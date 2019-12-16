@@ -1,0 +1,146 @@
+@css-prefix:x-sheet;
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+// x-sheet
+.@{css-prefix} {
+  width: 100%;
+  height: 100%;
+  font-family: Arial, serif;
+  user-select: none;
+}
+
+//垂直布局
+.@{css-prefix}-vertical-layer{
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.@{css-prefix}-vertical-layer-element {
+  flex-grow: 0;
+  width: 100%;
+}
+
+//水平布局
+.@{css-prefix}-horizontal-layer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+.@{css-prefix}-horizontal-layer-element {
+  flex-grow: 0;
+  height: 100%;
+  flex-basis: 0;
+}
+
+// 水平居中
+.@{css-prefix}-horizontal-center {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+.@{css-prefix}-horizontal-center-element{
+  height: 100%;
+}
+
+// 垂直居中
+.@{css-prefix}-vertical-center {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.@{css-prefix}-vertical-center-element {
+  width: 100%;
+}
+
+// 水平滚动条
+.@{css-prefix}-scroll-bar-x {
+  width: 100%;
+  height: 15px;
+  background: #dfdfdf;
+}
+.@{css-prefix}-scroll-bar-x-last-but {
+  width: 15px;
+  height: 100%;
+  float: left;
+  background-image: url('../assets/svg/arrow3.svg');
+  background-size: 100% 100%;
+  background-color: #dfdfdf;
+}
+.@{css-prefix}-scroll-bar-x-next-but {
+  width: 15px;
+  height: 100%;
+  float: right;
+  background-image: url('../assets/svg/arrow4.svg');
+  background-size: 100% 100%;
+  background-color: #dfdfdf;
+}
+.@{css-prefix}-scroll-bar-x-content {
+  margin: 0 15px 0 15px;
+  height: 100%;
+  position: relative;
+}
+.@{css-prefix}-scroll-bar-x-block {
+  position: absolute;
+  width: 100px;
+  height: 100%;
+  box-sizing: border-box;
+  left: 0;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  cursor: default;
+}
+
+// 垂直滚动条
+.@{css-prefix}-scroll-bar-y {
+  width: 15px;
+  height: 100%;
+  background: #dfdfdf;
+  position: relative;
+}
+.@{css-prefix}-scroll-bar-y-last-but {
+  width: 100%;
+  height: 15px;
+  position: absolute;
+  top: 0;
+  background-image: url('../assets/svg/arrow1.svg');
+  background-size: 100% 100%;
+  background-color: #dfdfdf;
+}
+.@{css-prefix}-scroll-bar-y-next-but {
+  width: 100%;
+  height: 15px;
+  position: absolute;
+  bottom: 0;
+  background-image: url('../assets/svg/arrow2.svg');
+  background-size: 100% 100%;
+  background-color: #dfdfdf;
+}
+.@{css-prefix}-scroll-bar-y-content {
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 0;
+  bottom: 15px;
+  z-index: 2;
+}
+.@{css-prefix}-scroll-bar-y-block {
+  position: absolute;
+  width: 100%;
+  height: 100px;
+  box-sizing: border-box;
+  top: 0;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  cursor: default;
+}

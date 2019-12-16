@@ -1,0 +1,131 @@
+@css-prefix:x-sheet;
+
+// 工作界面
+.@{css-prefix}-work {
+  width: 100%;
+  height: 100%;
+}
+.@{css-prefix}-work-body {
+  width: 100%;
+  height: 100%;
+  background: #e8e8e8;
+}
+
+// sheet view
+.@{css-prefix}-sheet-view {
+  width: 100%;
+  height: 100%;
+  background: royalblue;
+}
+
+// 工作表
+.@{css-prefix}-sheet {
+  width: 100%;
+  height: 100%;
+}
+
+// 表格
+.@{css-prefix}-table {
+  width: 100%;
+  height: 100%;
+}
+
+// sheet 选项卡
+.@{css-prefix}-sheet-switch-tab {
+  height: 25px;
+  width: 100%;
+  background: #e8e8e8;
+}
+.@{css-prefix}-switch-tab-last-btn {
+  height: 100%;
+  width: 30px;
+  cursor: pointer;
+  float: left;
+  background: url("../assets/svg/arrow-1-1.svg") center center no-repeat;
+  background-size: 50% 50%;
+}
+.@{css-prefix}-switch-tab-next-btn {
+  height: 100%;
+  width: 30px;
+  cursor: pointer;
+  float: left;
+  background: url("../assets/svg/arrow-1-2.svg") center center no-repeat;
+  background-size: 50% 50%;
+}
+.@{css-prefix}-sheet-tab-content {
+  height: 100%;
+  width: auto;
+  max-width: calc(100% - 85px);
+  float: left;
+  overflow: hidden;
+}
+.@{css-prefix}-sheet-tab-tabs {
+  width: max-content;
+  height: 100%;
+}
+.@{css-prefix}-sheet-tab-plus{
+  height: 100%;
+  width: 25px;
+  cursor: pointer;
+  background: url("../assets/svg/plus.svg") center center no-repeat;
+  background-size: 80% 80%;
+  float: left;
+}
+.@{css-prefix}-sheet-tab {
+  height: 100%;
+  padding: 0 20px 0 20px;
+  box-sizing: border-box;
+  background: #d0d0d0;
+  float: left;
+  text-align: center;
+  line-height: 25px;
+  font-size: 14px;
+  font-weight: bold;
+  border-left: 1px solid #bebebe;
+  cursor: pointer;
+  color: #787878;
+}
+.@{css-prefix}-sheet-tab:first-child {
+  border-left: none;
+}
+.@{css-prefix}-sheet-tab.active {
+  background: #ffffff;
+  color: #42a642;
+}
+
+  // 工具菜单
+.@{css-prefix}-tools-menu {
+  height: 41px;
+  background: #e9e9e9;
+}
+
+// 底部菜单
+.@{css-prefix}-bottom-menu {
+  height: 30px;
+  background: #e3e3e3;
+}
+.@{css-prefix}-bottom-sum {
+  height: 100%;
+  float: left;
+  line-height: 30px;
+  margin-left: 20px;
+  margin-right: 8px;
+  font-size: 13px;
+  font-weight: bold;
+}
+.@{css-prefix}-bottom-avg {
+  height: 100%;
+  float: left;
+  line-height: 30px;
+  margin-right: 8px;
+  font-size: 13px;
+  font-weight: bold;
+}
+.@{css-prefix}-bottom-number {
+  height: 100%;
+  float: left;
+  line-height: 30px;
+  margin-right: 8px;
+  font-size: 13px;
+  font-weight: bold;
+}
