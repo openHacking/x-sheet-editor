@@ -13,6 +13,7 @@ import { VerticalCenter } from '../lib/layer/center/VerticalCenter';
 import { Constant } from '../utils/Constant';
 import { SheetView } from './SheetView';
 import { SheetSwitchTab } from './SheetSwitchTab';
+import { LayerBar } from '../lib/layer/LayerBar';
 
 // sheet表和垂直滚动条
 let sheetViewLayerHorizontalElement;
@@ -27,9 +28,9 @@ let sheetSwitchTabLayerHorizontalElement;
 let horizontalLayer2;
 
 // 根布局
-let rootHorizontalLayer1LayerVerticalElement;
-let rootHorizontalLayer2Layer1LayerVerticalElement;
-let rootLayerVerticalLayer;
+let horizontalLayer1LayerVerticalElement;
+let horizontalLayer2Layer1LayerVerticalElement;
+let layerVerticalLayer;
 
 class WorkBody extends Widget {
   constructor() {
@@ -73,19 +74,19 @@ class WorkBody extends Widget {
     });
 
     // 根布局
-    rootHorizontalLayer1LayerVerticalElement = new VerticalLayerElement(horizontalLayer1, {
+    horizontalLayer1LayerVerticalElement = new VerticalLayerElement(horizontalLayer1, {
       style: {
         flexGrow: 1,
       },
     });
-    rootHorizontalLayer2Layer1LayerVerticalElement = new VerticalLayerElement(horizontalLayer2);
-    rootLayerVerticalLayer = new VerticalLayer({
-      layerElements: [rootHorizontalLayer1LayerVerticalElement,
-        rootHorizontalLayer2Layer1LayerVerticalElement],
+    horizontalLayer2Layer1LayerVerticalElement = new VerticalLayerElement(horizontalLayer2);
+    layerVerticalLayer = new VerticalLayer({
+      layerElements: [horizontalLayer1LayerVerticalElement,
+        horizontalLayer2Layer1LayerVerticalElement],
     });
 
     // 添加布局
-    this.children(rootLayerVerticalLayer);
+    this.children(layerVerticalLayer);
   }
 
   init() {

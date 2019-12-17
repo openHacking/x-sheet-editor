@@ -1,6 +1,7 @@
 class Cols {
-  constructor(len) {
+  constructor(len, width) {
     this._ = [];
+    this.width = width;
     this.len = len;
   }
 }

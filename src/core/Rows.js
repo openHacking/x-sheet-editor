@@ -1,6 +1,7 @@
 class Rows {
-  constructor(len) {
+  constructor(len, height) {
     this._ = [];
+    this.height = height;
     this.len = len;
   }
 }
