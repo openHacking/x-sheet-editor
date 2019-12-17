@@ -12,6 +12,11 @@ function thinLineWidth() {
   return dpr() - 0.5;
 }
 
+function npxLine(px) {
+  const n = npx(px);
+  return n > 0 ? n - 0.5 : 0.5;
+}
+
 class Draw {
   constructor(el, width, height) {
     this.el = el;
@@ -36,6 +41,10 @@ class Draw {
   attr(options) {
     Object.assign(this.ctx, options);
     return this;
+  }
+
+  beginPath() {
+    this.ctx.beginPath();
   }
 
   save() {
@@ -69,14 +78,24 @@ class Draw {
     return this;
   }
 
-  npxLine(px) {
-    const n = npx(px);
-    return n > 0 ? n - 0.5 : 0.5;
+  line(...xys) {
+    const { ctx } = this;
+    if (xys.length > 1) {
+      const [x, y] = xys[0];
+      ctx.moveTo(npxLine(x), npxLine(y));
+      for (let i = 1, len = xys.length; i < len; i += 1) {
+        const [x1, y1] = xys[i];
+        ctx.lineTo(npxLine(x1), npxLine(y1));
+      }
+      ctx.stroke();
+    }
+    return this;
   }
 }
 
 export {
   Draw,
+  npxLine,
   thinLineWidth,
   npx,
 };

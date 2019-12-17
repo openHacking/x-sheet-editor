@@ -49,6 +49,10 @@ class Table extends Widget {
     this.draw.restore();
   }
 
+  renderCell(viewRange) {
+
+  }
+
   render() {
     const [vWidth, vHeight] = [this.visualWidth(), this.visualHeight()];
     const viewRange = this.viewRange();
