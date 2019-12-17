@@ -26,6 +26,7 @@ class ScrollBarY extends Widget {
     this.blockTop = 0;
     this.maxBlockTop = 0;
     this.blockHeight = 0;
+    this.minBlockHeight = 10;
     this.scrollTo = 0;
     this.contentHeight = 0;
     this.viewPortHeight = 0;
@@ -70,11 +71,11 @@ class ScrollBarY extends Widget {
       // 计算滑块高度
       const contentBox = this.content.box();
       const blockHeight = viewPortHeight / contentHeight * contentBox.height;
+      this.blockHeight = blockHeight < this.minBlockHeight ? this.minBlockHeight : blockHeight;
       this.viewPortHeight = viewPortHeight;
       this.contentHeight = contentHeight;
-      this.maxBlockTop = contentBox.height - blockHeight;
-      this.blockHeight = blockHeight;
-      this.block.css('height', `${blockHeight}px`);
+      this.maxBlockTop = contentBox.height - this.blockHeight;
+      this.block.css('height', `${this.blockHeight}px`);
       // 计算滑块位置
       const blockTop = (this.scrollTo / (contentHeight - viewPortHeight)) * this.maxBlockTop;
       this.blockTop = blockTop > this.maxBlockTop ? this.maxBlockTop : blockTop;

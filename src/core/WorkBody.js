@@ -122,6 +122,9 @@ class WorkBody extends Widget {
       this.sheetView.getActiveSheet().table.render();
       this.setScroll();
     });
+    window.addEventListener(Constant.EVENT_TYPE.MOUSE_WHEEL, (e) => {
+      this.scrollBarY.blockTop
+    });
   }
 }
 
