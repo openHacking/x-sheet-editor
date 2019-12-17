@@ -55,7 +55,8 @@ class Table extends Widget {
 
   renderCell(viewRange) {
     viewRange.each((ri, ci) => {
-      const { boxRange, cell } = this.cells.getBoxRange(ri, ci);
+      const boxRange = this.cells.getBoxRange(ri, ci);
+      const cell = this.cells.getCell(ri, ci);
       const box = new Box(this.draw, {
         style: {
           fillStyle: cell.style.bgColor || '#',
@@ -74,6 +75,12 @@ class Table extends Widget {
       this.draw.restore();
     });
   }
+
+  renderLeftIndex() {}
+
+  renderTopIndex() {}
+
+  renderLeftTop() {}
 
   render() {
     const [vWidth, vHeight] = [this.visualWidth(), this.visualHeight()];

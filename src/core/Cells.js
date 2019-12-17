@@ -27,8 +27,9 @@ class Cells {
 
   getCell(ri, ci) {
     const row = this.data[ri];
-    if (row) return row[ci] || {};
-    return {};
+    let cell = {};
+    if (row && row[ci]) cell = row[ci];
+    return Utils.mergeDeep(cell, this.defaultAttr);
   }
 
   getBoxRange(ri, ci) {
@@ -38,11 +39,7 @@ class Cells {
       this.cols.getWidth(ci),
       this.rows.getHeight(ri),
     ];
-    const cell = this.getCell(ri, ci);
-    return {
-      boxRange: new BoxRange(x, y, width, height),
-      cell: Utils.mergeDeep(cell, this.defaultAttr),
-    };
+    return new BoxRange(x, y, width, height);
   }
 }
 
