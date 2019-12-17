@@ -107,7 +107,7 @@ class Table extends Widget {
     this.draw.save();
     this.cols.eachWidth(sci, eci, (i, cw, x) => {
       const offsetX = x + this.options.rowsIndexWidth;
-      this.draw.line([offsetX, 0], [offsetX, cw]);
+      this.draw.line([offsetX, 0], [offsetX, this.options.colsIndexHeight]);
       this.draw.fillText(Utils.stringAt(i), offsetX + (cw / 2), this.options.colsIndexHeight / 2);
     });
     this.draw.restore();
