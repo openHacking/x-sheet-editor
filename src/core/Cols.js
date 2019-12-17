@@ -36,6 +36,10 @@ class Cols {
   sumWidth(sci, eci) {
     return Utils.rangeSum(sci, eci + 1, i => this.getWidth(i));
   }
+
+  totalWidth() {
+    return this.sumWidth(0, this.len);
+  }
 }
 
 export { Cols };

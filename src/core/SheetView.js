@@ -17,6 +17,10 @@ class SheetView extends Widget {
     this.children(sheet);
     sheet.init();
   }
+
+  getActiveSheet() {
+    return this.sheets[0];
+  }
 }
 
 export { SheetView };

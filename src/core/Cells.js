@@ -32,14 +32,28 @@ class Cells {
     return Utils.mergeDeep(cell, this.defaultAttr);
   }
 
-  getBoxRange(ri, ci) {
-    const [x, y, width, height] = [
-      Utils.rangeSum(0, ci, i => this.cols.getWidth(i)),
-      Utils.rangeSum(0, ri, i => this.rows.getHeight(i)),
-      this.cols.getWidth(ci),
-      this.rows.getHeight(ri),
-    ];
-    return new BoxRange(x, y, width, height);
+  getBoxRangeCells(rectRange) {
+    const {
+      sri, eri, sci, eci,
+    } = rectRange;
+    const boxRanges = [];
+    let y = 0;
+    for (let i = sri; i <= eri; i += 1) {
+      const height = this.rows.getHeight(i);
+      let x = 0;
+      for (let j = sci; j <= eci; j += 1) {
+        const width = this.cols.getWidth(j);
+        boxRanges.push({
+          boxRange: new BoxRange(x, y, width, height),
+          cell: this.getCell(i, j),
+          ri: i,
+          ci: j,
+        });
+        x += width;
+      }
+      y += height;
+    }
+    return boxRanges;
   }
 }
 

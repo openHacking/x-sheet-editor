@@ -39,8 +39,16 @@ class WorkBody extends Widget {
     // 组件
     this.sheetView = new SheetView();
     this.sheetSwitchTab = new SheetSwitchTab();
-    this.scrollBarX = new ScrollBarX();
-    this.scrollBarY = new ScrollBarY();
+    this.scrollBarX = new ScrollBarX({
+      scroll: (move) => {
+        this.sheetView.getActiveSheet().table.scrollXTo(move);
+      },
+    });
+    this.scrollBarY = new ScrollBarY({
+      scroll: (move) => {
+        this.sheetView.getActiveSheet().table.scrollYTo(move);
+      },
+    });
 
     // sheet表和垂直滚动条
     sheetViewLayerHorizontalElement = new HorizontalLayerElement(this.sheetView, {
@@ -48,7 +56,11 @@ class WorkBody extends Widget {
         flexGrow: 1,
       },
     });
-    scrollBarYLayerHorizontalElement = new HorizontalLayerElement(this.scrollBarY);
+    scrollBarYLayerHorizontalElement = new HorizontalLayerElement(this.scrollBarY, {
+      style: {
+        overflow: 'inherit',
+      },
+    });
     horizontalLayer1 = new HorizontalLayer({
       layerElements: [sheetViewLayerHorizontalElement, scrollBarYLayerHorizontalElement],
     });
@@ -65,7 +77,6 @@ class WorkBody extends Widget {
     });
     sheetSwitchTabLayerHorizontalElement = new HorizontalLayerElement(this.sheetSwitchTab, {
       style: {
-        overflow: 'hidden',
         flexGrow: 3,
       },
     });
@@ -99,13 +110,16 @@ class WorkBody extends Widget {
   }
 
   setScroll() {
-    this.scrollBarY.setSize(this.sheetView.offset().height, 5000);
-    this.scrollBarX.setSize(this.sheetView.offset().width, 5000);
+    this.scrollBarY.setSize(this.sheetView.offset().height,
+      this.sheetView.getActiveSheet().table.rows.totalHeight());
+    this.scrollBarX.setSize(this.sheetView.offset().width,
+      this.sheetView.getActiveSheet().table.cols.totalWidth());
     scrollBarXLayerHorizontalElement.display(!this.scrollBarX.isHide);
   }
 
   bind() {
     window.addEventListener(Constant.EVENT_TYPE.RESIZE, () => {
+      this.sheetView.getActiveSheet().table.render();
       this.setScroll();
     });
   }

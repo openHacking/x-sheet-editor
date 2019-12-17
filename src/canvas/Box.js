@@ -10,8 +10,6 @@ class Box {
     draw.attr(this.options.style);
   }
 
-  // ==================矩形绘制==================
-
   rect(boxRange) {
     const { ctx } = this.draw;
     ctx.rect(
@@ -23,8 +21,6 @@ class Box {
     ctx.clip();
     ctx.fill();
   }
-
-  // ==================文字绘制==================
 
   drawFontLine(type, tx, ty, align, verticalAlign, blHeight, blWidth) {
     const { draw } = this;

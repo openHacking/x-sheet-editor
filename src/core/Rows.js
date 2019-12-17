@@ -36,6 +36,10 @@ class Rows {
   sumHeight(sri, eri) {
     return Utils.rangeSum(sri, eri + 1, i => this.getHeight(i));
   }
+
+  totalHeight() {
+    return this.sumHeight(0, this.len);
+  }
 }
 
 export { Rows };

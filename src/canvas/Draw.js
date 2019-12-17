@@ -18,14 +18,13 @@ function npxLine(px) {
 }
 
 class Draw {
-  constructor(el, width, height) {
+  constructor(el) {
     this.el = el;
     this.ctx = el.getContext('2d');
-    this.resize(width, height);
-    this.ctx.scale(dpr(), dpr());
   }
 
   resize(width, height) {
+    this.ctx.scale(dpr(), dpr());
     this.el.style.width = `${width}px`;
     this.el.style.height = `${height}px`;
     this.el.width = npx(width);
