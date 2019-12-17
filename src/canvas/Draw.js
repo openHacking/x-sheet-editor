@@ -8,6 +8,10 @@ function npx(px) {
   return parseInt(px * dpr(), 10);
 }
 
+function thinLineWidth() {
+  return dpr() - 0.5;
+}
+
 class Draw {
   constructor(el, width, height) {
     this.el = el;
@@ -64,9 +68,15 @@ class Draw {
     this.ctx.fillText(text, npx(x), npx(y));
     return this;
   }
+
+  npxLine(px) {
+    const n = npx(px);
+    return n > 0 ? n - 0.5 : 0.5;
+  }
 }
 
 export {
   Draw,
+  thinLineWidth,
   npx,
 };

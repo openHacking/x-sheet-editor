@@ -1,0 +1,277 @@
+import { Utils } from '../utils/Utils';
+
+class CellRange {
+  /**
+   * CellRange
+   * @param {int} sri 起始行
+   * @param {int} sci 起始列
+   * @param {int} eri 结束行
+   * @param {int} eci 结束列
+   * @param {int} w 宽度
+   * @param {int} h 高度
+   */
+  constructor(sri, sci, eri, eci, w = 0, h = 0) {
+    this.sri = sri;
+    this.sci = sci;
+    this.eri = eri;
+    this.eci = eci;
+    this.w = w;
+    this.h = h;
+  }
+
+  /**
+   * 设置区域
+   * @param {int} sri 起始行
+   * @param {int} sci 起始列
+   * @param {int} eri 结束行
+   * @param {int} eci 结束列
+   */
+  set(sri, sci, eri, eci) {
+    this.sri = sri;
+    this.sci = sci;
+    this.eri = eri;
+    this.eci = eci;
+  }
+
+  /**
+   * 判断是否跨多个单元格
+   * @returns {boolean}
+   */
+  multiple() {
+    return this.eri - this.sri > 0 || this.eci - this.sci > 0;
+  }
+
+  /**
+   * 判断当前的区域是否包含指定的行和列
+   * 参数支持 ri, ci 和 A10 两种形式
+   * @param {[int, int] | String} args 行索引,列索引 或者 字符串
+   * @returns {boolean}
+   */
+  includes(...args) {
+    let [ri, ci] = [0, 0];
+    if (args.length === 1) {
+      [ci, ri] = Utils.expr2xy(args[0]);
+    } else if (args.length === 2) {
+      [ri, ci] = args;
+    }
+    const {
+      sri, sci, eri, eci,
+    } = this;
+    return sri <= ri && ri <= eri && sci <= ci && ci <= eci;
+  }
+
+  /**
+   * 循环过滤指定的行列
+   * @param {Function} cb 回调函数
+   * @param {Function} rowFilter 过滤使用的回调函数
+   */
+  each(cb, rowFilter = () => true) {
+    const {
+      sri, sci, eri, eci,
+    } = this;
+    for (let i = sri; i <= eri; i += 1) {
+      if (rowFilter(i)) {
+        for (let j = sci; j <= eci; j += 1) {
+          cb(i, j);
+        }
+      }
+    }
+  }
+
+  /**
+   * 判断当前的区域是否包含指定的区域
+   * @param {CellRange} other 区域
+   * @returns {boolean}
+   */
+  contains(other) {
+    return this.sri <= other.sri
+      && this.sci <= other.sci
+      && this.eri >= other.eri
+      && this.eci >= other.eci;
+  }
+
+  /**
+   * 判断当前的区域是否被指定的区域包含
+   * @param {CellRange} other 区域
+   * @returns {boolean}
+   */
+  within(other) {
+    return this.sri >= other.sri
+      && this.sci >= other.sci
+      && this.eri <= other.eri
+      && this.eci <= other.eci;
+  }
+
+  /**
+   * 判断当前的区域和指定的区域不发生重合
+   * @param {CellRange} other 区域
+   * @returns {boolean}
+   */
+  disjoint(other) {
+    return this.sri > other.eri
+      || this.sci > other.eci
+      || other.sri > this.eri
+      || other.sci > this.eci;
+  }
+
+  /**
+   * 判断当前的区域和指定的区域发生重合
+   * @param {CellRange} other 区域
+   * @returns {boolean}
+   */
+  intersects(other) {
+    return this.sri <= other.eri
+      && this.sci <= other.eci
+      && other.sri <= this.eri
+      && other.sci <= this.eci;
+  }
+
+  /**
+   * 返回当前区域和指定区域合并后的新区域
+   * @param {CellRange} other 区域
+   * @returns {CellRange}
+   */
+  union(other) {
+    const {
+      sri, sci, eri, eci,
+    } = this;
+    return new CellRange(
+      other.sri < sri ? other.sri : sri,
+      other.sci < sci ? other.sci : sci,
+      other.eri > eri ? other.eri : eri,
+      other.eci > eci ? other.eci : eci,
+    );
+  }
+
+  /**
+   * 返回当前区域和指定区域不重合的部分
+   * @param {CellRange} other 区域
+   * @returns {Array}
+   */
+  difference(other) {
+    const ret = [];
+    const addRet = (sri, sci, eri, eci) => {
+      ret.push(new CellRange(sri, sci, eri, eci));
+    };
+    const {
+      sri, sci, eri, eci,
+    } = this;
+    const dsr = other.sri - sri;
+    const dsc = other.sci - sci;
+    const der = eri - other.eri;
+    const dec = eci - other.eci;
+    if (dsr > 0) {
+      addRet(sri, sci, other.sri - 1, eci);
+      if (der > 0) {
+        addRet(other.eri + 1, sci, eri, eci);
+        if (dsc > 0) {
+          addRet(other.sri, sci, other.eri, other.sci - 1);
+        }
+        if (dec > 0) {
+          addRet(other.sri, other.eci + 1, other.eri, eci);
+        }
+      } else {
+        if (dsc > 0) {
+          addRet(other.sri, sci, eri, other.sci - 1);
+        }
+        if (dec > 0) {
+          addRet(other.sri, other.eci + 1, eri, eci);
+        }
+      }
+    } else if (der > 0) {
+      addRet(other.eri + 1, sci, eri, eci);
+      if (dsc > 0) {
+        addRet(sri, sci, other.eri, other.sci - 1);
+      }
+      if (dec > 0) {
+        addRet(sri, other.eci + 1, other.eri, eci);
+      }
+    }
+    if (dsc > 0) {
+      addRet(sri, sci, eri, other.sci - 1);
+      if (dec > 0) {
+        addRet(sri, other.eri + 1, eri, eci);
+        if (dsr > 0) {
+          addRet(sri, other.sci, other.sri - 1, other.eci);
+        }
+        if (der > 0) {
+          addRet(other.sri + 1, other.sci, eri, other.eci);
+        }
+      } else {
+        if (dsr > 0) {
+          addRet(sri, other.sci, other.sri - 1, eci);
+        }
+        if (der > 0) {
+          addRet(other.sri + 1, other.sci, eri, eci);
+        }
+      }
+    } else if (dec > 0) {
+      addRet(eri, other.eci + 1, eri, eci);
+      if (dsr > 0) {
+        addRet(sri, sci, other.sri - 1, other.eci);
+      }
+      if (der > 0) {
+        addRet(other.eri + 1, sci, eri, other.eci);
+      }
+    }
+    return ret;
+  }
+
+  /**
+   * 当前区域跨的行列数
+   * @returns {number[]}
+   */
+  size() {
+    return [
+      this.eri - this.sri + 1,
+      this.eci - this.sci + 1,
+    ];
+  }
+
+  toString() {
+    const {
+      sri, sci, eri, eci,
+    } = this;
+    let ref = Utils.xy2expr(sci, sri);
+    if (this.multiple()) {
+      ref = `${ref}:${Utils.xy2expr(eci, eri)}`;
+    }
+    return ref;
+  }
+
+  clone() {
+    const {
+      sri, sci, eri, eci, w, h,
+    } = this;
+    return new CellRange(sri, sci, eri, eci, w, h);
+  }
+
+  /**
+   * equals
+   * @param {CellRange} other 区域
+   * @returns {boolean}
+   */
+  equals(other) {
+    return this.eri === other.eri
+      && this.eci === other.eci
+      && this.sri === other.sri
+      && this.sci === other.sci;
+  }
+
+  /**
+   * 将 B1:B8 或者 B1 参数转换成新的区域
+   * @param {String} ref 行列字符串
+   * @returns {CellRange}
+   */
+  static valueOf(ref) {
+    const refs = ref.split(':');
+    const [sci, sri] = Utils.expr2xy(refs[0]);
+    let [eri, eci] = [sri, sci];
+    if (refs.length > 1) {
+      [eci, eri] = Utils.expr2xy(refs[1]);
+    }
+    return new CellRange(sri, sci, eri, eci);
+  }
+}
+
+export { CellRange };

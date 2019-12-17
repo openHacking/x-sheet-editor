@@ -13,9 +13,9 @@ class SheetView extends Widget {
   }
 
   add(sheet = new Sheet()) {
-    sheet.init();
     this.sheets.push(sheet);
     this.children(sheet);
+    sheet.init();
   }
 }
 

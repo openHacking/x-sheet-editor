@@ -5,12 +5,12 @@ import { Table } from './Table';
 class Sheet extends Widget {
   constructor() {
     super(`${cssPrefix}-sheet`);
-    this.table = null;
+    this.table = new Table();
+    this.children(this.table);
   }
 
   init() {
-    this.table = new Table();
-    this.children(this.table);
+    this.table.init();
   }
 }
 
