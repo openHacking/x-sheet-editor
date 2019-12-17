@@ -85,8 +85,6 @@ class Box {
       align, verticalAlign, font, color, strike, underline,
     } = attr;
     const tx = this.textAlign(boxRange, align);
-    ctx.save();
-    ctx.beginPath();
     draw.attr({
       textAlign: align,
       textBaseline: verticalAlign,
@@ -139,7 +137,6 @@ class Box {
         this.drawFontLine('underline', tx, ty, align, verticalAlign, font.size, txtWidth);
       }
     }
-    ctx.restore();
     return this;
   }
 }

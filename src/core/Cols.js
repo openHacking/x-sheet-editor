@@ -1,3 +1,5 @@
+import { Utils } from '../utils/Utils';
+
 class Cols {
   constructor({ len, width }) {
     this._ = [];
@@ -29,6 +31,10 @@ class Cols {
       cb(i, colWidth, x);
       x += colWidth;
     }
+  }
+
+  sumWidth(sci, eci) {
+    return Utils.rangeSum(sci, eci + 1, i => this.getWidth(i));
   }
 }
 

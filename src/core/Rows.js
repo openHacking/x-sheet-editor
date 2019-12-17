@@ -1,3 +1,5 @@
+import { Utils } from '../utils/Utils';
+
 class Rows {
   constructor({ len, height }) {
     this._ = [];
@@ -29,6 +31,10 @@ class Rows {
       cb(i, rowHeight, y);
       y += rowHeight;
     }
+  }
+
+  sumHeight(sri, eri) {
+    return Utils.rangeSum(sri, eri + 1, i => this.getHeight(i));
   }
 }
 
