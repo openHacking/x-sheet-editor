@@ -1,5 +1,8 @@
+
+const defaultPadding = 5;
+
 class BoxRange {
-  constructor(x = 0, y = 0, width = 0, height = 0, padding = 0) {
+  constructor(x = 0, y = 0, width = 0, height = 0, padding = defaultPadding) {
     this.x = x;
     this.y = y;
     this.width = width;

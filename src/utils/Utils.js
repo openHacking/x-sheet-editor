@@ -94,6 +94,21 @@ class Utils {
   }
 
   /**
+   * 区间求和
+   * @param min
+   * @param max
+   * @param cb
+   * @returns {number}
+   */
+  static rangeSum(min, max, cb) {
+    let s = 0;
+    for (let i = min; i < max; i += 1) {
+      s += cb(i);
+    }
+    return s;
+  }
+
+  /**
    * 字符串转浮点数字
    * @param val
    * @returns {number}

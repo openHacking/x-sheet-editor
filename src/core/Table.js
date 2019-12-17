@@ -6,8 +6,10 @@ import { Rows } from './Rows';
 import { Cols } from './Cols';
 import { Draw } from '../canvas/Draw';
 import { Scroll } from './Scroll';
-import { CellRange } from './CellRange';
 import { Grid } from '../canvas/Grid';
+import { RectRange } from './RectRange';
+import { Cells } from './Cells';
+import { Box } from '../canvas/Box';
 
 class Table extends Widget {
   constructor(options) {
@@ -24,6 +26,7 @@ class Table extends Widget {
     }, options);
     this.rows = new Rows(this.options.rows);
     this.cols = new Cols(this.options.cols);
+    this.cells = new Cells({ rows: this.rows, cols: this.cols });
     this.canvas = h('canvas', `${cssPrefix}-table-canvas`);
     this.scroll = new Scroll();
     this.children(this.canvas);
@@ -33,9 +36,10 @@ class Table extends Widget {
     this.render();
   }
 
-  renderGrid({
-    sri, sci, eri, eci, w: width, h: height,
-  }) {
+  renderGrid(viewRange) {
+    const {
+      sri, sci, eri, eci, w: width, h: height,
+    } = viewRange;
     this.draw.save();
     const grid = new Grid(this.draw);
     this.rows.eachHeight(sri, eri, (i, ch, y) => {
@@ -50,7 +54,25 @@ class Table extends Widget {
   }
 
   renderCell(viewRange) {
-
+    viewRange.each((ri, ci) => {
+      const { boxRange, cell } = this.cells.getBoxRange(ri, ci);
+      const box = new Box(this.draw, {
+        style: {
+          fillStyle: cell.style.bgColor || '#',
+        },
+      });
+      this.draw.save();
+      box.rect(boxRange);
+      box.text(boxRange, '12313', {
+        align: cell.style.align,
+        verticalAlign: cell.style.verticalAlign,
+        font: cell.style.font,
+        color: cell.style.color,
+        strike: cell.style.strike,
+        underline: cell.style.underline,
+      });
+      this.draw.restore();
+    });
   }
 
   render() {
@@ -60,6 +82,7 @@ class Table extends Widget {
     this.draw.resize(vWidth, vHeight);
     this.draw.clear();
     this.renderGrid(viewRange);
+    this.renderCell(viewRange);
   }
 
   visualHeight() {
@@ -69,10 +92,6 @@ class Table extends Widget {
   visualWidth() {
     return this.box().width;
   }
-
-  rowsHeight() {}
-
-  colsWidth() {}
 
   viewRange() {
     const {
@@ -91,7 +110,7 @@ class Table extends Widget {
       eci = j;
       if (width > this.visualWidth()) break;
     }
-    return new CellRange(ri, ci, eri, eci, width, height);
+    return new RectRange(ri, ci, eri, eci, width, height);
   }
 
   scrollYTo(y) {

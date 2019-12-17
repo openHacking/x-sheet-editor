@@ -54,7 +54,7 @@ class Box {
 
   textAlign(boxRange, align) {
     const { width, padding } = boxRange;
-    let { x } = this;
+    let { x } = boxRange;
     if (align === 'left') {
       x += padding;
     } else if (align === 'center') {
@@ -67,7 +67,7 @@ class Box {
 
   textVerticalAlign(boxRange, align, fontSize, hOffset) {
     const { height, padding } = boxRange;
-    let { y } = this;
+    let { y } = boxRange;
     if (align === 'top') {
       y += padding;
     } else if (align === 'middle') {

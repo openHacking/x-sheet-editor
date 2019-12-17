@@ -1,8 +1,8 @@
 import { Utils } from '../utils/Utils';
 
-class CellRange {
+class RectRange {
   /**
-   * CellRange
+   * RectRange
    * @param {int} sri 起始行
    * @param {int} sci 起始列
    * @param {int} eri 结束行
@@ -80,7 +80,7 @@ class CellRange {
 
   /**
    * 判断当前的区域是否包含指定的区域
-   * @param {CellRange} other 区域
+   * @param {RectRange} other 区域
    * @returns {boolean}
    */
   contains(other) {
@@ -92,7 +92,7 @@ class CellRange {
 
   /**
    * 判断当前的区域是否被指定的区域包含
-   * @param {CellRange} other 区域
+   * @param {RectRange} other 区域
    * @returns {boolean}
    */
   within(other) {
@@ -104,7 +104,7 @@ class CellRange {
 
   /**
    * 判断当前的区域和指定的区域不发生重合
-   * @param {CellRange} other 区域
+   * @param {RectRange} other 区域
    * @returns {boolean}
    */
   disjoint(other) {
@@ -116,7 +116,7 @@ class CellRange {
 
   /**
    * 判断当前的区域和指定的区域发生重合
-   * @param {CellRange} other 区域
+   * @param {RectRange} other 区域
    * @returns {boolean}
    */
   intersects(other) {
@@ -128,14 +128,14 @@ class CellRange {
 
   /**
    * 返回当前区域和指定区域合并后的新区域
-   * @param {CellRange} other 区域
-   * @returns {CellRange}
+   * @param {RectRange} other 区域
+   * @returns {RectRange}
    */
   union(other) {
     const {
       sri, sci, eri, eci,
     } = this;
-    return new CellRange(
+    return new RectRange(
       other.sri < sri ? other.sri : sri,
       other.sci < sci ? other.sci : sci,
       other.eri > eri ? other.eri : eri,
@@ -145,13 +145,13 @@ class CellRange {
 
   /**
    * 返回当前区域和指定区域不重合的部分
-   * @param {CellRange} other 区域
+   * @param {RectRange} other 区域
    * @returns {Array}
    */
   difference(other) {
     const ret = [];
     const addRet = (sri, sci, eri, eci) => {
-      ret.push(new CellRange(sri, sci, eri, eci));
+      ret.push(new RectRange(sri, sci, eri, eci));
     };
     const {
       sri, sci, eri, eci,
@@ -243,12 +243,12 @@ class CellRange {
     const {
       sri, sci, eri, eci, w, h,
     } = this;
-    return new CellRange(sri, sci, eri, eci, w, h);
+    return new RectRange(sri, sci, eri, eci, w, h);
   }
 
   /**
    * equals
-   * @param {CellRange} other 区域
+   * @param {RectRange} other 区域
    * @returns {boolean}
    */
   equals(other) {
@@ -261,7 +261,7 @@ class CellRange {
   /**
    * 将 B1:B8 或者 B1 参数转换成新的区域
    * @param {String} ref 行列字符串
-   * @returns {CellRange}
+   * @returns {RectRange}
    */
   static valueOf(ref) {
     const refs = ref.split(':');
@@ -270,8 +270,8 @@ class CellRange {
     if (refs.length > 1) {
       [eci, eri] = Utils.expr2xy(refs[1]);
     }
-    return new CellRange(sri, sci, eri, eci);
+    return new RectRange(sri, sci, eri, eci);
   }
 }
 
-export { CellRange };
+export { RectRange };
