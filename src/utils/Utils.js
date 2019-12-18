@@ -1,6 +1,7 @@
 /* global navigator */
 
 const alphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+let throttleHandle = null;
 
 class Utils {
   /**
@@ -212,6 +213,16 @@ class Utils {
       s += v;
     }
     return [i, s - v, v];
+  }
+
+  /**
+   * 节流
+   * @param cb
+   * @param time
+   */
+  static throttle(cb = () => {}, time = 500) {
+    if (throttleHandle) clearTimeout(throttleHandle);
+    throttleHandle = setTimeout(cb, time);
   }
 }
 

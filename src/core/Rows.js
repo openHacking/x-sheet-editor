@@ -33,12 +33,12 @@ class Rows {
     }
   }
 
-  sumHeight(sri, eri) {
+  sectionSumHeight(sri, eri) {
     return Utils.rangeSum(sri, eri + 1, i => this.getHeight(i));
   }
 
   totalHeight() {
-    return this.sumHeight(0, this.len);
+    return Utils.rangeSum(0, this.len, i => this.getHeight(i));
   }
 }
 

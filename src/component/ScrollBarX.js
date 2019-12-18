@@ -26,6 +26,7 @@ class ScrollBarX extends Widget {
     this.blockLeft = 0;
     this.maxBlockLeft = 0;
     this.blockWidth = 0;
+    this.minBlockWidth = 10;
     this.scrollTo = 0;
     this.contentWidth = 0;
     this.viewPortWidth = 0;
@@ -70,19 +71,21 @@ class ScrollBarX extends Widget {
       // 计算滑块宽度
       const contentBox = this.content.box();
       const blockWidth = viewPortWidth / contentWidth * contentBox.width;
+      this.blockWidth = blockWidth < this.minBlockWidth ? this.minBlockWidth : blockWidth;
       this.viewPortWidth = viewPortWidth;
       this.contentWidth = contentWidth;
-      this.maxBlockLeft = contentBox.width - blockWidth;
-      this.blockWidth = blockWidth;
-      this.block.css('width', `${blockWidth}px`);
+      this.maxBlockLeft = contentBox.width - this.blockWidth;
+      this.block.css('width', `${this.blockWidth}px`);
       // 计算滑块位置
       const blockLeft = (this.scrollTo / (contentWidth - viewPortWidth)) * this.maxBlockLeft;
       this.blockLeft = blockLeft > this.maxBlockLeft ? this.maxBlockLeft : blockLeft;
-      this.block.css('left', `${this.blockLeft}px`);
       this.scrollTo = this.computerScrollTo(this.blockLeft);
+      this.block.css('left', `${this.blockLeft}px`);
+      this.option.scroll(this.scrollTo);
     } else {
       this.isHide = true;
       this.hide();
+      this.option.scroll(0);
     }
   }
 

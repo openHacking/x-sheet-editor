@@ -81,9 +81,11 @@ class ScrollBarY extends Widget {
       this.blockTop = blockTop > this.maxBlockTop ? this.maxBlockTop : blockTop;
       this.scrollTo = this.computerScrollTo(this.blockTop);
       this.block.css('top', `${this.blockTop}px`);
+      this.option.scroll(this.scrollTo);
     } else {
       this.isHide = true;
       this.hide();
+      this.option.scroll(0);
     }
   }
 

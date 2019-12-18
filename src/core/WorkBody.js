@@ -13,7 +13,6 @@ import { VerticalCenter } from '../lib/layer/center/VerticalCenter';
 import { Constant } from '../utils/Constant';
 import { SheetView } from './SheetView';
 import { SheetSwitchTab } from './SheetSwitchTab';
-import { LayerBar } from '../lib/layer/LayerBar';
 
 // sheet表和垂直滚动条
 let sheetViewLayerHorizontalElement;
@@ -110,20 +109,17 @@ class WorkBody extends Widget {
   }
 
   setScroll() {
-    this.scrollBarY.setSize(this.sheetView.offset().height,
-      this.sheetView.getActiveSheet().table.rows.totalHeight());
-    this.scrollBarX.setSize(this.sheetView.offset().width,
-      this.sheetView.getActiveSheet().table.cols.totalWidth());
+    const { table } = this.sheetView.getActiveSheet();
+    this.scrollBarY.setSize(table.gridVisualHeight(), table.gridContentHeight());
+    this.scrollBarX.setSize(table.gridVisualWidth(), table.gridContentWidth());
     scrollBarXLayerHorizontalElement.display(!this.scrollBarX.isHide);
   }
 
   bind() {
     window.addEventListener(Constant.EVENT_TYPE.RESIZE, () => {
-      this.sheetView.getActiveSheet().table.render();
       this.setScroll();
     });
-    window.addEventListener(Constant.EVENT_TYPE.MOUSE_WHEEL, (e) => {
-      this.scrollBarY.blockTop
+    window.addEventListener(Constant.EVENT_TYPE.MOUSE_WHEEL, () => {
     });
   }
 }

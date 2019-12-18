@@ -30,7 +30,7 @@ class Table extends Widget {
       indexColsHeight: 30,
       indexRowsWidth: 50,
       rows: {
-        len: 100000,
+        len: 300,
         height: 30,
       },
       cols: {
@@ -42,10 +42,15 @@ class Table extends Widget {
         lineWidth: thinLineWidth,
         strokeStyle: '#e6e6e6',
       },
+      data: [
+        [{ text: '1' }, { text: '2' }, { text: '3' }],
+        [{ text: '1' }, { text: '2' }, { text: '3' }],
+        [{ text: '1' }, { text: '2' }, { text: '3' }],
+      ],
     }, options);
     this.rows = new Rows(this.options.rows);
     this.cols = new Cols(this.options.cols);
-    this.cells = new Cells({ rows: this.rows, cols: this.cols });
+    this.cells = new Cells({ rows: this.rows, cols: this.cols, data: this.options.data });
     this.canvas = h('canvas', `${cssPrefix}-table-canvas`);
     this.draw = new Draw(this.canvas.el);
     this.scroll = new Scroll();
@@ -77,11 +82,8 @@ class Table extends Widget {
   renderCell(viewRange, offsetX = 0, offsetY = 0) {
     this.draw.save();
     this.draw.translate(offsetX, offsetY);
-    const boxRangeCells = this.cells.getBoxRangeCells(viewRange);
-    boxRangeCells.forEach((boxRangeCell) => {
-      const {
-        boxRange, cell, ri, ci,
-      } = boxRangeCell;
+    this.cells.getRectRangeCell(viewRange, (ri, ci, boxRange, cell) => {
+      if (cell === null) return;
       const box = new Box(this.draw, {
         style: {
           fillStyle: cell.style.bgColor || '#ffffff',
@@ -104,7 +106,7 @@ class Table extends Widget {
 
   renderColsIndex(viewRange, offsetX = 0) {
     const { sci, eci } = viewRange;
-    const sumWidth = this.cols.sumWidth(sci, eci);
+    const sumWidth = this.cols.sectionSumWidth(sci, eci);
     this.draw.save();
     this.draw.translate(offsetX, 0);
     // 绘制背景
@@ -126,7 +128,7 @@ class Table extends Widget {
 
   renderRowsIndex(viewRange, offsetY = 0) {
     const { sri, eri } = viewRange;
-    const sumHeight = this.rows.sumHeight(sri, eri);
+    const sumHeight = this.rows.sectionSumHeight(sri, eri);
     this.draw.save();
     this.draw.translate(0, offsetY);
     // 绘制背景
@@ -162,8 +164,8 @@ class Table extends Widget {
     const [offsetX, offsetY] = [this.options.indexRowsWidth, this.options.indexColsHeight];
     const [vWidth, vHeight] = [this.visualWidth(), this.visualHeight()];
     const viewRange = this.viewRange();
-    this.draw.resize(vWidth, vHeight);
     this.draw.clear();
+    this.draw.resize(vWidth, vHeight);
     this.renderGrid(viewRange, offsetX, offsetY);
     this.renderCell(viewRange, offsetX, offsetY);
     this.renderRowsIndex(viewRange, offsetY);
@@ -177,6 +179,22 @@ class Table extends Widget {
 
   visualWidth() {
     return this.box().width;
+  }
+
+  gridVisualHeight() {
+    return this.visualHeight() - this.options.indexColsHeight;
+  }
+
+  gridVisualWidth() {
+    return this.visualWidth() - this.options.indexRowsWidth;
+  }
+
+  gridContentHeight() {
+    return this.rows.totalHeight();
+  }
+
+  gridContentWidth() {
+    return this.cols.totalWidth();
   }
 
   viewRange() {

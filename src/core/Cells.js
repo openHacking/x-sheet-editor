@@ -1,11 +1,14 @@
 import { Utils } from '../utils/Utils';
 import { BoxRange } from '../canvas/BoxRange';
+import { Merges } from './Merges';
 
 class Cells {
   constructor({ cols, rows, data = [] }) {
     this.cols = cols;
     this.rows = rows;
+    this.merges = new Merges();
     this.defaultAttr = {
+      merge: [0, 0],
       style: {
         bgColor: '#ffffff',
         align: 'left',
@@ -27,33 +30,25 @@ class Cells {
 
   getCell(ri, ci) {
     const row = this.data[ri];
-    let cell = {};
-    if (row && row[ci]) cell = row[ci];
-    return Utils.mergeDeep(cell, this.defaultAttr);
+    if (row && row[ci]) return Utils.mergeDeep(row[ci], this.defaultAttr);
+    return null;
   }
 
-  getBoxRangeCells(rectRange) {
+  getRectRangeCell(rectRange, cb) {
     const {
       sri, eri, sci, eci,
     } = rectRange;
-    const boxRanges = [];
     let y = 0;
     for (let i = sri; i <= eri; i += 1) {
       const height = this.rows.getHeight(i);
       let x = 0;
       for (let j = sci; j <= eci; j += 1) {
         const width = this.cols.getWidth(j);
-        boxRanges.push({
-          boxRange: new BoxRange(x, y, width, height),
-          cell: this.getCell(i, j),
-          ri: i,
-          ci: j,
-        });
+        cb(i, j, new BoxRange(x, y, width, height), this.getCell(i, j));
         x += width;
       }
       y += height;
     }
-    return boxRanges;
   }
 }
 
