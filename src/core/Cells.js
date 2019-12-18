@@ -16,7 +16,7 @@ class Cells {
         textWrap: false,
         strike: false,
         underline: false,
-        color: '#0a0a0a',
+        color: '#000000',
         font: {
           name: 'Arial',
           size: 13,
@@ -30,7 +30,7 @@ class Cells {
 
   getCell(ri, ci) {
     const row = this.data[ri];
-    if (row && row[ci]) return Utils.mergeDeep(row[ci], this.defaultAttr);
+    if (row && row[ci]) return Utils.mergeDeep({}, this.defaultAttr, row[ci]);
     return null;
   }
 
@@ -40,14 +40,32 @@ class Cells {
     } = rectRange;
     let y = 0;
     for (let i = sri; i <= eri; i += 1) {
-      const height = this.rows.getHeight(i);
+      const rowHeight = this.rows.getHeight(i);
       let x = 0;
       for (let j = sci; j <= eci; j += 1) {
-        const width = this.cols.getWidth(j);
-        cb(i, j, new BoxRange(x, y, width, height), this.getCell(i, j));
-        x += width;
+        const colWidth = this.cols.getWidth(j);
+        const cell = this.getCell(i, j);
+        if (cell !== null) {
+          const { merge } = cell;
+          let [cellWidth, cellHeight] = [colWidth, rowHeight];
+          if (merge) {
+            const [rn, cn] = merge;
+            if (rn > 0) {
+              for (let ii = 1; ii <= rn; ii += 1) {
+                cellHeight += this.rows.getHeight(i + ii);
+              }
+            }
+            if (cn > 0) {
+              for (let jj = 1; jj <= cn; jj += 1) {
+                cellWidth += this.cols.getWidth(j + jj);
+              }
+            }
+          }
+          cb(i, j, new BoxRange(x, y, cellWidth, cellHeight), cell);
+        }
+        x += colWidth;
       }
-      y += height;
+      y += rowHeight;
     }
   }
 }

@@ -116,10 +116,19 @@ class WorkBody extends Widget {
   }
 
   bind() {
+    this.on(Constant.EVENT_TYPE.MOUSE_WHEEL, (evt) => {
+      const { scrollTo } = this.scrollBarY;
+      const { scroll, rows } = this.sheetView.getActiveSheet().table;
+      if (evt.detail > 0) {
+        // down
+        this.scrollBarY.scrollMove(scrollTo + rows.getHeight(scroll.ri + 1));
+      } else {
+        // up
+        this.scrollBarY.scrollMove(scrollTo - rows.getHeight(scroll.ri - 1));
+      }
+    });
     window.addEventListener(Constant.EVENT_TYPE.RESIZE, () => {
       this.setScroll();
-    });
-    window.addEventListener(Constant.EVENT_TYPE.MOUSE_WHEEL, () => {
     });
   }
 }

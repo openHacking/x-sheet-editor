@@ -30,7 +30,7 @@ class Table extends Widget {
       indexColsHeight: 30,
       indexRowsWidth: 50,
       rows: {
-        len: 300,
+        len: 1000,
         height: 30,
       },
       cols: {
@@ -43,9 +43,8 @@ class Table extends Widget {
         strokeStyle: '#e6e6e6',
       },
       data: [
-        [{ text: '1' }, { text: '2' }, { text: '3' }],
-        [{ text: '1' }, { text: '2' }, { text: '3' }],
-        [{ text: '1' }, { text: '2' }, { text: '3' }],
+        [{ text: '1' }, { text: '1' }, { text: '3' }, { text: '1' }, { text: '3' }],
+        [{ text: '1' }, { text: '1' }, { text: '3' }, { text: '1' }, { text: '3' }],
       ],
     }, options);
     this.rows = new Rows(this.options.rows);
@@ -83,7 +82,6 @@ class Table extends Widget {
     this.draw.save();
     this.draw.translate(offsetX, offsetY);
     this.cells.getRectRangeCell(viewRange, (ri, ci, boxRange, cell) => {
-      if (cell === null) return;
       const box = new Box(this.draw, {
         style: {
           fillStyle: cell.style.bgColor || '#ffffff',
@@ -91,7 +89,7 @@ class Table extends Widget {
       });
       this.draw.save();
       box.rect(boxRange);
-      box.text(boxRange, `${ri} ${ci}`, {
+      box.text(boxRange, cell.text, {
         align: cell.style.align,
         verticalAlign: cell.style.verticalAlign,
         font: cell.style.font,
