@@ -163,6 +163,12 @@ class Table extends Widget {
     this.draw.restore();
   }
 
+  renderFixedHeader() {}
+
+  renderFixedLeft() {}
+
+  renderFixedRight() {}
+
   render() {
     const [offsetX, offsetY] = [this.options.indexRowsWidth, this.options.indexColsHeight];
     const [vWidth, vHeight] = [this.visualWidth(), this.visualHeight()];
