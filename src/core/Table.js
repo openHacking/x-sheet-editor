@@ -11,6 +11,7 @@ import { Cells } from './Cells';
 import { Box } from '../canvas/Box';
 import { Selector } from '../component/Selector';
 import { Constant } from '../utils/Constant';
+import { Fixed } from './Fixed';
 
 class Table extends Widget {
   constructor(options) {
@@ -44,10 +45,7 @@ class Table extends Widget {
         lineWidth: thinLineWidth,
         strokeStyle: '#e6e6e6',
       },
-      data: [
-        [{ text: '1' }, { text: '1' }, { text: '3' }, { text: '1' }, { text: '3' }],
-        [{ text: '1' }, { text: '1' }, { text: '3' }, { text: '1' }, { text: '3' }],
-      ],
+      data: [],
     }, options);
     this.rows = new Rows(this.options.rows);
     this.cols = new Cols(this.options.cols);
@@ -56,6 +54,7 @@ class Table extends Widget {
     this.canvas = h('canvas', `${cssPrefix}-table-canvas`);
     this.draw = new Draw(this.canvas.el);
     this.scroll = new Scroll();
+    this.fixed = new Fixed();
     this.children(this.canvas, this.selector);
     this.downRectRange = null;
   }
@@ -63,6 +62,19 @@ class Table extends Widget {
   init() {
     this.render();
     this.bind();
+  }
+
+  totalTopFixedHeight() {
+    return this.rows.sectionSumHeight(0, this.fixed.top);
+  }
+
+  totalLeftFixedWidth() {
+    return this.cols.sectionSumWidth(0, this.fixed.left);
+  }
+
+  totalRightFixedWidth() {
+    if (this.fixed.right === -1) return 0;
+    return this.cols.sectionSumWidth(this.fixed.right, this.cols.len - 1);
   }
 
   renderColsIndex(viewRange, offsetX = 0) {
@@ -139,7 +151,7 @@ class Table extends Widget {
     this.draw.restore();
   }
 
-  renderCell(viewRange, offsetX = 0, offsetY = 0) {
+  renderCell(viewRange, offsetX = 0, offsetY = 0, { sx = 0, sy = 0 } = {}) {
     this.draw.save();
     this.draw.translate(offsetX, offsetY);
     this.cells.getRectRangeCell(viewRange, (ri, ci, boxRange, cell) => {
@@ -159,15 +171,27 @@ class Table extends Widget {
         underline: cell.style.underline,
       });
       this.draw.restore();
-    });
+    }, { sx, sy });
     this.draw.restore();
   }
 
-  renderFixedHeader() {}
+  renderFixedTop(viewRange, offsetX, offsetY) {
+    const fixedTopHeight = this.totalTopFixedHeight();
+    const {
+      sri, sci, eri, eci, width, height,
+    } = viewRange;
+    const fixedRange = new RectRange(0, this.fixed.left, this.fixed.top, eci, width, height);
+  }
 
-  renderFixedLeft() {}
+  renderFixedLeft(viewRange, offsetX, offsetY) {
+
+  }
+
+  renderFixedTopLeft() {}
 
   renderFixedRight() {}
+
+  renderFixedTopRight() {}
 
   render() {
     const [offsetX, offsetY] = [this.options.indexRowsWidth, this.options.indexColsHeight];

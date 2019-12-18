@@ -29,17 +29,17 @@ class Cells {
   getCell(ri, ci) {
     const row = this.data[ri];
     if (row && row[ci]) return Utils.mergeDeep({}, this.defaultAttr, row[ci]);
-    return null;
+    return Utils.mergeDeep({ text: `${ri}-${ci}` }, this.defaultAttr);
   }
 
-  getRectRangeCell(rectRange, cb) {
+  getRectRangeCell(rectRange, cb, { sy = 0, sx = 0 } = {}) {
     const {
       sri, eri, sci, eci,
     } = rectRange;
-    let y = 0;
+    let y = sy;
     for (let i = sri; i <= eri; i += 1) {
       const rowHeight = this.rows.getHeight(i);
-      let x = 0;
+      let x = sx;
       for (let j = sci; j <= eci; j += 1) {
         const colWidth = this.cols.getWidth(j);
         const cell = this.getCell(i, j);
