@@ -9,6 +9,8 @@ import { Scroll } from './Scroll';
 import { RectRange } from './RectRange';
 import { Cells } from './Cells';
 import { Box } from '../canvas/Box';
+import { Selector } from '../component/Selector';
+import { Constant } from '../utils/Constant';
 
 class Table extends Widget {
   constructor(options) {
@@ -30,7 +32,7 @@ class Table extends Widget {
       indexColsHeight: 30,
       indexRowsWidth: 50,
       rows: {
-        len: 500,
+        len: 88,
         height: 30,
       },
       cols: {
@@ -50,14 +52,17 @@ class Table extends Widget {
     this.rows = new Rows(this.options.rows);
     this.cols = new Cols(this.options.cols);
     this.cells = new Cells({ rows: this.rows, cols: this.cols, data: this.options.data });
+    this.selector = new Selector();
     this.canvas = h('canvas', `${cssPrefix}-table-canvas`);
     this.draw = new Draw(this.canvas.el);
     this.scroll = new Scroll();
-    this.children(this.canvas);
+    this.children(this.canvas, this.selector);
+    this.downRectRange = null;
   }
 
   init() {
     this.render();
+    this.bind();
   }
 
   renderGrid(viewRange, offsetX = 0, offsetY = 0) {
@@ -196,9 +201,7 @@ class Table extends Widget {
   }
 
   viewRange() {
-    const {
-      scroll, rows, cols,
-    } = this;
+    const { scroll, rows, cols } = this;
     let [width, height] = [0, 0];
     const { ri, ci } = scroll;
     let [eri, eci] = [rows.len, cols.len];
@@ -213,6 +216,38 @@ class Table extends Widget {
       if (width > this.visualWidth()) break;
     }
     return new RectRange(ri, ci, eri, eci, width, height);
+  }
+
+  xYRange(eventX, eventY) {
+    let [x, y] = [eventX, eventY];
+    x -= this.options.indexRowsWidth;
+    y -= this.options.indexColsHeight;
+    const { scroll, cols, rows } = this;
+    let [width, height] = [0, 0];
+    let [totalWidth, totalHeight] = [0, 0];
+    const { ri, ci } = scroll;
+    let [eri, eci] = [rows.len, cols.len];
+    if (x >= 0) {
+      for (let j = ci; j < cols.len; j += 1) {
+        width = cols.getWidth(j);
+        totalWidth += width;
+        eci = j;
+        if (totalWidth > x) break;
+      }
+    } else { eci = -1; }
+    if (y >= 0) {
+      for (let i = ri; i < rows.len; i += 1) {
+        height = rows.getHeight(i);
+        totalHeight += height;
+        eri = i;
+        if (totalHeight > y) break;
+      }
+    } else { eri = -1; }
+    return new RectRange(eri, eci, eri, eci, width, height);
+  }
+
+  selectedRange() {
+
   }
 
   scrollYTo(y) {
@@ -241,6 +276,15 @@ class Table extends Widget {
       scroll.x = x1;
     }
     this.render();
+  }
+
+  bind() {
+    this.on(Constant.EVENT_TYPE.MOUSE_MOVE, () => {});
+    this.on(Constant.EVENT_TYPE.MOUSE_DOWN, (event) => {
+      const { x, y } = this.computerEventXy(event);
+      this.downRectRange = this.xYRange(x, y);
+    });
+    this.on(Constant.EVENT_TYPE.MOUSE_UP, () => {});
   }
 }
 

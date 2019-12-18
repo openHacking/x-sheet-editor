@@ -6,7 +6,7 @@ class Widget extends Element {
     super('div', `${cssPrefix}-widget ${className}`);
   }
 
-  computerEventXy(element, event) {
+  computerEventXy(event, element = this) {
     const { top, left } = element.box();
     return {
       x: event.pageX - left,
@@ -16,4 +16,5 @@ class Widget extends Element {
 
   init() {}
 }
+
 export { Widget };

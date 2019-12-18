@@ -44,7 +44,7 @@ class ScrollBarX extends Widget {
     this.on(Constant.EVENT_TYPE.MOUSE_WHEEL, () => {});
     this.block.on(Constant.EVENT_TYPE.MOUSE_DOWN, (event) => {
       this.down = true;
-      downEventXy = this.computerEventXy(this.block, event);
+      downEventXy = this.computerEventXy(event, this.block);
     });
     h(document).on(Constant.EVENT_TYPE.MOUSE_UP, () => {
       this.down = false;
@@ -52,7 +52,7 @@ class ScrollBarX extends Widget {
     h(document).on(Constant.EVENT_TYPE.MOUSE_MOVE, (event) => {
       if (!this.down) return;
       // 计算移动的距离
-      const moveEventXy = this.computerEventXy(this.content, event);
+      const moveEventXy = this.computerEventXy(event, this.content);
       let left = moveEventXy.x - downEventXy.x;
       if (left < 0) left = 0;
       if (left > this.maxBlockLeft) left = this.maxBlockLeft;
