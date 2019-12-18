@@ -119,7 +119,9 @@ class WorkBody extends Widget {
     this.on(Constant.EVENT_TYPE.MOUSE_WHEEL, (evt) => {
       const { scrollTo } = this.scrollBarY;
       const { scroll, rows } = this.sheetView.getActiveSheet().table;
-      if (evt.detail > 0) {
+      let { deltaY } = evt;
+      if (evt.detail) deltaY = evt.detail * 40;
+      if (deltaY > 0) {
         // down
         this.scrollBarY.scrollMove(scrollTo + rows.getHeight(scroll.ri + 1));
       } else {

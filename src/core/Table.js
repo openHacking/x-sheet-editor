@@ -65,48 +65,6 @@ class Table extends Widget {
     this.bind();
   }
 
-  renderGrid(viewRange, offsetX = 0, offsetY = 0) {
-    const {
-      sri, sci, eri, eci, w: width, h: height,
-    } = viewRange;
-    this.draw.save();
-    this.draw.translate(offsetX, offsetY);
-    this.draw.attr(this.options.gridStyle);
-    this.rows.eachHeight(sri, eri, (i, ch, y) => {
-      if (i !== sri) this.draw.line([0, y], [width, y]);
-      if (i === eri) this.draw.line([0, y + ch], [width, y + ch]);
-    });
-    this.cols.eachWidth(sci, eci, (i, cw, x) => {
-      if (i !== sci) this.draw.line([x, 0], [x, height]);
-      if (i === eci) this.draw.line([x + cw, 0], [x + cw, height]);
-    });
-    this.draw.restore();
-  }
-
-  renderCell(viewRange, offsetX = 0, offsetY = 0) {
-    this.draw.save();
-    this.draw.translate(offsetX, offsetY);
-    this.cells.getRectRangeCell(viewRange, (ri, ci, boxRange, cell) => {
-      const box = new Box(this.draw, {
-        style: {
-          fillStyle: cell.style.bgColor || '#ffffff',
-        },
-      });
-      this.draw.save();
-      box.rect(boxRange);
-      box.text(boxRange, cell.text, {
-        align: cell.style.align,
-        verticalAlign: cell.style.verticalAlign,
-        font: cell.style.font,
-        color: cell.style.color,
-        strike: cell.style.strike,
-        underline: cell.style.underline,
-      });
-      this.draw.restore();
-    });
-    this.draw.restore();
-  }
-
   renderColsIndex(viewRange, offsetX = 0) {
     const { sci, eci } = viewRange;
     const sumWidth = this.cols.sectionSumWidth(sci, eci);
@@ -160,6 +118,48 @@ class Table extends Widget {
     this.draw.attr(this.options.indexStyle.font);
     this.draw.line([width, 0], [width, height]);
     this.draw.line([0, height], [width, height]);
+    this.draw.restore();
+  }
+
+  renderGrid(viewRange, offsetX = 0, offsetY = 0) {
+    const {
+      sri, sci, eri, eci, w: width, h: height,
+    } = viewRange;
+    this.draw.save();
+    this.draw.translate(offsetX, offsetY);
+    this.draw.attr(this.options.gridStyle);
+    this.rows.eachHeight(sri, eri, (i, ch, y) => {
+      if (i !== sri) this.draw.line([0, y], [width, y]);
+      if (i === eri) this.draw.line([0, y + ch], [width, y + ch]);
+    });
+    this.cols.eachWidth(sci, eci, (i, cw, x) => {
+      if (i !== sci) this.draw.line([x, 0], [x, height]);
+      if (i === eci) this.draw.line([x + cw, 0], [x + cw, height]);
+    });
+    this.draw.restore();
+  }
+
+  renderCell(viewRange, offsetX = 0, offsetY = 0) {
+    this.draw.save();
+    this.draw.translate(offsetX, offsetY);
+    this.cells.getRectRangeCell(viewRange, (ri, ci, boxRange, cell) => {
+      const box = new Box(this.draw, {
+        style: {
+          fillStyle: cell.style.bgColor || '#ffffff',
+        },
+      });
+      this.draw.save();
+      box.rect(boxRange);
+      box.text(boxRange, cell.text, {
+        align: cell.style.align,
+        verticalAlign: cell.style.verticalAlign,
+        font: cell.style.font,
+        color: cell.style.color,
+        strike: cell.style.strike,
+        underline: cell.style.underline,
+      });
+      this.draw.restore();
+    });
     this.draw.restore();
   }
 
@@ -280,10 +280,7 @@ class Table extends Widget {
 
   bind() {
     this.on(Constant.EVENT_TYPE.MOUSE_MOVE, () => {});
-    this.on(Constant.EVENT_TYPE.MOUSE_DOWN, (event) => {
-      const { x, y } = this.computerEventXy(event);
-      this.downRectRange = this.xYRange(x, y);
-    });
+    this.on(Constant.EVENT_TYPE.MOUSE_DOWN, () => {});
     this.on(Constant.EVENT_TYPE.MOUSE_UP, () => {});
   }
 }

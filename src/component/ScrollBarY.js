@@ -5,6 +5,7 @@ import { cssPrefix } from '../config';
 import { h } from '../lib/Element';
 import { Constant } from '../utils/Constant';
 import { Utils } from '../utils/Utils';
+import { Event } from '../utils/Event';
 
 class ScrollBarY extends Widget {
   constructor(option) {
@@ -30,7 +31,6 @@ class ScrollBarY extends Widget {
     this.scrollTo = 0;
     this.contentHeight = 0;
     this.viewPortHeight = 0;
-    this.down = false;
     this.isHide = false;
   }
 
@@ -40,27 +40,20 @@ class ScrollBarY extends Widget {
   }
 
   bind() {
-    let downEventXy = null;
-    this.on(Constant.EVENT_TYPE.MOUSE_WHEEL, () => {});
-    this.block.on(Constant.EVENT_TYPE.MOUSE_DOWN, (event) => {
-      this.down = true;
-      downEventXy = this.computerEventXy(event, this.block);
-    });
-    h(document).on(Constant.EVENT_TYPE.MOUSE_UP, () => {
-      this.down = false;
-    });
-    h(document).on(Constant.EVENT_TYPE.MOUSE_MOVE, (event) => {
-      if (this.down === false) return;
-      // 计算移动的距离
-      const moveEventXy = this.computerEventXy(event, this.content);
-      let top = moveEventXy.y - downEventXy.y;
-      if (top < 0) top = 0;
-      if (top > this.maxBlockTop) top = this.maxBlockTop;
-      // 计算滑动的距离
-      this.blockTop = top;
-      this.scrollTo = this.computerScrollTo(this.blockTop);
-      this.block.css('top', `${top}px`);
-      this.option.scroll(this.scrollTo);
+    this.block.on(Constant.EVENT_TYPE.MOUSE_DOWN, (evt1) => {
+      const downEventXy = this.computerEventXy(evt1, this.block);
+      Event.mouseMoveUp(h(document), (evt2) => {
+        // 计算移动的距离
+        const moveEventXy = this.computerEventXy(evt2, this.content);
+        let top = moveEventXy.y - downEventXy.y;
+        if (top < 0) top = 0;
+        if (top > this.maxBlockTop) top = this.maxBlockTop;
+        // 计算滑动的距离
+        this.blockTop = top;
+        this.scrollTo = this.computerScrollTo(this.blockTop);
+        this.block.css('top', `${top}px`);
+        this.option.scroll(this.scrollTo);
+      });
     });
   }
 

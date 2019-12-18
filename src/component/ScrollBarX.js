@@ -5,6 +5,7 @@ import { cssPrefix } from '../config';
 import { h } from '../lib/Element';
 import { Utils } from '../utils/Utils';
 import { Constant } from '../utils/Constant';
+import { Event } from '../utils/Event';
 
 class ScrollBarX extends Widget {
   constructor(option) {
@@ -30,7 +31,6 @@ class ScrollBarX extends Widget {
     this.scrollTo = 0;
     this.contentWidth = 0;
     this.viewPortWidth = 0;
-    this.down = false;
     this.isHide = false;
   }
 
@@ -40,27 +40,20 @@ class ScrollBarX extends Widget {
   }
 
   bind() {
-    let downEventXy = null;
-    this.on(Constant.EVENT_TYPE.MOUSE_WHEEL, () => {});
-    this.block.on(Constant.EVENT_TYPE.MOUSE_DOWN, (event) => {
-      this.down = true;
-      downEventXy = this.computerEventXy(event, this.block);
-    });
-    h(document).on(Constant.EVENT_TYPE.MOUSE_UP, () => {
-      this.down = false;
-    });
-    h(document).on(Constant.EVENT_TYPE.MOUSE_MOVE, (event) => {
-      if (!this.down) return;
-      // 计算移动的距离
-      const moveEventXy = this.computerEventXy(event, this.content);
-      let left = moveEventXy.x - downEventXy.x;
-      if (left < 0) left = 0;
-      if (left > this.maxBlockLeft) left = this.maxBlockLeft;
-      // 计算滑动的距离
-      this.blockLeft = left;
-      this.scrollTo = this.computerScrollTo(this.blockLeft);
-      this.block.css('left', `${left}px`);
-      this.option.scroll(this.scrollTo);
+    this.block.on(Constant.EVENT_TYPE.MOUSE_DOWN, (evt1) => {
+      const downEventXy = this.computerEventXy(evt1, this.block);
+      Event.mouseMoveUp(h(document), (evt2) => {
+        // 计算移动的距离
+        const moveEventXy = this.computerEventXy(evt2, this.content);
+        let left = moveEventXy.x - downEventXy.x;
+        if (left < 0) left = 0;
+        if (left > this.maxBlockLeft) left = this.maxBlockLeft;
+        // 计算滑动的距离
+        this.blockLeft = left;
+        this.scrollTo = this.computerScrollTo(this.blockLeft);
+        this.block.css('left', `${left}px`);
+        this.option.scroll(this.scrollTo);
+      });
     });
   }
 
