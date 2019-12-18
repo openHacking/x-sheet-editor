@@ -1,12 +1,10 @@
 import { Utils } from '../utils/Utils';
 import { BoxRange } from '../canvas/BoxRange';
-import { Merges } from './Merges';
 
 class Cells {
   constructor({ cols, rows, data = [] }) {
     this.cols = cols;
     this.rows = rows;
-    this.merges = new Merges();
     this.defaultAttr = {
       merge: [0, 0],
       style: {

@@ -126,6 +126,10 @@ class WorkBody extends Widget {
         // up
         this.scrollBarY.scrollMove(scrollTo - rows.getHeight(scroll.ri - 1));
       }
+      if (scroll.blockTop < scroll.maxBlockTop && scroll.blockTop > 0) {
+        evt.preventDefault();
+        evt.stopPropagation();
+      }
     });
     window.addEventListener(Constant.EVENT_TYPE.RESIZE, () => {
       this.setScroll();

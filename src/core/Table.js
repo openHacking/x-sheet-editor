@@ -30,7 +30,7 @@ class Table extends Widget {
       indexColsHeight: 30,
       indexRowsWidth: 50,
       rows: {
-        len: 1000,
+        len: 500,
         height: 30,
       },
       cols: {
