@@ -1,209 +1,339 @@
-import { Widget } from '../lib/Widget';
+import {Draw, npx, thinLineWidth} from '../canvas/Draw';
 import { cssPrefix } from '../config';
-import { h } from '../lib/Element';
 import { Utils } from '../utils/Utils';
 import { Rows } from './Rows';
 import { Cols } from './Cols';
-import { Draw, npx, thinLineWidth } from '../canvas/Draw';
-import { Scroll } from './Scroll';
-import { RectRange } from './RectRange';
 import { Cells } from './Cells';
-import { Box } from '../canvas/Box';
 import { Selector } from '../component/Selector';
-import { Constant } from '../utils/Constant';
+import { Scroll } from './Scroll';
 import { Fixed } from './Fixed';
+import { h } from '../lib/Element';
+import { Widget } from '../lib/Widget';
+import { RectRange } from './RectRange';
+import { Box } from '../canvas/Box';
 
-class Table extends Widget {
-  constructor(options) {
-    super(`${cssPrefix}-table`);
-    this.options = Utils.mergeDeep({
-      indexStyle: {
-        background: {
-          fillStyle: '#f4f5f8',
-        },
-        font: {
-          textAlign: 'center',
-          textBaseline: 'middle',
-          font: `500 ${npx(12)}px Source Sans Pro`,
-          fillStyle: '#585757',
-          lineWidth: thinLineWidth(),
-          strokeStyle: '#e6e6e6',
-        },
-      },
-      indexColsHeight: 30,
-      indexRowsWidth: 50,
-      rows: {
-        len: 88,
-        height: 30,
-      },
-      cols: {
-        len: 80,
-        width: 150,
-      },
-      gridStyle: {
-        fillStyle: '#fff',
-        lineWidth: thinLineWidth,
-        strokeStyle: '#e6e6e6',
-      },
-      data: [],
-    }, options);
-    this.rows = new Rows(this.options.rows);
-    this.cols = new Cols(this.options.cols);
-    this.cells = new Cells({ rows: this.rows, cols: this.cols, data: this.options.data });
-    this.selector = new Selector();
-    this.canvas = h('canvas', `${cssPrefix}-table-canvas`);
-    this.draw = new Draw(this.canvas.el);
+const defaultSettings = {
+  index: {
+    height: 30,
+    width: 0,
+    bgColor: '#f4f5f8',
+    color: '#000000'
+  },
+  cell: {
+    bgColor: '#ffffff',
+    align: 'left',
+    verticalAlign: 'middle',
+    textWrap: false,
+    strike: false,
+    underline: false,
+    color: '#000000',
+    font: {
+      name: 'Arial',
+      size: 13,
+      bold: false,
+      italic: false,
+    },
+  },
+  table: {
+    borderWidth: thinLineWidth,
+    borderColor: '#fff',
+    strokeColor: '#e6e6e6',
+  },
+  data: [],
+  rows: {
+    len: 88,
+    height: 30,
+  },
+  cols: {
+    len: 80,
+    width: 150,
+  },
+};
+
+class FixedLeft {
+  constructor(table) {
+    this.table = table;
+  }
+}
+
+class FixedTop {
+  constructor(table) {
+    this.table = table;
+  }
+
+  getYOffset() {
+    const { table } = this;
+    const { settings } = table;
+    const { index } = settings;
+    const { height } = index;
+    return height;
+  }
+
+  render() {
+    const { table } = this;
+    const { content, fixed } = table;
+    const { fxTop } = fixed;
+    const viewRange = content.getViewRange();
+    const offsetX = content.getXOffset();
+    const offsetY = this.getYOffset();
+    viewRange.sri = 0;
+    viewRange.eri = fxTop;
+    content.drawGrid(viewRange, offsetX, offsetY);
+    content.drawCell(viewRange, offsetX, offsetY);
+  }
+}
+
+class FixedTopLeft {}
+
+class Content {
+  constructor(table) {
     this.scroll = new Scroll();
-    this.fixed = new Fixed();
-    this.children(this.canvas, this.selector);
-    this.downRectRange = null;
+    this.table = table;
+    this.scrollX(0);
+    this.scrollY(100);
   }
 
-  init() {
-    this.render();
-    this.bind();
+  scrollX(x) {
+    const { table, scroll } = this;
+    const { cols, fixed } = table;
+    let { fxLeft } = fixed;
+    fxLeft += 1;
+    const [
+      ci, left, width,
+    ] = Utils.rangeReduceIf(fxLeft, cols.len, 0, 0, x, i => cols.getWidth(i));
+    let x1 = left;
+    if (x > 0) x1 += width;
+    scroll.ci = ci;
+    scroll.x = x1;
   }
 
-  totalTopFixedHeight() {
-    return this.rows.sectionSumHeight(0, this.fixed.top);
+  scrollY(y) {
+    const { table, scroll } = this;
+    const { rows, fixed } = table;
+    let { fxTop } = fixed;
+    fxTop += 1;
+    const [
+      ri, top, height,
+    ] = Utils.rangeReduceIf(fxTop, rows.len, 0, 0, y, i => rows.getHeight(i));
+    let y1 = top;
+    if (y > 0) y1 += height;
+    scroll.ri = ri;
+    scroll.y = y1;
   }
 
-  totalLeftFixedWidth() {
-    return this.cols.sectionSumWidth(0, this.fixed.left);
+  getXOffset() {
+    const { table } = this;
+    const { fixed, settings } = table;
+    const { index } = settings;
+    const { fxLeft } = fixed;
+    const { width } = index;
+    const fixedLeftWidth = table.cols.sectionSumWidth(0, fxLeft);
+    return fixedLeftWidth + width;
   }
 
-  totalRightFixedWidth() {
-    if (this.fixed.right === -1) return 0;
-    return this.cols.sectionSumWidth(this.fixed.right, this.cols.len - 1);
+  getYOffset() {
+    const { table } = this;
+    const { fixed, settings } = table;
+    const { index } = settings;
+    const { fxTop } = fixed;
+    const { height } = index;
+    const fixedTopHeight = table.rows.sectionSumHeight(0, fxTop);
+    return height + fixedTopHeight;
   }
 
-  renderColsIndex(viewRange, offsetX = 0) {
-    const { sci, eci } = viewRange;
-    const sumWidth = this.cols.sectionSumWidth(sci, eci);
-    this.draw.save();
-    this.draw.translate(offsetX, 0);
-    // 绘制背景
-    this.draw.save();
-    this.draw.attr(this.options.indexStyle.background);
-    this.draw.fillRect(0, 0, sumWidth, this.options.indexColsHeight);
-    this.draw.restore();
-    // 绘制字母
-    this.draw.save();
-    this.draw.attr(this.options.indexStyle.font);
-    this.cols.eachWidth(sci, eci, (i, cw, x) => {
-      if (sci !== i) this.draw.line([x, 0], [x, this.options.indexColsHeight]);
-      this.draw.line([x, this.options.indexColsHeight], [x + cw, this.options.indexColsHeight]);
-      this.draw.fillText(Utils.stringAt(i), x + (cw / 2), this.options.indexColsHeight / 2);
-    });
-    this.draw.restore();
-    this.draw.restore();
+  getWidth() {
+    const { table } = this;
+    const { fixed, settings } = table;
+    const { index } = settings;
+    const { fxLeft, fxRight } = fixed;
+    const { width } = index;
+    const fixedLeftWidth = table.cols.sectionSumWidth(0, fxLeft);
+    let fixedRightWidth = 0;
+    if (fxRight !== -1) {
+      fixedRightWidth = table.cols.sectionSumWidth(table.cols.len - fxRight, table.cols.len);
+    }
+    return table.visualWidth() - (fixedLeftWidth + width + fixedRightWidth);
   }
 
-  renderRowsIndex(viewRange, offsetY = 0) {
-    const { sri, eri } = viewRange;
-    const sumHeight = this.rows.sectionSumHeight(sri, eri);
-    this.draw.save();
-    this.draw.translate(0, offsetY);
-    // 绘制背景
-    this.draw.save();
-    this.draw.attr(this.options.indexStyle.background);
-    this.draw.fillRect(0, 0, this.options.indexRowsWidth, sumHeight);
-    this.draw.restore();
-    // 绘制数字
-    this.draw.save();
-    this.draw.attr(this.options.indexStyle.font);
-    this.rows.eachHeight(sri, eri, (i, ch, y) => {
-      if (sri !== i) this.draw.line([0, y], [this.options.indexRowsWidth, y]);
-      this.draw.line([this.options.indexRowsWidth, y], [this.options.indexRowsWidth, y + ch]);
-      this.draw.fillText(i + 1, this.options.indexRowsWidth / 2, y + (ch / 2));
-    });
-    this.draw.restore();
-    this.draw.restore();
+  getHeight() {
+    const { table } = this;
+    const { fixed, settings } = table;
+    const { index } = settings;
+    const { fxTop } = fixed;
+    const { height } = index;
+    const fixedTopHeight = table.rows.sectionSumHeight(0, fxTop);
+    return table.visualHeight() - (height + fixedTopHeight);
   }
 
-  renderColsRowsTop(width, height) {
-    this.draw.save();
-    this.draw.attr(this.options.indexStyle.background);
-    this.draw.fillRect(0, 0, width, height);
-    this.draw.restore();
-    this.draw.save();
-    this.draw.attr(this.options.indexStyle.font);
-    this.draw.line([width, 0], [width, height]);
-    this.draw.line([0, height], [width, height]);
-    this.draw.restore();
+  getViewRange() {
+    const { scroll, table } = this;
+    const { rows, cols } = table;
+    let [width, height] = [0, 0];
+    const { ri, ci } = scroll;
+    let [eri, eci] = [rows.len, cols.len];
+    for (let i = ri; i < rows.len; i += 1) {
+      height += rows.getHeight(i);
+      eri = i;
+      if (height > this.getHeight()) break;
+    }
+    for (let j = ci; j < cols.len; j += 1) {
+      width += cols.getWidth(j);
+      eci = j;
+      if (width > this.getWidth()) break;
+    }
+    return new RectRange(ri, ci, eri, eci, width, height);
   }
 
-  renderGrid(viewRange, offsetX = 0, offsetY = 0) {
+  drawGrid(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, settings, rows, cols,
+    } = table;
     const {
       sri, sci, eri, eci, w: width, h: height,
     } = viewRange;
-    this.draw.save();
-    this.draw.translate(offsetX, offsetY);
-    this.draw.attr(this.options.gridStyle);
-    this.rows.eachHeight(sri, eri, (i, ch, y) => {
-      if (i !== sri) this.draw.line([0, y], [width, y]);
-      if (i === eri) this.draw.line([0, y + ch], [width, y + ch]);
+    draw.save();
+    draw.translate(offsetX, offsetY);
+    draw.attr({
+      fillStyle: settings.table.borderColor,
+      lineWidth: settings.table.borderWidth,
+      strokeStyle: settings.table.strokeColor,
     });
-    this.cols.eachWidth(sci, eci, (i, cw, x) => {
-      if (i !== sci) this.draw.line([x, 0], [x, height]);
-      if (i === eci) this.draw.line([x + cw, 0], [x + cw, height]);
+    rows.eachHeight(sri, eri, (i, ch, y) => {
+      if (i !== sri) draw.line([0, y], [width, y]);
+      if (i === eri) draw.line([0, y + ch], [width, y + ch]);
     });
-    this.draw.restore();
+    cols.eachWidth(sci, eci, (i, cw, x) => {
+      if (i !== sci) draw.line([x, 0], [x, height]);
+      if (i === eci) draw.line([x + cw, 0], [x + cw, height]);
+    });
+    draw.restore();
   }
 
-  renderCell(viewRange, offsetX = 0, offsetY = 0, { sx = 0, sy = 0 } = {}) {
-    this.draw.save();
-    this.draw.translate(offsetX, offsetY);
-    this.cells.getRectRangeCell(viewRange, (ri, ci, boxRange, cell) => {
-      const box = new Box(this.draw, {
+  drawCell(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, cells, settings,
+    } = table;
+    draw.save();
+    draw.translate(offsetX, offsetY);
+    cells.getRectRangeCell(viewRange, (ri, ci, boxRange, cell) => {
+      const style = Utils.mergeDeep({}, settings.cell, cell.style);
+      const box = new Box(draw, {
         style: {
-          fillStyle: cell.style.bgColor || '#ffffff',
+          fillStyle: style.bgColor || '#ffffff',
         },
       });
-      this.draw.save();
+      draw.save();
       box.rect(boxRange);
       box.text(boxRange, cell.text, {
-        align: cell.style.align,
-        verticalAlign: cell.style.verticalAlign,
-        font: cell.style.font,
-        color: cell.style.color,
-        strike: cell.style.strike,
-        underline: cell.style.underline,
+        align: style.align,
+        verticalAlign: style.verticalAlign,
+        font: style.font,
+        color: style.color,
+        strike: style.strike,
+        underline: style.underline,
       });
-      this.draw.restore();
-    }, { sx, sy });
-    this.draw.restore();
+      draw.restore();
+    });
+    draw.restore();
   }
-
-  renderFixedTop(viewRange, offsetX, offsetY) {
-    const fixedTopHeight = this.totalTopFixedHeight();
-    const {
-      sri, sci, eri, eci, width, height,
-    } = viewRange;
-    const fixedRange = new RectRange(0, this.fixed.left, this.fixed.top, eci, width, height);
-  }
-
-  renderFixedLeft(viewRange, offsetX, offsetY) {
-
-  }
-
-  renderFixedTopLeft() {}
-
-  renderFixedRight() {}
-
-  renderFixedTopRight() {}
 
   render() {
-    const [offsetX, offsetY] = [this.options.indexRowsWidth, this.options.indexColsHeight];
-    const [vWidth, vHeight] = [this.visualWidth(), this.visualHeight()];
-    const viewRange = this.viewRange();
-    this.draw.clear();
-    this.draw.resize(vWidth, vHeight);
-    this.renderGrid(viewRange, offsetX, offsetY);
-    this.renderCell(viewRange, offsetX, offsetY);
-    this.renderRowsIndex(viewRange, offsetY);
-    this.renderColsIndex(viewRange, offsetX);
-    this.renderColsRowsTop(offsetX, offsetY);
+    const offsetX = this.getXOffset();
+    const offsetY = this.getYOffset();
+    const viewRange = this.getViewRange();
+    this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawCell(viewRange, offsetX, offsetY);
+  }
+}
+
+class FixedTopIndex {
+  constructor(table) {
+    this.table = table;
+  }
+
+  getYOffset() {
+    return 0;
+  }
+
+  draw(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const { cols, settings, draw } = table;
+    const { sci, eci } = viewRange;
+    const sumWidth = cols.sectionSumWidth(sci, eci);
+    draw.save();
+    draw.translate(offsetX, offsetY);
+    // 绘制背景
+    draw.save();
+    draw.attr({
+      fillStyle: settings.index.bgColor,
+    });
+    draw.fillRect(0, 0, sumWidth, settings.index.height);
+    draw.restore();
+    // 绘制字母
+    cols.eachWidth(sci, eci, (i, cw, x) => {
+      // 线条
+      draw.save();
+      draw.attr({
+        fillStyle: settings.table.borderColor,
+        lineWidth: settings.table.borderWidth,
+        strokeStyle: settings.table.strokeColor,
+      });
+      if (sci !== i) draw.line([x, 0], [x, settings.index.height]);
+      draw.line([x, settings.index.height], [x + cw, settings.index.height]);
+      draw.restore();
+      // 文字
+      draw.save();
+      draw.attr({
+        textAlign: 'center',
+        textBaseline: 'middle',
+        font: 'bold 13px Arial',
+        fillStyle: '#000000',
+      });
+      draw.fillText(Utils.stringAt(i), x + (cw / 2), settings.index.height / 2);
+      draw.restore();
+    });
+    draw.restore();
+  }
+
+  render() {
+    const { table } = this;
+    const { content } = table;
+    const offsetX = content.getXOffset();
+    const offsetY = this.getYOffset();
+    const viewRange = content.getViewRange();
+    this.draw(viewRange, offsetX, offsetY);
+  }
+}
+
+class FixedLeftIndex {
+  constructor() {}
+}
+
+class FixedTopLeftIndex {}
+
+class Table extends Widget {
+  constructor(settings) {
+    super(`${cssPrefix}-table`);
+    this.canvas = h('canvas', `${cssPrefix}-table-canvas`);
+    this.settings = Utils.mergeDeep(defaultSettings, settings);
+    this.rows = new Rows(this.settings.rows);
+    this.cols = new Cols(this.settings.cols);
+    this.cells = new Cells({
+      rows: this.rows,
+      cols: this.cols,
+      data: this.settings.data,
+    });
+    this.selector = new Selector();
+    this.fixed = new Fixed();
+    this.draw = new Draw(this.canvas.el);
+    this.content = new Content(this);
+    this.fixedLeft = new FixedLeft(this);
+    this.fixedLeftIndex = new FixedLeftIndex(this);
+    this.fixedTop = new FixedTop(this);
+    this.fixedTopIndex = new FixedTopIndex(this);
+    this.children(this.canvas, this.selector);
   }
 
   visualHeight() {
@@ -214,104 +344,28 @@ class Table extends Widget {
     return this.box().width;
   }
 
-  gridVisualHeight() {
-    return this.visualHeight() - this.options.indexColsHeight;
-  }
-
-  gridVisualWidth() {
-    return this.visualWidth() - this.options.indexRowsWidth;
-  }
-
-  gridContentHeight() {
-    return this.rows.totalHeight();
-  }
-
-  gridContentWidth() {
-    return this.cols.totalWidth();
-  }
-
-  viewRange() {
-    const { scroll, rows, cols } = this;
-    let [width, height] = [0, 0];
-    const { ri, ci } = scroll;
-    let [eri, eci] = [rows.len, cols.len];
-    for (let i = ri; i < rows.len; i += 1) {
-      height += rows.getHeight(i);
-      eri = i;
-      if (height > this.visualHeight()) break;
-    }
-    for (let j = ci; j < cols.len; j += 1) {
-      width += cols.getWidth(j);
-      eci = j;
-      if (width > this.visualWidth()) break;
-    }
-    return new RectRange(ri, ci, eri, eci, width, height);
-  }
-
-  xYRange(eventX, eventY) {
-    let [x, y] = [eventX, eventY];
-    x -= this.options.indexRowsWidth;
-    y -= this.options.indexColsHeight;
-    const { scroll, cols, rows } = this;
-    let [width, height] = [0, 0];
-    let [totalWidth, totalHeight] = [0, 0];
-    const { ri, ci } = scroll;
-    let [eri, eci] = [rows.len, cols.len];
-    if (x >= 0) {
-      for (let j = ci; j < cols.len; j += 1) {
-        width = cols.getWidth(j);
-        totalWidth += width;
-        eci = j;
-        if (totalWidth > x) break;
-      }
-    } else { eci = -1; }
-    if (y >= 0) {
-      for (let i = ri; i < rows.len; i += 1) {
-        height = rows.getHeight(i);
-        totalHeight += height;
-        eri = i;
-        if (totalHeight > y) break;
-      }
-    } else { eri = -1; }
-    return new RectRange(eri, eci, eri, eci, width, height);
-  }
-
-  selectedRange() {
-
-  }
-
-  scrollYTo(y) {
-    const { scroll, rows } = this;
-    const [
-      ri, top, height,
-    ] = Utils.rangeReduceIf(0, rows.len, 0, 0, y, i => rows.getHeight(i));
-    let y1 = top;
-    if (y > 0) y1 += height;
-    if (scroll.y !== y1) {
-      scroll.ri = y > 0 ? ri : 0;
-      scroll.y = y1;
-    }
+  init() {
     this.render();
   }
 
-  scrollXTo(x) {
-    const { scroll, cols } = this;
-    const [
-      ci, left, width,
-    ] = Utils.rangeReduceIf(0, cols.len, 0, 0, x, i => cols.getWidth(i));
-    let x1 = left;
-    if (x > 0) x1 += width;
-    if (scroll.x !== x1) {
-      scroll.ci = x > 0 ? ci : 0;
-      scroll.x = x1;
-    }
+  render() {
+    const { draw } = this;
+    draw.clear();
+    const [width, height] = [this.visualWidth(), this.visualHeight()];
+    draw.resize(width, height);
+    this.content.render();
+    this.fixedTopIndex.render();
+    this.fixedTop.render();
+  }
+
+  scrollX(x) {
+    this.content.scrollX(x);
     this.render();
   }
 
-  bind() {
-    this.on(Constant.EVENT_TYPE.MOUSE_MOVE, () => {});
-    this.on(Constant.EVENT_TYPE.MOUSE_DOWN, () => {});
-    this.on(Constant.EVENT_TYPE.MOUSE_UP, () => {});
+  scrollY(y) {
+    this.content.scrollY(y);
+    this.render();
   }
 }
 

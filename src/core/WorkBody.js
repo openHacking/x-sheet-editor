@@ -108,35 +108,9 @@ class WorkBody extends Widget {
     this.setScroll();
   }
 
-  setScroll() {
-    const { table } = this.sheetView.getActiveSheet();
-    this.scrollBarY.setSize(table.gridVisualHeight(), table.gridContentHeight());
-    this.scrollBarX.setSize(table.gridVisualWidth(), table.gridContentWidth());
-    scrollBarXLayerHorizontalElement.display(!this.scrollBarX.isHide);
-  }
+  setScroll() {}
 
-  bind() {
-    this.on(Constant.EVENT_TYPE.MOUSE_WHEEL, (evt) => {
-      const { scrollTo } = this.scrollBarY;
-      const { scroll, rows } = this.sheetView.getActiveSheet().table;
-      let { deltaY } = evt;
-      if (evt.detail) deltaY = evt.detail * 40;
-      if (deltaY > 0) {
-        // down
-        this.scrollBarY.scrollMove(scrollTo + rows.getHeight(scroll.ri + 1));
-      } else {
-        // up
-        this.scrollBarY.scrollMove(scrollTo - rows.getHeight(scroll.ri - 1));
-      }
-      if (scroll.blockTop < scroll.maxBlockTop && scroll.blockTop > 0) {
-        evt.preventDefault();
-        evt.stopPropagation();
-      }
-    });
-    window.addEventListener(Constant.EVENT_TYPE.RESIZE, () => {
-      this.setScroll();
-    });
-  }
+  bind() {}
 }
 
 export { WorkBody };
