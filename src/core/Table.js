@@ -1,4 +1,4 @@
-import {Draw, npx, thinLineWidth} from '../canvas/Draw';
+import { Draw, thinLineWidth } from '../canvas/Draw';
 import { cssPrefix } from '../config';
 import { Utils } from '../utils/Utils';
 import { Rows } from './Rows';
@@ -15,9 +15,9 @@ import { Box } from '../canvas/Box';
 const defaultSettings = {
   index: {
     height: 30,
-    width: 0,
+    width: 50,
     bgColor: '#f4f5f8',
-    color: '#000000'
+    color: '#000000',
   },
   cell: {
     bgColor: '#ffffff',
@@ -90,7 +90,7 @@ class Content {
     this.scroll = new Scroll();
     this.table = table;
     this.scrollX(0);
-    this.scrollY(100);
+    this.scrollY(0);
   }
 
   scrollX(x) {
@@ -308,7 +308,62 @@ class FixedTopIndex {
 }
 
 class FixedLeftIndex {
-  constructor() {}
+  constructor(table) {
+    this.table = table;
+  }
+
+  getXOffset() {
+    return 0;
+  }
+
+  draw(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const { rows, settings, draw } = table;
+    const { sri, eri } = viewRange;
+    const sumHeight = rows.sectionSumHeight(sri, eri);
+    draw.save();
+    draw.translate(offsetX, offsetY);
+    // 绘制背景
+    draw.save();
+    draw.attr({
+      fillStyle: settings.index.bgColor,
+    });
+    draw.fillRect(0, 0, settings.index.width, sumHeight);
+    draw.restore();
+    // 绘制数字
+    rows.eachHeight(sri, eri, (i, ch, y) => {
+      // 边框
+      draw.save();
+      draw.attr({
+        fillStyle: settings.table.borderColor,
+        lineWidth: settings.table.borderWidth,
+        strokeStyle: settings.table.strokeColor,
+      });
+      if (sri !== i) draw.line([0, y], [settings.index.width, y]);
+      draw.line([settings.index.width, y], [settings.index.width, y + ch]);
+      draw.restore();
+      // 数字
+      draw.save();
+      draw.attr({
+        textAlign: 'center',
+        textBaseline: 'middle',
+        font: 'bold 13px Arial',
+        fillStyle: '#000000',
+      });
+      draw.fillText(i + 1, settings.index.width / 2, y + (ch / 2));
+      draw.restore();
+    });
+    draw.restore();
+  }
+
+  render() {
+    const { table } = this;
+    const { content } = table;
+    const offsetX = this.getXOffset();
+    const offsetY = content.getYOffset();
+    const viewRange = content.getViewRange();
+    this.draw(viewRange, offsetX, offsetY);
+  }
 }
 
 class FixedTopLeftIndex {}
@@ -354,8 +409,9 @@ class Table extends Widget {
     const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.resize(width, height);
     this.content.render();
-    this.fixedTopIndex.render();
     this.fixedTop.render();
+    this.fixedTopIndex.render();
+    this.fixedLeftIndex.render();
   }
 
   scrollX(x) {
