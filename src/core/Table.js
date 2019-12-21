@@ -123,9 +123,7 @@ class FixedTopLeft {
     return index.height;
   }
 
-  render() {
-    const
-  }
+  render() {}
 }
 
 class Content {
@@ -133,7 +131,7 @@ class Content {
     this.scroll = new Scroll();
     this.table = table;
     this.scrollX(0);
-    this.scrollY(20);
+    this.scrollY(0);
   }
 
   scrollX(x) {
