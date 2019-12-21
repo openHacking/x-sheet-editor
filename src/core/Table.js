@@ -54,6 +54,27 @@ class FixedLeft {
   constructor(table) {
     this.table = table;
   }
+
+  getXOffset() {
+    const { table } = this;
+    const { settings } = table;
+    const { index } = settings;
+    const { width } = index;
+    return width;
+  }
+
+  render() {
+    const { table } = this;
+    const { content, fixed } = table;
+    const { fxLeft } = fixed;
+    const viewRange = content.getViewRange();
+    const offsetX = this.getXOffset();
+    const offsetY = content.getYOffset();
+    viewRange.sci = 0;
+    viewRange.eci = fxLeft;
+    content.drawGrid(viewRange, offsetX, offsetY);
+    content.drawCell(viewRange, offsetX, offsetY);
+  }
 }
 
 class FixedTop {
@@ -83,14 +104,36 @@ class FixedTop {
   }
 }
 
-class FixedTopLeft {}
+class FixedTopLeft {
+  constructor(table) {
+    this.table = table;
+  }
+
+  getXOffset() {
+    const { table } = this;
+    const { settings } = table;
+    const { index } = settings;
+    return index.width;
+  }
+
+  getYOffset() {
+    const { table } = this;
+    const { settings } = table;
+    const { index } = settings;
+    return index.height;
+  }
+
+  render() {
+    const
+  }
+}
 
 class Content {
   constructor(table) {
     this.scroll = new Scroll();
     this.table = table;
     this.scrollX(0);
-    this.scrollY(0);
+    this.scrollY(20);
   }
 
   scrollX(x) {
@@ -366,7 +409,128 @@ class FixedLeftIndex {
   }
 }
 
-class FixedTopLeftIndex {}
+class FixedTopLeftIndex {
+  constructor(table) {
+    this.table = table;
+  }
+
+  drawTop(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const { cols, settings, draw } = table;
+    const { sci, eci } = viewRange;
+    const sumWidth = cols.sectionSumWidth(sci, eci);
+    draw.save();
+    draw.translate(offsetX, offsetY);
+    // 绘制背景
+    draw.save();
+    draw.attr({
+      fillStyle: settings.index.bgColor,
+    });
+    draw.fillRect(0, 0, sumWidth, settings.index.height);
+    draw.restore();
+    // 绘制字母
+    cols.eachWidth(sci, eci, (i, cw, x) => {
+      // 线条
+      draw.save();
+      draw.attr({
+        fillStyle: settings.table.borderColor,
+        lineWidth: settings.table.borderWidth,
+        strokeStyle: settings.table.strokeColor,
+      });
+      if (i !== sci) draw.line([x, 0], [x, settings.index.height]);
+      draw.line([x + cw, 0], [x + cw, settings.index.height]);
+      draw.line([x, settings.index.height], [x + cw, settings.index.height]);
+      draw.restore();
+      // 文字
+      draw.save();
+      draw.attr({
+        textAlign: 'center',
+        textBaseline: 'middle',
+        font: 'bold 13px Arial',
+        fillStyle: '#000000',
+      });
+      draw.fillText(Utils.stringAt(i), x + (cw / 2), settings.index.height / 2);
+      draw.restore();
+    });
+    draw.restore();
+  }
+
+  drawLeft(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const { rows, settings, draw } = table;
+    const { sri, eri } = viewRange;
+    const sumHeight = rows.sectionSumHeight(sri, eri);
+    draw.save();
+    draw.translate(offsetX, offsetY);
+    // 绘制背景
+    draw.save();
+    draw.attr({
+      fillStyle: settings.index.bgColor,
+    });
+    draw.fillRect(0, 0, settings.index.width, sumHeight);
+    draw.restore();
+    // 绘制数字
+    rows.eachHeight(sri, eri, (i, ch, y) => {
+      // 边框
+      draw.save();
+      draw.attr({
+        fillStyle: settings.table.borderColor,
+        lineWidth: settings.table.borderWidth,
+        strokeStyle: settings.table.strokeColor,
+      });
+      if (i !== sri) draw.line([0, y], [settings.index.width, y]);
+      draw.line([0, y + ch], [settings.index.width, y + ch]);
+      draw.line([settings.index.width, y], [settings.index.width, y + ch]);
+      draw.restore();
+      // 数字
+      draw.save();
+      draw.attr({
+        textAlign: 'center',
+        textBaseline: 'middle',
+        font: 'bold 13px Arial',
+        fillStyle: '#000000',
+      });
+      draw.fillText(i + 1, settings.index.width / 2, y + (ch / 2));
+      draw.restore();
+    });
+    draw.restore();
+  }
+
+  draw() {
+    const { table } = this;
+    const { settings, draw } = table;
+    const { index } = settings;
+    draw.save();
+    // 绘制背景
+    draw.save();
+    draw.attr({
+      fillStyle: settings.index.bgColor,
+    });
+    draw.fillRect(0, 0, index.width, index.height);
+    draw.restore();
+    // 线条
+    draw.save();
+    draw.attr({
+      fillStyle: settings.table.borderColor,
+      lineWidth: settings.table.borderWidth,
+      strokeStyle: settings.table.strokeColor,
+    });
+    draw.line([0, index.height], [index.width, index.height]);
+    draw.line([index.width, 0], [index.width, index.height]);
+    draw.restore();
+  }
+
+  render() {
+    const { table } = this;
+    const { fixed, settings } = table;
+    const { index } = settings;
+    const { fxLeft, fxTop } = fixed;
+    const topRange = new RectRange(0, 0, fxTop, fxLeft);
+    this.drawTop(topRange, index.width, 0);
+    this.drawLeft(topRange, 0, index.height);
+    this.draw();
+  }
+}
 
 class Table extends Widget {
   constructor(settings) {
@@ -385,9 +549,11 @@ class Table extends Widget {
     this.draw = new Draw(this.canvas.el);
     this.content = new Content(this);
     this.fixedLeft = new FixedLeft(this);
-    this.fixedLeftIndex = new FixedLeftIndex(this);
     this.fixedTop = new FixedTop(this);
+    this.fixedTopLeft = new FixedTopLeft(this);
+    this.fixedLeftIndex = new FixedLeftIndex(this);
     this.fixedTopIndex = new FixedTopIndex(this);
+    this.fixedTopLeftIndex = new FixedTopLeftIndex(this);
     this.children(this.canvas, this.selector);
   }
 
@@ -410,8 +576,10 @@ class Table extends Widget {
     draw.resize(width, height);
     this.content.render();
     this.fixedTop.render();
+    this.fixedLeft.render();
     this.fixedTopIndex.render();
     this.fixedLeftIndex.render();
+    this.fixedTopLeftIndex.render();
   }
 
   scrollX(x) {
