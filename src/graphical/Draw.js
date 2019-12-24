@@ -12,6 +12,7 @@ class Draw {
   constructor(el) {
     this.el = el;
     this.ctx = el.getContext('2d');
+    this.ctx.scale(dpr(), dpr());
   }
 
   resize(width, height) {
@@ -19,7 +20,6 @@ class Draw {
     this.el.style.height = `${height}px`;
     this.el.width = npx(width);
     this.el.height = npx(height);
-    this.ctx.scale(dpr(), dpr());
   }
 
   clear() {

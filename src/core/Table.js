@@ -15,14 +15,14 @@ import { Rect } from '../graphical/Rect';
 
 const defaultSettings = {
   index: {
-    height: 25,
-    width: 35,
+    height: 30,
+    width: 40,
     bgColor: '#f4f5f8',
     color: '#000000',
   },
   table: {
     borderWidth: npx(0.5),
-    borderColor: '#c8c8c8',
+    borderColor: '#e0e0e0',
   },
   data: [
     [{
@@ -56,12 +56,12 @@ const defaultSettings = {
     },
   },
   rows: {
-    len: 500,
-    height: 25,
+    len: 1000,
+    height: 30,
   },
   cols: {
     len: 80,
-    width: 120,
+    width: 150,
   },
 };
 
@@ -157,8 +157,8 @@ class Content {
     const { table } = this;
     const { rows, fixed } = table;
     const total = rows.sectionSumHeight(0, rows.len - 1);
-    const fixedTop = rows.sectionSumHeight(0, fixed.fxTop);
-    return total - fixedTop;
+    const fixedHeight = rows.sectionSumHeight(0, fixed.fxTop);
+    return total - fixedHeight;
   }
 
   getViewRange() {
@@ -407,7 +407,9 @@ class FixedTopIndex {
   getWidth() {
     const { table } = this;
     const { content } = table;
-    return content.getWidth();
+    const viewRange = content.getViewRange();
+    const { sci, eci } = viewRange;
+    return table.cols.sectionSumWidth(sci, eci);
   }
 
   getHeight() {
@@ -447,7 +449,7 @@ class FixedTopIndex {
       draw.attr({
         textAlign: 'center',
         textBaseline: 'middle',
-        font: `500 ${npx(9)}px Source Sans Pro`,
+        font: `500 ${npx(10)}px Arial`,
         fillStyle: '#585757',
         lineWidth: npx(1),
         strokeStyle: '#e6e6e6',
@@ -506,7 +508,9 @@ class FixedLeftIndex {
   getHeight() {
     const { table } = this;
     const { content } = table;
-    return content.getHeight();
+    const viewRange = content.getViewRange();
+    const { sri, eri } = viewRange;
+    return table.rows.sectionSumHeight(sri, eri);
   }
 
   draw(viewRange, offsetX, offsetY, width, height) {
@@ -539,7 +543,7 @@ class FixedLeftIndex {
       draw.attr({
         textAlign: 'center',
         textBaseline: 'middle',
-        font: `500 ${npx(9)}px Source Sans Pro`,
+        font: `500 ${npx(10)}px Arial`,
         fillStyle: '#585757',
         lineWidth: npx(1),
         strokeStyle: '#e6e6e6',
@@ -712,7 +716,7 @@ class FrozenLeftIndex {
       draw.attr({
         textAlign: 'center',
         textBaseline: 'middle',
-        font: `500 ${npx(9)}px Source Sans Pro`,
+        font: `500 ${npx(10)}px Arial`,
         fillStyle: '#585757',
         lineWidth: npx(1),
         strokeStyle: '#e6e6e6',
@@ -805,7 +809,7 @@ class FrozenTopIndex {
       draw.attr({
         textAlign: 'center',
         textBaseline: 'middle',
-        font: `500 ${npx(9)}px Source Sans Pro`,
+        font: `500 ${npx(10)}px Arial`,
         fillStyle: '#585757',
         lineWidth: npx(1),
         strokeStyle: '#e6e6e6',
