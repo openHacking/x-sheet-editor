@@ -21,7 +21,7 @@ const defaultSettings = {
     color: '#000000',
   },
   table: {
-    borderWidth: 1,
+    borderWidth: npx(1),
     borderColor: '#fff',
     strokeColor: '#e6e6e6',
   },
@@ -662,17 +662,93 @@ class FrozenLeftIndex {
     this.table = table;
   }
 
-  getXOffset() {}
+  getXOffset() {
+    return 0;
+  }
 
-  getYOffset() {}
+  getYOffset() {
+    const { table } = this;
+    const { settings } = table;
+    const { index } = settings;
+    return index.height;
+  }
 
-  getWidth() {}
+  getWidth() {
+    const { table } = this;
+    const { settings } = table;
+    const { index } = settings;
+    return index.width;
+  }
 
-  getHeight() {}
+  getHeight() {
+    const { table } = this;
+    const { fixed } = table;
+    const { fxTop } = fixed;
+    return table.rows.sectionSumHeight(0, fxTop);
+  }
 
-  draw() {}
+  draw(viewRange, offsetX, offsetY, width, height) {
+    const { table } = this;
+    const { draw, rows, settings } = table;
+    const { sri, eri } = viewRange;
+    draw.save();
+    draw.translate(offsetX, offsetY);
+    draw.beginPath();
+    // 绘制背景
+    draw.save();
+    draw.attr({
+      fillStyle: '#fff',
+    });
+    draw.fillRect(0, 0, width, height);
+    draw.restore();
+    // 绘制文字和边框
+    rows.eachHeight(sri, eri, (i, ch, y) => {
+      // 边框
+      draw.save();
+      draw.attr({
+        fillStyle: settings.table.borderColor,
+        lineWidth: settings.table.borderWidth,
+        strokeStyle: 'red',
+      });
+      draw.line([0, y], [width, y]);
+      draw.line([width, y], [width, y + ch]);
+      draw.restore();
+      // 文字
+      draw.save();
+      draw.attr({
+        textAlign: 'center',
+        textBaseline: 'middle',
+        font: `500 ${npx(12)}px Source Sans Pro`,
+        fillStyle: '#585757',
+        lineWidth: npx(1),
+        strokeStyle: '#e6e6e6',
+      });
+      draw.fillText(i + 1, width / 2, y + (ch / 2));
+      draw.restore();
+    });
+    draw.restore();
+  }
 
-  render() {}
+  render() {
+    const { table } = this;
+    const { draw, fixed } = table;
+    const { fxTop } = fixed;
+    const offsetX = this.getXOffset();
+    const offsetY = this.getYOffset();
+    const width = this.getWidth();
+    const height = this.getHeight();
+    const viewRange = new RectRange(0, 0, fxTop, 0, width, height);
+    const rect = new Rect({
+      x: offsetX,
+      y: offsetY,
+      width,
+      height,
+    });
+    const rectCut = new RectCut(draw, rect);
+    rectCut.outwardCut(0.5);
+    this.draw(viewRange, offsetX, offsetY, width, height);
+    rectCut.closeCut();
+  }
 }
 
 class FrozenTopIndex {
@@ -736,9 +812,10 @@ class Table extends Widget {
     draw.clear();
     const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.resize(width, height);
+    this.frozenLeftTop.render();
+    this.frozenLeftIndex.render();
     this.fixedTopIndex.render();
     this.fixedLeftIndex.render();
-    this.frozenLeftTop.render();
     this.fixedTop.render();
     this.fixedLeft.render();
     this.content.render();
