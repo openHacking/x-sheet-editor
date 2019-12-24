@@ -11,7 +11,6 @@ class RectDraw {
     } = rect;
     // left
     draw.save();
-    draw.beginPath();
     draw.attr({
       strokeStyle: leftBorder.color,
       lineWidth: leftBorder.width,
@@ -20,7 +19,6 @@ class RectDraw {
     draw.restore();
     // top
     draw.save();
-    draw.beginPath();
     draw.attr({
       strokeStyle: topBorder.color,
       lineWidth: topBorder.width,
@@ -29,7 +27,6 @@ class RectDraw {
     draw.restore();
     // right
     draw.save();
-    draw.beginPath();
     draw.attr({
       strokeStyle: rightBorder.color,
       lineWidth: rightBorder.width,
@@ -38,7 +35,6 @@ class RectDraw {
     draw.restore();
     // bottom
     draw.save();
-    draw.beginPath();
     draw.attr({
       strokeStyle: bottomBorder.color,
       lineWidth: bottomBorder.width,

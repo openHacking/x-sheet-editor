@@ -95,6 +95,7 @@ class Draw {
   line(...xys) {
     const { ctx } = this;
     if (xys.length > 1) {
+      this.beginPath();
       const [x, y] = xys[0];
       this.moveTo(x, y);
       for (let i = 1, len = xys.length; i < len; i += 1) {
