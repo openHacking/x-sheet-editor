@@ -1,7 +1,7 @@
 class Fixed {
   constructor() {
-    this.fxTop = 0;
-    this.fxLeft = 0;
+    this.fxTop = 1;
+    this.fxLeft = 1;
     this.fxRight = -1;
   }
 }
