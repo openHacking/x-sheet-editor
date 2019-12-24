@@ -714,7 +714,8 @@ class Table extends Widget {
     this.fixedTopIndex = new FixedTopIndex(this);
     this.fixedLeftIndex = new FixedLeftIndex(this);
     this.frozenLeftTop = new FrozenLeftTop(this);
-    this.frozenLeftIndex = 呢我FrozenLeftIndex
+    this.frozenLeftIndex = new FrozenLeftIndex(this);
+    this.frozenTopIndex = new FrozenTopIndex(this);
     this.children(this.canvas, this.selector);
   }
 
