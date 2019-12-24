@@ -9,7 +9,7 @@ import { Fixed } from './Fixed';
 import { h } from '../lib/Element';
 import { Widget } from '../lib/Widget';
 import { RectRange } from './RectRange';
-import { Draw, npx } from '../graphical/Draw';
+import { Draw, linePx, npx } from '../graphical/Draw';
 import { RectCut } from '../graphical/RectCut';
 import { Rect } from '../graphical/Rect';
 
@@ -21,8 +21,8 @@ const defaultSettings = {
     color: '#000000',
   },
   table: {
-    borderWidth: npx(0.5),
-    borderColor: '#e0e0e0',
+    borderWidth: linePx(1),
+    borderColor: '#e9e9e9',
   },
   data: [
     [{
@@ -451,7 +451,7 @@ class FixedTopIndex {
         textBaseline: 'middle',
         font: `500 ${npx(10)}px Arial`,
         fillStyle: '#585757',
-        lineWidth: npx(1),
+        lineWidth: linePx(1),
         strokeStyle: '#e6e6e6',
       });
       draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
@@ -545,7 +545,7 @@ class FixedLeftIndex {
         textBaseline: 'middle',
         font: `500 ${npx(10)}px Arial`,
         fillStyle: '#585757',
-        lineWidth: npx(1),
+        lineWidth: linePx(1),
         strokeStyle: '#e6e6e6',
       });
       draw.fillText(i + 1, width / 2, y + (ch / 2));
@@ -718,7 +718,7 @@ class FrozenLeftIndex {
         textBaseline: 'middle',
         font: `500 ${npx(10)}px Arial`,
         fillStyle: '#585757',
-        lineWidth: npx(1),
+        lineWidth: linePx(1),
         strokeStyle: '#e6e6e6',
       });
       draw.fillText(i + 1, width / 2, y + (ch / 2));
@@ -811,13 +811,12 @@ class FrozenTopIndex {
         textBaseline: 'middle',
         font: `500 ${npx(10)}px Arial`,
         fillStyle: '#585757',
-        lineWidth: npx(1),
+        lineWidth: linePx(1),
         strokeStyle: '#e6e6e6',
       });
       draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
       draw.restore();
     });
-    draw.restore();
     draw.restore();
   }
 
@@ -854,7 +853,6 @@ class FrozenRect {
     draw.save();
     draw.translate(offsetX, offsetY);
     // 绘制背景
-    draw.save();
     draw.attr({
       fillStyle: '#f4f5f8',
     });

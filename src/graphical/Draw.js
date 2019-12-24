@@ -8,6 +8,10 @@ function npx(px) {
   return px * dpr();
 }
 
+function linePx(px) {
+  return npx(px) + 0.5;
+}
+
 class Draw {
   constructor(el) {
     this.el = el;
@@ -84,12 +88,12 @@ class Draw {
 
   moveTo(x, y) {
     const { ctx } = this;
-    ctx.moveTo(npx(x), npx(y));
+    ctx.moveTo(linePx(x), linePx(y));
   }
 
   lineTo(x, y) {
     const { ctx } = this;
-    ctx.lineTo(npx(x), npx(y));
+    ctx.lineTo(linePx(x), linePx(y));
   }
 
   line(...xys) {
@@ -114,4 +118,4 @@ class Draw {
   }
 }
 
-export { Draw, npx };
+export { Draw, npx, linePx };
