@@ -15,7 +15,6 @@ class RectCut extends RectDraw {
     });
     draw.rect(x, y, width, height);
     draw.clip();
-    draw.beginPath();
   }
 
   closeCut() {

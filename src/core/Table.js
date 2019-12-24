@@ -426,6 +426,7 @@ class FixedTopIndex {
     const { draw, cols, settings } = table;
     const { sci, eci } = viewRange;
     draw.save();
+    draw.beginPath();
     draw.translate(offsetX, offsetY);
     // 绘制背景
     draw.save();
@@ -518,6 +519,7 @@ class FixedLeftIndex {
     const { draw, rows, settings } = table;
     const { sri, eri } = viewRange;
     draw.save();
+    draw.beginPath();
     draw.translate(offsetX, offsetY);
     // 绘制背景
     draw.save();
@@ -692,8 +694,8 @@ class FrozenLeftIndex {
     const { draw, rows, settings } = table;
     const { sri, eri } = viewRange;
     draw.save();
-    draw.translate(offsetX, offsetY);
     draw.beginPath();
+    draw.translate(offsetX, offsetY);
     // 绘制背景
     draw.save();
     draw.attr({
@@ -812,8 +814,8 @@ class Table extends Widget {
     draw.clear();
     const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.resize(width, height);
-    this.frozenLeftTop.render();
     this.frozenLeftIndex.render();
+    this.frozenLeftTop.render();
     this.fixedTopIndex.render();
     this.fixedLeftIndex.render();
     this.fixedTop.render();
