@@ -5,16 +5,7 @@ function dpr() {
 }
 
 function npx(px) {
-  return parseInt(px * dpr(), 10);
-}
-
-function thinLineWidth() {
-  return dpr() - 0.5;
-}
-
-function npxLine(px) {
-  const n = npx(px);
-  return n > 0 ? n - 0.5 : 0.5;
+  return px * dpr();
 }
 
 class Draw {
@@ -24,16 +15,16 @@ class Draw {
   }
 
   resize(width, height) {
-    this.ctx.scale(dpr(), dpr());
     this.el.style.width = `${width}px`;
     this.el.style.height = `${height}px`;
     this.el.width = npx(width);
     this.el.height = npx(height);
+    this.ctx.scale(dpr(), dpr());
   }
 
   clear() {
     const { width, height } = this.el;
-    this.ctx.clearRect(0, 0, width, height);
+    this.clearRect(0, 0, width, height);
     return this;
   }
 
@@ -46,14 +37,19 @@ class Draw {
     this.ctx.beginPath();
   }
 
+  closePath() {
+    this.ctx.closePath();
+  }
+
   save() {
-    this.ctx.save();
-    this.ctx.beginPath();
+    const { ctx } = this;
+    ctx.save();
     return this;
   }
 
   restore() {
-    this.ctx.restore();
+    const { ctx } = this;
+    ctx.restore();
     return this;
   }
 
@@ -67,9 +63,18 @@ class Draw {
     return this;
   }
 
-  fillRect(x, y, w, h) {
-    this.ctx.fillRect(npx(x) - 0.5, npx(y) - 0.5, npx(w), npx(h));
+  rect(x, y, w, h) {
+    this.ctx.rect(npx(x), npx(y), npx(w), npx(h));
     return this;
+  }
+
+  fillRect(x, y, w, h) {
+    this.ctx.fillRect(npx(x), npx(y), npx(w), npx(h));
+    return this;
+  }
+
+  fill() {
+    this.ctx.fill();
   }
 
   fillText(text, x, y) {
@@ -77,24 +82,35 @@ class Draw {
     return this;
   }
 
+  moveTo(x, y) {
+    const { ctx } = this;
+    ctx.moveTo(npx(x), npx(y));
+  }
+
+  lineTo(x, y) {
+    const { ctx } = this;
+    ctx.lineTo(npx(x), npx(y));
+  }
+
   line(...xys) {
     const { ctx } = this;
     if (xys.length > 1) {
       const [x, y] = xys[0];
-      ctx.moveTo(npxLine(x), npxLine(y));
+      this.moveTo(x, y);
       for (let i = 1, len = xys.length; i < len; i += 1) {
         const [x1, y1] = xys[i];
-        ctx.lineTo(npxLine(x1), npxLine(y1));
+        this.lineTo(x1, y1);
       }
       ctx.stroke();
     }
     return this;
   }
+
+  clip() {
+    const { ctx } = this;
+    ctx.clip();
+    ctx.fill();
+  }
 }
 
-export {
-  Draw,
-  npxLine,
-  thinLineWidth,
-  npx,
-};
+export { Draw, npx };

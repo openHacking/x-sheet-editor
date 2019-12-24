@@ -1,12 +1,11 @@
-import { Utils } from '../utils/Utils';
-import { BoxRange } from '../canvas/BoxRange';
+import { Rect } from '../graphical/Rect';
 
 class Cells {
   constructor({ cols, rows, data = [] }) {
     this.cols = cols;
     this.rows = rows;
     this.defaultAttr = {
-      merge: [0, 0],
+      merge: null,
       style: {
         bgColor: '#ffffff',
         align: 'left',
@@ -22,14 +21,15 @@ class Cells {
           italic: false,
         },
       },
+      text: '',
     };
     this.data = data;
   }
 
   getCell(ri, ci) {
     const row = this.data[ri];
-    if (row && row[ci]) return Utils.mergeDeep({}, this.defaultAttr, row[ci]);
-    return Utils.mergeDeep({ text: `${ri}-${ci}` }, this.defaultAttr);
+    if (row && row[ci]) return row[ci];
+    return null;
   }
 
   getRectRangeCell(rectRange, cb, { sy = 0, sx = 0 } = {}) {
@@ -38,32 +38,19 @@ class Cells {
     } = rectRange;
     let y = sy;
     for (let i = sri; i <= eri; i += 1) {
-      const rowHeight = this.rows.getHeight(i);
+      const height = this.rows.getHeight(i);
       let x = sx;
       for (let j = sci; j <= eci; j += 1) {
-        const colWidth = this.cols.getWidth(j);
+        const width = this.cols.getWidth(j);
         const cell = this.getCell(i, j);
-        if (cell !== null) {
-          const { merge } = cell;
-          let [cellWidth, cellHeight] = [colWidth, rowHeight];
-          if (merge) {
-            const [rn, cn] = merge;
-            if (rn > 0) {
-              for (let ii = 1; ii <= rn; ii += 1) {
-                cellHeight += this.rows.getHeight(i + ii);
-              }
-            }
-            if (cn > 0) {
-              for (let jj = 1; jj <= cn; jj += 1) {
-                cellWidth += this.cols.getWidth(j + jj);
-              }
-            }
-          }
-          cb(i, j, new BoxRange(x, y, cellWidth, cellHeight), cell);
+        if (cell) {
+          cb(i, j, new Rect({
+            x, y, width, height,
+          }), cell);
         }
-        x += colWidth;
+        x += width;
       }
-      y += rowHeight;
+      y += height;
     }
   }
 }
