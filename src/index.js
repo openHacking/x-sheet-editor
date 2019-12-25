@@ -13,7 +13,13 @@ class XSheet extends Widget {
     sheetConfig: {},
     workConfig: {},
     switchConfig: {},
-    sheetData: [],
+    /**
+      [
+     {name:'', data: [[{},{},{}], [{},{},{}], [{},{},{} ]] },
+     {name:'', data: [[{},{},{}], [{},{},{}], [{},{},{} ]] }
+     ]
+     * */
+    sheetData: [{ data: [] }],
   }) {
     super(`${cssPrefix}`);
     let root = selectors;
@@ -22,7 +28,7 @@ class XSheet extends Widget {
     }
     root = h(root);
     root.children(this);
-    this.work = new Work();
+    this.work = new Work(options);
     this.children(this.work);
     this.work.init();
   }

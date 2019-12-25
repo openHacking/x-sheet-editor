@@ -33,7 +33,7 @@ let horizontalLayer2Layer1LayerVerticalElement;
 let layerVerticalLayer;
 
 class WorkBody extends Widget {
-  constructor() {
+  constructor(options) {
     super(`${cssPrefix}-work-body`);
 
     this.tabAndSheet = [];
@@ -130,7 +130,9 @@ class WorkBody extends Widget {
 
   bind() {
     this.on(Constant.EVENT_TYPE.MOUSE_WHEEL, (evt) => {
-      const { table } = this.sheetView.getActiveSheet();
+      const sheet = this.sheetView.getActiveSheet();
+      if (Utils.isUnDef(sheet)) return;
+      const { table } = sheet;
       const { rows, content } = table;
       const { scroll } = content;
       const { scrollTo } = this.scrollBarY;
