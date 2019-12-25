@@ -194,7 +194,7 @@ class Content {
     draw.restore();
   }
 
-  drawContent(viewRange, offsetX, offsetY) {
+  drawCells(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
       draw, cells,
@@ -246,7 +246,7 @@ class Content {
     const rectCut = new RectCut(draw, rect);
     rectCut.outwardCut(0.5);
     this.drawGrid(viewRange, offsetX, offsetY);
-    this.drawContent(viewRange, offsetX, offsetY);
+    this.drawCells(viewRange, offsetX, offsetY);
     rectCut.closeCut();
   }
 }
@@ -308,6 +308,41 @@ class FixedLeft {
     draw.restore();
   }
 
+  drawCells(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, cells,
+    } = table;
+    draw.save();
+    draw.translate(offsetX, offsetY);
+    cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
+      if (cell.merge) {
+        this.drewMerge(cell.merge);
+      } else {
+        this.drawCell(i, c, rect, cell);
+      }
+    });
+    draw.restore();
+  }
+
+  drawCell(i, c, rect, cell) {
+    const { table } = this;
+    const { draw } = table;
+    const { style } = cell;
+    const textRect = new TextRect(rect);
+    const rectText = new RectText(draw, textRect);
+    rectText.text(cell.text, {
+      align: style.align,
+      verticalAlign: style.verticalAlign,
+      font: style.font,
+      color: style.color,
+      strike: style.strike,
+      underline: style.underline,
+    });
+  }
+
+  drewMerge(merge) {}
+
   render() {
     const { table } = this;
     const { content, fixed, draw } = table;
@@ -328,6 +363,7 @@ class FixedLeft {
     const rectCut = new RectCut(draw, rect);
     rectCut.outwardCut(0.5);
     this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawCells(viewRange, offsetX, offsetY);
     rectCut.closeCut();
   }
 }
@@ -389,6 +425,41 @@ class FixedTop {
     draw.restore();
   }
 
+  drawCells(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, cells,
+    } = table;
+    draw.save();
+    draw.translate(offsetX, offsetY);
+    cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
+      if (cell.merge) {
+        this.drewMerge(cell.merge);
+      } else {
+        this.drawCell(i, c, rect, cell);
+      }
+    });
+    draw.restore();
+  }
+
+  drawCell(i, c, rect, cell) {
+    const { table } = this;
+    const { draw } = table;
+    const { style } = cell;
+    const textRect = new TextRect(rect);
+    const rectText = new RectText(draw, textRect);
+    rectText.text(cell.text, {
+      align: style.align,
+      verticalAlign: style.verticalAlign,
+      font: style.font,
+      color: style.color,
+      strike: style.strike,
+      underline: style.underline,
+    });
+  }
+
+  drewMerge(merge) {}
+
   render() {
     const { table } = this;
     const { content, fixed, draw } = table;
@@ -409,6 +480,7 @@ class FixedTop {
     const rectCut = new RectCut(draw, rect);
     rectCut.outwardCut(0.5);
     this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawCells(viewRange, offsetX, offsetY);
     rectCut.closeCut();
   }
 }
@@ -660,6 +732,41 @@ class FrozenLeftTop {
     draw.restore();
   }
 
+  drawCells(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, cells,
+    } = table;
+    draw.save();
+    draw.translate(offsetX, offsetY);
+    cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
+      if (cell.merge) {
+        this.drewMerge(cell.merge);
+      } else {
+        this.drawCell(i, c, rect, cell);
+      }
+    });
+    draw.restore();
+  }
+
+  drawCell(i, c, rect, cell) {
+    const { table } = this;
+    const { draw } = table;
+    const { style } = cell;
+    const textRect = new TextRect(rect);
+    const rectText = new RectText(draw, textRect);
+    rectText.text(cell.text, {
+      align: style.align,
+      verticalAlign: style.verticalAlign,
+      font: style.font,
+      color: style.color,
+      strike: style.strike,
+      underline: style.underline,
+    });
+  }
+
+  drewMerge(merge) {}
+
   render() {
     const { table } = this;
     const { fixed, draw } = table;
@@ -678,6 +785,7 @@ class FrozenLeftTop {
     const rectCut = new RectCut(draw, rect);
     rectCut.outwardCut(0.5);
     this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawCells(viewRange, offsetX, offsetY);
     rectCut.closeCut();
   }
 }
