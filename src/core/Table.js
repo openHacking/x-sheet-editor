@@ -203,7 +203,7 @@ class Content {
     draw.translate(offsetX, offsetY);
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       if (cell.merge) {
-        this.drewMerge(cell.merge);
+        this.drewMerge(viewRange, cell.merge);
       } else {
         this.drawCell(i, c, rect, cell);
       }
@@ -227,7 +227,10 @@ class Content {
     });
   }
 
-  drewMerge(merge) {}
+  drewMerge(viewRange, merge) {
+    // TODO....
+    //
+  }
 
   render() {
     const { table } = this;
@@ -317,7 +320,7 @@ class FixedLeft {
     draw.translate(offsetX, offsetY);
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       if (cell.merge) {
-        this.drewMerge(cell.merge);
+        this.drewMerge(viewRange, cell.merge);
       } else {
         this.drawCell(i, c, rect, cell);
       }
@@ -341,7 +344,10 @@ class FixedLeft {
     });
   }
 
-  drewMerge(merge) {}
+  drewMerge(viewRange, merge) {
+    // TODO....
+    //
+  }
 
   render() {
     const { table } = this;
@@ -434,7 +440,7 @@ class FixedTop {
     draw.translate(offsetX, offsetY);
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       if (cell.merge) {
-        this.drewMerge(cell.merge);
+        this.drewMerge(viewRange, cell.merge);
       } else {
         this.drawCell(i, c, rect, cell);
       }
@@ -458,7 +464,10 @@ class FixedTop {
     });
   }
 
-  drewMerge(merge) {}
+  drewMerge(viewRange, merge) {
+    // TODO....
+    //
+  }
 
   render() {
     const { table } = this;
@@ -741,7 +750,7 @@ class FrozenLeftTop {
     draw.translate(offsetX, offsetY);
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       if (cell.merge) {
-        this.drewMerge(cell.merge);
+        this.drewMerge(viewRange, cell.merge);
       } else {
         this.drawCell(i, c, rect, cell);
       }
@@ -765,7 +774,10 @@ class FrozenLeftTop {
     });
   }
 
-  drewMerge(merge) {}
+  drewMerge(viewRange, merge) {
+    // TODO....
+    //
+  }
 
   render() {
     const { table } = this;
