@@ -31,7 +31,8 @@ class ScrollBarX extends Widget {
     this.scrollTo = 0;
     this.contentWidth = 0;
     this.viewPortWidth = 0;
-    this.isHide = false;
+    this.isHide = true;
+    this.hide();
   }
 
   init() {

@@ -13,6 +13,7 @@ import { VerticalCenter } from '../lib/layer/center/VerticalCenter';
 import { Constant } from '../utils/Constant';
 import { SheetView } from './SheetView';
 import { SheetSwitchTab } from './SheetSwitchTab';
+import { Utils } from '../utils/Utils';
 
 // sheet表和垂直滚动条
 let sheetViewLayerHorizontalElement;
@@ -35,9 +36,18 @@ class WorkBody extends Widget {
   constructor() {
     super(`${cssPrefix}-work-body`);
 
+    this.tabAndSheet = [];
+
     // 组件
     this.sheetView = new SheetView();
-    this.sheetSwitchTab = new SheetSwitchTab();
+    this.sheetSwitchTab = new SheetSwitchTab({
+      onAdd(tab) {
+        console.log('add Tab', tab);
+      },
+      onSwitch(tab) {
+        console.log('switch Tab', tab);
+      },
+    });
     this.scrollBarX = new ScrollBarX({
       scroll: (move) => {
         this.sheetView.getActiveSheet().table.scrollX(move);
@@ -109,7 +119,9 @@ class WorkBody extends Widget {
   }
 
   setScroll() {
-    const { table } = this.sheetView.getActiveSheet();
+    const sheet = this.sheetView.getActiveSheet();
+    if (Utils.isUnDef(sheet)) return;
+    const { table } = sheet;
     const { content } = table;
     this.scrollBarY.setSize(content.getHeight(), content.getContentHeight());
     this.scrollBarX.setSize(content.getWidth(), content.getContentWidth());
