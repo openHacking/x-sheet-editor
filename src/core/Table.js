@@ -12,6 +12,9 @@ import { RectRange } from './RectRange';
 import { Draw, linePx, npx } from '../graphical/Draw';
 import { RectCut } from '../graphical/RectCut';
 import { Rect } from '../graphical/Rect';
+import { RectText } from '../graphical/RectText';
+import { TextRect } from '../graphical/TextRect';
+import { Data } from '../DataTest';
 
 const defaultSettings = {
   index: {
@@ -24,22 +27,7 @@ const defaultSettings = {
     borderWidth: linePx(1),
     borderColor: '#e9e9e9',
   },
-  data: [
-    [{
-      text: '唐浩',
-      merge: {
-        rect: new RectRange(0, 0, 0, 1, 300, 30),
-        master: { text: '唐浩' },
-      },
-    }, {
-      text: '刁亚文',
-      merge: {
-        rect: new RectRange(0, 0, 0, 1, 300, 30),
-        master: { text: '唐浩' },
-      },
-    }, { text: '叶家俊' }, { text: '刁军凯' }],
-    [{ text: '唐标' }, { text: '唐伟春' }, { text: '唐伟' }, { text: '唐武' }],
-  ],
+  data: Data,
   cell: {
     bgColor: '#ffffff',
     align: 'left',
@@ -206,6 +194,41 @@ class Content {
     draw.restore();
   }
 
+  drawContent(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, cells,
+    } = table;
+    draw.save();
+    draw.translate(offsetX, offsetY);
+    cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
+      if (cell.merge) {
+        this.drewMerge(cell.merge);
+      } else {
+        this.drawCell(i, c, rect, cell);
+      }
+    });
+    draw.restore();
+  }
+
+  drawCell(i, c, rect, cell) {
+    const { table } = this;
+    const { draw } = table;
+    const { style } = cell;
+    const textRect = new TextRect(rect);
+    const rectText = new RectText(draw, textRect);
+    rectText.text(cell.text, {
+      align: style.align,
+      verticalAlign: style.verticalAlign,
+      font: style.font,
+      color: style.color,
+      strike: style.strike,
+      underline: style.underline,
+    });
+  }
+
+  drewMerge(merge) {}
+
   render() {
     const { table } = this;
     const { draw } = table;
@@ -223,6 +246,7 @@ class Content {
     const rectCut = new RectCut(draw, rect);
     rectCut.outwardCut(0.5);
     this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawContent(viewRange, offsetX, offsetY);
     rectCut.closeCut();
   }
 }
@@ -443,6 +467,7 @@ class FixedTopIndex {
       });
       draw.line([x, 0], [x, height]);
       draw.line([x, height], [x + cw, height]);
+      if (i === eci) draw.line([x + cw, 0], [x + cw, height]);
       draw.restore();
       // 文字
       draw.save();
@@ -537,6 +562,7 @@ class FixedLeftIndex {
       });
       draw.line([0, y], [width, y]);
       draw.line([width, y], [width, y + ch]);
+      if (i === eri) draw.line([0, y + ch], [width, y + ch]);
       draw.restore();
       // 文字
       draw.save();

@@ -1,4 +1,5 @@
 import { Rect } from '../graphical/Rect';
+import { Utils } from '../utils/Utils';
 
 class Cells {
   constructor({ cols, rows, data = [] }) {
@@ -28,7 +29,7 @@ class Cells {
 
   getCell(ri, ci) {
     const row = this.data[ri];
-    if (row && row[ci]) return row[ci];
+    if (row && row[ci]) return Utils.mergeDeep({}, this.defaultAttr, row[ci]);
     return null;
   }
 
