@@ -24,7 +24,7 @@ const defaultSettings = {
     color: '#000000',
   },
   table: {
-    borderWidth: linePx(1),
+    borderWidth: linePx(0.5),
     borderColor: '#e9e9e9',
   },
   data: Data,
