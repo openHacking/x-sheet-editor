@@ -55,10 +55,15 @@ const defaultSettings = {
 
 class Content {
   constructor(table) {
+    this.viewRange = null;
     this.table = table;
     this.scroll = new Scroll();
     this.scrollX(0);
     this.scrollY(0);
+  }
+
+  preProcessing() {
+    this.viewRange = this.getViewRange();
   }
 
   scrollX(x) {
@@ -239,7 +244,7 @@ class Content {
     const offsetY = this.getYOffset();
     const width = this.getWidth();
     const height = this.getHeight();
-    const viewRange = this.getViewRange();
+    const viewRange = this.viewRange.clone();
     const rect = new Rect({
       x: offsetX,
       y: offsetY,
@@ -353,7 +358,7 @@ class FixedLeft {
     const { table } = this;
     const { content, fixed, draw } = table;
     const { fxLeft } = fixed;
-    const viewRange = content.getViewRange();
+    const viewRange = content.viewRange.clone();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
     const width = this.getWidth();
@@ -473,7 +478,7 @@ class FixedTop {
     const { table } = this;
     const { content, fixed, draw } = table;
     const { fxTop } = fixed;
-    const viewRange = content.getViewRange();
+    const viewRange = content.viewRange.clone();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
     const width = this.getWidth();
@@ -512,7 +517,7 @@ class FixedTopIndex {
   getWidth() {
     const { table } = this;
     const { content } = table;
-    const viewRange = content.getViewRange();
+    const viewRange = content.viewRange.clone();
     const { sci, eci } = viewRange;
     return table.cols.sectionSumWidth(sci, eci);
   }
@@ -569,7 +574,7 @@ class FixedTopIndex {
   render() {
     const { table } = this;
     const { content } = table;
-    const viewRange = content.getViewRange();
+    const viewRange = content.viewRange.clone();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
     const width = this.getWidth();
@@ -605,7 +610,7 @@ class FixedLeftIndex {
   getHeight() {
     const { table } = this;
     const { content } = table;
-    const viewRange = content.getViewRange();
+    const viewRange = content.viewRange.clone();
     const { sri, eri } = viewRange;
     return table.rows.sectionSumHeight(sri, eri);
   }
@@ -655,7 +660,7 @@ class FixedLeftIndex {
   render() {
     const { table } = this;
     const { content } = table;
-    const viewRange = content.getViewRange();
+    const viewRange = content.viewRange.clone();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
     const width = this.getWidth();
@@ -1005,7 +1010,12 @@ class Table extends Widget {
   }
 
   init() {
+    this.preProcessing();
     this.render();
+  }
+
+  preProcessing() {
+    this.content.preProcessing();
   }
 
   render() {
@@ -1026,11 +1036,13 @@ class Table extends Widget {
 
   scrollX(x) {
     this.content.scrollX(x);
+    this.preProcessing();
     this.render();
   }
 
   scrollY(y) {
     this.content.scrollY(y);
+    this.preProcessing();
     this.render();
   }
 }
