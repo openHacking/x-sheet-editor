@@ -5,16 +5,18 @@ class RectText extends RectDraw {
   constructor(draw, rect, attr) {
     super(draw, rect);
     this.attr = attr;
-    const {
-      align, verticalAlign, font, color,
-    } = this.attr;
-    draw.attr({
-      textAlign: align,
-      textBaseline: verticalAlign,
-      font: `${font.italic ? 'italic' : ''} ${font.bold ? 'bold' : ''} ${npx(font.size)}px ${font.name}`,
-      fillStyle: color,
-      strokeStyle: color,
-    });
+    if (this.attr) {
+      const {
+        align, verticalAlign, font, color,
+      } = this.attr;
+      draw.attr({
+        textAlign: align,
+        textBaseline: verticalAlign,
+        font: `${font.italic ? 'italic' : ''} ${font.bold ? 'bold' : ''} ${npx(font.size)}px ${font.name}`,
+        fillStyle: color,
+        strokeStyle: color,
+      });
+    }
   }
 
   setRect(rect) {
