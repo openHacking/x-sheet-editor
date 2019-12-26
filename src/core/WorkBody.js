@@ -14,6 +14,7 @@ import { Constant } from '../utils/Constant';
 import { SheetView } from './SheetView';
 import { SheetSwitchTab } from './SheetSwitchTab';
 import { Utils } from '../utils/Utils';
+import { Sheet } from './Sheet';
 
 // sheet表和垂直滚动条
 let sheetViewLayerHorizontalElement;
@@ -36,6 +37,8 @@ class WorkBody extends Widget {
   constructor(options) {
     super(`${cssPrefix}-work-body`);
 
+    this.workConfig = options.workConfig;
+    this.sheetData = options.sheetData;
     this.tabAndSheet = [];
 
     // 组件
@@ -115,6 +118,7 @@ class WorkBody extends Widget {
     this.scrollBarX.init();
     this.scrollBarY.init();
     this.bind();
+    this.setSheet();
     this.setScroll();
   }
 
@@ -126,6 +130,28 @@ class WorkBody extends Widget {
     this.scrollBarY.setSize(content.getHeight(), content.getContentHeight());
     this.scrollBarX.setSize(content.getWidth(), content.getContentWidth());
     scrollBarXLayerHorizontalElement.display(!this.scrollBarX.isHide);
+  }
+
+  setSheet() {
+    const { sheetView, sheetSwitchTab } = this;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const item of this.sheetData) {
+      // eslint-disable-next-line no-restricted-syntax
+      const { name, data } = item;
+      const { sheetConfig } = this.workConfig;
+      const newSheetConfig = Utils.cloneDeep(sheetConfig);
+      newSheetConfig.data = data;
+      const sheet = new Sheet(newSheetConfig);
+      sheetView.add(sheet);
+      const tab = sheetSwitchTab.add(name);
+      this.tabAndSheet.push({ tab, sheet });
+    }
+  }
+
+  setActive(index) {
+    const { sheetView, sheetSwitchTab } = this;
+    sheetView.setActiveSheet(index);
+    sheetSwitchTab.setActiveTab(index);
   }
 
   bind() {

@@ -24,16 +24,25 @@ class SheetSwitchTab extends Widget {
     }, options);
     this.number = 0;
     this.left = null;
+    this.tabList = [];
   }
 
   createTab(name) {
     const tab = h('div', `${cssPrefix}-sheet-tab`);
-    tab.on('click', () => this.activeTab(tab));
+    this.tabList.push(tab);
+    tab.on('click', () => this.setActive(tab));
     tab.text(name);
     return tab;
   }
 
-  activeTab(tab) {
+  setActiveTab(index) {
+    const { tabList } = this;
+    if (tabList[index]) {
+      this.setActive(tabList[index]);
+    }
+  }
+
+  setActive(tab) {
     tab.addClass('active');
     tab.sibling().forEach((item) => {
       item.removeClass('active');
@@ -78,6 +87,7 @@ class SheetSwitchTab extends Widget {
       this.tabs.css('marginLeft', `${this.left}px`);
     }
     this.optiions.onAdd(tab);
+    return tab;
   }
 }
 

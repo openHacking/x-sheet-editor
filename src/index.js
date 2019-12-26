@@ -9,10 +9,12 @@ import './index.less';
 
 class XSheet extends Widget {
   constructor(selectors, options = {
-    tableConfig: {},
-    sheetConfig: {},
-    workConfig: {},
-    switchConfig: {},
+    workConfig: {
+      switchConfig: {},
+      sheetConfig: {
+        tableConfig: {},
+      },
+    },
     /**
       [
      {name:'', data: [[{},{},{}], [{},{},{}], [{},{},{} ]] },
