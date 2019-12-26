@@ -520,7 +520,6 @@ class FixedTopIndex {
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
       draw.line([x, 0], [x, height]);
-      draw.line([x, height], [x + cw, height]);
       if (i === eci) draw.line([x + cw, 0], [x + cw, height]);
     });
     draw.restore();
@@ -607,7 +606,6 @@ class FixedLeftIndex {
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
       draw.line([0, y], [width, y]);
-      draw.line([width, y], [width, y + ch]);
       if (i === eri) draw.line([0, y + ch], [width, y + ch]);
     });
     draw.restore();
@@ -794,7 +792,6 @@ class FrozenLeftIndex {
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
       draw.line([0, y], [width, y]);
-      draw.line([width, y], [width, y + ch]);
     });
     draw.restore();
     // 绘制文字
@@ -879,7 +876,6 @@ class FrozenTopIndex {
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
       draw.line([x, 0], [x, height]);
-      draw.line([x, height], [x + cw, height]);
     });
     draw.restore();
     // 绘制文字
