@@ -45,10 +45,10 @@ class WorkBody extends Widget {
     this.sheetView = new SheetView();
     this.sheetSwitchTab = new SheetSwitchTab({
       onAdd(tab) {
-        console.log('add Tab', tab);
+        return tab;
       },
       onSwitch(tab) {
-        console.log('switch Tab', tab);
+        return tab;
       },
     });
     this.scrollBarX = new ScrollBarX({
@@ -142,10 +142,11 @@ class WorkBody extends Widget {
       const newSheetConfig = Utils.cloneDeep(sheetConfig);
       newSheetConfig.data = data;
       const sheet = new Sheet(newSheetConfig);
-      sheetView.add(sheet);
       const tab = sheetSwitchTab.add(name);
+      sheetView.add(sheet);
       this.tabAndSheet.push({ tab, sheet });
     }
+    this.setActive(this.tabAndSheet.length - 1);
   }
 
   setActive(index) {

@@ -7,13 +7,13 @@ class SheetView extends Widget {
     super(`${cssPrefix}-sheet-view`);
     this.sheetList = [];
     this.activeIndex = -1;
-    this.hide();
   }
 
   add(sheet = new Sheet()) {
     this.sheetList.push(sheet);
     this.children(sheet);
     sheet.init();
+    sheet.hide();
     return this.sheetList.length - 1;
   }
 
@@ -24,6 +24,7 @@ class SheetView extends Widget {
   setActiveSheet(index) {
     const { sheetList } = this;
     if (sheetList[index]) {
+      this.activeIndex = index;
       this.setActive(sheetList[index]);
     }
   }

@@ -239,7 +239,7 @@ class Content {
       height,
     });
     const rectCut = new RectCut(draw, rect);
-    rectCut.outwardCut(thinLineWidth());
+    rectCut.outwardCut(thinLineWidth() / 2);
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     rectCut.closeCut();
@@ -351,7 +351,7 @@ class FixedLeft {
       height,
     });
     const rectCut = new RectCut(draw, rect);
-    rectCut.outwardCut(thinLineWidth());
+    rectCut.outwardCut(thinLineWidth() / 2);
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     rectCut.closeCut();
@@ -463,7 +463,7 @@ class FixedTop {
       height,
     });
     const rectCut = new RectCut(draw, rect);
-    rectCut.outwardCut(thinLineWidth());
+    rectCut.outwardCut(thinLineWidth() / 2);
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     rectCut.closeCut();
