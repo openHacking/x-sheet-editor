@@ -172,7 +172,15 @@ class WorkBody extends Widget {
 
   setActiveTabIndex(index) {
     const { sheetView } = this;
-    sheetView.setActiveSheet(index);
+    const sheet = sheetView.setActiveSheet(index);
+    if (sheet) {
+      const { table } = sheet;
+      const { content } = table;
+      const { scroll } = content;
+      const { scrollBarX, scrollBarY } = this;
+      scrollBarX.scrollMove(scroll.x);
+      scrollBarY.scrollMove(scroll.y);
+    }
   }
 
   setActiveSheetIndex(index) {

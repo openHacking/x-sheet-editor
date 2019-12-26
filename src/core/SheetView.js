@@ -25,14 +25,16 @@ class SheetView extends Widget {
     const { sheetList } = this;
     if (sheetList[index]) {
       this.activeIndex = index;
-      this.setActive(sheetList[index]);
+      return this.setActive(sheetList[index]);
     }
+    return null;
   }
 
   setActive(sheet) {
     sheet.show().sibling().forEach((item) => {
       item.hide();
     });
+    return sheet;
   }
 }
 

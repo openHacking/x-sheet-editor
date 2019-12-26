@@ -83,6 +83,17 @@ class ScrollBarX extends Widget {
     }
   }
 
+  scrollMove(move) {
+    let to = move;
+    const maxTo = this.contentWidth - this.viewPortWidth;
+    if (to > maxTo) to = maxTo; else if (to < 0) to = 0;
+    const blockLeft = (to / (this.contentWidth - this.viewPortWidth)) * this.maxBlockLeft;
+    this.blockLeft = blockLeft > this.maxBlockLeft ? this.maxBlockLeft : blockLeft;
+    this.scrollTo = to;
+    this.block.css('left', `${this.blockLeft}px`);
+    this.option.scroll(this.scrollTo);
+  }
+
   computerScrollTo(move) {
     return (move / this.maxBlockLeft) * (this.contentWidth - this.viewPortWidth);
   }

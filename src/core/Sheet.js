@@ -19,12 +19,6 @@ class Sheet extends Widget {
   init() {
     this.table.init();
   }
-
-  show() {
-    super.show();
-    this.table.render();
-    return this;
-  }
 }
 
 export { Sheet };
