@@ -9,6 +9,10 @@ class SheetView extends Widget {
     this.activeIndex = 0;
   }
 
+  init() {
+    this.add();
+  }
+
   add(sheet = new Sheet()) {
     this.sheets.push(sheet);
     this.children(sheet);

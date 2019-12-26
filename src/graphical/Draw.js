@@ -4,12 +4,17 @@ function dpr() {
   return window.devicePixelRatio || 1;
 }
 
-function npx(px) {
-  return px * dpr();
+function thinLineWidth() {
+  return dpr() - 0.5;
 }
 
-function linePx(px) {
-  return npx(px) + 0.5;
+function npx(px) {
+  return parseInt(px * dpr(), 10);
+}
+
+function npxLine(px) {
+  const n = npx(px);
+  return n > 0 ? n - 0.5 : 0.5;
 }
 
 class Draw {
@@ -48,6 +53,7 @@ class Draw {
   save() {
     const { ctx } = this;
     ctx.save();
+    this.beginPath();
     return this;
   }
 
@@ -88,18 +94,17 @@ class Draw {
 
   moveTo(x, y) {
     const { ctx } = this;
-    ctx.moveTo(linePx(x), linePx(y));
+    ctx.moveTo(npxLine(x), npxLine(y));
   }
 
   lineTo(x, y) {
     const { ctx } = this;
-    ctx.lineTo(linePx(x), linePx(y));
+    ctx.lineTo(npxLine(x), npxLine(y));
   }
 
   line(...xys) {
     const { ctx } = this;
     if (xys.length > 1) {
-      this.beginPath();
       const [x, y] = xys[0];
       this.moveTo(x, y);
       for (let i = 1, len = xys.length; i < len; i += 1) {
@@ -118,4 +123,4 @@ class Draw {
   }
 }
 
-export { Draw, npx, linePx };
+export { Draw, npx, thinLineWidth };

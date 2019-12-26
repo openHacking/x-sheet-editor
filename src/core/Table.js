@@ -9,7 +9,7 @@ import { Fixed } from './Fixed';
 import { h } from '../lib/Element';
 import { Widget } from '../lib/Widget';
 import { RectRange } from './RectRange';
-import { Draw, linePx, npx } from '../graphical/Draw';
+import { Draw, npx, thinLineWidth } from '../graphical/Draw';
 import { RectCut } from '../graphical/RectCut';
 import { Rect } from '../graphical/Rect';
 import { RectText } from '../graphical/RectText';
@@ -24,7 +24,7 @@ const defaultSettings = {
     color: '#000000',
   },
   table: {
-    borderWidth: linePx(0.5),
+    borderWidth: thinLineWidth(),
     borderColor: '#e9e9e9',
   },
   data: Data,
@@ -44,7 +44,7 @@ const defaultSettings = {
     },
   },
   rows: {
-    len: 1000,
+    len: 100000,
     height: 30,
   },
   cols: {
@@ -247,7 +247,7 @@ class Content {
       height,
     });
     const rectCut = new RectCut(draw, rect);
-    rectCut.outwardCut(0.5);
+    rectCut.outwardCut(thinLineWidth());
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     rectCut.closeCut();
@@ -367,7 +367,7 @@ class FixedLeft {
       height,
     });
     const rectCut = new RectCut(draw, rect);
-    rectCut.outwardCut(0.5);
+    rectCut.outwardCut(thinLineWidth());
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     rectCut.closeCut();
@@ -487,7 +487,7 @@ class FixedTop {
       height,
     });
     const rectCut = new RectCut(draw, rect);
-    rectCut.outwardCut(0.5);
+    rectCut.outwardCut(thinLineWidth());
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     rectCut.closeCut();
@@ -557,7 +557,7 @@ class FixedTopIndex {
         textBaseline: 'middle',
         font: `500 ${npx(10)}px Arial`,
         fillStyle: '#585757',
-        lineWidth: linePx(1),
+        lineWidth: thinLineWidth(),
         strokeStyle: '#e6e6e6',
       });
       draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
@@ -568,7 +568,7 @@ class FixedTopIndex {
 
   render() {
     const { table } = this;
-    const { content, draw } = table;
+    const { content } = table;
     const viewRange = content.getViewRange();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
@@ -576,16 +576,7 @@ class FixedTopIndex {
     const height = this.getHeight();
     viewRange.sri = 0;
     viewRange.eri = 0;
-    const rect = new Rect({
-      x: offsetX,
-      y: offsetY,
-      width,
-      height,
-    });
-    const rectCut = new RectCut(draw, rect);
-    rectCut.outwardCut(0.5);
     this.draw(viewRange, offsetX, offsetY, width, height);
-    rectCut.closeCut();
   }
 }
 
@@ -652,7 +643,7 @@ class FixedLeftIndex {
         textBaseline: 'middle',
         font: `500 ${npx(10)}px Arial`,
         fillStyle: '#585757',
-        lineWidth: linePx(1),
+        lineWidth: thinLineWidth(),
         strokeStyle: '#e6e6e6',
       });
       draw.fillText(i + 1, width / 2, y + (ch / 2));
@@ -663,7 +654,7 @@ class FixedLeftIndex {
 
   render() {
     const { table } = this;
-    const { content, draw } = table;
+    const { content } = table;
     const viewRange = content.getViewRange();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
@@ -671,16 +662,7 @@ class FixedLeftIndex {
     const height = this.getHeight();
     viewRange.sci = 0;
     viewRange.eci = 0;
-    const rect = new Rect({
-      x: offsetX,
-      y: offsetY,
-      width,
-      height,
-    });
-    const rectCut = new RectCut(draw, rect);
-    rectCut.outwardCut(0.5);
     this.draw(viewRange, offsetX, offsetY, width, height);
-    rectCut.closeCut();
   }
 }
 
@@ -781,24 +763,15 @@ class FrozenLeftTop {
 
   render() {
     const { table } = this;
-    const { fixed, draw } = table;
+    const { fixed } = table;
     const { fxTop, fxLeft } = fixed;
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
     const width = this.getWidth();
     const height = this.getHeight();
     const viewRange = new RectRange(0, 0, fxTop, fxLeft, width, height);
-    const rect = new Rect({
-      x: offsetX,
-      y: offsetY,
-      width,
-      height,
-    });
-    const rectCut = new RectCut(draw, rect);
-    rectCut.outwardCut(0.5);
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
-    rectCut.closeCut();
   }
 }
 
@@ -864,7 +837,7 @@ class FrozenLeftIndex {
         textBaseline: 'middle',
         font: `500 ${npx(10)}px Arial`,
         fillStyle: '#585757',
-        lineWidth: linePx(1),
+        lineWidth: thinLineWidth(),
         strokeStyle: '#e6e6e6',
       });
       draw.fillText(i + 1, width / 2, y + (ch / 2));
@@ -875,23 +848,14 @@ class FrozenLeftIndex {
 
   render() {
     const { table } = this;
-    const { draw, fixed } = table;
+    const { fixed } = table;
     const { fxTop } = fixed;
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
     const width = this.getWidth();
     const height = this.getHeight();
     const viewRange = new RectRange(0, 0, fxTop, 0, width, height);
-    const rect = new Rect({
-      x: offsetX,
-      y: offsetY,
-      width,
-      height,
-    });
-    const rectCut = new RectCut(draw, rect);
-    rectCut.outwardCut(0.5);
     this.draw(viewRange, offsetX, offsetY, width, height);
-    rectCut.closeCut();
   }
 }
 
@@ -957,7 +921,7 @@ class FrozenTopIndex {
         textBaseline: 'middle',
         font: `500 ${npx(10)}px Arial`,
         fillStyle: '#585757',
-        lineWidth: linePx(1),
+        lineWidth: thinLineWidth(),
         strokeStyle: '#e6e6e6',
       });
       draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
@@ -968,23 +932,14 @@ class FrozenTopIndex {
 
   render() {
     const { table } = this;
-    const { draw, fixed } = table;
+    const { fixed } = table;
     const { fxLeft } = fixed;
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
     const width = this.getWidth();
     const height = this.getHeight();
     const viewRange = new RectRange(0, 0, 0, fxLeft, width, height);
-    const rect = new Rect({
-      x: offsetX,
-      y: offsetY,
-      width,
-      height,
-    });
-    const rectCut = new RectCut(draw, rect);
-    rectCut.outwardCut(0.5);
     this.draw(viewRange, offsetX, offsetY, width, height);
-    rectCut.closeCut();
   }
 }
 
