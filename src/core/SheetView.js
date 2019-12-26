@@ -30,7 +30,9 @@ class SheetView extends Widget {
   }
 
   setActive(sheet) {
-    sheet.show();
+    sheet.show().sibling().forEach((item) => {
+      item.hide();
+    });
   }
 }
 

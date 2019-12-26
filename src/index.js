@@ -6,6 +6,7 @@ import { Work } from './core/Work';
 import { Widget } from './lib/Widget';
 import './base.less';
 import './index.less';
+import { Data } from './DataTest';
 
 class XSheet extends Widget {
   constructor(selectors, options = {
@@ -21,7 +22,7 @@ class XSheet extends Widget {
      {name:'', data: [[{},{},{}], [{},{},{}], [{},{},{} ]] }
      ]
      * */
-    sheetData: [{ data: [] }],
+    sheetData: [{ data: Data }],
   }) {
     super(`${cssPrefix}`);
     let root = selectors;

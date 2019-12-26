@@ -14,7 +14,6 @@ import { RectCut } from '../graphical/RectCut';
 import { Rect } from '../graphical/Rect';
 import { RectText } from '../graphical/RectText';
 import { TextRect } from '../graphical/TextRect';
-import { Data } from '../DataTest';
 
 const defaultSettings = {
   index: {
@@ -27,7 +26,7 @@ const defaultSettings = {
     borderWidth: thinLineWidth(),
     borderColor: '#e9e9e9',
   },
-  data: Data,
+  data: [],
   cell: {
     bgColor: '#ffffff',
     align: 'left',
@@ -44,7 +43,7 @@ const defaultSettings = {
     },
   },
   rows: {
-    len: 1000,
+    len: 500,
     height: 30,
   },
   cols: {

@@ -2,6 +2,7 @@ import { Widget } from '../lib/Widget';
 import { cssPrefix } from '../config';
 import { h } from '../lib/Element';
 import { Utils } from '../utils/Utils';
+import { Tab } from '../component/Tab';
 
 class SheetSwitchTab extends Widget {
   constructor(options) {
@@ -27,14 +28,6 @@ class SheetSwitchTab extends Widget {
     this.tabList = [];
   }
 
-  createTab(name) {
-    const tab = h('div', `${cssPrefix}-sheet-tab`);
-    this.tabList.push(tab);
-    tab.on('click', () => this.setActive(tab));
-    tab.text(name);
-    return tab;
-  }
-
   setActiveTab(index) {
     const { tabList } = this;
     if (tabList[index]) {
@@ -47,7 +40,6 @@ class SheetSwitchTab extends Widget {
     tab.sibling().forEach((item) => {
       item.removeClass('active');
     });
-    this.optiions.onSwitch(tab);
   }
 
   init() {
@@ -56,7 +48,9 @@ class SheetSwitchTab extends Widget {
 
   bind() {
     this.plus.on('click', () => {
-      this.add();
+      const tab = new Tab();
+      const index = this.add(tab);
+      this.optiions.onAdd(tab, index);
     });
     this.last.on('click', () => {
       if (this.left !== null) {
@@ -77,17 +71,20 @@ class SheetSwitchTab extends Widget {
     });
   }
 
-  add(name = `${this.number += 1}-tab`) {
-    const tab = this.createTab(name);
+  add(tab) {
+    this.tabList.push(tab);
     this.tabs.children(tab);
+    tab.on('click', () => {
+      this.setActive(tab);
+      this.optiions.onSwitch(tab);
+    });
     const maxWidth = this.content.offset().width;
     const current = this.tabs.offset().width;
     if (current > maxWidth) {
       this.left = -(current - maxWidth);
       this.tabs.css('marginLeft', `${this.left}px`);
     }
-    this.optiions.onAdd(tab);
-    return tab;
+    return this.tabList.length - 1;
   }
 }
 

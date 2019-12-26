@@ -15,6 +15,7 @@ import { SheetView } from './SheetView';
 import { SheetSwitchTab } from './SheetSwitchTab';
 import { Utils } from '../utils/Utils';
 import { Sheet } from './Sheet';
+import { Tab } from '../component/Tab';
 
 // sheet表和垂直滚动条
 let sheetViewLayerHorizontalElement;
@@ -44,11 +45,21 @@ class WorkBody extends Widget {
     // 组件
     this.sheetView = new SheetView();
     this.sheetSwitchTab = new SheetSwitchTab({
-      onAdd(tab) {
-        return tab;
+      onAdd: (tab, tabIndex) => {
+        const { sheetView } = this;
+        const { sheetConfig } = this.workConfig;
+        const newSheetConfig = Utils.cloneDeep(sheetConfig);
+        const sheet = new Sheet(newSheetConfig);
+        const sheetIndex = sheetView.add(sheet);
+        this.tabAndSheet.push({
+          tab,
+          sheet,
+          tabIndex,
+          sheetIndex,
+        });
       },
-      onSwitch(tab) {
-        return tab;
+      onSwitch: (tab) => {
+        this.setActiveTab(tab);
       },
     });
     this.scrollBarX = new ScrollBarX({
@@ -142,17 +153,40 @@ class WorkBody extends Widget {
       const newSheetConfig = Utils.cloneDeep(sheetConfig);
       newSheetConfig.data = data;
       const sheet = new Sheet(newSheetConfig);
-      const tab = sheetSwitchTab.add(name);
-      sheetView.add(sheet);
-      this.tabAndSheet.push({ tab, sheet });
+      const tab = new Tab(name);
+      const sheetIndex = sheetView.add(sheet);
+      const tabIndex = sheetSwitchTab.add(tab);
+      this.tabAndSheet.push({
+        tab,
+        sheet,
+        tabIndex,
+        sheetIndex,
+      });
     }
-    this.setActive(this.tabAndSheet.length - 1);
+    const first = this.tabAndSheet[0];
+    if (first) {
+      this.setActiveTabIndex(first.tabIndex);
+      this.setActiveSheetIndex(first.sheetIndex);
+    }
   }
 
-  setActive(index) {
-    const { sheetView, sheetSwitchTab } = this;
+  setActiveTabIndex(index) {
+    const { sheetView } = this;
     sheetView.setActiveSheet(index);
+  }
+
+  setActiveSheetIndex(index) {
+    const { sheetSwitchTab } = this;
     sheetSwitchTab.setActiveTab(index);
+  }
+
+  setActiveTab(tab) {
+    this.tabAndSheet.forEach((item) => {
+      if (item.tab === tab) {
+        this.setActiveTabIndex(item.tabIndex);
+        this.setActiveSheetIndex(item.sheetIndex);
+      }
+    });
   }
 
   bind() {
