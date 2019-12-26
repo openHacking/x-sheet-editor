@@ -6,7 +6,6 @@ class Cells {
     this.cols = cols;
     this.rows = rows;
     this.defaultAttr = {
-      merge: null,
       style: {
         bgColor: '#ffffff',
         align: 'left',
@@ -22,14 +21,17 @@ class Cells {
           italic: false,
         },
       },
-      text: '',
     };
     this.data = data;
   }
 
   getCell(ri, ci) {
     const row = this.data[ri];
-    if (row && row[ci]) return Utils.mergeDeep({}, this.defaultAttr, row[ci]);
+    if (row && row[ci]) {
+      return Utils.mergeDeep({
+        text: '',
+      }, row[ci]);
+    }
     return null;
   }
 

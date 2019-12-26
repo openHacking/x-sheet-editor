@@ -2,6 +2,25 @@ import { RectDraw } from './RectDraw';
 import { npx } from './Draw';
 
 class RectText extends RectDraw {
+  constructor(draw, rect, attr) {
+    super(draw, rect);
+    this.attr = attr;
+    const {
+      align, verticalAlign, font, color,
+    } = this.attr;
+    draw.attr({
+      textAlign: align,
+      textBaseline: verticalAlign,
+      font: `${font.italic ? 'italic' : ''} ${font.bold ? 'bold' : ''} ${npx(font.size)}px ${font.name}`,
+      fillStyle: color,
+      strokeStyle: color,
+    });
+  }
+
+  setRect(rect) {
+    this.rect = rect;
+  }
+
   drawFontLine(type, tx, ty, align, verticalAlign, blHeight, blWidth) {
     const { draw } = this;
     const flOffset = { x: 0, y: 0 };
@@ -56,21 +75,26 @@ class RectText extends RectDraw {
     return y;
   }
 
-  text(txt, attr = {}, textWrap = true) {
+  text(txt, attr, textWrap = true) {
     const { draw, rect } = this;
     const { ctx } = draw;
-    const {
+    let {
       align, verticalAlign, font, color, strike, underline,
-    } = attr;
-    const tx = this.textAlign(align);
+    } = this.attr;
     draw.save();
-    draw.attr({
-      textAlign: align,
-      textBaseline: verticalAlign,
-      font: `${font.italic ? 'italic' : ''} ${font.bold ? 'bold' : ''} ${npx(font.size)}px ${font.name}`,
-      fillStyle: color,
-      strokeStyle: color,
-    });
+    if (attr) {
+      ({
+        align, verticalAlign, font, color, strike, underline,
+      } = this.attr);
+      draw.attr({
+        textAlign: align,
+        textBaseline: verticalAlign,
+        font: `${font.italic ? 'italic' : ''} ${font.bold ? 'bold' : ''} ${npx(font.size)}px ${font.name}`,
+        fillStyle: color,
+        strokeStyle: color,
+      });
+    }
+    const tx = this.textAlign(align);
     const txtWidth = ctx.measureText(txt).width;
     let hOffset = 0;
     if (textWrap) {

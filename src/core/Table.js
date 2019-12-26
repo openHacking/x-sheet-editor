@@ -201,35 +201,27 @@ class Content {
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
+    const rectText = new RectText(draw, null, {
+      align: cells.defaultAttr.style.align,
+      verticalAlign: cells.defaultAttr.style.verticalAlign,
+      font: cells.defaultAttr.style.font,
+      color: cells.defaultAttr.style.color,
+      strike: cells.defaultAttr.style.strike,
+      underline: cells.defaultAttr.style.underline,
+    });
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       if (cell.merge) {
-        this.drewMerge(viewRange, cell.merge);
+        // TODO ...
+        // ...
       } else {
-        this.drawCell(i, c, rect, cell);
+        // 绘制文字
+        const textRect = new TextRect(rect);
+        const { style } = cell;
+        rectText.setRect(textRect);
+        rectText.text(cell.text, style);
       }
     });
     draw.restore();
-  }
-
-  drawCell(i, c, rect, cell) {
-    const { table } = this;
-    const { draw } = table;
-    const { style } = cell;
-    const textRect = new TextRect(rect);
-    const rectText = new RectText(draw, textRect);
-    rectText.text(cell.text, {
-      align: style.align,
-      verticalAlign: style.verticalAlign,
-      font: style.font,
-      color: style.color,
-      strike: style.strike,
-      underline: style.underline,
-    });
-  }
-
-  drewMerge(viewRange, merge) {
-    // TODO....
-    //
   }
 
   render() {
@@ -318,35 +310,26 @@ class FixedLeft {
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
+    const rectText = new RectText(draw, null, {
+      align: cells.defaultAttr.style.align,
+      verticalAlign: cells.defaultAttr.style.verticalAlign,
+      font: cells.defaultAttr.style.font,
+      color: cells.defaultAttr.style.color,
+      strike: cells.defaultAttr.style.strike,
+      underline: cells.defaultAttr.style.underline,
+    });
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       if (cell.merge) {
-        this.drewMerge(viewRange, cell.merge);
+        // TODO ...
       } else {
-        this.drawCell(i, c, rect, cell);
+        // 绘制文字
+        const textRect = new TextRect(rect);
+        const { style } = cell;
+        rectText.setRect(textRect);
+        rectText.text(cell.text, style);
       }
     });
     draw.restore();
-  }
-
-  drawCell(i, c, rect, cell) {
-    const { table } = this;
-    const { draw } = table;
-    const { style } = cell;
-    const textRect = new TextRect(rect);
-    const rectText = new RectText(draw, textRect);
-    rectText.text(cell.text, {
-      align: style.align,
-      verticalAlign: style.verticalAlign,
-      font: style.font,
-      color: style.color,
-      strike: style.strike,
-      underline: style.underline,
-    });
-  }
-
-  drewMerge(viewRange, merge) {
-    // TODO....
-    //
   }
 
   render() {
@@ -438,35 +421,26 @@ class FixedTop {
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
+    const rectText = new RectText(draw, null, {
+      align: cells.defaultAttr.style.align,
+      verticalAlign: cells.defaultAttr.style.verticalAlign,
+      font: cells.defaultAttr.style.font,
+      color: cells.defaultAttr.style.color,
+      strike: cells.defaultAttr.style.strike,
+      underline: cells.defaultAttr.style.underline,
+    });
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       if (cell.merge) {
-        this.drewMerge(viewRange, cell.merge);
+        // TODO ...
       } else {
-        this.drawCell(i, c, rect, cell);
+        // 绘制文字
+        const textRect = new TextRect(rect);
+        const { style } = cell;
+        rectText.setRect(textRect);
+        rectText.text(cell.text, style);
       }
     });
     draw.restore();
-  }
-
-  drawCell(i, c, rect, cell) {
-    const { table } = this;
-    const { draw } = table;
-    const { style } = cell;
-    const textRect = new TextRect(rect);
-    const rectText = new RectText(draw, textRect);
-    rectText.text(cell.text, {
-      align: style.align,
-      verticalAlign: style.verticalAlign,
-      font: style.font,
-      color: style.color,
-      strike: style.strike,
-      underline: style.underline,
-    });
-  }
-
-  drewMerge(viewRange, merge) {
-    // TODO....
-    //
   }
 
   render() {
@@ -537,32 +511,33 @@ class FixedTopIndex {
     });
     draw.fillRect(0, 0, width, height);
     draw.restore();
-    // 绘制文字和边框
+    // 绘制边框
+    draw.save();
+    draw.attr({
+      fillStyle: settings.table.borderColor,
+      lineWidth: settings.table.borderWidth,
+      strokeStyle: settings.table.borderColor,
+    });
     cols.eachWidth(sci, eci, (i, cw, x) => {
-      // 边框
-      draw.save();
-      draw.attr({
-        fillStyle: settings.table.borderColor,
-        lineWidth: settings.table.borderWidth,
-        strokeStyle: settings.table.borderColor,
-      });
       draw.line([x, 0], [x, height]);
       draw.line([x, height], [x + cw, height]);
       if (i === eci) draw.line([x + cw, 0], [x + cw, height]);
-      draw.restore();
-      // 文字
-      draw.save();
-      draw.attr({
-        textAlign: 'center',
-        textBaseline: 'middle',
-        font: `500 ${npx(10)}px Arial`,
-        fillStyle: '#585757',
-        lineWidth: thinLineWidth(),
-        strokeStyle: '#e6e6e6',
-      });
-      draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
-      draw.restore();
     });
+    draw.restore();
+    // 绘制文字
+    draw.save();
+    draw.attr({
+      textAlign: 'center',
+      textBaseline: 'middle',
+      font: `500 ${npx(10)}px Arial`,
+      fillStyle: '#585757',
+      lineWidth: thinLineWidth(),
+      strokeStyle: '#e6e6e6',
+    });
+    cols.eachWidth(sci, eci, (i, cw, x) => {
+      draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
+    });
+    draw.restore();
     draw.restore();
   }
 
@@ -623,32 +598,33 @@ class FixedLeftIndex {
     });
     draw.fillRect(0, 0, width, height);
     draw.restore();
-    // 绘制文字和边框
+    // 绘制边框
+    draw.save();
+    draw.attr({
+      fillStyle: settings.table.borderColor,
+      lineWidth: settings.table.borderWidth,
+      strokeStyle: settings.table.borderColor,
+    });
     rows.eachHeight(sri, eri, (i, ch, y) => {
-      // 边框
-      draw.save();
-      draw.attr({
-        fillStyle: settings.table.borderColor,
-        lineWidth: settings.table.borderWidth,
-        strokeStyle: settings.table.borderColor,
-      });
       draw.line([0, y], [width, y]);
       draw.line([width, y], [width, y + ch]);
       if (i === eri) draw.line([0, y + ch], [width, y + ch]);
-      draw.restore();
-      // 文字
-      draw.save();
-      draw.attr({
-        textAlign: 'center',
-        textBaseline: 'middle',
-        font: `500 ${npx(10)}px Arial`,
-        fillStyle: '#585757',
-        lineWidth: thinLineWidth(),
-        strokeStyle: '#e6e6e6',
-      });
-      draw.fillText(i + 1, width / 2, y + (ch / 2));
-      draw.restore();
     });
+    draw.restore();
+    // 绘制文字
+    draw.save();
+    draw.attr({
+      textAlign: 'center',
+      textBaseline: 'middle',
+      font: `500 ${npx(10)}px Arial`,
+      fillStyle: '#585757',
+      lineWidth: thinLineWidth(),
+      strokeStyle: '#e6e6e6',
+    });
+    rows.eachHeight(sri, eri, (i, ch, y) => {
+      draw.fillText(i + 1, width / 2, y + (ch / 2));
+    });
+    draw.restore();
     draw.restore();
   }
 
@@ -730,35 +706,26 @@ class FrozenLeftTop {
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
+    const rectText = new RectText(draw, null, {
+      align: cells.defaultAttr.style.align,
+      verticalAlign: cells.defaultAttr.style.verticalAlign,
+      font: cells.defaultAttr.style.font,
+      color: cells.defaultAttr.style.color,
+      strike: cells.defaultAttr.style.strike,
+      underline: cells.defaultAttr.style.underline,
+    });
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       if (cell.merge) {
-        this.drewMerge(viewRange, cell.merge);
+        // TODO ...
       } else {
-        this.drawCell(i, c, rect, cell);
+        // 绘制文字
+        const textRect = new TextRect(rect);
+        const { style } = cell;
+        rectText.setRect(textRect);
+        rectText.text(cell.text, style);
       }
     });
     draw.restore();
-  }
-
-  drawCell(i, c, rect, cell) {
-    const { table } = this;
-    const { draw } = table;
-    const { style } = cell;
-    const textRect = new TextRect(rect);
-    const rectText = new RectText(draw, textRect);
-    rectText.text(cell.text, {
-      align: style.align,
-      verticalAlign: style.verticalAlign,
-      font: style.font,
-      color: style.color,
-      strike: style.strike,
-      underline: style.underline,
-    });
-  }
-
-  drewMerge(viewRange, merge) {
-    // TODO....
-    //
   }
 
   render() {
@@ -818,31 +785,32 @@ class FrozenLeftIndex {
     });
     draw.fillRect(0, 0, width, height);
     draw.restore();
-    // 绘制文字和边框
+    // 绘制边框
+    draw.save();
+    draw.attr({
+      fillStyle: settings.table.borderColor,
+      lineWidth: settings.table.borderWidth,
+      strokeStyle: settings.table.borderColor,
+    });
     rows.eachHeight(sri, eri, (i, ch, y) => {
-      // 边框
-      draw.save();
-      draw.attr({
-        fillStyle: settings.table.borderColor,
-        lineWidth: settings.table.borderWidth,
-        strokeStyle: settings.table.borderColor,
-      });
       draw.line([0, y], [width, y]);
       draw.line([width, y], [width, y + ch]);
-      draw.restore();
-      // 文字
-      draw.save();
-      draw.attr({
-        textAlign: 'center',
-        textBaseline: 'middle',
-        font: `500 ${npx(10)}px Arial`,
-        fillStyle: '#585757',
-        lineWidth: thinLineWidth(),
-        strokeStyle: '#e6e6e6',
-      });
-      draw.fillText(i + 1, width / 2, y + (ch / 2));
-      draw.restore();
     });
+    draw.restore();
+    // 绘制文字
+    draw.save();
+    draw.attr({
+      textAlign: 'center',
+      textBaseline: 'middle',
+      font: `500 ${npx(10)}px Arial`,
+      fillStyle: '#585757',
+      lineWidth: thinLineWidth(),
+      strokeStyle: '#e6e6e6',
+    });
+    rows.eachHeight(sri, eri, (i, ch, y) => {
+      draw.fillText(i + 1, width / 2, y + (ch / 2));
+    });
+    draw.restore();
     draw.restore();
   }
 
@@ -902,31 +870,32 @@ class FrozenTopIndex {
     });
     draw.fillRect(0, 0, width, height);
     draw.restore();
-    // 绘制文字和边框
+    // 绘制边框
+    draw.save();
+    draw.attr({
+      fillStyle: settings.table.borderColor,
+      lineWidth: settings.table.borderWidth,
+      strokeStyle: settings.table.borderColor,
+    });
     cols.eachWidth(sci, eci, (i, cw, x) => {
-      // 边框
-      draw.save();
-      draw.attr({
-        fillStyle: settings.table.borderColor,
-        lineWidth: settings.table.borderWidth,
-        strokeStyle: settings.table.borderColor,
-      });
       draw.line([x, 0], [x, height]);
       draw.line([x, height], [x + cw, height]);
-      draw.restore();
-      // 文字
-      draw.save();
-      draw.attr({
-        textAlign: 'center',
-        textBaseline: 'middle',
-        font: `500 ${npx(10)}px Arial`,
-        fillStyle: '#585757',
-        lineWidth: thinLineWidth(),
-        strokeStyle: '#e6e6e6',
-      });
-      draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
-      draw.restore();
     });
+    draw.restore();
+    // 绘制文字
+    draw.save();
+    draw.attr({
+      textAlign: 'center',
+      textBaseline: 'middle',
+      font: `500 ${npx(10)}px Arial`,
+      fillStyle: '#585757',
+      lineWidth: thinLineWidth(),
+      strokeStyle: '#e6e6e6',
+    });
+    cols.eachWidth(sci, eci, (i, cw, x) => {
+      draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
+    });
+    draw.restore();
     draw.restore();
   }
 
