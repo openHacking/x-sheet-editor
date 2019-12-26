@@ -44,7 +44,7 @@ const defaultSettings = {
     },
   },
   rows: {
-    len: 8000,
+    len: 1000,
     height: 30,
   },
   cols: {
@@ -299,6 +299,7 @@ class FixedLeft {
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
       if (i !== sci) draw.line([x, 0], [x, height]);
+      draw.line([x, 0], [x, height]);
     });
     draw.restore();
   }
@@ -405,6 +406,7 @@ class FixedTop {
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
+      draw.line([0, y], [width, y]);
       if (sri !== i) draw.line([0, y], [width, y]);
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
@@ -689,9 +691,11 @@ class FrozenLeftTop {
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
+      draw.line([0, y], [width, y]);
       if (sri !== i) draw.line([0, y], [width, y]);
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
+      draw.line([x, 0], [x, height]);
       if (sci !== i) draw.line([x, 0], [x, height]);
     });
     draw.restore();
