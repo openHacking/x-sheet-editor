@@ -6,7 +6,7 @@ const svg = `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
     <rect class="${cssPrefix}-selector-clipboard-stroked" x="0" y="0" width="300" height="200" />
   </svg>
-`
+`;
 
 class SelectorElement extends Widget {
   constructor() {
