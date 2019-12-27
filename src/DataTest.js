@@ -1,5 +1,5 @@
 const Data = [];
-for (let i = 1; i <= 500; i++) {
+for (let i = 1; i <= 50; i++) {
   const rows = [];
   for (let j = 1; j <= 80; j++) {
     rows.push({

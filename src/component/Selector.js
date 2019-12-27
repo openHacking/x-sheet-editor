@@ -11,7 +11,7 @@ class Selector extends Widget {
     this.l = new SelectorElement({ startZIndex: this.getElementZIndex() });
     this.tl = new SelectorElement({ startZIndex: this.getElementZIndex() });
     this.br.show();
-    this.children(this.tl, this.t, this.l, this.br).hide();
+    this.children(this.tl, this.t, this.l, this.br).show();
   }
 
   getElementZIndex() {

@@ -37,6 +37,73 @@
   top: 0
 }
 
+// 选择框
+@keyframes clipboard-stroke-dashoffset-animation {
+  to { stroke-dashoffset: 19; }
+}
+.@{css-prefix}-selector {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  left: 0;
+  top: 0;
+}
+.@{css-prefix}-selector-element {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.@{css-prefix}-selector-area {
+  position: absolute;
+  border: 2px solid #4b89ff;
+  background: rgba(181, 202, 242, 0.1);
+  display: block;
+  width: 197.8px;
+  height: 97.8px;
+  left: 299.2px;
+  top: 99.2px;
+}
+.@{css-prefix}-selector-corner {
+  pointer-events: auto;
+  position: absolute;
+  cursor: crosshair;
+  font-size: 0;
+  height: 5px;
+  width: 5px;
+  right: -5px;
+  bottom: -5px;
+  border: 2px solid #ffffff;
+  background: #4b89ff;
+}
+.@{css-prefix}-selector-clipboard {
+  position: absolute;
+  display: block;
+  width: 197.8px;
+  height: 97.8px;
+  left: 599.2px;
+  top: 200px;
+}
+.@{css-prefix}-selector-clipboard-stroked {
+  stroke: #4b89ff;
+  fill: transparent;
+  stroke-width: 7;
+  stroke-dasharray: 10;
+  animation: clipboard-stroke-dashoffset-animation 0.5s forwards infinite linear;
+}
+.@{css-prefix}-selector-auto-fill {
+  position: absolute;
+  display: block;
+  width: 197.8px;
+  height: 97.8px;
+  left: 299.2px;
+  top: 200px;
+  border: 1px dashed rgba(0, 0, 0, 0.45);
+}
+
 // sheet 选项卡
 .@{css-prefix}-sheet-switch-tab {
   height: 25px;
