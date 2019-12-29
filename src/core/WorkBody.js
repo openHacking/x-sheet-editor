@@ -15,7 +15,7 @@ import { SheetView } from './SheetView';
 import { SheetSwitchTab } from './SheetSwitchTab';
 import { Utils } from '../utils/Utils';
 import { Sheet } from './Sheet';
-import { Tab } from '../component/Tab';
+import { Tab } from './Tab';
 
 // sheet表和垂直滚动条
 let sheetViewLayerHorizontalElement;
@@ -170,7 +170,7 @@ class WorkBody extends Widget {
     }
   }
 
-  setActiveTabIndex(index) {
+  setActiveSheetIndex(index) {
     const { sheetView } = this;
     const sheet = sheetView.setActiveSheet(index);
     if (sheet) {
@@ -183,7 +183,7 @@ class WorkBody extends Widget {
     }
   }
 
-  setActiveSheetIndex(index) {
+  setActiveTabIndex(index) {
     const { sheetSwitchTab } = this;
     sheetSwitchTab.setActiveTab(index);
   }

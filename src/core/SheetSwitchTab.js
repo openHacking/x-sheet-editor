@@ -2,7 +2,7 @@ import { Widget } from '../lib/Widget';
 import { cssPrefix } from '../config';
 import { h } from '../lib/Element';
 import { Utils } from '../utils/Utils';
-import { Tab } from '../component/Tab';
+import { Tab } from './Tab';
 
 class SheetSwitchTab extends Widget {
   constructor(options) {
@@ -32,7 +32,9 @@ class SheetSwitchTab extends Widget {
     const { tabList } = this;
     if (tabList[index]) {
       this.setActive(tabList[index]);
+      return tabList[index];
     }
+    return null;
   }
 
   setActive(tab) {

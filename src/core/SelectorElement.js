@@ -9,15 +9,18 @@ const svg = `
 `;
 
 class SelectorElement extends Widget {
-  constructor() {
+  constructor(option) {
     super(`${cssPrefix}-selector-element`);
+    this.option = option;
+    this.table = option.table;
+    this.zIndex = option.zIndex;
     this.cornerEl = h('div', `${cssPrefix}-selector-corner`);
-    this.areaEl = h('div', `${cssPrefix}-selector-area`);
+    this.areaEl = h('div', `${cssPrefix}-selector-area`).hide();
     this.autofillEl = h('div', `${cssPrefix}-selector-auto-fill`).hide();
     this.clipboardEl = h('div', `${cssPrefix}-selector-clipboard`).hide();
     this.areaEl.children(this.cornerEl);
     this.clipboardEl.html(svg);
-    this.children(this.areaEl.show(), this.clipboardEl.show(), this.autofillEl.show());
+    this.children(this.areaEl, this.clipboardEl, this.autofillEl);
   }
 }
 

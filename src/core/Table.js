@@ -3,7 +3,7 @@ import { Utils } from '../utils/Utils';
 import { Rows } from './Rows';
 import { Cols } from './Cols';
 import { Cells } from './Cells';
-import { Selector } from '../component/Selector';
+import { Selector } from './Selector';
 import { Scroll } from './Scroll';
 import { Fixed } from './Fixed';
 import { h } from '../lib/Element';
@@ -14,6 +14,7 @@ import { RectCut } from '../graphical/RectCut';
 import { Rect } from '../graphical/Rect';
 import { RectText } from '../graphical/RectText';
 import { TextRect } from '../graphical/TextRect';
+import { Merges } from './Merges';
 
 const defaultSettings = {
   index: {
@@ -940,6 +941,7 @@ class FrozenRect {
 class Table extends Widget {
   constructor(settings) {
     super(`${cssPrefix}-table`);
+    // table core
     this.canvas = h('canvas', `${cssPrefix}-table-canvas`);
     this.settings = Utils.mergeDeep(defaultSettings, settings);
     this.rows = new Rows(this.settings.rows);
@@ -949,7 +951,7 @@ class Table extends Widget {
       cols: this.cols,
       data: this.settings.data,
     });
-    this.selector = new Selector();
+    this.merges = new Merges();
     this.fixed = new Fixed();
     this.draw = new Draw(this.canvas.el);
     this.content = new Content(this);
@@ -961,7 +963,12 @@ class Table extends Widget {
     this.frozenLeftIndex = new FrozenLeftIndex(this);
     this.frozenTopIndex = new FrozenTopIndex(this);
     this.frozenRect = new FrozenRect(this);
-    this.children(this.canvas, this.selector);
+    // table 组件
+    this.selector = new Selector(this);
+    this.children(...[
+      this.canvas,
+      this.selector,
+    ]);
   }
 
   visualHeight() {
@@ -973,6 +980,7 @@ class Table extends Widget {
   }
 
   init() {
+    this.selector.init();
     this.render();
   }
 
@@ -994,11 +1002,13 @@ class Table extends Widget {
 
   scrollX(x) {
     this.content.scrollX(x);
+    this.selector.scrollX(x);
     this.render();
   }
 
   scrollY(y) {
     this.content.scrollY(y);
+    this.selector.scrollY(y);
     this.render();
   }
 }
