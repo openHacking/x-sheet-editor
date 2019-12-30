@@ -14,11 +14,9 @@ import { Rect } from '../../graphical/Rect';
 import { RectText } from '../../graphical/RectText';
 import { TextRect } from '../../graphical/TextRect';
 import { Merges } from './Merges';
-import { Constant } from '../../utils/Constant';
-import { Selector } from '../selector/Selector';
+import { Selector } from './selector/Selector';
 import { EventManage, TABLE_EVENT } from './EventManage';
 import { Event } from './Event';
-import { Plugin } from './Plugin';
 
 const defaultSettings = {
   index: {
@@ -55,7 +53,6 @@ const defaultSettings = {
     len: 80,
     width: 150,
   },
-  plugins: [new Selector()],
 };
 
 class Content {
@@ -967,12 +964,13 @@ class Table extends Widget {
     this.frozenLeftIndex = new FrozenLeftIndex(this);
     this.frozenTopIndex = new FrozenTopIndex(this);
     this.frozenRect = new FrozenRect(this);
-    this.eventMange = new EventManage();
-    this.plugins = [];
-    this.children(this.canvas);
+    this.eventMange = new EventManage(this);
+    this.selector = new Selector(this);
+    this.children(...[
+      this.canvas,
+      this.selector,
+    ]);
     this.bind();
-    // eslint-disable-next-line no-restricted-syntax
-    for (const plugin of this.settings.plugins) this.addPlugin(plugin);
   }
 
   visualHeight() {
@@ -983,38 +981,12 @@ class Table extends Widget {
     return this.box().width;
   }
 
-  addPlugin(...plugins) {
-    // eslint-disable-next-line no-restricted-syntax
-    for (const plugin of plugins) {
-      if (plugin instanceof Plugin) {
-        this.plugins.push(plugin);
-        this.children(plugin);
-        plugin.ready(this);
-      } else {
-        throw new TypeError('plugin Illegal type');
-      }
-    }
-  }
-
   init() {
-    this.render();
-    // eslint-disable-next-line no-restricted-syntax
-    for (const plugin of this.plugins) plugin.init();
+    this.selector.init();
   }
 
   bind() {
-    this.on(Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {
-      const { x, y } = this.computeEventXy(e);
-      this.eventMange.triggerEvent(TABLE_EVENT.MOUSE_DOWN, new Event(e, {
-        x, y,
-      }));
-    });
-    this.on(Constant.EVENT_TYPE.MOUSE_UP, (e) => {
-      this.eventMange.triggerEvent(TABLE_EVENT.MOUSE_UP, new Event(e));
-    });
-    this.on(Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
-      this.eventMange.triggerEvent(TABLE_EVENT.MOUSE_MOVE, new Event(e));
-    });
+    this.eventMange.addEvent(TABLE_EVENT.MOUSE_DOWN, () => {});
   }
 
   render() {

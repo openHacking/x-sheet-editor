@@ -1,6 +1,6 @@
-import { cssPrefix } from '../../config';
-import { Widget } from '../../lib/Widget';
-import { h } from '../../lib/Element';
+import { cssPrefix } from '../../../config';
+import { Widget } from '../../../lib/Widget';
+import { h } from '../../../lib/Element';
 
 const svg = `
   <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">

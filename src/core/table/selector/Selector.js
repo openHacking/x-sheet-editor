@@ -1,7 +1,7 @@
-import { cssPrefix } from '../../config';
-import { Plugin } from '../table/Plugin';
+import { cssPrefix } from '../../../config';
 import { SelectorElement } from './SelectorElement';
-import { TABLE_EVENT } from '../table/EventManage';
+import { TABLE_EVENT } from '../EventManage';
+import { Widget } from '../../../lib/Widget';
 
 class L extends SelectorElement {
   setAreaOffset(selectorAttr) {
@@ -111,9 +111,10 @@ class Br extends SelectorElement {
   }
 }
 
-class Selector extends Plugin {
-  constructor() {
+class Selector extends Widget {
+  constructor(table) {
     super(`${cssPrefix}-selector`);
+    this.table = table;
     this.l = new L(this);
     this.t = new T(this);
     this.tl = new TL(this);
@@ -121,16 +122,17 @@ class Selector extends Plugin {
     this.br.show();
     this.children(this.l, this.t, this.tl, this.br).show();
     this.selectorAttr = null;
+    this.bind();
   }
 
   init() {
     this.setDivideLayer();
   }
 
-  ready(table) {
-    this.table = table;
+  bind() {
+    const { table } = this;
     table.eventMange.addEvent(TABLE_EVENT.MOUSE_DOWN, (e) => {
-      const { x, y } = e;
+      const { x, y } = table.computeEventXy(e.native);
       this.selectorAttr = this.getXYSelectorAttr(x, y);
       this.setAreaOffset();
     });
