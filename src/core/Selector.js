@@ -281,7 +281,7 @@ class Selector extends Widget {
     const { table } = this;
     const { settings, merges } = table;
     const { index } = settings;
-    let { x, y } = table.computerEventXy(event);
+    let { x, y } = table.computeEventXy(event);
     y -= index.height;
     x -= index.width;
     let { ri, top, height } = this.getCellRowByY(y);

@@ -42,16 +42,16 @@ class ScrollBarY extends Widget {
 
   bind() {
     this.block.on(Constant.EVENT_TYPE.MOUSE_DOWN, (evt1) => {
-      const downEventXy = this.computerEventXy(evt1, this.block);
+      const downEventXy = this.computeEventXy(evt1, this.block);
       Event.mouseMoveUp(h(document), (evt2) => {
         // 计算移动的距离
-        const moveEventXy = this.computerEventXy(evt2, this.content);
+        const moveEventXy = this.computeEventXy(evt2, this.content);
         let top = moveEventXy.y - downEventXy.y;
         if (top < 0) top = 0;
         if (top > this.maxBlockTop) top = this.maxBlockTop;
         // 计算滑动的距离
         this.blockTop = top;
-        this.scrollTo = this.computerScrollTo(this.blockTop);
+        this.scrollTo = this.computeScrollTo(this.blockTop);
         this.block.css('top', `${top}px`);
         this.option.scroll(this.scrollTo);
       });
@@ -73,7 +73,7 @@ class ScrollBarY extends Widget {
       // 计算滑块位置
       const blockTop = (this.scrollTo / (contentHeight - viewPortHeight)) * this.maxBlockTop;
       this.blockTop = blockTop > this.maxBlockTop ? this.maxBlockTop : blockTop;
-      this.scrollTo = this.computerScrollTo(this.blockTop);
+      this.scrollTo = this.computeScrollTo(this.blockTop);
       this.block.css('top', `${this.blockTop}px`);
       this.option.scroll(this.scrollTo);
     } else {
@@ -94,7 +94,7 @@ class ScrollBarY extends Widget {
     this.option.scroll(this.scrollTo);
   }
 
-  computerScrollTo(move) {
+  computeScrollTo(move) {
     return (move / this.maxBlockTop) * (this.contentHeight - this.viewPortHeight);
   }
 }

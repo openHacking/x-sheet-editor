@@ -40,6 +40,10 @@ class Rows {
   totalHeight() {
     return Utils.rangeSum(0, this.len, i => this.getHeight(i));
   }
+
+  getTop() {
+
+  }
 }
 
 export { Rows };
