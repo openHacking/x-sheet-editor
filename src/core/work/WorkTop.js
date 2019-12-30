@@ -1,11 +1,11 @@
 import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../config';
-import { ToolsMenu } from './ToolsMenu';
+import { TopMenu } from './TopMenu';
 
 class WorkTop extends Widget {
   constructor() {
     super(`${cssPrefix}-work-top`);
-    this.toolsMenu = new ToolsMenu();
+    this.toolsMenu = new TopMenu();
     this.children(this.toolsMenu);
   }
 }

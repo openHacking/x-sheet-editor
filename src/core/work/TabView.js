@@ -4,7 +4,7 @@ import { h } from '../../lib/Element';
 import { Utils } from '../../utils/Utils';
 import { Tab } from './Tab';
 
-class SheetSwitchTab extends Widget {
+class TabView extends Widget {
   constructor(options) {
     super(`${cssPrefix}-sheet-switch-tab`);
     this.last = h('div', `${cssPrefix}-switch-tab-last-btn`);
@@ -90,4 +90,4 @@ class SheetSwitchTab extends Widget {
   }
 }
 
-export { SheetSwitchTab };
+export { TabView };

@@ -46,7 +46,7 @@ const defaultSettings = {
     },
   },
   rows: {
-    len: 500,
+    len: 1000,
     height: 30,
   },
   cols: {

@@ -12,7 +12,7 @@ import { VerticalCenterElement } from '../../lib/layer/center/VerticalCenterElem
 import { VerticalCenter } from '../../lib/layer/center/VerticalCenter';
 import { Constant } from '../../utils/Constant';
 import { SheetView } from './SheetView';
-import { SheetSwitchTab } from './SheetSwitchTab';
+import { TabView } from './TabView';
 import { Utils } from '../../utils/Utils';
 import { Sheet } from './Sheet';
 import { Tab } from './Tab';
@@ -44,7 +44,7 @@ class WorkBody extends Widget {
 
     // 组件
     this.sheetView = new SheetView();
-    this.sheetSwitchTab = new SheetSwitchTab({
+    this.tabView = new TabView({
       onAdd: (tab, tabIndex) => {
         const { sheetView } = this;
         const { sheetConfig } = this.workConfig;
@@ -98,7 +98,7 @@ class WorkBody extends Widget {
         flexGrow: 2,
       },
     });
-    sheetSwitchTabLayerHorizontalElement = new HorizontalLayerElement(this.sheetSwitchTab, {
+    sheetSwitchTabLayerHorizontalElement = new HorizontalLayerElement(this.tabView, {
       style: {
         flexGrow: 3,
       },
@@ -121,14 +121,14 @@ class WorkBody extends Widget {
 
     // 添加布局
     this.children(layerVerticalLayer);
+    this.bind();
   }
 
   init() {
     this.sheetView.init();
-    this.sheetSwitchTab.init();
+    this.tabView.init();
     this.scrollBarX.init();
     this.scrollBarY.init();
-    this.bind();
     this.setSheet();
     this.setScroll();
   }
@@ -144,7 +144,7 @@ class WorkBody extends Widget {
   }
 
   setSheet() {
-    const { sheetView, sheetSwitchTab } = this;
+    const { sheetView, tabView } = this;
     // eslint-disable-next-line no-restricted-syntax
     for (const item of this.sheetData) {
       // eslint-disable-next-line no-restricted-syntax
@@ -155,7 +155,7 @@ class WorkBody extends Widget {
       const sheet = new Sheet(newSheetConfig);
       const tab = new Tab(name);
       const sheetIndex = sheetView.add(sheet);
-      const tabIndex = sheetSwitchTab.add(tab);
+      const tabIndex = tabView.add(tab);
       this.tabAndSheet.push({
         tab,
         sheet,
@@ -184,8 +184,8 @@ class WorkBody extends Widget {
   }
 
   setActiveTabIndex(index) {
-    const { sheetSwitchTab } = this;
-    sheetSwitchTab.setActiveTab(index);
+    const { tabView } = this;
+    tabView.setActiveTab(index);
   }
 
   setActiveTab(tab) {

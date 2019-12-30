@@ -1,10 +1,10 @@
 import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../config';
 
-class ToolsMenu extends Widget {
+class TopMenu extends Widget {
   constructor() {
     super(`${cssPrefix}-tools-menu`);
   }
 }
 
-export { ToolsMenu };
+export { TopMenu };
