@@ -1,7 +1,7 @@
-import { Widget } from '../lib/Widget';
-import { cssPrefix } from '../config';
-import { VerticalLayer } from '../lib/layer/VerticalLayer';
-import { VerticalLayerElement } from '../lib/layer/VerticalLayerElement';
+import { Widget } from '../../lib/Widget';
+import { cssPrefix } from '../../config';
+import { VerticalLayer } from '../../lib/layer/VerticalLayer';
+import { VerticalLayerElement } from '../../lib/layer/VerticalLayerElement';
 import { WorkTop } from './WorkTop';
 import { WorkBody } from './WorkBody';
 import { WorkBottom } from './WorkBottom';

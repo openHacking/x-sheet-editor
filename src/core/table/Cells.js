@@ -1,5 +1,5 @@
-import { Rect } from '../graphical/Rect';
-import { Utils } from '../utils/Utils';
+import { Rect } from '../../graphical/Rect';
+import { Utils } from '../../utils/Utils';
 
 class Cells {
   constructor({ cols, rows, data = [] }) {

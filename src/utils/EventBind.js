@@ -1,6 +1,6 @@
 import { Constant } from './Constant';
 
-class Event {
+class EventBind {
   static bind(target, name, fn) {
     (target.el || target).addEventListener(name, fn);
   }
@@ -11,13 +11,13 @@ class Event {
 
   static mouseMoveUp(target, moveFunc = () => {}, upFunc = () => {}) {
     target.xEvtUp = (evt) => {
-      Event.unbind(target, Constant.EVENT_TYPE.MOUSE_MOVE, moveFunc);
-      Event.unbind(target, Constant.EVENT_TYPE.MOUSE_UP, target.xEvtUp);
+      EventBind.unbind(target, Constant.EVENT_TYPE.MOUSE_MOVE, moveFunc);
+      EventBind.unbind(target, Constant.EVENT_TYPE.MOUSE_UP, target.xEvtUp);
       upFunc(evt);
     };
-    Event.bind(target, Constant.EVENT_TYPE.MOUSE_MOVE, moveFunc);
-    Event.bind(target, Constant.EVENT_TYPE.MOUSE_UP, target.xEvtUp);
+    EventBind.bind(target, Constant.EVENT_TYPE.MOUSE_MOVE, moveFunc);
+    EventBind.bind(target, Constant.EVENT_TYPE.MOUSE_UP, target.xEvtUp);
   }
 }
 
-export { Event };
+export { EventBind };

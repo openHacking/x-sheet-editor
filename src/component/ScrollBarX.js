@@ -5,7 +5,7 @@ import { cssPrefix } from '../config';
 import { h } from '../lib/Element';
 import { Utils } from '../utils/Utils';
 import { Constant } from '../utils/Constant';
-import { Event } from '../utils/Event';
+import { EventBind } from '../utils/EventBind';
 
 class ScrollBarX extends Widget {
   constructor(option) {
@@ -43,7 +43,7 @@ class ScrollBarX extends Widget {
   bind() {
     this.block.on(Constant.EVENT_TYPE.MOUSE_DOWN, (evt1) => {
       const downEventXy = this.computeEventXy(evt1, this.block);
-      Event.mouseMoveUp(h(document), (evt2) => {
+      EventBind.mouseMoveUp(h(document), (evt2) => {
         // 计算移动的距离
         const moveEventXy = this.computeEventXy(evt2, this.content);
         let left = moveEventXy.x - downEventXy.x;

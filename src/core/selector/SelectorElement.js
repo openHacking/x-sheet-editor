@@ -1,6 +1,6 @@
-import { h } from '../lib/Element';
-import { cssPrefix } from '../config';
-import { Widget } from '../lib/Widget';
+import { cssPrefix } from '../../config';
+import { Widget } from '../../lib/Widget';
+import { h } from '../../lib/Element';
 
 const svg = `
   <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
@@ -9,11 +9,9 @@ const svg = `
 `;
 
 class SelectorElement extends Widget {
-  constructor(option) {
+  constructor(selector) {
     super(`${cssPrefix}-selector-element`);
-    this.option = option;
-    this.table = option.table;
-    this.zIndex = option.zIndex;
+    this.selector = selector;
     this.cornerEl = h('div', `${cssPrefix}-selector-corner`);
     this.areaEl = h('div', `${cssPrefix}-selector-area`).hide();
     this.autofillEl = h('div', `${cssPrefix}-selector-auto-fill`).hide();

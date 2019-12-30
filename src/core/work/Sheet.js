@@ -1,7 +1,7 @@
-import { Widget } from '../lib/Widget';
-import { cssPrefix } from '../config';
-import { Table } from './Table';
-import { Utils } from '../utils/Utils';
+import { Widget } from '../../lib/Widget';
+import { cssPrefix } from '../../config';
+import { Table } from '../table/Table';
+import { Utils } from '../../utils/Utils';
 
 class Sheet extends Widget {
   constructor(options) {

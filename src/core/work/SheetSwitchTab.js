@@ -1,7 +1,7 @@
-import { Widget } from '../lib/Widget';
-import { cssPrefix } from '../config';
-import { h } from '../lib/Element';
-import { Utils } from '../utils/Utils';
+import { Widget } from '../../lib/Widget';
+import { cssPrefix } from '../../config';
+import { h } from '../../lib/Element';
+import { Utils } from '../../utils/Utils';
 import { Tab } from './Tab';
 
 class SheetSwitchTab extends Widget {

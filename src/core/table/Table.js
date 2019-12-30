@@ -1,20 +1,24 @@
-import { cssPrefix } from '../config';
-import { Utils } from '../utils/Utils';
+import { cssPrefix } from '../../config';
+import { Utils } from '../../utils/Utils';
 import { Rows } from './Rows';
 import { Cols } from './Cols';
 import { Cells } from './Cells';
-import { Selector } from './Selector';
 import { Scroll } from './Scroll';
 import { Fixed } from './Fixed';
-import { h } from '../lib/Element';
-import { Widget } from '../lib/Widget';
+import { h } from '../../lib/Element';
+import { Widget } from '../../lib/Widget';
 import { RectRange } from './RectRange';
-import { Draw, npx, thinLineWidth } from '../graphical/Draw';
-import { RectCut } from '../graphical/RectCut';
-import { Rect } from '../graphical/Rect';
-import { RectText } from '../graphical/RectText';
-import { TextRect } from '../graphical/TextRect';
+import { Draw, npx, thinLineWidth } from '../../graphical/Draw';
+import { RectCut } from '../../graphical/RectCut';
+import { Rect } from '../../graphical/Rect';
+import { RectText } from '../../graphical/RectText';
+import { TextRect } from '../../graphical/TextRect';
 import { Merges } from './Merges';
+import { Constant } from '../../utils/Constant';
+import { Selector } from '../selector/Selector';
+import { EventManage, TABLE_EVENT } from './EventManage';
+import { Event } from './Event';
+import { Plugin } from './Plugin';
 
 const defaultSettings = {
   index: {
@@ -51,6 +55,7 @@ const defaultSettings = {
     len: 80,
     width: 150,
   },
+  plugins: [new Selector()],
 };
 
 class Content {
@@ -939,13 +944,8 @@ class FrozenRect {
 }
 
 class Table extends Widget {
-  /**
-   * Table
-   * @param settings
-   */
   constructor(settings) {
     super(`${cssPrefix}-table`);
-    // table core
     this.canvas = h('canvas', `${cssPrefix}-table-canvas`);
     this.settings = Utils.mergeDeep(defaultSettings, settings);
     this.rows = new Rows(this.settings.rows);
@@ -967,41 +967,56 @@ class Table extends Widget {
     this.frozenLeftIndex = new FrozenLeftIndex(this);
     this.frozenTopIndex = new FrozenTopIndex(this);
     this.frozenRect = new FrozenRect(this);
-    // table 组件
-    this.selector = new Selector(this);
-    this.children(...[
-      this.canvas,
-      this.selector,
-    ]);
+    this.eventMange = new EventManage();
+    this.plugins = [];
+    this.children(this.canvas);
+    this.bind();
+    // eslint-disable-next-line no-restricted-syntax
+    for (const plugin of this.settings.plugins) this.addPlugin(plugin);
   }
 
-  /**
-   *Table的可视高度
-   * @returns {*}
-   */
   visualHeight() {
     return this.box().height;
   }
 
-  /**
-   * Table的可视宽度
-   * @returns {*}
-   */
   visualWidth() {
     return this.box().width;
   }
 
-  /**
-   * 初始化
-   */
-  init() {
-    this.selector.init();
-    this.render();
+  addPlugin(...plugins) {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const plugin of plugins) {
+      if (plugin instanceof Plugin) {
+        this.plugins.push(plugin);
+        this.children(plugin);
+        plugin.ready(this);
+      } else {
+        throw new TypeError('plugin Illegal type');
+      }
+    }
   }
 
-  /**
-   * 渲染界面
-   */
+  init() {
+    this.render();
+    // eslint-disable-next-line no-restricted-syntax
+    for (const plugin of this.plugins) plugin.init();
+  }
+
+  bind() {
+    this.on(Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const { x, y } = this.computeEventXy(e);
+      this.eventMange.triggerEvent(TABLE_EVENT.MOUSE_DOWN, new Event(e, {
+        x, y,
+      }));
+    });
+    this.on(Constant.EVENT_TYPE.MOUSE_UP, (e) => {
+      this.eventMange.triggerEvent(TABLE_EVENT.MOUSE_UP, new Event(e));
+    });
+    this.on(Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
+      this.eventMange.triggerEvent(TABLE_EVENT.MOUSE_MOVE, new Event(e));
+    });
+  }
+
   render() {
     const { draw } = this;
     draw.clear();
@@ -1018,37 +1033,25 @@ class Table extends Widget {
     this.content.render();
   }
 
-  /**
-   * 滚动到指定x距离
-   * @param x
-   */
   scrollX(x) {
     this.content.scrollX(x);
     this.render();
+    this.eventMange.triggerEvent(TABLE_EVENT.SCROLL_X, new Event(null, { x }));
   }
 
-  /**
-   * 滚动到指定y距离
-   * @param y
-   */
   scrollY(y) {
     this.content.scrollY(y);
     this.render();
+    this.eventMange.triggerEvent(TABLE_EVENT.SCROLL_Y, new Event(null, { y }));
   }
 
-  /**
-   * 获取指定x y对应的单元格
-   * @param x
-   * @param y
-   * @returns {{ci: number, ri: number}}
-   */
   getRiCiByXy(x, y) {
     const {
       settings, fixed, rows, cols, content,
     } = this;
     const { index } = settings;
-    const fixedHeight = rows.sectionSumHeight(0, fixed.fxTop);
-    const fixedWidth = cols.sectionSumWidth(0, fixed.fxLeft);
+    const fixedHeight = this.fixedTop.getHeight();
+    const fixedWidth = this.fixedLeft.getWidth();
 
     let [left, top] = [x, y];
     let [ci, ri] = [-1, -1];
@@ -1101,27 +1104,39 @@ class Table extends Widget {
     };
   }
 
-  /**
-   * 获取指定行距离顶部的高度
-   * @param ri
-   * @returns {*}
-   */
   getRowTop(ri) {
     const { settings, rows } = this;
     const { index } = settings;
     return rows.getTop(ri) + index.height;
   }
 
-  /**
-   * 获取指定列距离左边的宽度
-   * @param ci
-   * @returns {*}
-   */
   getColLeft(ci) {
     const { settings, cols } = this;
     const { index } = settings;
     return cols.getLeft(ci) + index.width;
   }
+
+  getFixedWidth() {
+    return this.fixedLeft.getWidth();
+  }
+
+  getFixedHeight() {
+    return this.fixedTop.getHeight();
+  }
+
+  getScroll() {
+    return this.content.scroll;
+  }
+
+  getIndexWidth() {
+    const { settings } = this;
+    return settings.index.width;
+  }
+
+  getIndexHeight() {
+    const { settings } = this;
+    return settings.index.height;
+  }
 }
 
-export { Table };
+export { Table, TABLE_EVENT };

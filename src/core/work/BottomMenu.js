@@ -1,6 +1,6 @@
-import { Widget } from '../lib/Widget';
-import { cssPrefix } from '../config';
-import { h } from '../lib/Element';
+import { Widget } from '../../lib/Widget';
+import { cssPrefix } from '../../config';
+import { h } from '../../lib/Element';
 
 class BottomMenu extends Widget {
   constructor() {

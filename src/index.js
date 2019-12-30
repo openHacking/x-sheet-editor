@@ -2,7 +2,7 @@
 
 import { cssPrefix } from './config';
 import { h } from './lib/Element';
-import { Work } from './core/Work';
+import { Work } from './core/work/Work';
 import { Widget } from './lib/Widget';
 import './base.less';
 import './index.less';

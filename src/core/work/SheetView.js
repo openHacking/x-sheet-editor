@@ -1,5 +1,5 @@
-import { Widget } from '../lib/Widget';
-import { cssPrefix } from '../config';
+import { Widget } from '../../lib/Widget';
+import { cssPrefix } from '../../config';
 import { Sheet } from './Sheet';
 
 class SheetView extends Widget {

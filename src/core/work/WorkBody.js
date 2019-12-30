@@ -1,19 +1,19 @@
 /* global window */
 
-import { Widget } from '../lib/Widget';
-import { cssPrefix } from '../config';
-import { VerticalLayer } from '../lib/layer/VerticalLayer';
-import { HorizontalLayer } from '../lib/layer/HorizontalLayer';
-import { VerticalLayerElement } from '../lib/layer/VerticalLayerElement';
-import { ScrollBarX } from '../component/ScrollBarX';
-import { ScrollBarY } from '../component/ScrollBarY';
-import { HorizontalLayerElement } from '../lib/layer/HorizontalLayerElement';
-import { VerticalCenterElement } from '../lib/layer/center/VerticalCenterElement';
-import { VerticalCenter } from '../lib/layer/center/VerticalCenter';
-import { Constant } from '../utils/Constant';
+import { Widget } from '../../lib/Widget';
+import { cssPrefix } from '../../config';
+import { VerticalLayer } from '../../lib/layer/VerticalLayer';
+import { HorizontalLayer } from '../../lib/layer/HorizontalLayer';
+import { VerticalLayerElement } from '../../lib/layer/VerticalLayerElement';
+import { ScrollBarX } from '../../component/ScrollBarX';
+import { ScrollBarY } from '../../component/ScrollBarY';
+import { HorizontalLayerElement } from '../../lib/layer/HorizontalLayerElement';
+import { VerticalCenterElement } from '../../lib/layer/center/VerticalCenterElement';
+import { VerticalCenter } from '../../lib/layer/center/VerticalCenter';
+import { Constant } from '../../utils/Constant';
 import { SheetView } from './SheetView';
 import { SheetSwitchTab } from './SheetSwitchTab';
-import { Utils } from '../utils/Utils';
+import { Utils } from '../../utils/Utils';
 import { Sheet } from './Sheet';
 import { Tab } from './Tab';
 

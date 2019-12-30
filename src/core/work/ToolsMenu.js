@@ -1,5 +1,5 @@
-import { Widget } from '../lib/Widget';
-import { cssPrefix } from '../config';
+import { Widget } from '../../lib/Widget';
+import { cssPrefix } from '../../config';
 
 class ToolsMenu extends Widget {
   constructor() {
