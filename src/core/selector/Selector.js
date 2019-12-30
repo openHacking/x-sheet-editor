@@ -124,30 +124,27 @@ class Selector extends Plugin {
   }
 
   init() {
-    this.divideLayer();
+    this.setDivideLayer();
   }
 
   ready(table) {
     this.table = table;
     table.eventMange.addEvent(TABLE_EVENT.MOUSE_DOWN, (e) => {
       const { x, y } = e;
-      this.selectorAttr = this.eventSelectorAttr(x, y);
-      this.l.setAreaOffset(this.selectorAttr);
-      this.t.setAreaOffset(this.selectorAttr);
-      this.tl.setAreaOffset(this.selectorAttr);
-      this.br.setAreaOffset(this.selectorAttr);
+      this.selectorAttr = this.getXYSelectorAttr(x, y);
+      this.setAreaOffset();
     });
     table.eventMange.addEvent(TABLE_EVENT.MOUSE_UP, () => {});
     table.eventMange.addEvent(TABLE_EVENT.MOUSE_MOVE, () => {});
     table.eventMange.addEvent(TABLE_EVENT.SCROLL_X, () => {
-      this.updateSelectorAttr();
+      this.setAreaOffset();
     });
     table.eventMange.addEvent(TABLE_EVENT.SCROLL_Y, () => {
-      this.updateSelectorAttr();
+      this.setAreaOffset();
     });
   }
 
-  eventSelectorAttr(x, y) {
+  getXYSelectorAttr(x, y) {
     const { table } = this;
     const {
       merges, cols, rows,
@@ -176,9 +173,16 @@ class Selector extends Plugin {
     };
   }
 
-  updateSelectorAttr() {}
+  setAreaOffset() {
+    if (this.selectorAttr) {
+      this.l.setAreaOffset(this.selectorAttr);
+      this.t.setAreaOffset(this.selectorAttr);
+      this.tl.setAreaOffset(this.selectorAttr);
+      this.br.setAreaOffset(this.selectorAttr);
+    }
+  }
 
-  divideLayer() {
+  setDivideLayer() {
     const { table } = this;
     const { settings } = table;
     const { index } = settings;
