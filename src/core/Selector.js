@@ -5,30 +5,17 @@ import { Constant } from '../utils/Constant';
 
 let zIndex = 1;
 
-class Br extends SelectorElement {
+class L extends SelectorElement {
   setAreaOffset(selectorAttr) {
     const { table } = this;
-    const {
-      fixed, rows, cols, settings, content,
-    } = table;
-    const { scroll } = content;
+    const { settings } = table;
     const { width, height } = selectorAttr;
     const { index } = settings;
-    const fixedWidth = cols.sectionSumWidth(0, fixed.fxLeft);
-    const fixedHeight = rows.sectionSumHeight(0, fixed.fxTop);
 
-    let {
-      left, top,
-    } = selectorAttr;
+    let { left, top } = selectorAttr;
 
     left -= index.width;
-    left -= fixedWidth;
-
     top -= index.height;
-    top -= fixedHeight;
-
-    top -= scroll.y;
-    left -= scroll.x;
 
     this.areaEl.offset({
       width: width - 4,
@@ -50,9 +37,7 @@ class T extends SelectorElement {
     const { index } = settings;
     const fixedWidth = cols.sectionSumWidth(0, fixed.fxLeft);
 
-    let {
-      left, top,
-    } = selectorAttr;
+    let { left, top } = selectorAttr;
 
     left -= index.width;
     left -= fixedWidth;
@@ -80,17 +65,13 @@ class TL extends SelectorElement {
     const { index } = settings;
     const fixedHeight = rows.sectionSumHeight(0, fixed.fxTop);
 
-    let {
-      left, top,
-    } = selectorAttr;
+    let { left, top } = selectorAttr;
 
     left -= index.width;
 
     top -= index.height;
     top -= fixedHeight;
-
     top -= scroll.y;
-    left -= scroll.x;
 
     this.areaEl.offset({
       width: width - 4,
@@ -101,17 +82,29 @@ class TL extends SelectorElement {
   }
 }
 
-class L extends SelectorElement {
+class Br extends SelectorElement {
   setAreaOffset(selectorAttr) {
     const { table } = this;
-    const { settings } = table;
+    const {
+      fixed, rows, cols, settings, content,
+    } = table;
+    const { scroll } = content;
     const { width, height } = selectorAttr;
     const { index } = settings;
+    const fixedWidth = cols.sectionSumWidth(0, fixed.fxLeft);
+    const fixedHeight = rows.sectionSumHeight(0, fixed.fxTop);
 
-    let { left, top } = selectorAttr;
+    let {
+      left, top,
+    } = selectorAttr;
 
     left -= index.width;
+    left -= fixedWidth;
+    left -= scroll.x;
+
     top -= index.height;
+    top -= fixedHeight;
+    top -= scroll.y;
 
     this.areaEl.offset({
       width: width - 4,
@@ -123,6 +116,10 @@ class L extends SelectorElement {
 }
 
 class Selector extends Widget {
+  /**
+   * Selector
+   * @param table
+   */
   constructor(table) {
     super(`${cssPrefix}-selector`);
     this.table = table;
@@ -136,170 +133,44 @@ class Selector extends Widget {
     this.setDivideLayer();
   }
 
-  // ri top height
-  getCellRowByY(eventY) {
-    const { table } = this;
-    const {
-      fixed, rows, content,
-    } = table;
-    const fixedHeight = rows.sectionSumHeight(0, fixed.fxTop);
-
-    if (eventY < fixedHeight) {
-      // 鼠标在冻结区域
-      let ri = 0;
-      let top = 0;
-      let height = 0;
-      for (let i = 0; i <= fixed.fxTop; i += 1) {
-        height = rows.getHeight(i);
-        top += height;
-        ri = i;
-        if (top > eventY) break;
-      }
-      top -= height;
-      return { ri, top, height };
-    }
-
-    // 鼠标在滚动区域
-    const { scroll } = content;
-    const viewRange = content.getViewRange();
-    let ri = 0;
-    let top = fixedHeight;
-    let height = 0;
-
-    for (let i = viewRange.sri; i <= viewRange.eri; i += 1) {
-      height = rows.getHeight(i);
-      top += height;
-      ri = i;
-      if (top > eventY) break;
-    }
-    top -= height;
-    top += scroll.y;
-
-    return { ri, top, height };
-  }
-
-  // ci left width
-  getCellColByX(eventX) {
-    const { table } = this;
-    const {
-      fixed, cols, content,
-    } = table;
-    const fixedWidth = cols.sectionSumWidth(0, fixed.fxLeft);
-
-    if (eventX < fixedWidth) {
-      // 鼠标在冻结区域
-      let ci = 0;
-      let left = 0;
-      let width = 0;
-      for (let i = 0; i <= fixed.fxLeft; i += 1) {
-        width = cols.getWidth(i);
-        left += width;
-        ci = i;
-        if (left > eventX) break;
-      }
-      left -= width;
-      return { ci, left, width };
-    }
-
-    // 鼠标在滚动区域
-    const { scroll } = content;
-    const viewRange = content.getViewRange();
-    let ci = 0;
-    let left = fixedWidth;
-    let width = 0;
-
-    for (let i = viewRange.sci; i <= viewRange.eci; i += 1) {
-      width = cols.getWidth(i);
-      left += width;
-      ci = i;
-      if (left > eventX) break;
-    }
-    left -= width;
-    left += scroll.x;
-
-    return { ci, left, width };
-  }
-
-  // top height
-  getMergeCellRowByY(rect) {
-    const { table } = this;
-    const {
-      fixed, rows, content,
-    } = table;
-    const height = rows.sectionSumHeight(rect.sri, rect.eri);
-    if (rect.sri <= fixed.fxTop) {
-      // 合并单元格的起始坐标在固定区域中
-      let top = rows.sectionSumHeight(0, rect.sri);
-      top -= rows.getHeight(rect.sri);
-      return { top, height };
-    }
-    // 合并单元格的起始坐标在滚动区域中
-    const { scroll } = content;
-    const viewRange = content.getViewRange();
-    const fixedHeight = rows.sectionSumHeight(0, fixed.fxTop);
-    let top = rows.sectionSumHeight(
-      Math.min(rect.sri, viewRange.sri),
-      Math.max(rect.sri, viewRange.sri),
-    );
-    top -= rows.getHeight(rect.sri);
-    top = viewRange.sri > rect.sri ? top * -1 : top;
-    top += scroll.y;
-    top += fixedHeight;
-    return { top, height };
-  }
-
-  // left width
-  getMergeCellRowByX(rect) {
-    const { table } = this;
-    const {
-      fixed, cols, content,
-    } = table;
-    const width = cols.sectionSumWidth(rect.sci, rect.eci);
-    if (rect.sci <= fixed.fxLeft) {
-      // 合并单元格的起始坐标在固定区域中
-      let left = cols.sectionSumWidth(0, rect.sci);
-      left -= cols.getWidth(rect.sci);
-      return { left, width };
-    }
-    // 合并单元格的起始坐标在滚动区域中
-    const { scroll } = content;
-    const viewRange = content.getViewRange();
-    const fixedWidth = cols.sectionSumWidth(0, fixed.fxLeft);
-    let left = cols.sectionSumWidth(
-      Math.min(rect.sci, viewRange.eci),
-      Math.max(rect.sci, viewRange.eci),
-    );
-    left -= cols.getWidth(rect.sri);
-    left = viewRange.sci > rect.sci ? left * -1 : left;
-    left += scroll.x;
-    left += fixedWidth;
-    return { left, width };
-  }
-
-  // 获取发生鼠标事件的单元格信息
+  /**
+   * 获取发生鼠标事件的单元格信息
+   * @param event
+   * @returns {{top: *, left: *, ci: number, ri: number, width: *, height: *}}
+   */
   getEventSelector(event) {
     const { table } = this;
-    const { settings, merges } = table;
-    const { index } = settings;
-    let { x, y } = table.computeEventXy(event);
-    y -= index.height;
-    x -= index.width;
-    let { ri, top, height } = this.getCellRowByY(y);
-    let { ci, left, width } = this.getCellColByX(x);
+    const {
+      merges, cols, rows,
+    } = table;
+    const { x, y } = table.computeEventXy(event);
+    let { ri, ci } = table.getRiCiByXy(x, y);
+    // console.log('ri ci >>>', ri, ci);
+    let [top, left, width, height] = [
+      table.getRowTop(ri),
+      table.getColLeft(ci),
+      cols.getWidth(ci),
+      rows.getHeight(ri),
+    ];
     const rectRange = merges.getFirstIncludes(ri, ci);
     if (rectRange) {
-      ({ sri: ri, sci: ci } = rectRange);
-      ({ top, height } = this.getMergeCellRowByY(rectRange));
-      ({ left, width } = this.getMergeCellRowByX(rectRange));
+      [ri, ci, top, left, width, height] = [
+        rectRange.sri,
+        rectRange.sci,
+        table.getRowTop(ri),
+        table.getColLeft(ci),
+        cols.sectionSumWidth(rectRange.sci, rectRange.eci),
+        rows.sectionSumHeight(rectRange.sri, rectRange.eri),
+      ];
     }
-    top += index.height;
-    left += index.width;
     return {
       ri, ci, left, top, width, height,
     };
   }
 
-  // 划分显示的区域
+  /**
+   * 划分显示的区域
+   */
   setDivideLayer() {
     const { table } = this;
     const {
@@ -325,14 +196,9 @@ class Selector extends Widget {
     }
   }
 
-  scrollX() {
-
-  }
-
-  scrollY() {
-
-  }
-
+  /**
+   * 绑定事件
+   */
   bind() {
     const { table } = this;
     table.on(Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {

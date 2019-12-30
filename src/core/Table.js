@@ -1002,14 +1002,83 @@ class Table extends Widget {
 
   scrollX(x) {
     this.content.scrollX(x);
-    this.selector.scrollX(x);
     this.render();
   }
 
   scrollY(y) {
     this.content.scrollY(y);
-    this.selector.scrollY(y);
     this.render();
+  }
+
+  getRiCiByXy(x, y) {
+    const {
+      settings, fixed, rows, cols, content,
+    } = this;
+    const { index } = settings;
+    const fixedHeight = rows.sectionSumHeight(0, fixed.fxTop);
+    const fixedWidth = cols.sectionSumWidth(0, fixed.fxLeft);
+
+    let [left, top] = [x, y];
+    let [ci, ri] = [-1, -1];
+
+    left -= index.width;
+    top -= index.height;
+
+    // left
+    if (left <= fixedWidth) {
+      let total = 0;
+      for (let i = 0; i <= fixed.fxLeft; i += 1) {
+        const width = cols.getWidth(i);
+        total += width;
+        ci = i;
+        if (total > left) break;
+      }
+    } else {
+      let total = fixedWidth;
+      const viewRange = content.getViewRange();
+      for (let i = viewRange.sci; i <= viewRange.eci; i += 1) {
+        const width = cols.getWidth(i);
+        total += width;
+        ci = i;
+        if (total > left) break;
+      }
+    }
+
+    // top
+    if (top < fixedHeight) {
+      let total = 0;
+      for (let i = 0; i <= fixed.fxTop; i += 1) {
+        const height = rows.getHeight(i);
+        total += height;
+        ri = i;
+        if (total > top) break;
+      }
+    } else {
+      let total = fixedHeight;
+      const viewRange = content.getViewRange();
+      for (let i = viewRange.sri; i <= viewRange.eri; i += 1) {
+        const height = rows.getHeight(i);
+        total += height;
+        ri = i;
+        if (total > top) break;
+      }
+    }
+
+    return {
+      ri, ci,
+    };
+  }
+
+  getRowTop(ri) {
+    const { settings, rows } = this;
+    const { index } = settings;
+    return rows.getTop(ri) + index.height;
+  }
+
+  getColLeft(ci) {
+    const { settings, cols } = this;
+    const { index } = settings;
+    return cols.getLeft(ci) + index.width;
   }
 }
 
