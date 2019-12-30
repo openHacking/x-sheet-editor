@@ -37,8 +37,10 @@ class EventManage {
   triggerEvent(type, event) {
     this._.forEach((item) => {
       if (type === item.type) {
+        if (event.isUse) return false;
         item.cb(event);
       }
+      return true;
     });
   }
 }
