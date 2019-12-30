@@ -939,6 +939,10 @@ class FrozenRect {
 }
 
 class Table extends Widget {
+  /**
+   * Table
+   * @param settings
+   */
   constructor(settings) {
     super(`${cssPrefix}-table`);
     // table core
@@ -971,19 +975,33 @@ class Table extends Widget {
     ]);
   }
 
+  /**
+   *Table的可视高度
+   * @returns {*}
+   */
   visualHeight() {
     return this.box().height;
   }
 
+  /**
+   * Table的可视宽度
+   * @returns {*}
+   */
   visualWidth() {
     return this.box().width;
   }
 
+  /**
+   * 初始化
+   */
   init() {
     this.selector.init();
     this.render();
   }
 
+  /**
+   * 渲染界面
+   */
   render() {
     const { draw } = this;
     draw.clear();
@@ -1000,16 +1018,30 @@ class Table extends Widget {
     this.content.render();
   }
 
+  /**
+   * 滚动到指定x距离
+   * @param x
+   */
   scrollX(x) {
     this.content.scrollX(x);
     this.render();
   }
 
+  /**
+   * 滚动到指定y距离
+   * @param y
+   */
   scrollY(y) {
     this.content.scrollY(y);
     this.render();
   }
 
+  /**
+   * 获取指定x y对应的单元格
+   * @param x
+   * @param y
+   * @returns {{ci: number, ri: number}}
+   */
   getRiCiByXy(x, y) {
     const {
       settings, fixed, rows, cols, content,
@@ -1069,12 +1101,22 @@ class Table extends Widget {
     };
   }
 
+  /**
+   * 获取指定行距离顶部的高度
+   * @param ri
+   * @returns {*}
+   */
   getRowTop(ri) {
     const { settings, rows } = this;
     const { index } = settings;
     return rows.getTop(ri) + index.height;
   }
 
+  /**
+   * 获取指定列距离左边的宽度
+   * @param ci
+   * @returns {*}
+   */
   getColLeft(ci) {
     const { settings, cols } = this;
     const { index } = settings;
