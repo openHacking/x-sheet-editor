@@ -7,7 +7,7 @@ class Selector extends Widget {
     super(`${cssPrefix}-selector`);
     this.cornerEl = h('div', `${cssPrefix}-selector-corner`);
     this.areaEl = h('div', `${cssPrefix}-selector-area`);
-    this.autofillEl = h('div', `${cssPrefix}-selector-auto-fill`);
+    this.autofillEl = h('div', `${cssPrefix}-selector-auto-fill`).hide();
     this.areaEl.children(this.cornerEl);
     this.hide();
     this.children(this.areaEl, this.autofillEl);
