@@ -129,11 +129,11 @@ class WorkBody extends Widget {
     this.tabView.init();
     this.scrollBarX.init();
     this.scrollBarY.init();
-    this.setSheet();
-    this.setScroll();
+    this.initSheet();
+    this.initScroll();
   }
 
-  setScroll() {
+  initScroll() {
     const sheet = this.sheetView.getActiveSheet();
     if (Utils.isUnDef(sheet)) return;
     const { table } = sheet;
@@ -143,7 +143,7 @@ class WorkBody extends Widget {
     scrollBarXLayerHorizontalElement.display(!this.scrollBarX.isHide);
   }
 
-  setSheet() {
+  initSheet() {
     const { sheetView, tabView } = this;
     // eslint-disable-next-line no-restricted-syntax
     for (const item of this.sheetData) {

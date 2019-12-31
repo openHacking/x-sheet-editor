@@ -1,5 +1,4 @@
-/* global document */
-/* global window */
+/* global document Event window */
 
 import { Utils } from '../utils/Utils';
 
@@ -312,6 +311,11 @@ class Element {
       right: Utils.parseFloat(right),
       bottom: Utils.parseFloat(bottom),
     };
+  }
+
+  trigger(type) {
+    const event = new Event(type, { bubbles: true, cancelable: false });
+    this.el.dispatchEvent(event);
   }
 }
 

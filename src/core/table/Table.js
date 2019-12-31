@@ -14,9 +14,9 @@ import { Rect } from '../../graphical/Rect';
 import { RectText } from '../../graphical/RectText';
 import { TextRect } from '../../graphical/TextRect';
 import { Merges } from './Merges';
-import { Selector } from './selector/Selector';
-import { EventManage, TABLE_EVENT } from './EventManage';
-import { Event } from './Event';
+import { Constant } from '../../utils/Constant';
+import { Screen } from './screen/Screen';
+import { ScreenSelector } from './selector/ScreenSelector';
 
 const defaultSettings = {
   index: {
@@ -964,13 +964,11 @@ class Table extends Widget {
     this.frozenLeftIndex = new FrozenLeftIndex(this);
     this.frozenTopIndex = new FrozenTopIndex(this);
     this.frozenRect = new FrozenRect(this);
-    this.eventMange = new EventManage(this);
-    this.selector = new Selector(this);
+    this.screen = new Screen(this);
     this.children(...[
       this.canvas,
-      this.selector,
+      this.screen,
     ]);
-    this.bind();
   }
 
   visualHeight() {
@@ -982,11 +980,13 @@ class Table extends Widget {
   }
 
   init() {
-    this.selector.init();
+    this.screen.init();
+    this.initScreenWidget();
   }
 
-  bind() {
-    this.eventMange.addEvent(TABLE_EVENT.MOUSE_DOWN, () => {});
+  initScreenWidget() {
+    const screenSelector = new ScreenSelector(this.screen);
+    this.screen.addWidgets(screenSelector);
   }
 
   render() {
@@ -1008,13 +1008,13 @@ class Table extends Widget {
   scrollX(x) {
     this.content.scrollX(x);
     this.render();
-    this.eventMange.triggerEvent(TABLE_EVENT.SCROLL_X, new Event(null, { x }));
+    this.trigger(Constant.EVENT_TYPE.SCROLL);
   }
 
   scrollY(y) {
     this.content.scrollY(y);
     this.render();
-    this.eventMange.triggerEvent(TABLE_EVENT.SCROLL_Y, new Event(null, { y }));
+    this.trigger(Constant.EVENT_TYPE.SCROLL);
   }
 
   getRiCiByXy(x, y) {

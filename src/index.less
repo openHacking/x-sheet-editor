@@ -36,18 +36,13 @@
   left: 0;
   top: 0
 }
-
-// 选择框
-@keyframes clipboard-stroke-dashoffset-animation {
-  to { stroke-dashoffset: 19; }
-}
-.@{css-prefix}-selector {
+.@{css-prefix}-screen {
   display: block;
   width: 100%;
   height: 100%;
   position: relative;
 }
-.@{css-prefix}-selector-element {
+.@{css-prefix}-screen-element {
   display: block;
   width: 100%;
   height: 100%;
@@ -56,15 +51,40 @@
   top: 0;
   overflow: hidden;
 }
-.@{css-prefix}-selector-area {
+
+// 粘贴板
+@keyframes clipboard-stroke-dashoffset-animation {
+  to { stroke-dashoffset: 19; }
+}
+.@{css-prefix}-clipboard {
   position: absolute;
-  border: 2px solid #4b89ff;
-  background: rgba(181, 202, 242, 0.1);
   display: block;
   width: 197.8px;
   height: 97.8px;
-  left: 299.2px;
-  top: 99.2px;
+  left: 599.2px;
+  top: 200px;
+}
+.@{css-prefix}-clipboard-stroked {
+  display: block;
+  stroke: #4b89ff;
+  fill: transparent;
+  stroke-width: 3;
+  stroke-dasharray: 10;
+  animation: clipboard-stroke-dashoffset-animation 0.5s forwards infinite linear;
+}
+
+// 选择框
+.@{css-prefix}-selector {
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+.@{css-prefix}-selector-area {
+  border: 2px solid #4b89ff;
+  background: rgba(181, 202, 242, 0.1);
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  position: relative;
 }
 .@{css-prefix}-selector-corner {
   pointer-events: auto;
@@ -77,22 +97,6 @@
   bottom: -5px;
   border: 2px solid #ffffff;
   background: #4b89ff;
-}
-.@{css-prefix}-selector-clipboard {
-  position: absolute;
-  display: block;
-  width: 197.8px;
-  height: 97.8px;
-  left: 599.2px;
-  top: 200px;
-}
-.@{css-prefix}-selector-clipboard-stroked {
-  display: block;
-  stroke: #4b89ff;
-  fill: transparent;
-  stroke-width: 3;
-  stroke-dasharray: 10;
-  animation: clipboard-stroke-dashoffset-animation 0.5s forwards infinite linear;
 }
 .@{css-prefix}-selector-auto-fill {
   position: absolute;
