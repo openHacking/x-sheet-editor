@@ -1111,4 +1111,4 @@ class Table extends Widget {
   }
 }
 
-export { Table, TABLE_EVENT };
+export { Table };
