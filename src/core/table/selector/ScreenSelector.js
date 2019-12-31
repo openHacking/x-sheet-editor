@@ -1,6 +1,8 @@
 import { Selector } from './Selector';
 import { Constant } from '../../../utils/Constant';
 import { ScreenWidget } from '../screen/ScreenWidget';
+import { EventBind } from '../../../utils/EventBind';
+import { RectRange } from '../RectRange';
 
 class ScreenSelector extends ScreenWidget {
   constructor(screen, options = {}) {
@@ -15,13 +17,22 @@ class ScreenSelector extends ScreenWidget {
   bind() {
     const { screen } = this;
     const { table } = screen;
-    table.on(Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {
-      const { x, y } = table.computeEventXy(e);
-      this.selectorAttr = this.getXYSelectorAttr(x, y);
-      // console.log('selectorAttr >>>', this.selectorAttr);
+    table.on(Constant.EVENT_TYPE.SCROLL, () => {
       this.setOffset();
     });
-    table.on(Constant.EVENT_TYPE.SCROLL, () => {
+    table.on(Constant.EVENT_TYPE.MOUSE_DOWN, (e1) => {
+      const { x, y } = table.computeEventXy(e1);
+      const downSelectorAttr = this.getXYSelectorAttr(x, y);
+      EventBind.mouseMoveUp(table, (e2) => {
+        const { x, y } = table.computeEventXy(e2);
+        const moveSelectorAttr = this.getXYSelectorAttr(x, y);
+        const { ri: dri, ci: dci } = downSelectorAttr;
+        const { ri: mri, ci: mci } = moveSelectorAttr;
+        const downRectRange = new RectRange(dri, dci, dri, dci);
+        const moveRectRange = new RectRange(mri, mci, mri, mci);
+        const newRectRange = downRectRange.union(moveRectRange);
+      });
+      this.selectorAttr = downSelectorAttr;
       this.setOffset();
     });
   }
@@ -131,11 +142,8 @@ class ScreenSelector extends ScreenWidget {
   getXYSelectorAttr(x, y) {
     const { screen } = this;
     const { table } = screen;
-    const {
-      merges, cols, rows,
-    } = table;
+    const { merges, cols, rows } = table;
     let { ri, ci } = table.getRiCiByXy(x, y);
-    // console.log('ri ci >>>', ri, ci);
     let [top, left, width, height] = [
       table.getRowTop(ri),
       table.getColLeft(ci),
