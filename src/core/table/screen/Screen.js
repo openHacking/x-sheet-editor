@@ -10,6 +10,7 @@ class Screen extends Widget {
     this.t = new ScreenElement();
     this.l = new ScreenElement();
     this.br = new ScreenElement();
+    this.focusWidget = null;
     this.children(this.lt, this.t, this.l, this.br);
   }
 
