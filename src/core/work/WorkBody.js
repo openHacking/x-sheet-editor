@@ -220,7 +220,7 @@ class WorkBody extends Widget {
       }
     });
     window.addEventListener(Constant.EVENT_TYPE.RESIZE, () => {
-      this.setScroll();
+      this.initScroll();
     });
   }
 }

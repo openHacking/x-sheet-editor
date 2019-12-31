@@ -1109,6 +1109,14 @@ class Table extends Widget {
     const { settings } = this;
     return settings.index.height;
   }
+
+  getContentWidth() {
+    return this.content.getContentWidth();
+  }
+
+  getContentHeight() {
+    return this.content.getContentHeight();
+  }
 }
 
 export { Table };
