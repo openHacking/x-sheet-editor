@@ -21,7 +21,7 @@ import { ScreenSelector } from './selector/ScreenSelector';
 const defaultSettings = {
   index: {
     height: 30,
-    width: 40,
+    width: 50,
     bgColor: '#f4f5f8',
     color: '#000000',
   },
