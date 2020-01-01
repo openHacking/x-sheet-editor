@@ -225,8 +225,10 @@ class Content {
   drawMerge(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges, cols, rows,
+      draw, cells, merges, cols, rows, settings,
     } = table;
+    let { borderWidth } = settings.table;
+    borderWidth += 0.5;
     draw.save();
     draw.translate(offsetX, offsetY);
     const filter = [];
@@ -240,8 +242,6 @@ class Content {
       let maxSci = Math.max(viewRange.sci, rectRange.sci);
       maxSri -= 1;
       maxSci -= 1;
-      if (maxSri < 0) maxSri = 0;
-      if (maxSci < 0) maxSci = 0;
       let x = cols.sectionSumWidth(minSci, maxSci);
       let y = rows.sectionSumHeight(minSri, maxSri);
       x = viewRange.sci > rectRange.sci ? x * -1 : x;
@@ -249,10 +249,13 @@ class Content {
       const width = cols.sectionSumWidth(rectRange.sci, rectRange.eci);
       const height = rows.sectionSumHeight(rectRange.sri, rectRange.eri);
       const rect = new Rect({
-        x, y, width, height,
+        x: x + borderWidth,
+        y: y + borderWidth,
+        width: width - (borderWidth * 2),
+        height: height - (borderWidth * 2),
       });
       const rectDraw = new RectDraw(draw, rect);
-      rectDraw.fill();
+      rectDraw.fill('#fff');
     });
     draw.restore();
   }
@@ -362,6 +365,44 @@ class FixedLeft {
     draw.restore();
   }
 
+  drawMerge(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, cells, merges, cols, rows, settings,
+    } = table;
+    let { borderWidth } = settings.table;
+    borderWidth += 0.5;
+    draw.save();
+    draw.translate(offsetX, offsetY);
+    const filter = [];
+    cells.getRectRangeCell(viewRange, (i, c) => {
+      const rectRange = merges.getFirstIncludes(i, c);
+      if (!rectRange || filter.find(item => item === rectRange)) return;
+      filter.push(rectRange);
+      const minSri = Math.min(viewRange.sri, rectRange.sri);
+      let maxSri = Math.max(viewRange.sri, rectRange.sri);
+      const minSci = Math.min(viewRange.sci, rectRange.sci);
+      let maxSci = Math.max(viewRange.sci, rectRange.sci);
+      maxSri -= 1;
+      maxSci -= 1;
+      let x = cols.sectionSumWidth(minSci, maxSci);
+      let y = rows.sectionSumHeight(minSri, maxSri);
+      x = viewRange.sci > rectRange.sci ? x * -1 : x;
+      y = viewRange.sri > rectRange.sri ? y * -1 : y;
+      const width = cols.sectionSumWidth(rectRange.sci, rectRange.eci);
+      const height = rows.sectionSumHeight(rectRange.sri, rectRange.eri);
+      const rect = new Rect({
+        x: x + borderWidth,
+        y: y + borderWidth,
+        width: width - (borderWidth * 2),
+        height: height - (borderWidth * 2),
+      });
+      const rectDraw = new RectDraw(draw, rect);
+      rectDraw.fill('#fff');
+    });
+    draw.restore();
+  }
+
   render() {
     const { table } = this;
     const { content, fixed, draw } = table;
@@ -383,7 +424,7 @@ class FixedLeft {
     });
     const rectCut = new RectCut(draw, rect);
     rectCut.outwardCut(thinLineWidth() / 2);
-    // TODO Merge
+    this.drawMerge(viewRange, offsetX, offsetY);
     rectCut.closeCut();
   }
 }
@@ -470,6 +511,44 @@ class FixedTop {
     draw.restore();
   }
 
+  drawMerge(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, cells, merges, cols, rows, settings,
+    } = table;
+    let { borderWidth } = settings.table;
+    borderWidth += 0.5;
+    draw.save();
+    draw.translate(offsetX, offsetY);
+    const filter = [];
+    cells.getRectRangeCell(viewRange, (i, c) => {
+      const rectRange = merges.getFirstIncludes(i, c);
+      if (!rectRange || filter.find(item => item === rectRange)) return;
+      filter.push(rectRange);
+      const minSri = Math.min(viewRange.sri, rectRange.sri);
+      let maxSri = Math.max(viewRange.sri, rectRange.sri);
+      const minSci = Math.min(viewRange.sci, rectRange.sci);
+      let maxSci = Math.max(viewRange.sci, rectRange.sci);
+      maxSri -= 1;
+      maxSci -= 1;
+      let x = cols.sectionSumWidth(minSci, maxSci);
+      let y = rows.sectionSumHeight(minSri, maxSri);
+      x = viewRange.sci > rectRange.sci ? x * -1 : x;
+      y = viewRange.sri > rectRange.sri ? y * -1 : y;
+      const width = cols.sectionSumWidth(rectRange.sci, rectRange.eci);
+      const height = rows.sectionSumHeight(rectRange.sri, rectRange.eri);
+      const rect = new Rect({
+        x: x + borderWidth,
+        y: y + borderWidth,
+        width: width - (borderWidth * 2),
+        height: height - (borderWidth * 2),
+      });
+      const rectDraw = new RectDraw(draw, rect);
+      rectDraw.fill('#fff');
+    });
+    draw.restore();
+  }
+
   render() {
     const { table } = this;
     const { content, fixed, draw } = table;
@@ -491,7 +570,7 @@ class FixedTop {
     });
     const rectCut = new RectCut(draw, rect);
     rectCut.outwardCut(thinLineWidth() / 2);
-    // TODO Merge
+    this.drawMerge(viewRange, offsetX, offsetY);
     rectCut.closeCut();
   }
 }
@@ -751,9 +830,47 @@ class FrozenLeftTop {
     draw.restore();
   }
 
+  drawMerge(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, cells, merges, cols, rows, settings,
+    } = table;
+    let { borderWidth } = settings.table;
+    borderWidth += 0.5;
+    draw.save();
+    draw.translate(offsetX, offsetY);
+    const filter = [];
+    cells.getRectRangeCell(viewRange, (i, c) => {
+      const rectRange = merges.getFirstIncludes(i, c);
+      if (!rectRange || filter.find(item => item === rectRange)) return;
+      filter.push(rectRange);
+      const minSri = Math.min(viewRange.sri, rectRange.sri);
+      let maxSri = Math.max(viewRange.sri, rectRange.sri);
+      const minSci = Math.min(viewRange.sci, rectRange.sci);
+      let maxSci = Math.max(viewRange.sci, rectRange.sci);
+      maxSri -= 1;
+      maxSci -= 1;
+      let x = cols.sectionSumWidth(minSci, maxSci);
+      let y = rows.sectionSumHeight(minSri, maxSri);
+      x = viewRange.sci > rectRange.sci ? x * -1 : x;
+      y = viewRange.sri > rectRange.sri ? y * -1 : y;
+      const width = cols.sectionSumWidth(rectRange.sci, rectRange.eci);
+      const height = rows.sectionSumHeight(rectRange.sri, rectRange.eri);
+      const rect = new Rect({
+        x: x + borderWidth,
+        y: y + borderWidth,
+        width: width - (borderWidth * 2),
+        height: height - (borderWidth * 2),
+      });
+      const rectDraw = new RectDraw(draw, rect);
+      rectDraw.fill('#fff');
+    });
+    draw.restore();
+  }
+
   render() {
     const { table } = this;
-    const { fixed } = table;
+    const { fixed, draw } = table;
     const { fxTop, fxLeft } = fixed;
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
@@ -762,7 +879,16 @@ class FrozenLeftTop {
     const viewRange = new RectRange(0, 0, fxTop, fxLeft, width, height);
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
-    // TODO merge
+    const rect = new Rect({
+      x: offsetX,
+      y: offsetY,
+      width,
+      height,
+    });
+    const rectCut = new RectCut(draw, rect);
+    rectCut.outwardCut(thinLineWidth() / 2);
+    this.drawMerge(viewRange, offsetX, offsetY);
+    rectCut.closeCut();
   }
 }
 
@@ -972,7 +1098,9 @@ class Table extends Widget {
       cols: this.cols,
       data: this.settings.data,
     });
-    this.merges = new Merges();
+    this.merges = new Merges([
+      new RectRange(1, 1, 2, 2),
+    ]);
     this.fixed = new Fixed();
     this.draw = new Draw(this.canvas.el);
     this.content = new Content(this);
