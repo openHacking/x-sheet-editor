@@ -6,7 +6,16 @@ import { ScreenWidget } from '../screen/ScreenWidget';
 import { EventBind } from '../../../utils/EventBind';
 import { RectRange } from '../RectRange';
 
-class ScreenSelectorOffset extends ScreenWidget {
+class ScreenSelector extends ScreenWidget {
+  constructor(screen, options = {}) {
+    super(screen);
+    this.lt = new Selector(options);
+    this.t = new Selector(options);
+    this.l = new Selector(options);
+    this.br = new Selector(options);
+    this.bind();
+  }
+
   setLTOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
@@ -100,9 +109,7 @@ class ScreenSelectorOffset extends ScreenWidget {
     this.setLOffset(selectorAttr);
     this.setBROffset(selectorAttr);
   }
-}
 
-class ScreenSelectorAutoFillOffset extends ScreenSelectorOffset {
   setLtAutoFillOffset(selectorAutoFillAttr) {
     const { rect, direction } = selectorAutoFillAttr;
     const { lt } = this;
@@ -271,17 +278,6 @@ class ScreenSelectorAutoFillOffset extends ScreenSelectorOffset {
     l.autofillEl.hide();
     br.autofillEl.hide();
   }
-}
-
-class ScreenSelector extends ScreenSelectorAutoFillOffset {
-  constructor(screen, options = {}) {
-    super(screen);
-    this.lt = new Selector(options);
-    this.t = new Selector(options);
-    this.l = new Selector(options);
-    this.br = new Selector(options);
-    this.bind();
-  }
 
   bind() {
     const { screen } = this;
@@ -318,6 +314,8 @@ class ScreenSelector extends ScreenSelectorAutoFillOffset {
         if (selectorAutoFillAttr) {
           this.showAutoFill();
           this.setAutoFillOffset(selectorAutoFillAttr);
+        } else {
+          this.hideAutoFill();
         }
       }, () => {
         this.hideAutoFill();
@@ -349,10 +347,13 @@ class ScreenSelector extends ScreenSelectorAutoFillOffset {
     const { screen } = this;
     const { table } = screen;
     const { cols, rows } = table;
-    const { ri, ci } = table.getRiCiByXy(x, y);
-    // console.log('ri, ci >>>', ri, ci);
     const { selectorAttr } = this;
     const { rect: selectorRect } = selectorAttr;
+    let { ri, ci } = table.getRiCiByXy(x, y);
+    // console.log('ri, ci >>>', ri, ci);
+
+    if (ri < 0) ri = 0; else if (ri > rows.len) ri = rows.len;
+    if (ci < 0) ci = 0; else if (ci > cols.len) ci = cols.len;
 
     let rect = null;
     let direction = 'un';
