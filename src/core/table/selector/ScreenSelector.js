@@ -19,12 +19,12 @@ class ScreenSelector extends ScreenWidget {
   bind() {
     const { screen } = this;
     const { table } = screen;
-    table.on(Constant.EVENT_TYPE.SCROLL, () => {
+    EventBind.bind(table, Constant.EVENT_TYPE.SCROLL, () => {
       if (this.selectorAttr) {
         this.setOffset(this.selectorAttr);
       }
     });
-    table.on(Constant.EVENT_TYPE.MOUSE_DOWN, (e1) => {
+    EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_DOWN, (e1) => {
       const { x, y } = table.computeEventXy(e1);
       const downSelectAttr = this.getDownXYSelectorAttr(x, y);
       // console.log('downSelectAttr >>>', downSelectAttr);
@@ -36,6 +36,15 @@ class ScreenSelector extends ScreenWidget {
         this.selectorAttr = moveSelectorAttr;
         this.setOffset(moveSelectorAttr);
       });
+    });
+    EventBind.bind([
+      this.lt.cornerEl,
+      this.t.cornerEl,
+      this.l.cornerEl,
+      this.br.cornerEl,
+    ], Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {
+      // console.log('auto fill');
+      e.stopPropagation();
     });
   }
 

@@ -2,11 +2,25 @@ import { Constant } from './Constant';
 
 class EventBind {
   static bind(target, name, fn) {
-    (target.el || target).addEventListener(name, fn);
+    if (Array.isArray(target)) {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const item of target) {
+        (item.el || item).addEventListener(name, fn);
+      }
+    } else {
+      (target.el || target).addEventListener(name, fn);
+    }
   }
 
   static unbind(target, name, fn) {
-    (target.el || target).removeEventListener(name, fn);
+    if (Array.isArray(target)) {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const item of target) {
+        (item.el || item).addEventListener(name, fn);
+      }
+    } else {
+      (target.el || target).removeEventListener(name, fn);
+    }
   }
 
   static mouseMoveUp(target, moveFunc = () => {}, upFunc = () => {}) {
