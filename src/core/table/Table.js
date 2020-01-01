@@ -17,6 +17,7 @@ import { Merges } from './Merges';
 import { Constant } from '../../utils/Constant';
 import { Screen } from './screen/Screen';
 import { ScreenSelector } from './selector/ScreenSelector';
+import { RectDraw } from '../../graphical/RectDraw';
 
 const defaultSettings = {
   index: {
@@ -212,16 +213,46 @@ class Content {
       underline: cells.defaultAttr.style.underline,
     });
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
-      if (cell.merge) {
-        // TODO ...
-        // ...
-      } else {
-        // 绘制文字
-        const textRect = new TextRect(rect);
-        const { style } = cell;
-        rectText.setRect(textRect);
-        rectText.text(cell.text, style);
-      }
+      // 绘制文字
+      const textRect = new TextRect(rect);
+      const { style } = cell;
+      rectText.setRect(textRect);
+      rectText.text(cell.text, style);
+    });
+    draw.restore();
+  }
+
+  drawMerge(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, cells, merges, cols, rows,
+    } = table;
+    draw.save();
+    draw.translate(offsetX, offsetY);
+    const filter = [];
+    cells.getRectRangeCell(viewRange, (i, c) => {
+      const rectRange = merges.getFirstIncludes(i, c);
+      if (!rectRange || filter.find(item => item === rectRange)) return;
+      filter.push(rectRange);
+      const minSri = Math.min(viewRange.sri, rectRange.sri);
+      let maxSri = Math.max(viewRange.sri, rectRange.sri);
+      const minSci = Math.min(viewRange.sci, rectRange.sci);
+      let maxSci = Math.max(viewRange.sci, rectRange.sci);
+      maxSri -= 1;
+      maxSci -= 1;
+      if (maxSri < 0) maxSri = 0;
+      if (maxSci < 0) maxSci = 0;
+      let x = cols.sectionSumWidth(minSci, maxSci);
+      let y = rows.sectionSumHeight(minSri, maxSri);
+      x = viewRange.sci > rectRange.sci ? x * -1 : x;
+      y = viewRange.sri > rectRange.sri ? y * -1 : y;
+      const width = cols.sectionSumWidth(rectRange.sci, rectRange.eci);
+      const height = rows.sectionSumHeight(rectRange.sri, rectRange.eri);
+      const rect = new Rect({
+        x, y, width, height,
+      });
+      const rectDraw = new RectDraw(draw, rect);
+      rectDraw.fill();
     });
     draw.restore();
   }
@@ -234,6 +265,8 @@ class Content {
     const width = this.getWidth();
     const height = this.getHeight();
     const viewRange = this.getViewRange();
+    this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawCells(viewRange, offsetX, offsetY);
     const rect = new Rect({
       x: offsetX,
       y: offsetY,
@@ -242,9 +275,8 @@ class Content {
     });
     const rectCut = new RectCut(draw, rect);
     rectCut.outwardCut(thinLineWidth() / 2);
-    this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawMerge(viewRange, offsetX, offsetY);
     rectCut.closeCut();
-    this.drawCells(viewRange, offsetX, offsetY);
   }
 }
 
@@ -322,15 +354,10 @@ class FixedLeft {
       underline: cells.defaultAttr.style.underline,
     });
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
-      if (cell.merge) {
-        // TODO ...
-      } else {
-        // 绘制文字
-        const textRect = new TextRect(rect);
-        const { style } = cell;
-        rectText.setRect(textRect);
-        rectText.text(cell.text, style);
-      }
+      const textRect = new TextRect(rect);
+      const { style } = cell;
+      rectText.setRect(textRect);
+      rectText.text(cell.text, style);
     });
     draw.restore();
   }
@@ -346,6 +373,8 @@ class FixedLeft {
     const height = this.getHeight();
     viewRange.sci = 0;
     viewRange.eci = fxLeft;
+    this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawCells(viewRange, offsetX, offsetY);
     const rect = new Rect({
       x: offsetX,
       y: offsetY,
@@ -354,9 +383,8 @@ class FixedLeft {
     });
     const rectCut = new RectCut(draw, rect);
     rectCut.outwardCut(thinLineWidth() / 2);
-    this.drawGrid(viewRange, offsetX, offsetY);
+    // TODO Merge
     rectCut.closeCut();
-    this.drawCells(viewRange, offsetX, offsetY);
   }
 }
 
@@ -434,15 +462,10 @@ class FixedTop {
       underline: cells.defaultAttr.style.underline,
     });
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
-      if (cell.merge) {
-        // TODO ...
-      } else {
-        // 绘制文字
-        const textRect = new TextRect(rect);
-        const { style } = cell;
-        rectText.setRect(textRect);
-        rectText.text(cell.text, style);
-      }
+      const textRect = new TextRect(rect);
+      const { style } = cell;
+      rectText.setRect(textRect);
+      rectText.text(cell.text, style);
     });
     draw.restore();
   }
@@ -458,6 +481,8 @@ class FixedTop {
     const height = this.getHeight();
     viewRange.sri = 0;
     viewRange.eri = fxTop;
+    this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawCells(viewRange, offsetX, offsetY);
     const rect = new Rect({
       x: offsetX,
       y: offsetY,
@@ -466,9 +491,8 @@ class FixedTop {
     });
     const rectCut = new RectCut(draw, rect);
     rectCut.outwardCut(thinLineWidth() / 2);
-    this.drawGrid(viewRange, offsetX, offsetY);
+    // TODO Merge
     rectCut.closeCut();
-    this.drawCells(viewRange, offsetX, offsetY);
   }
 }
 
@@ -719,15 +743,10 @@ class FrozenLeftTop {
       underline: cells.defaultAttr.style.underline,
     });
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
-      if (cell.merge) {
-        // TODO ...
-      } else {
-        // 绘制文字
-        const textRect = new TextRect(rect);
-        const { style } = cell;
-        rectText.setRect(textRect);
-        rectText.text(cell.text, style);
-      }
+      const textRect = new TextRect(rect);
+      const { style } = cell;
+      rectText.setRect(textRect);
+      rectText.text(cell.text, style);
     });
     draw.restore();
   }
@@ -743,6 +762,7 @@ class FrozenLeftTop {
     const viewRange = new RectRange(0, 0, fxTop, fxLeft, width, height);
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
+    // TODO merge
   }
 }
 
