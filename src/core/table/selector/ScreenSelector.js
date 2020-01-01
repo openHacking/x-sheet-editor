@@ -439,12 +439,11 @@ class ScreenSelector extends ScreenWidget {
     }
 
     const merge = merges.getFirstIncludes(ri, ci);
-    let rect;
+    let rect = new RectRange(ri, ci, ri, ci);
     if (merge) {
       rect = merge;
-    } else {
-      rect = new RectRange(ri, ci, ri, ci);
     }
+
     const top = table.getRowTop(rect.sri);
     const left = table.getColLeft(rect.sci);
     const width = cols.sectionSumWidth(rect.sci, rect.eci);
@@ -505,6 +504,7 @@ class ScreenSelector extends ScreenWidget {
       // console.log('viewRange >>>', viewRange);
       let rect = new RectRange(viewRange.sri, viewRange.sci, 0, 0);
       rect = selectRect.union(rect);
+      rect = merges.union(rect);
       const width = cols.sectionSumWidth(rect.sci, rect.eci);
       const height = rows.sectionSumHeight(rect.sri, rect.eri);
       const left = table.getColLeft(rect.sci);
@@ -519,6 +519,7 @@ class ScreenSelector extends ScreenWidget {
       // console.log('viewRange >>>', viewRange);
       let rect = new RectRange(viewRange.sri, ci, 0, ci);
       rect = selectRect.union(rect);
+      rect = merges.union(rect);
       const width = cols.sectionSumWidth(rect.sci, rect.eci);
       const height = rows.sectionSumHeight(rect.sri, rect.eri);
       const left = table.getColLeft(rect.sci);
@@ -533,6 +534,7 @@ class ScreenSelector extends ScreenWidget {
       // console.log('viewRange >>>', viewRange);
       let rect = new RectRange(ri, viewRange.sci, ri, 0);
       rect = selectRect.union(rect);
+      rect = merges.union(rect);
       const width = cols.sectionSumWidth(rect.sci, rect.eci);
       const height = rows.sectionSumHeight(rect.sri, rect.eri);
       const left = table.getColLeft(rect.sci);
@@ -543,13 +545,9 @@ class ScreenSelector extends ScreenWidget {
       return { left, top, rect };
     }
 
-    const merge = merges.getFirstIncludes(ri, ci);
-    let rect;
-    if (merge) {
-      rect = selectRect.union(merge);
-    } else {
-      rect = selectRect.union(new RectRange(ri, ci, ri, ci));
-    }
+    let rect = selectRect.union(new RectRange(ri, ci, ri, ci));
+    rect = merges.union(rect);
+
     const top = table.getRowTop(rect.sri);
     const left = table.getColLeft(rect.sci);
     const width = cols.sectionSumWidth(rect.sci, rect.eci);
