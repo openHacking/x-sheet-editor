@@ -1032,7 +1032,7 @@ class Table extends Widget {
     top -= index.height;
 
     // left
-    if (left <= fixedWidth) {
+    if (left <= fixedWidth && x > index.width) {
       let total = 0;
       for (let i = 0; i <= fixed.fxLeft; i += 1) {
         const width = cols.getWidth(i);
@@ -1040,7 +1040,7 @@ class Table extends Widget {
         ci = i;
         if (total > left) break;
       }
-    } else {
+    } else if (x > index.width) {
       let total = fixedWidth;
       const viewRange = content.getViewRange();
       for (let i = viewRange.sci; i <= viewRange.eci; i += 1) {
@@ -1049,10 +1049,11 @@ class Table extends Widget {
         ci = i;
         if (total > left) break;
       }
+      // console.log('ci >>', ci);
     }
 
     // top
-    if (top < fixedHeight) {
+    if (top < fixedHeight && y > index.height) {
       let total = 0;
       for (let i = 0; i <= fixed.fxTop; i += 1) {
         const height = rows.getHeight(i);
@@ -1060,7 +1061,7 @@ class Table extends Widget {
         ri = i;
         if (total > top) break;
       }
-    } else {
+    } else if (y > index.height) {
       let total = fixedHeight;
       const viewRange = content.getViewRange();
       for (let i = viewRange.sri; i <= viewRange.eri; i += 1) {
@@ -1069,6 +1070,7 @@ class Table extends Widget {
         ri = i;
         if (total > top) break;
       }
+      // console.log('ri >>', ri);
     }
 
     return {

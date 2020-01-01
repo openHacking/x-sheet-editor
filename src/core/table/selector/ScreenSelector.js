@@ -27,6 +27,7 @@ class ScreenSelector extends ScreenWidget {
     table.on(Constant.EVENT_TYPE.MOUSE_DOWN, (e1) => {
       const { x, y } = table.computeEventXy(e1);
       const downSelectAttr = this.getDownXYSelectorAttr(x, y);
+      // console.log('downSelectAttr >>>', downSelectAttr);
       this.selectorAttr = downSelectAttr;
       this.setOffset(downSelectAttr);
       EventBind.mouseMoveUp(document, (e2) => {
@@ -132,16 +133,48 @@ class ScreenSelector extends ScreenWidget {
     this.setBROffset(selectorAttr);
   }
 
+  getViewRange() {
+    const { screen } = this;
+    const { table } = screen;
+    const { content, cols, rows } = table;
+    const viewRange = content.getViewRange();
+    let { sri, sci } = viewRange;
+    const { eri, eci } = viewRange;
+    if (table.getFixedWidth() > 0) {
+      sri = 0;
+    }
+    if (table.getFixedHeight() > 0) {
+      sci = 0;
+    }
+    const width = cols.sectionSumWidth(sci, eci);
+    const height = rows.sectionSumHeight(sri, eri);
+    return new RectRange(sri, sci, eri, eci, width, height);
+  }
+
   getDownXYSelectorAttr(x, y) {
+    // console.log('x, y >>>', x, y);
     const { screen } = this;
     const { table } = screen;
     const { merges, cols, rows } = table;
     const { ri, ci } = table.getRiCiByXy(x, y);
     // console.log('ri, ci >>>', ri, ci);
+
+    if (ri === -1 && ci === -1) {
+      const width = table.getContentWidth() + table.getFixedWidth();
+      const height = table.getContentHeight() + table.getFixedHeight();
+      const left = table.getIndexWidth();
+      const top = table.getIndexHeight();
+      // console.log('width, height, left, top >>>', width, height, left, top);
+      const rect = new RectRange(0, ci, 0, ci);
+      rect.width = width;
+      rect.height = height;
+      return {
+        left, top, rect, edge: true,
+      };
+    }
     if (ri === -1) {
-      // 选中一整列
       const width = cols.getWidth(ci);
-      const height = table.getContentHeight();
+      const height = table.getContentHeight() + table.getFixedHeight();
       const left = table.getColLeft(ci);
       const top = table.getIndexHeight();
       // console.log('width, height, left, top >>>', width, height, left, top);
@@ -149,14 +182,11 @@ class ScreenSelector extends ScreenWidget {
       rect.width = width;
       rect.height = height;
       return {
-        left,
-        top,
-        rect,
+        left, top, rect, edge: true,
       };
     }
     if (ci === -1) {
-      // 选中一整行
-      const width = table.getContentWidth();
+      const width = table.getContentWidth() + table.getFixedWidth();
       const height = rows.getHeight(ri);
       const left = table.getIndexWidth();
       const top = table.getRowTop(ri);
@@ -165,11 +195,10 @@ class ScreenSelector extends ScreenWidget {
       rect.width = width;
       rect.height = height;
       return {
-        left,
-        top,
-        rect,
+        left, top, rect, edge: true,
       };
     }
+
     const merge = merges.getFirstIncludes(ri, ci);
     let rect;
     if (merge) {
@@ -183,9 +212,7 @@ class ScreenSelector extends ScreenWidget {
     const height = rows.sectionSumHeight(rect.sri, rect.eri);
     rect.width = width;
     rect.height = height;
-    return {
-      left, top, rect,
-    };
+    return { left, top, rect };
   }
 
   getMoveXySelectorAttr(selectorAttr, x, y) {
@@ -193,8 +220,90 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const { merges, cols, rows } = table;
-    const { rect: selectRect } = selectorAttr;
+    const { rect: selectRect, edge } = selectorAttr;
     const { ri, ci } = table.getRiCiByXy(x, y);
+
+    if (edge && ri === -1 && ci === -1) {
+      const width = table.getContentWidth() + table.getFixedWidth();
+      const height = table.getContentHeight() + table.getFixedHeight();
+      const left = table.getIndexWidth();
+      const top = table.getIndexHeight();
+      // console.log('width, height, left, top >>>', width, height, left, top);
+      const rect = new RectRange(0, ci, 0, ci);
+      rect.width = width;
+      rect.height = height;
+      return {
+        left, top, rect, edge: true,
+      };
+    }
+    if (edge && ri === -1) {
+      let rect = new RectRange(0, ci, 0, ci);
+      rect = selectRect.union(rect);
+      const width = cols.sectionSumWidth(rect.sci, rect.eci);
+      const height = table.getContentHeight() + table.getFixedHeight();
+      const left = table.getColLeft(rect.sci);
+      const top = table.getIndexHeight();
+      // console.log('width, height, left, top >>>', width, height, left, top);
+      rect.width = width;
+      rect.height = height;
+      return { left, top, rect };
+    }
+    if (edge && ci === -1) {
+      let rect = new RectRange(ri, 0, ri, 0);
+      rect = selectRect.union(rect);
+      const width = table.getContentWidth() + table.getFixedWidth();
+      const height = rows.sectionSumHeight(rect.sri, rect.eri);
+      const left = table.getIndexWidth();
+      const top = table.getRowTop(rect.sri);
+      // console.log('width, height, left, top >>>', width, height, left, top);
+      rect.width = width;
+      rect.height = height;
+      return { left, top, rect };
+    }
+
+    if (ri === -1 && ci === -1) {
+      const viewRange = this.getViewRange();
+      // console.log('viewRange >>>', viewRange);
+      let rect = new RectRange(viewRange.sri, viewRange.sci, 0, 0);
+      rect = selectRect.union(rect);
+      const width = cols.sectionSumWidth(rect.sci, rect.eci);
+      const height = rows.sectionSumHeight(rect.sri, rect.eri);
+      const left = table.getColLeft(rect.sci);
+      const top = table.getRowTop(rect.sri);
+      // console.log('width, height, left, top >>>', width, height, left, top);
+      rect.width = width;
+      rect.height = height;
+      return { left, top, rect };
+    }
+    if (ri === -1) {
+      const viewRange = this.getViewRange();
+      // console.log('viewRange >>>', viewRange);
+      let rect = new RectRange(viewRange.sri, ci, 0, ci);
+      rect = selectRect.union(rect);
+      const width = cols.sectionSumWidth(rect.sci, rect.eci);
+      const height = rows.sectionSumHeight(rect.sri, rect.eri);
+      const left = table.getColLeft(rect.sci);
+      const top = table.getRowTop(rect.sri);
+      // console.log('width, height, left, top >>>', width, height, left, top);
+      rect.width = width;
+      rect.height = height;
+      return { left, top, rect };
+    }
+    if (ci === -1) {
+      const viewRange = this.getViewRange();
+      // console.log('viewRange >>>', viewRange);
+      let rect = new RectRange(ri, viewRange.sci, ri, 0);
+      rect = selectRect.union(rect);
+      const width = cols.sectionSumWidth(rect.sci, rect.eci);
+      const height = rows.sectionSumHeight(rect.sri, rect.eri);
+      const left = table.getColLeft(rect.sci);
+      const top = table.getRowTop(rect.sri);
+      // console.log('width, height, left, top >>>', width, height, left, top);
+      rect.width = width;
+      rect.height = height;
+      return { left, top, rect };
+    }
+
     const merge = merges.getFirstIncludes(ri, ci);
     let rect;
     if (merge) {
@@ -208,9 +317,9 @@ class ScreenSelector extends ScreenWidget {
     const height = rows.sectionSumHeight(rect.sri, rect.eri);
     rect.width = width;
     rect.height = height;
-    return {
-      top, left, rect,
-    };
+    // console.log('selectRect>>>', selectRect);
+    // console.log('rect>>>', rect);
+    return { left, top, rect };
   }
 }
 
