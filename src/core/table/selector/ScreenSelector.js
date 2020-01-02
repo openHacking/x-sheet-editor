@@ -418,7 +418,7 @@ class ScreenSelector extends ScreenWidget {
       const left = table.getIndexWidth();
       const top = table.getIndexHeight();
       // console.log('width, height, left, top >>>', width, height, left, top);
-      const rect = new RectRange(0, ci, 0, ci);
+      const rect = new RectRange(0, 0, 0, 0);
       rect.width = width;
       rect.height = height;
       return {
@@ -444,7 +444,7 @@ class ScreenSelector extends ScreenWidget {
       const left = table.getIndexWidth();
       const top = table.getRowTop(ri);
       // console.log('width, height, left, top >>>', width, height, left, top);
-      const rect = new RectRange(ri, 0, ri, 0, width, height);
+      const rect = new RectRange(ri, 0, ri, 0);
       rect.width = width;
       rect.height = height;
       return {
@@ -480,7 +480,7 @@ class ScreenSelector extends ScreenWidget {
       const left = table.getIndexWidth();
       const top = table.getIndexHeight();
       // console.log('width, height, left, top >>>', width, height, left, top);
-      const rect = new RectRange(0, ci, 0, ci);
+      const rect = new RectRange(0, 0, 0, 0);
       rect.width = width;
       rect.height = height;
       return {
@@ -534,7 +534,7 @@ class ScreenSelector extends ScreenWidget {
     if (ri === -1) {
       const viewRange = this.getViewRange();
       // console.log('viewRange >>>', viewRange);
-      let rect = new RectRange(viewRange.sri, ci, 0, ci);
+      let rect = new RectRange(viewRange.sri, ci, viewRange.sri, ci);
       rect = selectRect.union(rect);
       rect = merges.union(rect);
       const width = cols.sectionSumWidth(rect.sci, rect.eci);
@@ -549,7 +549,7 @@ class ScreenSelector extends ScreenWidget {
     if (ci === -1) {
       const viewRange = this.getViewRange();
       // console.log('viewRange >>>', viewRange);
-      let rect = new RectRange(ri, viewRange.sci, ri, 0);
+      let rect = new RectRange(ri, viewRange.sci, ri, viewRange.sci);
       rect = selectRect.union(rect);
       rect = merges.union(rect);
       const width = cols.sectionSumWidth(rect.sci, rect.eci);
