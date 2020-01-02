@@ -1100,7 +1100,7 @@ class Table extends Widget {
       data: this.settings.data,
     });
     this.merges = new Merges(this.settings.merges);
-    this.fixed = new Fixed();
+    this.fixed = new Fixed(this.settings.fixed);
     this.draw = new Draw(this.canvas.el);
     this.content = new Content(this);
     this.fixedLeft = new FixedLeft(this);

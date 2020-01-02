@@ -22,6 +22,10 @@ class XSheet extends Widget {
                 new RectRange(1, 1, 2, 2),
                 new RectRange(3, 3, 4, 4),
               ],
+              fixed: {
+                fxTop: 1,
+                fxLeft: 0,
+              },
               data: Data,
             },
           },
