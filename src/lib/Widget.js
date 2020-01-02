@@ -14,6 +14,21 @@ class Widget extends Element {
     };
   }
 
+  computeWidgetXy(element) {
+    if (!element) {
+      return {
+        x: 0,
+        y: 0,
+      };
+    }
+    const { top: eleTop, left: eleLeft } = element.box();
+    const { top, left } = this.box();
+    return {
+      x: eleLeft - left,
+      y: eleTop - top,
+    };
+  }
+
   init() {}
 }
 
