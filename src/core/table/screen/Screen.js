@@ -6,10 +6,10 @@ class Screen extends Widget {
   constructor(table) {
     super(`${cssPrefix}-screen`);
     this.table = table;
-    this.lt = new ScreenElement();
-    this.t = new ScreenElement();
-    this.l = new ScreenElement();
-    this.br = new ScreenElement();
+    this.lt = new ScreenElement(`${cssPrefix}-screen-element-lt`);
+    this.t = new ScreenElement(`${cssPrefix}-screen-element-t`);
+    this.l = new ScreenElement(`${cssPrefix}-screen-element-l`);
+    this.br = new ScreenElement(`${cssPrefix}-screen-element-br`);
     this.focusWidget = null;
     this.children(this.lt, this.t, this.l, this.br);
   }
@@ -34,13 +34,18 @@ class Screen extends Widget {
     const brLeft = index.width + fixedWidth;
     const brTop = index.height + fixedHeight;
     this.br.offset({ left: brLeft, top: brTop });
-    if (brLeft > 0 || brTop > 0) {
+    if (fixedWidth > 0 && fixedHeight > 0) {
       this.lt.offset({
         left: index.width, top: index.height, width: fixedWidth, height: fixedHeight,
       }).show();
-      this.t.offset({ left: brLeft, top: index.height, height: fixedHeight }).show();
+    }
+    if (fixedWidth) {
       this.l.offset({ left: index.width, top: brTop, width: fixedWidth }).show();
-    } else {
+    }
+    if (fixedHeight) {
+      this.t.offset({ left: brLeft, top: index.height, height: fixedHeight }).show();
+    }
+    if (fixedWidth === 0 && fixedHeight === 0) {
       this.lt.hide();
       this.t.hide();
       this.l.hide();

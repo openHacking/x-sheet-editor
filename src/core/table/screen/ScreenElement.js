@@ -2,8 +2,8 @@ import { Widget } from '../../../lib/Widget';
 import { cssPrefix } from '../../../config';
 
 class ScreenElement extends Widget {
-  constructor() {
-    super(`${cssPrefix}-screen-element`);
+  constructor(className) {
+    super(`${cssPrefix}-screen-element ${className}`);
     this.widgets = [];
   }
 
