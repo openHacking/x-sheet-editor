@@ -145,6 +145,7 @@ class WorkBody extends Widget {
     const { sheetView, tabView } = this;
     // eslint-disable-next-line no-restricted-syntax
     for (const item of this.sheets) {
+      // console.log(item);
       // eslint-disable-next-line no-restricted-syntax
       const { name } = item;
       const sheet = new Sheet(item);

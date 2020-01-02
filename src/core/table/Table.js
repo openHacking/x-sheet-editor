@@ -55,6 +55,11 @@ const defaultSettings = {
     width: 150,
   },
   merges: [],
+  fixed: {
+    fxTop: -1,
+    fxLeft: -1,
+    fxRight: -1,
+  },
 };
 
 class Content {
@@ -1091,7 +1096,7 @@ class Table extends Widget {
   constructor(settings) {
     super(`${cssPrefix}-table`);
     this.canvas = h('canvas', `${cssPrefix}-table-canvas`);
-    this.settings = Utils.mergeDeep(defaultSettings, settings);
+    this.settings = Utils.mergeDeep({}, defaultSettings, settings);
     this.rows = new Rows(this.settings.rows);
     this.cols = new Cols(this.settings.cols);
     this.cells = new Cells({
@@ -1100,6 +1105,7 @@ class Table extends Widget {
       data: this.settings.data,
     });
     this.merges = new Merges(this.settings.merges);
+    // console.log('this.settings.fixed >>>', this.settings.fixed);
     this.fixed = new Fixed(this.settings.fixed);
     this.draw = new Draw(this.canvas.el);
     this.content = new Content(this);

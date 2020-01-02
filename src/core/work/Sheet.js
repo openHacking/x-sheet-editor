@@ -11,6 +11,7 @@ class Sheet extends Widget {
   }) {
     super(`${cssPrefix}-sheet`);
     this.options = options;
+    // console.log('this.options.tableConfig >>>', this.options.tableConfig);
     this.table = new Table(this.options.tableConfig);
     this.children(this.table);
   }
