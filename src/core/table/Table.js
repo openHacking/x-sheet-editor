@@ -147,7 +147,7 @@ class Content {
   getContentWidth() {
     const { table } = this;
     const { cols, fixed } = table;
-    const total = cols.sectionSumWidth(0, cols.len - 1);
+    const total = cols.totalWidth();
     const fixedWidth = cols.sectionSumWidth(0, fixed.fxLeft);
     return total - fixedWidth;
   }
@@ -155,7 +155,7 @@ class Content {
   getContentHeight() {
     const { table } = this;
     const { rows, fixed } = table;
-    const total = rows.sectionSumHeight(0, rows.len - 1);
+    const total = rows.totalHeight();
     const fixedHeight = rows.sectionSumHeight(0, fixed.fxTop);
     return total - fixedHeight;
   }

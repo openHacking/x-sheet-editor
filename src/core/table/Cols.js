@@ -5,6 +5,7 @@ class Cols {
     this._ = [];
     this.width = width;
     this.len = len;
+    this.cacheTotalWidth = -1;
   }
 
   get(ci) {
@@ -27,6 +28,7 @@ class Cols {
   setWidth(i, width) {
     const col = this.get(i);
     col.width = width;
+    this.cacheTotalWidth = 0;
     this.computeLeft(i, this.len);
   }
 
@@ -44,7 +46,10 @@ class Cols {
   }
 
   totalWidth() {
-    return Utils.rangeSum(0, this.len, i => this.getWidth(i));
+    if (this.cacheTotalWidth === -1) {
+      this.cacheTotalWidth = Utils.rangeSum(0, this.len, i => this.getWidth(i));
+    }
+    return this.cacheTotalWidth;
   }
 
   getLeft(i) {

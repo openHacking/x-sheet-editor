@@ -5,6 +5,7 @@ class Rows {
     this._ = [];
     this.height = height;
     this.len = len;
+    this.cacheTotalHeight = -1;
   }
 
   get(ri) {
@@ -27,6 +28,7 @@ class Rows {
   setHeight(ri, height) {
     const row = this.get(ri);
     row.height = height;
+    this.cacheTotalHeight = -1;
     this.computeTop(ri, this.len);
   }
 
@@ -44,7 +46,10 @@ class Rows {
   }
 
   totalHeight() {
-    return Utils.rangeSum(0, this.len, i => this.getHeight(i));
+    if (this.cacheTotalHeight === -1) {
+      this.cacheTotalHeight = Utils.rangeSum(0, this.len, i => this.getHeight(i));
+    }
+    return this.cacheTotalHeight;
   }
 
   getTop(ri) {

@@ -348,32 +348,46 @@ class ScreenSelector extends ScreenWidget {
     const { table } = screen;
     const { cols, rows } = table;
     const { selectorAttr } = this;
-    const { rect: selectorRect } = selectorAttr;
+    const { rect: selectorRect, edge } = selectorAttr;
     let { ri, ci } = table.getRiCiByXy(x, y);
     // console.log('ri, ci >>>', ri, ci);
+    if (ri < 0) ri = 0; else if (ri > rows.len) ri = rows.len - 1;
+    if (ci < 0) ci = 0; else if (ci > cols.len) ci = cols.len - 1;
 
-    if (ri < 0) ri = 0; else if (ri > rows.len) ri = rows.len;
-    if (ci < 0) ci = 0; else if (ci > cols.len) ci = cols.len;
+    const {
+      sri: selectorSri, sci: selectorSci,
+    } = selectorRect;
+    let {
+      eri: selectorEri, eci: selectorEci,
+    } = selectorRect;
+    if (edge && selectorRect.width === table.getContentWidth() + table.getFixedWidth()) {
+      selectorEci = cols.len - 1;
+    }
+    if (edge && selectorRect.height === table.getContentHeight() + table.getFixedHeight()) {
+      selectorEri = rows.len - 1;
+    }
+    // console.log('selectorSri selectorSci selectorEri selectorEci',
+    //   selectorSri, selectorSci, selectorEri, selectorEci);
 
     let rect = null;
     let direction = 'un';
-    if (ri < selectorRect.sri || ri > selectorRect.eri) {
-      if (ri < selectorRect.sri) {
+    if (ri < selectorSri || ri > selectorEri) {
+      if (ri < selectorSri) {
         direction = 'top';
-        rect = new RectRange(ri, selectorRect.sci, selectorRect.sri - 1, selectorRect.eci);
+        rect = new RectRange(ri, selectorSci, selectorSri - 1, selectorEci);
       }
-      if (ri > selectorRect.eri) {
+      if (ri > selectorEri) {
         direction = 'bottom';
-        rect = new RectRange(selectorRect.eri + 1, selectorRect.sci, ri, selectorRect.eci);
+        rect = new RectRange(selectorEri + 1, selectorSci, ri, selectorEci);
       }
-    } else if (ci < selectorRect.sci || ci > selectorRect.eci) {
-      if (ci < selectorRect.sci) {
+    } else if (ci < selectorSci || ci > selectorEci) {
+      if (ci < selectorSci) {
         direction = 'left';
-        rect = new RectRange(selectorRect.sri, ci, selectorRect.eri, selectorRect.sci - 1);
+        rect = new RectRange(selectorSri, ci, selectorEri, selectorSci - 1);
       }
-      if (ci > selectorRect.eci) {
+      if (ci > selectorEci) {
         direction = 'right';
-        rect = new RectRange(selectorRect.sri, selectorRect.eci + 1, selectorRect.eri, ci);
+        rect = new RectRange(selectorSri, selectorEci + 1, selectorEri, ci);
       }
     }
 
@@ -483,7 +497,9 @@ class ScreenSelector extends ScreenWidget {
       // console.log('width, height, left, top >>>', width, height, left, top);
       rect.width = width;
       rect.height = height;
-      return { left, top, rect };
+      return {
+        left, top, rect, edge: true,
+      };
     }
     if (edge && ci === -1) {
       let rect = new RectRange(ri, 0, ri, 0);
@@ -495,7 +511,9 @@ class ScreenSelector extends ScreenWidget {
       // console.log('width, height, left, top >>>', width, height, left, top);
       rect.width = width;
       rect.height = height;
-      return { left, top, rect };
+      return {
+        left, top, rect, edge: true,
+      };
     }
 
     if (ri === -1 && ci === -1) {
