@@ -35,11 +35,11 @@ let horizontalLayer2Layer1LayerVerticalElement;
 let layerVerticalLayer;
 
 class WorkBody extends Widget {
-  constructor(options) {
+  constructor(options = { sheets: [] }) {
     super(`${cssPrefix}-work-body`);
 
-    this.workConfig = options.workConfig;
-    this.sheetData = options.sheetData;
+    this.workConfig = options;
+    this.sheets = this.workConfig.sheets;
     this.tabAndSheet = [];
 
     // 组件
@@ -47,9 +47,7 @@ class WorkBody extends Widget {
     this.tabView = new TabView({
       onAdd: (tab, tabIndex) => {
         const { sheetView } = this;
-        const { sheetConfig } = this.workConfig;
-        const newSheetConfig = Utils.cloneDeep(sheetConfig);
-        const sheet = new Sheet(newSheetConfig);
+        const sheet = new Sheet();
         const sheetIndex = sheetView.add(sheet);
         this.tabAndSheet.push({
           tab,
@@ -146,13 +144,10 @@ class WorkBody extends Widget {
   initSheet() {
     const { sheetView, tabView } = this;
     // eslint-disable-next-line no-restricted-syntax
-    for (const item of this.sheetData) {
+    for (const item of this.sheets) {
       // eslint-disable-next-line no-restricted-syntax
-      const { name, data } = item;
-      const { sheetConfig } = this.workConfig;
-      const newSheetConfig = Utils.cloneDeep(sheetConfig);
-      newSheetConfig.data = data;
-      const sheet = new Sheet(newSheetConfig);
+      const { name } = item;
+      const sheet = new Sheet(item);
       const tab = new Tab(name);
       const sheetIndex = sheetView.add(sheet);
       const tabIndex = tabView.add(tab);

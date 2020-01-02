@@ -12,12 +12,14 @@ let bottomLayerVerticalElement;
 let verticalLayer;
 
 class Work extends Widget {
-  constructor(options) {
+  constructor(options = { body: {} }) {
     super(`${cssPrefix}-work`);
+
+    this.options = options.workConfig;
 
     // 组件
     this.top = new WorkTop();
-    this.body = new WorkBody(options);
+    this.body = new WorkBody(this.options.body);
     this.bottom = new WorkBottom();
 
     topLayerVerticalElement = new VerticalLayerElement(this.top);

@@ -7,22 +7,38 @@ import { Widget } from './lib/Widget';
 import './base.less';
 import './index.less';
 import { Data } from './DataTest';
+import { RectRange } from './core/table/RectRange';
 
 class XSheet extends Widget {
   constructor(selectors, options = {
     workConfig: {
-      switchConfig: {},
-      sheetConfig: {
-        tableConfig: {},
+      body: {
+        sheets: [
+          {
+            name: '白云测试',
+            tableConfig: {
+              merges: [
+                new RectRange(0, 0, 0, 1),
+                new RectRange(1, 1, 2, 2),
+                new RectRange(3, 3, 4, 4),
+              ],
+              data: Data,
+            },
+          },
+          {
+            name: 'jerry测试',
+            tableConfig: {
+              merges: [
+                new RectRange(0, 0, 0, 1),
+                new RectRange(1, 1, 2, 2),
+                new RectRange(3, 3, 4, 4),
+              ],
+              data: Data,
+            },
+          },
+        ],
       },
     },
-    /**
-      [
-     {name:'', data: [[{},{},{}], [{},{},{}], [{},{},{} ]] },
-     {name:'', data: [[{},{},{}], [{},{},{}], [{},{},{} ]] }
-     ]
-     * */
-    sheetData: [{ data: Data }],
   }) {
     super(`${cssPrefix}`);
     let root = selectors;

@@ -54,6 +54,7 @@ const defaultSettings = {
     len: 80,
     width: 150,
   },
+  merges: [],
 };
 
 class Content {
@@ -1098,11 +1099,7 @@ class Table extends Widget {
       cols: this.cols,
       data: this.settings.data,
     });
-    this.merges = new Merges([
-      new RectRange(0, 0, 0, 1),
-      new RectRange(1, 1, 2, 2),
-      new RectRange(3, 3, 4, 4),
-    ]);
+    this.merges = new Merges(this.settings.merges);
     this.fixed = new Fixed();
     this.draw = new Draw(this.canvas.el);
     this.content = new Content(this);
