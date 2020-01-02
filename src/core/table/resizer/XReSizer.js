@@ -33,8 +33,10 @@ class XReSizer extends Widget {
       const { x: tdx } = table.computeEventXy(e);
       const { x: xrx } = table.computeWidgetXy(this);
       const diff = tdx - xrx;
+      const min = tdx - (index.width - 20);
       EventBind.mouseMoveUp(document, (e) => {
-        const { x: mx } = table.computeEventXy(e);
+        let { x: mx } = table.computeEventXy(e);
+        if (mx < min) mx = min;
         this.css('left', `${mx - diff}px`);
         this.lineEl.css('height', `${table.visualHeight()}px`);
         this.lineEl.show();
