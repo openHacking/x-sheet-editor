@@ -22,6 +22,7 @@ class Work extends Widget {
     this.body = new WorkBody(this.options.body);
     this.bottom = new WorkBottom();
 
+    // 布局
     topLayerVerticalElement = new VerticalLayerElement(this.top);
     bodyLayerVerticalElement = new VerticalLayerElement(this.body, {
       style: {
