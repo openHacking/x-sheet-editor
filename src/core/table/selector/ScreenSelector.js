@@ -443,7 +443,6 @@ class ScreenSelector extends ScreenWidget {
     if (merge) {
       rect = merge;
     }
-
     const top = table.getRowTop(rect.sri);
     const left = table.getColLeft(rect.sci);
     const width = cols.sectionSumWidth(rect.sci, rect.eci);
@@ -547,7 +546,6 @@ class ScreenSelector extends ScreenWidget {
 
     let rect = selectRect.union(new RectRange(ri, ci, ri, ci));
     rect = merges.union(rect);
-
     const top = table.getRowTop(rect.sri);
     const left = table.getColLeft(rect.sci);
     const width = cols.sectionSumWidth(rect.sci, rect.eci);

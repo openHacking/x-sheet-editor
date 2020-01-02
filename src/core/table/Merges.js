@@ -73,11 +73,18 @@ class Merges {
    */
   union(cellRange) {
     let cr = cellRange;
-    this._.forEach((it) => {
-      if (it.intersects(cr)) {
-        cr = it.union(cr);
+    const filter = [];
+    for (let i = 0; i < this._.length; i += 1) {
+      const item = this._[i];
+      if (filter.find(e => e === item)) {
+        continue;
       }
-    });
+      if (item.intersects(cr)) {
+        filter.push(item);
+        cr = item.union(cr);
+        i = -1;
+      }
+    }
     return cr;
   }
 
