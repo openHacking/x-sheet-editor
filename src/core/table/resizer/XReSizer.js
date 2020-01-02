@@ -1,0 +1,5 @@
+class XReSizer {
+
+}
+
+export { XReSizer };
