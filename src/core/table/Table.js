@@ -18,6 +18,8 @@ import { Constant } from '../../utils/Constant';
 import { Screen } from './screen/Screen';
 import { ScreenSelector } from './selector/ScreenSelector';
 import { RectDraw } from '../../graphical/RectDraw';
+import { XReSizer } from './resizer/XReSizer';
+import { YReSizer } from './resizer/YReSizer';
 
 const defaultSettings = {
   index: {
@@ -1117,10 +1119,15 @@ class Table extends Widget {
     this.frozenLeftIndex = new FrozenLeftIndex(this);
     this.frozenTopIndex = new FrozenTopIndex(this);
     this.frozenRect = new FrozenRect(this);
+    // 组件
     this.screen = new Screen(this);
+    this.xReSizer = new XReSizer(this);
+    this.yReSizer = new YReSizer(this);
     this.children(...[
       this.canvas,
       this.screen,
+      this.xReSizer,
+      this.yReSizer,
     ]);
   }
 
@@ -1134,6 +1141,8 @@ class Table extends Widget {
 
   init() {
     this.screen.init();
+    this.xReSizer.init();
+    this.yReSizer.init();
     this.initScreenWidget();
   }
 

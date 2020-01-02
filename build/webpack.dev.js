@@ -10,6 +10,7 @@ module.exports = merge(common, {
     new CleanWebpackPlugin(['dist']),
     //  you should know that the HtmlWebpackPlugin by default will generate its own index.html
     new HtmlWebpackPlugin({
+      favicon: './assets/img/logo.ico',
       template: './index.html',
       title: 'x-sheet',
     }),
