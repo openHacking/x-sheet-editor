@@ -195,7 +195,7 @@ class WorkBody extends Widget {
   }
 
   bind() {
-    EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_WHEEL, (evt) => {
+    this.on(Constant.EVENT_TYPE.MOUSE_WHEEL, (evt) => {
       const sheet = this.sheetView.getActiveSheet();
       if (Utils.isUnDef(sheet)) return;
       const { table } = sheet;
