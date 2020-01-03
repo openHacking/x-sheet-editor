@@ -90,14 +90,16 @@ class XReSizer extends Widget {
     });
     EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
       if (moveOff) return;
-      let { left } = this.getEventLeft(e);
+      // eslint-disable-next-line prefer-const
+      let { left, ci } = this.getEventLeft(e);
+      const min = left - cols.getWidth(ci) + 90;
       const visualWidth = table.visualWidth();
       // console.log('left >>>', left);
       // console.log('visualWidth', visualWidth);
       if (left > visualWidth) {
         left = visualWidth;
       }
-      if (left === -1) {
+      if (left === -1 || min > visualWidth) {
         this.hide();
       } else {
         this.show();
