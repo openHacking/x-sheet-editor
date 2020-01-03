@@ -26,7 +26,7 @@ class Rows {
   }
 
   setHeight(ri, height) {
-    const row = this.get(ri);
+    const row = this.getOrNew(ri);
     row.height = height;
     this.cacheTotalHeight = -1;
     this.computeTop(ri, this.len);

@@ -1,26 +1,117 @@
+/* global document */
+
 import { Widget } from '../../../lib/Widget';
 import { cssPrefix } from '../../../config';
 import { h } from '../../../lib/Element';
+import { EventBind } from '../../../utils/EventBind';
+import { Constant } from '../../../utils/Constant';
+import { Utils } from '../../../utils/Utils';
 
 class YReSizer extends Widget {
-  constructor(table) {
+  constructor(table, options = { height: 5, minHeight: 20 }) {
     super(`${cssPrefix}-re-sizer-vertical`);
     this.table = table;
+    this.options = options;
+    this.height = options.height;
+    this.minHeight = options.minHeight;
     this.hoverEl = h('div', `${cssPrefix}-re-sizer-hover`);
     this.lineEl = h('div', `${cssPrefix}-re-sizer-line`);
     this.children(...[
       this.hoverEl,
       this.lineEl,
     ]);
+    this.bind();
   }
 
-  init() {
-
+  getEventTop(event) {
+    const { table } = this;
+    const {
+      settings, content, rows, fixed,
+    } = table;
+    const { scroll } = content;
+    const { index } = settings;
+    const { x, y } = table.computeEventXy(event);
+    const { ri, ci } = table.getRiCiByXy(x, y);
+    if (ci !== -1) {
+      return {
+        top: -1,
+        x,
+        y,
+        ri,
+        ci,
+      };
+    }
+    let top = index.height + rows.sectionSumHeight(0, ri);
+    if (ri > fixed.fxTop) {
+      top -= scroll.y;
+    }
+    return {
+      top,
+      x,
+      y,
+      ri,
+      ci,
+    };
   }
 
-  setSize() {}
-
-  setSize() {}
+  bind() {
+    const { table } = this;
+    const { settings, rows } = table;
+    const { index } = settings;
+    let moveOff = false;
+    EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {
+      Utils.setMousePointRowReSize();
+      moveOff = true;
+      const { top, ri } = this.getEventTop(e);
+      const min = top - rows.getHeight(ri) + 20;
+      let { y: my } = table.computeEventXy(e);
+      EventBind.mouseMoveUp(document, (e) => {
+        ({ y: my } = table.computeEventXy(e));
+        // console.log('mx >>>', mx);
+        if (my < min) my = min;
+        this.css('top', `${my}px`);
+        this.lineEl.css('width', `${table.visualWidth()}px`);
+        this.lineEl.show();
+      }, (e) => {
+        moveOff = false;
+        this.lineEl.hide();
+        this.css('top', `${my}px`);
+        const { x } = table.computeEventXy(e);
+        if (x <= 0) {
+          this.hide();
+        }
+        const newLeft = my - (top - rows.getHeight(ri)) + this.height;
+        table.setHeight(ri, newLeft);
+        Utils.setMousePoint();
+      });
+      e.stopPropagation();
+    });
+    EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
+      if (moveOff) return;
+      // eslint-disable-next-line prefer-const
+      let { top, ri } = this.getEventTop(e);
+      const min = top - rows.getHeight(ri) + 20;
+      const visualHeight = table.visualHeight();
+      // console.log('top >>>', top);
+      // console.log('visualHeight >>>', visualHeight);
+      // console.log('min >>>', min);
+      if (top > visualHeight) {
+        top = visualHeight;
+      }
+      if (top === -1 || min > visualHeight) {
+        this.hide();
+      } else {
+        this.show();
+        this.css('top', `${top - this.height}px`);
+        this.hoverEl.css('width', `${index.width}px`);
+        this.hoverEl.css('height', `${this.height}px`);
+      }
+    });
+    EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_LEAVE, () => {
+      if (moveOff) return;
+      this.hide();
+    });
+  }
 }
 
 export { YReSizer };

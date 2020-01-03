@@ -71,13 +71,14 @@
   display: block;
 }
 .@{css-prefix}-re-sizer-vertical .@{css-prefix}-re-sizer-hover {
-  background: rgba(75, 137, 255, 0.25);
+  background: rgba(111, 255, 75, 0.25);
   cursor: row-resize;
 }
 .@{css-prefix}-re-sizer-vertical .@{css-prefix}-re-sizer-line {
+  border-bottom: 2px dashed #42a642;
+  box-sizing: border-box;
   position: absolute;
-  border-bottom: 2px dashed #4b89ff;
-  left: 0;
+  height: 100%;
   bottom: 0;
 }
 
@@ -97,6 +98,7 @@
   box-sizing: border-box;
   position: absolute;
   width: 100%;
+  right: 0;
 }
 
 // 粘贴板
