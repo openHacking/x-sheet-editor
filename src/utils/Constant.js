@@ -13,6 +13,8 @@ Constant.EVENT_TYPE = {
   DRAG_START: 'dragstart',
   SCROLL: 'scroll',
   RESIZE: 'resize',
+  CHANGE_HEIGHT: 'changeheight',
+  CHANGE_WIDTH: 'changewidth',
   stop: type => `${type}.stop`,
 };
 

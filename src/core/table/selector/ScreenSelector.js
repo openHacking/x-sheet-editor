@@ -574,6 +574,16 @@ class ScreenSelector extends ScreenWidget {
     // console.log('rect>>>', rect);
     return { left, top, rect };
   }
+
+  getAutoFillRange() {
+    // TODO ...
+    //
+  }
+
+  getSelectorRange() {
+    // TODO ...
+    //
+  }
 }
 
 export { ScreenSelector };

@@ -1281,6 +1281,20 @@ class Table extends Widget {
   getContentHeight() {
     return this.content.getContentHeight();
   }
+
+  setWidth(ci, width) {
+    const { cols } = this;
+    cols.setWidth(ci, width);
+    this.render();
+    this.trigger(Constant.EVENT_TYPE.CHANGE_WIDTH);
+  }
+
+  setHeight(ri, height) {
+    const { rows } = this;
+    rows.setHeight(ri, height);
+    this.render();
+    this.trigger(Constant.EVENT_TYPE.CHANGE_HEIGHT);
+  }
 }
 
 export { Table };

@@ -1,6 +1,7 @@
 import { ScreenElement } from './ScreenElement';
 import { Widget } from '../../../lib/Widget';
 import { cssPrefix } from '../../../config';
+import { Constant } from '../../../utils/Constant';
 
 class Screen extends Widget {
   constructor(table) {
@@ -12,10 +13,21 @@ class Screen extends Widget {
     this.br = new ScreenElement(`${cssPrefix}-screen-element-br`);
     this.focusWidget = null;
     this.children(this.lt, this.t, this.l, this.br);
+    this.bind();
   }
 
   init() {
     this.setDivideLayer();
+  }
+
+  bind() {
+    const { table } = this;
+    table.on(Constant.EVENT_TYPE.CHANGE_HEIGHT, () => {
+      this.setDivideLayer();
+    });
+    table.on(Constant.EVENT_TYPE.CHANGE_WIDTH, () => {
+      this.setDivideLayer();
+    });
   }
 
   addWidgets(widget) {

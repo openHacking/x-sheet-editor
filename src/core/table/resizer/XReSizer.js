@@ -61,10 +61,11 @@ class XReSizer extends Widget {
       moveOff = true;
       const { left, ci } = this.getEventLeft(e);
       const min = left - cols.getWidth(ci) + this.width + 90;
+      let mx = 0;
       // console.log('left >>>', left + index.width);
       // console.log('min >>>', min);
       EventBind.mouseMoveUp(document, (e) => {
-        let { x: mx } = table.computeEventXy(e);
+        ({ x: mx } = table.computeEventXy(e));
         // console.log('mx >>>', mx);
         if (mx < min) mx = min;
         this.css('left', `${mx - this.width / 2}px`);
@@ -77,6 +78,7 @@ class XReSizer extends Widget {
         if (y <= 0) {
           this.hide();
         }
+        table.setWidth(ci, mx);
       });
       e.stopPropagation();
     });
