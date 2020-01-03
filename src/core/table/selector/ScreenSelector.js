@@ -13,6 +13,7 @@ class ScreenSelector extends ScreenWidget {
     this.t = new Selector(options);
     this.l = new Selector(options);
     this.br = new Selector(options);
+    this.selectorAttr = null;
     this.bind();
   }
 
@@ -583,6 +584,10 @@ class ScreenSelector extends ScreenWidget {
   getSelectorRange() {
     // TODO ...
     //
+  }
+
+  updateSelectorAttr() {
+
   }
 }
 
