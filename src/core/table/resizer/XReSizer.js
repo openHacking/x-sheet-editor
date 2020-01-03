@@ -90,8 +90,13 @@ class XReSizer extends Widget {
     });
     EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
       if (moveOff) return;
-      const { left } = this.getEventLeft(e);
+      let { left } = this.getEventLeft(e);
+      const visualWidth = table.visualWidth();
       // console.log('left >>>', left);
+      // console.log('visualWidth', visualWidth);
+      if (left > visualWidth) {
+        left = visualWidth;
+      }
       if (left === -1) {
         this.hide();
       } else {
