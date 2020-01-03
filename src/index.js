@@ -40,6 +40,9 @@ class XSheet extends Widget {
               data: Data,
             },
           },
+          {
+            name: 'coffee cloud 二次迭代开发',
+          },
         ],
       },
     },
