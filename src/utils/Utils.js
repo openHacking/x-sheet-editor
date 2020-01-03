@@ -227,31 +227,19 @@ class Utils {
   }
 
   static setMousePointRowReSize() {
-    document.body.classList.remove('point-col-resize');
-    document.body.classList.remove('point-crosshair');
-    document.body.classList.remove('point-default');
-    document.body.classList.add('point-row-resize');
+    document.body.style.cursor = 'row-resize';
   }
 
   static serMousePointColReSize() {
-    document.body.classList.remove('point-row-resize');
-    document.body.classList.remove('point-crosshair');
-    document.body.classList.remove('point-default');
-    document.body.classList.add('point-col-resize');
+    document.body.style.cursor = 'col-resize';
   }
 
   static serMousePointCrossHair() {
-    document.body.classList.remove('point-row-resize');
-    document.body.classList.remove('point-col-resize');
-    document.body.classList.remove('point-default');
-    document.body.classList.add('point-crosshair');
+    document.body.style.cursor = 'crosshair';
   }
 
   static setMousePoint() {
-    document.body.classList.remove('point-row-resize');
-    document.body.classList.remove('point-col-resize');
-    document.body.classList.remove('point-crosshair');
-    document.body.classList.add('point-default');
+    document.body.style.cursor = 'default';
   }
 }
 
