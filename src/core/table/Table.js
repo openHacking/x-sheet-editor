@@ -314,6 +314,7 @@ class FixedLeft {
     const { table } = this;
     const { fixed } = table;
     const { fxLeft } = fixed;
+    // console.log('table.cols >>>', table.cols);
     return table.cols.sectionSumWidth(0, fxLeft);
   }
 
@@ -338,6 +339,7 @@ class FixedLeft {
       lineWidth: settings.table.borderWidth,
       strokeStyle: settings.table.borderColor,
     });
+    // console.log('width>>>', width);
     rows.eachHeight(sri, eri, (i, ch, y) => {
       draw.line([0, y], [width, y]);
       if (i === eri) draw.line([0, y + ch], [width, y + ch]);
@@ -420,8 +422,11 @@ class FixedLeft {
     const offsetY = this.getYOffset();
     const width = this.getWidth();
     const height = this.getHeight();
+    // console.log('width >>>', width);
     viewRange.sci = 0;
     viewRange.eci = fxLeft;
+    viewRange.w = width;
+    viewRange.h = height;
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     const rect = new Rect({
@@ -568,6 +573,8 @@ class FixedTop {
     const height = this.getHeight();
     viewRange.sri = 0;
     viewRange.eri = fxTop;
+    viewRange.w = width;
+    viewRange.h = height;
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     const rect = new Rect({

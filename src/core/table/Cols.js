@@ -67,8 +67,10 @@ class Cols {
       left += this.getWidth(sci - 1);
     }
     for (let i = sci; i <= eci; i += 1) {
-      const col = this.getOrNew(i);
-      col.left = left;
+      const col = this.get(i);
+      if (col) {
+        col.left = left;
+      }
       left += this.getWidth(i);
     }
   }

@@ -67,8 +67,10 @@ class Rows {
       top += this.getHeight(sri - 1);
     }
     for (let i = sri; i <= eri; i += 1) {
-      const row = this.getOrNew(i);
-      row.top = top;
+      const row = this.get(i);
+      if (row) {
+        row.top = top;
+      }
       top += this.getHeight(i);
     }
   }
