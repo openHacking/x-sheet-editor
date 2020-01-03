@@ -98,7 +98,7 @@ class YReSizer extends Widget {
       if (top > visualHeight) {
         top = visualHeight;
       }
-      if (top === -1 || min > visualHeight) {
+      if (top === -1 || min > visualHeight || ri === -1) {
         this.hide();
       } else {
         this.show();

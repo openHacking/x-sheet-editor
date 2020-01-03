@@ -99,7 +99,7 @@ class XReSizer extends Widget {
       if (left > visualWidth) {
         left = visualWidth;
       }
-      if (left === -1 || min > visualWidth) {
+      if (left === -1 || min > visualWidth || ci === -1) {
         this.hide();
       } else {
         this.show();
