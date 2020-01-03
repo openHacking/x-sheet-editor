@@ -84,7 +84,6 @@ class XReSizer extends Widget {
         }
         const newLeft = mx - (left - cols.getWidth(ci)) + this.width;
         table.setWidth(ci, newLeft);
-        Utils.setMousePoint();
       });
       e.stopPropagation();
     });
