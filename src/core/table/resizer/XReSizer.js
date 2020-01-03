@@ -21,23 +21,53 @@ class XReSizer extends Widget {
     this.bind();
   }
 
+  getEventLeft(event) {
+    const { table } = this;
+    const {
+      settings, content, cols, fixed,
+    } = table;
+    const { scroll } = content;
+    const { index } = settings;
+    const { x, y } = table.computeEventXy(event);
+    const { ri, ci } = table.getRiCiByXy(x, y);
+    if (ri !== -1) {
+      return {
+        left: -1,
+        x,
+        y,
+        ri,
+        ci,
+      };
+    }
+    let left = index.width + cols.sectionSumWidth(0, ci);
+    if (ci > fixed.fxLeft) {
+      left -= scroll.x;
+    }
+    return {
+      left: left - this.width,
+      x,
+      y,
+      ri,
+      ci,
+    };
+  }
+
   bind() {
     const { table } = this;
-    const { settings, content } = table;
-    const { cols, fixed } = table;
-    const { scroll } = content;
+    const { settings, cols } = table;
     const { index } = settings;
     let moveOff = false;
     EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {
       moveOff = true;
-      const { x: tdx } = table.computeEventXy(e);
-      const { x: xrx } = table.computeWidgetXy(this);
-      const diff = tdx - xrx;
-      const min = tdx - (index.width - 20);
+      const { left, ci } = this.getEventLeft(e);
+      const min = left - cols.getWidth(ci) + this.width + 90;
+      // console.log('left >>>', left + index.width);
+      // console.log('min >>>', min);
       EventBind.mouseMoveUp(document, (e) => {
         let { x: mx } = table.computeEventXy(e);
+        // console.log('mx >>>', mx);
         if (mx < min) mx = min;
-        this.css('left', `${mx - diff}px`);
+        this.css('left', `${mx - this.width / 2}px`);
         this.lineEl.css('height', `${table.visualHeight()}px`);
         this.lineEl.show();
       }, (e) => {
@@ -52,19 +82,15 @@ class XReSizer extends Widget {
     });
     EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
       if (moveOff) return;
-      const { x, y } = table.computeEventXy(e);
-      const { ri, ci } = table.getRiCiByXy(x, y);
-      if (ri === -1) {
+      const { left } = this.getEventLeft(e);
+      // console.log('left >>>', left);
+      if (left === -1) {
+        this.hide();
+      } else {
         this.show();
-        let left = index.width + cols.sectionSumWidth(0, ci);
-        if (ci > fixed.fxLeft) {
-          left -= scroll.x;
-        }
-        this.css('left', `${left - this.width}px`);
+        this.css('left', `${left}px`);
         this.hoverEl.css('width', `${this.width}px`);
         this.hoverEl.css('height', `${index.height}px`);
-      } else {
-        this.hide();
       }
     });
     EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_LEAVE, () => {
