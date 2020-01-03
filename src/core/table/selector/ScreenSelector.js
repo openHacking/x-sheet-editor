@@ -5,6 +5,7 @@ import { Constant } from '../../../utils/Constant';
 import { ScreenWidget } from '../screen/ScreenWidget';
 import { EventBind } from '../../../utils/EventBind';
 import { RectRange } from '../RectRange';
+import { Utils } from '../../../utils/Utils';
 
 class ScreenSelector extends ScreenWidget {
   constructor(screen, options = {}) {
@@ -283,6 +284,7 @@ class ScreenSelector extends ScreenWidget {
   bind() {
     const { screen } = this;
     const { table } = screen;
+    let moveOff = false;
     EventBind.bind(table, Constant.EVENT_TYPE.SCROLL, () => {
       if (this.selectorAttr) {
         this.setOffset(this.selectorAttr);
@@ -308,6 +310,8 @@ class ScreenSelector extends ScreenWidget {
       this.br.cornerEl,
     ], Constant.EVENT_TYPE.MOUSE_DOWN, (e1) => {
       // console.log('auto fill');
+      Utils.serMousePointCrossHair();
+      moveOff = true;
       EventBind.mouseMoveUp(document, (e2) => {
         const { x, y } = table.computeEventXy(e2);
         const selectorAutoFillAttr = this.getMoveAutoFillXYSelectorAttr(x, y);
@@ -319,9 +323,29 @@ class ScreenSelector extends ScreenWidget {
           this.hideAutoFill();
         }
       }, () => {
+        moveOff = false;
+        Utils.setMousePoint();
         this.hideAutoFill();
       });
       e1.stopPropagation();
+    });
+    EventBind.bind([
+      this.lt.cornerEl,
+      this.t.cornerEl,
+      this.l.cornerEl,
+      this.br.cornerEl,
+    ], Constant.EVENT_TYPE.MOUSE_LEAVE, () => {
+      if (moveOff) return;
+      Utils.setMousePoint();
+    });
+    EventBind.bind([
+      this.lt.cornerEl,
+      this.t.cornerEl,
+      this.l.cornerEl,
+      this.br.cornerEl,
+    ], Constant.EVENT_TYPE.MOUSE_ENTER, () => {
+      if (moveOff) return;
+      Utils.serMousePointCrossHair();
     });
   }
 

@@ -1,4 +1,4 @@
-/* global navigator */
+/* global navigator document */
 
 const alphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
@@ -224,6 +224,34 @@ class Utils {
   static throttle(cb = () => {}, time = 500) {
     if (throttleHandle) clearTimeout(throttleHandle);
     throttleHandle = setTimeout(cb, time);
+  }
+
+  static setMousePointRowReSize() {
+    document.body.classList.remove('point-col-resize');
+    document.body.classList.remove('point-crosshair');
+    document.body.classList.remove('point-default');
+    document.body.classList.add('point-row-resize');
+  }
+
+  static serMousePointColReSize() {
+    document.body.classList.remove('point-row-resize');
+    document.body.classList.remove('point-crosshair');
+    document.body.classList.remove('point-default');
+    document.body.classList.add('point-col-resize');
+  }
+
+  static serMousePointCrossHair() {
+    document.body.classList.remove('point-row-resize');
+    document.body.classList.remove('point-col-resize');
+    document.body.classList.remove('point-default');
+    document.body.classList.add('point-crosshair');
+  }
+
+  static setMousePoint() {
+    document.body.classList.remove('point-row-resize');
+    document.body.classList.remove('point-col-resize');
+    document.body.classList.remove('point-crosshair');
+    document.body.classList.add('point-default');
   }
 }
 

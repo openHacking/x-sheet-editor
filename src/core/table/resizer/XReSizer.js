@@ -5,6 +5,7 @@ import { cssPrefix } from '../../../config';
 import { h } from '../../../lib/Element';
 import { EventBind } from '../../../utils/EventBind';
 import { Constant } from '../../../utils/Constant';
+import { Utils } from '../../../utils/Utils';
 
 class XReSizer extends Widget {
   constructor(table, options = { width: 5, minWidth: 90 }) {
@@ -59,6 +60,7 @@ class XReSizer extends Widget {
     const { index } = settings;
     let moveOff = false;
     EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {
+      Utils.serMousePointColReSize();
       moveOff = true;
       const { left, ci } = this.getEventLeft(e);
       const min = left - cols.getWidth(ci) + 90;
@@ -82,6 +84,7 @@ class XReSizer extends Widget {
         }
         const newLeft = mx - (left - cols.getWidth(ci)) + this.width;
         table.setWidth(ci, newLeft);
+        Utils.setMousePoint();
       });
       e.stopPropagation();
     });
@@ -101,6 +104,14 @@ class XReSizer extends Widget {
     EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_LEAVE, () => {
       if (moveOff) return;
       this.hide();
+    });
+    EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_ENTER, () => {
+      if (moveOff) return;
+      Utils.serMousePointColReSize();
+    });
+    EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_LEAVE, () => {
+      if (moveOff) return;
+      Utils.setMousePoint();
     });
   }
 }
