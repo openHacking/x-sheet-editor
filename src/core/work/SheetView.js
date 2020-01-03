@@ -1,6 +1,8 @@
 import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../config';
 import { Sheet } from './Sheet';
+import { EventBind } from '../../utils/EventBind';
+import { Constant } from '../../utils/Constant';
 
 class SheetView extends Widget {
   constructor() {
@@ -14,6 +16,17 @@ class SheetView extends Widget {
     this.children(sheet);
     sheet.init();
     sheet.hide();
+    // console.log(sheet);
+    EventBind.bind(sheet, Constant.EVENT_TYPE.CHANGE_WIDTH, (e) => {
+      // console.log('e>>>', e);
+      this.trigger(Constant.EVENT_TYPE.CHANGE_WIDTH);
+      e.stopPropagation();
+    });
+    EventBind.bind(sheet, Constant.EVENT_TYPE.CHANGE_HEIGHT, (e) => {
+      // console.log('e>>>', e);
+      this.trigger(Constant.EVENT_TYPE.CHANGE_HEIGHT);
+      e.stopPropagation();
+    });
     return this.sheetList.length - 1;
   }
 

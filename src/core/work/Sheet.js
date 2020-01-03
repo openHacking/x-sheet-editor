@@ -1,6 +1,8 @@
 import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../config';
 import { Table } from '../table/Table';
+import { EventBind } from '../../utils/EventBind';
+import { Constant } from '../../utils/Constant';
 
 class Sheet extends Widget {
   constructor(options = {
@@ -14,10 +16,23 @@ class Sheet extends Widget {
     // console.log('this.options.tableConfig >>>', this.options.tableConfig);
     this.table = new Table(this.options.tableConfig);
     this.children(this.table);
+    this.bind();
   }
 
   init() {
     this.table.init();
+  }
+
+  bind() {
+    EventBind.bind(this.table, Constant.EVENT_TYPE.CHANGE_WIDTH, (e) => {
+      // console.log('change width');
+      this.trigger(Constant.EVENT_TYPE.CHANGE_WIDTH, this);
+      e.stopPropagation();
+    });
+    EventBind.bind(this.table, Constant.EVENT_TYPE.CHANGE_HEIGHT, (e) => {
+      this.trigger(Constant.EVENT_TYPE.CHANGE_HEIGHT, this);
+      e.stopPropagation();
+    });
   }
 }
 

@@ -1,4 +1,4 @@
-/* global document Event window */
+/* global document CustomEvent window */
 
 import { Utils } from '../utils/Utils';
 
@@ -313,8 +313,12 @@ class Element {
     };
   }
 
-  trigger(type) {
-    const event = new Event(type, { bubbles: true, cancelable: false });
+  trigger(type, message) {
+    const event = new CustomEvent(type, {
+      detail: message,
+      bubbles: true,
+      cancelable: false,
+    });
     this.el.dispatchEvent(event);
   }
 }

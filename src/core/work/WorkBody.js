@@ -16,6 +16,7 @@ import { TabView } from './TabView';
 import { Utils } from '../../utils/Utils';
 import { Sheet } from './Sheet';
 import { Tab } from './Tab';
+import { EventBind } from '../../utils/EventBind';
 
 // sheet表和垂直滚动条
 let sheetViewLayerHorizontalElement;
@@ -194,7 +195,7 @@ class WorkBody extends Widget {
   }
 
   bind() {
-    this.on(Constant.EVENT_TYPE.MOUSE_WHEEL, (evt) => {
+    EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_WHEEL, (evt) => {
       const sheet = this.sheetView.getActiveSheet();
       if (Utils.isUnDef(sheet)) return;
       const { table } = sheet;
@@ -215,7 +216,15 @@ class WorkBody extends Widget {
         evt.stopPropagation();
       }
     });
-    window.addEventListener(Constant.EVENT_TYPE.RESIZE, () => {
+    EventBind.bind(window, Constant.EVENT_TYPE.RESIZE, () => {
+      this.initScroll();
+    });
+    EventBind.bind(this.sheetView, Constant.EVENT_TYPE.CHANGE_HEIGHT, () => {
+      // console.log('change height');
+      this.initScroll();
+    });
+    EventBind.bind(this.sheetView, Constant.EVENT_TYPE.CHANGE_WIDTH, () => {
+      // console.log('change width');
       this.initScroll();
     });
   }

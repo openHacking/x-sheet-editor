@@ -22,11 +22,15 @@ class Screen extends Widget {
 
   bind() {
     const { table } = this;
-    table.on(Constant.EVENT_TYPE.CHANGE_HEIGHT, () => {
+    table.on(Constant.EVENT_TYPE.CHANGE_HEIGHT, (e) => {
+      // console.log('change height');
       this.setDivideLayer();
+      e.stopPropagation();
     });
-    table.on(Constant.EVENT_TYPE.CHANGE_WIDTH, () => {
+    table.on(Constant.EVENT_TYPE.CHANGE_WIDTH, (e) => {
+      // console.log('change width');
       this.setDivideLayer();
+      e.stopPropagation();
     });
   }
 

@@ -28,7 +28,7 @@ class Cols {
   setWidth(i, width) {
     const col = this.getOrNew(i);
     col.width = width;
-    this.cacheTotalWidth = 0;
+    this.cacheTotalWidth = -1;
     this.computeLeft(i, this.len);
   }
 

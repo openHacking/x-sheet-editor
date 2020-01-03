@@ -22,7 +22,7 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const { rect } = selectorAttr;
-    const { width, height } = rect;
+    const { w: width, h: height } = rect;
     const indexWidth = table.getIndexWidth();
     const indexHeight = table.getIndexHeight();
     let { left, top } = selectorAttr;
@@ -40,7 +40,7 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const { rect } = selectorAttr;
-    const { width, height } = rect;
+    const { w: width, h: height } = rect;
     const scroll = table.getScroll();
     const indexWidth = table.getIndexWidth();
     const indexHeight = table.getIndexHeight();
@@ -62,7 +62,7 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const { rect } = selectorAttr;
-    const { width, height } = rect;
+    const { w: width, h: height } = rect;
     const scroll = table.getScroll();
     const indexWidth = table.getIndexWidth();
     const indexHeight = table.getIndexHeight();
@@ -84,7 +84,7 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const { rect } = selectorAttr;
-    const { width, height } = rect;
+    const { w: width, h: height } = rect;
     const scroll = table.getScroll();
     const indexWidth = table.getIndexWidth();
     const indexHeight = table.getIndexHeight();
@@ -122,26 +122,26 @@ class ScreenSelector extends ScreenWidget {
     autofillEl.cssRemoveKeys('bottom');
     switch (direction) {
       case 'top':
-        autofillEl.css('top', `-${rect.height}px`);
-        autofillEl.css('width', `${rect.width}px`);
-        autofillEl.css('height', `${rect.height}px`);
+        autofillEl.css('top', `-${rect.h}px`);
+        autofillEl.css('width', `${rect.w}px`);
+        autofillEl.css('height', `${rect.h}px`);
         break;
       case 'bottom':
-        autofillEl.css('bottom', `-${rect.height}px`);
-        autofillEl.css('width', `${rect.width}px`);
-        autofillEl.css('height', `${rect.height}px`);
+        autofillEl.css('bottom', `-${rect.h}px`);
+        autofillEl.css('width', `${rect.w}px`);
+        autofillEl.css('height', `${rect.h}px`);
         break;
       case 'left':
         autofillEl.css('top', '0px');
-        autofillEl.css('left', `-${rect.width}px`);
-        autofillEl.css('width', `${rect.width}px`);
-        autofillEl.css('height', `${rect.height}px`);
+        autofillEl.css('left', `-${rect.w}px`);
+        autofillEl.css('width', `${rect.w}px`);
+        autofillEl.css('height', `${rect.h}px`);
         break;
       case 'right':
         autofillEl.css('top', '0px');
-        autofillEl.css('right', `-${rect.width}px`);
-        autofillEl.css('width', `${rect.width}px`);
-        autofillEl.css('height', `${rect.height}px`);
+        autofillEl.css('right', `-${rect.w}px`);
+        autofillEl.css('width', `${rect.w}px`);
+        autofillEl.css('height', `${rect.h}px`);
         break;
       default: break;
     }
@@ -157,26 +157,26 @@ class ScreenSelector extends ScreenWidget {
     autofillEl.cssRemoveKeys('bottom');
     switch (direction) {
       case 'top':
-        autofillEl.css('top', `-${rect.height}px`);
-        autofillEl.css('width', `${rect.width}px`);
-        autofillEl.css('height', `${rect.height}px`);
+        autofillEl.css('top', `-${rect.h}px`);
+        autofillEl.css('width', `${rect.w}px`);
+        autofillEl.css('height', `${rect.h}px`);
         break;
       case 'bottom':
-        autofillEl.css('bottom', `-${rect.height}px`);
-        autofillEl.css('width', `${rect.width}px`);
-        autofillEl.css('height', `${rect.height}px`);
+        autofillEl.css('bottom', `-${rect.h}px`);
+        autofillEl.css('width', `${rect.w}px`);
+        autofillEl.css('height', `${rect.h}px`);
         break;
       case 'left':
         autofillEl.css('top', '0px');
-        autofillEl.css('left', `-${rect.width}px`);
-        autofillEl.css('width', `${rect.width}px`);
-        autofillEl.css('height', `${rect.height}px`);
+        autofillEl.css('left', `-${rect.w}px`);
+        autofillEl.css('width', `${rect.w}px`);
+        autofillEl.css('height', `${rect.h}px`);
         break;
       case 'right':
         autofillEl.css('top', '0px');
-        autofillEl.css('right', `-${rect.width}px`);
-        autofillEl.css('width', `${rect.width}px`);
-        autofillEl.css('height', `${rect.height}px`);
+        autofillEl.css('right', `-${rect.w}px`);
+        autofillEl.css('width', `${rect.w}px`);
+        autofillEl.css('height', `${rect.h}px`);
         break;
       default: break;
     }
@@ -192,26 +192,26 @@ class ScreenSelector extends ScreenWidget {
     autofillEl.cssRemoveKeys('bottom');
     switch (direction) {
       case 'top':
-        autofillEl.css('top', `-${rect.height}px`);
-        autofillEl.css('width', `${rect.width}px`);
-        autofillEl.css('height', `${rect.height}px`);
+        autofillEl.css('top', `-${rect.h}px`);
+        autofillEl.css('width', `${rect.w}px`);
+        autofillEl.css('height', `${rect.h}px`);
         break;
       case 'bottom':
-        autofillEl.css('bottom', `-${rect.height}px`);
-        autofillEl.css('width', `${rect.width}px`);
-        autofillEl.css('height', `${rect.height}px`);
+        autofillEl.css('bottom', `-${rect.h}px`);
+        autofillEl.css('width', `${rect.w}px`);
+        autofillEl.css('height', `${rect.h}px`);
         break;
       case 'left':
         autofillEl.css('top', '0px');
-        autofillEl.css('left', `-${rect.width}px`);
-        autofillEl.css('width', `${rect.width}px`);
-        autofillEl.css('height', `${rect.height}px`);
+        autofillEl.css('left', `-${rect.w}px`);
+        autofillEl.css('width', `${rect.w}px`);
+        autofillEl.css('height', `${rect.h}px`);
         break;
       case 'right':
         autofillEl.css('top', '0px');
-        autofillEl.css('right', `-${rect.width}px`);
-        autofillEl.css('width', `${rect.width}px`);
-        autofillEl.css('height', `${rect.height}px`);
+        autofillEl.css('right', `-${rect.w}px`);
+        autofillEl.css('width', `${rect.w}px`);
+        autofillEl.css('height', `${rect.h}px`);
         break;
       default: break;
     }
@@ -227,26 +227,26 @@ class ScreenSelector extends ScreenWidget {
     autofillEl.cssRemoveKeys('bottom');
     switch (direction) {
       case 'top':
-        autofillEl.css('top', `-${rect.height}px`);
-        autofillEl.css('width', `${rect.width}px`);
-        autofillEl.css('height', `${rect.height}px`);
+        autofillEl.css('top', `-${rect.h}px`);
+        autofillEl.css('width', `${rect.w}px`);
+        autofillEl.css('height', `${rect.h}px`);
         break;
       case 'bottom':
-        autofillEl.css('bottom', `-${rect.height}px`);
-        autofillEl.css('width', `${rect.width}px`);
-        autofillEl.css('height', `${rect.height}px`);
+        autofillEl.css('bottom', `-${rect.h}px`);
+        autofillEl.css('width', `${rect.w}px`);
+        autofillEl.css('height', `${rect.h}px`);
         break;
       case 'left':
         autofillEl.css('top', '0px');
-        autofillEl.css('left', `-${rect.width}px`);
-        autofillEl.css('width', `${rect.width}px`);
-        autofillEl.css('height', `${rect.height}px`);
+        autofillEl.css('left', `-${rect.w}px`);
+        autofillEl.css('width', `${rect.w}px`);
+        autofillEl.css('height', `${rect.h}px`);
         break;
       case 'right':
         autofillEl.css('top', '0px');
-        autofillEl.css('right', `-${rect.width}px`);
-        autofillEl.css('width', `${rect.width}px`);
-        autofillEl.css('height', `${rect.height}px`);
+        autofillEl.css('right', `-${rect.w}px`);
+        autofillEl.css('width', `${rect.w}px`);
+        autofillEl.css('height', `${rect.h}px`);
         break;
       default: break;
     }
@@ -326,6 +326,20 @@ class ScreenSelector extends ScreenWidget {
       });
       e1.stopPropagation();
     });
+    EventBind.bind(table, Constant.EVENT_TYPE.CHANGE_HEIGHT, (e) => {
+      if (this.selectorAttr) {
+        this.updateSelectorAttr();
+        this.setOffset(this.selectorAttr);
+      }
+      e.stopPropagation();
+    });
+    EventBind.bind(table, Constant.EVENT_TYPE.CHANGE_WIDTH, (e) => {
+      if (this.selectorAttr) {
+        this.updateSelectorAttr();
+        this.setOffset(this.selectorAttr);
+      }
+      e.stopPropagation();
+    });
   }
 
   getViewRange() {
@@ -352,9 +366,10 @@ class ScreenSelector extends ScreenWidget {
     const { table } = screen;
     const { cols, rows } = table;
     const { selectorAttr } = this;
-    const { rect: selectorRect, edge } = selectorAttr;
+    const { rect: selectorRect, edge, edgeType } = selectorAttr;
     let { ri, ci } = table.getRiCiByXy(x, y);
     // console.log('ri, ci >>>', ri, ci);
+    // console.log('edge >>>', edge);
     if (ri < 0) ri = 0; else if (ri > rows.len) ri = rows.len - 1;
     if (ci < 0) ci = 0; else if (ci > cols.len) ci = cols.len - 1;
 
@@ -364,10 +379,10 @@ class ScreenSelector extends ScreenWidget {
     let {
       eri: selectorEri, eci: selectorEci,
     } = selectorRect;
-    if (edge && selectorRect.width === table.getContentWidth() + table.getFixedWidth()) {
+    if (edge && edgeType === 'left') {
       selectorEci = cols.len - 1;
     }
-    if (edge && selectorRect.height === table.getContentHeight() + table.getFixedHeight()) {
+    if (edge && edgeType === 'top') {
       selectorEri = rows.len - 1;
     }
     // console.log('selectorSri selectorSci selectorEri selectorEci',
@@ -394,12 +409,13 @@ class ScreenSelector extends ScreenWidget {
         rect = new RectRange(selectorSri, selectorEci + 1, selectorEri, ci);
       }
     }
+    // console.log('rect >>>', rect);
 
     if (rect !== null) {
       const width = cols.sectionSumWidth(rect.sci, rect.eci);
       const height = rows.sectionSumHeight(rect.sri, rect.eri);
-      rect.width = width;
-      rect.height = height;
+      rect.w = width;
+      rect.h = height;
       return {
         rect, direction,
       };
@@ -423,10 +439,10 @@ class ScreenSelector extends ScreenWidget {
       const top = table.getIndexHeight();
       // console.log('width, height, left, top >>>', width, height, left, top);
       const rect = new RectRange(0, 0, 0, 0);
-      rect.width = width;
-      rect.height = height;
+      rect.w = width;
+      rect.h = height;
       return {
-        left, top, rect, edge: true,
+        left, top, rect, edge: true, edgeType: 'left-top',
       };
     }
     if (ri === -1) {
@@ -436,10 +452,10 @@ class ScreenSelector extends ScreenWidget {
       const top = table.getIndexHeight();
       // console.log('width, height, left, top >>>', width, height, left, top);
       const rect = new RectRange(0, ci, 0, ci);
-      rect.width = width;
-      rect.height = height;
+      rect.w = width;
+      rect.h = height;
       return {
-        left, top, rect, edge: true,
+        left, top, rect, edge: true, edgeType: 'top',
       };
     }
     if (ci === -1) {
@@ -449,10 +465,10 @@ class ScreenSelector extends ScreenWidget {
       const top = table.getRowTop(ri);
       // console.log('width, height, left, top >>>', width, height, left, top);
       const rect = new RectRange(ri, 0, ri, 0);
-      rect.width = width;
-      rect.height = height;
+      rect.w = width;
+      rect.h = height;
       return {
-        left, top, rect, edge: true,
+        left, top, rect, edge: true, edgeType: 'left',
       };
     }
 
@@ -465,8 +481,8 @@ class ScreenSelector extends ScreenWidget {
     const left = table.getColLeft(rect.sci);
     const width = cols.sectionSumWidth(rect.sci, rect.eci);
     const height = rows.sectionSumHeight(rect.sri, rect.eri);
-    rect.width = width;
-    rect.height = height;
+    rect.w = width;
+    rect.h = height;
     return { left, top, rect };
   }
 
@@ -485,10 +501,10 @@ class ScreenSelector extends ScreenWidget {
       const top = table.getIndexHeight();
       // console.log('width, height, left, top >>>', width, height, left, top);
       const rect = new RectRange(0, 0, 0, 0);
-      rect.width = width;
-      rect.height = height;
+      rect.w = width;
+      rect.h = height;
       return {
-        left, top, rect, edge: true,
+        left, top, rect, edge: true, edgeType: 'left-top',
       };
     }
     if (edge && ri === -1) {
@@ -499,10 +515,10 @@ class ScreenSelector extends ScreenWidget {
       const left = table.getColLeft(rect.sci);
       const top = table.getIndexHeight();
       // console.log('width, height, left, top >>>', width, height, left, top);
-      rect.width = width;
-      rect.height = height;
+      rect.w = width;
+      rect.h = height;
       return {
-        left, top, rect, edge: true,
+        left, top, rect, edge: true, edgeType: 'top',
       };
     }
     if (edge && ci === -1) {
@@ -513,10 +529,10 @@ class ScreenSelector extends ScreenWidget {
       const left = table.getIndexWidth();
       const top = table.getRowTop(rect.sri);
       // console.log('width, height, left, top >>>', width, height, left, top);
-      rect.width = width;
-      rect.height = height;
+      rect.w = width;
+      rect.h = height;
       return {
-        left, top, rect, edge: true,
+        left, top, rect, edge: true, edgeType: 'left',
       };
     }
 
@@ -531,8 +547,8 @@ class ScreenSelector extends ScreenWidget {
       const left = table.getColLeft(rect.sci);
       const top = table.getRowTop(rect.sri);
       // console.log('width, height, left, top >>>', width, height, left, top);
-      rect.width = width;
-      rect.height = height;
+      rect.w = width;
+      rect.h = height;
       return { left, top, rect };
     }
     if (ri === -1) {
@@ -546,8 +562,8 @@ class ScreenSelector extends ScreenWidget {
       const left = table.getColLeft(rect.sci);
       const top = table.getRowTop(rect.sri);
       // console.log('width, height, left, top >>>', width, height, left, top);
-      rect.width = width;
-      rect.height = height;
+      rect.w = width;
+      rect.h = height;
       return { left, top, rect };
     }
     if (ci === -1) {
@@ -561,8 +577,8 @@ class ScreenSelector extends ScreenWidget {
       const left = table.getColLeft(rect.sci);
       const top = table.getRowTop(rect.sri);
       // console.log('width, height, left, top >>>', width, height, left, top);
-      rect.width = width;
-      rect.height = height;
+      rect.w = width;
+      rect.h = height;
       return { left, top, rect };
     }
 
@@ -572,8 +588,8 @@ class ScreenSelector extends ScreenWidget {
     const left = table.getColLeft(rect.sci);
     const width = cols.sectionSumWidth(rect.sci, rect.eci);
     const height = rows.sectionSumHeight(rect.sri, rect.eri);
-    rect.width = width;
-    rect.height = height;
+    rect.w = width;
+    rect.h = height;
     // console.log('selectRect>>>', selectRect);
     // console.log('rect>>>', rect);
     return { left, top, rect };
@@ -590,7 +606,38 @@ class ScreenSelector extends ScreenWidget {
   }
 
   updateSelectorAttr() {
-
+    const { screen } = this;
+    const { table } = screen;
+    const { rows, cols } = table;
+    const { rect } = this.selectorAttr;
+    if (this.selectorAttr.edge) {
+      switch (this.selectorAttr.edgeType) {
+        case 'left':
+          this.selectorAttr.left = table.getIndexWidth();
+          this.selectorAttr.top = table.getRowTop(rect.sri);
+          rect.w = table.getContentWidth() + table.getFixedWidth();
+          rect.h = rows.sectionSumHeight(rect.sri, rect.eri);
+          break;
+        case 'top':
+          this.selectorAttr.left = table.getColLeft(rect.sci);
+          this.selectorAttr.top = table.getIndexHeight();
+          rect.w = cols.sectionSumWidth(rect.sci, rect.eci);
+          rect.h = table.getContentHeight() + table.getFixedHeight();
+          break;
+        case 'left-top':
+          this.selectorAttr.left = table.getIndexWidth();
+          this.selectorAttr.top = table.getIndexHeight();
+          rect.w = table.getContentWidth() + table.getFixedWidth();
+          rect.h = table.getContentHeight() + table.getFixedHeight();
+          break;
+        default: break;
+      }
+    } else {
+      this.selectorAttr.left = table.getColLeft(rect.sci);
+      this.selectorAttr.top = table.getRowTop(rect.sri);
+      rect.w = cols.sectionSumWidth(rect.sci, rect.eci);
+      rect.h = rows.sectionSumHeight(rect.sri, rect.eri);
+    }
   }
 }
 
