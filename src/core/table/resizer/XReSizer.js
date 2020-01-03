@@ -7,11 +7,12 @@ import { EventBind } from '../../../utils/EventBind';
 import { Constant } from '../../../utils/Constant';
 
 class XReSizer extends Widget {
-  constructor(table, options = { width: 5 }) {
+  constructor(table, options = { width: 5, minWidth: 90 }) {
     super(`${cssPrefix}-re-sizer-horizontal`);
     this.table = table;
     this.options = options;
     this.width = options.width;
+    this.minWidth = options.minWidth;
     this.hoverEl = h('div', `${cssPrefix}-re-sizer-hover`);
     this.lineEl = h('div', `${cssPrefix}-re-sizer-line`);
     this.children(...[
@@ -44,7 +45,7 @@ class XReSizer extends Widget {
       left -= scroll.x;
     }
     return {
-      left: left - this.width,
+      left,
       x,
       y,
       ri,
@@ -60,25 +61,27 @@ class XReSizer extends Widget {
     EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {
       moveOff = true;
       const { left, ci } = this.getEventLeft(e);
-      const min = left - cols.getWidth(ci) + this.width + 90;
-      let mx = 0;
+      const min = left - cols.getWidth(ci) + 90;
+      let { x: mx } = table.computeEventXy(e);
       // console.log('left >>>', left + index.width);
       // console.log('min >>>', min);
       EventBind.mouseMoveUp(document, (e) => {
         ({ x: mx } = table.computeEventXy(e));
         // console.log('mx >>>', mx);
         if (mx < min) mx = min;
-        this.css('left', `${mx - this.width / 2}px`);
+        this.css('left', `${mx}px`);
         this.lineEl.css('height', `${table.visualHeight()}px`);
         this.lineEl.show();
       }, (e) => {
         moveOff = false;
         this.lineEl.hide();
+        this.css('left', `${mx}px`);
         const { y } = table.computeEventXy(e);
         if (y <= 0) {
           this.hide();
         }
-        table.setWidth(ci, mx);
+        const newLeft = mx - (left - cols.getWidth(ci)) + this.width;
+        table.setWidth(ci, newLeft);
       });
       e.stopPropagation();
     });
@@ -90,7 +93,7 @@ class XReSizer extends Widget {
         this.hide();
       } else {
         this.show();
-        this.css('left', `${left}px`);
+        this.css('left', `${left - this.width}px`);
         this.hoverEl.css('width', `${this.width}px`);
         this.hoverEl.css('height', `${index.height}px`);
       }
