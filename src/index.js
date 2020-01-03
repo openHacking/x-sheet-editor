@@ -24,7 +24,7 @@ class XSheet extends Widget {
               ],
               fixed: {
                 fxTop: 1,
-                fxLeft: 0,
+                fxLeft: 1,
               },
               data: Data,
             },

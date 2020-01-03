@@ -124,14 +124,10 @@ class Content {
     const { table } = this;
     const { fixed, settings } = table;
     const { index } = settings;
-    const { fxLeft, fxRight } = fixed;
+    const { fxLeft } = fixed;
     const { width } = index;
     const fixedLeftWidth = table.cols.sectionSumWidth(0, fxLeft);
-    let fixedRightWidth = 0;
-    if (fxRight !== -1) {
-      fixedRightWidth = table.cols.sectionSumWidth(table.cols.len - fxRight, table.cols.len);
-    }
-    return table.visualWidth() - (fixedLeftWidth + width + fixedRightWidth);
+    return table.visualWidth() - (fixedLeftWidth + width);
   }
 
   getHeight() {
@@ -321,7 +317,8 @@ class FixedLeft {
   getHeight() {
     const { table } = this;
     const { content } = table;
-    return content.getHeight();
+    const viewRange = content.getViewRange();
+    return viewRange.h;
   }
 
   drawGrid(viewRange, offsetX, offsetY) {
@@ -464,7 +461,8 @@ class FixedTop {
   getWidth() {
     const { table } = this;
     const { content } = table;
-    return content.getWidth();
+    const viewRange = content.getViewRange();
+    return viewRange.w;
   }
 
   getHeight() {
@@ -575,6 +573,7 @@ class FixedTop {
     viewRange.eri = fxTop;
     viewRange.w = width;
     viewRange.h = height;
+    // console.log('width >>>', width);
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     const rect = new Rect({
