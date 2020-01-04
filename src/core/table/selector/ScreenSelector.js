@@ -140,7 +140,7 @@ class ScreenSelector extends ScreenWidget {
   setBROffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
-    const { rect, edgeType, edge } = selectorAttr;
+    const { rect, edgeType } = selectorAttr;
     const { w: width, h: height } = rect;
     const scroll = table.getScroll();
     const indexWidth = table.getIndexWidth();
@@ -160,26 +160,24 @@ class ScreenSelector extends ScreenWidget {
       left,
       top,
     }).show();
-    if (edge) {
-      switch (edgeType) {
-        case 'top':
-          this.br.cornerEl.cssRemoveKeys('bottom');
-          this.br.cornerEl.cssRemoveKeys('left');
-          this.br.cornerEl.css('top', `${scroll.y - 3}px`);
-          this.br.cornerEl.css('right', '-3px');
-          break;
-        case 'left':
-          this.br.cornerEl.cssRemoveKeys('top');
-          this.br.cornerEl.cssRemoveKeys('right');
-          this.br.cornerEl.css('bottom', '-3px');
-          this.br.cornerEl.css('left', `${scroll.x - 3}px`);
-          break;
-        default:
-          this.br.cornerEl.cssRemoveKeys('top');
-          this.br.cornerEl.cssRemoveKeys('left');
-          this.br.cornerEl.css('bottom', '-3px');
-          this.br.cornerEl.css('right', '-3px');
-      }
+    switch (edgeType) {
+      case 'top':
+        this.br.cornerEl.cssRemoveKeys('bottom');
+        this.br.cornerEl.cssRemoveKeys('left');
+        this.br.cornerEl.css('top', `${scroll.y - 3}px`);
+        this.br.cornerEl.css('right', '-3px');
+        break;
+      case 'left':
+        this.br.cornerEl.cssRemoveKeys('top');
+        this.br.cornerEl.cssRemoveKeys('right');
+        this.br.cornerEl.css('bottom', '-3px');
+        this.br.cornerEl.css('left', `${scroll.x - 3}px`);
+        break;
+      default:
+        this.br.cornerEl.cssRemoveKeys('top');
+        this.br.cornerEl.cssRemoveKeys('left');
+        this.br.cornerEl.css('bottom', '-3px');
+        this.br.cornerEl.css('right', '-3px');
     }
   }
 
