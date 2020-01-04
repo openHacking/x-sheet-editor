@@ -140,7 +140,7 @@ class ScreenSelector extends ScreenWidget {
   setBROffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
-    const { rect, edgeType } = selectorAttr;
+    const { rect, edgeType, edge } = selectorAttr;
     const { w: width, h: height } = rect;
     const scroll = table.getScroll();
     const indexWidth = table.getIndexWidth();
@@ -160,24 +160,26 @@ class ScreenSelector extends ScreenWidget {
       left,
       top,
     }).show();
-    switch (edgeType) {
-      case 'top':
-        this.br.cornerEl.cssRemoveKeys('bottom');
-        this.br.cornerEl.cssRemoveKeys('left');
-        this.br.cornerEl.css('top', '-3px');
-        this.br.cornerEl.css('right', '-3px');
-        break;
-      case 'left':
-        this.br.cornerEl.cssRemoveKeys('top');
-        this.br.cornerEl.cssRemoveKeys('right');
-        this.br.cornerEl.css('bottom', '-3px');
-        this.br.cornerEl.css('left', '-3px');
-        break;
-      default:
-        this.br.cornerEl.cssRemoveKeys('top');
-        this.br.cornerEl.cssRemoveKeys('left');
-        this.br.cornerEl.css('bottom', '-3px');
-        this.br.cornerEl.css('right', '-3px');
+    if (edge) {
+      switch (edgeType) {
+        case 'top':
+          this.br.cornerEl.cssRemoveKeys('bottom');
+          this.br.cornerEl.cssRemoveKeys('left');
+          this.br.cornerEl.css('top', `${scroll.y - 3}px`);
+          this.br.cornerEl.css('right', '-3px');
+          break;
+        case 'left':
+          this.br.cornerEl.cssRemoveKeys('top');
+          this.br.cornerEl.cssRemoveKeys('right');
+          this.br.cornerEl.css('bottom', '-3px');
+          this.br.cornerEl.css('left', `${scroll.x - 3}px`);
+          break;
+        default:
+          this.br.cornerEl.cssRemoveKeys('top');
+          this.br.cornerEl.cssRemoveKeys('left');
+          this.br.cornerEl.css('bottom', '-3px');
+          this.br.cornerEl.css('right', '-3px');
+      }
     }
   }
 
@@ -399,6 +401,7 @@ class ScreenSelector extends ScreenWidget {
       }, () => {
         this.hideAutoFill();
         Utils.setMousePoint();
+        this.autoFill();
       });
       e1.stopPropagation();
     });
@@ -677,8 +680,35 @@ class ScreenSelector extends ScreenWidget {
   }
 
   getSelectorRange() {
-    // TODO ...
-    //
+    const { screen } = this;
+    const { table } = screen;
+    const { rows, cols } = table;
+    const { selectorAttr } = this;
+    const { edge, edgeType, rect } = selectorAttr;
+    // console.log('rect>>>', rect);
+    // console.log('selectorAttr>>>', selectorAttr);
+    // console.log('edgeType>>>', edgeType);
+    const result = rect.clone();
+    if (edge) {
+      switch (edgeType) {
+        case 'left':
+          result.eci = cols.len - 1;
+          break;
+        case 'top':
+          result.eri = rows.len - 1;
+          break;
+        default:
+          result.eci = cols.len - 1;
+          result.eri = rows.len - 1;
+          break;
+      }
+    }
+    return result;
+  }
+
+  autoFill() {
+    const selectorRange = this.getSelectorRange();
+    console.log('selectorRange>>>', selectorRange);
   }
 
   updateSelectorAttr() {
