@@ -15,6 +15,7 @@ class ScreenSelector extends ScreenWidget {
     this.l = new Selector(options);
     this.br = new Selector(options);
     this.selectorAttr = null;
+    this.autoFillAttr = null;
     this.bind();
   }
 
@@ -396,6 +397,7 @@ class ScreenSelector extends ScreenWidget {
         } else {
           this.hideAutoFill();
         }
+        this.autoFillAttr = selectorAutoFillAttr;
       }, () => {
         this.hideAutoFill();
         Utils.setMousePoint();
@@ -673,8 +675,8 @@ class ScreenSelector extends ScreenWidget {
   }
 
   getAutoFillRange() {
-    // TODO ...
-    //
+    const { rect } = this.autoFillAttr;
+    return rect;
   }
 
   getSelectorRange() {
@@ -706,7 +708,9 @@ class ScreenSelector extends ScreenWidget {
 
   autoFill() {
     const selectorRange = this.getSelectorRange();
+    const autoFillRange = this.getAutoFillRange();
     console.log('selectorRange>>>', selectorRange);
+    console.log('autoFillRange>>>', autoFillRange);
   }
 
   updateSelectorAttr() {

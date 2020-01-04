@@ -1,4 +1,4 @@
-class RectBorder {
+class BorderAttr {
   constructor({
     width = 0, color = '#000000',
   } = {}) {
@@ -8,8 +8,8 @@ class RectBorder {
 
   clone() {
     const { width, color } = this;
-    return new RectBorder({ width, color });
+    return new BorderAttr({ width, color });
   }
 }
 
-export { RectBorder };
+export { BorderAttr };
