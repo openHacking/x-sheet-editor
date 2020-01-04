@@ -70,7 +70,7 @@ class XReSizer extends Widget {
       EventBind.mouseMoveUp(document, (e) => {
         ({ x: mx } = table.computeEventXy(e));
         // console.log('mx >>>', mx);
-        if (mx < min) mx = min;
+        mx = Utils.minIf(mx, min);
         this.css('left', `${mx}px`);
         this.lineEl.css('height', `${table.visualHeight()}px`);
         this.lineEl.show();

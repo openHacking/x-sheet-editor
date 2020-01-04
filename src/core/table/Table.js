@@ -54,7 +54,7 @@ const defaultSettings = {
   },
   cols: {
     len: 80,
-    width: 150,
+    width: 130,
   },
   merges: [],
   fixed: {
@@ -1289,15 +1289,15 @@ class Table extends Widget {
   }
 
   setWidth(ci, width) {
-    const { cols } = this;
-    cols.setWidth(ci, width);
+    const { cols, xReSizer } = this;
+    cols.setWidth(ci, Utils.minIf(width, xReSizer.minWidth));
     this.render();
     this.trigger(Constant.EVENT_TYPE.CHANGE_WIDTH);
   }
 
   setHeight(ri, height) {
-    const { rows } = this;
-    rows.setHeight(ri, height);
+    const { rows, yReSizer } = this;
+    rows.setHeight(ri, Utils.minIf(height, yReSizer.minHeight));
     this.render();
     this.trigger(Constant.EVENT_TYPE.CHANGE_HEIGHT);
   }

@@ -241,6 +241,16 @@ class Utils {
   static setMousePoint() {
     document.body.style.cursor = 'default';
   }
+
+  static minIf(v, min) {
+    if (v < min) return min;
+    return v;
+  }
+
+  static maxIf(v, max) {
+    if (v > max) return max;
+    return v;
+  }
 }
 
 export { Utils };

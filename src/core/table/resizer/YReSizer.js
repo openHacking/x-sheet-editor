@@ -67,8 +67,8 @@ class YReSizer extends Widget {
       let { y: my } = table.computeEventXy(e);
       EventBind.mouseMoveUp(document, (e) => {
         ({ y: my } = table.computeEventXy(e));
-        // console.log('mx >>>', mx);
-        if (my < min) my = min;
+        // console.log('my >>>', my);
+        my = Utils.minIf(my, min);
         this.css('top', `${my}px`);
         this.lineEl.css('width', `${table.visualWidth()}px`);
         this.lineEl.show();
