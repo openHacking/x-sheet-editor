@@ -206,10 +206,18 @@ class WorkBody extends Widget {
       if (evt.detail) deltaY = evt.detail * 40;
       if (deltaY > 0) {
         // down
-        this.scrollBarY.scrollMove(scrollTo + rows.getHeight(scroll.ri + 1));
+        // console.log('scroll.ri >>>', scroll.ri);
+        // console.log('scrollTo before >>>', scrollTo);
+        // console.log('height >>>', rows.getHeight(scroll.ri));
+        this.scrollBarY.scrollMove(scrollTo + rows.getHeight(scroll.ri));
+        // console.log('scrollTo after >>>', this.scrollBarY.scrollTo);
       } else {
         // up
+        // console.log('scroll.ri >>>', scroll.ri);
+        // console.log('scrollTo before >>>', scrollTo);
+        // console.log('height >>>', rows.getHeight(scroll.ri));
         this.scrollBarY.scrollMove(scrollTo - rows.getHeight(scroll.ri - 1));
+        // console.log('scrollTo after >>>', this.scrollBarY.scrollTo);
       }
       if (scroll.blockTop < scroll.maxBlockTop && scroll.blockTop > 0) {
         evt.preventDefault();
