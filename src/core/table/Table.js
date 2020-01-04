@@ -1289,15 +1289,15 @@ class Table extends Widget {
   }
 
   setWidth(ci, width) {
-    const { cols, xReSizer } = this;
-    cols.setWidth(ci, Utils.minIf(width, xReSizer.minWidth));
+    const { cols } = this;
+    cols.setWidth(ci, width);
     this.render();
     this.trigger(Constant.EVENT_TYPE.CHANGE_WIDTH);
   }
 
   setHeight(ri, height) {
-    const { rows, yReSizer } = this;
-    rows.setHeight(ri, Utils.minIf(height, yReSizer.minHeight));
+    const { rows } = this;
+    rows.setHeight(ri, height);
     this.render();
     this.trigger(Constant.EVENT_TYPE.CHANGE_HEIGHT);
   }

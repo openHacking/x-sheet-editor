@@ -8,12 +8,11 @@ import { Constant } from '../../../utils/Constant';
 import { Utils } from '../../../utils/Utils';
 
 class XReSizer extends Widget {
-  constructor(table, options = { width: 5, minWidth: 90 }) {
+  constructor(table, options = { width: 5 }) {
     super(`${cssPrefix}-re-sizer-horizontal`);
     this.table = table;
     this.options = options;
     this.width = options.width;
-    this.minWidth = options.minWidth;
     this.hoverEl = h('div', `${cssPrefix}-re-sizer-hover`);
     this.lineEl = h('div', `${cssPrefix}-re-sizer-line`);
     this.children(...[
@@ -63,7 +62,7 @@ class XReSizer extends Widget {
       Utils.serMousePointColReSize();
       moveOff = true;
       const { left, ci } = this.getEventLeft(e);
-      const min = left - cols.getWidth(ci) + 90;
+      const min = left - cols.getWidth(ci) + cols.minWidth;
       let { x: mx } = table.computeEventXy(e);
       // console.log('left >>>', left + index.width);
       // console.log('min >>>', min);
@@ -92,7 +91,7 @@ class XReSizer extends Widget {
       if (moveOff) return;
       // eslint-disable-next-line prefer-const
       let { left, ci } = this.getEventLeft(e);
-      const min = left - cols.getWidth(ci) + 90;
+      const min = left - cols.getWidth(ci) + cols.minWidth;
       const visualWidth = table.visualWidth();
       // console.log('left >>>', left);
       // console.log('visualWidth', visualWidth);

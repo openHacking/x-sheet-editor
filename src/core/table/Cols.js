@@ -3,7 +3,8 @@ import { Utils } from '../../utils/Utils';
 class Cols {
   constructor({ len, width }) {
     this._ = [];
-    this.width = width;
+    this.minWidth = 90;
+    this.width = Utils.minIf(width, this.minWidth);
     this.len = len;
     this.cacheTotalWidth = -1;
   }
@@ -27,7 +28,7 @@ class Cols {
 
   setWidth(i, width) {
     const col = this.getOrNew(i);
-    col.width = width;
+    col.width = Utils.minIf(width, this.minWidth);
     this.cacheTotalWidth = -1;
     this.computeLeft(i, this.len);
   }

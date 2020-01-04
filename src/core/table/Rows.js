@@ -3,7 +3,8 @@ import { Utils } from '../../utils/Utils';
 class Rows {
   constructor({ len, height }) {
     this._ = [];
-    this.height = height;
+    this.minHeight = 20;
+    this.height = Utils.minIf(height, this.minHeight);
     this.len = len;
     this.cacheTotalHeight = -1;
   }
@@ -27,7 +28,7 @@ class Rows {
 
   setHeight(ri, height) {
     const row = this.getOrNew(ri);
-    row.height = height;
+    row.height = Utils.minIf(height, this.minHeight);
     this.cacheTotalHeight = -1;
     this.computeTop(ri, this.len);
   }

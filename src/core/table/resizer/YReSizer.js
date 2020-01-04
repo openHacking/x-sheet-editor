@@ -8,12 +8,11 @@ import { Constant } from '../../../utils/Constant';
 import { Utils } from '../../../utils/Utils';
 
 class YReSizer extends Widget {
-  constructor(table, options = { height: 5, minHeight: 20 }) {
+  constructor(table, options = { height: 5 }) {
     super(`${cssPrefix}-re-sizer-vertical`);
     this.table = table;
     this.options = options;
     this.height = options.height;
-    this.minHeight = options.minHeight;
     this.hoverEl = h('div', `${cssPrefix}-re-sizer-hover`);
     this.lineEl = h('div', `${cssPrefix}-re-sizer-line`);
     this.children(...[
@@ -63,7 +62,7 @@ class YReSizer extends Widget {
       Utils.setMousePointRowReSize();
       moveOff = true;
       const { top, ri } = this.getEventTop(e);
-      const min = top - rows.getHeight(ri) + 20;
+      const min = top - rows.getHeight(ri) + rows.minHeight;
       let { y: my } = table.computeEventXy(e);
       EventBind.mouseMoveUp(document, (e) => {
         ({ y: my } = table.computeEventXy(e));
@@ -90,7 +89,7 @@ class YReSizer extends Widget {
       if (moveOff) return;
       // eslint-disable-next-line prefer-const
       let { top, ri } = this.getEventTop(e);
-      const min = top - rows.getHeight(ri) + 20;
+      const min = top - rows.getHeight(ri) + rows.minHeight;
       const visualHeight = table.visualHeight();
       // console.log('top >>>', top);
       // console.log('visualHeight >>>', visualHeight);
