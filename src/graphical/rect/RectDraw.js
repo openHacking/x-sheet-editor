@@ -43,6 +43,10 @@ class RectDraw {
     draw.restore();
   }
 
+  setRect(rect) {
+    this.rect = rect;
+  }
+
   fill(color = '#000000') {
     const { draw, rect } = this;
     draw.save();

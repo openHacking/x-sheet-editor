@@ -19,10 +19,6 @@ class RectText extends RectDraw {
     }
   }
 
-  setRect(rect) {
-    this.rect = rect;
-  }
-
   drawFontLine(type, tx, ty, align, verticalAlign, blHeight, blWidth) {
     const { draw } = this;
     const flOffset = { x: 0, y: 0 };
