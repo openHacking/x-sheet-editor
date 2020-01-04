@@ -21,7 +21,7 @@ class ScreenSelector extends ScreenWidget {
   setLTOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
-    const { rect } = selectorAttr;
+    const { rect, edgeType } = selectorAttr;
     const { w: width, h: height } = rect;
     const indexWidth = table.getIndexWidth();
     const indexHeight = table.getIndexHeight();
@@ -34,12 +34,31 @@ class ScreenSelector extends ScreenWidget {
       left,
       top,
     }).show();
+    switch (edgeType) {
+      case 'top':
+        this.lt.cornerEl.cssRemoveKeys('bottom');
+        this.lt.cornerEl.cssRemoveKeys('left');
+        this.lt.cornerEl.css('top', '-3px');
+        this.lt.cornerEl.css('right', '-3px');
+        break;
+      case 'left':
+        this.lt.cornerEl.cssRemoveKeys('top');
+        this.lt.cornerEl.cssRemoveKeys('right');
+        this.lt.cornerEl.css('bottom', '-3px');
+        this.lt.cornerEl.css('left', '-3px');
+        break;
+      default:
+        this.lt.cornerEl.cssRemoveKeys('top');
+        this.lt.cornerEl.cssRemoveKeys('left');
+        this.lt.cornerEl.css('bottom', '-3px');
+        this.lt.cornerEl.css('right', '-3px');
+    }
   }
 
   setTOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
-    const { rect } = selectorAttr;
+    const { rect, edgeType } = selectorAttr;
     const { w: width, h: height } = rect;
     const scroll = table.getScroll();
     const indexWidth = table.getIndexWidth();
@@ -56,12 +75,31 @@ class ScreenSelector extends ScreenWidget {
       left,
       top,
     }).show();
+    switch (edgeType) {
+      case 'top':
+        this.t.cornerEl.cssRemoveKeys('bottom');
+        this.t.cornerEl.cssRemoveKeys('left');
+        this.t.cornerEl.css('top', '-3px');
+        this.t.cornerEl.css('right', '-3px');
+        break;
+      case 'left':
+        this.t.cornerEl.cssRemoveKeys('top');
+        this.t.cornerEl.cssRemoveKeys('right');
+        this.t.cornerEl.css('bottom', '-3px');
+        this.t.cornerEl.css('left', '-3px');
+        break;
+      default:
+        this.t.cornerEl.cssRemoveKeys('top');
+        this.t.cornerEl.cssRemoveKeys('left');
+        this.t.cornerEl.css('bottom', '-3px');
+        this.t.cornerEl.css('right', '-3px');
+    }
   }
 
   setLOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
-    const { rect } = selectorAttr;
+    const { rect, edgeType } = selectorAttr;
     const { w: width, h: height } = rect;
     const scroll = table.getScroll();
     const indexWidth = table.getIndexWidth();
@@ -78,12 +116,31 @@ class ScreenSelector extends ScreenWidget {
       left,
       top,
     }).show();
+    switch (edgeType) {
+      case 'top':
+        this.l.cornerEl.cssRemoveKeys('bottom');
+        this.l.cornerEl.cssRemoveKeys('left');
+        this.l.cornerEl.css('top', '-3px');
+        this.l.cornerEl.css('right', '-3px');
+        break;
+      case 'left':
+        this.l.cornerEl.cssRemoveKeys('top');
+        this.l.cornerEl.cssRemoveKeys('right');
+        this.l.cornerEl.css('bottom', '-3px');
+        this.l.cornerEl.css('left', '-3px');
+        break;
+      default:
+        this.l.cornerEl.cssRemoveKeys('top');
+        this.l.cornerEl.cssRemoveKeys('left');
+        this.l.cornerEl.css('bottom', '-3px');
+        this.l.cornerEl.css('right', '-3px');
+    }
   }
 
   setBROffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
-    const { rect } = selectorAttr;
+    const { rect, edgeType } = selectorAttr;
     const { w: width, h: height } = rect;
     const scroll = table.getScroll();
     const indexWidth = table.getIndexWidth();
@@ -103,6 +160,25 @@ class ScreenSelector extends ScreenWidget {
       left,
       top,
     }).show();
+    switch (edgeType) {
+      case 'top':
+        this.br.cornerEl.cssRemoveKeys('bottom');
+        this.br.cornerEl.cssRemoveKeys('left');
+        this.br.cornerEl.css('top', '-3px');
+        this.br.cornerEl.css('right', '-3px');
+        break;
+      case 'left':
+        this.br.cornerEl.cssRemoveKeys('top');
+        this.br.cornerEl.cssRemoveKeys('right');
+        this.br.cornerEl.css('bottom', '-3px');
+        this.br.cornerEl.css('left', '-3px');
+        break;
+      default:
+        this.br.cornerEl.cssRemoveKeys('top');
+        this.br.cornerEl.cssRemoveKeys('left');
+        this.br.cornerEl.css('bottom', '-3px');
+        this.br.cornerEl.css('right', '-3px');
+    }
   }
 
   setOffset(selectorAttr) {
