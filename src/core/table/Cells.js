@@ -1,4 +1,4 @@
-import { Rect } from '../../graphical/Rect';
+import { Rect } from '../../graphical/rect/Rect';
 import { Utils } from '../../utils/Utils';
 
 class Cells {

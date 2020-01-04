@@ -1,5 +1,5 @@
 import { RectDraw } from './RectDraw';
-import { npx } from './Draw';
+import { npx } from '../Draw';
 
 class RectText extends RectDraw {
   constructor(draw, rect, attr) {

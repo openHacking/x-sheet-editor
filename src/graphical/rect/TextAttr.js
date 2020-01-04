@@ -1,6 +1,6 @@
 import { Rect } from './Rect';
 
-class TextRect extends Rect {
+class TextAttr extends Rect {
   constructor({
     x = 0,
     y = 0,
@@ -27,4 +27,4 @@ class TextRect extends Rect {
   }
 }
 
-export { TextRect };
+export { TextAttr };

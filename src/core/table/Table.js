@@ -9,15 +9,15 @@ import { h } from '../../lib/Element';
 import { Widget } from '../../lib/Widget';
 import { RectRange } from './RectRange';
 import { Draw, npx, thinLineWidth } from '../../graphical/Draw';
-import { RectCut } from '../../graphical/RectCut';
-import { Rect } from '../../graphical/Rect';
-import { RectText } from '../../graphical/RectText';
-import { TextRect } from '../../graphical/TextRect';
+import { RectCut } from '../../graphical/rect/RectCut';
+import { Rect } from '../../graphical/rect/Rect';
+import { RectText } from '../../graphical/rect/RectText';
+import { TextAttr } from '../../graphical/rect/TextAttr';
 import { Merges } from './Merges';
 import { Constant } from '../../utils/Constant';
 import { Screen } from './screen/Screen';
 import { ScreenSelector } from './selector/ScreenSelector';
-import { RectDraw } from '../../graphical/RectDraw';
+import { RectDraw } from '../../graphical/rect/RectDraw';
 import { XReSizer } from './resizer/XReSizer';
 import { YReSizer } from './resizer/YReSizer';
 
@@ -218,9 +218,9 @@ class Content {
     });
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       // 绘制文字
-      const textRect = new TextRect(rect);
+      const textAttr = new TextAttr(rect);
       const { style } = cell;
-      rectText.setRect(textRect);
+      rectText.setRect(textAttr);
       rectText.text(cell.text, style);
     });
     draw.restore();
@@ -364,9 +364,9 @@ class FixedLeft {
       underline: cells.defaultAttr.style.underline,
     });
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
-      const textRect = new TextRect(rect);
+      const textAttr = new TextAttr(rect);
       const { style } = cell;
-      rectText.setRect(textRect);
+      rectText.setRect(textAttr);
       rectText.text(cell.text, style);
     });
     draw.restore();
@@ -514,9 +514,9 @@ class FixedTop {
       underline: cells.defaultAttr.style.underline,
     });
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
-      const textRect = new TextRect(rect);
+      const textAttr = new TextAttr(rect);
       const { style } = cell;
-      rectText.setRect(textRect);
+      rectText.setRect(textAttr);
       rectText.text(cell.text, style);
     });
     draw.restore();
@@ -836,9 +836,9 @@ class FrozenLeftTop {
       underline: cells.defaultAttr.style.underline,
     });
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
-      const textRect = new TextRect(rect);
+      const textAttr = new TextAttr(rect);
       const { style } = cell;
-      rectText.setRect(textRect);
+      rectText.setRect(textAttr);
       rectText.text(cell.text, style);
     });
     draw.restore();
