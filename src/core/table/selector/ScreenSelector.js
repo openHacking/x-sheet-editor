@@ -412,6 +412,11 @@ class ScreenSelector extends ScreenWidget {
       // console.log('downSelectAttr >>>', downSelectAttr);
       this.selectorAttr = downSelectAttr;
       this.setOffset(downSelectAttr);
+      if (downSelectAttr.edge) {
+        mousePointType.on(['table-ci', 'table-ri', 'table-cell']);
+      } else {
+        mousePointType.on(['table-cell']);
+      }
       EventBind.mouseMoveUp(document, (e2) => {
         const { x, y } = table.computeEventXy(e2);
         const moveSelectorAttr = this.getMoveXySelectorAttr(downSelectAttr, x, y);
@@ -419,6 +424,8 @@ class ScreenSelector extends ScreenWidget {
         this.setOffset(moveSelectorAttr);
         e2.stopPropagation();
         e2.preventDefault();
+      }, () => {
+        mousePointType.off();
       });
       e1.stopPropagation();
       e1.preventDefault();

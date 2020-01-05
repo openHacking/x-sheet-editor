@@ -1212,11 +1212,11 @@ class Table extends Widget {
       const { x, y } = this.computeEventXy(e);
       const { ri, ci } = this.getRiCiByXy(x, y);
       if (ri === -1) {
-        this.mousePointType.set('s-resize');
+        this.mousePointType.set('s-resize', 'table-ci');
       } else if (ci === -1) {
-        this.mousePointType.set('e-resize');
+        this.mousePointType.set('e-resize', 'table-ri');
       } else {
-        this.mousePointType.set('cell');
+        this.mousePointType.set('cell', 'table-cell');
       }
     });
   }
