@@ -11,8 +11,8 @@ class RectText extends RectDraw {
         textAlign: this.attr.align,
         textBaseline: this.attr.verticalAlign,
         font: `${this.attr.font.italic ? 'italic' : ''} ${this.attr.font.bold ? 'bold' : ''} ${npx(this.attr.font.size)}px ${this.attr.font.name}`,
-        fillStyle: this.attr.font.color,
-        strokeStyle: this.attr.font.color,
+        fillStyle: this.attr.color,
+        strokeStyle: this.attr.color,
       });
     }
   }
@@ -87,6 +87,8 @@ class RectText extends RectDraw {
       }
       if (addAttr.font) {
         changeAttr.font = `${addAttr.font.italic ? 'italic' : ''} ${addAttr.font.bold ? 'bold' : ''} ${npx(addAttr.font.size)}px ${addAttr.font.name}`;
+      }
+      if (addAttr.color) {
         changeAttr.fillStyle = addAttr.color;
         changeAttr.strokeStyle = addAttr.color;
       }

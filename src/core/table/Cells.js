@@ -12,12 +12,12 @@ class Cells {
       textWrap: false,
       strike: false,
       underline: false,
+      color: '#000000',
       font: {
         name: 'Arial',
         size: 13,
         bold: false,
         italic: false,
-        color: '#000000',
       },
     };
     this.data = data;
@@ -60,6 +60,7 @@ class Cells {
       align: this.defaultStyle.align,
       verticalAlign: this.defaultStyle.verticalAlign,
       font: this.defaultStyle.font,
+      color: this.defaultStyle.color,
       strike: this.defaultStyle.strike,
       underline: this.defaultStyle.underline,
     });
