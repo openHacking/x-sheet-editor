@@ -2,7 +2,6 @@
 
 import { EventBind } from '../../utils/EventBind';
 import { Constant } from '../../utils/Constant';
-import { Utils } from '../../utils/Utils';
 import { ScreenSelector } from './selector/ScreenSelector';
 
 class MousePoint {
@@ -40,10 +39,20 @@ class MousePoint {
     EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { x, y } = table.computeEventXy(e);
       const { ri, ci } = table.getRiCiByXy(x, y);
+      yReSizer.hoverEl.css('cursor', 'inherit');
+      xReSizer.hoverEl.css('cursor', 'inherit');
       if (ri !== -1 && ci !== -1) {
         moveOff = true;
         EventBind.mouseMoveUp(document, () => {}, (e) => {
+          yReSizer.hoverEl.cssRemoveKeys('cursor');
+          xReSizer.hoverEl.cssRemoveKeys('cursor');
           moveOff = false;
+          this.setTableMousePoint(e);
+        });
+      } else {
+        EventBind.mouseMoveUp(document, () => {}, (e) => {
+          yReSizer.hoverEl.cssRemoveKeys('cursor');
+          xReSizer.hoverEl.cssRemoveKeys('cursor');
           this.setTableMousePoint(e);
         });
       }
@@ -98,8 +107,32 @@ class MousePoint {
   }
 
   init() {
-    this.bind();
+    // this.bind();
   }
 }
 
-export { MousePoint };
+class MousePointType {
+  constructor(table) {
+    this.table = table;
+    this.switch = false;
+    this.ignoreNames = [];
+  }
+
+  on(ignoredNames) {
+    this.switch = true;
+    this.ignoreNames = this.ignoreNames.concat(ignoredNames);
+  }
+
+  set(type, name) {
+    if (this.switch && this.ignoreNames.indexOf(name) === -1) return;
+    const { table } = this;
+    table.css('cursor', type);
+  }
+
+  off() {
+    this.switch = false;
+    this.ignoreNames = [];
+  }
+}
+
+export { MousePoint, MousePointType };

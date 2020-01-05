@@ -55,11 +55,18 @@ class YReSizer extends Widget {
 
   bind() {
     const { table } = this;
-    const { settings, rows } = table;
+    const { settings, rows, mousePointType } = table;
     const { index } = settings;
     let moveOff = false;
+    EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
+      mousePointType.set('row-resize', 'YReSizer');
+      e.stopPropagation();
+      e.preventDefault();
+    });
     EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {
       moveOff = true;
+      mousePointType.on(['YReSizer']);
+      mousePointType.set('row-resize', 'YReSizer');
       const { top, ri } = this.getEventTop(e);
       const min = top - rows.getHeight(ri) + rows.minHeight;
       let { y: my } = table.computeEventXy(e);
@@ -75,6 +82,7 @@ class YReSizer extends Widget {
         e.preventDefault();
       }, (e) => {
         moveOff = false;
+        mousePointType.off();
         this.lineEl.hide();
         this.css('top', `${my}px`);
         const { x } = table.computeEventXy(e);

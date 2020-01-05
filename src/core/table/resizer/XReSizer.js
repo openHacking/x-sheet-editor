@@ -55,11 +55,18 @@ class XReSizer extends Widget {
 
   bind() {
     const { table } = this;
-    const { settings, cols } = table;
+    const { settings, cols, mousePointType } = table;
     const { index } = settings;
     let moveOff = false;
+    EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
+      mousePointType.set('col-resize', 'XReSizer');
+      e.stopPropagation();
+      e.preventDefault();
+    });
     EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {
       moveOff = true;
+      mousePointType.on(['XReSizer']);
+      mousePointType.set('col-resize', 'XReSizer');
       const { left, ci } = this.getEventLeft(e);
       const min = left - cols.getWidth(ci) + cols.minWidth;
       let { x: mx } = table.computeEventXy(e);
@@ -77,6 +84,7 @@ class XReSizer extends Widget {
         e.preventDefault();
       }, (e) => {
         moveOff = false;
+        mousePointType.off();
         this.lineEl.hide();
         this.css('left', `${mx}px`);
         const { y } = table.computeEventXy(e);

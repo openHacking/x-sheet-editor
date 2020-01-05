@@ -360,6 +360,47 @@ class ScreenSelector extends ScreenWidget {
   bind() {
     const { screen } = this;
     const { table } = screen;
+    const { mousePointType } = table;
+    EventBind.bind([
+      this.lt.cornerEl,
+      this.t.cornerEl,
+      this.l.cornerEl,
+      this.br.cornerEl,
+    ], Constant.EVENT_TYPE.MOUSE_DOWN, (e1) => {
+      // console.log('auto fill');
+      mousePointType.on(['selector']);
+      mousePointType.set('crosshair', 'selector');
+      EventBind.mouseMoveUp(document, (e2) => {
+        const { x, y } = table.computeEventXy(e2);
+        const selectorAutoFillAttr = this.getMoveAutoFillXYSelectorAttr(x, y);
+        // console.log(selectorAutoFillAttr);
+        if (selectorAutoFillAttr) {
+          this.showAutoFill();
+          this.setAutoFillOffset(selectorAutoFillAttr);
+        } else {
+          this.hideAutoFill();
+        }
+        this.autoFillAttr = selectorAutoFillAttr;
+        e2.stopPropagation();
+        e2.preventDefault();
+      }, () => {
+        mousePointType.off();
+        this.hideAutoFill();
+        this.autoFill();
+      });
+      e1.stopPropagation();
+      e1.preventDefault();
+    });
+    EventBind.bind([
+      this.lt.cornerEl,
+      this.t.cornerEl,
+      this.l.cornerEl,
+      this.br.cornerEl,
+    ], Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
+      mousePointType.set('crosshair', 'selector');
+      e.stopPropagation();
+      e.preventDefault();
+    });
     EventBind.bind(table, Constant.EVENT_TYPE.SCROLL, () => {
       if (this.selectorAttr) {
         this.setOffset(this.selectorAttr);
@@ -378,33 +419,6 @@ class ScreenSelector extends ScreenWidget {
         this.setOffset(moveSelectorAttr);
         e2.stopPropagation();
         e2.preventDefault();
-      });
-      e1.stopPropagation();
-      e1.preventDefault();
-    });
-    EventBind.bind([
-      this.lt.cornerEl,
-      this.t.cornerEl,
-      this.l.cornerEl,
-      this.br.cornerEl,
-    ], Constant.EVENT_TYPE.MOUSE_DOWN, (e1) => {
-      // console.log('auto fill');
-      EventBind.mouseMoveUp(document, (e2) => {
-        const { x, y } = table.computeEventXy(e2);
-        const selectorAutoFillAttr = this.getMoveAutoFillXYSelectorAttr(x, y);
-        // console.log(selectorAutoFillAttr);
-        if (selectorAutoFillAttr) {
-          this.showAutoFill();
-          this.setAutoFillOffset(selectorAutoFillAttr);
-        } else {
-          this.hideAutoFill();
-        }
-        this.autoFillAttr = selectorAutoFillAttr;
-        e2.stopPropagation();
-        e2.preventDefault();
-      }, () => {
-        this.hideAutoFill();
-        this.autoFill();
       });
       e1.stopPropagation();
       e1.preventDefault();

@@ -20,7 +20,8 @@ import { ScreenSelector } from './selector/ScreenSelector';
 import { RectDraw } from '../../graphical/rect/RectDraw';
 import { XReSizer } from './resizer/XReSizer';
 import { YReSizer } from './resizer/YReSizer';
-import { MousePoint } from './MousePoint';
+import { MousePointType } from './MousePoint';
+import { EventBind } from '../../utils/EventBind';
 
 const defaultSettings = {
   index: {
@@ -1164,6 +1165,7 @@ class Table extends Widget {
       cols: this.cols,
       data: this.settings.data,
     });
+    this.mousePointType = new MousePointType(this);
     this.merges = new Merges(this.settings.merges);
     // console.log('this.settings.fixed >>>', this.settings.fixed);
     this.fixed = new Fixed(this.settings.fixed);
@@ -1187,7 +1189,7 @@ class Table extends Widget {
       this.xReSizer,
       this.yReSizer,
     ]);
-    this.mousePoint = new MousePoint(this);
+    this.bind();
   }
 
   visualHeight() {
@@ -1203,7 +1205,20 @@ class Table extends Widget {
     this.xReSizer.init();
     this.yReSizer.init();
     this.initScreenWidget();
-    this.mousePoint.init();
+  }
+
+  bind() {
+    EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
+      const { x, y } = this.computeEventXy(e);
+      const { ri, ci } = this.getRiCiByXy(x, y);
+      if (ri === -1) {
+        this.mousePointType.set('s-resize');
+      } else if (ci === -1) {
+        this.mousePointType.set('e-resize');
+      } else {
+        this.mousePointType.set('cell');
+      }
+    });
   }
 
   initScreenWidget() {
