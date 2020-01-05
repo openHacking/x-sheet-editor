@@ -54,7 +54,11 @@ class ScrollBarY extends Widget {
         this.scrollTo = this.computeScrollTo(this.blockTop);
         this.block.css('top', `${top}px`);
         this.option.scroll(this.scrollTo);
+        evt2.stopPropagation();
+        evt2.preventDefault();
       });
+      evt1.stopPropagation();
+      evt1.preventDefault();
     });
   }
 

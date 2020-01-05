@@ -71,6 +71,8 @@ class YReSizer extends Widget {
         this.css('top', `${my}px`);
         this.lineEl.css('width', `${table.visualWidth()}px`);
         this.lineEl.show();
+        e.stopPropagation();
+        e.preventDefault();
       }, (e) => {
         moveOff = false;
         this.lineEl.hide();
@@ -84,6 +86,7 @@ class YReSizer extends Widget {
         Utils.setMousePoint();
       });
       e.stopPropagation();
+      e.preventDefault();
     });
     EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
       if (moveOff) return;

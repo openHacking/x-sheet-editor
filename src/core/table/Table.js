@@ -682,14 +682,11 @@ class FixedTopIndex {
     draw.save();
     draw.translate(offsetX, offsetY);
     // 绘制背景
-    draw.save();
     draw.attr({
       fillStyle: '#f4f5f8',
     });
     draw.fillRect(0, 0, width, height);
-    draw.restore();
     // 绘制边框
-    draw.save();
     draw.attr({
       fillStyle: settings.table.borderColor,
       lineWidth: settings.table.borderWidth,
@@ -699,9 +696,7 @@ class FixedTopIndex {
       draw.line([x, 0], [x, height]);
       if (i === eci) draw.line([x + cw, 0], [x + cw, height]);
     });
-    draw.restore();
     // 绘制文字
-    draw.save();
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
@@ -713,7 +708,6 @@ class FixedTopIndex {
     cols.eachWidth(sci, eci, (i, cw, x) => {
       draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
     });
-    draw.restore();
     draw.restore();
   }
 
@@ -768,14 +762,11 @@ class FixedLeftIndex {
     draw.save();
     draw.translate(offsetX, offsetY);
     // 绘制背景
-    draw.save();
     draw.attr({
       fillStyle: '#f4f5f8',
     });
     draw.fillRect(0, 0, width, height);
-    draw.restore();
     // 绘制边框
-    draw.save();
     draw.attr({
       fillStyle: settings.table.borderColor,
       lineWidth: settings.table.borderWidth,
@@ -785,9 +776,7 @@ class FixedLeftIndex {
       draw.line([0, y], [width, y]);
       if (i === eri) draw.line([0, y + ch], [width, y + ch]);
     });
-    draw.restore();
     // 绘制文字
-    draw.save();
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
@@ -799,7 +788,6 @@ class FixedLeftIndex {
     rows.eachHeight(sri, eri, (i, ch, y) => {
       draw.fillText(i + 1, width / 2, y + (ch / 2));
     });
-    draw.restore();
     draw.restore();
   }
 
@@ -1018,14 +1006,11 @@ class FrozenLeftIndex {
     draw.save();
     draw.translate(offsetX, offsetY);
     // 绘制背景
-    draw.save();
     draw.attr({
       fillStyle: '#f4f5f8',
     });
     draw.fillRect(0, 0, width, height);
-    draw.restore();
     // 绘制边框
-    draw.save();
     draw.attr({
       fillStyle: settings.table.borderColor,
       lineWidth: settings.table.borderWidth,
@@ -1034,9 +1019,7 @@ class FrozenLeftIndex {
     rows.eachHeight(sri, eri, (i, ch, y) => {
       draw.line([0, y], [width, y]);
     });
-    draw.restore();
     // 绘制文字
-    draw.save();
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
@@ -1048,7 +1031,6 @@ class FrozenLeftIndex {
     rows.eachHeight(sri, eri, (i, ch, y) => {
       draw.fillText(i + 1, width / 2, y + (ch / 2));
     });
-    draw.restore();
     draw.restore();
   }
 
@@ -1102,14 +1084,11 @@ class FrozenTopIndex {
     draw.save();
     draw.translate(offsetX, offsetY);
     // 绘制背景
-    draw.save();
     draw.attr({
       fillStyle: '#f4f5f8',
     });
     draw.fillRect(0, 0, width, height);
-    draw.restore();
     // 绘制边框
-    draw.save();
     draw.attr({
       fillStyle: settings.table.borderColor,
       lineWidth: settings.table.borderWidth,
@@ -1118,9 +1097,7 @@ class FrozenTopIndex {
     cols.eachWidth(sci, eci, (i, cw, x) => {
       draw.line([x, 0], [x, height]);
     });
-    draw.restore();
     // 绘制文字
-    draw.save();
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
@@ -1132,7 +1109,6 @@ class FrozenTopIndex {
     cols.eachWidth(sci, eci, (i, cw, x) => {
       draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
     });
-    draw.restore();
     draw.restore();
   }
 

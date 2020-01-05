@@ -377,7 +377,11 @@ class ScreenSelector extends ScreenWidget {
         const moveSelectorAttr = this.getMoveXySelectorAttr(downSelectAttr, x, y);
         this.selectorAttr = moveSelectorAttr;
         this.setOffset(moveSelectorAttr);
+        e2.stopPropagation();
+        e2.preventDefault();
       });
+      e1.stopPropagation();
+      e1.preventDefault();
     });
     EventBind.bind([
       this.lt.cornerEl,
@@ -398,12 +402,15 @@ class ScreenSelector extends ScreenWidget {
           this.hideAutoFill();
         }
         this.autoFillAttr = selectorAutoFillAttr;
+        e2.stopPropagation();
+        e2.preventDefault();
       }, () => {
         this.hideAutoFill();
         Utils.setMousePoint();
         this.autoFill();
       });
       e1.stopPropagation();
+      e1.preventDefault();
     });
     EventBind.bind(table, Constant.EVENT_TYPE.CHANGE_HEIGHT, (e) => {
       if (this.selectorAttr) {

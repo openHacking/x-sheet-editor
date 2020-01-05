@@ -73,6 +73,8 @@ class XReSizer extends Widget {
         this.css('left', `${mx}px`);
         this.lineEl.css('height', `${table.visualHeight()}px`);
         this.lineEl.show();
+        e.stopPropagation();
+        e.preventDefault();
       }, (e) => {
         moveOff = false;
         this.lineEl.hide();
@@ -86,6 +88,7 @@ class XReSizer extends Widget {
         Utils.setMousePoint();
       });
       e.stopPropagation();
+      e.preventDefault();
     });
     EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
       if (moveOff) return;
