@@ -230,11 +230,11 @@ class Utils {
     document.body.style.cursor = 'row-resize';
   }
 
-  static serMousePointColReSize() {
+  static setMousePointColReSize() {
     document.body.style.cursor = 'col-resize';
   }
 
-  static serMousePointCrossHair() {
+  static setMousePointCrossHair() {
     document.body.style.cursor = 'crosshair';
   }
 

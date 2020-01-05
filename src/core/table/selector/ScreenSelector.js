@@ -5,7 +5,6 @@ import { Constant } from '../../../utils/Constant';
 import { ScreenWidget } from '../screen/ScreenWidget';
 import { EventBind } from '../../../utils/EventBind';
 import { RectRange } from '../RectRange';
-import { Utils } from '../../../utils/Utils';
 
 class ScreenSelector extends ScreenWidget {
   constructor(screen, options = {}) {
@@ -390,7 +389,6 @@ class ScreenSelector extends ScreenWidget {
       this.br.cornerEl,
     ], Constant.EVENT_TYPE.MOUSE_DOWN, (e1) => {
       // console.log('auto fill');
-      Utils.serMousePointCrossHair();
       EventBind.mouseMoveUp(document, (e2) => {
         const { x, y } = table.computeEventXy(e2);
         const selectorAutoFillAttr = this.getMoveAutoFillXYSelectorAttr(x, y);
@@ -406,7 +404,6 @@ class ScreenSelector extends ScreenWidget {
         e2.preventDefault();
       }, () => {
         this.hideAutoFill();
-        Utils.setMousePoint();
         this.autoFill();
       });
       e1.stopPropagation();

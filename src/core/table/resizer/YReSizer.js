@@ -59,7 +59,6 @@ class YReSizer extends Widget {
     const { index } = settings;
     let moveOff = false;
     EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {
-      Utils.setMousePointRowReSize();
       moveOff = true;
       const { top, ri } = this.getEventTop(e);
       const min = top - rows.getHeight(ri) + rows.minHeight;
@@ -67,6 +66,7 @@ class YReSizer extends Widget {
       EventBind.mouseMoveUp(document, (e) => {
         ({ y: my } = table.computeEventXy(e));
         // console.log('my >>>', my);
+        my -= this.height / 2;
         my = Utils.minIf(my, min);
         this.css('top', `${my}px`);
         this.lineEl.css('width', `${table.visualWidth()}px`);
@@ -83,7 +83,6 @@ class YReSizer extends Widget {
         }
         const newLeft = my - (top - rows.getHeight(ri)) + this.height;
         table.setHeight(ri, newLeft);
-        Utils.setMousePoint();
       });
       e.stopPropagation();
       e.preventDefault();

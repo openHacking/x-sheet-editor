@@ -24,13 +24,13 @@ class EventBind {
   }
 
   static mouseMoveUp(target, moveFunc = () => {}, upFunc = () => {}) {
-    target.xEvtUp = (evt) => {
+    const xEvtUp = (evt) => {
       EventBind.unbind(target, Constant.EVENT_TYPE.MOUSE_MOVE, moveFunc);
-      EventBind.unbind(target, Constant.EVENT_TYPE.MOUSE_UP, target.xEvtUp);
+      EventBind.unbind(target, Constant.EVENT_TYPE.MOUSE_UP, xEvtUp);
       upFunc(evt);
     };
     EventBind.bind(target, Constant.EVENT_TYPE.MOUSE_MOVE, moveFunc);
-    EventBind.bind(target, Constant.EVENT_TYPE.MOUSE_UP, target.xEvtUp);
+    EventBind.bind(target, Constant.EVENT_TYPE.MOUSE_UP, xEvtUp);
   }
 }
 

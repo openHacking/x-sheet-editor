@@ -59,7 +59,6 @@ class XReSizer extends Widget {
     const { index } = settings;
     let moveOff = false;
     EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {
-      Utils.serMousePointColReSize();
       moveOff = true;
       const { left, ci } = this.getEventLeft(e);
       const min = left - cols.getWidth(ci) + cols.minWidth;
@@ -69,6 +68,7 @@ class XReSizer extends Widget {
       EventBind.mouseMoveUp(document, (e) => {
         ({ x: mx } = table.computeEventXy(e));
         // console.log('mx >>>', mx);
+        mx -= this.width / 2;
         mx = Utils.minIf(mx, min);
         this.css('left', `${mx}px`);
         this.lineEl.css('height', `${table.visualHeight()}px`);
@@ -85,7 +85,6 @@ class XReSizer extends Widget {
         }
         const newLeft = mx - (left - cols.getWidth(ci)) + this.width;
         table.setWidth(ci, newLeft);
-        Utils.setMousePoint();
       });
       e.stopPropagation();
       e.preventDefault();

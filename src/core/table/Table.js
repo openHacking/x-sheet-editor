@@ -20,6 +20,7 @@ import { ScreenSelector } from './selector/ScreenSelector';
 import { RectDraw } from '../../graphical/rect/RectDraw';
 import { XReSizer } from './resizer/XReSizer';
 import { YReSizer } from './resizer/YReSizer';
+import { MousePoint } from './MousePoint';
 
 const defaultSettings = {
   index: {
@@ -1186,6 +1187,7 @@ class Table extends Widget {
       this.xReSizer,
       this.yReSizer,
     ]);
+    this.mousePoint = new MousePoint(this);
   }
 
   visualHeight() {
@@ -1201,6 +1203,7 @@ class Table extends Widget {
     this.xReSizer.init();
     this.yReSizer.init();
     this.initScreenWidget();
+    this.mousePoint.init();
   }
 
   initScreenWidget() {

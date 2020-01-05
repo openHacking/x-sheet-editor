@@ -14,6 +14,7 @@ class Screen extends Widget {
     this.focusWidget = null;
     this.children(this.lt, this.t, this.l, this.br);
     this.bind();
+    this.widgets = [];
   }
 
   init() {
@@ -35,6 +36,7 @@ class Screen extends Widget {
   }
 
   addWidgets(widget) {
+    this.widgets.push(widget);
     this.lt.addWidgets(widget.getLT(this));
     this.t.addWidgets(widget.getT(this));
     this.l.addWidgets(widget.getL(this));
@@ -66,6 +68,18 @@ class Screen extends Widget {
       this.t.hide();
       this.l.hide();
     }
+  }
+
+  findByClass(clazz) {
+    let find = null;
+    this.widgets.forEach((item) => {
+      if (item instanceof clazz) {
+        find = item;
+        return false;
+      }
+      return true;
+    });
+    return find;
   }
 }
 
