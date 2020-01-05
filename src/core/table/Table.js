@@ -52,7 +52,7 @@ const defaultSettings = {
     },
   },
   rows: {
-    len: 100000,
+    len: 1000,
     height: 30,
   },
   cols: {
