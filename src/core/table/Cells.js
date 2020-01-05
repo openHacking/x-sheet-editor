@@ -1,25 +1,23 @@
 import { Rect } from '../../graphical/rect/Rect';
 import { Utils } from '../../utils/Utils';
+import { RectText } from '../../graphical/rect/RectText';
 
 class Cells {
   constructor({ cols, rows, data = [] }) {
     this.cols = cols;
     this.rows = rows;
-    this.defaultAttr = {
-      style: {
-        bgColor: '#ffffff',
-        align: 'left',
-        verticalAlign: 'middle',
-        textWrap: false,
-        strike: false,
-        underline: false,
+    this.defaultStyle = {
+      align: 'left',
+      verticalAlign: 'middle',
+      textWrap: false,
+      strike: false,
+      underline: false,
+      font: {
+        name: 'Arial',
+        size: 13,
+        bold: false,
+        italic: false,
         color: '#000000',
-        font: {
-          name: 'Arial',
-          size: 13,
-          bold: false,
-          italic: false,
-        },
       },
     };
     this.data = data;
@@ -55,6 +53,16 @@ class Cells {
       }
       y += height;
     }
+  }
+
+  getRectText(draw, rect = null) {
+    return new RectText(draw, rect, {
+      align: this.defaultStyle.align,
+      verticalAlign: this.defaultStyle.verticalAlign,
+      font: this.defaultStyle.font,
+      strike: this.defaultStyle.strike,
+      underline: this.defaultStyle.underline,
+    });
   }
 }
 

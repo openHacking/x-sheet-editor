@@ -1,20 +1,18 @@
 import { RectDraw } from './RectDraw';
 import { npx } from '../Draw';
+import { Utils } from '../../utils/Utils';
 
 class RectText extends RectDraw {
   constructor(draw, rect, attr) {
     super(draw, rect);
     this.attr = attr;
     if (this.attr) {
-      const {
-        align, verticalAlign, font, color,
-      } = this.attr;
       draw.attr({
-        textAlign: align,
-        textBaseline: verticalAlign,
-        font: `${font.italic ? 'italic' : ''} ${font.bold ? 'bold' : ''} ${npx(font.size)}px ${font.name}`,
-        fillStyle: color,
-        strokeStyle: color,
+        textAlign: this.attr.align,
+        textBaseline: this.attr.verticalAlign,
+        font: `${this.attr.font.italic ? 'italic' : ''} ${this.attr.font.bold ? 'bold' : ''} ${npx(this.attr.font.size)}px ${this.attr.font.name}`,
+        fillStyle: this.attr.font.color,
+        strokeStyle: this.attr.font.color,
       });
     }
   }
@@ -76,22 +74,28 @@ class RectText extends RectDraw {
   text(txt, attr, textWrap = true) {
     const { draw, rect } = this;
     const { ctx } = draw;
-    let {
-      align, verticalAlign, font, color, strike, underline,
-    } = this.attr;
-    draw.save();
-    if (attr) {
-      ({
-        align, verticalAlign, font, color, strike, underline,
-      } = this.attr);
-      draw.attr({
-        textAlign: align,
-        textBaseline: verticalAlign,
-        font: `${font.italic ? 'italic' : ''} ${font.bold ? 'bold' : ''} ${npx(font.size)}px ${font.name}`,
-        fillStyle: color,
-        strokeStyle: color,
-      });
+    const addAttr = Utils.contrastDifference(attr, this.attr);
+    const isChange = Utils.isNotEmptyObject(addAttr);
+    if (isChange) {
+      draw.save();
+      const changeAttr = {};
+      if (addAttr.align) {
+        changeAttr.align = addAttr.align;
+      }
+      if (addAttr.verticalAlign) {
+        changeAttr.textBaseline = addAttr.verticalAlign;
+      }
+      if (addAttr.font) {
+        changeAttr.font = `${addAttr.font.italic ? 'italic' : ''} ${addAttr.font.bold ? 'bold' : ''} ${npx(addAttr.font.size)}px ${addAttr.font.name}`;
+        changeAttr.fillStyle = addAttr.color;
+        changeAttr.strokeStyle = addAttr.color;
+      }
+      draw.attr(changeAttr);
     }
+    const newAttr = Utils.mergeDeep({}, this.attr, addAttr);
+    const {
+      align, verticalAlign, font, strike, underline,
+    } = newAttr;
     const tx = this.textAlign(align);
     const txtWidth = ctx.measureText(txt).width;
     let hOffset = 0;
@@ -138,7 +142,9 @@ class RectText extends RectDraw {
         this.drawFontLine('underline', tx, ty, align, verticalAlign, font.size, txtWidth);
       }
     }
-    draw.restore();
+    if (isChange) {
+      draw.restore();
+    }
     return this;
   }
 }

@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 /* global navigator document */
 
 const alphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
@@ -5,56 +6,42 @@ const alphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', '
 let throttleHandle = null;
 
 class Utils {
-  /**
-   * 对象复制
-   * @param obj
-   * @returns {any}
-   */
   static cloneDeep(obj) {
     return JSON.parse(JSON.stringify(obj));
   }
 
-  /**
-   * mac判定
-   * @returns {boolean}
-   */
   static isMac() {
     return /macintosh|mac os x/i.test(navigator.userAgent);
   }
 
-  /**
-   * windows判定
-   * @returns {boolean}
-   */
   static isWindows() {
     return /windows|win32/i.test(navigator.userAgent);
   }
 
-  /**
-   * 空判定
-   * @param e
-   * @returns {boolean}
-   */
+  static isEmptyObject(object) {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const key in object) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (object.hasOwnProperty(key)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  static isNotEmptyObject(object) {
+    return !Utils.isEmptyObject(object);
+  }
+
   static isUnDef(e) {
     return e === undefined || e === null;
   }
 
-  /**
-   * 数字判定
-   * @param e
-   * @returns {boolean}
-   */
   static isNumber(e) {
     // eslint-disable-next-line no-restricted-globals,radix
     return !isNaN(parseInt(e));
   }
 
-  /**
-   * 对象合并
-   * @param object
-   * @param sources
-   * @returns {{}}
-   */
   static mergeDeep(object = {}, ...sources) {
     if (Utils.isUnDef(object)) {
       return {};
@@ -79,12 +66,6 @@ class Utils {
     return object;
   }
 
-  /**
-   * 数组或者对象属性求和
-   * @param objOrAry
-   * @param cb
-   * @returns {number[]}
-   */
   static sum(objOrAry, cb = value => value) {
     let total = 0;
     let size = 0;
@@ -95,13 +76,6 @@ class Utils {
     return [total, size];
   }
 
-  /**
-   * 区间求和
-   * @param min
-   * @param max
-   * @param cb
-   * @returns {number}
-   */
   static rangeSum(min, max, cb) {
     let s = 0;
     for (let i = min; i < max; i += 1) {
@@ -110,21 +84,11 @@ class Utils {
     return s;
   }
 
-  /**
-   * 字符串转浮点数字
-   * @param val
-   * @returns {number}
-   */
   static parseFloat(val) {
     if (Utils.isNumber(val)) return parseFloat(val);
     return 0;
   }
 
-  /**
-   * 将数字转换成excel字母
-   * @param index
-   * @returns {string}
-   */
   static stringAt(index) {
     let str = '';
     let idx = index;
@@ -138,11 +102,6 @@ class Utils {
     return str;
   }
 
-  /**
-   * 将excel字母转换成数字
-   * @param str
-   * @returns {number}
-   */
   static indexAt(str) {
     let ret = 0;
     for (let i = 0; i < str.length - 1; i += 1) {
@@ -154,11 +113,6 @@ class Utils {
     return ret;
   }
 
-  /**
-   * 将excel字母行列转换成数字行列,例如: B10 => x,y
-   * @param src
-   * @returns {number[]}
-   */
   static expr2xy(src) {
     let x = '';
     let y = '';
@@ -172,38 +126,15 @@ class Utils {
     return [Utils.indexAt(x), parseInt(y, 10) - 1];
   }
 
-  /**
-   * 将数字行列转换成excel字母,例如: x,y =>B10
-   * @param x
-   * @param y
-   * @returns {string}
-   */
   static xy2expr(x, y) {
     return `${Utils.stringAt(x)}${y + 1}`;
   }
 
-  /**
-   * 将excel字母行列转换成数字行列,例如: B10 => x,y 并且将转换后的数字行和列加上 xn, yn
-   * @param src
-   * @param xn
-   * @param yn
-   * @returns {string}
-   */
   static expr2expr(src, xn, yn) {
     const [x, y] = Utils.expr2xy(src);
     return Utils.xy2expr(x + xn, y + yn);
   }
 
-  /**
-   * 缩小范围
-   * @param min
-   * @param max
-   * @param initS
-   * @param initV
-   * @param ifv
-   * @param getV
-   * @returns {*[]}
-   */
   static rangeReduceIf(min, max, initS, initV, ifv, getV) {
     let s = initS;
     let v = initV;
@@ -216,30 +147,25 @@ class Utils {
     return [i, s - v, v];
   }
 
-  /**
-   * 节流
-   * @param cb
-   * @param time
-   */
   static throttle(cb = () => {}, time = 500) {
     if (throttleHandle) clearTimeout(throttleHandle);
     throttleHandle = setTimeout(cb, time);
   }
 
-  static setMousePointRowReSize() {
-    document.body.style.cursor = 'row-resize';
-  }
-
-  static setMousePointColReSize() {
-    document.body.style.cursor = 'col-resize';
-  }
-
-  static setMousePointCrossHair() {
-    document.body.style.cursor = 'crosshair';
-  }
-
-  static setMousePoint() {
-    document.body.style.cursor = 'default';
+  static contrastDifference(target, src) {
+    const result = {};
+    if (Utils.isUnDef(target)) {
+      return result;
+    }
+    // eslint-disable-next-line no-restricted-syntax
+    for (const key in target) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (target.hasOwnProperty(key)) {
+        if (src[key] && Utils.equal(src[key], target[key])) continue;
+        result[key] = target[key];
+      }
+    }
+    return result;
   }
 
   static minIf(v, min) {
@@ -250,6 +176,14 @@ class Utils {
   static maxIf(v, max) {
     if (v > max) return max;
     return v;
+  }
+
+  static equal(o1, o2) {
+    let no1 = o1;
+    let no2 = o2;
+    if (typeof no1 === 'object') no1 = JSON.stringify(no1);
+    if (typeof no2 === 'object') no2 = JSON.stringify(no2);
+    return no1.toString() === no2.toString();
   }
 }
 

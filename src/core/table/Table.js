@@ -11,7 +11,6 @@ import { RectRange } from './RectRange';
 import { Draw, npx, thinLineWidth } from '../../graphical/Draw';
 import { RectCut } from '../../graphical/rect/RectCut';
 import { Rect } from '../../graphical/rect/Rect';
-import { RectText } from '../../graphical/rect/RectText';
 import { TextAttr } from '../../graphical/rect/TextAttr';
 import { Merges } from './Merges';
 import { Constant } from '../../utils/Constant';
@@ -24,6 +23,8 @@ import { MousePointType } from './MousePoint';
 import { EventBind } from '../../utils/EventBind';
 
 const defaultSettings = {
+  tipsRenderTime: true,
+  tipsScrollTime: true,
   index: {
     height: 30,
     width: 50,
@@ -75,8 +76,9 @@ class Content {
   }
 
   scrollX(x) {
+    const start = Date.now();
     const { table, scroll } = this;
-    const { cols, fixed } = table;
+    const { cols, fixed, settings } = table;
     let { fxLeft } = fixed;
     fxLeft += 1;
     const [
@@ -86,11 +88,18 @@ class Content {
     if (x > 0) x1 += width;
     scroll.ci = ci;
     scroll.x = x1;
+    const end = Date.now();
+    const consume = end - start;
+    if (consume > 16 && settings.tipsScrollTime) {
+      // eslint-disable-next-line no-console
+      console.log('滚动条计算消耗的时间', consume);
+    }
   }
 
   scrollY(y) {
+    const start = Date.now();
     const { table, scroll } = this;
-    const { rows, fixed } = table;
+    const { rows, fixed, settings } = table;
     let { fxTop } = fixed;
     fxTop += 1;
     const [
@@ -100,6 +109,12 @@ class Content {
     if (y > 0) y1 += height;
     scroll.ri = ri;
     scroll.y = y1;
+    const end = Date.now();
+    const consume = end - start;
+    if (consume > 16 && settings.tipsScrollTime) {
+      // eslint-disable-next-line no-console
+      console.log('滚动条计算消耗的时间', consume);
+    }
   }
 
   getXOffset() {
@@ -210,14 +225,7 @@ class Content {
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
-    const rectText = new RectText(draw, null, {
-      align: cells.defaultAttr.style.align,
-      verticalAlign: cells.defaultAttr.style.verticalAlign,
-      font: cells.defaultAttr.style.font,
-      color: cells.defaultAttr.style.color,
-      strike: cells.defaultAttr.style.strike,
-      underline: cells.defaultAttr.style.underline,
-    });
+    const rectText = cells.getRectText(draw);
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) {
@@ -242,14 +250,7 @@ class Content {
     draw.save();
     draw.translate(offsetX, offsetY);
     const filter = [];
-    const rectText = new RectText(draw, null, {
-      align: cells.defaultAttr.style.align,
-      verticalAlign: cells.defaultAttr.style.verticalAlign,
-      font: cells.defaultAttr.style.font,
-      color: cells.defaultAttr.style.color,
-      strike: cells.defaultAttr.style.strike,
-      underline: cells.defaultAttr.style.underline,
-    });
+    const rectText = cells.getRectText(draw);
     cells.getRectRangeCell(viewRange, (i, c) => {
       const rectRange = merges.getFirstIncludes(i, c);
       if (!rectRange || filter.find(item => item === rectRange)) return;
@@ -375,14 +376,7 @@ class FixedLeft {
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
-    const rectText = new RectText(draw, null, {
-      align: cells.defaultAttr.style.align,
-      verticalAlign: cells.defaultAttr.style.verticalAlign,
-      font: cells.defaultAttr.style.font,
-      color: cells.defaultAttr.style.color,
-      strike: cells.defaultAttr.style.strike,
-      underline: cells.defaultAttr.style.underline,
-    });
+    const rectText = cells.getRectText(draw);
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) {
@@ -407,14 +401,7 @@ class FixedLeft {
     draw.save();
     draw.translate(offsetX, offsetY);
     const filter = [];
-    const rectText = new RectText(draw, null, {
-      align: cells.defaultAttr.style.align,
-      verticalAlign: cells.defaultAttr.style.verticalAlign,
-      font: cells.defaultAttr.style.font,
-      color: cells.defaultAttr.style.color,
-      strike: cells.defaultAttr.style.strike,
-      underline: cells.defaultAttr.style.underline,
-    });
+    const rectText = cells.getRectText(draw);
     cells.getRectRangeCell(viewRange, (i, c) => {
       const rectRange = merges.getFirstIncludes(i, c);
       if (!rectRange || filter.find(item => item === rectRange)) return;
@@ -544,14 +531,7 @@ class FixedTop {
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
-    const rectText = new RectText(draw, null, {
-      align: cells.defaultAttr.style.align,
-      verticalAlign: cells.defaultAttr.style.verticalAlign,
-      font: cells.defaultAttr.style.font,
-      color: cells.defaultAttr.style.color,
-      strike: cells.defaultAttr.style.strike,
-      underline: cells.defaultAttr.style.underline,
-    });
+    const rectText = cells.getRectText(draw);
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) {
@@ -576,14 +556,7 @@ class FixedTop {
     draw.save();
     draw.translate(offsetX, offsetY);
     const filter = [];
-    const rectText = new RectText(draw, null, {
-      align: cells.defaultAttr.style.align,
-      verticalAlign: cells.defaultAttr.style.verticalAlign,
-      font: cells.defaultAttr.style.font,
-      color: cells.defaultAttr.style.color,
-      strike: cells.defaultAttr.style.strike,
-      underline: cells.defaultAttr.style.underline,
-    });
+    const rectText = cells.getRectText(draw);
     cells.getRectRangeCell(viewRange, (i, c) => {
       const rectRange = merges.getFirstIncludes(i, c);
       if (!rectRange || filter.find(item => item === rectRange)) return;
@@ -873,14 +846,7 @@ class FrozenLeftTop {
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
-    const rectText = new RectText(draw, null, {
-      align: cells.defaultAttr.style.align,
-      verticalAlign: cells.defaultAttr.style.verticalAlign,
-      font: cells.defaultAttr.style.font,
-      color: cells.defaultAttr.style.color,
-      strike: cells.defaultAttr.style.strike,
-      underline: cells.defaultAttr.style.underline,
-    });
+    const rectText = cells.getRectText(draw);
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) {
@@ -905,14 +871,7 @@ class FrozenLeftTop {
     draw.save();
     draw.translate(offsetX, offsetY);
     const filter = [];
-    const rectText = new RectText(draw, null, {
-      align: cells.defaultAttr.style.align,
-      verticalAlign: cells.defaultAttr.style.verticalAlign,
-      font: cells.defaultAttr.style.font,
-      color: cells.defaultAttr.style.color,
-      strike: cells.defaultAttr.style.strike,
-      underline: cells.defaultAttr.style.underline,
-    });
+    const rectText = cells.getRectText(draw);
     cells.getRectRangeCell(viewRange, (i, c) => {
       const rectRange = merges.getFirstIncludes(i, c);
       if (!rectRange || filter.find(item => item === rectRange)) return;
@@ -1227,7 +1186,8 @@ class Table extends Widget {
   }
 
   render() {
-    const { draw } = this;
+    const start = Date.now();
+    const { draw, settings } = this;
     draw.clear();
     const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.resize(width, height);
@@ -1240,6 +1200,12 @@ class Table extends Widget {
     this.fixedTop.render();
     this.fixedLeft.render();
     this.content.render();
+    const end = Date.now();
+    const consume = end - start;
+    if (consume > 16 && settings.tipsRenderTime) {
+      // eslint-disable-next-line no-console
+      console.log('渲染界面消耗的时间', consume);
+    }
   }
 
   scrollX(x) {
