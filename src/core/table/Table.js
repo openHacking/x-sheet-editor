@@ -436,27 +436,33 @@ class FixedLeft {
     draw.restore();
   }
 
-  render() {
+  getViewRange() {
     const { table } = this;
-    const { content, fixed, draw } = table;
+    const { content, fixed } = table;
     const { fxLeft } = fixed;
     const viewRange = content.getViewRange();
-    const offsetX = this.getXOffset();
-    const offsetY = this.getYOffset();
     const width = this.getWidth();
     const height = this.getHeight();
-    // console.log('width >>>', width);
     viewRange.sci = 0;
     viewRange.eci = fxLeft;
     viewRange.w = width;
     viewRange.h = height;
+    return viewRange;
+  }
+
+  render() {
+    const { table } = this;
+    const { draw } = table;
+    const viewRange = this.getViewRange();
+    const offsetX = this.getXOffset();
+    const offsetY = this.getYOffset();
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     const rect = new Rect({
       x: offsetX,
       y: offsetY,
-      width,
-      height,
+      width: viewRange.w,
+      height: viewRange.h,
     });
     const rectCut = new RectCut(draw, rect);
     rectCut.outwardCut(thinLineWidth() / 2);
@@ -591,27 +597,33 @@ class FixedTop {
     draw.restore();
   }
 
-  render() {
+  getViewRange() {
     const { table } = this;
-    const { content, fixed, draw } = table;
+    const { content, fixed } = table;
     const { fxTop } = fixed;
     const viewRange = content.getViewRange();
-    const offsetX = this.getXOffset();
-    const offsetY = this.getYOffset();
     const width = this.getWidth();
     const height = this.getHeight();
     viewRange.sri = 0;
     viewRange.eri = fxTop;
     viewRange.w = width;
     viewRange.h = height;
-    // console.log('width >>>', width);
+    return viewRange;
+  }
+
+  render() {
+    const { table } = this;
+    const { draw } = table;
+    const viewRange = this.getViewRange();
+    const offsetX = this.getXOffset();
+    const offsetY = this.getYOffset();
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     const rect = new Rect({
       x: offsetX,
       y: offsetY,
-      width,
-      height,
+      width: viewRange.w,
+      height: viewRange.h,
     });
     const rectCut = new RectCut(draw, rect);
     rectCut.outwardCut(thinLineWidth() / 2);
@@ -906,22 +918,28 @@ class FrozenLeftTop {
     draw.restore();
   }
 
-  render() {
-    const { table } = this;
-    const { fixed, draw } = table;
-    const { fxTop, fxLeft } = fixed;
-    const offsetX = this.getXOffset();
-    const offsetY = this.getYOffset();
+  getViewRange() {
     const width = this.getWidth();
     const height = this.getHeight();
-    const viewRange = new RectRange(0, 0, fxTop, fxLeft, width, height);
+    const { table } = this;
+    const { fixed } = table;
+    const { fxTop, fxLeft } = fixed;
+    return new RectRange(0, 0, fxTop, fxLeft, width, height);
+  }
+
+  render() {
+    const { table } = this;
+    const { draw } = table;
+    const offsetX = this.getXOffset();
+    const offsetY = this.getYOffset();
+    const viewRange = this.getViewRange();
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     const rect = new Rect({
       x: offsetX,
       y: offsetY,
-      width,
-      height,
+      width: viewRange.w,
+      height: viewRange.h,
     });
     const rectCut = new RectCut(draw, rect);
     rectCut.outwardCut(thinLineWidth() / 2);

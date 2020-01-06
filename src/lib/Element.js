@@ -251,12 +251,18 @@ class Element {
   }
 
   show() {
-    this.css('display', 'block');
+    const style = this.computedStyle();
+    if (style && style.display !== 'block') {
+      this.css('display', 'block');
+    }
     return this;
   }
 
   hide() {
-    this.css('display', 'none');
+    const style = this.computedStyle();
+    if (style && style.display !== 'none') {
+      this.css('display', 'none');
+    }
     return this;
   }
 

@@ -21,164 +21,229 @@ class ScreenSelector extends ScreenWidget {
   setLTOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
+    const { frozenLeftTop, cols, rows } = table;
+    const viewRange = frozenLeftTop.getViewRange();
     const { rect, edgeType } = selectorAttr;
-    const { w: width, h: height } = rect;
-    const indexWidth = table.getIndexWidth();
-    const indexHeight = table.getIndexHeight();
-    let { left, top } = selectorAttr;
-    left -= indexWidth;
-    top -= indexHeight;
+    const empty = new RectRange(0, 0, 0, 0, 0, 0);
+    const coincideRange = rect.coincide(viewRange);
+    // console.log('coincideRange >>>', coincideRange);
+    if (empty.equals(coincideRange)) {
+      this.lt.hide();
+      return;
+    }
+    let width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci);
+    let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
+    const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
+    const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
+    // console.log('rect >>>', rect);
+    if (edgeType === 'left') {
+      this.lt.cornerEl.cssRemoveKeys('right');
+      this.lt.cornerEl.cssRemoveKeys('top');
+      this.lt.cornerEl.css('left', '-3px');
+      this.lt.cornerEl.css('bottom', '-3px');
+    } else if (edgeType === 'top') {
+      this.lt.cornerEl.cssRemoveKeys('left');
+      this.lt.cornerEl.cssRemoveKeys('bottom');
+      this.lt.cornerEl.css('right', '-3px');
+      this.lt.cornerEl.css('top', '-3px');
+    } else {
+      this.lt.cornerEl.cssRemoveKeys('top');
+      this.lt.cornerEl.cssRemoveKeys('left');
+      this.lt.cornerEl.css('right', '-3px');
+      this.lt.cornerEl.css('bottom', '-3px');
+    }
+    if (rect.eci > viewRange.eci) {
+      this.lt.areaEl.css('border-right', 'none');
+      width += 2;
+    } else {
+      this.lt.areaEl.cssRemoveKeys('border-right');
+    }
+    if (rect.eri > viewRange.eri) {
+      height += 2;
+      this.lt.areaEl.css('border-bottom', 'none');
+    } else {
+      this.lt.areaEl.cssRemoveKeys('border-bottom');
+    }
+    if (rect.eci <= viewRange.eci && rect.eri <= viewRange.eri) {
+      this.lt.cornerEl.show();
+    } else {
+      this.lt.cornerEl.hide();
+    }
     this.lt.offset({
       width,
       height,
       left,
       top,
     }).show();
-    switch (edgeType) {
-      case 'top':
-        this.lt.cornerEl.cssRemoveKeys('bottom');
-        this.lt.cornerEl.cssRemoveKeys('left');
-        this.lt.cornerEl.css('top', '-3px');
-        this.lt.cornerEl.css('right', '-3px');
-        break;
-      case 'left':
-        this.lt.cornerEl.cssRemoveKeys('top');
-        this.lt.cornerEl.cssRemoveKeys('right');
-        this.lt.cornerEl.css('bottom', '-3px');
-        this.lt.cornerEl.css('left', '-3px');
-        break;
-      default:
-        this.lt.cornerEl.cssRemoveKeys('top');
-        this.lt.cornerEl.cssRemoveKeys('left');
-        this.lt.cornerEl.css('bottom', '-3px');
-        this.lt.cornerEl.css('right', '-3px');
-    }
   }
 
   setTOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
+    const { fixedTop, cols, rows } = table;
+    const viewRange = fixedTop.getViewRange();
     const { rect, edgeType } = selectorAttr;
-    const { w: width, h: height } = rect;
-    const scroll = table.getScroll();
-    const indexWidth = table.getIndexWidth();
-    const indexHeight = table.getIndexHeight();
-    const fixedWidth = table.getFixedWidth();
-    let { left, top } = selectorAttr;
-    left -= indexWidth;
-    left -= fixedWidth;
-    left -= scroll.x;
-    top -= indexHeight;
+    const empty = new RectRange(0, 0, 0, 0, 0, 0);
+    const coincideRange = rect.coincide(viewRange);
+    // console.log('coincideRange >>>', coincideRange);
+    if (empty.equals(coincideRange)) {
+      this.t.hide();
+      return;
+    }
+    let width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci);
+    let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
+    const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
+    const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
+    if (edgeType === 'left') {
+      this.t.cornerEl.cssRemoveKeys('right');
+      this.t.cornerEl.cssRemoveKeys('top');
+      this.t.cornerEl.css('left', '-3px');
+      this.t.cornerEl.css('bottom', '-3px');
+    } else if (edgeType === 'top') {
+      this.t.cornerEl.cssRemoveKeys('left');
+      this.t.cornerEl.cssRemoveKeys('bottom');
+      this.t.cornerEl.css('right', '-3px');
+      this.t.cornerEl.css('top', '-3px');
+    } else {
+      this.t.cornerEl.cssRemoveKeys('top');
+      this.t.cornerEl.cssRemoveKeys('left');
+      this.t.cornerEl.css('right', '-3px');
+      this.t.cornerEl.css('bottom', '-3px');
+    }
+    if (rect.sci < viewRange.sci) {
+      this.t.areaEl.css('border-left', 'none');
+      width += 2;
+    } else {
+      this.t.areaEl.cssRemoveKeys('border-left');
+    }
+    if (rect.eri > viewRange.eri) {
+      this.t.areaEl.css('border-bottom', 'none');
+      height += 2;
+    } else {
+      this.t.areaEl.cssRemoveKeys('border-bottom');
+    }
+    if (rect.eci <= viewRange.eci && rect.eri <= viewRange.eri) {
+      this.t.cornerEl.show();
+    } else {
+      this.t.cornerEl.hide();
+    }
     this.t.offset({
       width,
       height,
       left,
       top,
     }).show();
-    switch (edgeType) {
-      case 'top':
-        this.t.cornerEl.cssRemoveKeys('bottom');
-        this.t.cornerEl.cssRemoveKeys('left');
-        this.t.cornerEl.css('top', '-3px');
-        this.t.cornerEl.css('right', '-3px');
-        break;
-      case 'left':
-        this.t.cornerEl.cssRemoveKeys('top');
-        this.t.cornerEl.cssRemoveKeys('right');
-        this.t.cornerEl.css('bottom', '-3px');
-        this.t.cornerEl.css('left', '-3px');
-        break;
-      default:
-        this.t.cornerEl.cssRemoveKeys('top');
-        this.t.cornerEl.cssRemoveKeys('left');
-        this.t.cornerEl.css('bottom', '-3px');
-        this.t.cornerEl.css('right', '-3px');
-    }
   }
 
   setLOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
+    const { fixedLeft, cols, rows } = table;
+    const viewRange = fixedLeft.getViewRange();
     const { rect, edgeType } = selectorAttr;
-    const { w: width, h: height } = rect;
-    const scroll = table.getScroll();
-    const indexWidth = table.getIndexWidth();
-    const indexHeight = table.getIndexHeight();
-    const fixedHeight = table.getFixedHeight();
-    let { left, top } = selectorAttr;
-    left -= indexWidth;
-    top -= indexHeight;
-    top -= fixedHeight;
-    top -= scroll.y;
+    const empty = new RectRange(0, 0, 0, 0, 0, 0);
+    const coincideRange = rect.coincide(viewRange);
+    // console.log('coincideRange >>>', coincideRange);
+    if (empty.equals(coincideRange)) {
+      this.l.hide();
+      return;
+    }
+    let width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci);
+    let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
+    const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
+    const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
+    if (edgeType === 'left') {
+      this.l.cornerEl.cssRemoveKeys('right');
+      this.l.cornerEl.cssRemoveKeys('top');
+      this.l.cornerEl.css('left', '-3px');
+      this.l.cornerEl.css('bottom', '-3px');
+    } else if (edgeType === 'top') {
+      this.l.cornerEl.cssRemoveKeys('left');
+      this.l.cornerEl.cssRemoveKeys('bottom');
+      this.l.cornerEl.css('right', '-3px');
+      this.l.cornerEl.css('top', '-3px');
+    } else {
+      this.l.cornerEl.cssRemoveKeys('top');
+      this.l.cornerEl.cssRemoveKeys('left');
+      this.l.cornerEl.css('right', '-3px');
+      this.l.cornerEl.css('bottom', '-3px');
+    }
+    if (rect.sri < viewRange.sri) {
+      this.l.areaEl.css('border-top', 'none');
+      height += 2;
+    } else {
+      this.l.areaEl.cssRemoveKeys('border-top');
+    }
+    if (rect.eci > viewRange.eci) {
+      this.l.areaEl.css('border-right', 'none');
+      width += 2;
+    } else {
+      this.l.areaEl.cssRemoveKeys('border-right');
+    }
+    if (rect.eci <= viewRange.eci && rect.eri <= viewRange.eri) {
+      this.l.cornerEl.show();
+    } else {
+      this.l.cornerEl.hide();
+    }
     this.l.offset({
       width,
       height,
       left,
       top,
     }).show();
-    switch (edgeType) {
-      case 'top':
-        this.l.cornerEl.cssRemoveKeys('bottom');
-        this.l.cornerEl.cssRemoveKeys('left');
-        this.l.cornerEl.css('top', '-3px');
-        this.l.cornerEl.css('right', '-3px');
-        break;
-      case 'left':
-        this.l.cornerEl.cssRemoveKeys('top');
-        this.l.cornerEl.cssRemoveKeys('right');
-        this.l.cornerEl.css('bottom', '-3px');
-        this.l.cornerEl.css('left', '-3px');
-        break;
-      default:
-        this.l.cornerEl.cssRemoveKeys('top');
-        this.l.cornerEl.cssRemoveKeys('left');
-        this.l.cornerEl.css('bottom', '-3px');
-        this.l.cornerEl.css('right', '-3px');
-    }
   }
 
   setBROffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
+    const { content, cols, rows } = table;
+    const viewRange = content.getViewRange();
     const { rect, edgeType } = selectorAttr;
-    const { w: width, h: height } = rect;
-    const scroll = table.getScroll();
-    const indexWidth = table.getIndexWidth();
-    const indexHeight = table.getIndexHeight();
-    const fixedHeight = table.getFixedHeight();
-    const fixedWidth = table.getFixedWidth();
-    let { left, top } = selectorAttr;
-    left -= indexWidth;
-    left -= fixedWidth;
-    left -= scroll.x;
-    top -= indexHeight;
-    top -= fixedHeight;
-    top -= scroll.y;
+    const empty = new RectRange(0, 0, 0, 0, 0, 0);
+    const coincideRange = rect.coincide(viewRange);
+    // console.log('coincideRange >>>', coincideRange);
+    if (empty.equals(coincideRange)) {
+      this.br.hide();
+      return;
+    }
+    let width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci);
+    let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
+    const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
+    const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
+    if (edgeType === 'left') {
+      this.br.cornerEl.cssRemoveKeys('right');
+      this.br.cornerEl.cssRemoveKeys('top');
+      this.br.cornerEl.css('left', '-3px');
+      this.br.cornerEl.css('bottom', '-3px');
+    } else if (edgeType === 'top') {
+      this.br.cornerEl.cssRemoveKeys('left');
+      this.br.cornerEl.cssRemoveKeys('bottom');
+      this.br.cornerEl.css('right', '-3px');
+      this.br.cornerEl.css('top', '-3px');
+    } else {
+      this.br.cornerEl.cssRemoveKeys('top');
+      this.br.cornerEl.cssRemoveKeys('left');
+      this.br.cornerEl.css('right', '-3px');
+      this.br.cornerEl.css('bottom', '-3px');
+    }
+    if (rect.sci < viewRange.sci) {
+      this.br.areaEl.css('border-left', 'none');
+      width += 2;
+    } else {
+      this.br.areaEl.cssRemoveKeys('border-left');
+    }
+    if (rect.sri < viewRange.sri) {
+      this.br.areaEl.css('border-top', 'none');
+      height += 2;
+    } else {
+      this.br.areaEl.cssRemoveKeys('border-top');
+    }
     this.br.offset({
       width,
       height,
       left,
       top,
     }).show();
-    switch (edgeType) {
-      case 'top':
-        this.br.cornerEl.cssRemoveKeys('bottom');
-        this.br.cornerEl.cssRemoveKeys('left');
-        this.br.cornerEl.css('top', `${scroll.y - 3}px`);
-        this.br.cornerEl.css('right', '-3px');
-        break;
-      case 'left':
-        this.br.cornerEl.cssRemoveKeys('top');
-        this.br.cornerEl.cssRemoveKeys('right');
-        this.br.cornerEl.css('bottom', '-3px');
-        this.br.cornerEl.css('left', `${scroll.x - 3}px`);
-        break;
-      default:
-        this.br.cornerEl.cssRemoveKeys('top');
-        this.br.cornerEl.cssRemoveKeys('left');
-        this.br.cornerEl.css('bottom', '-3px');
-        this.br.cornerEl.css('right', '-3px');
-    }
   }
 
   setOffset(selectorAttr) {
@@ -403,12 +468,6 @@ class ScreenSelector extends ScreenWidget {
     });
     EventBind.bind(table, Constant.EVENT_TYPE.SCROLL, () => {
       if (this.selectorAttr) {
-        const { content } = table;
-        const { rect } = this.selectorAttr;
-        const viewRange = content.getViewRange();
-        const coincideRange = rect.coincide(viewRange);
-        console.log('viewRange >>>', viewRange);
-        console.log('coincideRange', coincideRange);
         this.setOffset(this.selectorAttr);
       }
     });
@@ -423,10 +482,6 @@ class ScreenSelector extends ScreenWidget {
       } else {
         mousePointType.on(['table-cell']);
       }
-      this.lt.css('transition', 'all 50ms linear');
-      this.t.css('transition', 'all 50ms linear');
-      this.l.css('transition', 'all 50ms linear');
-      this.br.css('transition', 'all 50ms linear');
       EventBind.mouseMoveUp(document, (e2) => {
         const { x, y } = table.computeEventXy(e2);
         const moveSelectorAttr = this.getMoveXySelectorAttr(downSelectAttr, x, y);
@@ -436,10 +491,6 @@ class ScreenSelector extends ScreenWidget {
         e2.preventDefault();
       }, () => {
         mousePointType.off();
-        this.lt.cssRemoveKeys('transition', 'all 50ms linear');
-        this.t.cssRemoveKeys('transition', 'all 50ms linear');
-        this.l.cssRemoveKeys('transition', 'all 50ms linear');
-        this.br.cssRemoveKeys('transition', 'all 50ms linear');
       });
       e1.stopPropagation();
       e1.preventDefault();
@@ -546,47 +597,26 @@ class ScreenSelector extends ScreenWidget {
     // console.log('x, y >>>', x, y);
     const { screen } = this;
     const { table } = screen;
-    const { merges, cols, rows } = table;
+    const { merges , rows, cols} = table;
     const { ri, ci } = table.getRiCiByXy(x, y);
     // console.log('ri, ci >>>', ri, ci);
 
     if (ri === -1 && ci === -1) {
-      const width = table.getContentWidth() + table.getFixedWidth();
-      const height = table.getContentHeight() + table.getFixedHeight();
-      const left = table.getIndexWidth();
-      const top = table.getIndexHeight();
-      // console.log('width, height, left, top >>>', width, height, left, top);
-      const rect = new RectRange(0, 0, 0, 0);
-      rect.w = width;
-      rect.h = height;
+      const rect = new RectRange(0, 0, rows.len, cols.len);
       return {
-        left, top, rect, edge: true, edgeType: 'left-top',
+        rect, edge: true, edgeType: 'left-top',
       };
     }
     if (ri === -1) {
-      const width = cols.getWidth(ci);
-      const height = table.getContentHeight() + table.getFixedHeight();
-      const left = table.getColLeft(ci);
-      const top = table.getIndexHeight();
-      // console.log('width, height, left, top >>>', width, height, left, top);
-      const rect = new RectRange(0, ci, 0, ci);
-      rect.w = width;
-      rect.h = height;
+      const rect = new RectRange(0, ci, rows.len, ci);
       return {
-        left, top, rect, edge: true, edgeType: 'top',
+        rect, edge: true, edgeType: 'top',
       };
     }
     if (ci === -1) {
-      const width = table.getContentWidth() + table.getFixedWidth();
-      const height = rows.getHeight(ri);
-      const left = table.getIndexWidth();
-      const top = table.getRowTop(ri);
-      // console.log('width, height, left, top >>>', width, height, left, top);
-      const rect = new RectRange(ri, 0, ri, 0);
-      rect.w = width;
-      rect.h = height;
+      const rect = new RectRange(ri, 0, ri, cols.len);
       return {
-        left, top, rect, edge: true, edgeType: 'left',
+        rect, edge: true, edgeType: 'left',
       };
     }
 
@@ -595,62 +625,36 @@ class ScreenSelector extends ScreenWidget {
     if (merge) {
       rect = merge;
     }
-    const top = table.getRowTop(rect.sri);
-    const left = table.getColLeft(rect.sci);
-    const width = cols.sectionSumWidth(rect.sci, rect.eci);
-    const height = rows.sectionSumHeight(rect.sri, rect.eri);
-    rect.w = width;
-    rect.h = height;
-    return { left, top, rect };
+    return { rect };
   }
 
   getMoveXySelectorAttr(selectorAttr, x, y) {
     // console.log('x, y >>>', x, y);
     const { screen } = this;
     const { table } = screen;
-    const { merges, cols, rows } = table;
+    const { merges } = table;
     const { rect: selectRect, edge } = selectorAttr;
     const { ri, ci } = table.getRiCiByXy(x, y);
 
     if (edge && ri === -1 && ci === -1) {
-      const width = table.getContentWidth() + table.getFixedWidth();
-      const height = table.getContentHeight() + table.getFixedHeight();
-      const left = table.getIndexWidth();
-      const top = table.getIndexHeight();
       // console.log('width, height, left, top >>>', width, height, left, top);
       const rect = new RectRange(0, 0, 0, 0);
-      rect.w = width;
-      rect.h = height;
       return {
-        left, top, rect, edge: true, edgeType: 'left-top',
+        rect, edge: true, edgeType: 'left-top',
       };
     }
     if (edge && ri === -1) {
       let rect = new RectRange(0, ci, 0, ci);
       rect = selectRect.union(rect);
-      const width = cols.sectionSumWidth(rect.sci, rect.eci);
-      const height = table.getContentHeight() + table.getFixedHeight();
-      const left = table.getColLeft(rect.sci);
-      const top = table.getIndexHeight();
-      // console.log('width, height, left, top >>>', width, height, left, top);
-      rect.w = width;
-      rect.h = height;
       return {
-        left, top, rect, edge: true, edgeType: 'top',
+        rect, edge: true, edgeType: 'top',
       };
     }
     if (edge && ci === -1) {
       let rect = new RectRange(ri, 0, ri, 0);
       rect = selectRect.union(rect);
-      const width = table.getContentWidth() + table.getFixedWidth();
-      const height = rows.sectionSumHeight(rect.sri, rect.eri);
-      const left = table.getIndexWidth();
-      const top = table.getRowTop(rect.sri);
-      // console.log('width, height, left, top >>>', width, height, left, top);
-      rect.w = width;
-      rect.h = height;
       return {
-        left, top, rect, edge: true, edgeType: 'left',
+        rect, edge: true, edgeType: 'left',
       };
     }
 
@@ -660,14 +664,7 @@ class ScreenSelector extends ScreenWidget {
       let rect = new RectRange(viewRange.sri, viewRange.sci, 0, 0);
       rect = selectRect.union(rect);
       rect = merges.union(rect);
-      const width = cols.sectionSumWidth(rect.sci, rect.eci);
-      const height = rows.sectionSumHeight(rect.sri, rect.eri);
-      const left = table.getColLeft(rect.sci);
-      const top = table.getRowTop(rect.sri);
-      // console.log('width, height, left, top >>>', width, height, left, top);
-      rect.w = width;
-      rect.h = height;
-      return { left, top, rect };
+      return { rect };
     }
     if (ri === -1) {
       const viewRange = this.getViewRange();
@@ -675,14 +672,7 @@ class ScreenSelector extends ScreenWidget {
       let rect = new RectRange(viewRange.sri, ci, viewRange.sri, ci);
       rect = selectRect.union(rect);
       rect = merges.union(rect);
-      const width = cols.sectionSumWidth(rect.sci, rect.eci);
-      const height = rows.sectionSumHeight(rect.sri, rect.eri);
-      const left = table.getColLeft(rect.sci);
-      const top = table.getRowTop(rect.sri);
-      // console.log('width, height, left, top >>>', width, height, left, top);
-      rect.w = width;
-      rect.h = height;
-      return { left, top, rect };
+      return { rect };
     }
     if (ci === -1) {
       const viewRange = this.getViewRange();
@@ -690,27 +680,14 @@ class ScreenSelector extends ScreenWidget {
       let rect = new RectRange(ri, viewRange.sci, ri, viewRange.sci);
       rect = selectRect.union(rect);
       rect = merges.union(rect);
-      const width = cols.sectionSumWidth(rect.sci, rect.eci);
-      const height = rows.sectionSumHeight(rect.sri, rect.eri);
-      const left = table.getColLeft(rect.sci);
-      const top = table.getRowTop(rect.sri);
-      // console.log('width, height, left, top >>>', width, height, left, top);
-      rect.w = width;
-      rect.h = height;
-      return { left, top, rect };
+      return { rect };
     }
 
     let rect = selectRect.union(new RectRange(ri, ci, ri, ci));
     rect = merges.union(rect);
-    const top = table.getRowTop(rect.sri);
-    const left = table.getColLeft(rect.sci);
-    const width = cols.sectionSumWidth(rect.sci, rect.eci);
-    const height = rows.sectionSumHeight(rect.sri, rect.eri);
-    rect.w = width;
-    rect.h = height;
     // console.log('selectRect>>>', selectRect);
     // console.log('rect>>>', rect);
-    return { left, top, rect };
+    return { rect };
   }
 
   getAutoFillRange() {
