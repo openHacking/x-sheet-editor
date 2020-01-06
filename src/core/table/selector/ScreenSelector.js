@@ -82,7 +82,7 @@ class ScreenSelector extends ScreenWidget {
     const { table } = screen;
     const { fixedTop, cols, rows } = table;
     const viewRange = fixedTop.getViewRange();
-    const { rect, edgeType } = selectorAttr;
+    const { rect, edgeType, edge } = selectorAttr;
     const empty = new RectRange(0, 0, 0, 0, 0, 0);
     const coincideRange = rect.coincide(viewRange);
     // console.log('coincideRange >>>', coincideRange);
@@ -122,7 +122,7 @@ class ScreenSelector extends ScreenWidget {
     } else {
       this.t.areaEl.cssRemoveKeys('border-bottom');
     }
-    if (rect.eci <= viewRange.eci && rect.eri <= viewRange.eri) {
+    if ((rect.eci <= viewRange.eci && rect.eri <= viewRange.eri) || edge) {
       this.t.cornerEl.show();
     } else {
       this.t.cornerEl.hide();
@@ -140,7 +140,7 @@ class ScreenSelector extends ScreenWidget {
     const { table } = screen;
     const { fixedLeft, cols, rows } = table;
     const viewRange = fixedLeft.getViewRange();
-    const { rect, edgeType } = selectorAttr;
+    const { rect, edgeType, edge } = selectorAttr;
     const empty = new RectRange(0, 0, 0, 0, 0, 0);
     const coincideRange = rect.coincide(viewRange);
     // console.log('coincideRange >>>', coincideRange);
@@ -180,7 +180,7 @@ class ScreenSelector extends ScreenWidget {
     } else {
       this.l.areaEl.cssRemoveKeys('border-right');
     }
-    if (rect.eci <= viewRange.eci && rect.eri <= viewRange.eri) {
+    if ((rect.eci <= viewRange.eci && rect.eri <= viewRange.eri) || edge) {
       this.l.cornerEl.show();
     } else {
       this.l.cornerEl.hide();
@@ -198,7 +198,7 @@ class ScreenSelector extends ScreenWidget {
     const { table } = screen;
     const { content, cols, rows } = table;
     const viewRange = content.getViewRange();
-    const { rect, edgeType } = selectorAttr;
+    const { rect, edgeType, edge } = selectorAttr;
     const empty = new RectRange(0, 0, 0, 0, 0, 0);
     const coincideRange = rect.coincide(viewRange);
     // console.log('coincideRange >>>', coincideRange);
@@ -237,6 +237,11 @@ class ScreenSelector extends ScreenWidget {
       height += 2;
     } else {
       this.br.areaEl.cssRemoveKeys('border-top');
+    }
+    if (edge) {
+      this.br.cornerEl.hide();
+    } else {
+      this.br.cornerEl.show();
     }
     this.br.offset({
       width,
