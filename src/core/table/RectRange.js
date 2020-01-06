@@ -152,6 +152,9 @@ class RectRange {
     const {
       sri, sci, eri, eci,
     } = this;
+    if (this.disjoint(other)) {
+      return new RectRange(0, 0, 0, 0);
+    }
     return new RectRange(
       other.sri > sri ? other.sri : sri,
       other.sci > sci ? other.sci : sci,

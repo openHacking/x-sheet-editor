@@ -1,9 +1,9 @@
 /* global document */
 
 import { Selector } from './Selector';
+import { EventBind } from '../../../utils/EventBind';
 import { Constant } from '../../../utils/Constant';
 import { ScreenWidget } from '../screen/ScreenWidget';
-import { EventBind } from '../../../utils/EventBind';
 import { RectRange } from '../RectRange';
 
 class ScreenSelector extends ScreenWidget {
@@ -403,6 +403,12 @@ class ScreenSelector extends ScreenWidget {
     });
     EventBind.bind(table, Constant.EVENT_TYPE.SCROLL, () => {
       if (this.selectorAttr) {
+        const { content } = table;
+        const { rect } = this.selectorAttr;
+        const viewRange = content.getViewRange();
+        const coincideRange = rect.coincide(viewRange);
+        console.log('viewRange >>>', viewRange);
+        console.log('coincideRange', coincideRange);
         this.setOffset(this.selectorAttr);
       }
     });
@@ -417,6 +423,10 @@ class ScreenSelector extends ScreenWidget {
       } else {
         mousePointType.on(['table-cell']);
       }
+      this.lt.css('transition', 'all 50ms linear');
+      this.t.css('transition', 'all 50ms linear');
+      this.l.css('transition', 'all 50ms linear');
+      this.br.css('transition', 'all 50ms linear');
       EventBind.mouseMoveUp(document, (e2) => {
         const { x, y } = table.computeEventXy(e2);
         const moveSelectorAttr = this.getMoveXySelectorAttr(downSelectAttr, x, y);
@@ -426,6 +436,10 @@ class ScreenSelector extends ScreenWidget {
         e2.preventDefault();
       }, () => {
         mousePointType.off();
+        this.lt.cssRemoveKeys('transition', 'all 50ms linear');
+        this.t.cssRemoveKeys('transition', 'all 50ms linear');
+        this.l.cssRemoveKeys('transition', 'all 50ms linear');
+        this.br.cssRemoveKeys('transition', 'all 50ms linear');
       });
       e1.stopPropagation();
       e1.preventDefault();
