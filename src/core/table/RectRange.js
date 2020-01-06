@@ -144,6 +144,23 @@ class RectRange {
   }
 
   /**
+   * 返回当前区域和指定区域合重合的新区域
+   * @param {RectRange} other
+   * @returns {RectRange}
+   */
+  coincide(other) {
+    const {
+      sri, sci, eri, eci,
+    } = this;
+    return new RectRange(
+      other.sri > sri ? other.sri : sri,
+      other.sci > sci ? other.sci : sci,
+      other.eri < eri ? other.eri : eri,
+      other.eci < eci ? other.eci : eci,
+    );
+  }
+
+  /**
    * 返回当前区域和指定区域不重合的部分
    * @param {RectRange} other 区域
    * @returns {Array}

@@ -7,12 +7,15 @@ class RectText extends RectDraw {
     super(draw, rect);
     this.attr = attr;
     if (this.attr) {
+      const {
+        align, verticalAlign, font, color,
+      } = this.attr;
       draw.attr({
-        textAlign: this.attr.align,
-        textBaseline: this.attr.verticalAlign,
-        font: `${this.attr.font.italic ? 'italic' : ''} ${this.attr.font.bold ? 'bold' : ''} ${npx(this.attr.font.size)}px ${this.attr.font.name}`,
-        fillStyle: this.attr.color,
-        strokeStyle: this.attr.color,
+        textAlign: align,
+        textBaseline: verticalAlign,
+        font: `${font.italic ? 'italic' : ''} ${font.bold ? 'bold' : ''} ${npx(font.size)}px ${font.name}`,
+        fillStyle: color,
+        strokeStyle: color,
       });
     }
   }
