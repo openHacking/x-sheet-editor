@@ -5,6 +5,7 @@ import { EventBind } from '../../../utils/EventBind';
 import { Constant } from '../../../utils/Constant';
 import { ScreenWidget } from '../screen/ScreenWidget';
 import { RectRange } from '../RectRange';
+import { Utils } from '../../../utils/Utils';
 
 class ScreenSelector extends ScreenWidget {
   constructor(screen, options = {}) {
@@ -18,13 +19,13 @@ class ScreenSelector extends ScreenWidget {
     this.bind();
   }
 
-  setLTOffset(selectorAttr) {
+  setLTOffset(selectorAttr, corner) {
     const { screen } = this;
     const { table } = screen;
     const { frozenLeftTop, cols, rows } = table;
     const viewRange = frozenLeftTop.getViewRange();
-    const { rect, edgeType } = selectorAttr;
-    const empty = new RectRange(0, 0, 0, 0, 0, 0);
+    const { rect } = selectorAttr;
+    const empty = new RectRange(-1, -1, -1, -1);
     const coincideRange = rect.coincide(viewRange);
     // console.log('coincideRange >>>', coincideRange);
     if (empty.equals(coincideRange)) {
@@ -36,35 +37,20 @@ class ScreenSelector extends ScreenWidget {
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
     // console.log('rect >>>', rect);
-    if (edgeType === 'left') {
-      this.lt.cornerEl.cssRemoveKeys('right');
-      this.lt.cornerEl.cssRemoveKeys('top');
-      this.lt.cornerEl.css('left', '-3px');
-      this.lt.cornerEl.css('bottom', '-3px');
-    } else if (edgeType === 'top') {
-      this.lt.cornerEl.cssRemoveKeys('left');
-      this.lt.cornerEl.cssRemoveKeys('bottom');
-      this.lt.cornerEl.css('right', '-3px');
-      this.lt.cornerEl.css('top', '-3px');
-    } else {
-      this.lt.cornerEl.cssRemoveKeys('top');
-      this.lt.cornerEl.cssRemoveKeys('left');
-      this.lt.cornerEl.css('right', '-3px');
-      this.lt.cornerEl.css('bottom', '-3px');
-    }
-    if (rect.eci > viewRange.eci) {
+    // 选区大小和位置
+    if (Utils.arrayContain(corner, ['lt', 't'])) {
       this.lt.areaEl.css('border-right', 'none');
       width += 2;
     } else {
       this.lt.areaEl.cssRemoveKeys('border-right');
     }
-    if (rect.eri > viewRange.eri) {
+    if (Utils.arrayContain(corner, ['lt', 'l'])) {
       height += 2;
       this.lt.areaEl.css('border-bottom', 'none');
     } else {
       this.lt.areaEl.cssRemoveKeys('border-bottom');
     }
-    if (rect.eci <= viewRange.eci && rect.eri <= viewRange.eri) {
+    if (Utils.arrayEqual(corner, ['lt'])) {
       this.lt.cornerEl.show();
     } else {
       this.lt.cornerEl.hide();
@@ -77,13 +63,13 @@ class ScreenSelector extends ScreenWidget {
     }).show();
   }
 
-  setTOffset(selectorAttr) {
+  setTOffset(selectorAttr, corner) {
     const { screen } = this;
     const { table } = screen;
     const { fixedTop, cols, rows } = table;
     const viewRange = fixedTop.getViewRange();
-    const { rect, edgeType, edge } = selectorAttr;
-    const empty = new RectRange(0, 0, 0, 0, 0, 0);
+    const { rect } = selectorAttr;
+    const empty = new RectRange(-1, -1, -1, -1);
     const coincideRange = rect.coincide(viewRange);
     // console.log('coincideRange >>>', coincideRange);
     if (empty.equals(coincideRange)) {
@@ -94,35 +80,20 @@ class ScreenSelector extends ScreenWidget {
     let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
-    if (edgeType === 'left') {
-      this.t.cornerEl.cssRemoveKeys('right');
-      this.t.cornerEl.cssRemoveKeys('top');
-      this.t.cornerEl.css('left', '-3px');
-      this.t.cornerEl.css('bottom', '-3px');
-    } else if (edgeType === 'top') {
-      this.t.cornerEl.cssRemoveKeys('left');
-      this.t.cornerEl.cssRemoveKeys('bottom');
-      this.t.cornerEl.css('right', '-3px');
-      this.t.cornerEl.css('top', '-3px');
-    } else {
-      this.t.cornerEl.cssRemoveKeys('top');
-      this.t.cornerEl.cssRemoveKeys('left');
-      this.t.cornerEl.css('right', '-3px');
-      this.t.cornerEl.css('bottom', '-3px');
-    }
-    if (rect.sci < viewRange.sci) {
+    if (Utils.arrayContain(corner, ['lt', 't'])) {
       this.t.areaEl.css('border-left', 'none');
       width += 2;
     } else {
       this.t.areaEl.cssRemoveKeys('border-left');
     }
-    if (rect.eri > viewRange.eri) {
+    if (Utils.arrayContain(corner, ['t', 'br'])) {
       this.t.areaEl.css('border-bottom', 'none');
       height += 2;
     } else {
       this.t.areaEl.cssRemoveKeys('border-bottom');
     }
-    if ((rect.eci <= viewRange.eci && rect.eri <= viewRange.eri) || edge) {
+    // console.log('corner>>>', corner);
+    if (Utils.arrayEqual(corner, ['t']) || Utils.arrayEqual(corner, ['lt', 't'])) {
       this.t.cornerEl.show();
     } else {
       this.t.cornerEl.hide();
@@ -135,13 +106,13 @@ class ScreenSelector extends ScreenWidget {
     }).show();
   }
 
-  setLOffset(selectorAttr) {
+  setLOffset(selectorAttr, corner) {
     const { screen } = this;
     const { table } = screen;
     const { fixedLeft, cols, rows } = table;
     const viewRange = fixedLeft.getViewRange();
-    const { rect, edgeType, edge } = selectorAttr;
-    const empty = new RectRange(0, 0, 0, 0, 0, 0);
+    const { rect } = selectorAttr;
+    const empty = new RectRange(-1, -1, -1, -1);
     const coincideRange = rect.coincide(viewRange);
     // console.log('coincideRange >>>', coincideRange);
     if (empty.equals(coincideRange)) {
@@ -152,35 +123,19 @@ class ScreenSelector extends ScreenWidget {
     let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
-    if (edgeType === 'left') {
-      this.l.cornerEl.cssRemoveKeys('right');
-      this.l.cornerEl.cssRemoveKeys('top');
-      this.l.cornerEl.css('left', '-3px');
-      this.l.cornerEl.css('bottom', '-3px');
-    } else if (edgeType === 'top') {
-      this.l.cornerEl.cssRemoveKeys('left');
-      this.l.cornerEl.cssRemoveKeys('bottom');
-      this.l.cornerEl.css('right', '-3px');
-      this.l.cornerEl.css('top', '-3px');
-    } else {
-      this.l.cornerEl.cssRemoveKeys('top');
-      this.l.cornerEl.cssRemoveKeys('left');
-      this.l.cornerEl.css('right', '-3px');
-      this.l.cornerEl.css('bottom', '-3px');
-    }
-    if (rect.sri < viewRange.sri) {
+    if (Utils.arrayContain(corner, ['lt', 'l'])) {
       this.l.areaEl.css('border-top', 'none');
       height += 2;
     } else {
       this.l.areaEl.cssRemoveKeys('border-top');
     }
-    if (rect.eci > viewRange.eci) {
+    if (Utils.arrayContain(corner, ['l', 'br'])) {
       this.l.areaEl.css('border-right', 'none');
       width += 2;
     } else {
       this.l.areaEl.cssRemoveKeys('border-right');
     }
-    if ((rect.eci <= viewRange.eci && rect.eri <= viewRange.eri) || edge) {
+    if (Utils.arrayEqual(corner, ['l']) || Utils.arrayEqual(corner, ['lt', 'l'])) {
       this.l.cornerEl.show();
     } else {
       this.l.cornerEl.hide();
@@ -193,13 +148,15 @@ class ScreenSelector extends ScreenWidget {
     }).show();
   }
 
-  setBROffset(selectorAttr) {
+  setBROffset(selectorAttr, corner) {
     const { screen } = this;
     const { table } = screen;
-    const { content, cols, rows } = table;
+    const {
+      content, cols, rows,
+    } = table;
     const viewRange = content.getViewRange();
-    const { rect, edgeType, edge } = selectorAttr;
-    const empty = new RectRange(0, 0, 0, 0, 0, 0);
+    const { rect } = selectorAttr;
+    const empty = new RectRange(-1, -1, -1, -1);
     const coincideRange = rect.coincide(viewRange);
     // console.log('coincideRange >>>', coincideRange);
     if (empty.equals(coincideRange)) {
@@ -210,38 +167,22 @@ class ScreenSelector extends ScreenWidget {
     let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
-    if (edgeType === 'left') {
-      this.br.cornerEl.cssRemoveKeys('right');
-      this.br.cornerEl.cssRemoveKeys('top');
-      this.br.cornerEl.css('left', '-3px');
-      this.br.cornerEl.css('bottom', '-3px');
-    } else if (edgeType === 'top') {
-      this.br.cornerEl.cssRemoveKeys('left');
-      this.br.cornerEl.cssRemoveKeys('bottom');
-      this.br.cornerEl.css('right', '-3px');
-      this.br.cornerEl.css('top', '-3px');
-    } else {
-      this.br.cornerEl.cssRemoveKeys('top');
-      this.br.cornerEl.cssRemoveKeys('left');
-      this.br.cornerEl.css('right', '-3px');
-      this.br.cornerEl.css('bottom', '-3px');
-    }
-    if (rect.sci < viewRange.sci) {
+    if (Utils.arrayContain(corner, ['l', 'br'])) {
       this.br.areaEl.css('border-left', 'none');
       width += 2;
     } else {
       this.br.areaEl.cssRemoveKeys('border-left');
     }
-    if (rect.sri < viewRange.sri) {
+    if (Utils.arrayContain(corner, ['t', 'br'])) {
       this.br.areaEl.css('border-top', 'none');
       height += 2;
     } else {
       this.br.areaEl.cssRemoveKeys('border-top');
     }
-    if (edge) {
-      this.br.cornerEl.hide();
-    } else {
+    if (Utils.arrayEqual(corner, ['br']) || Utils.arrayEqual(corner, ['br', 't']) || Utils.arrayEqual(corner, ['br', 'l']) || Utils.arrayEqual(corner, ['br', 'lt', 't', 'l'])) {
       this.br.cornerEl.show();
+    } else {
+      this.br.cornerEl.hide();
     }
     this.br.offset({
       width,
@@ -251,11 +192,29 @@ class ScreenSelector extends ScreenWidget {
     }).show();
   }
 
+  getCorner(selectorAttr) {
+    const { screen } = this;
+    const { table } = screen;
+    const { fixed, cols, rows } = table;
+    const { rect } = selectorAttr;
+    const area = [];
+    const tlRange = new RectRange(0, 0, fixed.fxTop, fixed.fxLeft);
+    const tRange = new RectRange(0, fixed.fxLeft + 1, fixed.fxTop, cols.len);
+    const lRange = new RectRange(fixed.fxTop + 1, 0, rows.len, fixed.fxLeft);
+    const brRange = new RectRange(fixed.fxTop + 1, fixed.fxLeft + 1, rows.len, cols.len);
+    if (rect.intersects(tlRange)) area.push('lt');
+    if (rect.intersects(tRange)) area.push('t');
+    if (rect.intersects(lRange)) area.push('l');
+    if (rect.intersects(brRange)) area.push('br');
+    return area;
+  }
+
   setOffset(selectorAttr) {
-    this.setLTOffset(selectorAttr);
-    this.setTOffset(selectorAttr);
-    this.setLOffset(selectorAttr);
-    this.setBROffset(selectorAttr);
+    const corner = this.getCorner(selectorAttr);
+    this.setLTOffset(selectorAttr, corner);
+    this.setTOffset(selectorAttr, corner);
+    this.setLOffset(selectorAttr, corner);
+    this.setBROffset(selectorAttr, corner);
   }
 
   setLtAutoFillOffset(selectorAutoFillAttr) {
@@ -602,7 +561,7 @@ class ScreenSelector extends ScreenWidget {
     // console.log('x, y >>>', x, y);
     const { screen } = this;
     const { table } = screen;
-    const { merges , rows, cols} = table;
+    const { merges, rows, cols } = table;
     const { ri, ci } = table.getRiCiByXy(x, y);
     // console.log('ri, ci >>>', ri, ci);
 
@@ -727,12 +686,7 @@ class ScreenSelector extends ScreenWidget {
     return result;
   }
 
-  autoFill() {
-    const selectorRange = this.getSelectorRange();
-    const autoFillRange = this.getAutoFillRange();
-    console.log('selectorRange>>>', selectorRange);
-    console.log('autoFillRange>>>', autoFillRange);
-  }
+  autoFill() {}
 
   updateSelectorAttr() {
     const { screen } = this;

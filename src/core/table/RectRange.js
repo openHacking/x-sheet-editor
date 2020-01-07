@@ -153,7 +153,7 @@ class RectRange {
       sri, sci, eri, eci,
     } = this;
     if (this.disjoint(other)) {
-      return new RectRange(0, 0, 0, 0);
+      return new RectRange(-1, -1, -1, -1);
     }
     return new RectRange(
       other.sri > sri ? other.sri : sri,

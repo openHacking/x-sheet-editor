@@ -185,6 +185,18 @@ class Utils {
     if (typeof no2 === 'object') no2 = JSON.stringify(no2);
     return no1.toString() === no2.toString();
   }
+
+  static arrayContain(a2, a1) {
+    for (let i = 0; i < a1.length; i += 1) {
+      if (a2.indexOf(a1[i]) === -1) return false;
+    }
+    return true;
+  }
+
+  static arrayEqual(a1, a2) {
+    if (a1.length !== a2.length) return false;
+    return Utils.arrayContain(a2, a1);
+  }
 }
 
 export { Utils };

@@ -56,17 +56,18 @@ class Screen extends Widget {
       this.lt.offset({
         left: index.width, top: index.height, width: fixedWidth, height: fixedHeight,
       }).show();
-    }
-    if (fixedWidth) {
-      this.l.offset({ left: index.width, top: brTop, width: fixedWidth }).show();
-    }
-    if (fixedHeight) {
-      this.t.offset({ left: brLeft, top: index.height, height: fixedHeight }).show();
-    }
-    if (fixedWidth === 0 && fixedHeight === 0) {
+    } else {
       this.lt.hide();
-      this.t.hide();
+    }
+    if (fixedWidth > 0) {
+      this.l.offset({ left: index.width, top: brTop, width: fixedWidth }).show();
+    } else {
       this.l.hide();
+    }
+    if (fixedHeight > 0) {
+      this.t.offset({ left: brLeft, top: index.height, height: fixedHeight }).show();
+    } else {
+      this.t.hide();
     }
   }
 
