@@ -35,13 +35,13 @@ class ScreenSelector extends ScreenWidget {
     let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
-    if (Utils.arrayContain(intersectsArea, ['lt', 't'])) {
+    if (rect.eci > viewRange.eci) {
       this.lt.areaEl.css('border-right', 'none');
       width += 2;
     } else {
       this.lt.areaEl.cssRemoveKeys('border-right');
     }
-    if (Utils.arrayContain(intersectsArea, ['lt', 'l'])) {
+    if (rect.eri > viewRange.eri) {
       height += 2;
       this.lt.areaEl.css('border-bottom', 'none');
     } else {
@@ -92,13 +92,13 @@ class ScreenSelector extends ScreenWidget {
     let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
-    if (Utils.arrayContain(intersectsArea, ['lt', 't'])) {
+    if (rect.sci < viewRange.sci) {
       this.t.areaEl.css('border-left', 'none');
       width += 2;
     } else {
       this.t.areaEl.cssRemoveKeys('border-left');
     }
-    if (Utils.arrayContain(intersectsArea, ['t', 'br'])) {
+    if (rect.eri > viewRange.eri) {
       this.t.areaEl.css('border-bottom', 'none');
       height += 2;
     } else {
@@ -144,13 +144,13 @@ class ScreenSelector extends ScreenWidget {
     let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
-    if (Utils.arrayContain(intersectsArea, ['lt', 'l'])) {
+    if (rect.sri < viewRange.sri) {
       this.l.areaEl.css('border-top', 'none');
       height += 2;
     } else {
       this.l.areaEl.cssRemoveKeys('border-top');
     }
-    if (Utils.arrayContain(intersectsArea, ['l', 'br'])) {
+    if (rect.eci > viewRange.eci) {
       this.l.areaEl.css('border-right', 'none');
       width += 2;
     } else {
@@ -198,13 +198,13 @@ class ScreenSelector extends ScreenWidget {
     let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
-    if (Utils.arrayContain(intersectsArea, ['l', 'br'])) {
+    if (rect.sci < viewRange.sci) {
       this.br.areaEl.css('border-left', 'none');
       width += 2;
     } else {
       this.br.areaEl.cssRemoveKeys('border-left');
     }
-    if (Utils.arrayContain(intersectsArea, ['t', 'br'])) {
+    if (rect.sri < viewRange.sri) {
       this.br.areaEl.css('border-top', 'none');
       height += 2;
     } else {
