@@ -19,7 +19,7 @@ class ScreenSelector extends ScreenWidget {
     this.bind();
   }
 
-  setLTOffset(selectorAttr, corner) {
+  setLTOffset(selectorAttr, intersectsArea) {
     const { screen } = this;
     const { table } = screen;
     const { frozenLeftTop, cols, rows } = table;
@@ -27,7 +27,6 @@ class ScreenSelector extends ScreenWidget {
     const { rect } = selectorAttr;
     const empty = new RectRange(-1, -1, -1, -1);
     const coincideRange = rect.coincide(viewRange);
-    // console.log('coincideRange >>>', coincideRange);
     if (empty.equals(coincideRange)) {
       this.lt.hide();
       return;
@@ -36,21 +35,19 @@ class ScreenSelector extends ScreenWidget {
     let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
-    // console.log('rect >>>', rect);
-    // 选区大小和位置
-    if (Utils.arrayContain(corner, ['lt', 't'])) {
+    if (Utils.arrayContain(intersectsArea, ['lt', 't'])) {
       this.lt.areaEl.css('border-right', 'none');
       width += 2;
     } else {
       this.lt.areaEl.cssRemoveKeys('border-right');
     }
-    if (Utils.arrayContain(corner, ['lt', 'l'])) {
+    if (Utils.arrayContain(intersectsArea, ['lt', 'l'])) {
       height += 2;
       this.lt.areaEl.css('border-bottom', 'none');
     } else {
       this.lt.areaEl.cssRemoveKeys('border-bottom');
     }
-    if (Utils.arrayEqual(corner, ['lt'])) {
+    if (Utils.arrayEqual(intersectsArea, ['lt'])) {
       this.lt.cornerEl.show();
     } else {
       this.lt.cornerEl.hide();
@@ -63,7 +60,7 @@ class ScreenSelector extends ScreenWidget {
     }).show();
   }
 
-  setTOffset(selectorAttr, corner) {
+  setTOffset(selectorAttr, intersectsArea) {
     const { screen } = this;
     const { table } = screen;
     const { fixedTop, cols, rows } = table;
@@ -71,7 +68,6 @@ class ScreenSelector extends ScreenWidget {
     const { rect } = selectorAttr;
     const empty = new RectRange(-1, -1, -1, -1);
     const coincideRange = rect.coincide(viewRange);
-    // console.log('coincideRange >>>', coincideRange);
     if (empty.equals(coincideRange)) {
       this.t.hide();
       return;
@@ -80,20 +76,19 @@ class ScreenSelector extends ScreenWidget {
     let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
-    if (Utils.arrayContain(corner, ['lt', 't'])) {
+    if (Utils.arrayContain(intersectsArea, ['lt', 't'])) {
       this.t.areaEl.css('border-left', 'none');
       width += 2;
     } else {
       this.t.areaEl.cssRemoveKeys('border-left');
     }
-    if (Utils.arrayContain(corner, ['t', 'br'])) {
+    if (Utils.arrayContain(intersectsArea, ['t', 'br'])) {
       this.t.areaEl.css('border-bottom', 'none');
       height += 2;
     } else {
       this.t.areaEl.cssRemoveKeys('border-bottom');
     }
-    // console.log('corner>>>', corner);
-    if (Utils.arrayEqual(corner, ['t']) || Utils.arrayEqual(corner, ['lt', 't'])) {
+    if (Utils.arrayEqual(intersectsArea, ['t']) || Utils.arrayEqual(intersectsArea, ['lt', 't'])) {
       this.t.cornerEl.show();
     } else {
       this.t.cornerEl.hide();
@@ -106,7 +101,7 @@ class ScreenSelector extends ScreenWidget {
     }).show();
   }
 
-  setLOffset(selectorAttr, corner) {
+  setLOffset(selectorAttr, intersectsArea) {
     const { screen } = this;
     const { table } = screen;
     const { fixedLeft, cols, rows } = table;
@@ -114,7 +109,6 @@ class ScreenSelector extends ScreenWidget {
     const { rect } = selectorAttr;
     const empty = new RectRange(-1, -1, -1, -1);
     const coincideRange = rect.coincide(viewRange);
-    // console.log('coincideRange >>>', coincideRange);
     if (empty.equals(coincideRange)) {
       this.l.hide();
       return;
@@ -123,19 +117,19 @@ class ScreenSelector extends ScreenWidget {
     let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
-    if (Utils.arrayContain(corner, ['lt', 'l'])) {
+    if (Utils.arrayContain(intersectsArea, ['lt', 'l'])) {
       this.l.areaEl.css('border-top', 'none');
       height += 2;
     } else {
       this.l.areaEl.cssRemoveKeys('border-top');
     }
-    if (Utils.arrayContain(corner, ['l', 'br'])) {
+    if (Utils.arrayContain(intersectsArea, ['l', 'br'])) {
       this.l.areaEl.css('border-right', 'none');
       width += 2;
     } else {
       this.l.areaEl.cssRemoveKeys('border-right');
     }
-    if (Utils.arrayEqual(corner, ['l']) || Utils.arrayEqual(corner, ['lt', 'l'])) {
+    if (Utils.arrayEqual(intersectsArea, ['l']) || Utils.arrayEqual(intersectsArea, ['lt', 'l'])) {
       this.l.cornerEl.show();
     } else {
       this.l.cornerEl.hide();
@@ -148,7 +142,7 @@ class ScreenSelector extends ScreenWidget {
     }).show();
   }
 
-  setBROffset(selectorAttr, corner) {
+  setBROffset(selectorAttr, intersectsArea) {
     const { screen } = this;
     const { table } = screen;
     const {
@@ -158,7 +152,6 @@ class ScreenSelector extends ScreenWidget {
     const { rect } = selectorAttr;
     const empty = new RectRange(-1, -1, -1, -1);
     const coincideRange = rect.coincide(viewRange);
-    // console.log('coincideRange >>>', coincideRange);
     if (empty.equals(coincideRange)) {
       this.br.hide();
       return;
@@ -167,19 +160,19 @@ class ScreenSelector extends ScreenWidget {
     let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
-    if (Utils.arrayContain(corner, ['l', 'br'])) {
+    if (Utils.arrayContain(intersectsArea, ['l', 'br'])) {
       this.br.areaEl.css('border-left', 'none');
       width += 2;
     } else {
       this.br.areaEl.cssRemoveKeys('border-left');
     }
-    if (Utils.arrayContain(corner, ['t', 'br'])) {
+    if (Utils.arrayContain(intersectsArea, ['t', 'br'])) {
       this.br.areaEl.css('border-top', 'none');
       height += 2;
     } else {
       this.br.areaEl.cssRemoveKeys('border-top');
     }
-    if (Utils.arrayEqual(corner, ['br']) || Utils.arrayEqual(corner, ['br', 't']) || Utils.arrayEqual(corner, ['br', 'l']) || Utils.arrayEqual(corner, ['br', 'lt', 't', 'l'])) {
+    if (Utils.arrayEqual(intersectsArea, ['br']) || Utils.arrayEqual(intersectsArea, ['br', 't']) || Utils.arrayEqual(intersectsArea, ['br', 'l']) || Utils.arrayEqual(intersectsArea, ['br', 'lt', 't', 'l'])) {
       this.br.cornerEl.show();
     } else {
       this.br.cornerEl.hide();
@@ -192,7 +185,7 @@ class ScreenSelector extends ScreenWidget {
     }).show();
   }
 
-  getCorner(selectorAttr) {
+  getIntersectsArea(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
     const { fixed, cols, rows } = table;
@@ -210,11 +203,11 @@ class ScreenSelector extends ScreenWidget {
   }
 
   setOffset(selectorAttr) {
-    const corner = this.getCorner(selectorAttr);
-    this.setLTOffset(selectorAttr, corner);
-    this.setTOffset(selectorAttr, corner);
-    this.setLOffset(selectorAttr, corner);
-    this.setBROffset(selectorAttr, corner);
+    const intersectsArea = this.getIntersectsArea(selectorAttr);
+    this.setLTOffset(selectorAttr, intersectsArea);
+    this.setTOffset(selectorAttr, intersectsArea);
+    this.setLOffset(selectorAttr, intersectsArea);
+    this.setBROffset(selectorAttr, intersectsArea);
   }
 
   setLtAutoFillOffset(selectorAutoFillAttr) {
