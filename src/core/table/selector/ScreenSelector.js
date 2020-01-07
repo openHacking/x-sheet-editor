@@ -221,16 +221,20 @@ class ScreenSelector extends ScreenWidget {
     } else {
       this.br.cornerEl.hide();
     }
-    if (edge && Utils.arrayEqual(intersectsArea, ['br'])) {
-      if (edgeType === 'top') {
-        this.br.cornerEl.show();
-        this.br.cornerEl.css('top', '-3px');
-        this.br.cornerEl.css('right', '-3px');
-      }
-      if (edgeType === 'left') {
-        this.br.cornerEl.show();
-        this.br.cornerEl.css('left', '-3px');
-        this.br.cornerEl.css('bottom', '-3px');
+    if (edge) {
+      if (Utils.arrayEqual(intersectsArea, ['br'])) {
+        if (edgeType === 'top') {
+          this.br.cornerEl.show();
+          this.br.cornerEl.css('top', '-3px');
+          this.br.cornerEl.css('right', '-3px');
+        }
+        if (edgeType === 'left') {
+          this.br.cornerEl.show();
+          this.br.cornerEl.css('left', '-3px');
+          this.br.cornerEl.css('bottom', '-3px');
+        }
+      } else {
+        this.br.cornerEl.hide();
       }
     }
     this.br.offset({
