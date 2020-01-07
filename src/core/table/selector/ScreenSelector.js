@@ -53,20 +53,20 @@ class ScreenSelector extends ScreenWidget {
     this.lt.cornerEl.css('bottom', 'initial');
     if (Utils.arrayEqual(intersectsArea, ['lt'])) {
       this.lt.cornerEl.show();
-      this.lt.cornerEl.css('right', '-3px');
-      this.lt.cornerEl.css('bottom', '-3px');
+      this.lt.cornerEl.css('right', '0px');
+      this.lt.cornerEl.css('bottom', '0px');
     } else {
       this.lt.cornerEl.hide();
     }
     if (edgeType === 'top') {
       this.lt.cornerEl.show();
-      this.lt.cornerEl.css('top', '-3px');
-      this.lt.cornerEl.css('right', '-3px');
+      this.lt.cornerEl.css('top', '0px');
+      this.lt.cornerEl.css('right', '0px');
     }
     if (edgeType === 'left') {
       this.lt.cornerEl.show();
-      this.lt.cornerEl.css('left', '-3px');
-      this.lt.cornerEl.css('bottom', '-3px');
+      this.lt.cornerEl.css('left', '0px');
+      this.lt.cornerEl.css('bottom', '0px');
     }
     this.lt.offset({
       width,
@@ -110,15 +110,15 @@ class ScreenSelector extends ScreenWidget {
     this.t.cornerEl.css('bottom', 'initial');
     if (Utils.arrayEqual(intersectsArea, ['t']) || Utils.arrayEqual(intersectsArea, ['lt', 't'])) {
       this.t.cornerEl.show();
-      this.t.cornerEl.css('right', '-3px');
-      this.t.cornerEl.css('bottom', '-3px');
+      this.t.cornerEl.css('right', '0px');
+      this.t.cornerEl.css('bottom', '0px');
     } else {
       this.t.cornerEl.hide();
     }
     if (edgeType === 'top') {
       this.t.cornerEl.show();
-      this.t.cornerEl.css('top', '-3px');
-      this.t.cornerEl.css('right', '-3px');
+      this.t.cornerEl.css('top', '0px');
+      this.t.cornerEl.css('right', '0px');
     }
     this.t.offset({
       width,
@@ -162,15 +162,15 @@ class ScreenSelector extends ScreenWidget {
     this.l.cornerEl.css('bottom', 'initial');
     if (Utils.arrayEqual(intersectsArea, ['l']) || Utils.arrayEqual(intersectsArea, ['lt', 'l'])) {
       this.l.cornerEl.show();
-      this.l.cornerEl.css('right', '-3px');
-      this.l.cornerEl.css('bottom', '-3px');
+      this.l.cornerEl.css('right', '0px');
+      this.l.cornerEl.css('bottom', '0px');
     } else {
       this.l.cornerEl.hide();
     }
     if (edgeType === 'left') {
       this.l.cornerEl.show();
-      this.l.cornerEl.css('left', '-3px');
-      this.l.cornerEl.css('bottom', '-3px');
+      this.l.cornerEl.css('left', '0px');
+      this.l.cornerEl.css('bottom', '0px');
     }
     this.l.offset({
       width,
@@ -216,8 +216,8 @@ class ScreenSelector extends ScreenWidget {
     this.br.cornerEl.css('bottom', 'initial');
     if (Utils.arrayEqual(intersectsArea, ['br']) || Utils.arrayEqual(intersectsArea, ['br', 't']) || Utils.arrayEqual(intersectsArea, ['br', 'l']) || Utils.arrayEqual(intersectsArea, ['br', 'lt', 't', 'l'])) {
       this.br.cornerEl.show();
-      this.br.cornerEl.css('right', '-3px');
-      this.br.cornerEl.css('bottom', '-3px');
+      this.br.cornerEl.css('right', '0px');
+      this.br.cornerEl.css('bottom', '0px');
     } else {
       this.br.cornerEl.hide();
     }
@@ -225,13 +225,13 @@ class ScreenSelector extends ScreenWidget {
       if (Utils.arrayEqual(intersectsArea, ['br'])) {
         if (edgeType === 'top') {
           this.br.cornerEl.show();
-          this.br.cornerEl.css('top', '-3px');
-          this.br.cornerEl.css('right', '-3px');
+          this.br.cornerEl.css('top', '0px');
+          this.br.cornerEl.css('right', '0px');
         }
         if (edgeType === 'left') {
           this.br.cornerEl.show();
-          this.br.cornerEl.css('left', '-3px');
-          this.br.cornerEl.css('bottom', '-3px');
+          this.br.cornerEl.css('left', '0px');
+          this.br.cornerEl.css('bottom', '0px');
         }
       } else {
         this.br.cornerEl.hide();
@@ -270,175 +270,6 @@ class ScreenSelector extends ScreenWidget {
     this.setBROffset(selectorAttr, intersectsArea);
   }
 
-  setLtAutoFillOffset(selectorAutoFillAttr) {
-    const { rect, direction } = selectorAutoFillAttr;
-    const { lt } = this;
-    const { autofillEl } = lt;
-    autofillEl.cssRemoveKeys('top');
-    autofillEl.cssRemoveKeys('left');
-    autofillEl.cssRemoveKeys('right');
-    autofillEl.cssRemoveKeys('bottom');
-    switch (direction) {
-      case 'top':
-        autofillEl.css('top', `-${rect.h}px`);
-        autofillEl.css('width', `${rect.w}px`);
-        autofillEl.css('height', `${rect.h}px`);
-        break;
-      case 'bottom':
-        autofillEl.css('bottom', `-${rect.h}px`);
-        autofillEl.css('width', `${rect.w}px`);
-        autofillEl.css('height', `${rect.h}px`);
-        break;
-      case 'left':
-        autofillEl.css('top', '0px');
-        autofillEl.css('left', `-${rect.w}px`);
-        autofillEl.css('width', `${rect.w}px`);
-        autofillEl.css('height', `${rect.h}px`);
-        break;
-      case 'right':
-        autofillEl.css('top', '0px');
-        autofillEl.css('right', `-${rect.w}px`);
-        autofillEl.css('width', `${rect.w}px`);
-        autofillEl.css('height', `${rect.h}px`);
-        break;
-      default: break;
-    }
-  }
-
-  setTAutoFillOffset(selectorAutoFillAttr) {
-    const { rect, direction } = selectorAutoFillAttr;
-    const { t } = this;
-    const { autofillEl } = t;
-    autofillEl.cssRemoveKeys('top');
-    autofillEl.cssRemoveKeys('left');
-    autofillEl.cssRemoveKeys('right');
-    autofillEl.cssRemoveKeys('bottom');
-    switch (direction) {
-      case 'top':
-        autofillEl.css('top', `-${rect.h}px`);
-        autofillEl.css('width', `${rect.w}px`);
-        autofillEl.css('height', `${rect.h}px`);
-        break;
-      case 'bottom':
-        autofillEl.css('bottom', `-${rect.h}px`);
-        autofillEl.css('width', `${rect.w}px`);
-        autofillEl.css('height', `${rect.h}px`);
-        break;
-      case 'left':
-        autofillEl.css('top', '0px');
-        autofillEl.css('left', `-${rect.w}px`);
-        autofillEl.css('width', `${rect.w}px`);
-        autofillEl.css('height', `${rect.h}px`);
-        break;
-      case 'right':
-        autofillEl.css('top', '0px');
-        autofillEl.css('right', `-${rect.w}px`);
-        autofillEl.css('width', `${rect.w}px`);
-        autofillEl.css('height', `${rect.h}px`);
-        break;
-      default: break;
-    }
-  }
-
-  setLAutoFillOffset(selectorAutoFillAttr) {
-    const { rect, direction } = selectorAutoFillAttr;
-    const { l } = this;
-    const { autofillEl } = l;
-    autofillEl.cssRemoveKeys('top');
-    autofillEl.cssRemoveKeys('left');
-    autofillEl.cssRemoveKeys('right');
-    autofillEl.cssRemoveKeys('bottom');
-    switch (direction) {
-      case 'top':
-        autofillEl.css('top', `-${rect.h}px`);
-        autofillEl.css('width', `${rect.w}px`);
-        autofillEl.css('height', `${rect.h}px`);
-        break;
-      case 'bottom':
-        autofillEl.css('bottom', `-${rect.h}px`);
-        autofillEl.css('width', `${rect.w}px`);
-        autofillEl.css('height', `${rect.h}px`);
-        break;
-      case 'left':
-        autofillEl.css('top', '0px');
-        autofillEl.css('left', `-${rect.w}px`);
-        autofillEl.css('width', `${rect.w}px`);
-        autofillEl.css('height', `${rect.h}px`);
-        break;
-      case 'right':
-        autofillEl.css('top', '0px');
-        autofillEl.css('right', `-${rect.w}px`);
-        autofillEl.css('width', `${rect.w}px`);
-        autofillEl.css('height', `${rect.h}px`);
-        break;
-      default: break;
-    }
-  }
-
-  setBRAutoFillOffset(selectorAutoFillAttr) {
-    const { rect, direction } = selectorAutoFillAttr;
-    const { br } = this;
-    const { autofillEl } = br;
-    autofillEl.cssRemoveKeys('top');
-    autofillEl.cssRemoveKeys('left');
-    autofillEl.cssRemoveKeys('right');
-    autofillEl.cssRemoveKeys('bottom');
-    switch (direction) {
-      case 'top':
-        autofillEl.css('top', `-${rect.h}px`);
-        autofillEl.css('width', `${rect.w}px`);
-        autofillEl.css('height', `${rect.h}px`);
-        break;
-      case 'bottom':
-        autofillEl.css('bottom', `-${rect.h}px`);
-        autofillEl.css('width', `${rect.w}px`);
-        autofillEl.css('height', `${rect.h}px`);
-        break;
-      case 'left':
-        autofillEl.css('top', '0px');
-        autofillEl.css('left', `-${rect.w}px`);
-        autofillEl.css('width', `${rect.w}px`);
-        autofillEl.css('height', `${rect.h}px`);
-        break;
-      case 'right':
-        autofillEl.css('top', '0px');
-        autofillEl.css('right', `-${rect.w}px`);
-        autofillEl.css('width', `${rect.w}px`);
-        autofillEl.css('height', `${rect.h}px`);
-        break;
-      default: break;
-    }
-  }
-
-  setAutoFillOffset(selectorAutoFillAttr) {
-    this.setLtAutoFillOffset(selectorAutoFillAttr);
-    this.setTAutoFillOffset(selectorAutoFillAttr);
-    this.setLAutoFillOffset(selectorAutoFillAttr);
-    this.setBRAutoFillOffset(selectorAutoFillAttr);
-  }
-
-  showAutoFill() {
-    const { lt } = this;
-    const { t } = this;
-    const { l } = this;
-    const { br } = this;
-    lt.autofillEl.show();
-    t.autofillEl.show();
-    l.autofillEl.show();
-    br.autofillEl.show();
-  }
-
-  hideAutoFill() {
-    const { lt } = this;
-    const { t } = this;
-    const { l } = this;
-    const { br } = this;
-    lt.autofillEl.hide();
-    t.autofillEl.hide();
-    l.autofillEl.hide();
-    br.autofillEl.hide();
-  }
-
   bind() {
     const { screen } = this;
     const { table } = screen;
@@ -453,22 +284,10 @@ class ScreenSelector extends ScreenWidget {
       mousePointType.on(['selector']);
       mousePointType.set('crosshair', 'selector');
       EventBind.mouseMoveUp(document, (e2) => {
-        const { x, y } = table.computeEventXy(e2);
-        const selectorAutoFillAttr = this.getMoveAutoFillXYSelectorAttr(x, y);
-        // console.log(selectorAutoFillAttr);
-        if (selectorAutoFillAttr) {
-          this.showAutoFill();
-          this.setAutoFillOffset(selectorAutoFillAttr);
-        } else {
-          this.hideAutoFill();
-        }
-        this.autoFillAttr = selectorAutoFillAttr;
         e2.stopPropagation();
         e2.preventDefault();
       }, () => {
         mousePointType.off();
-        this.hideAutoFill();
-        this.autoFill();
       });
       e1.stopPropagation();
       e1.preventDefault();
@@ -544,70 +363,6 @@ class ScreenSelector extends ScreenWidget {
     const width = cols.sectionSumWidth(sci, eci);
     const height = rows.sectionSumHeight(sri, eri);
     return new RectRange(sri, sci, eri, eci, width, height);
-  }
-
-  getMoveAutoFillXYSelectorAttr(x, y) {
-    // console.log('x, y >>>', x, y);
-    const { screen } = this;
-    const { table } = screen;
-    const { cols, rows } = table;
-    const { selectorAttr } = this;
-    const { rect: selectorRect, edge, edgeType } = selectorAttr;
-    let { ri, ci } = table.getRiCiByXy(x, y);
-    // console.log('ri, ci >>>', ri, ci);
-    // console.log('edge >>>', edge);
-    if (ri < 0) ri = 0; else if (ri > rows.len) ri = rows.len - 1;
-    if (ci < 0) ci = 0; else if (ci > cols.len) ci = cols.len - 1;
-
-    const {
-      sri: selectorSri, sci: selectorSci,
-    } = selectorRect;
-    let {
-      eri: selectorEri, eci: selectorEci,
-    } = selectorRect;
-    if (edge && edgeType === 'left') {
-      selectorEci = cols.len - 1;
-    }
-    if (edge && edgeType === 'top') {
-      selectorEri = rows.len - 1;
-    }
-    // console.log('selectorSri selectorSci selectorEri selectorEci',
-    //   selectorSri, selectorSci, selectorEri, selectorEci);
-
-    let rect = null;
-    let direction = 'un';
-    if (ri < selectorSri || ri > selectorEri) {
-      if (ri < selectorSri) {
-        direction = 'top';
-        rect = new RectRange(ri, selectorSci, selectorSri - 1, selectorEci);
-      }
-      if (ri > selectorEri) {
-        direction = 'bottom';
-        rect = new RectRange(selectorEri + 1, selectorSci, ri, selectorEci);
-      }
-    } else if (ci < selectorSci || ci > selectorEci) {
-      if (ci < selectorSci) {
-        direction = 'left';
-        rect = new RectRange(selectorSri, ci, selectorEri, selectorSci - 1);
-      }
-      if (ci > selectorEci) {
-        direction = 'right';
-        rect = new RectRange(selectorSri, selectorEci + 1, selectorEri, ci);
-      }
-    }
-    // console.log('rect >>>', rect);
-
-    if (rect !== null) {
-      const width = cols.sectionSumWidth(rect.sci, rect.eci);
-      const height = rows.sectionSumHeight(rect.sri, rect.eri);
-      rect.w = width;
-      rect.h = height;
-      return {
-        rect, direction,
-      };
-    }
-
-    return null;
   }
 
   getDownXYSelectorAttr(x, y) {
@@ -706,40 +461,6 @@ class ScreenSelector extends ScreenWidget {
     // console.log('rect>>>', rect);
     return { rect };
   }
-
-  getAutoFillRange() {
-    const { rect } = this.autoFillAttr;
-    return rect;
-  }
-
-  getSelectorRange() {
-    const { screen } = this;
-    const { table } = screen;
-    const { rows, cols } = table;
-    const { selectorAttr } = this;
-    const { edge, edgeType, rect } = selectorAttr;
-    // console.log('rect>>>', rect);
-    // console.log('selectorAttr>>>', selectorAttr);
-    // console.log('edgeType>>>', edgeType);
-    const result = rect.clone();
-    if (edge) {
-      switch (edgeType) {
-        case 'left':
-          result.eci = cols.len - 1;
-          break;
-        case 'top':
-          result.eri = rows.len - 1;
-          break;
-        default:
-          result.eci = cols.len - 1;
-          result.eri = rows.len - 1;
-          break;
-      }
-    }
-    return result;
-  }
-
-  autoFill() {}
 
   updateSelectorAttr() {
     const { screen } = this;
