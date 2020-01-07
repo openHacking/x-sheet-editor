@@ -31,26 +31,24 @@ class ScreenSelector extends ScreenWidget {
       this.lt.hide();
       return;
     }
-    let width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci);
-    let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
+    const width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci);
+    const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
     if (rect.eci > viewRange.eci) {
       this.lt.areaEl.css('border-right', 'none');
-      width += 2;
     } else {
       this.lt.areaEl.cssRemoveKeys('border-right');
     }
     if (rect.eri > viewRange.eri) {
-      height += 2;
       this.lt.areaEl.css('border-bottom', 'none');
     } else {
       this.lt.areaEl.cssRemoveKeys('border-bottom');
     }
-    this.lt.cornerEl.css('left', 'initial');
-    this.lt.cornerEl.css('top', 'initial');
-    this.lt.cornerEl.css('right', 'initial');
-    this.lt.cornerEl.css('bottom', 'initial');
+    this.lt.cornerEl.cssRemoveKeys('left');
+    this.lt.cornerEl.cssRemoveKeys('top');
+    this.lt.cornerEl.cssRemoveKeys('right');
+    this.lt.cornerEl.cssRemoveKeys('bottom');
     if (Utils.arrayEqual(intersectsArea, ['lt'])) {
       this.lt.cornerEl.show();
       this.lt.cornerEl.css('right', '0px');
@@ -88,26 +86,24 @@ class ScreenSelector extends ScreenWidget {
       this.t.hide();
       return;
     }
-    let width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci);
-    let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
+    const width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci);
+    const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
     if (rect.sci < viewRange.sci) {
       this.t.areaEl.css('border-left', 'none');
-      width += 2;
     } else {
       this.t.areaEl.cssRemoveKeys('border-left');
     }
     if (rect.eri > viewRange.eri) {
       this.t.areaEl.css('border-bottom', 'none');
-      height += 2;
     } else {
       this.t.areaEl.cssRemoveKeys('border-bottom');
     }
-    this.t.cornerEl.css('left', 'initial');
-    this.t.cornerEl.css('top', 'initial');
-    this.t.cornerEl.css('right', 'initial');
-    this.t.cornerEl.css('bottom', 'initial');
+    this.t.cornerEl.cssRemoveKeys('left');
+    this.t.cornerEl.cssRemoveKeys('top');
+    this.t.cornerEl.cssRemoveKeys('right');
+    this.t.cornerEl.cssRemoveKeys('bottom');
     if (Utils.arrayEqual(intersectsArea, ['t']) || Utils.arrayEqual(intersectsArea, ['lt', 't'])) {
       this.t.cornerEl.show();
       this.t.cornerEl.css('right', '0px');
@@ -140,26 +136,24 @@ class ScreenSelector extends ScreenWidget {
       this.l.hide();
       return;
     }
-    let width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci);
-    let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
+    const width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci);
+    const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
     if (rect.sri < viewRange.sri) {
       this.l.areaEl.css('border-top', 'none');
-      height += 2;
     } else {
       this.l.areaEl.cssRemoveKeys('border-top');
     }
     if (rect.eci > viewRange.eci) {
       this.l.areaEl.css('border-right', 'none');
-      width += 2;
     } else {
       this.l.areaEl.cssRemoveKeys('border-right');
     }
-    this.l.cornerEl.css('left', 'initial');
-    this.l.cornerEl.css('top', 'initial');
-    this.l.cornerEl.css('right', 'initial');
-    this.l.cornerEl.css('bottom', 'initial');
+    this.l.cornerEl.cssRemoveKeys('left');
+    this.l.cornerEl.cssRemoveKeys('top');
+    this.l.cornerEl.cssRemoveKeys('right');
+    this.l.cornerEl.cssRemoveKeys('bottom');
     if (Utils.arrayEqual(intersectsArea, ['l']) || Utils.arrayEqual(intersectsArea, ['lt', 'l'])) {
       this.l.cornerEl.show();
       this.l.cornerEl.css('right', '0px');
@@ -194,26 +188,24 @@ class ScreenSelector extends ScreenWidget {
       this.br.hide();
       return;
     }
-    let width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci);
-    let height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
+    const width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci);
+    const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
     if (rect.sci < viewRange.sci) {
       this.br.areaEl.css('border-left', 'none');
-      width += 2;
     } else {
       this.br.areaEl.cssRemoveKeys('border-left');
     }
     if (rect.sri < viewRange.sri) {
       this.br.areaEl.css('border-top', 'none');
-      height += 2;
     } else {
       this.br.areaEl.cssRemoveKeys('border-top');
     }
-    this.br.cornerEl.css('left', 'initial');
-    this.br.cornerEl.css('top', 'initial');
-    this.br.cornerEl.css('right', 'initial');
-    this.br.cornerEl.css('bottom', 'initial');
+    this.br.cornerEl.cssRemoveKeys('left');
+    this.br.cornerEl.cssRemoveKeys('top');
+    this.br.cornerEl.cssRemoveKeys('right');
+    this.br.cornerEl.cssRemoveKeys('bottom');
     if (Utils.arrayEqual(intersectsArea, ['br']) || Utils.arrayEqual(intersectsArea, ['br', 't']) || Utils.arrayEqual(intersectsArea, ['br', 'l']) || Utils.arrayEqual(intersectsArea, ['br', 'lt', 't', 'l'])) {
       this.br.cornerEl.show();
       this.br.cornerEl.css('right', '0px');
