@@ -15,7 +15,6 @@ class ScreenSelector extends ScreenWidget {
     this.l = new Selector(options);
     this.br = new Selector(options);
     this.selectorAttr = null;
-    this.autoFillAttr = null;
     this.bind();
   }
 
@@ -337,6 +336,7 @@ class ScreenSelector extends ScreenWidget {
     }
     if (edge) {
       const br = Utils.arrayEqual(intersectsArea, ['br']);
+      const ltTLBr = Utils.arrayEqual(intersectsArea, ['lt', 't', 'l', 'br']);
       if (edgeType === 'left' && br) {
         this.br.cornerEl.show();
         this.br.cornerEl.css('left', '0');
@@ -346,6 +346,11 @@ class ScreenSelector extends ScreenWidget {
         this.br.cornerEl.show();
         this.br.cornerEl.css('right', '0');
         this.br.cornerEl.css('top', '0');
+      }
+      if (edgeType === 'left-top' && ltTLBr) {
+        this.br.cornerEl.show();
+        this.br.cornerEl.css('right', '0');
+        this.br.cornerEl.css('bottom', '0');
       }
     } else {
       const br = Utils.arrayEqual(intersectsArea, ['br']);
