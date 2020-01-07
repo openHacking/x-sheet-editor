@@ -1188,7 +1188,9 @@ class Table extends Widget {
     EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
       const { x, y } = this.computeEventXy(e);
       const { ri, ci } = this.getRiCiByXy(x, y);
-      if (ri === -1) {
+      if (ri === -1 && ci === -1) {
+        this.mousePointType.set('cell', 'table-cell');
+      } else if (ri === -1) {
         this.mousePointType.set('s-resize', 'table-ci');
       } else if (ci === -1) {
         this.mousePointType.set('e-resize', 'table-ri');

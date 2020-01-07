@@ -19,12 +19,12 @@ class ScreenSelector extends ScreenWidget {
     this.bind();
   }
 
-  setLTOffset(selectorAttr, intersectsArea) {
+  setLTOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
     const { frozenLeftTop, cols, rows } = table;
     const viewRange = frozenLeftTop.getViewRange();
-    const { rect, edgeType, edge } = selectorAttr;
+    const { rect } = selectorAttr;
     const empty = new RectRange(-1, -1, -1, -1);
     const coincideRange = rect.coincide(viewRange);
     if (empty.equals(coincideRange)) {
@@ -35,37 +35,15 @@ class ScreenSelector extends ScreenWidget {
     const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
-    this.lt.cornerEl.cssRemoveKeys('left');
-    this.lt.cornerEl.cssRemoveKeys('top');
-    this.lt.cornerEl.cssRemoveKeys('right');
-    this.lt.cornerEl.cssRemoveKeys('bottom');
-    this.lt.cornerEl.show();
-    if (Utils.arrayEqual(intersectsArea, ['lt'])) {
-      this.lt.cornerEl.css('right', '0px');
-      this.lt.cornerEl.css('bottom', '0px');
-    }
-    if (edgeType === 'top') {
-      this.lt.cornerEl.css('top', '0px');
-      this.lt.cornerEl.css('right', '0px');
-    }
-    if (edgeType === 'left') {
-      this.lt.cornerEl.css('left', '0px');
-      this.lt.cornerEl.css('bottom', '0px');
-    }
     if (rect.eci > viewRange.eci) {
-      this.lt.cornerEl.hide();
       this.lt.areaEl.css('border-right', 'none');
     } else {
       this.lt.areaEl.cssRemoveKeys('border-right');
     }
     if (rect.eri > viewRange.eri) {
-      this.lt.cornerEl.hide();
       this.lt.areaEl.css('border-bottom', 'none');
     } else {
       this.lt.areaEl.cssRemoveKeys('border-bottom');
-    }
-    if (edge) {
-      this.lt.cornerEl.show();
     }
     this.lt.offset({
       width,
@@ -75,12 +53,12 @@ class ScreenSelector extends ScreenWidget {
     }).show();
   }
 
-  setTOffset(selectorAttr, intersectsArea) {
+  setTOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
     const { fixedTop, cols, rows } = table;
     const viewRange = fixedTop.getViewRange();
-    const { rect, edgeType, edge } = selectorAttr;
+    const { rect } = selectorAttr;
     const empty = new RectRange(-1, -1, -1, -1);
     const coincideRange = rect.coincide(viewRange);
     if (empty.equals(coincideRange)) {
@@ -91,19 +69,6 @@ class ScreenSelector extends ScreenWidget {
     const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
-    this.t.cornerEl.cssRemoveKeys('left');
-    this.t.cornerEl.cssRemoveKeys('top');
-    this.t.cornerEl.cssRemoveKeys('right');
-    this.t.cornerEl.cssRemoveKeys('bottom');
-    this.t.cornerEl.show();
-    if (Utils.arrayEqual(intersectsArea, ['t']) || Utils.arrayEqual(intersectsArea, ['lt', 't'])) {
-      this.t.cornerEl.css('right', '0px');
-      this.t.cornerEl.css('bottom', '0px');
-    }
-    if (edgeType === 'top') {
-      this.t.cornerEl.css('top', '0px');
-      this.t.cornerEl.css('right', '0px');
-    }
     if (rect.sci < viewRange.sci) {
       this.t.areaEl.css('border-left', 'none');
     } else {
@@ -111,7 +76,6 @@ class ScreenSelector extends ScreenWidget {
     }
     if (rect.eri > viewRange.eri) {
       this.t.areaEl.css('border-bottom', 'none');
-      this.t.cornerEl.hide();
     } else {
       this.t.areaEl.cssRemoveKeys('border-bottom');
     }
@@ -121,9 +85,6 @@ class ScreenSelector extends ScreenWidget {
     } else {
       this.t.areaEl.cssRemoveKeys('border-right');
     }
-    if (edge) {
-      this.t.cornerEl.show();
-    }
     this.t.offset({
       width,
       height,
@@ -132,12 +93,12 @@ class ScreenSelector extends ScreenWidget {
     }).show();
   }
 
-  setLOffset(selectorAttr, intersectsArea) {
+  setLOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
     const { fixedLeft, cols, rows } = table;
     const viewRange = fixedLeft.getViewRange();
-    const { rect, edgeType, edge } = selectorAttr;
+    const { rect } = selectorAttr;
     const empty = new RectRange(-1, -1, -1, -1);
     const coincideRange = rect.coincide(viewRange);
     if (empty.equals(coincideRange)) {
@@ -148,38 +109,20 @@ class ScreenSelector extends ScreenWidget {
     const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
-    this.l.cornerEl.cssRemoveKeys('left');
-    this.l.cornerEl.cssRemoveKeys('top');
-    this.l.cornerEl.cssRemoveKeys('right');
-    this.l.cornerEl.cssRemoveKeys('bottom');
-    this.l.cornerEl.show();
-    if (Utils.arrayEqual(intersectsArea, ['l']) || Utils.arrayEqual(intersectsArea, ['lt', 'l'])) {
-      this.l.cornerEl.css('right', '0px');
-      this.l.cornerEl.css('bottom', '0px');
-    }
-    if (edgeType === 'left') {
-      this.l.cornerEl.css('left', '0px');
-      this.l.cornerEl.css('bottom', '0px');
-    }
     if (rect.sri < viewRange.sri) {
       this.l.areaEl.css('border-top', 'none');
     } else {
       this.l.areaEl.cssRemoveKeys('border-top');
     }
     if (rect.eci > viewRange.eci) {
-      this.l.cornerEl.hide();
       this.l.areaEl.css('border-right', 'none');
     } else {
       this.l.areaEl.cssRemoveKeys('border-right');
     }
     if (rect.eri > viewRange.eri) {
-      this.l.cornerEl.hide();
       this.l.areaEl.css('border-bottom', 'none');
     } else {
       this.l.areaEl.cssRemoveKeys('border-bottom');
-    }
-    if (edge) {
-      this.l.cornerEl.show();
     }
     this.l.offset({
       width,
@@ -189,14 +132,14 @@ class ScreenSelector extends ScreenWidget {
     }).show();
   }
 
-  setBROffset(selectorAttr, intersectsArea) {
+  setBROffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
     const {
       content, cols, rows,
     } = table;
     const viewRange = content.getViewRange();
-    const { rect, edge, edgeType } = selectorAttr;
+    const { rect } = selectorAttr;
     const empty = new RectRange(-1, -1, -1, -1);
     const coincideRange = rect.coincide(viewRange);
     if (empty.equals(coincideRange)) {
@@ -207,27 +150,6 @@ class ScreenSelector extends ScreenWidget {
     const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
-    this.br.cornerEl.cssRemoveKeys('left');
-    this.br.cornerEl.cssRemoveKeys('top');
-    this.br.cornerEl.cssRemoveKeys('right');
-    this.br.cornerEl.cssRemoveKeys('bottom');
-    this.br.cornerEl.show();
-    if (Utils.arrayEqual(intersectsArea, ['br']) || Utils.arrayEqual(intersectsArea, ['br', 't']) || Utils.arrayEqual(intersectsArea, ['br', 'l']) || Utils.arrayEqual(intersectsArea, ['br', 'lt', 't', 'l'])) {
-      this.br.cornerEl.css('right', '0px');
-      this.br.cornerEl.css('bottom', '0px');
-    }
-    if (edge) {
-      if (Utils.arrayEqual(intersectsArea, ['br'])) {
-        if (edgeType === 'top') {
-          this.br.cornerEl.css('top', '0px');
-          this.br.cornerEl.css('right', '0px');
-        }
-        if (edgeType === 'left') {
-          this.br.cornerEl.css('left', '0px');
-          this.br.cornerEl.css('bottom', '0px');
-        }
-      }
-    }
     if (rect.sci < viewRange.sci) {
       this.br.areaEl.css('border-left', 'none');
     } else {
@@ -239,19 +161,14 @@ class ScreenSelector extends ScreenWidget {
       this.br.areaEl.cssRemoveKeys('border-top');
     }
     if (rect.eri > viewRange.eri) {
-      this.br.cornerEl.hide();
       this.br.areaEl.css('border-bottom', 'none');
     } else {
       this.br.areaEl.cssRemoveKeys('border-bottom');
     }
     if (rect.eci > viewRange.eci) {
-      this.br.cornerEl.hide();
       this.br.areaEl.css('border-right', 'none');
     } else {
       this.br.areaEl.cssRemoveKeys('border-right');
-    }
-    if (edge) {
-      this.br.cornerEl.hide();
     }
     this.br.offset({
       width,
@@ -259,6 +176,188 @@ class ScreenSelector extends ScreenWidget {
       left,
       top,
     }).show();
+  }
+
+  setLTCorner(selectorAttr, intersectsArea) {
+    const { screen } = this;
+    const { table } = screen;
+    const { frozenLeftTop } = table;
+    const viewRange = frozenLeftTop.getViewRange();
+    const { rect, edge, edgeType } = selectorAttr;
+    const empty = new RectRange(-1, -1, -1, -1);
+    const coincideRange = rect.coincide(viewRange);
+    if (empty.equals(coincideRange)) {
+      this.lt.hide();
+      return;
+    }
+    this.lt.cornerEl.cssRemoveKeys('left');
+    this.lt.cornerEl.cssRemoveKeys('top');
+    this.lt.cornerEl.cssRemoveKeys('right');
+    this.lt.cornerEl.cssRemoveKeys('bottom');
+    this.lt.cornerEl.hide();
+    if (edge) {
+      const ltT = Utils.arrayEqual(intersectsArea, ['lt', 't']);
+      const ltL = Utils.arrayEqual(intersectsArea, ['lt', 'l']);
+      if (edgeType === 'left' && ltT) {
+        this.lt.cornerEl.show();
+        this.lt.cornerEl.css('let', '0');
+        this.lt.cornerEl.css('bottom', '0');
+      }
+      if (edgeType === 'top' && ltL) {
+        this.lt.cornerEl.show();
+        this.lt.cornerEl.css('right', '0');
+        this.lt.cornerEl.css('top', '0');
+      }
+    } else {
+      const lt = Utils.arrayEqual(intersectsArea, ['lt']);
+      if (lt) {
+        this.lt.cornerEl.show();
+        this.lt.cornerEl.css('right', '0');
+        this.lt.cornerEl.css('bottom', '0');
+      }
+      if (rect.eci > viewRange.eci) {
+        this.lt.cornerEl.hide();
+      }
+      if (rect.eri > viewRange.eri) {
+        this.lt.cornerEl.hide();
+      }
+    }
+  }
+
+  setTCorner(selectorAttr, intersectsArea) {
+    const { screen } = this;
+    const { table } = screen;
+    const { fixedTop } = table;
+    const viewRange = fixedTop.getViewRange();
+    const { rect, edge, edgeType } = selectorAttr;
+    const empty = new RectRange(-1, -1, -1, -1);
+    const coincideRange = rect.coincide(viewRange);
+    if (empty.equals(coincideRange)) {
+      this.t.hide();
+      return;
+    }
+    this.t.cornerEl.cssRemoveKeys('left');
+    this.t.cornerEl.cssRemoveKeys('top');
+    this.t.cornerEl.cssRemoveKeys('right');
+    this.t.cornerEl.cssRemoveKeys('bottom');
+    this.t.cornerEl.hide();
+    if (edge) {
+      const tBr = Utils.arrayEqual(intersectsArea, ['t', 'br']);
+      const ltTBrL = Utils.arrayEqual(intersectsArea, ['lt', 't', 'l', 'br']);
+      if (edgeType === 'top' && tBr) {
+        this.t.cornerEl.show();
+        this.t.cornerEl.css('right', '0');
+        this.t.cornerEl.css('top', '0');
+      }
+      if (edgeType === 'top' && ltTBrL) {
+        this.t.cornerEl.show();
+        this.t.cornerEl.css('right', '0');
+        this.t.cornerEl.css('top', '0');
+      }
+    } else {
+      const t = Utils.arrayEqual(intersectsArea, ['t']);
+      const ltT = Utils.arrayEqual(intersectsArea, ['lt', 't']);
+      if (t || ltT) {
+        this.t.cornerEl.show();
+        this.t.cornerEl.css('right', '0');
+        this.t.cornerEl.css('bottom', '0');
+      }
+      if (rect.eci > viewRange.eci) {
+        this.t.cornerEl.hide();
+      }
+      if (rect.eri > viewRange.eri) {
+        this.t.cornerEl.hide();
+      }
+    }
+  }
+
+  setLCorner(selectorAttr, intersectsArea) {
+    const { screen } = this;
+    const { table } = screen;
+    const { fixedLeft } = table;
+    const viewRange = fixedLeft.getViewRange();
+    const { rect, edge, edgeType } = selectorAttr;
+    const empty = new RectRange(-1, -1, -1, -1);
+    const coincideRange = rect.coincide(viewRange);
+    if (empty.equals(coincideRange)) {
+      this.l.hide();
+      return;
+    }
+    this.l.cornerEl.cssRemoveKeys('left');
+    this.l.cornerEl.cssRemoveKeys('top');
+    this.l.cornerEl.cssRemoveKeys('right');
+    this.l.cornerEl.cssRemoveKeys('bottom');
+    this.l.cornerEl.hide();
+    if (edge) {
+      const lBr = Utils.arrayEqual(intersectsArea, ['l', 'br']);
+      if (edgeType === 'left' && lBr) {
+        this.l.cornerEl.show();
+        this.l.cornerEl.css('left', '0');
+        this.l.cornerEl.css('bottom', '0');
+      }
+    } else {
+      const l = Utils.arrayEqual(intersectsArea, ['l']);
+      const ltL = Utils.arrayEqual(intersectsArea, ['lt', 'l']);
+      if (l || ltL) {
+        this.l.cornerEl.show();
+        this.l.cornerEl.css('right', '0');
+        this.l.cornerEl.css('bottom', '0');
+      }
+      if (rect.eci > viewRange.eci) {
+        this.l.cornerEl.hide();
+      }
+      if (rect.eri > viewRange.eri) {
+        this.l.cornerEl.hide();
+      }
+    }
+  }
+
+  setBrCorner(selectorAttr, intersectsArea) {
+    const { screen } = this;
+    const { table } = screen;
+    const { content } = table;
+    const viewRange = content.getViewRange();
+    const { rect, edge, edgeType } = selectorAttr;
+    const empty = new RectRange(-1, -1, -1, -1);
+    const coincideRange = rect.coincide(viewRange);
+    this.br.cornerEl.cssRemoveKeys('left');
+    this.br.cornerEl.cssRemoveKeys('top');
+    this.br.cornerEl.cssRemoveKeys('right');
+    this.br.cornerEl.cssRemoveKeys('bottom');
+    this.br.cornerEl.hide();
+    if (empty.equals(coincideRange)) {
+      this.br.hide();
+      return;
+    }
+    if (edge) {
+      const br = Utils.arrayEqual(intersectsArea, ['br']);
+      if (edgeType === 'left' && br) {
+        this.br.cornerEl.show();
+        this.br.cornerEl.css('left', '0');
+        this.br.cornerEl.css('bottom', '0');
+      }
+      if (edgeType === 'top' && br) {
+        this.br.cornerEl.show();
+        this.br.cornerEl.css('right', '0');
+        this.br.cornerEl.css('top', '0');
+      }
+    } else {
+      const br = Utils.arrayEqual(intersectsArea, ['br']);
+      const tBr = Utils.arrayEqual(intersectsArea, ['t', 'br']);
+      const lBr = Utils.arrayEqual(intersectsArea, ['l', 'br']);
+      const ltTLBr = Utils.arrayEqual(intersectsArea, ['lt', 't', 'l', 'br']);
+      if (br || tBr || lBr || lBr || ltTLBr) {
+        this.br.cornerEl.show();
+        this.br.cornerEl.css('right', '0');
+        this.br.cornerEl.css('bottom', '0');
+      }
+      if (rect.eri > viewRange.eri) {
+        this.br.cornerEl.hide();
+      }
+      if (rect.eci > viewRange.eci) {
+        this.br.cornerEl.hide();
+      }
+    }
   }
 
   getIntersectsArea(selectorAttr) {
@@ -280,10 +379,15 @@ class ScreenSelector extends ScreenWidget {
 
   setOffset(selectorAttr) {
     const intersectsArea = this.getIntersectsArea(selectorAttr);
-    this.setLTOffset(selectorAttr, intersectsArea);
-    this.setTOffset(selectorAttr, intersectsArea);
-    this.setLOffset(selectorAttr, intersectsArea);
-    this.setBROffset(selectorAttr, intersectsArea);
+    // console.log('intersectsArea', intersectsArea)
+    this.setLTOffset(selectorAttr);
+    this.setTOffset(selectorAttr);
+    this.setLOffset(selectorAttr);
+    this.setBROffset(selectorAttr);
+    this.setLTCorner(selectorAttr, intersectsArea);
+    this.setTCorner(selectorAttr, intersectsArea);
+    this.setLCorner(selectorAttr, intersectsArea);
+    this.setBrCorner(selectorAttr, intersectsArea);
   }
 
   bind() {
@@ -329,10 +433,20 @@ class ScreenSelector extends ScreenWidget {
       // console.log('downSelectAttr >>>', downSelectAttr);
       this.selectorAttr = downSelectAttr;
       this.setOffset(downSelectAttr);
-      if (downSelectAttr.edge) {
-        mousePointType.on(['table-ci', 'table-ri', 'table-cell']);
-      } else {
-        mousePointType.on(['table-cell']);
+      const { edgeType } = downSelectAttr;
+      switch (edgeType) {
+        case 'left-top':
+          mousePointType.on(['table-cell']);
+          break;
+        case 'left':
+          mousePointType.on(['table-ri']);
+          break;
+        case 'top':
+          mousePointType.on(['table-ci']);
+          break;
+        default:
+          mousePointType.on(['table-cell']);
+          break;
       }
       EventBind.mouseMoveUp(document, (e2) => {
         const { x, y } = table.computeEventXy(e2);
@@ -382,13 +496,10 @@ class ScreenSelector extends ScreenWidget {
   }
 
   getDownXYSelectorAttr(x, y) {
-    // console.log('x, y >>>', x, y);
     const { screen } = this;
     const { table } = screen;
     const { merges, rows, cols } = table;
     const { ri, ci } = table.getRiCiByXy(x, y);
-    // console.log('ri, ci >>>', ri, ci);
-
     if (ri === -1 && ci === -1) {
       const rect = new RectRange(0, 0, rows.len - 1, cols.len - 1);
       return {
@@ -407,7 +518,6 @@ class ScreenSelector extends ScreenWidget {
         rect, edge: true, edgeType: 'left',
       };
     }
-
     const merge = merges.getFirstIncludes(ri, ci);
     let rect = new RectRange(ri, ci, ri, ci);
     if (merge) {
@@ -417,64 +527,37 @@ class ScreenSelector extends ScreenWidget {
   }
 
   getMoveXySelectorAttr(selectorAttr, x, y) {
-    // console.log('x, y >>>', x, y);
     const { screen } = this;
     const { table } = screen;
-    const { merges } = table;
-    const { rect: selectRect, edge } = selectorAttr;
+    const { merges, rows, cols } = table;
+    const { rect: selectRect, edgeType } = selectorAttr;
     const { ri, ci } = table.getRiCiByXy(x, y);
-
-    if (edge && ri === -1 && ci === -1) {
-      // console.log('width, height, left, top >>>', width, height, left, top);
-      const rect = new RectRange(0, 0, 0, 0);
-      return {
-        rect, edge: true, edgeType: 'left-top',
-      };
+    switch (edgeType) {
+      case 'left-top': {
+        let rect = selectRect.union(new RectRange(0, 0, rows.len - 1, cols.len - 1));
+        rect = selectRect.union(rect);
+        return {
+          rect, edge: true, edgeType: 'left-top',
+        };
+      }
+      case 'top': {
+        let rect = selectRect.union(new RectRange(0, ci, 0, ci));
+        rect = selectRect.union(rect);
+        return {
+          rect, edge: true, edgeType: 'top',
+        };
+      }
+      case 'left': {
+        let rect = selectRect.union(new RectRange(ri, 0, ri, 0));
+        rect = selectRect.union(rect);
+        return {
+          rect, edge: true, edgeType: 'left',
+        };
+      }
+      default: break;
     }
-    if (edge && ri === -1) {
-      let rect = new RectRange(0, ci, 0, ci);
-      rect = selectRect.union(rect);
-      return {
-        rect, edge: true, edgeType: 'top',
-      };
-    }
-    if (edge && ci === -1) {
-      let rect = new RectRange(ri, 0, ri, 0);
-      rect = selectRect.union(rect);
-      return {
-        rect, edge: true, edgeType: 'left',
-      };
-    }
-
-    if (ri === -1 && ci === -1) {
-      const viewRange = this.getViewRange();
-      // console.log('viewRange >>>', viewRange);
-      let rect = new RectRange(viewRange.sri, viewRange.sci, 0, 0);
-      rect = selectRect.union(rect);
-      rect = merges.union(rect);
-      return { rect };
-    }
-    if (ri === -1) {
-      const viewRange = this.getViewRange();
-      // console.log('viewRange >>>', viewRange);
-      let rect = new RectRange(viewRange.sri, ci, viewRange.sri, ci);
-      rect = selectRect.union(rect);
-      rect = merges.union(rect);
-      return { rect };
-    }
-    if (ci === -1) {
-      const viewRange = this.getViewRange();
-      // console.log('viewRange >>>', viewRange);
-      let rect = new RectRange(ri, viewRange.sci, ri, viewRange.sci);
-      rect = selectRect.union(rect);
-      rect = merges.union(rect);
-      return { rect };
-    }
-
     let rect = selectRect.union(new RectRange(ri, ci, ri, ci));
     rect = merges.union(rect);
-    // console.log('selectRect>>>', selectRect);
-    // console.log('rect>>>', rect);
     return { rect };
   }
 
