@@ -52,6 +52,10 @@ class ScreenAutoFill extends ScreenWidget {
         this.t.hide();
         this.l.hide();
         this.br.hide();
+        if (this.autoFillAttr) {
+          this.autoFillTo();
+          table.render();
+        }
       });
       e1.stopPropagation();
       e1.preventDefault();
@@ -277,6 +281,36 @@ class ScreenAutoFill extends ScreenWidget {
       };
     }
     return null;
+  }
+
+  autoFillTo() {
+    const { screen, screenSelector } = this;
+    const { table } = screen;
+    const { cells } = table;
+    const { autoFillAttr } = this;
+    const { selectorAttr } = screenSelector;
+    const { rect: autoFillRect } = autoFillAttr;
+    const { rect: selectorRect } = selectorAttr;
+    let sIndexRi = selectorRect.sri;
+    let tIndexRi = autoFillRect.sri;
+    while (tIndexRi <= autoFillRect.eri) {
+      let sIndexCi = selectorRect.sci;
+      let tIndexCi = autoFillRect.sci;
+      while (tIndexCi <= autoFillRect.eci) {
+        // 复制
+        const src = cells.getCell(sIndexRi, sIndexCi);
+        const target = cells.getCell(tIndexRi, tIndexCi);
+        if (src && target) {
+          target.text = src.text;
+        }
+        sIndexCi += 1;
+        tIndexCi += 1;
+        if (sIndexCi > selectorRect.eci) sIndexCi = selectorRect.sci;
+      }
+      sIndexRi += 1;
+      tIndexRi += 1;
+      if (sIndexRi > selectorRect.eri) sIndexRi = selectorRect.sri;
+    }
   }
 }
 

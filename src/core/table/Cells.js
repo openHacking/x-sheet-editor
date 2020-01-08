@@ -26,11 +26,25 @@ class Cells {
   getCell(ri, ci) {
     const row = this.data[ri];
     if (row && row[ci]) {
-      return Utils.mergeDeep({
+      row[ci] = Utils.mergeDeep({
+        text: '',
+      }, row[ci]);
+      return row[ci];
+    }
+    return null;
+  }
+
+  getCellOrNew(ri, ci) {
+    const row = this.data[ri];
+    if (!row) {
+      this.data.splice(ri, 0, []);
+    }
+    if (!row[ci]) {
+      row[ci] = Utils.mergeDeep({
         text: '',
       }, row[ci]);
     }
-    return null;
+    return row[ci];
   }
 
   getRectRangeCell(rectRange, cb, { sy = 0, sx = 0 } = {}) {
