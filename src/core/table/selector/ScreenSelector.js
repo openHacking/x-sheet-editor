@@ -352,6 +352,11 @@ class ScreenSelector extends ScreenWidget {
         this.br.cornerEl.css('right', '0');
         this.br.cornerEl.css('bottom', '0');
       }
+      if (edgeType === 'left-top' && br) {
+        this.br.cornerEl.show();
+        this.br.cornerEl.css('right', '0');
+        this.br.cornerEl.css('bottom', '0');
+      }
     } else {
       const br = Utils.arrayEqual(intersectsArea, ['br']);
       const tBr = Utils.arrayEqual(intersectsArea, ['t', 'br']);
