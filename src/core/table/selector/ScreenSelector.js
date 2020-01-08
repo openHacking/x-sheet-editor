@@ -22,34 +22,6 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const { mousePointType } = table;
-    EventBind.bind([
-      this.lt.cornerEl,
-      this.t.cornerEl,
-      this.l.cornerEl,
-      this.br.cornerEl,
-    ], Constant.EVENT_TYPE.MOUSE_DOWN, (e1) => {
-      // console.log('auto fill');
-      mousePointType.on(['selector']);
-      mousePointType.set('crosshair', 'selector');
-      EventBind.mouseMoveUp(document, (e2) => {
-        e2.stopPropagation();
-        e2.preventDefault();
-      }, () => {
-        mousePointType.off();
-      });
-      e1.stopPropagation();
-      e1.preventDefault();
-    });
-    EventBind.bind([
-      this.lt.cornerEl,
-      this.t.cornerEl,
-      this.l.cornerEl,
-      this.br.cornerEl,
-    ], Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
-      mousePointType.set('crosshair', 'selector');
-      e.stopPropagation();
-      e.preventDefault();
-    });
     EventBind.bind(table, Constant.EVENT_TYPE.SCROLL, () => {
       if (this.selectorAttr) {
         this.setOffset(this.selectorAttr);
@@ -164,7 +136,6 @@ class ScreenSelector extends ScreenWidget {
       this.t.areaEl.cssRemoveKeys('border-bottom');
     }
     if (rect.eci > viewRange.eci) {
-      this.t.cornerEl.hide();
       this.t.areaEl.css('border-right', 'none');
     } else {
       this.t.areaEl.cssRemoveKeys('border-right');

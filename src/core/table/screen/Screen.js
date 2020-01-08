@@ -35,12 +35,12 @@ class Screen extends Widget {
     });
   }
 
-  addWidgets(widget) {
+  addWidget(widget) {
     this.widgets.push(widget);
-    this.lt.addWidgets(widget.getLT(this));
-    this.t.addWidgets(widget.getT(this));
-    this.l.addWidgets(widget.getL(this));
-    this.br.addWidgets(widget.getBR(this));
+    this.lt.addWidget(widget.getLT(this));
+    this.t.addWidget(widget.getT(this));
+    this.l.addWidget(widget.getL(this));
+    this.br.addWidget(widget.getBR(this));
   }
 
   setDivideLayer() {

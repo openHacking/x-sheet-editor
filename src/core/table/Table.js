@@ -21,6 +21,7 @@ import { XReSizer } from './resizer/XReSizer';
 import { YReSizer } from './resizer/YReSizer';
 import { MousePointType } from './MousePoint';
 import { EventBind } from '../../utils/EventBind';
+import { ScreenAutoFill } from './selector/ScreenAutoFill';
 
 const defaultSettings = {
   tipsRenderTime: true,
@@ -1202,7 +1203,9 @@ class Table extends Widget {
 
   initScreenWidget() {
     const screenSelector = new ScreenSelector(this.screen);
-    this.screen.addWidgets(screenSelector);
+    this.screen.addWidget(screenSelector);
+    const screenAutoFill = new ScreenAutoFill(this.screen);
+    this.screen.addWidget(screenAutoFill);
   }
 
   render() {

@@ -7,7 +7,7 @@ class ScreenElement extends Widget {
     this.widgets = [];
   }
 
-  addWidgets(widget) {
+  addWidget(widget) {
     this.widgets.push(widget);
     this.children(widget);
   }
