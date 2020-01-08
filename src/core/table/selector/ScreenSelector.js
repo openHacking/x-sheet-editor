@@ -18,6 +18,91 @@ class ScreenSelector extends ScreenWidget {
     this.bind();
   }
 
+  bind() {
+    const { screen } = this;
+    const { table } = screen;
+    const { mousePointType } = table;
+    EventBind.bind([
+      this.lt.cornerEl,
+      this.t.cornerEl,
+      this.l.cornerEl,
+      this.br.cornerEl,
+    ], Constant.EVENT_TYPE.MOUSE_DOWN, (e1) => {
+      // console.log('auto fill');
+      mousePointType.on(['selector']);
+      mousePointType.set('crosshair', 'selector');
+      EventBind.mouseMoveUp(document, (e2) => {
+        e2.stopPropagation();
+        e2.preventDefault();
+      }, () => {
+        mousePointType.off();
+      });
+      e1.stopPropagation();
+      e1.preventDefault();
+    });
+    EventBind.bind([
+      this.lt.cornerEl,
+      this.t.cornerEl,
+      this.l.cornerEl,
+      this.br.cornerEl,
+    ], Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
+      mousePointType.set('crosshair', 'selector');
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(table, Constant.EVENT_TYPE.SCROLL, () => {
+      if (this.selectorAttr) {
+        this.setOffset(this.selectorAttr);
+      }
+    });
+    EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_DOWN, (e1) => {
+      const { x, y } = table.computeEventXy(e1);
+      const downSelectAttr = this.getDownXYSelectorAttr(x, y);
+      // console.log('downSelectAttr >>>', downSelectAttr);
+      this.selectorAttr = downSelectAttr;
+      this.setOffset(downSelectAttr);
+      const { edgeType } = downSelectAttr;
+      switch (edgeType) {
+        case 'left-top':
+          mousePointType.on(['table-cell']);
+          break;
+        case 'left':
+          mousePointType.on(['table-ri']);
+          break;
+        case 'top':
+          mousePointType.on(['table-ci']);
+          break;
+        default:
+          mousePointType.on(['table-cell']);
+          break;
+      }
+      EventBind.mouseMoveUp(document, (e2) => {
+        const { x, y } = table.computeEventXy(e2);
+        const moveSelectorAttr = this.getMoveXySelectorAttr(downSelectAttr, x, y);
+        this.selectorAttr = moveSelectorAttr;
+        this.setOffset(moveSelectorAttr);
+        e2.stopPropagation();
+        e2.preventDefault();
+      }, () => {
+        mousePointType.off();
+      });
+      e1.stopPropagation();
+      e1.preventDefault();
+    });
+    EventBind.bind(table, Constant.EVENT_TYPE.CHANGE_HEIGHT, (e) => {
+      if (this.selectorAttr) {
+        this.setOffset(this.selectorAttr);
+      }
+      e.stopPropagation();
+    });
+    EventBind.bind(table, Constant.EVENT_TYPE.CHANGE_WIDTH, (e) => {
+      if (this.selectorAttr) {
+        this.setOffset(this.selectorAttr);
+      }
+      e.stopPropagation();
+    });
+  }
+
   setLTOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
@@ -406,93 +491,6 @@ class ScreenSelector extends ScreenWidget {
     this.setBrCorner(selectorAttr, intersectsArea);
   }
 
-  bind() {
-    const { screen } = this;
-    const { table } = screen;
-    const { mousePointType } = table;
-    EventBind.bind([
-      this.lt.cornerEl,
-      this.t.cornerEl,
-      this.l.cornerEl,
-      this.br.cornerEl,
-    ], Constant.EVENT_TYPE.MOUSE_DOWN, (e1) => {
-      // console.log('auto fill');
-      mousePointType.on(['selector']);
-      mousePointType.set('crosshair', 'selector');
-      EventBind.mouseMoveUp(document, (e2) => {
-        e2.stopPropagation();
-        e2.preventDefault();
-      }, () => {
-        mousePointType.off();
-      });
-      e1.stopPropagation();
-      e1.preventDefault();
-    });
-    EventBind.bind([
-      this.lt.cornerEl,
-      this.t.cornerEl,
-      this.l.cornerEl,
-      this.br.cornerEl,
-    ], Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
-      mousePointType.set('crosshair', 'selector');
-      e.stopPropagation();
-      e.preventDefault();
-    });
-    EventBind.bind(table, Constant.EVENT_TYPE.SCROLL, () => {
-      if (this.selectorAttr) {
-        this.setOffset(this.selectorAttr);
-      }
-    });
-    EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_DOWN, (e1) => {
-      const { x, y } = table.computeEventXy(e1);
-      const downSelectAttr = this.getDownXYSelectorAttr(x, y);
-      // console.log('downSelectAttr >>>', downSelectAttr);
-      this.selectorAttr = downSelectAttr;
-      this.setOffset(downSelectAttr);
-      const { edgeType } = downSelectAttr;
-      switch (edgeType) {
-        case 'left-top':
-          mousePointType.on(['table-cell']);
-          break;
-        case 'left':
-          mousePointType.on(['table-ri']);
-          break;
-        case 'top':
-          mousePointType.on(['table-ci']);
-          break;
-        default:
-          mousePointType.on(['table-cell']);
-          break;
-      }
-      EventBind.mouseMoveUp(document, (e2) => {
-        const { x, y } = table.computeEventXy(e2);
-        const moveSelectorAttr = this.getMoveXySelectorAttr(downSelectAttr, x, y);
-        this.selectorAttr = moveSelectorAttr;
-        this.setOffset(moveSelectorAttr);
-        e2.stopPropagation();
-        e2.preventDefault();
-      }, () => {
-        mousePointType.off();
-      });
-      e1.stopPropagation();
-      e1.preventDefault();
-    });
-    EventBind.bind(table, Constant.EVENT_TYPE.CHANGE_HEIGHT, (e) => {
-      if (this.selectorAttr) {
-        this.updateSelectorAttr();
-        this.setOffset(this.selectorAttr);
-      }
-      e.stopPropagation();
-    });
-    EventBind.bind(table, Constant.EVENT_TYPE.CHANGE_WIDTH, (e) => {
-      if (this.selectorAttr) {
-        this.updateSelectorAttr();
-        this.setOffset(this.selectorAttr);
-      }
-      e.stopPropagation();
-    });
-  }
-
   getViewRange() {
     const { screen } = this;
     const { table } = screen;
@@ -582,39 +580,9 @@ class ScreenSelector extends ScreenWidget {
     return { rect };
   }
 
-  updateSelectorAttr() {
-    const { screen } = this;
-    const { table } = screen;
-    const { rows, cols } = table;
+  getSelectRange() {
     const { rect } = this.selectorAttr;
-    if (this.selectorAttr.edge) {
-      switch (this.selectorAttr.edgeType) {
-        case 'left':
-          this.selectorAttr.left = table.getIndexWidth();
-          this.selectorAttr.top = table.getRowTop(rect.sri);
-          rect.w = table.getContentWidth() + table.getFixedWidth();
-          rect.h = rows.sectionSumHeight(rect.sri, rect.eri);
-          break;
-        case 'top':
-          this.selectorAttr.left = table.getColLeft(rect.sci);
-          this.selectorAttr.top = table.getIndexHeight();
-          rect.w = cols.sectionSumWidth(rect.sci, rect.eci);
-          rect.h = table.getContentHeight() + table.getFixedHeight();
-          break;
-        case 'left-top':
-          this.selectorAttr.left = table.getIndexWidth();
-          this.selectorAttr.top = table.getIndexHeight();
-          rect.w = table.getContentWidth() + table.getFixedWidth();
-          rect.h = table.getContentHeight() + table.getFixedHeight();
-          break;
-        default: break;
-      }
-    } else {
-      this.selectorAttr.left = table.getColLeft(rect.sci);
-      this.selectorAttr.top = table.getRowTop(rect.sri);
-      rect.w = cols.sectionSumWidth(rect.sci, rect.eci);
-      rect.h = rows.sectionSumHeight(rect.sri, rect.eri);
-    }
+    return rect;
   }
 }
 
