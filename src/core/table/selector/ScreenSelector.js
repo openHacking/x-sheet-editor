@@ -540,9 +540,14 @@ class ScreenSelector extends ScreenWidget {
   getMoveXySelectorAttr(selectorAttr, x, y) {
     const { screen } = this;
     const { table } = screen;
-    const { merges, rows, cols } = table;
+    const {
+      merges, rows, cols,
+    } = table;
     const { rect: selectRect, edgeType } = selectorAttr;
-    const { ri, ci } = table.getRiCiByXy(x, y);
+    const viewRange = this.getViewRange();
+    let { ri, ci } = table.getRiCiByXy(x, y);
+    if (ri === -1) ri = viewRange.sri;
+    if (ci === -1) ci = viewRange.sci;
     switch (edgeType) {
       case 'left-top': {
         let rect = selectRect.union(new RectRange(0, 0, rows.len - 1, cols.len - 1));
