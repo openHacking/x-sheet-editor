@@ -284,7 +284,7 @@ class ScreenSelector extends ScreenWidget {
       const ltL = Utils.arrayEqual(intersectsArea, ['lt', 'l']);
       if (edgeType === 'left' && ltT) {
         this.lt.cornerEl.show();
-        this.lt.cornerEl.css('let', '0');
+        this.lt.cornerEl.css('left', '0');
         this.lt.cornerEl.css('bottom', '0');
       }
       if (edgeType === 'top' && ltL) {
