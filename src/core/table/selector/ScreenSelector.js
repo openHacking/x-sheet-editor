@@ -338,6 +338,9 @@ class ScreenSelector extends ScreenWidget {
         this.t.cornerEl.css('right', '0');
         this.t.cornerEl.css('top', '0');
       }
+      if (edgeType === 'top' && rect.eci > viewRange.eci) {
+        this.t.cornerEl.hide();
+      }
     } else {
       const t = Utils.arrayEqual(intersectsArea, ['t']);
       const ltT = Utils.arrayEqual(intersectsArea, ['lt', 't']);
@@ -384,6 +387,9 @@ class ScreenSelector extends ScreenWidget {
         this.l.cornerEl.show();
         this.l.cornerEl.css('left', '0');
         this.l.cornerEl.css('bottom', '0');
+      }
+      if (edgeType === 'left' && rect.eri > viewRange.eri) {
+        this.l.cornerEl.hide();
       }
     } else {
       const l = Utils.arrayEqual(intersectsArea, ['l']);
@@ -441,6 +447,12 @@ class ScreenSelector extends ScreenWidget {
         this.br.cornerEl.show();
         this.br.cornerEl.css('right', '0');
         this.br.cornerEl.css('bottom', '0');
+      }
+      if (edgeType === 'left' && rect.eri > viewRange.eri) {
+        this.br.cornerEl.hide();
+      }
+      if (edgeType === 'top' && rect.eci > viewRange.eci) {
+        this.br.cornerEl.hide();
       }
     } else {
       const br = Utils.arrayEqual(intersectsArea, ['br']);
