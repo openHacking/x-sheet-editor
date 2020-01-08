@@ -15,6 +15,12 @@ class XSheet extends Widget {
       body: {
         sheets: [
           {
+            name: '80列100行',
+            tableConfig: {
+              data: Data,
+            },
+          },
+          {
             name: '白云测试',
             tableConfig: {
               merges: [
