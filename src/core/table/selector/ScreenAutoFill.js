@@ -241,8 +241,10 @@ class ScreenAutoFill extends ScreenWidget {
     const { screen, screenSelector } = this;
     const { table } = screen;
     const { selectorAttr } = screenSelector;
-    const { cols, rows } = table;
-    const { rect: selectorRect, edgeType } = selectorAttr;
+    const { cols, rows, merges } = table;
+    const { rect: selectorRect, edge, edgeType } = selectorAttr;
+    const autoFillSelectorRect = !edge && merges.intersects(selectorRect);
+    const [rSize, cSize] = selectorRect.size();
     let { ri, ci } = table.getRiCiByXy(x, y);
     if (ri < 0) ri = 0; else if (ri > rows.len) ri = rows.len - 1;
     if (ci < 0) ci = 0; else if (ci > cols.len) ci = cols.len - 1;
@@ -255,20 +257,64 @@ class ScreenAutoFill extends ScreenWidget {
     if (ri < selectorSri || ri > selectorEri) {
       if (ri < selectorSri) {
         direction = 'top';
-        rect = new RectRange(ri, selectorSci, selectorSri - 1, selectorEci);
+        if (autoFillSelectorRect) {
+          let minRi = selectorSri - rSize;
+          if (minRi >= 0) {
+            const diff = (selectorSri - 1) - ri;
+            for (let i = 1; i <= diff; i += 1) {
+              if (i % rSize === 0 && minRi - rSize >= 0) minRi -= rSize;
+            }
+            rect = new RectRange(minRi, selectorSci, selectorSri - 1, selectorEci);
+          }
+        } else {
+          rect = new RectRange(ri, selectorSci, selectorSri - 1, selectorEci);
+        }
       }
       if (ri > selectorEri) {
         direction = 'bottom';
-        rect = new RectRange(selectorEri + 1, selectorSci, ri, selectorEci);
+        if (autoFillSelectorRect) {
+          let maxRi = selectorEri + rSize;
+          if (maxRi <= rows.len - 1) {
+            const diff = ri - (selectorEri + 1);
+            for (let i = 1; i <= diff; i += 1) {
+              if (i % rSize === 0 && maxRi + rSize <= rows.len - 1) maxRi += rSize;
+            }
+            rect = new RectRange(selectorEri + 1, selectorSci, maxRi, selectorEci);
+          }
+        } else {
+          rect = new RectRange(selectorEri + 1, selectorSci, ri, selectorEci);
+        }
       }
     } else if (ci < selectorSci || ci > selectorEci) {
       if (ci < selectorSci) {
         direction = 'left';
-        rect = new RectRange(selectorSri, ci, selectorEri, selectorSci - 1);
+        if (autoFillSelectorRect) {
+          let minCi = selectorSci - cSize;
+          if (minCi >= 0) {
+            const diff = (selectorSci - 1) - ci;
+            for (let i = 1; i <= diff; i += 1) {
+              if (i % cSize === 0 && minCi - cSize >= 0) minCi -= cSize;
+            }
+            rect = new RectRange(selectorSri, minCi, selectorEri, selectorSci - 1);
+          }
+        } else {
+          rect = new RectRange(selectorSri, ci, selectorEri, selectorSci - 1);
+        }
       }
       if (ci > selectorEci) {
         direction = 'right';
-        rect = new RectRange(selectorSri, selectorEci + 1, selectorEri, ci);
+        if (autoFillSelectorRect) {
+          let maxCi = selectorEci + cSize;
+          if (maxCi <= cols.len - 1) {
+            const diff = ci - (selectorEci + 1);
+            for (let i = 1; i <= diff; i += 1) {
+              if (i % cSize === 0 && maxCi + cSize <= cols.len - 1) maxCi += cSize;
+            }
+            rect = new RectRange(selectorSri, selectorEci + 1, selectorEri, maxCi);
+          }
+        } else {
+          rect = new RectRange(selectorSri, selectorEci + 1, selectorEri, ci);
+        }
       }
     }
     if (rect !== null) {
