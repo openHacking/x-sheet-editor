@@ -332,11 +332,16 @@ class ScreenAutoFill extends ScreenWidget {
   autoFillTo() {
     const { screen, screenSelector } = this;
     const { table } = screen;
-    const { cells } = table;
+    const { cells, merges } = table;
     const { autoFillAttr } = this;
     const { selectorAttr } = screenSelector;
     const { rect: autoFillRect } = autoFillAttr;
     const { rect: selectorRect } = selectorAttr;
+    if (merges.intersects(autoFillRect)) {
+      // eslint-disable-next-line no-undef,no-alert
+      alert('此操作要求目标区域中不能存在合并单元格');
+      return;
+    }
     let sIndexRi = selectorRect.sri;
     let tIndexRi = autoFillRect.sri;
     while (tIndexRi <= autoFillRect.eri) {
