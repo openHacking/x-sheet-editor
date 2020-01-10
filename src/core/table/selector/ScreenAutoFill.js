@@ -14,10 +14,10 @@ class ScreenAutoFill extends ScreenWidget {
     this.options = Utils.mergeDeep({
       mergeForceSplit: true,
     }, options);
-    this.lt = new AutoFill(options);
-    this.t = new AutoFill(options);
-    this.l = new AutoFill(options);
-    this.br = new AutoFill(options);
+    this.lt = new AutoFill();
+    this.t = new AutoFill();
+    this.l = new AutoFill();
+    this.br = new AutoFill();
     this.autoFillAttr = null;
     this.screenSelector = screen.findByClass(ScreenSelector);
     this.bind();

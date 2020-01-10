@@ -10,10 +10,11 @@ import { Utils } from '../../../utils/Utils';
 class ScreenSelector extends ScreenWidget {
   constructor(screen, options = {}) {
     super(screen);
-    this.lt = new Selector(options);
-    this.t = new Selector(options);
-    this.l = new Selector(options);
-    this.br = new Selector(options);
+    this.options = options;
+    this.lt = new Selector();
+    this.t = new Selector();
+    this.l = new Selector();
+    this.br = new Selector();
     this.selectorAttr = null;
     this.bind();
   }
