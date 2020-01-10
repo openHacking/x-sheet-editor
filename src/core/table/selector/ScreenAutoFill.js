@@ -6,10 +6,14 @@ import { ScreenSelector } from './ScreenSelector';
 import { EventBind } from '../../../utils/EventBind';
 import { Constant } from '../../../utils/Constant';
 import { RectRange } from '../RectRange';
+import { Utils } from '../../../utils/Utils';
 
 class ScreenAutoFill extends ScreenWidget {
   constructor(screen, options = {}) {
     super(screen);
+    this.options = Utils.mergeDeep({
+      mergeForceSplit: true,
+    }, options);
     this.lt = new AutoFill(options);
     this.t = new AutoFill(options);
     this.l = new AutoFill(options);
@@ -329,26 +333,45 @@ class ScreenAutoFill extends ScreenWidget {
     return null;
   }
 
-  autoFillTo() {
+  mergeCellForceSplit() {
     const { screen, screenSelector } = this;
     const { table } = screen;
-    const { cells, merges } = table;
+    const { merges } = table;
     const { autoFillAttr } = this;
     const { selectorAttr } = screenSelector;
     const { rect: autoFillRect } = autoFillAttr;
     const { rect: selectorRect } = selectorAttr;
-    if (merges.intersects(autoFillRect)) {
-      // eslint-disable-next-line no-undef,no-alert
-      alert('此操作要求目标区域中不能存在合并单元格');
-      return;
-    }
     let sIndexRi = selectorRect.sri;
     let tIndexRi = autoFillRect.sri;
     while (tIndexRi <= autoFillRect.eri) {
       let sIndexCi = selectorRect.sci;
       let tIndexCi = autoFillRect.sci;
       while (tIndexCi <= autoFillRect.eci) {
-        // 复制
+        merges.deleteIntersects(new RectRange(tIndexRi, tIndexCi, tIndexRi, tIndexCi));
+        sIndexCi += 1;
+        tIndexCi += 1;
+        if (sIndexCi > selectorRect.eci) sIndexCi = selectorRect.sci;
+      }
+      sIndexRi += 1;
+      tIndexRi += 1;
+      if (sIndexRi > selectorRect.eri) sIndexRi = selectorRect.sri;
+    }
+  }
+
+  copyContent() {
+    const { screen, screenSelector } = this;
+    const { table } = screen;
+    const { cells } = table;
+    const { autoFillAttr } = this;
+    const { selectorAttr } = screenSelector;
+    const { rect: autoFillRect } = autoFillAttr;
+    const { rect: selectorRect } = selectorAttr;
+    let sIndexRi = selectorRect.sri;
+    let tIndexRi = autoFillRect.sri;
+    while (tIndexRi <= autoFillRect.eri) {
+      let sIndexCi = selectorRect.sci;
+      let tIndexCi = autoFillRect.sci;
+      while (tIndexCi <= autoFillRect.eci) {
         const src = cells.getCell(sIndexRi, sIndexCi);
         const target = cells.getCell(tIndexRi, tIndexCi);
         if (src && target) {
@@ -362,6 +385,58 @@ class ScreenAutoFill extends ScreenWidget {
       tIndexRi += 1;
       if (sIndexRi > selectorRect.eri) sIndexRi = selectorRect.sri;
     }
+  }
+
+  copyMerge() {
+    const { screen, screenSelector } = this;
+    const { table } = screen;
+    const { merges } = table;
+    const { autoFillAttr } = this;
+    const { selectorAttr } = screenSelector;
+    const { rect: autoFillRect } = autoFillAttr;
+    const { rect: selectorRect } = selectorAttr;
+    let sIndexRi = selectorRect.sri;
+    let tIndexRi = autoFillRect.sri;
+    while (tIndexRi <= autoFillRect.eri) {
+      let sIndexCi = selectorRect.sci;
+      let tIndexCi = autoFillRect.sci;
+      while (tIndexCi <= autoFillRect.eci) {
+        const mergeRect = merges.getFirstIncludes(sIndexRi, sIndexCi);
+        if (mergeRect) {
+          const isOrigin = mergeRect.sri === sIndexRi && mergeRect.sci === sIndexCi;
+          if (isOrigin) {
+            let [rSize, cSize] = mergeRect.size();
+            rSize -= 1;
+            cSize -= 1;
+            const newMerge = new RectRange(tIndexRi, tIndexCi, tIndexRi + rSize, tIndexCi + cSize);
+            // console.log('newMerge>>>', newMerge);
+            merges.add(newMerge);
+          }
+        }
+        sIndexCi += 1;
+        tIndexCi += 1;
+        if (sIndexCi > selectorRect.eci) sIndexCi = selectorRect.sci;
+      }
+      sIndexRi += 1;
+      tIndexRi += 1;
+      if (sIndexRi > selectorRect.eri) sIndexRi = selectorRect.sri;
+    }
+  }
+
+  autoFillTo() {
+    const { screen } = this;
+    const { table } = screen;
+    const { merges } = table;
+    const { autoFillAttr } = this;
+    const { rect: autoFillRect } = autoFillAttr;
+    if (merges.intersects(autoFillRect) && this.options.mergeForceSplit === false) {
+      // eslint-disable-next-line no-undef,no-alert
+      alert('此操作要求目标区域中不能存在合并单元格');
+      return;
+    }
+    this.mergeCellForceSplit();
+    this.copyContent();
+    this.copyMerge();
   }
 }
 

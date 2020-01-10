@@ -66,6 +66,15 @@ class Merges {
     return false;
   }
 
+  deleteIntersects(cellRange) {
+    for (let i = 0; i < this._.length; i += 1) {
+      const it = this._[i];
+      if (it.intersects(cellRange)) {
+        this._.splice(i, 1);
+      }
+    }
+  }
+
   /**
    * 返回区域数组中和指定区域发生重合的新区域
    * @param {RectRange} cellRange 区域
