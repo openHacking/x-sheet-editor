@@ -12,7 +12,7 @@ class ScreenAutoFill extends ScreenWidget {
   constructor(screen, options = {}) {
     super(screen);
     this.options = Utils.mergeDeep({
-      mergeForceSplit: true,
+      mergeForceSplit: false,
     }, options);
     this.lt = new AutoFill();
     this.t = new AutoFill();
