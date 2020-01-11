@@ -340,7 +340,7 @@ class ScreenAutoFill extends ScreenWidget {
     const { autoFillAttr } = this;
     const { selectorAttr } = screenSelector;
     const { rect: autoFillRect } = autoFillAttr;
-    const { rect: selectorRect, edge } = selectorAttr;
+    const { rect: selectorRect } = selectorAttr;
     let sIndexRi = selectorRect.sri;
     let tIndexRi = autoFillRect.sri;
     while (tIndexRi <= autoFillRect.eri) {
@@ -348,12 +348,8 @@ class ScreenAutoFill extends ScreenWidget {
       let tIndexCi = autoFillRect.sci;
       while (tIndexCi <= autoFillRect.eci) {
         const rect = new RectRange(tIndexRi, tIndexCi, tIndexRi, tIndexCi);
-        if (edge) {
-          const mergeRect = merges.getFirstIncludes(tIndexRi, tIndexCi);
-          if (!mergeRect || !selectorRect.intersects(mergeRect)) {
-            merges.deleteIntersects(rect);
-          }
-        } else {
+        const mergeRect = merges.getFirstIncludes(tIndexRi, tIndexCi);
+        if (!mergeRect || !selectorRect.intersects(mergeRect)) {
           merges.deleteIntersects(rect);
         }
         sIndexCi += 1;
@@ -401,11 +397,11 @@ class ScreenAutoFill extends ScreenWidget {
     const { merges } = table;
     const { autoFillAttr } = this;
     const { selectorAttr } = screenSelector;
-    const { rect: autoFillRect } = autoFillAttr;
+    const { rect: autoFillRect, direction } = autoFillAttr;
     const { rect: selectorRect, edge } = selectorAttr;
-    if (edge) return;
     let sIndexRi = selectorRect.sri;
     let tIndexRi = autoFillRect.sri;
+    if (edge && (direction === 'top' || direction === 'left')) return;
     while (tIndexRi <= autoFillRect.eri) {
       let sIndexCi = selectorRect.sci;
       let tIndexCi = autoFillRect.sci;
@@ -418,8 +414,9 @@ class ScreenAutoFill extends ScreenWidget {
             rSize -= 1;
             cSize -= 1;
             const newMerge = new RectRange(tIndexRi, tIndexCi, tIndexRi + rSize, tIndexCi + cSize);
-            // console.log('newMerge>>>', newMerge);
-            merges.add(newMerge);
+            if (!merges.intersects(newMerge)) {
+              merges.add(newMerge);
+            }
           }
         }
         sIndexCi += 1;
