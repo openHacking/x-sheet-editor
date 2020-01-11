@@ -67,7 +67,7 @@
 .@{css-prefix}-table-y-height-light {
   width: 100px;
   height: 50px;
-  background: rgba(120, 120, 120, 0.37);
+  background: rgba(206, 206, 206, 0.37);
   position: absolute;
   top: 0;
   left: 0;
@@ -75,10 +75,13 @@
 .@{css-prefix}-table-x-height-light {
   width: 100px;
   height: 50px;
-  background: rgba(120, 120, 120, 0.37);
+  background: rgba(206, 206, 206, 0.37);
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 1;
+  box-sizing: border-box;
+  border-bottom: 1px solid #42a642;
 }
 
 // 行高调整
@@ -105,6 +108,7 @@
   left: 0;
   top: 0;
   display: block;
+  z-index: 2;
 }
 .@{css-prefix}-re-sizer-horizontal .@{css-prefix}-re-sizer-hover {
   background: rgba(111, 255, 75, 0.25);

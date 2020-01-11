@@ -5,6 +5,7 @@ class YHeightLight extends Widget {
   constructor(table) {
     super(`${cssPrefix}-table-y-height-light`);
     this.table = table;
+    this.hide();
   }
 
   init() {

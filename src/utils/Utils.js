@@ -194,7 +194,12 @@ class Utils {
   }
 
   static arrayEqual(a1, a2) {
-    if (a1.length !== a2.length) return false;
+    if (Utils.isUnDef(a1) || Utils.isUnDef(a2)) {
+      return false;
+    }
+    if (a1.length !== a2.length) {
+      return false;
+    }
     return Utils.arrayContain(a2, a1);
   }
 }

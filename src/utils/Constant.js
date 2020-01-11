@@ -15,6 +15,7 @@ Constant.EVENT_TYPE = {
   RESIZE: 'resize',
   CHANGE_HEIGHT: 'changeheight',
   CHANGE_WIDTH: 'changewidth',
+  CHANGE: 'change',
   stop: type => `${type}.stop`,
 };
 
