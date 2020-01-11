@@ -22,6 +22,8 @@ import { YReSizer } from './resizer/YReSizer';
 import { MousePointType } from './MousePoint';
 import { EventBind } from '../../utils/EventBind';
 import { ScreenAutoFill } from './selector/ScreenAutoFill';
+import { XHeightLight } from './highlight/XHeightLight';
+import { YHeightLight } from './highlight/YHeightLight';
 
 const defaultSettings = {
   tipsRenderTime: true,
@@ -1157,15 +1159,19 @@ class Table extends Widget {
     this.frozenLeftIndex = new FrozenLeftIndex(this);
     this.frozenTopIndex = new FrozenTopIndex(this);
     this.frozenRect = new FrozenRect(this);
-    // 组件
+    // table基础组件
     this.screen = new Screen(this);
     this.xReSizer = new XReSizer(this);
     this.yReSizer = new YReSizer(this);
+    this.xHeightLight = new XHeightLight(this);
+    this.yHeightLight = new YHeightLight(this);
     this.children(...[
       this.canvas,
       this.screen,
       this.xReSizer,
       this.yReSizer,
+      this.xHeightLight,
+      this.yHeightLight,
     ]);
     this.bind();
   }
@@ -1179,10 +1185,12 @@ class Table extends Widget {
   }
 
   init() {
+    this.initScreenWidget();
     this.screen.init();
     this.xReSizer.init();
     this.yReSizer.init();
-    this.initScreenWidget();
+    this.xHeightLight.init();
+    this.yHeightLight.init();
   }
 
   bind() {
@@ -1202,8 +1210,10 @@ class Table extends Widget {
   }
 
   initScreenWidget() {
+    // 单元格筛选组件
     const screenSelector = new ScreenSelector(this.screen);
     this.screen.addWidget(screenSelector);
+    // 自动填充组件
     const screenAutoFill = new ScreenAutoFill(this.screen);
     this.screen.addWidget(screenAutoFill);
   }

@@ -13,12 +13,12 @@ class Screen extends Widget {
     this.br = new ScreenElement(`${cssPrefix}-screen-element-br`);
     this.focusWidget = null;
     this.children(this.lt, this.t, this.l, this.br);
-    this.bind();
     this.widgets = [];
   }
 
   init() {
     this.setDivideLayer();
+    this.bind();
   }
 
   bind() {
