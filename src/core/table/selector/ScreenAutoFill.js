@@ -247,9 +247,10 @@ class ScreenAutoFill extends ScreenWidget {
     const { selectorAttr } = screenSelector;
     const { cols, rows, merges } = table;
     const { rect: selectorRect, edge, edgeType } = selectorAttr;
-    const autoFillSelectorRect = !edge && merges.intersects(selectorRect);
+    const autoFillSelectorRect = edge || merges.intersects(selectorRect);
     const [rSize, cSize] = selectorRect.size();
     let { ri, ci } = table.getRiCiByXy(x, y);
+    // console.log('autoFillSelectorRect >>>', autoFillSelectorRect);
     if (ri < 0) ri = 0; else if (ri > rows.len) ri = rows.len - 1;
     if (ci < 0) ci = 0; else if (ci > cols.len) ci = cols.len - 1;
     const { sri: selectorSri, sci: selectorSci } = selectorRect;
