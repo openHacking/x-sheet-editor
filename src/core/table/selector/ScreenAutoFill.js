@@ -340,14 +340,22 @@ class ScreenAutoFill extends ScreenWidget {
     const { autoFillAttr } = this;
     const { selectorAttr } = screenSelector;
     const { rect: autoFillRect } = autoFillAttr;
-    const { rect: selectorRect } = selectorAttr;
+    const { rect: selectorRect, edge } = selectorAttr;
     let sIndexRi = selectorRect.sri;
     let tIndexRi = autoFillRect.sri;
     while (tIndexRi <= autoFillRect.eri) {
       let sIndexCi = selectorRect.sci;
       let tIndexCi = autoFillRect.sci;
       while (tIndexCi <= autoFillRect.eci) {
-        merges.deleteIntersects(new RectRange(tIndexRi, tIndexCi, tIndexRi, tIndexCi));
+        const rect = new RectRange(tIndexRi, tIndexCi, tIndexRi, tIndexCi);
+        if (edge) {
+          const mergeRect = merges.getFirstIncludes(tIndexRi, tIndexCi);
+          if (!mergeRect || !selectorRect.intersects(mergeRect)) {
+            merges.deleteIntersects(rect);
+          }
+        } else {
+          merges.deleteIntersects(rect);
+        }
         sIndexCi += 1;
         tIndexCi += 1;
         if (sIndexCi > selectorRect.eci) sIndexCi = selectorRect.sci;
@@ -394,7 +402,8 @@ class ScreenAutoFill extends ScreenWidget {
     const { autoFillAttr } = this;
     const { selectorAttr } = screenSelector;
     const { rect: autoFillRect } = autoFillAttr;
-    const { rect: selectorRect } = selectorAttr;
+    const { rect: selectorRect, edge } = selectorAttr;
+    if (edge) return;
     let sIndexRi = selectorRect.sri;
     let tIndexRi = autoFillRect.sri;
     while (tIndexRi <= autoFillRect.eri) {
