@@ -690,7 +690,7 @@ class FixedTopIndex {
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
-      font: `500 ${npx(12)}px Arial`,
+      font: `500 ${npx(11)}px Arial`,
       fillStyle: '#585757',
       lineWidth: thinLineWidth(),
       strokeStyle: '#e6e6e6',
@@ -1083,7 +1083,7 @@ class FrozenTopIndex {
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
-      font: `500 ${npx(12)}px Arial`,
+      font: `500 ${npx(11)}px Arial`,
       fillStyle: '#585757',
       lineWidth: thinLineWidth(),
       strokeStyle: '#e6e6e6',
