@@ -20,7 +20,7 @@ function npxLine(px) {
 class Draw {
   constructor(el) {
     this.el = el;
-    this.ctx = el.getContext('2d');
+    this.ctx = el.getContext('2d', { alpha: false });
     this.ctx.scale(dpr(), dpr());
   }
 

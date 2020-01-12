@@ -296,8 +296,6 @@ class Content {
     const width = this.getWidth();
     const height = this.getHeight();
     const viewRange = this.getViewRange();
-    this.drawGrid(viewRange, offsetX, offsetY);
-    this.drawCells(viewRange, offsetX, offsetY);
     const rect = new Rect({
       x: offsetX,
       y: offsetY,
@@ -306,6 +304,8 @@ class Content {
     });
     const rectCut = new RectCut(draw, rect);
     rectCut.outwardCut(thinLineWidth() / 2);
+    this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawCells(viewRange, offsetX, offsetY);
     this.drawMerge(viewRange, offsetX, offsetY);
     rectCut.closeCut();
   }
@@ -459,8 +459,6 @@ class FixedLeft {
     const viewRange = this.getViewRange();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
-    this.drawGrid(viewRange, offsetX, offsetY);
-    this.drawCells(viewRange, offsetX, offsetY);
     const rect = new Rect({
       x: offsetX,
       y: offsetY,
@@ -469,6 +467,8 @@ class FixedLeft {
     });
     const rectCut = new RectCut(draw, rect);
     rectCut.outwardCut(thinLineWidth() / 2);
+    this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawCells(viewRange, offsetX, offsetY);
     this.drawMerge(viewRange, offsetX, offsetY);
     rectCut.closeCut();
   }
@@ -620,8 +620,6 @@ class FixedTop {
     const viewRange = this.getViewRange();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
-    this.drawGrid(viewRange, offsetX, offsetY);
-    this.drawCells(viewRange, offsetX, offsetY);
     const rect = new Rect({
       x: offsetX,
       y: offsetY,
@@ -630,6 +628,8 @@ class FixedTop {
     });
     const rectCut = new RectCut(draw, rect);
     rectCut.outwardCut(thinLineWidth() / 2);
+    this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawCells(viewRange, offsetX, offsetY);
     this.drawMerge(viewRange, offsetX, offsetY);
     rectCut.closeCut();
   }
@@ -936,8 +936,6 @@ class FrozenLeftTop {
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
     const viewRange = this.getViewRange();
-    this.drawGrid(viewRange, offsetX, offsetY);
-    this.drawCells(viewRange, offsetX, offsetY);
     const rect = new Rect({
       x: offsetX,
       y: offsetY,
@@ -946,6 +944,8 @@ class FrozenLeftTop {
     });
     const rectCut = new RectCut(draw, rect);
     rectCut.outwardCut(thinLineWidth() / 2);
+    this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawCells(viewRange, offsetX, offsetY);
     this.drawMerge(viewRange, offsetX, offsetY);
     rectCut.closeCut();
   }

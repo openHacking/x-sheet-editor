@@ -11,7 +11,7 @@ class RectCut extends RectDraw {
     ];
     draw.save();
     draw.attr({
-      fillStyle: 'transparent',
+      fillStyle: '#ffffff',
     });
     draw.rect(x, y, width, height);
     draw.clip();
