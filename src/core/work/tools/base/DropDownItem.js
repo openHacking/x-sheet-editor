@@ -16,6 +16,10 @@ class DropDownItem extends Item {
   setTitle(text) {
     this.title.text(text);
   }
+
+  setIcon(icon) {
+    this.title.children(icon);
+  }
 }
 
 export { DropDownItem };

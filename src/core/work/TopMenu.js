@@ -7,6 +7,20 @@ import { ClearFormat } from './tools/ClearFormat';
 import { Format } from './tools/Format';
 import { Font } from './tools/Font';
 import { FontSize } from './tools/FontSize';
+import { FontBold } from './tools/FontBold';
+import { FontItalic } from './tools/FontItalic';
+import { UnderLine } from './tools/UnderLine';
+import { FontStrike } from './tools/FontStrike';
+import { FontColor } from './tools/FontColor';
+import { FillColor } from './tools/FillColor';
+import { Border } from './tools/Border';
+import { Merge } from './tools/Merge';
+import { HorizontalAlign } from './tools/HorizontalAlign';
+import { VerticalAlign } from './tools/VerticalAlign';
+import { TextWrapping } from './tools/TextWrapping';
+import { Fixed } from './tools/Fixed';
+import { Filter } from './tools/Filter';
+import { Functions } from './tools/Functions';
 
 class Divider extends Widget {
   constructor() {
@@ -24,6 +38,20 @@ class TopMenu extends Widget {
     this.format = new Format();
     this.font = new Font();
     this.fontSize = new FontSize();
+    this.fontBold = new FontBold();
+    this.fontItalic = new FontItalic();
+    this.underLine = new UnderLine();
+    this.fontStrike = new FontStrike();
+    this.fontColor = new FontColor();
+    this.fillColor = new FillColor();
+    this.border = new Border();
+    this.merge = new Merge();
+    this.horizontalAlign = new HorizontalAlign();
+    this.verticalAlign = new VerticalAlign();
+    this.textWrapping = new TextWrapping();
+    this.fixed = new Fixed();
+    this.filter = new Filter();
+    this.functions = new Functions();
     this.children(this.undo);
     this.children(this.redo);
     this.children(this.paintFormat);
@@ -34,6 +62,21 @@ class TopMenu extends Widget {
     this.children(this.font);
     this.children(this.fontSize);
     this.children(new Divider());
+    this.children(this.fontBold);
+    this.children(this.fontItalic);
+    this.children(this.underLine);
+    this.children(this.fontStrike);
+    this.children(this.fontColor);
+    this.children(new Divider());
+    this.children(this.fillColor);
+    this.children(this.border);
+    this.children(this.merge);
+    this.children(this.horizontalAlign);
+    this.children(this.verticalAlign);
+    this.children(this.textWrapping);
+    this.children(this.fixed);
+    this.children(this.filter);
+    this.children(this.functions);
   }
 }
 

@@ -278,7 +278,6 @@
 
 // icon 图标
 .@{css-prefix}-icon {
-  padding: 2px 5px 2px 5px;
   text-align: center;
   vertical-align: middle;
   user-select: none;
@@ -307,6 +306,48 @@
 .@{css-prefix}-icon-img.arrow-down {
   background-position: -7 * @icon-size -1 * @icon-size;
 }
+.@{css-prefix}-icon-img.font-bold {
+  background-position: -5 * @icon-size 0;
+}
+.@{css-prefix}-icon-img.font-italic {
+  background-position: -6 * @icon-size 0;
+}
+.@{css-prefix}-icon-img.under-line {
+  background-position: -7 * @icon-size 0;
+}
+.@{css-prefix}-icon-img.font-strike {
+  background-position: -8 * @icon-size 0;
+}
+.@{css-prefix}-icon-img.color {
+  background-position: -9 * @icon-size 0;
+}
+.@{css-prefix}-icon-img.fill-color {
+  background-position: -10 * @icon-size 0;
+}
+.@{css-prefix}-icon-img.border {
+  background-position: 0 -2 * @icon-size;
+}
+.@{css-prefix}-icon-img.merge {
+  background-position: -11 * @icon-size 0;
+}
+.@{css-prefix}-icon-img.align-left {
+  background-position: -12 * @icon-size 0;
+}
+.@{css-prefix}-icon-img.align-middle {
+  background-position: -2 * @icon-size -1 * @icon-size;
+}
+.@{css-prefix}-icon-img.text-wrap {
+  background-position: -4 * @icon-size -1 * @icon-size;
+}
+.@{css-prefix}-icon-img.freeze {
+  background-position: -11 * @icon-size -1 * @icon-size;
+}
+.@{css-prefix}-icon-img.filter {
+  background-position: -5 * @icon-size -1 * @icon-size;
+}
+.@{css-prefix}-icon-img.functions {
+  background-position: -6 * @icon-size -1 * @icon-size;
+}
 
 // 工具菜单
 .@{css-prefix}-tools-menu {
@@ -324,20 +365,15 @@
   height: 18px;
 }
 .@{css-prefix}-tools-item {
-  margin: 0 2px;
-  padding: 2px;
+  margin: 0 5px;
+  padding: 5px;
   border-radius: 2px;
   cursor: pointer;
 }
 .@{css-prefix}-tools-item:hover {
   background: #d8d8d8;
 }
-.@{css-prefix}-tools-drop-down-item {
-  margin: 0 2px;
-  padding: 2px;
-  border-radius: 2px;
-  cursor: pointer;
-}
+.@{css-prefix}-tools-drop-down-item {}
 .@{css-prefix}-tools-drop-down-item-mark {
   display: inline-block;
 }
@@ -345,7 +381,6 @@
   display: inline-block;
   color: #5e5e5e;
   font-size: 14px;
-  margin-left: 5px;
   font-family: 'Lato', 'Source Sans Pro', Roboto, Helvetica, Arial, sans-serif;
 }
 .@{css-prefix}-tools-drop-down-item:hover {
