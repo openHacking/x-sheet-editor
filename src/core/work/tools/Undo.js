@@ -1,8 +1,8 @@
-import { ToggleItem } from './ToggleItem';
-import { cssPrefix } from '../../config';
+import { cssPrefix } from '../../../config';
 import { Icon } from './Icon';
+import { Item } from './base/Item';
 
-class Undo extends ToggleItem {
+class Undo extends Item {
   constructor() {
     super(`${cssPrefix}-tools-undo`);
     this.icon = new Icon('undo');
