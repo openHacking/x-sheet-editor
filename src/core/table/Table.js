@@ -55,7 +55,7 @@ const defaultSettings = {
     },
   },
   rows: {
-    len: 1000,
+    len: 100000,
     height: 30,
   },
   cols: {
@@ -690,7 +690,7 @@ class FixedTopIndex {
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
-      font: `500 ${npx(10)}px Arial`,
+      font: `500 ${npx(12)}px Arial`,
       fillStyle: '#585757',
       lineWidth: thinLineWidth(),
       strokeStyle: '#e6e6e6',
@@ -770,7 +770,7 @@ class FixedLeftIndex {
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
-      font: `500 ${npx(10)}px Arial`,
+      font: `500 ${npx(11)}px Arial`,
       fillStyle: '#585757',
       lineWidth: thinLineWidth(),
       strokeStyle: '#e6e6e6',
@@ -1005,7 +1005,7 @@ class FrozenLeftIndex {
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
-      font: `500 ${npx(10)}px Arial`,
+      font: `500 ${npx(11)}px Arial`,
       fillStyle: '#585757',
       lineWidth: thinLineWidth(),
       strokeStyle: '#e6e6e6',
@@ -1083,7 +1083,7 @@ class FrozenTopIndex {
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
-      font: `500 ${npx(10)}px Arial`,
+      font: `500 ${npx(12)}px Arial`,
       fillStyle: '#585757',
       lineWidth: thinLineWidth(),
       strokeStyle: '#e6e6e6',
