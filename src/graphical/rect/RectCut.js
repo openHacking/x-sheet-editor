@@ -10,9 +10,6 @@ class RectCut extends RectDraw {
       rect.height + offset * 2,
     ];
     draw.save();
-    draw.attr({
-      fillStyle: '#ffffff',
-    });
     draw.rect(x, y, width, height);
     draw.clip();
   }
