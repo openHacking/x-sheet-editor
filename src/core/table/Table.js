@@ -293,9 +293,9 @@ class Content {
     const { draw } = table;
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
-    const width = this.getWidth();
-    const height = this.getHeight();
     const viewRange = this.getViewRange();
+    const width = viewRange.w;
+    const height = viewRange.h;
     const rect = new Rect({
       x: offsetX,
       y: offsetY,
@@ -1221,9 +1221,13 @@ class Table extends Widget {
   render() {
     const start = Date.now();
     const { draw, settings } = this;
-    draw.clear();
     const [width, height] = [this.visualWidth(), this.visualHeight()];
+    draw.clear();
     draw.resize(width, height);
+    draw.attr({
+      fillStyle: '#ffffff',
+    });
+    draw.fillRect(0, 0, width, height);
     this.frozenRect.render();
     this.frozenLeftTop.render();
     this.frozenLeftIndex.render();
