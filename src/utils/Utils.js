@@ -42,6 +42,13 @@ class Utils {
     return !isNaN(parseInt(e));
   }
 
+  static isBlank(s) {
+    if (Utils.isUnDef(s)) {
+      return true;
+    }
+    return s.toString() === '';
+  }
+
   static mergeDeep(object = {}, ...sources) {
     if (Utils.isUnDef(object)) {
       return {};

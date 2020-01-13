@@ -11,6 +11,7 @@ class Edit extends Widget {
     super(`${cssPrefix}-table-edit`);
     this.input = h('div', `${cssPrefix}-table-edit-input`);
     this.input.attr('contenteditable', true);
+    this.input.html('<p>&nbsp;</p>');
     this.table = table;
     this.children(this.input);
     this.hide();
@@ -35,14 +36,24 @@ class Edit extends Widget {
       }
       this.hide();
     });
+    EventBind.bind(this.input, Constant.EVENT_TYPE.INPUT, () => {
+      if (Utils.isBlank(this.input.text())) {
+        this.input.html('<p>&nbsp;</p>');
+      }
+    });
     EventBind.dbClick(table, () => {
-      const { screen } = table;
+      const { screen, cells } = table;
       const selector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = selector;
       if (selectorAttr && selectRect) {
         const { rect } = selectorAttr;
+        const cell = cells.getCell(rect.sri, rect.sci);
         if (rect.equals(selectRect)) {
           this.editOffset(rect);
+          if (cell) {
+            this.input.text(cell.text);
+          }
+          this.input.focus();
         }
       }
     });
@@ -56,7 +67,7 @@ class Edit extends Widget {
     const { rect } = selectorAttr;
     const { index } = settings;
     const { cols, rows } = table;
-    const offset = 2;
+    const offset = 4;
     const intersectsArea = selector.getIntersectsArea(selectorAttr);
     if (Utils.arrayEqual(intersectsArea, ['lt'])) {
       // console.log('lt');
@@ -65,10 +76,10 @@ class Edit extends Widget {
       const coincideRange = rect.coincide(viewRange);
       const width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci) - offset * 2;
       const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri) - offset * 2;
-      const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1)
-        + table.getIndexHeight() + offset;
-      const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1)
-        + index.width + offset;
+      let top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
+      let left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
+      top += table.getIndexHeight() + offset;
+      left += index.width + offset;
       this.offset({
         width,
         height,
@@ -82,10 +93,10 @@ class Edit extends Widget {
       const coincideRange = rect.coincide(viewRange);
       const width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci) - offset * 2;
       const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri) - offset * 2;
-      const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1)
-        + table.getIndexHeight() + offset;
-      const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1)
-        + table.getFixedWidth() + table.getIndexWidth() + offset;
+      let top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
+      let left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
+      top += table.getIndexHeight() + offset;
+      left += table.getFixedWidth() + table.getIndexWidth() + offset;
       this.offset({
         width,
         height,
@@ -94,6 +105,21 @@ class Edit extends Widget {
       }).show();
     } else if (Utils.arrayEqual(intersectsArea, ['br'])) {
       // console.log('br');
+      const { content } = table;
+      const viewRange = content.getViewRange();
+      const coincideRange = rect.coincide(viewRange);
+      const width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci) - offset * 2;
+      const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri) - offset * 2;
+      let top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
+      let left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
+      top += table.getFixedHeight() + table.getIndexHeight() + offset;
+      left += table.getFixedWidth() + table.getIndexWidth() + offset;
+      this.offset({
+        width,
+        height,
+        top,
+        left,
+      }).show();
     } else if (Utils.arrayEqual(intersectsArea, ['l'])) {
       console.log('l');
     } else if (Utils.arrayEqual(intersectsArea, ['lt', 't'])) {

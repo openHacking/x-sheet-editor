@@ -17,6 +17,7 @@ Constant.EVENT_TYPE = {
   CHANGE_HEIGHT: 'changeheight',
   CHANGE_WIDTH: 'changewidth',
   CHANGE: 'change',
+  INPUT: 'input',
   stop: type => `${type}.stop`,
 };
 

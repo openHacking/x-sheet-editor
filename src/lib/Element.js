@@ -327,6 +327,10 @@ class Element {
     });
     this.el.dispatchEvent(event);
   }
+
+  focus() {
+    this.el.focus();
+  }
 }
 
 const h = (tag, className = '') => new Element(tag, className);
