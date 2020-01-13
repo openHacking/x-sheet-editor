@@ -24,6 +24,7 @@ import { EventBind } from '../../utils/EventBind';
 import { ScreenAutoFill } from './selector/ScreenAutoFill';
 import { XHeightLight } from './highlight/XHeightLight';
 import { YHeightLight } from './highlight/YHeightLight';
+import { Edit } from './Edit';
 
 const defaultSettings = {
   tipsRenderTime: true,
@@ -1165,14 +1166,14 @@ class Table extends Widget {
     this.yReSizer = new YReSizer(this);
     this.xHeightLight = new XHeightLight(this);
     this.yHeightLight = new YHeightLight(this);
-    this.children(...[
-      this.canvas,
-      this.screen,
-      this.xReSizer,
-      this.yReSizer,
-      this.xHeightLight,
-      this.yHeightLight,
-    ]);
+    this.edit = new Edit(this);
+    this.children(this.canvas);
+    this.children(this.screen);
+    this.children(this.xReSizer);
+    this.children(this.yReSizer);
+    this.children(this.xHeightLight);
+    this.children(this.yHeightLight);
+    this.children(this.edit);
     this.bind();
   }
 

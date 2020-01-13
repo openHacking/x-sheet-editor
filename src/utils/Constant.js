@@ -8,6 +8,7 @@ Constant.EVENT_TYPE = {
   MOUSE_LEAVE: 'mouseleave',
   MOUSE_WHEEL: 'mousewheel',
   MOUSE_ENTER: 'mouseenter',
+  CLICK: 'click',
   KEY_DOWN: 'keydown',
   KEY_UP: 'keyup',
   DRAG_START: 'dragstart',

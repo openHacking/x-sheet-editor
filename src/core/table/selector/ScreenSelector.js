@@ -13,6 +13,7 @@ class ScreenSelector extends ScreenWidget {
     this.options = options;
     this.selectorAttr = null;
     this.onChangeStack = [];
+    this.onSelectChangeStack = [];
     this.lt = new Selector();
     this.t = new Selector();
     this.l = new Selector();
@@ -36,6 +37,7 @@ class ScreenSelector extends ScreenWidget {
       this.selectorAttr = downSelectAttr;
       this.setOffset(downSelectAttr);
       this.onChangeStack.forEach(cb => cb());
+      this.onSelectChangeStack.forEach(cb => cb());
       const { edgeType } = downSelectAttr;
       switch (edgeType) {
         case 'left-top':
@@ -57,6 +59,7 @@ class ScreenSelector extends ScreenWidget {
         this.selectorAttr = moveSelectorAttr;
         this.setOffset(moveSelectorAttr);
         this.onChangeStack.forEach(cb => cb());
+        this.onSelectChangeStack.forEach(cb => cb());
         e2.stopPropagation();
         e2.preventDefault();
       }, () => {
@@ -607,6 +610,10 @@ class ScreenSelector extends ScreenWidget {
 
   addChangeCb(cb) {
     this.onChangeStack.push(cb);
+  }
+
+  addSelectChangeCb(cb) {
+    this.onSelectChangeStack.push(cb);
   }
 }
 
