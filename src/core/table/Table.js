@@ -1228,15 +1228,15 @@ class Table extends Widget {
       fillStyle: '#ffffff',
     });
     draw.fillRect(0, 0, width, height);
-    this.frozenRect.render();
     this.frozenLeftTop.render();
-    this.frozenLeftIndex.render();
-    this.frozenTopIndex.render();
-    this.fixedTopIndex.render();
-    this.fixedLeftIndex.render();
     this.fixedTop.render();
     this.fixedLeft.render();
     this.content.render();
+    this.fixedTopIndex.render();
+    this.fixedLeftIndex.render();
+    this.frozenLeftIndex.render();
+    this.frozenTopIndex.render();
+    this.frozenRect.render();
     const end = Date.now();
     const consume = end - start;
     if (consume > 16 && settings.tipsRenderTime) {
