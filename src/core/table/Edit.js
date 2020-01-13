@@ -20,38 +20,50 @@ class Edit extends Widget {
 
   bind() {
     const { table } = this;
+    const { cells } = table;
     let selectRect = null;
+    let text;
+    let editModel = false;
     EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {
       e.stopPropagation();
     });
     EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
       e.stopPropagation();
     });
-    EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_DOWN, () => {
-      const { screen } = table;
-      const selector = screen.findByClass(ScreenSelector);
-      const { selectorAttr } = selector;
-      if (selectorAttr) {
-        selectRect = selectorAttr.rect;
-      }
-      this.hide();
-    });
     EventBind.bind(this.input, Constant.EVENT_TYPE.INPUT, () => {
       if (Utils.isBlank(this.input.text())) {
         this.input.html('<p>&nbsp;</p>');
       }
+      text = this.input.text();
+    });
+    EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_DOWN, () => {
+      const { screen } = table;
+      const selector = screen.findByClass(ScreenSelector);
+      const { selectorAttr } = selector;
+      if (editModel) {
+        const cell = cells.getCell(selectRect.sri, selectRect.sci);
+        cell.text = text;
+        table.render();
+      }
+      if (selectorAttr) {
+        selectRect = selectorAttr.rect;
+      }
+      this.hide();
+      editModel = false;
     });
     EventBind.dbClick(table, () => {
-      const { screen, cells } = table;
+      const { screen } = table;
       const selector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = selector;
       if (selectorAttr && selectRect) {
         const { rect } = selectorAttr;
         const cell = cells.getCell(rect.sri, rect.sci);
         if (rect.equals(selectRect)) {
+          editModel = true;
           this.editOffset(rect);
           if (cell) {
-            this.input.text(cell.text);
+            ({ text } = cell);
+            this.input.text(text);
           }
           this.input.focus();
         }
