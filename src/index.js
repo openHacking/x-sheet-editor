@@ -17,6 +17,13 @@ class XSheet extends Widget {
           {
             name: '80列100行',
             tableConfig: {
+              merges: [
+                new RectRange(1, 0, 2, 0),
+                new RectRange(0, 1, 0, 2),
+                new RectRange(0, 3, 2, 3),
+                new RectRange(5, 0, 5, 5),
+                new RectRange(1, 1, 2, 2),
+              ],
               data: Data,
             },
           },
@@ -24,9 +31,11 @@ class XSheet extends Widget {
             name: '白云测试',
             tableConfig: {
               merges: [
-                new RectRange(0, 0, 0, 1),
+                new RectRange(1, 0, 2, 0),
+                new RectRange(0, 1, 0, 2),
+                new RectRange(0, 3, 2, 3),
+                new RectRange(5, 0, 5, 5),
                 new RectRange(1, 1, 2, 2),
-                new RectRange(3, 3, 4, 4),
               ],
               fixed: {
                 fxTop: 1,

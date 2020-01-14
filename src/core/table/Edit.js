@@ -94,12 +94,16 @@ class Edit extends Widget {
       const { frozenLeftTop } = table;
       const viewRange = frozenLeftTop.getViewRange();
       const coincideRange = rect.coincide(viewRange);
+
       const width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci) - offset * 2;
       const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri) - offset * 2;
+
       let top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
       let left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
+
       top += table.getIndexHeight() + offset;
       left += table.getIndexWidth() + offset;
+
       this.offset({
         width,
         height,
@@ -111,12 +115,16 @@ class Edit extends Widget {
       const { fixedTop } = table;
       const viewRange = fixedTop.getViewRange();
       const coincideRange = rect.coincide(viewRange);
+
       const width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci) - offset * 2;
       const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri) - offset * 2;
+
       let top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
       let left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
+
       top += table.getIndexHeight() + offset;
       left += table.getFixedWidth() + table.getIndexWidth() + offset;
+
       this.offset({
         width,
         height,
@@ -128,12 +136,16 @@ class Edit extends Widget {
       const { content } = table;
       const viewRange = content.getViewRange();
       const coincideRange = rect.coincide(viewRange);
+
       const width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci) - offset * 2;
       const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri) - offset * 2;
+
       let top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
       let left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
+
       top += table.getFixedHeight() + table.getIndexHeight() + offset;
       left += table.getFixedWidth() + table.getIndexWidth() + offset;
+
       this.offset({
         width,
         height,
@@ -145,12 +157,16 @@ class Edit extends Widget {
       const { fixedLeft } = table;
       const viewRange = fixedLeft.getViewRange();
       const coincideRange = rect.coincide(viewRange);
+
       const width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci) - offset * 2;
       const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri) - offset * 2;
+
       let top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
       let left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
+
       top += table.getFixedHeight() + table.getIndexHeight() + offset;
       left += table.getIndexWidth() + offset;
+
       this.offset({
         width,
         height,
@@ -167,23 +183,17 @@ class Edit extends Widget {
       const tViewRange = fixedTop.getViewRange();
       const tCoincideRange = rect.coincide(tViewRange);
 
-      const ltWidth = cols.sectionSumWidth(ltCoincideRange.sci, ltCoincideRange.eci) - offset * 2;
-      const ltHeight = rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri) - offset * 2;
-      let ltTop = rows.sectionSumHeight(ltViewRange.sri, ltCoincideRange.sri - 1);
-      let ltLeft = cols.sectionSumWidth(ltViewRange.sci, ltCoincideRange.sci - 1);
-
-      const tWidth = cols.sectionSumWidth(tCoincideRange.sci, tCoincideRange.eci) - offset * 2;
-      const tHeight = rows.sectionSumHeight(tCoincideRange.sri, tCoincideRange.eri) - offset * 2;
-
-
-      ltTop += table.getIndexHeight() + offset;
-      ltLeft += table.getIndexWidth() + offset;
+      const ltWidth = cols.sectionSumWidth(ltCoincideRange.sci, ltCoincideRange.eci);
+      const ltHeight = rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
+      const ltTop = rows.sectionSumHeight(ltViewRange.sri, ltCoincideRange.sri - 1);
+      const ltLeft = cols.sectionSumWidth(ltViewRange.sci, ltCoincideRange.sci - 1);
+      const tWidth = cols.sectionSumWidth(tCoincideRange.sci, tCoincideRange.eci);
 
       this.offset({
-        width: ltWidth + tWidth,
-        height: ltHeight + tHeight,
-        top: ltTop,
-        left: ltLeft,
+        width: (ltWidth + tWidth) - offset * 2,
+        height: ltHeight - offset * 2,
+        top: ltTop + table.getIndexHeight() + offset,
+        left: ltLeft + table.getIndexWidth() + offset,
       }).show();
     } else if (Utils.arrayEqual(intersectsArea, ['t', 'br'])) {
       // console.log('t, br');
@@ -195,22 +205,18 @@ class Edit extends Widget {
       const tViewRange = fixedTop.getViewRange();
       const tCoincideRange = rect.coincide(tViewRange);
 
-      const cWidth = cols.sectionSumWidth(cCoincideRange.sci, cCoincideRange.eci) - offset * 2;
-      const cHeight = rows.sectionSumHeight(cCoincideRange.sri, cCoincideRange.eri) - offset * 2;
+      const tWidth = cols.sectionSumWidth(tCoincideRange.sci, tCoincideRange.eci);
+      const tHeight = rows.sectionSumHeight(tCoincideRange.sri, tCoincideRange.eri);
+      const tTop = rows.sectionSumHeight(tViewRange.sri, tCoincideRange.sri - 1);
+      const tLeft = cols.sectionSumWidth(tViewRange.sci, tCoincideRange.sci - 1);
 
-      const tWidth = cols.sectionSumWidth(tCoincideRange.sci, tCoincideRange.eci) - offset * 2;
-      const tHeight = rows.sectionSumHeight(tCoincideRange.sri, tCoincideRange.eri) - offset * 2;
-      let tTop = rows.sectionSumHeight(tViewRange.sri, tCoincideRange.sri - 1);
-      let tLeft = cols.sectionSumWidth(tViewRange.sci, tCoincideRange.sci - 1);
-
-      tTop += table.getIndexHeight() + offset;
-      tLeft += table.getFixedWidth() + table.getIndexWidth() + offset;
+      const cHeight = rows.sectionSumHeight(cCoincideRange.sri, cCoincideRange.eri);
 
       this.offset({
-        width: cWidth + tWidth,
-        height: cHeight + tHeight,
-        top: tTop,
-        left: tLeft,
+        width: tWidth - offset * 2,
+        height: (cHeight + tHeight) - offset * 2,
+        top: tTop + table.getIndexHeight() + offset,
+        left: tLeft + table.getFixedWidth() + table.getIndexWidth() + offset,
       }).show();
     } else if (Utils.arrayEqual(intersectsArea, ['br', 'l'])) {
       // console.log('br, l');
@@ -222,22 +228,18 @@ class Edit extends Widget {
       const lViewRange = fixedLeft.getViewRange();
       const lCoincideRange = rect.coincide(lViewRange);
 
-      const cWidth = cols.sectionSumWidth(cCoincideRange.sci, cCoincideRange.eci) - offset * 2;
-      const cHeight = rows.sectionSumHeight(cCoincideRange.sri, cCoincideRange.eri) - offset * 2;
+      const lWidth = cols.sectionSumWidth(lCoincideRange.sci, lCoincideRange.eci);
+      const lHeight = rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
+      const lTop = rows.sectionSumHeight(lViewRange.sri, lCoincideRange.sri - 1);
+      const lLeft = cols.sectionSumWidth(lViewRange.sci, lCoincideRange.sci - 1);
 
-      const lWidth = cols.sectionSumWidth(lCoincideRange.sci, lCoincideRange.eci) - offset * 2;
-      const lHeight = rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri) - offset * 2;
-      let lTop = rows.sectionSumHeight(lViewRange.sri, lCoincideRange.sri - 1);
-      let lLeft = cols.sectionSumWidth(lViewRange.sci, lCoincideRange.sci - 1);
-
-      lTop += table.getFixedHeight() + table.getIndexHeight() + offset;
-      lLeft += table.getIndexWidth() + offset;
+      const cWidth = cols.sectionSumWidth(cCoincideRange.sci, cCoincideRange.eci);
 
       this.offset({
-        width: cWidth + lWidth,
-        height: cHeight + lHeight,
-        top: lTop,
-        left: lLeft,
+        width: (lWidth + cWidth) - offset * 2,
+        height: lHeight - offset * 2,
+        top: lTop + table.getFixedHeight() + table.getIndexHeight() + offset,
+        left: lLeft + table.getIndexWidth() + offset,
       }).show();
     } else if (Utils.arrayEqual(intersectsArea, ['l', 'lt'])) {
       // console.log('l, lt');
@@ -249,20 +251,19 @@ class Edit extends Widget {
       const lViewRange = fixedLeft.getViewRange();
       const lCoincideRange = rect.coincide(lViewRange);
 
-      const ltWidth = cols.sectionSumWidth(ltCoincideRange.sci, ltCoincideRange.eci) - offset * 2;
-      const ltHeight = rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri) - offset * 2;
+      const ltWidth = cols.sectionSumWidth(ltCoincideRange.sci, ltCoincideRange.eci);
+      const ltHeight = rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
+      const lHeight = rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
+
       let ltTop = rows.sectionSumHeight(ltViewRange.sri, ltCoincideRange.sri - 1);
       let ltLeft = cols.sectionSumWidth(ltViewRange.sci, ltCoincideRange.sci - 1);
-
-      const lWidth = cols.sectionSumWidth(lCoincideRange.sci, lCoincideRange.eci) - offset * 2;
-      const lHeight = rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri) - offset * 2;
 
       ltTop += table.getIndexHeight() + offset;
       ltLeft += table.getIndexWidth() + offset;
 
       this.offset({
-        width: ltWidth + lWidth,
-        height: ltHeight + lHeight,
+        width: ltWidth - offset * 2,
+        height: (ltHeight + lHeight) - offset * 2,
         top: ltTop,
         left: ltLeft,
       }).show();
@@ -280,23 +281,19 @@ class Edit extends Widget {
       const lViewRange = fixedLeft.getViewRange();
       const lCoincideRange = rect.coincide(lViewRange);
 
-      let width = cols.sectionSumWidth(ltCoincideRange.sci, ltCoincideRange.eci);
-      let height = rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
-      width += cols.sectionSumWidth(tCoincideRange.sci, tCoincideRange.eci);
-      height += rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
-      width -= offset * 2;
-      height -= offset * 2;
+      const ltWidth = cols.sectionSumWidth(ltCoincideRange.sci, ltCoincideRange.eci);
+      const ltHeight = rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
+      const tWidth = cols.sectionSumWidth(tCoincideRange.sci, tCoincideRange.eci);
+      const lHeight = rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
 
-      let top = rows.sectionSumHeight(ltViewRange.sri, ltCoincideRange.sri - 1);
-      let left = cols.sectionSumWidth(ltViewRange.sci, ltCoincideRange.sci - 1);
-      top += table.getIndexHeight() + offset;
-      left += table.getIndexWidth() + offset;
+      const top = rows.sectionSumHeight(ltViewRange.sri, ltCoincideRange.sri - 1);
+      const left = cols.sectionSumWidth(ltViewRange.sci, ltCoincideRange.sci - 1);
 
       this.offset({
-        width,
-        height,
-        top,
-        left,
+        width: (ltWidth + tWidth) - offset * 2,
+        height: (ltHeight + lHeight) - offset * 2,
+        top: top + table.getIndexHeight() + offset,
+        left: left + table.getIndexWidth() + offset,
       }).show();
     }
   }
