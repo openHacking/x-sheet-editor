@@ -32,7 +32,7 @@ class ScreenAutoFill extends ScreenWidget {
       screenSelector.t.cornerEl,
       screenSelector.l.cornerEl,
       screenSelector.br.cornerEl,
-    ], Constant.EVENT_TYPE.MOUSE_DOWN, (e1) => {
+    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
       mousePointType.on(['autoFill']);
       mousePointType.set('crosshair', 'autoFill');
       EventBind.mouseMoveUp(document, (e2) => {
@@ -69,7 +69,7 @@ class ScreenAutoFill extends ScreenWidget {
       screenSelector.t.cornerEl,
       screenSelector.l.cornerEl,
       screenSelector.br.cornerEl,
-    ], Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
+    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       mousePointType.set('crosshair', 'autoFill');
       e.stopPropagation();
       e.preventDefault();

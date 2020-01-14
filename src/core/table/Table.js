@@ -25,6 +25,7 @@ import { ScreenAutoFill } from './selector/ScreenAutoFill';
 import { XHeightLight } from './highlight/XHeightLight';
 import { YHeightLight } from './highlight/YHeightLight';
 import { Edit } from './Edit';
+import { History } from './History';
 
 const defaultSettings = {
   tipsRenderTime: true,
@@ -1146,6 +1147,7 @@ class Table extends Widget {
       cols: this.cols,
       data: this.settings.data,
     });
+    this.history = new History(this);
     this.mousePointType = new MousePointType(this);
     this.merges = new Merges(this.settings.merges);
     // console.log('this.settings.fixed >>>', this.settings.fixed);
@@ -1177,14 +1179,6 @@ class Table extends Widget {
     this.bind();
   }
 
-  visualHeight() {
-    return this.box().height;
-  }
-
-  visualWidth() {
-    return this.box().width;
-  }
-
   init() {
     this.initScreenWidget();
     this.screen.init();
@@ -1192,10 +1186,20 @@ class Table extends Widget {
     this.yReSizer.init();
     this.xHeightLight.init();
     this.yHeightLight.init();
+    this.edit.init();
+  }
+
+  initScreenWidget() {
+    // 单元格筛选组件
+    const screenSelector = new ScreenSelector(this.screen);
+    this.screen.addWidget(screenSelector);
+    // 自动填充组件
+    const screenAutoFill = new ScreenAutoFill(this.screen);
+    this.screen.addWidget(screenAutoFill);
   }
 
   bind() {
-    EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       const { x, y } = this.computeEventXy(e);
       const { ri, ci } = this.getRiCiByXy(x, y);
       if (ri === -1 && ci === -1) {
@@ -1208,15 +1212,6 @@ class Table extends Widget {
         this.mousePointType.set('cell', 'table-cell');
       }
     });
-  }
-
-  initScreenWidget() {
-    // 单元格筛选组件
-    const screenSelector = new ScreenSelector(this.screen);
-    this.screen.addWidget(screenSelector);
-    // 自动填充组件
-    const screenAutoFill = new ScreenAutoFill(this.screen);
-    this.screen.addWidget(screenAutoFill);
   }
 
   render() {
@@ -1249,13 +1244,17 @@ class Table extends Widget {
   scrollX(x) {
     this.content.scrollX(x);
     this.render();
-    this.trigger(Constant.EVENT_TYPE.SCROLL);
+    this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
   }
 
   scrollY(y) {
     this.content.scrollY(y);
     this.render();
-    this.trigger(Constant.EVENT_TYPE.SCROLL);
+    this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
+  }
+
+  getScroll() {
+    return this.content.scroll;
   }
 
   getRiCiByXy(x, y) {
@@ -1319,16 +1318,12 @@ class Table extends Widget {
     };
   }
 
-  getRowTop(ri) {
-    const { settings, rows } = this;
-    const { index } = settings;
-    return rows.getTop(ri) + index.height;
+  visualHeight() {
+    return this.box().height;
   }
 
-  getColLeft(ci) {
-    const { settings, cols } = this;
-    const { index } = settings;
-    return cols.getLeft(ci) + index.width;
+  visualWidth() {
+    return this.box().width;
   }
 
   getFixedWidth() {
@@ -1337,10 +1332,6 @@ class Table extends Widget {
 
   getFixedHeight() {
     return this.fixedTop.getHeight();
-  }
-
-  getScroll() {
-    return this.content.scroll;
   }
 
   getIndexWidth() {
@@ -1362,17 +1353,44 @@ class Table extends Widget {
   }
 
   setWidth(ci, width) {
-    const { cols } = this;
+    const { cells, rows, cols } = this;
+    this.history.add({
+      cells,
+      rows,
+      cols,
+    });
     cols.setWidth(ci, width);
     this.render();
-    this.trigger(Constant.EVENT_TYPE.CHANGE_WIDTH);
+    this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH);
   }
 
   setHeight(ri, height) {
-    const { rows } = this;
+    const { cells, rows, cols } = this;
+    this.history.add({
+      cells,
+      rows,
+      cols,
+    });
     rows.setHeight(ri, height);
     this.render();
-    this.trigger(Constant.EVENT_TYPE.CHANGE_HEIGHT);
+    this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT);
+  }
+
+  getCell(ri, ci) {
+    const { cells } = this;
+    return Utils.mergeDeep({}, cells.getCell(ri, ci));
+  }
+
+  setCell(ri, ci, cell) {
+    const { cells, rows, cols } = this;
+    this.history.add({
+      cells,
+      rows,
+      cols,
+    });
+    Utils.mergeDeep(cells.getCellOrNew(ri, ci), cell);
+    this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+    this.render();
   }
 }
 

@@ -30,7 +30,6 @@ class Rows {
     const row = this.getOrNew(ri);
     row.height = Utils.minIf(height, this.minHeight);
     this.cacheTotalHeight = -1;
-    this.computeTop(ri, this.len);
   }
 
   eachHeight(ri, ei, cb) {
@@ -53,27 +52,12 @@ class Rows {
     return this.cacheTotalHeight;
   }
 
-  getTop(ri) {
-    const row = this.getOrNew(ri);
-    if (!row.top) {
-      this.computeTop(0, ri);
-    }
-    return row.top;
+  getData() {
+    return this._;
   }
 
-  computeTop(sri, eri) {
-    let top = 0;
-    if (sri > 0) {
-      top += this.getTop(sri - 1);
-      top += this.getHeight(sri - 1);
-    }
-    for (let i = sri; i <= eri; i += 1) {
-      const row = this.get(i);
-      if (row) {
-        row.top = top;
-      }
-      top += this.getHeight(i);
-    }
+  setData(data) {
+    this._ = data;
   }
 }
 

@@ -195,7 +195,7 @@ class WorkBody extends Widget {
   }
 
   bind() {
-    this.on(Constant.EVENT_TYPE.MOUSE_WHEEL, (evt) => {
+    this.on(Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (evt) => {
       const sheet = this.sheetView.getActiveSheet();
       if (Utils.isUnDef(sheet)) return;
       const { table } = sheet;
@@ -224,14 +224,14 @@ class WorkBody extends Widget {
         evt.stopPropagation();
       }
     });
-    EventBind.bind(window, Constant.EVENT_TYPE.RESIZE, () => {
+    EventBind.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
       this.initScroll();
     });
-    EventBind.bind(this.sheetView, Constant.EVENT_TYPE.CHANGE_HEIGHT, () => {
+    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       // console.log('change height');
       this.initScroll();
     });
-    EventBind.bind(this.sheetView, Constant.EVENT_TYPE.CHANGE_WIDTH, () => {
+    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
       // console.log('change width');
       this.initScroll();
     });

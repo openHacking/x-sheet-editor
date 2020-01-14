@@ -30,7 +30,6 @@ class Cols {
     const col = this.getOrNew(i);
     col.width = Utils.minIf(width, this.minWidth);
     this.cacheTotalWidth = -1;
-    this.computeLeft(i, this.len);
   }
 
   eachWidth(ci, ei, cb) {
@@ -53,27 +52,12 @@ class Cols {
     return this.cacheTotalWidth;
   }
 
-  getLeft(i) {
-    const col = this.getOrNew(i);
-    if (!col.left) {
-      this.computeLeft(0, i);
-    }
-    return col.left;
+  getData() {
+    return this._;
   }
 
-  computeLeft(sci, eci) {
-    let left = 0;
-    if (sci > 0) {
-      left += this.getLeft(sci - 1);
-      left += this.getWidth(sci - 1);
-    }
-    for (let i = sci; i <= eci; i += 1) {
-      const col = this.get(i);
-      if (col) {
-        col.left = left;
-      }
-      left += this.getWidth(i);
-    }
+  setData(data) {
+    this._ = data;
   }
 }
 

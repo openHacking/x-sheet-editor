@@ -25,17 +25,17 @@ class EventBind {
 
   static mouseMoveUp(target, moveFunc = () => {}, upFunc = () => {}) {
     const xEvtUp = (evt) => {
-      EventBind.unbind(target, Constant.EVENT_TYPE.MOUSE_MOVE, moveFunc);
-      EventBind.unbind(target, Constant.EVENT_TYPE.MOUSE_UP, xEvtUp);
+      EventBind.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, moveFunc);
+      EventBind.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp);
       upFunc(evt);
     };
-    EventBind.bind(target, Constant.EVENT_TYPE.MOUSE_MOVE, moveFunc);
-    EventBind.bind(target, Constant.EVENT_TYPE.MOUSE_UP, xEvtUp);
+    EventBind.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, moveFunc);
+    EventBind.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp);
   }
 
   static dbClick(target, func = () => {}) {
     let t = 0;
-    EventBind.bind(target, Constant.EVENT_TYPE.CLICK, (e) => {
+    EventBind.bind(target, Constant.SYSTEM_EVENT_TYPE.CLICK, (e) => {
       const n = Date.now();
       if (n - t <= 300) {
         func(e);

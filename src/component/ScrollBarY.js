@@ -41,7 +41,7 @@ class ScrollBarY extends Widget {
   }
 
   bind() {
-    this.block.on(Constant.EVENT_TYPE.MOUSE_DOWN, (evt1) => {
+    this.block.on(Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
       const downEventXy = this.computeEventXy(evt1, this.block);
       EventBind.mouseMoveUp(h(document), (evt2) => {
         // 计算移动的距离

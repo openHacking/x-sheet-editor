@@ -58,12 +58,12 @@ class YReSizer extends Widget {
     const { settings, rows, mousePointType } = table;
     const { index } = settings;
     let moveOff = false;
-    EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       mousePointType.set('row-resize', 'YReSizer');
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       moveOff = true;
       mousePointType.on(['YReSizer']);
       mousePointType.set('row-resize', 'YReSizer');
@@ -95,7 +95,7 @@ class YReSizer extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
+    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       if (moveOff) return;
       // eslint-disable-next-line prefer-const
       let { top, ri } = this.getEventTop(e);
@@ -116,7 +116,7 @@ class YReSizer extends Widget {
         this.hoverEl.css('height', `${this.height}px`);
       }
     });
-    EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_LEAVE, () => {
+    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       if (moveOff) return;
       this.hide();
     });

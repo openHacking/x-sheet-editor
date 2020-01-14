@@ -15,35 +15,43 @@ class Edit extends Widget {
     this.table = table;
     this.children(this.input);
     this.hide();
+  }
+
+  init() {
     this.bind();
   }
 
   bind() {
     const { table } = this;
-    const { cells } = table;
+    const { screen } = table;
+    const selector = screen.findByClass(ScreenSelector);
+    let text = '';
     let selectRect = null;
-    let text;
     let editModel = false;
-    EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       e.stopPropagation();
     });
-    EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       e.stopPropagation();
     });
-    EventBind.bind(this.input, Constant.EVENT_TYPE.INPUT, () => {
+    EventBind.bind(this.input, Constant.SYSTEM_EVENT_TYPE.INPUT, () => {
       if (Utils.isBlank(this.input.text())) {
         this.input.html('<p>&nbsp;</p>');
       }
       text = this.input.text();
     });
-    EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_DOWN, () => {
-      const { screen } = table;
-      const selector = screen.findByClass(ScreenSelector);
+    EventBind.bind([
+      selector.lt.cornerEl,
+      selector.t.cornerEl,
+      selector.l.cornerEl,
+      selector.br.cornerEl,
+      table,
+    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const { selectorAttr } = selector;
       if (editModel) {
-        const cell = cells.getCell(selectRect.sri, selectRect.sci);
-        cell.text = text;
-        table.render();
+        table.setCell(selectRect.sri, selectRect.sci, {
+          text,
+        });
       }
       if (selectorAttr) {
         selectRect = selectorAttr.rect;
@@ -57,7 +65,7 @@ class Edit extends Widget {
       const { selectorAttr } = selector;
       if (selectorAttr && selectRect) {
         const { rect } = selectorAttr;
-        const cell = cells.getCell(rect.sri, rect.sci);
+        const cell = table.getCell(rect.sri, rect.sci);
         if (rect.equals(selectRect)) {
           editModel = true;
           this.editOffset(rect);

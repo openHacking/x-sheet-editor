@@ -20,11 +20,11 @@ class Cells {
         italic: false,
       },
     };
-    this.data = data;
+    this._ = data;
   }
 
   getCell(ri, ci) {
-    const row = this.data[ri];
+    const row = this._[ri];
     if (row && row[ci]) {
       row[ci] = Utils.mergeDeep({
         text: '',
@@ -35,9 +35,9 @@ class Cells {
   }
 
   getCellOrNew(ri, ci) {
-    const row = this.data[ri];
+    const row = this._[ri];
     if (!row) {
-      this.data.splice(ri, 0, []);
+      this._.splice(ri, 0, []);
     }
     if (!row[ci]) {
       row[ci] = Utils.mergeDeep({
@@ -78,6 +78,14 @@ class Cells {
       strike: this.defaultStyle.strike,
       underline: this.defaultStyle.underline,
     });
+  }
+
+  getData() {
+    return this._;
+  }
+
+  setData(data) {
+    this._ = data;
   }
 }
 

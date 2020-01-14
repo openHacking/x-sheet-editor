@@ -17,14 +17,14 @@ class SheetView extends Widget {
     sheet.init();
     sheet.hide();
     // console.log(sheet);
-    EventBind.bind(sheet, Constant.EVENT_TYPE.CHANGE_WIDTH, (e) => {
+    EventBind.bind(sheet, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, (e) => {
       // console.log('e>>>', e);
-      this.trigger(Constant.EVENT_TYPE.CHANGE_WIDTH);
+      this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH);
       e.stopPropagation();
     });
-    EventBind.bind(sheet, Constant.EVENT_TYPE.CHANGE_HEIGHT, (e) => {
+    EventBind.bind(sheet, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, (e) => {
       // console.log('e>>>', e);
-      this.trigger(Constant.EVENT_TYPE.CHANGE_HEIGHT);
+      this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT);
       e.stopPropagation();
     });
     return this.sheetList.length - 1;

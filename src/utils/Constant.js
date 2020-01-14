@@ -1,24 +1,27 @@
 class Constant {}
 
-Constant.EVENT_TYPE = {
-  MOUSE_MOVE: 'mousemove',
-  MOUSE_DOWN: 'mousedown',
-  MOUSE_UP: 'mouseup',
-  MOUSE_OVER: 'mouseover',
-  MOUSE_LEAVE: 'mouseleave',
-  MOUSE_WHEEL: 'mousewheel',
-  MOUSE_ENTER: 'mouseenter',
-  CLICK: 'click',
-  KEY_DOWN: 'keydown',
-  KEY_UP: 'keyup',
-  DRAG_START: 'dragstart',
-  SCROLL: 'scroll',
-  RESIZE: 'resize',
-  CHANGE_HEIGHT: 'changeheight',
-  CHANGE_WIDTH: 'changewidth',
-  CHANGE: 'change',
-  INPUT: 'input',
-  stop: type => `${type}.stop`,
+Constant.SYSTEM_EVENT_TYPE = {
+  MOUSE_MOVE: 'mouseMove'.toLocaleLowerCase(),
+  MOUSE_DOWN: 'mouseDown'.toLocaleLowerCase(),
+  MOUSE_UP: 'mouseUp'.toLocaleLowerCase(),
+  MOUSE_OVER: 'mouseOver'.toLocaleLowerCase(),
+  MOUSE_LEAVE: 'mouseLeave'.toLocaleLowerCase(),
+  MOUSE_WHEEL: 'mouseWheel'.toLocaleLowerCase(),
+  MOUSE_ENTER: 'mouseEnter'.toLocaleLowerCase(),
+  CLICK: 'click'.toLocaleLowerCase(),
+  KEY_DOWN: 'keyDown'.toLocaleLowerCase(),
+  KEY_UP: 'keyUp'.toLocaleLowerCase(),
+  DRAG_START: 'dragStart'.toLocaleLowerCase(),
+  SCROLL: 'scroll'.toLocaleLowerCase(),
+  RESIZE: 'resize'.toLocaleLowerCase(),
+  CHANGE: 'change'.toLocaleLowerCase(),
+  INPUT: 'input'.toLocaleLowerCase(),
+};
+
+Constant.TABLE_EVENT_TYPE = {
+  CHANGE_HEIGHT: 'tableChangeHeight'.toLocaleLowerCase(),
+  CHANGE_WIDTH: 'tableChangeWidth'.toLocaleLowerCase(),
+  DATA_CHANGE: 'tableDataChange'.toLocaleLowerCase(),
 };
 
 export { Constant };

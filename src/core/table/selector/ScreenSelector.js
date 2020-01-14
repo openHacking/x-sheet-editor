@@ -25,12 +25,12 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const { mousePointType } = table;
-    EventBind.bind(table, Constant.EVENT_TYPE.SCROLL, () => {
+    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       if (this.selectorAttr) {
         this.setOffset(this.selectorAttr);
       }
     });
-    EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_DOWN, (e1) => {
+    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
       const { x, y } = table.computeEventXy(e1);
       const downSelectAttr = this.getDownXYSelectorAttr(x, y);
       // console.log('downSelectAttr >>>', downSelectAttr);
@@ -68,14 +68,14 @@ class ScreenSelector extends ScreenWidget {
       e1.stopPropagation();
       e1.preventDefault();
     });
-    EventBind.bind(table, Constant.EVENT_TYPE.CHANGE_HEIGHT, (e) => {
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, (e) => {
       if (this.selectorAttr) {
         this.setOffset(this.selectorAttr);
         this.onChangeStack.forEach(cb => cb());
       }
       e.stopPropagation();
     });
-    EventBind.bind(table, Constant.EVENT_TYPE.CHANGE_WIDTH, (e) => {
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, (e) => {
       if (this.selectorAttr) {
         this.setOffset(this.selectorAttr);
         this.onChangeStack.forEach(cb => cb());

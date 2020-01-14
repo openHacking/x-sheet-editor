@@ -195,7 +195,7 @@ class XHeightLight extends Widget {
         this.offsetHeightLight(selectorAttr, intersectsArea);
       }
     });
-    EventBind.bind(table, Constant.EVENT_TYPE.SCROLL, () => {
+    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
         const intersectsArea = screenSelector.getIntersectsArea(selectorAttr);

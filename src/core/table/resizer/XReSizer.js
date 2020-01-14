@@ -58,12 +58,12 @@ class XReSizer extends Widget {
     const { settings, cols, mousePointType } = table;
     const { index } = settings;
     let moveOff = false;
-    EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       mousePointType.set('col-resize', 'XReSizer');
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this, Constant.EVENT_TYPE.MOUSE_DOWN, (e) => {
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       moveOff = true;
       mousePointType.on(['XReSizer']);
       mousePointType.set('col-resize', 'XReSizer');
@@ -97,7 +97,7 @@ class XReSizer extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_MOVE, (e) => {
+    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       if (moveOff) return;
       // eslint-disable-next-line prefer-const
       let { left, ci } = this.getEventLeft(e);
@@ -117,7 +117,7 @@ class XReSizer extends Widget {
         this.hoverEl.css('height', `${index.height}px`);
       }
     });
-    EventBind.bind(table, Constant.EVENT_TYPE.MOUSE_LEAVE, () => {
+    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       if (moveOff) return;
       this.hide();
     });

@@ -24,13 +24,13 @@ class Sheet extends Widget {
   }
 
   bind() {
-    EventBind.bind(this.table, Constant.EVENT_TYPE.CHANGE_WIDTH, (e) => {
+    EventBind.bind(this.table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, (e) => {
       // console.log('change width');
-      this.trigger(Constant.EVENT_TYPE.CHANGE_WIDTH, this);
+      this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, this);
       e.stopPropagation();
     });
-    EventBind.bind(this.table, Constant.EVENT_TYPE.CHANGE_HEIGHT, (e) => {
-      this.trigger(Constant.EVENT_TYPE.CHANGE_HEIGHT, this);
+    EventBind.bind(this.table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, (e) => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, this);
       e.stopPropagation();
     });
   }
