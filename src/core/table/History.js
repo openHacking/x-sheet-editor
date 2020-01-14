@@ -1,15 +1,19 @@
 class History {
   constructor(table) {
     this.table = table;
-    this.data = [];
+    this._ = [];
   }
 
   add(data) {
-    this.data.push(data);
+    this._.push(data);
   }
 
   pop() {
-    this.data.pop();
+    this._.pop();
+  }
+
+  isEmpty() {
+    return this._.length === 0;
   }
 }
 

@@ -1140,6 +1140,7 @@ class Table extends Widget {
     super(`${cssPrefix}-table`);
     this.canvas = h('canvas', `${cssPrefix}-table-canvas`);
     this.settings = Utils.mergeDeep({}, defaultSettings, settings);
+    this.fixed = new Fixed(this.settings.fixed);
     this.rows = new Rows(this.settings.rows);
     this.cols = new Cols(this.settings.cols);
     this.cells = new Cells({
@@ -1147,12 +1148,11 @@ class Table extends Widget {
       cols: this.cols,
       data: this.settings.data,
     });
+    this.merges = new Merges(this.settings.merges);
     this.history = new History(this);
     this.mousePointType = new MousePointType(this);
-    this.merges = new Merges(this.settings.merges);
-    // console.log('this.settings.fixed >>>', this.settings.fixed);
-    this.fixed = new Fixed(this.settings.fixed);
     this.draw = new Draw(this.canvas.el);
+    // table表绘制的各个部分
     this.content = new Content(this);
     this.fixedLeft = new FixedLeft(this);
     this.fixedTop = new FixedTop(this);
@@ -1391,6 +1391,11 @@ class Table extends Widget {
     Utils.mergeDeep(cells.getCellOrNew(ri, ci), cell);
     this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
     this.render();
+  }
+
+  historyEmpty() {
+    const { history } = this;
+    return history.isEmpty();
   }
 }
 
