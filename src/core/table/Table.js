@@ -1392,11 +1392,6 @@ class Table extends Widget {
     this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
     this.render();
   }
-
-  historyEmpty() {
-    const { history } = this;
-    return history.isEmpty();
-  }
 }
 
 export { Table };
