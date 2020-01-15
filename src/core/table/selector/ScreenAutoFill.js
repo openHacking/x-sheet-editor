@@ -431,19 +431,27 @@ class ScreenAutoFill extends ScreenWidget {
   }
 
   autoFillTo() {
-    const { screen } = this;
+    const { screen, options } = this;
+    const { mergeForceSplit } = options;
     const { table } = screen;
     const { merges } = table;
     const { autoFillAttr } = this;
     const { rect: autoFillRect } = autoFillAttr;
-    if (merges.intersects(autoFillRect) && this.options.mergeForceSplit === false) {
-      // eslint-disable-next-line no-undef,no-alert
-      alert('此操作要求目标区域中不能存在合并单元格');
-      return;
+    const mergeRect = merges.getFirstIncludes(autoFillRect.sri, autoFillRect.sci);
+    if (mergeRect && mergeRect.equals(autoFillRect)) {
+      this.mergeCellForceSplit();
+      this.copyContent();
+      this.copyMerge();
+    } else {
+      if (merges.intersects(autoFillRect) && mergeForceSplit === false) {
+        // eslint-disable-next-line no-undef,no-alert
+        alert('此操作要求合并单元格都具有相同大小');
+        return;
+      }
+      this.mergeCellForceSplit();
+      this.copyContent();
+      this.copyMerge();
     }
-    this.mergeCellForceSplit();
-    this.copyContent();
-    this.copyMerge();
   }
 }
 
