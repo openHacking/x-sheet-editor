@@ -1,13 +1,13 @@
-const Data = [];
+const Data = new Array(1000);
 
-for (let i = 1; i <= 1000; i += 1) {
-  const rows = [];
-  for (let j = 1; j <= 80; j++) {
-    rows.push({
-      text: `行: ${i} 列:${j}`,
-    });
+for (let i = 0; i < Data.length; i += 1) {
+  const rows = new Array(80);
+  for (let j = 0; j < rows.length; j += 1) {
+    rows[j] = {
+      text: `行: ${i + 1} 列:${j + 1}`,
+    };
   }
-  Data.push(rows);
+  Data[i] = rows;
 }
 
 export { Data };
