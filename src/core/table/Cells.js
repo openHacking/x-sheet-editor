@@ -28,6 +28,7 @@ class Cells {
     if (row && row[ci]) {
       row[ci] = Utils.mergeDeep({
         text: '',
+        style: {},
       }, row[ci]);
       return row[ci];
     }
@@ -35,16 +36,29 @@ class Cells {
   }
 
   getCellOrNew(ri, ci) {
-    const row = this._[ri];
-    if (!row) {
-      this._.splice(ri, 0, []);
+    if (!this._[ri]) {
+      this._[ri] = [];
     }
-    if (!row[ci]) {
-      row[ci] = Utils.mergeDeep({
+    if (!this._[ri][ci]) {
+      this._[ri][ci] = Utils.mergeDeep({
         text: '',
-      }, row[ci]);
+        style: {},
+      });
     }
-    return row[ci];
+    return this._[ri][ci];
+  }
+
+  getCellContentMaxWidth(ri, ci) {
+    let total = this.cols.getWidth(ci);
+    for (let i = ci + 1; i < this.cols.len; i += 1) {
+      const cell = this.getCell(ri, i);
+      if (cell === null || Utils.isBlank(cell.text)) {
+        total += this.cols.getWidth(i);
+      } else {
+        return total;
+      }
+    }
+    return total;
   }
 
   getRectRangeCell(rectRange, cb, { sy = 0, sx = 0 } = {}) {
@@ -70,14 +84,7 @@ class Cells {
   }
 
   getRectText(draw, rect = null) {
-    return new RectText(draw, rect, {
-      align: this.defaultStyle.align,
-      verticalAlign: this.defaultStyle.verticalAlign,
-      font: this.defaultStyle.font,
-      color: this.defaultStyle.color,
-      strike: this.defaultStyle.strike,
-      underline: this.defaultStyle.underline,
-    });
+    return new RectText(draw, rect, this.defaultStyle);
   }
 
   getData() {

@@ -1,6 +1,8 @@
 import { RectDraw } from './RectDraw';
 import { npx } from '../Draw';
 import { Utils } from '../../utils/Utils';
+import { RectCut } from './RectCut';
+import { Rect } from './Rect';
 
 class RectText extends RectDraw {
   constructor(draw, rect, attr) {
@@ -74,7 +76,7 @@ class RectText extends RectDraw {
     return y;
   }
 
-  text(txt, attr, textWrap = true) {
+  text(txt, attr, maxWidth = 0) {
     const { draw, rect } = this;
     const { ctx } = draw;
     const addAttr = Utils.contrastDifference(attr, this.attr);
@@ -99,7 +101,7 @@ class RectText extends RectDraw {
     }
     const newAttr = Utils.mergeDeep({}, this.attr, addAttr);
     const {
-      align, verticalAlign, font, strike, underline,
+      align, verticalAlign, font, strike, underline, textWrap,
     } = newAttr;
     const tx = this.textAlign(align);
     const txtWidth = ctx.measureText(txt).width;
@@ -110,6 +112,8 @@ class RectText extends RectDraw {
     }
     let ty = this.textVerticalAlign(verticalAlign, font.size, hOffset);
     if (textWrap && txtWidth > rect.innerWidth()) {
+      const cut = new RectCut(draw, rect);
+      cut.outwardCut(0);
       const textLine = {
         len: 0,
         start: 0,
@@ -138,6 +142,23 @@ class RectText extends RectDraw {
           this.drawFontLine('underline', tx, ty, align, verticalAlign, font.size, textLine.len);
         }
       }
+      cut.closeCut();
+    } else if (maxWidth > 0 && txtWidth > maxWidth) {
+      const cut = new RectCut(draw, new Rect({
+        x: rect.x,
+        y: rect.y,
+        width: maxWidth,
+        height: rect.height,
+      }));
+      cut.outwardCut(0);
+      draw.fillText(txt, tx, ty);
+      if (strike) {
+        this.drawFontLine('strike', tx, ty, align, verticalAlign, font.size, txtWidth);
+      }
+      if (underline) {
+        this.drawFontLine('underline', tx, ty, align, verticalAlign, font.size, txtWidth);
+      }
+      cut.closeCut();
     } else {
       draw.fillText(txt, tx, ty);
       if (strike) {

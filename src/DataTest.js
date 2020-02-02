@@ -6,6 +6,10 @@ for (let i = 0; i < Data.length; i += 1) {
     rows[j] = {
       text: `行: ${i + 1} 列:${j + 1}`,
     };
+    if (i === 0 && j === 0) {
+      rows[j].style = {};
+      rows[j].style.textWrap = true;
+    }
   }
   Data[i] = rows;
 }

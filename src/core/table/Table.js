@@ -236,11 +236,12 @@ class Content {
       if (merges.getFirstIncludes(i, c)) {
         return;
       }
+      const contentMaxWidth = cells.getCellContentMaxWidth(i, c);
+      const { style } = cell;
       // 绘制文字
       const textAttr = new TextAttr(rect);
-      const { style } = cell;
       rectText.setRect(textAttr);
-      rectText.text(cell.text, style);
+      rectText.text(cell.text, style, contentMaxWidth);
     });
     draw.restore();
   }
@@ -279,13 +280,14 @@ class Content {
         width: width - (borderWidth * 2),
         height: height - (borderWidth * 2),
       });
+      const { style } = cell;
+      // 绘制背景
       const rectDraw = new RectDraw(draw, rect);
       rectDraw.fill('#fff');
       // 绘制文字
       const textAttr = new TextAttr(rect);
-      const { style } = cell;
       rectText.setRect(textAttr);
-      rectText.text(cell.text, style);
+      rectText.text(cell.text, style, rect.width);
     });
     draw.restore();
   }
@@ -387,11 +389,12 @@ class FixedLeft {
       if (merges.getFirstIncludes(i, c)) {
         return;
       }
+      const contentMaxWidth = cells.getCellContentMaxWidth(i, c);
+      const { style } = cell;
       // 绘制文字
       const textAttr = new TextAttr(rect);
-      const { style } = cell;
       rectText.setRect(textAttr);
-      rectText.text(cell.text, style);
+      rectText.text(cell.text, style, contentMaxWidth);
     });
     draw.restore();
   }
@@ -430,13 +433,14 @@ class FixedLeft {
         width: width - (borderWidth * 2),
         height: height - (borderWidth * 2),
       });
+      const { style } = cell;
+      // 绘制背景
       const rectDraw = new RectDraw(draw, rect);
       rectDraw.fill('#fff');
       // 绘制文字
       const textAttr = new TextAttr(rect);
-      const { style } = cell;
       rectText.setRect(textAttr);
-      rectText.text(cell.text, style);
+      rectText.text(cell.text, style, rect.width);
     });
     draw.restore();
   }
@@ -548,11 +552,12 @@ class FixedTop {
       if (merges.getFirstIncludes(i, c)) {
         return;
       }
+      const contentMaxWidth = cells.getCellContentMaxWidth(i, c);
+      const { style } = cell;
       // 绘制文字
       const textAttr = new TextAttr(rect);
-      const { style } = cell;
       rectText.setRect(textAttr);
-      rectText.text(cell.text, style);
+      rectText.text(cell.text, style, contentMaxWidth);
     });
     draw.restore();
   }
@@ -591,13 +596,14 @@ class FixedTop {
         width: width - (borderWidth * 2),
         height: height - (borderWidth * 2),
       });
+      const { style } = cell;
+      // 绘制背景
       const rectDraw = new RectDraw(draw, rect);
       rectDraw.fill('#fff');
       // 绘制文字
       const textAttr = new TextAttr(rect);
-      const { style } = cell;
       rectText.setRect(textAttr);
-      rectText.text(cell.text, style);
+      rectText.text(cell.text, style, rect.width);
     });
     draw.restore();
   }
@@ -869,11 +875,12 @@ class FrozenLeftTop {
       if (merges.getFirstIncludes(i, c)) {
         return;
       }
+      const contentMaxWidth = cells.getCellContentMaxWidth(i, c);
+      const { style } = cell;
       // 绘制文字
       const textAttr = new TextAttr(rect);
-      const { style } = cell;
       rectText.setRect(textAttr);
-      rectText.text(cell.text, style);
+      rectText.text(cell.text, style, contentMaxWidth);
     });
     draw.restore();
   }
@@ -912,13 +919,14 @@ class FrozenLeftTop {
         width: width - (borderWidth * 2),
         height: height - (borderWidth * 2),
       });
+      const { style } = cell;
+      // 绘制背景
       const rectDraw = new RectDraw(draw, rect);
       rectDraw.fill('#fff');
       // 绘制文字
       const textAttr = new TextAttr(rect);
-      const { style } = cell;
       rectText.setRect(textAttr);
-      rectText.text(cell.text, style);
+      rectText.text(cell.text, style, rect.width);
     });
     draw.restore();
   }

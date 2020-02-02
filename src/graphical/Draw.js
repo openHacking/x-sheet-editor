@@ -119,7 +119,6 @@ class Draw {
   clip() {
     const { ctx } = this;
     ctx.clip();
-    ctx.fill();
   }
 }
 

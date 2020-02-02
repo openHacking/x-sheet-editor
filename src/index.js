@@ -15,14 +15,18 @@ class XSheet extends Widget {
       body: {
         sheets: [
           {
-            name: '80列100行',
+            name: '80列1000行',
+            tableConfig: {
+              data: Data,
+            },
+          },
+          {
+            name: 'jerry测试',
             tableConfig: {
               merges: [
-                new RectRange(1, 0, 2, 0),
-                new RectRange(0, 1, 0, 2),
-                new RectRange(0, 3, 2, 3),
-                new RectRange(5, 0, 5, 5),
+                new RectRange(0, 0, 0, 1),
                 new RectRange(1, 1, 2, 2),
+                new RectRange(3, 3, 4, 4),
               ],
               data: Data,
             },
@@ -41,17 +45,6 @@ class XSheet extends Widget {
                 fxTop: 1,
                 fxLeft: 1,
               },
-              data: Data,
-            },
-          },
-          {
-            name: 'jerry测试',
-            tableConfig: {
-              merges: [
-                new RectRange(0, 0, 0, 1),
-                new RectRange(1, 1, 2, 2),
-                new RectRange(3, 3, 4, 4),
-              ],
               data: Data,
             },
           },

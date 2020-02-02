@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-/* global navigator document */
+/* global navigator document window */
 
 const alphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
@@ -208,6 +208,25 @@ class Utils {
       return false;
     }
     return Utils.arrayContain(a2, a1);
+  }
+
+  static keepLastIndex(obj) {
+    if (window.getSelection) {
+      obj.focus();
+      const range = window.getSelection();
+      range.selectAllChildren(obj);
+      range.collapseToEnd();
+    } else if (document.selection) {
+      const range = document.selection.createRange();
+      range.moveToElementText(obj);
+      range.collapse(false);
+      range.select();
+    }
+  }
+
+  static trim(s) {
+    if (this.isBlank(s)) return '';
+    return s.trim();
   }
 }
 

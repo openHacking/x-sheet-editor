@@ -50,7 +50,7 @@ class Edit extends Widget {
       const { selectorAttr } = selector;
       if (editModel) {
         table.setCell(selectRect.sri, selectRect.sci, {
-          text,
+          text: Utils.trim(text),
         });
       }
       if (selectorAttr) {
@@ -59,6 +59,9 @@ class Edit extends Widget {
       }
       this.hide();
       editModel = false;
+    });
+    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+      this.hide();
     });
     EventBind.dbClick(table, () => {
       const { screen } = table;
@@ -72,9 +75,13 @@ class Edit extends Widget {
           this.editOffset(rect);
           if (cell) {
             ({ text } = cell);
-            this.input.text(text);
+            if (Utils.isBlank(text)) {
+              this.input.html('<p>&nbsp;</p>');
+            } else {
+              this.input.text(text);
+            }
+            Utils.keepLastIndex(this.input.el);
           }
-          this.input.focus();
         }
       }
     });
