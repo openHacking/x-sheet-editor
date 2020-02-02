@@ -118,6 +118,7 @@ class RectText extends RectDraw {
         len: 0,
         start: 0,
       };
+      // console.log('rect.innerWidth()>>>', rect.innerWidth());
       for (let i = 0, len = txt.length; i < len; i += 1) {
         if (textLine.len >= rect.innerWidth()) {
           draw.fillText(txt.substring(textLine.start, i), tx, ty);
@@ -131,7 +132,7 @@ class RectText extends RectDraw {
           textLine.len = 0;
           textLine.start = i;
         }
-        textLine.len += ctx.measureText(txt[i]).width;
+        textLine.len += ctx.measureText(txt.charAt(i)).width;
       }
       if (textLine.len > 0) {
         draw.fillText(txt.substring(textLine.start), tx, ty);

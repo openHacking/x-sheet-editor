@@ -19,11 +19,11 @@ class TextAttr extends Rect {
   }
 
   innerWidth() {
-    return this.width - (this.padding * 2);
+    return this.width - this.padding;
   }
 
   innerHeight() {
-    return this.height - (this.padding * 2);
+    return this.height - this.padding;
   }
 }
 

@@ -1,4 +1,4 @@
-const Data = new Array(1000);
+const Data = new Array(100000);
 
 for (let i = 0; i < Data.length; i += 1) {
   const rows = new Array(80);
