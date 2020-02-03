@@ -17,6 +17,7 @@ import { Utils } from '../../utils/Utils';
 import { Sheet } from './Sheet';
 import { Tab } from './Tab';
 import { EventBind } from '../../utils/EventBind';
+import { h } from '../../lib/Element';
 
 // sheet表和垂直滚动条
 let sheetViewLayerHorizontalElement;
@@ -36,12 +37,18 @@ let horizontalLayer2Layer1LayerVerticalElement;
 let layerVerticalLayer;
 
 class WorkBody extends Widget {
-  constructor(options = { sheets: [] }) {
+  constructor(work, options = { sheets: [] }) {
     super(`${cssPrefix}-work-body`);
 
+    this.work = work;
     this.workConfig = options;
     this.sheets = this.workConfig.sheets;
     this.tabAndSheet = [];
+
+    // 产品标识
+    this.poweredBy = h('div', `${cssPrefix}-powered-by-tips`);
+    this.poweredBy.text('X-Sheet Powered by ©深为科技(Svell)');
+    this.children(this.poweredBy);
 
     // 组件
     this.sheetView = new SheetView();
@@ -190,6 +197,7 @@ class WorkBody extends Widget {
       if (item.tab === tab) {
         this.setActiveTabIndex(item.tabIndex);
         this.setActiveSheetIndex(item.sheetIndex);
+        this.trigger(Constant.WORK_BODY_TYPE.CHANGE_ACTIVE);
       }
     });
   }
@@ -206,18 +214,10 @@ class WorkBody extends Widget {
       if (evt.detail) deltaY = evt.detail * 40;
       if (deltaY > 0) {
         // down
-        // console.log('scroll.ri >>>', scroll.ri);
-        // console.log('scrollTo before >>>', scrollTo);
-        // console.log('height >>>', rows.getHeight(scroll.ri));
         this.scrollBarY.scrollMove(scrollTo + rows.getHeight(scroll.ri));
-        // console.log('scrollTo after >>>', this.scrollBarY.scrollTo);
       } else {
         // up
-        // console.log('scroll.ri >>>', scroll.ri);
-        // console.log('scrollTo before >>>', scrollTo);
-        // console.log('height >>>', rows.getHeight(scroll.ri));
         this.scrollBarY.scrollMove(scrollTo - rows.getHeight(scroll.ri - 1));
-        // console.log('scrollTo after >>>', this.scrollBarY.scrollTo);
       }
       if (scroll.blockTop < scroll.maxBlockTop && scroll.blockTop > 0) {
         evt.preventDefault();
@@ -234,6 +234,10 @@ class WorkBody extends Widget {
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
       // console.log('change width');
       this.initScroll();
+    });
+    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, (e) => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+      e.stopPropagation();
     });
   }
 }

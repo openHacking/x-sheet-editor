@@ -27,6 +27,10 @@ class SheetView extends Widget {
       this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT);
       e.stopPropagation();
     });
+    EventBind.bind(sheet, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, (e) => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+      e.stopPropagation();
+    });
     return this.sheetList.length - 1;
   }
 

@@ -15,6 +15,9 @@ class XSheet extends Widget {
       body: {
         sheets: [
           {
+            name: 'coffee cloud 二次迭代开发',
+          },
+          {
             name: '80列1000行',
             tableConfig: {
               data: Data,
@@ -47,9 +50,6 @@ class XSheet extends Widget {
               },
               data: Data,
             },
-          },
-          {
-            name: 'coffee cloud 二次迭代开发',
           },
         ],
       },

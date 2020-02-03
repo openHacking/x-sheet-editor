@@ -3,9 +3,10 @@ import { cssPrefix } from '../../config';
 import { TopMenu } from './TopMenu';
 
 class WorkTop extends Widget {
-  constructor() {
+  constructor(work) {
     super(`${cssPrefix}-work-top`);
-    this.toolsMenu = new TopMenu();
+    this.work = work;
+    this.toolsMenu = new TopMenu(this);
     this.children(this.toolsMenu);
   }
 }

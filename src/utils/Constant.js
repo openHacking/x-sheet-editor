@@ -24,4 +24,8 @@ Constant.TABLE_EVENT_TYPE = {
   DATA_CHANGE: 'tableDataChange'.toLocaleLowerCase(),
 };
 
+Constant.WORK_BODY_TYPE = {
+  CHANGE_ACTIVE: 'workBodyChangeActive'.toLocaleLowerCase(),
+};
+
 export { Constant };

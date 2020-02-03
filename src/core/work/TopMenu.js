@@ -21,6 +21,8 @@ import { TextWrapping } from './tools/TextWrapping';
 import { Fixed } from './tools/Fixed';
 import { Filter } from './tools/Filter';
 import { Functions } from './tools/Functions';
+import { EventBind } from '../../utils/EventBind';
+import { Constant } from '../../utils/Constant';
 
 class Divider extends Widget {
   constructor() {
@@ -29,8 +31,9 @@ class Divider extends Widget {
 }
 
 class TopMenu extends Widget {
-  constructor() {
+  constructor(workTop) {
     super(`${cssPrefix}-tools-menu`);
+    this.workTop = workTop;
     this.undo = new Undo();
     this.redo = new Redo();
     this.paintFormat = new PaintFormat();
@@ -77,6 +80,37 @@ class TopMenu extends Widget {
     this.children(this.fixed);
     this.children(this.filter);
     this.children(this.functions);
+    this.bind();
+  }
+
+  bind() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    EventBind.bind(body, Constant.WORK_BODY_TYPE.CHANGE_ACTIVE, () => {
+      this.setStatus();
+    });
+    EventBind.bind(body, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
+      this.setStatus();
+    });
+    EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      if (table.undo.length() > 1) table.undo.pop();
+    });
+    EventBind.bind(this.redo, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      table.redo.pop();
+    });
+  }
+
+  setStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    this.undo.active(table.undo.length() > 1);
+    this.redo.active(!table.redo.isEmpty());
   }
 }
 

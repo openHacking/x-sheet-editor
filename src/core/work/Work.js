@@ -18,9 +18,9 @@ class Work extends Widget {
     this.options = options.workConfig;
 
     // 组件
-    this.top = new WorkTop();
-    this.body = new WorkBody(this.options.body);
-    this.bottom = new WorkBottom();
+    this.body = new WorkBody(this, this.options.body);
+    this.bottom = new WorkBottom(this);
+    this.top = new WorkTop(this);
 
     // 布局
     topLayerVerticalElement = new VerticalLayerElement(this.top);

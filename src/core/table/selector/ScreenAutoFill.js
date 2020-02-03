@@ -13,6 +13,8 @@ class ScreenAutoFill extends ScreenWidget {
     super(screen);
     this.options = Utils.mergeDeep({
       mergeForceSplit: false,
+      onBeforeAutoFill: () => {},
+      onAfterAutoFill: () => {},
     }, options);
     this.lt = new AutoFill();
     this.t = new AutoFill();
@@ -439,18 +441,22 @@ class ScreenAutoFill extends ScreenWidget {
     const { rect: autoFillRect } = autoFillAttr;
     const mergeRect = merges.getFirstIncludes(autoFillRect.sri, autoFillRect.sci);
     if (mergeRect && mergeRect.equals(autoFillRect)) {
+      this.options.onBeforeAutoFill();
       this.mergeCellForceSplit();
       this.copyContent();
       this.copyMerge();
+      this.options.onAfterAutoFill();
     } else {
       if (merges.intersects(autoFillRect) && mergeForceSplit === false) {
         // eslint-disable-next-line no-undef,no-alert
         alert('此操作要求合并单元格都具有相同大小');
         return;
       }
+      this.options.onBeforeAutoFill();
       this.mergeCellForceSplit();
       this.copyContent();
       this.copyMerge();
+      this.options.onAfterAutoFill();
     }
   }
 }

@@ -57,7 +57,7 @@ const defaultSettings = {
     },
   },
   rows: {
-    len: 100000,
+    len: 500,
     height: 30,
   },
   cols: {
@@ -1157,8 +1157,29 @@ class Table extends Widget {
       data: this.settings.data,
     });
     this.merges = new Merges(this.settings.merges);
-    this.history = new History(this);
+    // 撤销/反撤销
+    this.undo = new History({
+      onPop: (e) => {
+        const data = Utils.cloneDeep(e);
+        this.redo.add(data);
+        this.cells.setData(this.undo.get());
+        this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+        this.render();
+      },
+    });
+    this.redo = new History({
+      onPop: (e) => {
+        const data = Utils.cloneDeep(e);
+        this.undo.add(data);
+        this.cells.setData(this.undo.get());
+        this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+        this.render();
+      },
+    });
+    this.undo.add(Utils.cloneDeep(this.cells.getData()));
+    // 鼠标指针
     this.mousePointType = new MousePointType(this);
+    // canvas 绘制资源
     this.draw = new Draw(this.canvas.el);
     // table表绘制的各个部分
     this.content = new Content(this);
@@ -1198,11 +1219,20 @@ class Table extends Widget {
   }
 
   initScreenWidget() {
+    const { cells } = this;
     // 单元格筛选组件
     const screenSelector = new ScreenSelector(this.screen);
     this.screen.addWidget(screenSelector);
     // 自动填充组件
-    const screenAutoFill = new ScreenAutoFill(this.screen);
+    const screenAutoFill = new ScreenAutoFill(this.screen, {
+      onBeforeAutoFill: () => {
+        this.redo.clear();
+        this.undo.add(cells.getData());
+      },
+      onAfterAutoFill: () => {
+        this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+      },
+    });
     this.screen.addWidget(screenAutoFill);
   }
 
@@ -1361,24 +1391,14 @@ class Table extends Widget {
   }
 
   setWidth(ci, width) {
-    const { cells, rows, cols } = this;
-    this.history.add({
-      cells,
-      rows,
-      cols,
-    });
+    const { cols } = this;
     cols.setWidth(ci, width);
     this.render();
     this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH);
   }
 
   setHeight(ri, height) {
-    const { cells, rows, cols } = this;
-    this.history.add({
-      cells,
-      rows,
-      cols,
-    });
+    const { rows } = this;
     rows.setHeight(ri, height);
     this.render();
     this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT);
@@ -1390,13 +1410,12 @@ class Table extends Widget {
   }
 
   setCell(ri, ci, cell) {
-    const { cells, rows, cols } = this;
-    this.history.add({
-      cells,
-      rows,
-      cols,
-    });
+    const { cells } = this;
     Utils.mergeDeep(cells.getCellOrNew(ri, ci), cell);
+    if (!Utils.isBlank(cell.text)) {
+      this.redo.clear();
+      this.undo.add(Utils.cloneDeep(cells.getData()));
+    }
     this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
     this.render();
   }

@@ -91,7 +91,7 @@ class Cells {
     return this._;
   }
 
-  setData(data) {
+  setData(data = []) {
     this._ = data;
   }
 }

@@ -10,6 +10,19 @@
   width: 100%;
   height: 100%;
   background: #e8e8e8;
+  position: relative;
+}
+.@{css-prefix}-powered-by-tips {
+  position: absolute;
+  right: 50px;
+  bottom: 50px;
+  z-index: 1;
+  border-radius: 10px;
+  padding: 20px;
+  color: #ffffff;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.64);
+  pointer-events: none;
 }
 
 // sheet view
@@ -78,6 +91,7 @@
 }
 .@{css-prefix}-table-edit-input {
   width: max-content;
+  min-width: 100%;
   height: 100%;
   display: flex;
   justify-content: left;
@@ -267,6 +281,7 @@
 .@{css-prefix}-sheet-tab.active {
   background: #ffffff;
   color: #42a642;
+  border-bottom: 2px solid #42a642;
 }
 
 // 底部菜单
@@ -370,6 +385,20 @@
 }
 .@{css-prefix}-icon-img.functions {
   background-position: -6 * @icon-size -1 * @icon-size;
+}
+
+// 工具菜单激活 状态/关闭状态
+.@{css-prefix}-tools-undo {
+  opacity: 0.5;
+}
+.@{css-prefix}-tools-undo.active {
+  opacity: 1;
+}
+.@{css-prefix}-tools-redo {
+  opacity: 0.5;
+}
+.@{css-prefix}-tools-redo.active {
+  opacity: 1;
 }
 
 // 工具菜单

@@ -8,11 +8,9 @@ class BottomMenu extends Widget {
     this.sum = h('div', `${cssPrefix}-bottom-sum`);
     this.avg = h('div', `${cssPrefix}-bottom-avg`);
     this.number = h('div', `${cssPrefix}-bottom-number`);
-    this.children(
-      this.sum,
-      this.avg,
-      this.number,
-    );
+    this.children(this.sum);
+    this.children(this.avg);
+    this.children(this.number);
   }
 
   setSum(val) {

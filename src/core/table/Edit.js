@@ -49,9 +49,13 @@ class Edit extends Widget {
     ], Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const { selectorAttr } = selector;
       if (editModel) {
-        table.setCell(selectRect.sri, selectRect.sci, {
-          text: Utils.trim(text),
-        });
+        text = Utils.trim(text);
+        const cell = table.getCell(selectRect.sri, selectRect.sci);
+        if (!cell || cell.text !== text) {
+          table.setCell(selectRect.sri, selectRect.sci, {
+            text,
+          });
+        }
       }
       if (selectorAttr) {
         const { rect } = selectorAttr;
