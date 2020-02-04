@@ -1161,7 +1161,10 @@ class Table extends Widget {
     this.undo = new History({
       onPop: (e) => {
         this.redo.add(Utils.cloneDeep(e));
-        this.cells.setData(Utils.cloneDeep(this.undo.get()));
+        const top = this.undo.get();
+        const { cells, merges } = top;
+        this.cells.setData(Utils.cloneDeep(cells));
+        this.merges.setData(Utils.cloneDeep(merges));
         this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
         this.render();
       },
@@ -1169,12 +1172,18 @@ class Table extends Widget {
     this.redo = new History({
       onPop: (e) => {
         this.undo.add(Utils.cloneDeep(e));
-        this.cells.setData(Utils.cloneDeep(this.undo.get()));
+        const top = this.undo.get();
+        const { cells, merges } = top;
+        this.cells.setData(Utils.cloneDeep(cells));
+        this.merges.setData(Utils.cloneDeep(merges));
         this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
         this.render();
       },
     });
-    this.undo.add(Utils.cloneDeep(this.cells.getData()));
+    this.undo.add({
+      cells: Utils.cloneDeep(this.cells.getData()),
+      merges: Utils.cloneDeep(this.merges.getData()),
+    });
     // 鼠标指针
     this.mousePointType = new MousePointType(this);
     // canvas 绘制资源
@@ -1217,7 +1226,7 @@ class Table extends Widget {
   }
 
   initScreenWidget() {
-    const { cells } = this;
+    const { cells, merges } = this;
     // 单元格筛选组件
     const screenSelector = new ScreenSelector(this.screen);
     this.screen.addWidget(screenSelector);
@@ -1226,7 +1235,10 @@ class Table extends Widget {
       onAfterAutoFill: (count) => {
         if (count > 0) {
           this.redo.clear();
-          this.undo.add(Utils.cloneDeep(cells.getData()));
+          this.undo.add({
+            cells: Utils.cloneDeep(cells.getData()),
+            merges: Utils.cloneDeep(merges.getData()),
+          });
           this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
         }
       },
@@ -1408,10 +1420,13 @@ class Table extends Widget {
   }
 
   setCell(ri, ci, cell) {
-    const { cells } = this;
+    const { cells, merges } = this;
     Utils.mergeDeep(cells.getCellOrNew(ri, ci), cell);
     this.redo.clear();
-    this.undo.add(Utils.cloneDeep(cells.getData()));
+    this.undo.add({
+      cells: Utils.cloneDeep(cells.getData()),
+      merges: Utils.cloneDeep(merges.getData()),
+    });
     this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
     this.render();
   }

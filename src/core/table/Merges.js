@@ -151,7 +151,7 @@ class Merges {
     });
   }
 
-  setData(merges) {
+  setData(merges = []) {
     this._ = merges.map(merge => RectRange.valueOf(merge));
     return this;
   }

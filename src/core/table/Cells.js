@@ -93,6 +93,7 @@ class Cells {
 
   setData(data = []) {
     this._ = data;
+    return this;
   }
 }
 
