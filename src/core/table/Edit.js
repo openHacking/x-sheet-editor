@@ -23,7 +23,7 @@ class Edit extends Widget {
 
   bind() {
     const { table } = this;
-    const { screen } = table;
+    const { screen, cells } = table;
     const selector = screen.findByClass(ScreenSelector);
     let text = '';
     let selectRect = null;
@@ -50,7 +50,7 @@ class Edit extends Widget {
       const { selectorAttr } = selector;
       if (editModel) {
         text = Utils.trim(text);
-        const cell = table.getCellOrNew(selectRect.sri, selectRect.sci);
+        const cell = cells.getCellOrNew(selectRect.sri, selectRect.sci);
         if (cell.text !== text) {
           table.setCell(selectRect.sri, selectRect.sci, {
             text,
