@@ -14,6 +14,7 @@ class ScreenSelector extends ScreenWidget {
     this.selectorAttr = null;
     this.onChangeStack = [];
     this.onSelectChangeStack = [];
+    this.onSelectChangeOver = [];
     this.lt = new Selector();
     this.t = new Selector();
     this.l = new Selector();
@@ -64,6 +65,7 @@ class ScreenSelector extends ScreenWidget {
         e2.preventDefault();
       }, () => {
         mousePointType.off();
+        this.onSelectChangeOver.forEach(cb => cb());
       });
       e1.stopPropagation();
       e1.preventDefault();
@@ -612,8 +614,42 @@ class ScreenSelector extends ScreenWidget {
     this.onChangeStack.push(cb);
   }
 
+  removeChangeCb(cb) {
+    for (let i = 0; i < this.onChangeStack.length; i += 1) {
+      const item = this.onChangeStack[i];
+      if (item === cb) {
+        this.onChangeStack.splice(i, 1);
+        return;
+      }
+    }
+  }
+
   addSelectChangeCb(cb) {
     this.onSelectChangeStack.push(cb);
+  }
+
+  removeSelectChangeCb(cb) {
+    for (let i = 0; i < this.onSelectChangeStack.length; i += 1) {
+      const item = this.onSelectChangeStack[i];
+      if (item === cb) {
+        this.onSelectChangeStack.splice(i, 1);
+        return;
+      }
+    }
+  }
+
+  addSelectChangeOverCb(cb) {
+    this.onSelectChangeOver.push(cb);
+  }
+
+  removeSelectChangeOverCb(cb) {
+    for (let i = 0; i < this.onSelectChangeOver.length; i += 1) {
+      const item = this.onSelectChangeOver[i];
+      if (item === cb) {
+        this.onSelectChangeOver.splice(i, 1);
+        return;
+      }
+    }
   }
 }
 

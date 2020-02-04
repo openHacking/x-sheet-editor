@@ -5,7 +5,6 @@ import { ScreenWidget } from '../screen/ScreenWidget';
 import { RectRange } from '../RectRange';
 import { EventBind } from '../../../utils/EventBind';
 import { Constant } from '../../../utils/Constant';
-import { ScreenSelector } from '../selector/ScreenSelector';
 
 class ScreenCopyStyle extends ScreenWidget {
   constructor(screen, options = {}) {
@@ -15,9 +14,7 @@ class ScreenCopyStyle extends ScreenWidget {
     this.t = new CopyStyle();
     this.l = new CopyStyle();
     this.br = new CopyStyle();
-    this.onOrOff = false;
     this.selectorAttr = null;
-    this.screenSelector = screen.findByClass(ScreenSelector);
     this.bind();
   }
 
@@ -56,10 +53,7 @@ class ScreenCopyStyle extends ScreenWidget {
       height,
       left,
       top,
-    });
-    if (this.onOrOff) {
-      this.lt.show();
-    }
+    }).show();
   }
 
   setTOffset(selectorAttr) {
@@ -102,10 +96,7 @@ class ScreenCopyStyle extends ScreenWidget {
       height,
       left,
       top,
-    });
-    if (this.onOrOff) {
-      this.t.show();
-    }
+    }).show();
   }
 
   setLOffset(selectorAttr) {
@@ -148,10 +139,7 @@ class ScreenCopyStyle extends ScreenWidget {
       height,
       left,
       top,
-    });
-    if (this.onOrOff) {
-      this.l.show();
-    }
+    }).show();
   }
 
   setBROffset(selectorAttr) {
@@ -201,10 +189,7 @@ class ScreenCopyStyle extends ScreenWidget {
       height,
       left,
       top,
-    });
-    if (this.onOrOff) {
-      this.br.show();
-    }
+    }).show();
   }
 
   setOffset(selectorAttr) {
@@ -215,7 +200,7 @@ class ScreenCopyStyle extends ScreenWidget {
   }
 
   bind() {
-    const { screen, screenSelector } = this;
+    const { screen } = this;
     const { table } = screen;
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       if (this.selectorAttr) {
@@ -234,16 +219,19 @@ class ScreenCopyStyle extends ScreenWidget {
       }
       e.stopPropagation();
     });
-    screenSelector.addChangeCb(() => {
-      if (screenSelector.selectorAttr) {
-        this.selectorAttr = screenSelector.selectorAttr;
-        this.setOffset(this.selectorAttr);
-      }
-    });
   }
 
-  setOnOrOff(off) {
-    this.onOrOff = off;
+  setShow(selectorAttr) {
+    this.selectorAttr = selectorAttr;
+    this.setOffset(selectorAttr);
+  }
+
+  setHide() {
+    this.selectorAttr = null;
+    this.lt.hide();
+    this.t.hide();
+    this.l.hide();
+    this.br.hide();
   }
 }
 

@@ -240,31 +240,49 @@
   height: 0;
   position: absolute;
 }
+.@{css-prefix}-copy-style-mask {
+  border: 3px solid #42a642;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+.@{css-prefix}-copy-style-svg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
 .@{css-prefix}-copy-style-stroked-top {
   display: block;
-  stroke: #42a642;
-  stroke-width: 10;
+  stroke: #ffffff;
+  stroke-width: 7;
   stroke-dasharray: 10;
   animation: copy-style-stroked-dashoffset-animation-top 0.5s forwards infinite linear;
 }
 .@{css-prefix}-copy-style-stroked-left {
   display: block;
-  stroke: #42a642;
-  stroke-width: 10;
+  stroke: #ffffff;
+  stroke-width: 6;
   stroke-dasharray: 10;
   animation: copy-style-stroked-dashoffset-animation-left 0.5s forwards infinite linear;
 }
 .@{css-prefix}-copy-style-stroked-bottom {
   display: block;
-  stroke: #42a642;
-  stroke-width: 10;
+  stroke: #ffffff;
+  stroke-width: 6;
   stroke-dasharray: 10;
   animation: copy-style-stroked-dashoffset-animation-bottom 0.5s forwards infinite linear;
 }
 .@{css-prefix}-copy-style-stroked-right {
   display: block;
-  stroke: #42a642;
-  stroke-width: 10;
+  stroke: #ffffff;
+  stroke-width: 6;
   stroke-dasharray: 10;
   animation: copy-style-stroked-dashoffset-animation-right 0.5s forwards infinite linear;
 }
@@ -446,6 +464,12 @@
 }
 .@{css-prefix}-tools-redo.active {
   opacity: 1;
+}
+.@{css-prefix}-tools-point-format {
+  background: transparent;
+}
+.@{css-prefix}-tools-point-format.active {
+  background: #d5d5d5;
 }
 
 // 工具菜单

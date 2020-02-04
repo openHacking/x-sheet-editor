@@ -23,6 +23,8 @@ import { Filter } from './tools/Filter';
 import { Functions } from './tools/Functions';
 import { EventBind } from '../../utils/EventBind';
 import { Constant } from '../../utils/Constant';
+import { ScreenCopyStyle } from '../table/copystyle/ScreenCopyStyle';
+import { ScreenSelector } from '../table/selector/ScreenSelector';
 
 class Divider extends Widget {
   constructor() {
@@ -101,6 +103,24 @@ class TopMenu extends Widget {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       table.redo.pop();
+    });
+    EventBind.bind(this.paintFormat, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      const { screen } = table;
+      const screenCopyStyle = screen.findByClass(ScreenCopyStyle);
+      const screenSelector = screen.findByClass(ScreenSelector);
+      const { selectorAttr } = screenSelector;
+      if (selectorAttr) {
+        screenCopyStyle.setShow(selectorAttr);
+        this.paintFormat.active(true);
+        const cb = () => {
+          screenCopyStyle.setHide();
+          this.paintFormat.active(false);
+          screenSelector.removeSelectChangeOverCb(cb);
+        };
+        screenSelector.addSelectChangeOverCb(cb);
+      }
     });
   }
 
