@@ -331,6 +331,21 @@ class Element {
   focus() {
     this.el.focus();
   }
+
+  find(select) {
+    const result = this.el.querySelectorAll(select);
+    if (result && result.length === 1) {
+      return new Element(result[0]);
+    }
+    const eleArray = [];
+    if (result) {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const item of result) {
+        eleArray.push(new Element(item));
+      }
+    }
+    return eleArray;
+  }
 }
 
 const h = (tag, className = '') => new Element(tag, className);

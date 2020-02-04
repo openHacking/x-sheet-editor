@@ -21,11 +21,12 @@ import { XReSizer } from './resizer/XReSizer';
 import { YReSizer } from './resizer/YReSizer';
 import { MousePointType } from './MousePoint';
 import { EventBind } from '../../utils/EventBind';
-import { ScreenAutoFill } from './selector/ScreenAutoFill';
+import { ScreenAutoFill } from './autofill/ScreenAutoFill';
 import { XHeightLight } from './highlight/XHeightLight';
 import { YHeightLight } from './highlight/YHeightLight';
 import { Edit } from './Edit';
 import { History } from './History';
+import { ScreenCopyStyle } from './copystyle/ScreenCopyStyle';
 
 const defaultSettings = {
   tipsRenderTime: true,
@@ -1244,6 +1245,9 @@ class Table extends Widget {
       },
     });
     this.screen.addWidget(screenAutoFill);
+    // 样式复制
+    const copyStyle = new ScreenCopyStyle(this.screen, {});
+    this.screen.addWidget(copyStyle);
   }
 
   bind() {

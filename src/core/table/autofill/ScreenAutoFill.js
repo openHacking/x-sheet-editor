@@ -2,7 +2,7 @@
 
 import { ScreenWidget } from '../screen/ScreenWidget';
 import { AutoFill } from './AutoFill';
-import { ScreenSelector } from './ScreenSelector';
+import { ScreenSelector } from '../selector/ScreenSelector';
 import { EventBind } from '../../../utils/EventBind';
 import { Constant } from '../../../utils/Constant';
 import { RectRange } from '../RectRange';

@@ -222,6 +222,53 @@
   background: #42a642;
 }
 
+// 样式复制
+@keyframes copy-style-stroked-dashoffset-animation-top {
+  to { stroke-dashoffset: 20; }
+}
+@keyframes copy-style-stroked-dashoffset-animation-left {
+  to { stroke-dashoffset: -20; }
+}
+@keyframes copy-style-stroked-dashoffset-animation-bottom {
+  to { stroke-dashoffset: -20; }
+}
+@keyframes copy-style-stroked-dashoffset-animation-right {
+  to { stroke-dashoffset: 20; }
+}
+.@{css-prefix}-copy-style {
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+.@{css-prefix}-copy-style-stroked-top {
+  display: block;
+  stroke: #42a642;
+  stroke-width: 10;
+  stroke-dasharray: 10;
+  animation: copy-style-stroked-dashoffset-animation-top 0.5s forwards infinite linear;
+}
+.@{css-prefix}-copy-style-stroked-left {
+  display: block;
+  stroke: #42a642;
+  stroke-width: 10;
+  stroke-dasharray: 10;
+  animation: copy-style-stroked-dashoffset-animation-left 0.5s forwards infinite linear;
+}
+.@{css-prefix}-copy-style-stroked-bottom {
+  display: block;
+  stroke: #42a642;
+  stroke-width: 10;
+  stroke-dasharray: 10;
+  animation: copy-style-stroked-dashoffset-animation-bottom 0.5s forwards infinite linear;
+}
+.@{css-prefix}-copy-style-stroked-right {
+  display: block;
+  stroke: #42a642;
+  stroke-width: 10;
+  stroke-dasharray: 10;
+  animation: copy-style-stroked-dashoffset-animation-right 0.5s forwards infinite linear;
+}
+
 // sheet 选项卡
 .@{css-prefix}-sheet-switch-tab {
   height: 25px;
