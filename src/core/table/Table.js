@@ -1223,10 +1223,12 @@ class Table extends Widget {
     this.screen.addWidget(screenSelector);
     // 自动填充组件
     const screenAutoFill = new ScreenAutoFill(this.screen, {
-      onAfterAutoFill: () => {
-        this.redo.clear();
-        this.undo.add(Utils.cloneDeep(cells.getData()));
-        this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+      onAfterAutoFill: (count) => {
+        if (count > 0) {
+          this.redo.clear();
+          this.undo.add(Utils.cloneDeep(cells.getData()));
+          this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+        }
       },
     });
     this.screen.addWidget(screenAutoFill);

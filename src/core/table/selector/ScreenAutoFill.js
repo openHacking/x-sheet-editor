@@ -366,6 +366,7 @@ class ScreenAutoFill extends ScreenWidget {
   }
 
   copyContent() {
+    let count = 0;
     const { screen, screenSelector } = this;
     const { table } = screen;
     const { cells } = table;
@@ -383,6 +384,9 @@ class ScreenAutoFill extends ScreenWidget {
         const target = cells.getCellOrNew(tIndexRi, tIndexCi);
         if (src) {
           target.text = src.text;
+          if (!Utils.isBlank(src.text)) {
+            count += 1;
+          }
         }
         sIndexCi += 1;
         tIndexCi += 1;
@@ -392,6 +396,7 @@ class ScreenAutoFill extends ScreenWidget {
       tIndexRi += 1;
       if (sIndexRi > selectorRect.eri) sIndexRi = selectorRect.sri;
     }
+    return count;
   }
 
   copyMerge() {
@@ -443,9 +448,9 @@ class ScreenAutoFill extends ScreenWidget {
     if (mergeRect && mergeRect.equals(autoFillRect)) {
       this.options.onBeforeAutoFill();
       this.mergeCellForceSplit();
-      this.copyContent();
+      const count = this.copyContent();
       this.copyMerge();
-      this.options.onAfterAutoFill();
+      this.options.onAfterAutoFill(count);
     } else {
       if (merges.intersects(autoFillRect) && mergeForceSplit === false) {
         // eslint-disable-next-line no-undef,no-alert
@@ -454,9 +459,9 @@ class ScreenAutoFill extends ScreenWidget {
       }
       this.options.onBeforeAutoFill();
       this.mergeCellForceSplit();
-      this.copyContent();
+      const count = this.copyContent();
       this.copyMerge();
-      this.options.onAfterAutoFill();
+      this.options.onAfterAutoFill(count);
     }
   }
 }
