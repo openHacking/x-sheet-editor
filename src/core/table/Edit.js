@@ -50,8 +50,8 @@ class Edit extends Widget {
       const { selectorAttr } = selector;
       if (editModel) {
         text = Utils.trim(text);
-        const cell = table.getCell(selectRect.sri, selectRect.sci);
-        if (!cell || cell.text !== text) {
+        const cell = table.getCellOrNew(selectRect.sri, selectRect.sci);
+        if (cell.text !== text) {
           table.setCell(selectRect.sri, selectRect.sci, {
             text,
           });

@@ -40,10 +40,10 @@ class Cells {
       this._[ri] = [];
     }
     if (!this._[ri][ci]) {
-      this._[ri][ci] = Utils.mergeDeep({
+      this._[ri][ci] = {
         text: '',
         style: {},
-      });
+      };
     }
     return this._[ri][ci];
   }

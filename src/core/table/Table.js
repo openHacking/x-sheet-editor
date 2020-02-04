@@ -1160,18 +1160,16 @@ class Table extends Widget {
     // 撤销/反撤销
     this.undo = new History({
       onPop: (e) => {
-        const data = Utils.cloneDeep(e);
-        this.redo.add(data);
-        this.cells.setData(this.undo.get());
+        this.redo.add(Utils.cloneDeep(e));
+        this.cells.setData(Utils.cloneDeep(this.undo.get()));
         this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
         this.render();
       },
     });
     this.redo = new History({
       onPop: (e) => {
-        const data = Utils.cloneDeep(e);
-        this.undo.add(data);
-        this.cells.setData(this.undo.get());
+        this.undo.add(Utils.cloneDeep(e));
+        this.cells.setData(Utils.cloneDeep(this.undo.get()));
         this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
         this.render();
       },
@@ -1225,11 +1223,9 @@ class Table extends Widget {
     this.screen.addWidget(screenSelector);
     // 自动填充组件
     const screenAutoFill = new ScreenAutoFill(this.screen, {
-      onBeforeAutoFill: () => {
-        this.redo.clear();
-        this.undo.add(cells.getData());
-      },
       onAfterAutoFill: () => {
+        this.redo.clear();
+        this.undo.add(Utils.cloneDeep(cells.getData()));
         this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
       },
     });
@@ -1412,10 +1408,8 @@ class Table extends Widget {
   setCell(ri, ci, cell) {
     const { cells } = this;
     Utils.mergeDeep(cells.getCellOrNew(ri, ci), cell);
-    if (!Utils.isBlank(cell.text)) {
-      this.redo.clear();
-      this.undo.add(Utils.cloneDeep(cells.getData()));
-    }
+    this.redo.clear();
+    this.undo.add(Utils.cloneDeep(cells.getData()));
     this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
     this.render();
   }

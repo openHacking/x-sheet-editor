@@ -380,8 +380,8 @@ class ScreenAutoFill extends ScreenWidget {
       let tIndexCi = autoFillRect.sci;
       while (tIndexCi <= autoFillRect.eci) {
         const src = cells.getCell(sIndexRi, sIndexCi);
-        const target = cells.getCell(tIndexRi, tIndexCi);
-        if (src && target) {
+        const target = cells.getCellOrNew(tIndexRi, tIndexCi);
+        if (src) {
           target.text = src.text;
         }
         sIndexCi += 1;
