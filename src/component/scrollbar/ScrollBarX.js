@@ -1,11 +1,11 @@
 /* global document */
 
-import { Widget } from '../lib/Widget';
-import { cssPrefix } from '../config';
-import { h } from '../lib/Element';
-import { Utils } from '../utils/Utils';
-import { Constant } from '../utils/Constant';
-import { EventBind } from '../utils/EventBind';
+import { Widget } from '../../lib/Widget';
+import { cssPrefix } from '../../config';
+import { h } from '../../lib/Element';
+import { Utils } from '../../utils/Utils';
+import { Constant } from '../../utils/Constant';
+import { EventBind } from '../../utils/EventBind';
 
 class ScrollBarX extends Widget {
   constructor(option) {

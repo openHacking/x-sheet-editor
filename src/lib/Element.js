@@ -109,7 +109,7 @@ class Element {
   }
 
   remove(ele) {
-    return this.el.removeChild(ele);
+    return this.el.removeChild(ele.el || ele);
   }
 
   prepend(ele) {

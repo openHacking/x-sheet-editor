@@ -25,6 +25,7 @@ import { EventBind } from '../../utils/EventBind';
 import { Constant } from '../../utils/Constant';
 import { ScreenCopyStyle } from '../table/copystyle/ScreenCopyStyle';
 import { ScreenSelector } from '../table/selector/ScreenSelector';
+import { Utils } from '../../utils/Utils';
 
 class Divider extends Widget {
   constructor() {
@@ -107,7 +108,7 @@ class TopMenu extends Widget {
     EventBind.bind(this.paintFormat, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      const { screen } = table;
+      const { screen, cells } = table;
       const screenCopyStyle = screen.findByClass(ScreenCopyStyle);
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
@@ -116,12 +117,33 @@ class TopMenu extends Widget {
         this.paintFormat.active(true);
         this.paintFormat.addSheet(sheet);
         const cb = () => {
+          // 清除复制
           screenCopyStyle.setHide();
           this.paintFormat.active(false);
           this.paintFormat.removeSheet(sheet);
           screenSelector.removeSelectChangeOverCb(cb);
+          // 复制样式
+          const { selectorAttr: newSelectorAttr } = screenSelector;
+          const src = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+          cells.getRectRangeCell(newSelectorAttr.rect, (r, c, rect, cell) => {
+            Utils.mergeDeep(cell.style, src.style);
+          });
+          table.render();
         };
         screenSelector.addSelectChangeOverCb(cb);
+      }
+    });
+    EventBind.bind(this.clearFormat, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      const { screen, cells } = table;
+      const screenSelector = screen.findByClass(ScreenSelector);
+      const { selectorAttr } = screenSelector;
+      if (selectorAttr) {
+        cells.getRectRangeCell(selectorAttr.rect, (r, c, rect, cell) => {
+          cell.style = cells.defaultStyle;
+        });
+        table.render();
       }
     });
   }
