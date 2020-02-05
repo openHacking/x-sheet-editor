@@ -39,13 +39,17 @@ class ScreenCopyStyle extends ScreenWidget {
 
     if (rect.eci > viewRange.eci) {
       this.lt.right.hide();
+      this.lt.mask.css('border-right', 'none');
     } else {
       this.lt.right.show();
+      this.lt.mask.cssRemoveKeys('border-right');
     }
     if (rect.eri > viewRange.eri) {
       this.lt.bottom.hide();
+      this.lt.mask.css('border-bottom', 'none');
     } else {
       this.lt.bottom.show();
+      this.lt.mask.cssRemoveKeys('border-bottom');
     }
 
     this.lt.offset({
@@ -77,18 +81,24 @@ class ScreenCopyStyle extends ScreenWidget {
 
     if (rect.sci < viewRange.sci) {
       this.t.left.hide();
+      this.t.mask.css('border-left', 'none');
     } else {
       this.t.left.show();
+      this.t.mask.cssRemoveKeys('border-left');
     }
     if (rect.eri > viewRange.eri) {
       this.t.bottom.hide();
+      this.t.mask.css('border-bottom', 'none');
     } else {
       this.t.bottom.show();
+      this.t.mask.cssRemoveKeys('border-bottom');
     }
     if (rect.eci > viewRange.eci) {
       this.t.right.hide();
+      this.t.mask.css('border-right', 'none');
     } else {
       this.t.right.show();
+      this.t.mask.cssRemoveKeys('border-right');
     }
 
     this.t.offset({
@@ -120,18 +130,24 @@ class ScreenCopyStyle extends ScreenWidget {
 
     if (rect.sri < viewRange.sri) {
       this.l.top.hide();
+      this.l.mask.css('border-top', 'none');
     } else {
       this.l.top.show();
+      this.l.mask.cssRemoveKeys('border-top');
     }
     if (rect.eci > viewRange.eci) {
       this.l.right.hide();
+      this.l.mask.css('border-right', 'none');
     } else {
       this.l.right.show();
+      this.l.mask.cssRemoveKeys('border-right');
     }
     if (rect.eri > viewRange.eri) {
       this.l.bottom.hide();
+      this.l.mask.css('border-bottom', 'none');
     } else {
       this.l.bottom.show();
+      this.l.mask.cssRemoveKeys('border-bottom');
     }
 
     this.l.offset({
@@ -165,23 +181,31 @@ class ScreenCopyStyle extends ScreenWidget {
 
     if (rect.sci < viewRange.sci) {
       this.br.left.hide();
+      this.br.mask.css('border-left', 'none');
     } else {
       this.br.left.show();
+      this.br.mask.cssRemoveKeys('border-left');
     }
     if (rect.sri < viewRange.sri) {
       this.br.top.hide();
+      this.br.mask.css('border-top', 'none');
     } else {
       this.br.top.show();
+      this.br.mask.cssRemoveKeys('border-top');
     }
     if (rect.eri > viewRange.eri) {
       this.br.bottom.hide();
+      this.br.mask.css('border-bottom', 'none');
     } else {
       this.br.bottom.show();
+      this.br.mask.cssRemoveKeys('border-bottom');
     }
     if (rect.eci > viewRange.eci) {
       this.br.right.hide();
+      this.br.mask.css('border-right', 'none');
     } else {
       this.br.right.show();
+      this.br.mask.cssRemoveKeys('border-right');
     }
 
     this.br.offset({
