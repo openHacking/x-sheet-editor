@@ -114,9 +114,11 @@ class TopMenu extends Widget {
       if (selectorAttr) {
         screenCopyStyle.setShow(selectorAttr);
         this.paintFormat.active(true);
+        this.paintFormat.addSheet(sheet);
         const cb = () => {
           screenCopyStyle.setHide();
           this.paintFormat.active(false);
+          this.paintFormat.removeSheet(sheet);
           screenSelector.removeSelectChangeOverCb(cb);
         };
         screenSelector.addSelectChangeOverCb(cb);
@@ -131,6 +133,7 @@ class TopMenu extends Widget {
     const { table } = sheet;
     this.undo.active(table.undo.length() > 1);
     this.redo.active(!table.redo.isEmpty());
+    this.paintFormat.active(this.paintFormat.includeSheet(sheet));
   }
 }
 
