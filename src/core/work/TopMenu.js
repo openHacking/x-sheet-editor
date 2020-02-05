@@ -146,6 +146,9 @@ class TopMenu extends Widget {
         table.render();
       }
     });
+    EventBind.bind(this.format, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      this.format.formatContextMenu.open();
+    });
   }
 
   setStatus() {

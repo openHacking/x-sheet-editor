@@ -7,8 +7,8 @@ import { h } from '../../lib/Element';
 import { Animate } from '../../lib/animate/Animate';
 
 class PopUp extends Widget {
-  constructor(options) {
-    super(`${cssPrefix}-pop-up-layer`);
+  constructor(className = '', options) {
+    super(`${cssPrefix}-pop-up-layer ${className}`);
     this.options = Utils.mergeDeep({}, options);
   }
 
