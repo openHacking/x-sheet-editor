@@ -67,8 +67,6 @@ class ScreenSelector extends ScreenWidget {
         mousePointType.off();
         this.onSelectChangeOver.forEach(cb => cb());
       });
-      e1.stopPropagation();
-      e1.preventDefault();
     });
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, (e) => {
       if (this.selectorAttr) {

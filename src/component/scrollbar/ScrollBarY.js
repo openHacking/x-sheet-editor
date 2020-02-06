@@ -33,15 +33,15 @@ class ScrollBarY extends Widget {
     this.viewPortHeight = 0;
     this.isHide = true;
     this.hide();
+    this.bind();
   }
 
   init() {
     this.css(this.option.style);
-    this.bind();
   }
 
   bind() {
-    this.block.on(Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
+    EventBind.bind(this.block, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
       const downEventXy = this.computeEventXy(evt1, this.block);
       EventBind.mouseMoveUp(h(document), (evt2) => {
         // 计算移动的距离
@@ -57,8 +57,6 @@ class ScrollBarY extends Widget {
         evt2.stopPropagation();
         evt2.preventDefault();
       });
-      evt1.stopPropagation();
-      evt1.preventDefault();
     });
   }
 

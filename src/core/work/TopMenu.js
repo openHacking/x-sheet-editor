@@ -146,8 +146,14 @@ class TopMenu extends Widget {
         table.render();
       }
     });
-    EventBind.bind(this.format, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-      this.format.formatContextMenu.open();
+    EventBind.bind(this.format, Constant.SYSTEM_EVENT_TYPE.CLICK, (e) => {
+      if (this.format.formatContextMenu.off) {
+        this.format.formatContextMenu.close();
+      } else {
+        this.format.formatContextMenu.open();
+      }
+      e.stopPropagation();
+      e.preventDefault();
     });
   }
 

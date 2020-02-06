@@ -4,8 +4,8 @@ import { ContextMenuDivider } from '../../../../component/contextmenu/ContextMen
 import { cssPrefix } from '../../../../config';
 
 class FormatContextMenu extends ContextMenu {
-  constructor() {
-    super(`${cssPrefix}-format-context-menu`);
+  constructor(options = {}) {
+    super(`${cssPrefix}-format-context-menu`, options);
     this.addItem(new FormatContextMenuItem('常规', ''));
     this.addItem(new FormatContextMenuItem('文本', ''));
     this.addItem(new ContextMenuDivider());

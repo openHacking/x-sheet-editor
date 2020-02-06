@@ -346,6 +346,15 @@ class Element {
     }
     return eleArray;
   }
+
+  isChild(target) {
+    let targetEl = target || target.el;
+    while (targetEl !== undefined && targetEl !== null && targetEl !== document.body) {
+      if (targetEl === this.el) return true;
+      targetEl = targetEl.parentNode;
+    }
+    return false;
+  }
 }
 
 const h = (tag, className = '') => new Element(tag, className);

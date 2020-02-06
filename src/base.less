@@ -150,5 +150,31 @@
 }
 
 // 弹出层
-.@{css-prefix}-pop-up-layer {}
+.@{css-prefix}-pop-up-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+.@{css-prefix}-pop-up-layer-content {
+  padding: 10px;
+}
+
+// 上下文菜单
+.@{css-prefix}-context-menu {
+  box-shadow: 1px 2px 3px 1px #c5c5c5;
+}
+.@{css-prefix}-context-menu-item {
+  cursor: pointer;
+}
+.@{css-prefix}-context-menu-item-divider {
+  display: inline-block;
+  border-bottom: 1px solid #f3f3f3;
+  width: 100%;
+  vertical-align: middle;
+  height: 0;
+}
+.@{css-prefix}-context-menu-item:hover {
+  background: #efefef;
+}
 
