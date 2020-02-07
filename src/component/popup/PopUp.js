@@ -6,10 +6,12 @@ import { Utils } from '../../utils/Utils';
 import { h } from '../../lib/Element';
 import { Animate } from '../../lib/animate/Animate';
 import { OffsetLocation } from './OffsetLocation';
-import { ElLocation, LOCATION_TYPE } from './ElLocation';
 import { HorizontalLayerElement } from '../../lib/layer/HorizontalLayerElement';
 import { HorizontalLayer } from '../../lib/layer/HorizontalLayer';
 import { ScrollBarY } from '../scrollbar/ScrollBarY';
+import { ElLocation, LOCATION_TYPE } from './ElLocation';
+import { EventBind } from '../../utils/EventBind';
+import { Constant } from '../../utils/Constant';
 
 let contentLayerHorizontalElement;
 let scrollBarYLayerHorizontalElement;
@@ -24,7 +26,9 @@ class PopUp extends Widget {
     this.off = false;
     this.content = h('div', `${cssPrefix}-pop-up-layer-content`);
     this.scrollBarY = new ScrollBarY({
-      scroll: () => {},
+      scroll: (px) => {
+        this.content.css('top', `-${px}px`);
+      },
     });
     // 布局
     contentLayerHorizontalElement = new HorizontalLayerElement(this.content, {
@@ -41,6 +45,13 @@ class PopUp extends Widget {
       layerElements: [contentLayerHorizontalElement, scrollBarYLayerHorizontalElement],
     });
     this.children(horizontalLayer);
+    this.bind();
+  }
+
+  computeScrollBarYSize() {
+    const contentBox = this.content.box();
+    const popUpBox = this.box();
+    this.scrollBarY.setSize(popUpBox.height, contentBox.height);
   }
 
   computeDisplayLocation() {
@@ -62,13 +73,13 @@ class PopUp extends Widget {
           top -= popUpBox.top;
           left += offset.x;
           top += offset.y;
-          const maxHeight = window.innerHeight - top;
-          const height = popUpBox.height > maxHeight ? maxHeight : popUpBox.height;
           this.offset({
             top,
             left,
-            height,
           });
+          const maxHeight = window.innerHeight - top;
+          const height = popUpBox.height > maxHeight ? `${maxHeight}px` : 'auto';
+          this.css('height', height);
           break;
         }
         case LOCATION_TYPE.BOTTOM: {
@@ -76,13 +87,13 @@ class PopUp extends Widget {
           let top = elBox.top + elBox.height;
           left += offset.x;
           top += offset.y;
-          const maxHeight = window.innerHeight - top;
-          const height = popUpBox.height > maxHeight ? maxHeight : popUpBox.height;
           this.offset({
             top,
             left,
-            height,
           });
+          const maxHeight = window.innerHeight - top;
+          const height = popUpBox.height > maxHeight ? `${maxHeight}px` : 'auto';
+          this.css('height', height);
           break;
         }
         case LOCATION_TYPE.LEFT: {
@@ -90,13 +101,13 @@ class PopUp extends Widget {
           left -= popUpBox.left;
           left += offset.x;
           top += offset.y;
-          const maxHeight = window.innerHeight - top;
-          const height = popUpBox.height > maxHeight ? maxHeight : popUpBox.height;
           this.offset({
             top,
             left,
-            height,
           });
+          const maxHeight = window.innerHeight - top;
+          const height = popUpBox.height > maxHeight ? `${maxHeight}px` : 'auto';
+          this.css('height', height);
           break;
         }
         case LOCATION_TYPE.RIGHT: {
@@ -104,13 +115,13 @@ class PopUp extends Widget {
           left += elBox.width;
           left += offset.x;
           top += offset.y;
-          const maxHeight = window.innerHeight - top;
-          const height = popUpBox.height > maxHeight ? maxHeight : popUpBox.height;
           this.offset({
             top,
             left,
-            height,
           });
+          const maxHeight = window.innerHeight - top;
+          const height = popUpBox.height > maxHeight ? `${maxHeight}px` : 'auto';
+          this.css('height', height);
           break;
         }
         default: break;
@@ -118,10 +129,24 @@ class PopUp extends Widget {
     }
   }
 
-  computeScrollBarYSize() {
-    const contentBox = this.content.box();
-    const popUpBox = this.box();
-    this.scrollBarY.setSize(popUpBox.height, contentBox.height);
+  bind() {
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (evt) => {
+      let { deltaY } = evt;
+      const { scrollTo, isHide } = this.scrollBarY;
+      if (isHide) return;
+      if (evt.detail) deltaY = evt.detail * 40;
+      if (deltaY > 0) {
+        // down
+        this.scrollBarY.scrollMove(scrollTo + deltaY);
+      } else {
+        // up
+        this.scrollBarY.scrollMove(scrollTo + deltaY);
+      }
+    });
+    EventBind.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
+      this.computeDisplayLocation();
+      this.computeScrollBarYSize();
+    });
   }
 
   open() {

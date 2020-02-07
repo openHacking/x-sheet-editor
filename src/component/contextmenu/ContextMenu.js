@@ -9,10 +9,10 @@ class ContextMenu extends PopUp {
   constructor(className = '', options = {}) {
     super(`${cssPrefix}-context-menu ${className}`, options);
     this.contextMenuArray = [];
-    this.bind();
   }
 
   bind() {
+    super.bind();
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (event) => {
       event.stopPropagation();
       event.preventDefault();

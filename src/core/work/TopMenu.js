@@ -95,17 +95,17 @@ class TopMenu extends Widget {
     EventBind.bind(body, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
       this.setStatus();
     });
-    EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       if (table.undo.length() > 1) table.undo.pop();
     });
-    EventBind.bind(this.redo, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    EventBind.bind(this.redo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       table.redo.pop();
     });
-    EventBind.bind(this.paintFormat, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    EventBind.bind(this.paintFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const { screen, cells } = table;
@@ -133,7 +133,7 @@ class TopMenu extends Widget {
         screenSelector.addSelectChangeOverCb(cb);
       }
     });
-    EventBind.bind(this.clearFormat, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    EventBind.bind(this.clearFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const { screen, cells } = table;
@@ -146,7 +146,7 @@ class TopMenu extends Widget {
         table.render();
       }
     });
-    EventBind.bind(this.format, Constant.SYSTEM_EVENT_TYPE.CLICK, (e) => {
+    EventBind.bind(this.format, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       if (this.format.formatContextMenu.off) {
         this.format.formatContextMenu.close();
       } else {
