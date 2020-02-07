@@ -61,9 +61,8 @@ class PopUp extends Widget {
       this.css('left', `${location.x}px`);
     }
     if (location instanceof ElLocation) {
-      const {
-        type, el, offset,
-      } = location;
+      const { type, el, offset } = location;
+      this.css('height', 'auto');
       const elBox = el.box();
       const popUpBox = this.box();
       switch (type) {
@@ -73,13 +72,16 @@ class PopUp extends Widget {
           top -= popUpBox.top;
           left += offset.x;
           top += offset.y;
+          // 显示位置
           this.offset({
             top,
             left,
           });
+          // 最大高度
           const maxHeight = window.innerHeight - top;
-          const height = popUpBox.height > maxHeight ? `${maxHeight}px` : 'auto';
-          this.css('height', height);
+          if (popUpBox.height > maxHeight) {
+            this.css('height', `${maxHeight}px`);
+          }
           break;
         }
         case LOCATION_TYPE.BOTTOM: {
@@ -87,13 +89,16 @@ class PopUp extends Widget {
           let top = elBox.top + elBox.height;
           left += offset.x;
           top += offset.y;
+          // 显示位置
           this.offset({
             top,
             left,
           });
+          // 最大高度
           const maxHeight = window.innerHeight - top;
-          const height = popUpBox.height > maxHeight ? `${maxHeight}px` : 'auto';
-          this.css('height', height);
+          if (popUpBox.height > maxHeight) {
+            this.css('height', `${maxHeight}px`);
+          }
           break;
         }
         case LOCATION_TYPE.LEFT: {
@@ -101,13 +106,16 @@ class PopUp extends Widget {
           left -= popUpBox.left;
           left += offset.x;
           top += offset.y;
+          // 显示位置
           this.offset({
             top,
             left,
           });
+          // 最大高度
           const maxHeight = window.innerHeight - top;
-          const height = popUpBox.height > maxHeight ? `${maxHeight}px` : 'auto';
-          this.css('height', height);
+          if (popUpBox.height > maxHeight) {
+            this.css('height', `${maxHeight}px`);
+          }
           break;
         }
         case LOCATION_TYPE.RIGHT: {
@@ -115,13 +123,16 @@ class PopUp extends Widget {
           left += elBox.width;
           left += offset.x;
           top += offset.y;
+          // 显示位置
           this.offset({
             top,
             left,
           });
+          // 最大高度
           const maxHeight = window.innerHeight - top;
-          const height = popUpBox.height > maxHeight ? `${maxHeight}px` : 'auto';
-          this.css('height', height);
+          if (popUpBox.height > maxHeight) {
+            this.css('height', `${maxHeight}px`);
+          }
           break;
         }
         default: break;
@@ -137,10 +148,10 @@ class PopUp extends Widget {
       if (evt.detail) deltaY = evt.detail * 40;
       if (deltaY > 0) {
         // down
-        this.scrollBarY.scrollMove(scrollTo + deltaY);
+        this.scrollBarY.scrollMove(scrollTo + 50);
       } else {
         // up
-        this.scrollBarY.scrollMove(scrollTo + deltaY);
+        this.scrollBarY.scrollMove(scrollTo - 50);
       }
     });
     EventBind.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
