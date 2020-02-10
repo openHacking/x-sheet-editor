@@ -1,14 +1,15 @@
 import { DropDownItem } from './base/DropDownItem';
 import { cssPrefix } from '../../../config';
-import { FormatContextMenu } from '../contextmenu/format/FormatContextMenu';
-import { ElLocation, LOCATION_TYPE } from '../../../component/popup/ElLocation';
+import { FormatContextMenu } from '../contextmenu/FormatContextMenu';
+import { EL_POPUP_POSITION } from '../../../component/elpopup/ElPopUp';
 
 class Format extends DropDownItem {
   constructor() {
     super(`${cssPrefix}-tools-format`);
     this.setTitle('Normal');
     this.formatContextMenu = new FormatContextMenu({
-      location: new ElLocation(this, LOCATION_TYPE.BOTTOM),
+      el: this,
+      position: EL_POPUP_POSITION.BOTTOM,
     });
   }
 }

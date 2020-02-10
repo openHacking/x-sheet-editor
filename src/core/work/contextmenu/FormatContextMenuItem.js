@@ -1,8 +1,8 @@
-import { ContextMenuItem } from '../../../../component/contextmenu/ContextMenuItem';
-import { h } from '../../../../lib/Element';
-import { cssPrefix } from '../../../../config';
+import { h } from '../../../lib/Element';
+import { cssPrefix } from '../../../config';
+import { ELContextMenuItem } from '../../../component/elcontextmenu/ELContextMenuItem';
 
-class FormatContextMenuItem extends ContextMenuItem {
+class FormatContextMenuItem extends ELContextMenuItem {
   constructor(title, desc) {
     super(`${cssPrefix}-format-context-menu-item`);
     this.titleElement = h('div', `${cssPrefix}-format-context-menu-item-title`);

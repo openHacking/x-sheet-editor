@@ -92,11 +92,11 @@ class Element {
     return new Element(this.el.parentNode);
   }
 
-  children(...eles) {
+  children(...args) {
     if (arguments.length === 0) {
       return this.el.childNodes;
     }
-    eles.forEach(ele => this.child(ele));
+    args.forEach(ele => this.child(ele));
     return this;
   }
 

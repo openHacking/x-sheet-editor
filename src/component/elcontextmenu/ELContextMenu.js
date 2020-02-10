@@ -1,13 +1,12 @@
 /* global document */
-
-import { PopUp } from '../popup/PopUp';
 import { cssPrefix } from '../../config';
 import { EventBind } from '../../utils/EventBind';
 import { Constant } from '../../utils/Constant';
+import { ElPopUp } from '../elpopup/ElPopUp';
 
-class ContextMenu extends PopUp {
+class ELContextMenu extends ElPopUp {
   constructor(className = '', options = {}) {
-    super(`${cssPrefix}-context-menu ${className}`, options);
+    super(`${cssPrefix}-el-context-menu ${className}`, options);
     this.contextMenuArray = [];
   }
 
@@ -28,4 +27,4 @@ class ContextMenu extends PopUp {
   }
 }
 
-export { ContextMenu };
+export { ELContextMenu };
