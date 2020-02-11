@@ -2,7 +2,7 @@ import { Rect } from '../../graphical/rect/Rect';
 import { Utils } from '../../utils/Utils';
 import { RectText } from '../../graphical/rect/RectText';
 
-const CELL_TEXT_FORMAT = {
+const CELL_TEXT_FORMAT_FUNC = {
   default: v => v,
   text: v => v,
 
@@ -36,7 +36,26 @@ const CELL_TEXT_FORMAT = {
   date5: v => v,
   time: v => v,
 };
+const CELL_TEXT_FORMAT_TYPE = {
+  default: 'default',
+  text: 'text',
 
+  number: 'number',
+  percentage: 'percentage',
+  fraction: 'fraction',
+  ENotation: 'ENotation',
+
+  rmb: 'rmb',
+  hk: 'hk',
+  dollar: 'dollar',
+
+  date1: 'date1',
+  date2: 'date2',
+  date3: 'date3',
+  date4: 'date4',
+  date5: 'date5',
+  time: 'time',
+};
 class Cells {
   constructor({ cols, rows, data = [] }) {
     this.cols = cols;
@@ -63,7 +82,7 @@ class Cells {
     if (row && row[ci]) {
       row[ci] = Utils.mergeDeep({
         text: '',
-        format: CELL_TEXT_FORMAT.default,
+        format: CELL_TEXT_FORMAT_TYPE.default,
         style: {},
       }, row[ci]);
       return row[ci];
@@ -78,7 +97,7 @@ class Cells {
     if (!this._[ri][ci]) {
       this._[ri][ci] = {
         text: '',
-        format: CELL_TEXT_FORMAT.default,
+        format: CELL_TEXT_FORMAT_TYPE.default,
         style: {},
       };
     }
@@ -134,4 +153,4 @@ class Cells {
   }
 }
 
-export { Cells, CELL_TEXT_FORMAT };
+export { Cells, CELL_TEXT_FORMAT_FUNC, CELL_TEXT_FORMAT_TYPE };

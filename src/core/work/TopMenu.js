@@ -26,7 +26,7 @@ import { Constant } from '../../utils/Constant';
 import { ScreenCopyStyle } from '../table/copystyle/ScreenCopyStyle';
 import { ScreenSelector } from '../table/selector/ScreenSelector';
 import { Utils } from '../../utils/Utils';
-import { CELL_TEXT_FORMAT } from '../table/Cells';
+import { CELL_TEXT_FORMAT_TYPE } from '../table/Cells';
 
 class Divider extends Widget {
   constructor() {
@@ -57,6 +57,7 @@ class TopMenu extends Widget {
             cells.getRectRangeCell(selectorAttr.rect, (r, c, rect, cell) => {
               cell.format = format;
             }, undefined, true);
+            table.snapshot();
             table.render();
           }
         },
@@ -198,41 +199,41 @@ class TopMenu extends Widget {
       const { format } = firstCell;
       let text = '常规';
       switch (format) {
-        case CELL_TEXT_FORMAT.default:
+        case CELL_TEXT_FORMAT_TYPE.default:
           text = '常规';
           break;
-        case CELL_TEXT_FORMAT.text:
+        case CELL_TEXT_FORMAT_TYPE.text:
           text = '文本';
           break;
-        case CELL_TEXT_FORMAT.number:
+        case CELL_TEXT_FORMAT_TYPE.number:
           text = '数字';
           break;
-        case CELL_TEXT_FORMAT.percentage:
+        case CELL_TEXT_FORMAT_TYPE.percentage:
           text = '百分比';
           break;
-        case CELL_TEXT_FORMAT.fraction:
+        case CELL_TEXT_FORMAT_TYPE.fraction:
           text = '分数';
           break;
-        case CELL_TEXT_FORMAT.ENotation:
+        case CELL_TEXT_FORMAT_TYPE.ENotation:
           text = '科学计数';
           break;
-        case CELL_TEXT_FORMAT.rmb:
+        case CELL_TEXT_FORMAT_TYPE.rmb:
           text = '人民币';
           break;
-        case CELL_TEXT_FORMAT.hk:
+        case CELL_TEXT_FORMAT_TYPE.hk:
           text = '港币';
           break;
-        case CELL_TEXT_FORMAT.dollar:
+        case CELL_TEXT_FORMAT_TYPE.dollar:
           text = '美元';
           break;
-        case CELL_TEXT_FORMAT.date1:
-        case CELL_TEXT_FORMAT.date2:
-        case CELL_TEXT_FORMAT.date3:
-        case CELL_TEXT_FORMAT.date4:
-        case CELL_TEXT_FORMAT.date5:
+        case CELL_TEXT_FORMAT_TYPE.date1:
+        case CELL_TEXT_FORMAT_TYPE.date2:
+        case CELL_TEXT_FORMAT_TYPE.date3:
+        case CELL_TEXT_FORMAT_TYPE.date4:
+        case CELL_TEXT_FORMAT_TYPE.date5:
           text = '日期';
           break;
-        case CELL_TEXT_FORMAT.time:
+        case CELL_TEXT_FORMAT_TYPE.time:
           text = '时间';
           break;
         default: break;

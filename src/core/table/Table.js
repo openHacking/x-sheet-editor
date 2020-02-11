@@ -2,7 +2,6 @@ import { cssPrefix } from '../../config';
 import { Utils } from '../../utils/Utils';
 import { Rows } from './Rows';
 import { Cols } from './Cols';
-import { Cells } from './Cells';
 import { Scroll } from './Scroll';
 import { Fixed } from './Fixed';
 import { h } from '../../lib/Element';
@@ -27,6 +26,7 @@ import { YHeightLight } from './highlight/YHeightLight';
 import { Edit } from './Edit';
 import { History } from './History';
 import { ScreenCopyStyle } from './copystyle/ScreenCopyStyle';
+import { CELL_TEXT_FORMAT_FUNC, Cells } from './Cells';
 
 const defaultSettings = {
   tipsRenderTime: true,
@@ -242,7 +242,7 @@ class Content {
       // 绘制文字
       const textAttr = new TextAttr(rect);
       rectText.setRect(textAttr);
-      rectText.text(cell.format(cell.text), style, contentMaxWidth);
+      rectText.text(CELL_TEXT_FORMAT_FUNC[cell.format](cell.text), style, contentMaxWidth);
     });
     draw.restore();
   }
@@ -288,7 +288,7 @@ class Content {
       // 绘制文字
       const textAttr = new TextAttr(rect);
       rectText.setRect(textAttr);
-      rectText.text(cell.format(cell.text), style, rect.width);
+      rectText.text(CELL_TEXT_FORMAT_FUNC[cell.format](cell.text), style, rect.width);
     });
     draw.restore();
   }
@@ -395,7 +395,7 @@ class FixedLeft {
       // 绘制文字
       const textAttr = new TextAttr(rect);
       rectText.setRect(textAttr);
-      rectText.text(cell.format(cell.text), style, contentMaxWidth);
+      rectText.text(CELL_TEXT_FORMAT_FUNC[cell.format](cell.text), style, contentMaxWidth);
     });
     draw.restore();
   }
@@ -441,7 +441,7 @@ class FixedLeft {
       // 绘制文字
       const textAttr = new TextAttr(rect);
       rectText.setRect(textAttr);
-      rectText.text(cell.format(cell.text), style, rect.width);
+      rectText.text(CELL_TEXT_FORMAT_FUNC[cell.format](cell.text), style, rect.width);
     });
     draw.restore();
   }
@@ -558,7 +558,7 @@ class FixedTop {
       // 绘制文字
       const textAttr = new TextAttr(rect);
       rectText.setRect(textAttr);
-      rectText.text(cell.format(cell.text), style, contentMaxWidth);
+      rectText.text(CELL_TEXT_FORMAT_FUNC[cell.format](cell.text), style, contentMaxWidth);
     });
     draw.restore();
   }
@@ -604,7 +604,7 @@ class FixedTop {
       // 绘制文字
       const textAttr = new TextAttr(rect);
       rectText.setRect(textAttr);
-      rectText.text(cell.format(cell.text), style, rect.width);
+      rectText.text(CELL_TEXT_FORMAT_FUNC[cell.format](cell.text), style, rect.width);
     });
     draw.restore();
   }
@@ -881,7 +881,7 @@ class FrozenLeftTop {
       // 绘制文字
       const textAttr = new TextAttr(rect);
       rectText.setRect(textAttr);
-      rectText.text(cell.format(cell.text), style, contentMaxWidth);
+      rectText.text(CELL_TEXT_FORMAT_FUNC[cell.format](cell.text), style, contentMaxWidth);
     });
     draw.restore();
   }
@@ -927,7 +927,7 @@ class FrozenLeftTop {
       // 绘制文字
       const textAttr = new TextAttr(rect);
       rectText.setRect(textAttr);
-      rectText.text(cell.format(cell.text), style, rect.width);
+      rectText.text(CELL_TEXT_FORMAT_FUNC[cell.format](cell.text), style, rect.width);
     });
     draw.restore();
   }
@@ -1227,7 +1227,6 @@ class Table extends Widget {
   }
 
   initScreenWidget() {
-    const { cells, merges } = this;
     // 单元格筛选组件
     const screenSelector = new ScreenSelector(this.screen);
     screenSelector.addSelectChangeCb(() => {
@@ -1238,12 +1237,7 @@ class Table extends Widget {
     const screenAutoFill = new ScreenAutoFill(this.screen, {
       onAfterAutoFill: (count) => {
         if (count > 0) {
-          this.redo.clear();
-          this.undo.add({
-            cells: Utils.cloneDeep(cells.getData()),
-            merges: Utils.cloneDeep(merges.getData()),
-          });
-          this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+          this.snapshot(true);
         }
       },
     });
@@ -1427,15 +1421,22 @@ class Table extends Widget {
   }
 
   setCell(ri, ci, cell) {
-    const { cells, merges } = this;
+    const { cells } = this;
     Utils.mergeDeep(cells.getCellOrNew(ri, ci), cell);
-    this.redo.clear();
+    this.snapshot(true);
+    this.render();
+  }
+
+  snapshot(clear = false) {
+    const { cells, merges } = this;
+    if (clear) {
+      this.redo.clear();
+    }
     this.undo.add({
       cells: Utils.cloneDeep(cells.getData()),
       merges: Utils.cloneDeep(merges.getData()),
     });
     this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-    this.render();
   }
 }
 
