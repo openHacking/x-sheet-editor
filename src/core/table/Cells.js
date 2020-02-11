@@ -2,6 +2,41 @@ import { Rect } from '../../graphical/rect/Rect';
 import { Utils } from '../../utils/Utils';
 import { RectText } from '../../graphical/rect/RectText';
 
+const CELL_TEXT_FORMAT = {
+  default: v => v,
+  text: v => v,
+
+  number: (v) => {
+    if (Utils.isNumber(v)) {
+      if (v.toString().indexOf('.') !== -1) {
+        const lastIndex = v.toString().lastIndexOf('.') + 1;
+        return v.toString().substring(0, lastIndex + 2);
+      }
+      return `${v}.00`;
+    }
+    return v;
+  },
+  percentage: (v) => {
+    if (Utils.isNumber(v)) {
+      return `${v}%`;
+    }
+    return v;
+  },
+  fraction: v => v,
+  ENotation: v => v,
+
+  rmb: v => v,
+  hk: v => v,
+  dollar: v => v,
+
+  date1: v => v,
+  date2: v => v,
+  date3: v => v,
+  date4: v => v,
+  date5: v => v,
+  time: v => v,
+};
+
 class Cells {
   constructor({ cols, rows, data = [] }) {
     this.cols = cols;
@@ -28,6 +63,7 @@ class Cells {
     if (row && row[ci]) {
       row[ci] = Utils.mergeDeep({
         text: '',
+        format: CELL_TEXT_FORMAT.default,
         style: {},
       }, row[ci]);
       return row[ci];
@@ -42,6 +78,7 @@ class Cells {
     if (!this._[ri][ci]) {
       this._[ri][ci] = {
         text: '',
+        format: CELL_TEXT_FORMAT.default,
         style: {},
       };
     }
@@ -61,7 +98,7 @@ class Cells {
     return total;
   }
 
-  getRectRangeCell(rectRange, cb, { sy = 0, sx = 0 } = {}) {
+  getRectRangeCell(rectRange, cb, { sy = 0, sx = 0 } = {}, createNew = false) {
     const {
       sri, eri, sci, eci,
     } = rectRange;
@@ -71,7 +108,7 @@ class Cells {
       let x = sx;
       for (let j = sci; j <= eci; j += 1) {
         const width = this.cols.getWidth(j);
-        const cell = this.getCell(i, j);
+        const cell = createNew ? this.getCellOrNew(i, j) : this.getCell(i, j);
         if (cell) {
           cb(i, j, new Rect({
             x, y, width, height,
@@ -97,4 +134,4 @@ class Cells {
   }
 }
 
-export { Cells };
+export { Cells, CELL_TEXT_FORMAT };

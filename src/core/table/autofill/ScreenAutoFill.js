@@ -384,6 +384,7 @@ class ScreenAutoFill extends ScreenWidget {
         const target = cells.getCellOrNew(tIndexRi, tIndexCi);
         if (src) {
           target.text = src.text;
+          target.format = src.format;
           if (!Utils.isBlank(src.text)) {
             count += 1;
           }

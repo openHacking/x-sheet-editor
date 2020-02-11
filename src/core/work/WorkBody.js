@@ -239,6 +239,10 @@ class WorkBody extends Widget {
       this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
       e.stopPropagation();
     });
+    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, (e) => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
+      e.stopPropagation();
+    });
   }
 }
 

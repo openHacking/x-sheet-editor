@@ -66,8 +66,7 @@ class Utils {
   }
 
   static isNumber(e) {
-    // eslint-disable-next-line no-restricted-globals,radix
-    return !isNaN(parseInt(e));
+    return /^(\d+.\d+)$|^(\d+)$/.test(e);
   }
 
   static isBlank(s) {

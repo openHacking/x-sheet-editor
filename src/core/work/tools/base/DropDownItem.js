@@ -20,6 +20,22 @@ class DropDownItem extends Item {
   setIcon(icon) {
     this.title.children(icon);
   }
+
+  setWidth(px) {
+    this.title.css('width', `${px}px`);
+  }
+
+  setEllipsis() {
+    this.title.css('overflow', 'hidden');
+    this.title.css('text-overflow', 'ellipsis');
+    this.title.css('white-space', 'nowrap');
+  }
+
+  removeEllipsis() {
+    this.title.cssRemoveKeys('overflow');
+    this.title.cssRemoveKeys('text-overflow');
+    this.title.cssRemoveKeys('white-space');
+  }
 }
 
 export { DropDownItem };

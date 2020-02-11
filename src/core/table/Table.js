@@ -242,7 +242,7 @@ class Content {
       // 绘制文字
       const textAttr = new TextAttr(rect);
       rectText.setRect(textAttr);
-      rectText.text(cell.text, style, contentMaxWidth);
+      rectText.text(cell.format(cell.text), style, contentMaxWidth);
     });
     draw.restore();
   }
@@ -288,7 +288,7 @@ class Content {
       // 绘制文字
       const textAttr = new TextAttr(rect);
       rectText.setRect(textAttr);
-      rectText.text(cell.text, style, rect.width);
+      rectText.text(cell.format(cell.text), style, rect.width);
     });
     draw.restore();
   }
@@ -395,7 +395,7 @@ class FixedLeft {
       // 绘制文字
       const textAttr = new TextAttr(rect);
       rectText.setRect(textAttr);
-      rectText.text(cell.text, style, contentMaxWidth);
+      rectText.text(cell.format(cell.text), style, contentMaxWidth);
     });
     draw.restore();
   }
@@ -441,7 +441,7 @@ class FixedLeft {
       // 绘制文字
       const textAttr = new TextAttr(rect);
       rectText.setRect(textAttr);
-      rectText.text(cell.text, style, rect.width);
+      rectText.text(cell.format(cell.text), style, rect.width);
     });
     draw.restore();
   }
@@ -558,7 +558,7 @@ class FixedTop {
       // 绘制文字
       const textAttr = new TextAttr(rect);
       rectText.setRect(textAttr);
-      rectText.text(cell.text, style, contentMaxWidth);
+      rectText.text(cell.format(cell.text), style, contentMaxWidth);
     });
     draw.restore();
   }
@@ -604,7 +604,7 @@ class FixedTop {
       // 绘制文字
       const textAttr = new TextAttr(rect);
       rectText.setRect(textAttr);
-      rectText.text(cell.text, style, rect.width);
+      rectText.text(cell.format(cell.text), style, rect.width);
     });
     draw.restore();
   }
@@ -881,7 +881,7 @@ class FrozenLeftTop {
       // 绘制文字
       const textAttr = new TextAttr(rect);
       rectText.setRect(textAttr);
-      rectText.text(cell.text, style, contentMaxWidth);
+      rectText.text(cell.format(cell.text), style, contentMaxWidth);
     });
     draw.restore();
   }
@@ -927,7 +927,7 @@ class FrozenLeftTop {
       // 绘制文字
       const textAttr = new TextAttr(rect);
       rectText.setRect(textAttr);
-      rectText.text(cell.text, style, rect.width);
+      rectText.text(cell.format(cell.text), style, rect.width);
     });
     draw.restore();
   }
@@ -1230,6 +1230,9 @@ class Table extends Widget {
     const { cells, merges } = this;
     // 单元格筛选组件
     const screenSelector = new ScreenSelector(this.screen);
+    screenSelector.addSelectChangeCb(() => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
+    });
     this.screen.addWidget(screenSelector);
     // 自动填充组件
     const screenAutoFill = new ScreenAutoFill(this.screen, {
