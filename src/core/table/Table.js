@@ -29,8 +29,8 @@ import { ScreenCopyStyle } from './copystyle/ScreenCopyStyle';
 import { CELL_TEXT_FORMAT_FUNC, Cells } from './Cells';
 
 const defaultSettings = {
-  tipsRenderTime: true,
-  tipsScrollTime: true,
+  tipsRenderTime: false,
+  tipsScrollTime: false,
   index: {
     height: 30,
     width: 50,
