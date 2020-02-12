@@ -1,6 +1,23 @@
 import { Rect } from '../../graphical/rect/Rect';
 import { Utils } from '../../utils/Utils';
 import { RectText } from '../../graphical/rect/RectText';
+import { DateUtils } from '../../utils/DateUtils';
+
+const parserToDate = (text) => {
+  let result = DateUtils.parserToDate(text, 'yyyy/MM/dd');
+  if (result) return result;
+  result = DateUtils.parserToDate(text, 'MM月dd日');
+  if (result) return result;
+  result = DateUtils.parserToDate(text, 'yyyy年MM月');
+  if (result) return result;
+  result = DateUtils.parserToDate(text, 'yyyy年MM月dd日');
+  if (result) return result;
+  result = DateUtils.parserToDate(text, 'yyyy/MM/dd hh:mm:ss');
+  if (result) return result;
+  result = DateUtils.parserToDate(text, 'hh:mm:ss');
+  if (result) return result;
+  return null;
+};
 
 const CELL_TEXT_FORMAT_FUNC = {
   default: v => v,
@@ -57,13 +74,38 @@ const CELL_TEXT_FORMAT_FUNC = {
     return v;
   },
 
-  date1: v => v,
-  date2: v => v,
-  date3: v => v,
-  date4: v => v,
-  date5: v => v,
-  time: v => v,
+  date1: (v) => {
+    const result = parserToDate(v);
+    if (result) return DateUtils.dateFormat('yyyy/MM/dd', result);
+    return v;
+  },
+  date2: (v) => {
+    const result = parserToDate(v);
+    if (result) return DateUtils.dateFormat('MM月dd日', result);
+    return v;
+  },
+  date3: (v) => {
+    const result = parserToDate(v);
+    if (result) return DateUtils.dateFormat('yyyy年MM月', result);
+    return v;
+  },
+  date4: (v) => {
+    const result = parserToDate(v);
+    if (result) return DateUtils.dateFormat('yyyy年MM月dd日', result);
+    return v;
+  },
+  date5: (v) => {
+    const result = parserToDate(v);
+    if (result) return DateUtils.dateFormat('yyyy/MM/dd hh:mm:ss', result);
+    return v;
+  },
+  time: (v) => {
+    const result = parserToDate(v);
+    if (result) return DateUtils.dateFormat('hh:mm:ss', result);
+    return v;
+  },
 };
+
 const CELL_TEXT_FORMAT_TYPE = {
   default: 'default',
   text: 'text',
@@ -84,6 +126,7 @@ const CELL_TEXT_FORMAT_TYPE = {
   date5: 'date5',
   time: 'time',
 };
+
 class Cells {
   constructor({ cols, rows, data = [] }) {
     this.cols = cols;
