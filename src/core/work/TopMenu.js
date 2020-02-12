@@ -171,15 +171,21 @@ class TopMenu extends Widget {
       }
     });
     EventBind.bind(this.format, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      const { screen } = table;
-      const screenSelector = screen.findByClass(ScreenSelector);
-      const { selectorAttr } = screenSelector;
       if (this.format.formatContextMenu.off) {
         this.format.formatContextMenu.close();
       } else {
-        this.format.formatContextMenu.open(selectorAttr);
+        this.format.formatContextMenu.open();
+        this.font.fontContextMenu.close();
+      }
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(this.font, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      if (this.font.fontContextMenu.off) {
+        this.font.fontContextMenu.close();
+      } else {
+        this.font.fontContextMenu.open();
+        this.format.formatContextMenu.close();
       }
       e.stopPropagation();
       e.preventDefault();
