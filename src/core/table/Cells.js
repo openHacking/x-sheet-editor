@@ -22,12 +22,40 @@ const CELL_TEXT_FORMAT_FUNC = {
     }
     return v;
   },
-  fraction: v => v,
-  ENotation: v => v,
+  fraction: (v) => {
+    if (Utils.isFraction(v)) {
+      const left = v.split('/')[0];
+      const right = v.split('/')[1];
+      return Utils.parseInt(left) / Utils.parseInt(right);
+    }
+    return v;
+  },
+  ENotation: (v) => {
+    if (Utils.isNumber(v)) {
+      const number = Utils.parseFloat(v);
+      return number.toExponential(2);
+    }
+    return v;
+  },
 
-  rmb: v => v,
-  hk: v => v,
-  dollar: v => v,
+  rmb: (v) => {
+    if (Utils.isNumber(v)) {
+      return `￥${v}`;
+    }
+    return v;
+  },
+  hk: (v) => {
+    if (Utils.isNumber(v)) {
+      return `HK${v}`;
+    }
+    return v;
+  },
+  dollar: (v) => {
+    if (Utils.isNumber(v)) {
+      return `$${v}`;
+    }
+    return v;
+  },
 
   date1: v => v,
   date2: v => v,

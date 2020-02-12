@@ -66,7 +66,11 @@ class Utils {
   }
 
   static isNumber(e) {
-    return /^(\d+.\d+)$|^(\d+)$/.test(e);
+    return /^(-?\d+.\d+)$|^(-?\d+)$/.test(e);
+  }
+
+  static isFraction(e) {
+    return /^\d+\/\d+$/.test(e);
   }
 
   static isBlank(s) {
@@ -96,6 +100,11 @@ class Utils {
 
   static parseFloat(val) {
     if (Utils.isNumber(val)) return parseFloat(val);
+    return 0;
+  }
+
+  static parseInt(val) {
+    if (Utils.isNumber(val)) return parseInt(val, 10);
     return 0;
   }
 

@@ -68,7 +68,6 @@ class ElPopUp extends Widget {
       layerElements: [contentVerticalLayerElement, scrollBarXVerticalLayerElement],
     });
 
-    super.children(this.content);
     super.children(verticalLayer);
     this.bind();
   }

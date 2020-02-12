@@ -27,14 +27,14 @@ class FormatContextMenu extends ELContextMenu {
     this.addItem(new FormatContextMenuItem('分数', '1/2').on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
       this.update(CELL_TEXT_FORMAT_TYPE.fraction, '分数');
     }));
-    this.addItem(new FormatContextMenuItem('科学计数', '9.50E-01').on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    this.addItem(new FormatContextMenuItem('科学计数', '9.50e-01').on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
       this.update(CELL_TEXT_FORMAT_TYPE.ENotation, '科学计数');
     }));
     this.addItem(new ELContextMenuDivider());
     this.addItem(new FormatContextMenuItem('人民币', '￥5.00').on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
       this.update(CELL_TEXT_FORMAT_TYPE.rmb, '人民币');
     }));
-    this.addItem(new FormatContextMenuItem('港币', 'HK$5.00').on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    this.addItem(new FormatContextMenuItem('港币', 'HK5.00').on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
       this.update(CELL_TEXT_FORMAT_TYPE.hk, '港币');
     }));
     this.addItem(new FormatContextMenuItem('美元', '$5.00').on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
