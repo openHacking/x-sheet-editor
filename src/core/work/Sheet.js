@@ -37,6 +37,10 @@ class Sheet extends Widget {
       this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, this);
       e.stopPropagation();
     });
+    EventBind.bind(this.table, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, (e) => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN, this);
+      e.stopPropagation();
+    });
   }
 }
 

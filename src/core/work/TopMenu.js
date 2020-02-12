@@ -116,7 +116,7 @@ class TopMenu extends Widget {
     EventBind.bind(body, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
       this.setStatus();
     });
-    EventBind.bind(body, Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, () => {
+    EventBind.bind(body, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, () => {
       this.setFormatStatus();
     });
     EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {

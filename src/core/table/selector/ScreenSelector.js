@@ -15,6 +15,7 @@ class ScreenSelector extends ScreenWidget {
     this.onChangeStack = [];
     this.onSelectChangeStack = [];
     this.onSelectChangeOver = [];
+    this.onDownSelectStack = [];
     this.lt = new Selector();
     this.t = new Selector();
     this.l = new Selector();
@@ -37,6 +38,7 @@ class ScreenSelector extends ScreenWidget {
       // console.log('downSelectAttr >>>', downSelectAttr);
       this.selectorAttr = downSelectAttr;
       this.setOffset(downSelectAttr);
+      this.onDownSelectStack.forEach(cb => cb());
       this.onChangeStack.forEach(cb => cb());
       this.onSelectChangeStack.forEach(cb => cb());
       const { edgeType } = downSelectAttr;
@@ -608,6 +610,24 @@ class ScreenSelector extends ScreenWidget {
     return rect;
   }
 
+  // ===========downSelectCb=============
+
+  addDownSelectCb(cb) {
+    this.onDownSelectStack.push(cb);
+  }
+
+  removeDownSelectCb(cb) {
+    for (let i = 0; i < this.onChangeStack.length; i += 1) {
+      const item = this.onDownSelectStack[i];
+      if (item === cb) {
+        this.onDownSelectStack.splice(i, 1);
+        return;
+      }
+    }
+  }
+
+  // ===========changeCb=============
+
   addChangeCb(cb) {
     this.onChangeStack.push(cb);
   }
@@ -622,6 +642,8 @@ class ScreenSelector extends ScreenWidget {
     }
   }
 
+  // ===========selectChangeCb=============
+
   addSelectChangeCb(cb) {
     this.onSelectChangeStack.push(cb);
   }
@@ -635,6 +657,8 @@ class ScreenSelector extends ScreenWidget {
       }
     }
   }
+
+  // ===========selectChangeOverCb=============
 
   addSelectChangeOverCb(cb) {
     this.onSelectChangeOver.push(cb);

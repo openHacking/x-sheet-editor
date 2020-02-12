@@ -1232,6 +1232,9 @@ class Table extends Widget {
     screenSelector.addSelectChangeCb(() => {
       this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
     });
+    screenSelector.addDownSelectCb(() => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN);
+    });
     this.screen.addWidget(screenSelector);
     // 自动填充组件
     const screenAutoFill = new ScreenAutoFill(this.screen, {
