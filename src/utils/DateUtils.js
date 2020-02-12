@@ -34,9 +34,9 @@ class DateUtils {
 
   static parserToDate(dateText, format) {
     if (!dateText) {
-      return new Date();
+      return null;
     }
-    const defaultVal = new Date();
+    const defaultVal = new Date('1970/01/01 00:00:00');
     const o = [{
       reg: 'y+',
     }, {
@@ -44,7 +44,7 @@ class DateUtils {
     }, {
       reg: 'd+',
     }, {
-      reg: 'H+',
+      reg: 'h+',
     }, {
       reg: 'm+',
     }, {
@@ -81,7 +81,7 @@ class DateUtils {
       const res = re.exec(format);
       if (res) {
         const formatPart = res[0];
-        const replaceVal = `([0-9]{${formatPart.length}})`;
+        const replaceVal = `([0-9]{1,${formatPart.length}})`;
         // eslint-disable-next-line no-param-reassign
         format = format.replace(formatPart, replaceVal);
       }

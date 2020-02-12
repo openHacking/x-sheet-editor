@@ -4,17 +4,17 @@ import { RectText } from '../../graphical/rect/RectText';
 import { DateUtils } from '../../utils/DateUtils';
 
 const parserToDate = (text) => {
-  let result = DateUtils.parserToDate(text, 'yyyy/MM/dd');
+  let result = DateUtils.parserToDate(text, 'yyyy/MM/dd hh:mm:ss');
+  if (result) return result;
+  result = DateUtils.parserToDate(text, 'yyyy/MM/dd');
+  if (result) return result;
+  result = DateUtils.parserToDate(text, 'hh:mm:ss');
   if (result) return result;
   result = DateUtils.parserToDate(text, 'MM月dd日');
   if (result) return result;
   result = DateUtils.parserToDate(text, 'yyyy年MM月');
   if (result) return result;
   result = DateUtils.parserToDate(text, 'yyyy年MM月dd日');
-  if (result) return result;
-  result = DateUtils.parserToDate(text, 'yyyy/MM/dd hh:mm:ss');
-  if (result) return result;
-  result = DateUtils.parserToDate(text, 'hh:mm:ss');
   if (result) return result;
   return null;
 };
