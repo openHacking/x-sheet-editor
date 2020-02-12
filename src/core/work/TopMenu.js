@@ -26,7 +26,8 @@ import { Constant } from '../../utils/Constant';
 import { ScreenCopyStyle } from '../table/copystyle/ScreenCopyStyle';
 import { ScreenSelector } from '../table/selector/ScreenSelector';
 import { Utils } from '../../utils/Utils';
-import { CELL_TEXT_FORMAT_TYPE } from '../table/Cells';
+import { CELL_TEXT_FORMAT_TYPE, Cells } from '../table/Cells';
+import { ElPopUp } from '../../component/elpopup/ElPopUp';
 
 class Divider extends Widget {
   constructor() {
@@ -63,7 +64,27 @@ class TopMenu extends Widget {
         },
       },
     });
-    this.font = new Font();
+    this.font = new Font({
+      contextMenu: {
+        onUpdate: (type) => {
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          const { screen, cells } = table;
+          const screenSelector = screen.findByClass(ScreenSelector);
+          const { selectorAttr } = screenSelector;
+          if (selectorAttr) {
+            cells.getRectRangeCell(selectorAttr.rect, (r, c, rect, cell) => {
+              const font = cell.style.font || cells.defaultStyle.font;
+              cell.style.font = Utils.copyProp(font, {
+                name: type,
+              });
+            }, undefined, true);
+            table.snapshot();
+            table.render();
+          }
+        },
+      },
+    });
     this.fontSize = new FontSize();
     this.fontBold = new FontBold();
     this.fontItalic = new FontItalic();
@@ -171,21 +192,21 @@ class TopMenu extends Widget {
       }
     });
     EventBind.bind(this.format, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      ElPopUp.closeAll([this]);
       if (this.format.formatContextMenu.off) {
         this.format.formatContextMenu.close();
       } else {
         this.format.formatContextMenu.open();
-        this.font.fontContextMenu.close();
       }
       e.stopPropagation();
       e.preventDefault();
     });
     EventBind.bind(this.font, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      ElPopUp.closeAll([this]);
       if (this.font.fontContextMenu.off) {
         this.font.fontContextMenu.close();
       } else {
         this.font.fontContextMenu.open();
-        this.format.formatContextMenu.close();
       }
       e.stopPropagation();
       e.preventDefault();

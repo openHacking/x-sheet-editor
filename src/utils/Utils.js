@@ -180,8 +180,11 @@ class Utils {
     for (const key in target) {
       // eslint-disable-next-line no-prototype-builtins
       if (target.hasOwnProperty(key)) {
-        if (src[key] && Utils.equal(src[key], target[key])) continue;
-        result[key] = target[key];
+        if (!Utils.isUnDef(src[key])
+          && !Utils.isUnDef(target[key])
+          && !Utils.equal(src[key], target[key])) {
+          result[key] = target[key];
+        }
       }
     }
     return result;

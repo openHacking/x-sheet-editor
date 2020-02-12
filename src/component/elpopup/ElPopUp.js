@@ -21,18 +21,7 @@ const EL_POPUP_POSITION = {
   RIGHT: 4,
 };
 
-let contentLayerHorizontalElement;
-let scrollBarYLayerHorizontalElement;
-let horizontalLayer;
-
-let contentVerticalLayerElement;
-let scrollBarXVerticalLayerElement;
-let verticalLayer;
-
-let animate1;
-let animate2;
-let animate3;
-let animate4;
+const pool = [];
 
 class ElPopUp extends Widget {
   constructor(className, options) {
@@ -46,30 +35,36 @@ class ElPopUp extends Widget {
     this.scrollBarY = new ScrollBarY();
     this.off = false;
 
+    this.animate1 = null;
+    this.animate2 = null;
+    this.animate3 = null;
+    this.animate4 = null;
+
     // 水平布局
-    contentLayerHorizontalElement = new HorizontalLayerElement(this.content, {
+    const contentLayerHorizontalElement = new HorizontalLayerElement(this.content, {
       style: {
         flexGrow: 1,
       },
     });
-    scrollBarYLayerHorizontalElement = new HorizontalLayerElement(this.scrollBarY, {
+    const scrollBarYLayerHorizontalElement = new HorizontalLayerElement(this.scrollBarY, {
       style: {
         overflow: 'inherit',
       },
     });
-    horizontalLayer = new HorizontalLayer({
+    const horizontalLayer = new HorizontalLayer({
       layerElements: [contentLayerHorizontalElement, scrollBarYLayerHorizontalElement],
     });
 
     // 垂直布局
-    contentVerticalLayerElement = new VerticalLayerElement(horizontalLayer);
-    scrollBarXVerticalLayerElement = new VerticalLayerElement(this.scrollBarX);
-    verticalLayer = new VerticalLayer({
+    const contentVerticalLayerElement = new VerticalLayerElement(horizontalLayer);
+    const scrollBarXVerticalLayerElement = new VerticalLayerElement(this.scrollBarX);
+    const verticalLayer = new VerticalLayer({
       layerElements: [contentVerticalLayerElement, scrollBarXVerticalLayerElement],
     });
 
     super.children(verticalLayer);
     this.bind();
+    pool.push(this);
   }
 
   bind() {
@@ -159,24 +154,26 @@ class ElPopUp extends Widget {
       this.computePosition();
       this.computeScrollSize();
       const popUpBox = this.box();
-      if (animate1) animate1.cancel();
-      if (animate2) animate2.cancel();
-      animate1 = new Animate({
+      if (this.animate1) this.animate1.cancel();
+      if (this.animate2) this.animate2.cancel();
+      if (this.animate3) this.animate3.cancel();
+      if (this.animate4) this.animate4.cancel();
+      this.animate1 = new Animate({
         begin: 0,
         end: 1,
         receive: (val) => {
           this.css('opacity', val);
         },
       });
-      animate2 = new Animate({
+      this.animate2 = new Animate({
         begin: popUpBox.top + 10,
         end: popUpBox.top,
         receive: (val) => {
           this.css('top', `${val}px`);
         },
       });
-      animate1.request();
-      animate2.request();
+      this.animate1.request();
+      this.animate2.request();
       this.off = true;
     }
   }
@@ -184,29 +181,39 @@ class ElPopUp extends Widget {
   close() {
     if (this.off) {
       const popUpBox = this.box();
-      if (animate3) animate3.cancel();
-      if (animate4) animate4.cancel();
-      animate3 = new Animate({
+      if (this.animate1) this.animate1.cancel();
+      if (this.animate2) this.animate2.cancel();
+      if (this.animate3) this.animate3.cancel();
+      if (this.animate4) this.animate4.cancel();
+      this.animate3 = new Animate({
         begin: 1,
         end: 0,
         receive: (val) => {
           this.css('opacity', val);
         },
       });
-      animate4 = new Animate({
+      this.animate4 = new Animate({
         begin: popUpBox.top,
         end: popUpBox.top + 10,
         receive: (val) => {
           this.css('top', `${val}px`);
         },
       });
-      Animate.success(animate3, animate4).then(() => {
+      Animate.success(this.animate3, this.animate4).then(() => {
         h(document.body).remove(this);
         this.off = false;
       });
-      animate3.request();
-      animate4.request();
+      this.animate3.request();
+      this.animate4.request();
     }
+  }
+
+  static closeAll(filter = []) {
+    pool.forEach((item) => {
+      if (filter.indexOf(item) === -1) {
+        item.close();
+      }
+    });
   }
 }
 

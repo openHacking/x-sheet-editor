@@ -385,6 +385,7 @@ class ScreenAutoFill extends ScreenWidget {
         if (src) {
           target.text = src.text;
           target.format = src.format;
+          target.style = src.style;
           if (!Utils.isBlank(src.text)) {
             count += 1;
           }
