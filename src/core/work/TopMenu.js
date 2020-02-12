@@ -26,7 +26,7 @@ import { Constant } from '../../utils/Constant';
 import { ScreenCopyStyle } from '../table/copystyle/ScreenCopyStyle';
 import { ScreenSelector } from '../table/selector/ScreenSelector';
 import { Utils } from '../../utils/Utils';
-import { CELL_TEXT_FORMAT_TYPE, Cells } from '../table/Cells';
+import { CELL_TEXT_FORMAT_TYPE } from '../table/Cells';
 import { ElPopUp } from '../../component/elpopup/ElPopUp';
 
 class Divider extends Widget {
@@ -74,10 +74,7 @@ class TopMenu extends Widget {
           const { selectorAttr } = screenSelector;
           if (selectorAttr) {
             cells.getRectRangeCell(selectorAttr.rect, (r, c, rect, cell) => {
-              const font = cell.style.font || cells.defaultStyle.font;
-              cell.style.font = Utils.copyProp(font, {
-                name: type,
-              });
+              cell.style.font.name = type;
             }, undefined, true);
             table.snapshot();
             table.render();
@@ -186,7 +183,7 @@ class TopMenu extends Widget {
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
         cells.getRectRangeCell(selectorAttr.rect, (r, c, rect, cell) => {
-          cell.style = cells.defaultStyle;
+          cell.style = cells.getDefaultStyle();
         });
         table.render();
       }

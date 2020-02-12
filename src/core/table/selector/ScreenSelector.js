@@ -279,8 +279,8 @@ class ScreenSelector extends ScreenWidget {
     this.lt.cornerEl.hide();
 
     if (edge) {
-      const ltT = Utils.arrayEqual(intersectsArea, ['lt', 't']);
-      const ltL = Utils.arrayEqual(intersectsArea, ['lt', 'l']);
+      const ltT = Utils.arrayIncludeArray(intersectsArea, ['lt', 't']);
+      const ltL = Utils.arrayIncludeArray(intersectsArea, ['lt', 'l']);
       if (edgeType === 'left' && ltT) {
         this.lt.cornerEl.show();
         this.lt.cornerEl.css('left', '0px');
@@ -292,7 +292,7 @@ class ScreenSelector extends ScreenWidget {
         this.lt.cornerEl.css('top', '0px');
       }
     } else {
-      const lt = Utils.arrayEqual(intersectsArea, ['lt']);
+      const lt = Utils.arrayIncludeArray(intersectsArea, ['lt']);
       if (lt) {
         this.lt.cornerEl.show();
         this.lt.cornerEl.css('right', '0px');
@@ -327,8 +327,8 @@ class ScreenSelector extends ScreenWidget {
     this.t.cornerEl.hide();
 
     if (edge) {
-      const tBr = Utils.arrayEqual(intersectsArea, ['t', 'br']);
-      const ltTBrL = Utils.arrayEqual(intersectsArea, ['lt', 't', 'l', 'br']);
+      const tBr = Utils.arrayIncludeArray(intersectsArea, ['t', 'br']);
+      const ltTBrL = Utils.arrayIncludeArray(intersectsArea, ['lt', 't', 'l', 'br']);
       if (edgeType === 'top' && tBr) {
         this.t.cornerEl.show();
         this.t.cornerEl.css('right', '0px');
@@ -343,8 +343,8 @@ class ScreenSelector extends ScreenWidget {
         this.t.cornerEl.hide();
       }
     } else {
-      const t = Utils.arrayEqual(intersectsArea, ['t']);
-      const ltT = Utils.arrayEqual(intersectsArea, ['lt', 't']);
+      const t = Utils.arrayIncludeArray(intersectsArea, ['t']);
+      const ltT = Utils.arrayIncludeArray(intersectsArea, ['lt', 't']);
       if (t || ltT) {
         this.t.cornerEl.show();
         this.t.cornerEl.css('right', '0px');
@@ -379,8 +379,8 @@ class ScreenSelector extends ScreenWidget {
     this.l.cornerEl.hide();
 
     if (edge) {
-      const lBr = Utils.arrayEqual(intersectsArea, ['l', 'br']);
-      const ltTBrL = Utils.arrayEqual(intersectsArea, ['lt', 't', 'l', 'br']);
+      const lBr = Utils.arrayIncludeArray(intersectsArea, ['l', 'br']);
+      const ltTBrL = Utils.arrayIncludeArray(intersectsArea, ['lt', 't', 'l', 'br']);
       if (edgeType === 'left' && lBr) {
         this.l.cornerEl.show();
         this.l.cornerEl.css('left', '0');
@@ -395,8 +395,8 @@ class ScreenSelector extends ScreenWidget {
         this.l.cornerEl.hide();
       }
     } else {
-      const l = Utils.arrayEqual(intersectsArea, ['l']);
-      const ltL = Utils.arrayEqual(intersectsArea, ['lt', 'l']);
+      const l = Utils.arrayIncludeArray(intersectsArea, ['l']);
+      const ltL = Utils.arrayIncludeArray(intersectsArea, ['lt', 'l']);
       if (l || ltL) {
         this.l.cornerEl.show();
         this.l.cornerEl.css('right', '0px');
@@ -431,8 +431,8 @@ class ScreenSelector extends ScreenWidget {
     this.br.cornerEl.hide();
 
     if (edge) {
-      const br = Utils.arrayEqual(intersectsArea, ['br']);
-      const ltTLBr = Utils.arrayEqual(intersectsArea, ['lt', 't', 'l', 'br']);
+      const br = Utils.arrayIncludeArray(intersectsArea, ['br']);
+      const ltTLBr = Utils.arrayIncludeArray(intersectsArea, ['lt', 't', 'l', 'br']);
       if (edgeType === 'left' && br) {
         this.br.cornerEl.show();
         this.br.cornerEl.css('left', '0');
@@ -460,10 +460,10 @@ class ScreenSelector extends ScreenWidget {
         this.br.cornerEl.hide();
       }
     } else {
-      const br = Utils.arrayEqual(intersectsArea, ['br']);
-      const tBr = Utils.arrayEqual(intersectsArea, ['t', 'br']);
-      const lBr = Utils.arrayEqual(intersectsArea, ['l', 'br']);
-      const ltTLBr = Utils.arrayEqual(intersectsArea, ['lt', 't', 'l', 'br']);
+      const br = Utils.arrayIncludeArray(intersectsArea, ['br']);
+      const tBr = Utils.arrayIncludeArray(intersectsArea, ['t', 'br']);
+      const lBr = Utils.arrayIncludeArray(intersectsArea, ['l', 'br']);
+      const ltTLBr = Utils.arrayIncludeArray(intersectsArea, ['lt', 't', 'l', 'br']);
       if (br || tBr || lBr || lBr || ltTLBr) {
         this.br.cornerEl.show();
         this.br.cornerEl.css('right', '0px');

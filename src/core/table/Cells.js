@@ -131,7 +131,21 @@ class Cells {
   constructor({ cols, rows, data = [] }) {
     this.cols = cols;
     this.rows = rows;
-    this.defaultStyle = {
+    this._ = data;
+  }
+
+  initCell(cell) {
+    if (cell.ini === true) return cell;
+    return Utils.mergeDeep({
+      text: '',
+      format: CELL_TEXT_FORMAT_TYPE.default,
+      style: this.getDefaultStyle(),
+      ini: true,
+    }, cell);
+  }
+
+  getDefaultStyle() {
+    return Utils.cloneDeep(true, {}, {
       align: 'left',
       verticalAlign: 'middle',
       textWrap: false,
@@ -144,18 +158,13 @@ class Cells {
         bold: false,
         italic: false,
       },
-    };
-    this._ = data;
+    });
   }
 
   getCell(ri, ci) {
     const row = this._[ri];
     if (row && row[ci]) {
-      row[ci] = Utils.mergeDeep({
-        text: '',
-        format: CELL_TEXT_FORMAT_TYPE.default,
-        style: {},
-      }, row[ci]);
+      row[ci] = this.initCell(row[ci]);
       return row[ci];
     }
     return null;
@@ -166,12 +175,9 @@ class Cells {
       this._[ri] = [];
     }
     if (!this._[ri][ci]) {
-      this._[ri][ci] = {
-        text: '',
-        format: CELL_TEXT_FORMAT_TYPE.default,
-        style: {},
-      };
+      this._[ri][ci] = {};
     }
+    this._[ri][ci] = this.initCell(this._[ri][ci]);
     return this._[ri][ci];
   }
 
@@ -211,7 +217,7 @@ class Cells {
   }
 
   getRectText(draw, rect = null) {
-    return new RectText(draw, rect, this.defaultStyle);
+    return new RectText(draw, rect, this.getDefaultStyle());
   }
 
   getData() {

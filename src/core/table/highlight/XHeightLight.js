@@ -43,7 +43,7 @@ class XHeightLight extends Widget {
     const { index } = settings;
     const empty = new RectRange(0, -1, 0, -1);
     this.hide();
-    if (Utils.arrayEqual(intersectsArea, ['lt'])) {
+    if (Utils.arrayIncludeArray(intersectsArea, ['lt'])) {
       const { rect } = selectorAttr;
       const { frozenLeftTop, cols } = table;
       const ltViewRange = frozenLeftTop.getViewRange();
@@ -56,7 +56,7 @@ class XHeightLight extends Widget {
           left,
         }).show();
       }
-    } else if (Utils.arrayEqual(intersectsArea, ['t'])) {
+    } else if (Utils.arrayIncludeArray(intersectsArea, ['t'])) {
       const { rect } = selectorAttr;
       const { fixedTop, cols } = table;
       const tViewRange = fixedTop.getViewRange();
@@ -70,7 +70,7 @@ class XHeightLight extends Widget {
           left,
         }).show();
       }
-    } else if (Utils.arrayEqual(intersectsArea, ['l'])) {
+    } else if (Utils.arrayIncludeArray(intersectsArea, ['l'])) {
       const { rect } = selectorAttr;
       const { fixedLeft, cols } = table;
       const lViewRange = fixedLeft.getViewRange();
@@ -83,7 +83,7 @@ class XHeightLight extends Widget {
           left,
         }).show();
       }
-    } else if (Utils.arrayEqual(intersectsArea, ['br'])) {
+    } else if (Utils.arrayIncludeArray(intersectsArea, ['br'])) {
       const { rect } = selectorAttr;
       const { content, cols } = table;
       const cViewRange = content.getViewRange();
@@ -97,7 +97,7 @@ class XHeightLight extends Widget {
           left,
         }).show();
       }
-    } else if (Utils.arrayEqual(intersectsArea, ['lt', 't'])) {
+    } else if (Utils.arrayIncludeArray(intersectsArea, ['lt', 't'])) {
       const { rect } = selectorAttr;
       const { frozenLeftTop, fixedTop, cols } = table;
       const ltViewRange = frozenLeftTop.getViewRange();
@@ -116,7 +116,7 @@ class XHeightLight extends Widget {
         width,
         left,
       }).show();
-    } else if (Utils.arrayEqual(intersectsArea, ['lt', 'l'])) {
+    } else if (Utils.arrayIncludeArray(intersectsArea, ['lt', 'l'])) {
       const { rect } = selectorAttr;
       const { frozenLeftTop, cols } = table;
       const ltViewRange = frozenLeftTop.getViewRange();
@@ -129,7 +129,7 @@ class XHeightLight extends Widget {
           left,
         }).show();
       }
-    } else if (Utils.arrayEqual(intersectsArea, ['t', 'br'])) {
+    } else if (Utils.arrayIncludeArray(intersectsArea, ['t', 'br'])) {
       const { rect } = selectorAttr;
       const { fixedTop, cols } = table;
       const tViewRange = fixedTop.getViewRange();
@@ -143,7 +143,7 @@ class XHeightLight extends Widget {
           left,
         }).show();
       }
-    } else if (Utils.arrayEqual(intersectsArea, ['l', 'br'])) {
+    } else if (Utils.arrayIncludeArray(intersectsArea, ['l', 'br'])) {
       const { rect } = selectorAttr;
       const { fixedLeft, content, cols } = table;
       const lViewRange = fixedLeft.getViewRange();
@@ -162,7 +162,7 @@ class XHeightLight extends Widget {
         width,
         left,
       }).show();
-    } else if (Utils.arrayEqual(intersectsArea, ['lt', 't', 'l', 'br'])) {
+    } else if (Utils.arrayIncludeArray(intersectsArea, ['lt', 't', 'l', 'br'])) {
       const { rect } = selectorAttr;
       const { frozenLeftTop, fixedTop, cols } = table;
       const ltViewRange = frozenLeftTop.getViewRange();

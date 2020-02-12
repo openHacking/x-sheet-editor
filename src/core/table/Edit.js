@@ -100,7 +100,7 @@ class Edit extends Widget {
     const { cols, rows } = table;
     const offset = 4;
     const intersectsArea = selector.getIntersectsArea(selectorAttr);
-    if (Utils.arrayEqual(intersectsArea, ['lt'])) {
+    if (Utils.arrayIncludeArray(intersectsArea, ['lt'])) {
       // console.log('lt');
       const { frozenLeftTop } = table;
       const viewRange = frozenLeftTop.getViewRange();
@@ -121,7 +121,7 @@ class Edit extends Widget {
         top,
         left,
       }).show();
-    } else if (Utils.arrayEqual(intersectsArea, ['t'])) {
+    } else if (Utils.arrayIncludeArray(intersectsArea, ['t'])) {
       // console.log('t');
       const { fixedTop } = table;
       const viewRange = fixedTop.getViewRange();
@@ -142,7 +142,7 @@ class Edit extends Widget {
         top,
         left,
       }).show();
-    } else if (Utils.arrayEqual(intersectsArea, ['br'])) {
+    } else if (Utils.arrayIncludeArray(intersectsArea, ['br'])) {
       // console.log('br');
       const { content } = table;
       const viewRange = content.getViewRange();
@@ -163,7 +163,7 @@ class Edit extends Widget {
         top,
         left,
       }).show();
-    } else if (Utils.arrayEqual(intersectsArea, ['l'])) {
+    } else if (Utils.arrayIncludeArray(intersectsArea, ['l'])) {
       // console.log('l');
       const { fixedLeft } = table;
       const viewRange = fixedLeft.getViewRange();
@@ -184,7 +184,7 @@ class Edit extends Widget {
         top,
         left,
       }).show();
-    } else if (Utils.arrayEqual(intersectsArea, ['lt', 't'])) {
+    } else if (Utils.arrayIncludeArray(intersectsArea, ['lt', 't'])) {
       // console.log('lt t');
       const { frozenLeftTop, fixedTop } = table;
 
@@ -206,7 +206,7 @@ class Edit extends Widget {
         top: ltTop + table.getIndexHeight() + offset,
         left: ltLeft + table.getIndexWidth() + offset,
       }).show();
-    } else if (Utils.arrayEqual(intersectsArea, ['t', 'br'])) {
+    } else if (Utils.arrayIncludeArray(intersectsArea, ['t', 'br'])) {
       // console.log('t, br');
       const { content, fixedTop } = table;
 
@@ -229,7 +229,7 @@ class Edit extends Widget {
         top: tTop + table.getIndexHeight() + offset,
         left: tLeft + table.getFixedWidth() + table.getIndexWidth() + offset,
       }).show();
-    } else if (Utils.arrayEqual(intersectsArea, ['br', 'l'])) {
+    } else if (Utils.arrayIncludeArray(intersectsArea, ['br', 'l'])) {
       // console.log('br, l');
       const { content, fixedLeft } = table;
 
@@ -252,7 +252,7 @@ class Edit extends Widget {
         top: lTop + table.getFixedHeight() + table.getIndexHeight() + offset,
         left: lLeft + table.getIndexWidth() + offset,
       }).show();
-    } else if (Utils.arrayEqual(intersectsArea, ['l', 'lt'])) {
+    } else if (Utils.arrayIncludeArray(intersectsArea, ['l', 'lt'])) {
       // console.log('l, lt');
       const { frozenLeftTop, fixedLeft } = table;
 
@@ -278,7 +278,7 @@ class Edit extends Widget {
         top: ltTop,
         left: ltLeft,
       }).show();
-    } else if (Utils.arrayEqual(intersectsArea, ['lt', 't', 'br', 'l'])) {
+    } else if (Utils.arrayIncludeArray(intersectsArea, ['lt', 't', 'br', 'l'])) {
       // console.log('lt t br l');
       const { frozenLeftTop } = table;
       const ltViewRange = frozenLeftTop.getViewRange();

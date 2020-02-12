@@ -9,16 +9,27 @@ class RectText extends RectDraw {
     super(draw, rect);
     this.attr = attr;
     if (this.attr) {
-      const {
-        align, verticalAlign, font, color,
-      } = this.attr;
-      draw.attr({
-        textAlign: align,
-        textBaseline: verticalAlign,
-        font: `${font.italic ? 'italic' : ''} ${font.bold ? 'bold' : ''} ${npx(font.size)}px ${font.name}`,
-        fillStyle: color,
-        strokeStyle: color,
-      });
+      this.updateFontDrawAttr(this.attr);
+    }
+  }
+
+  updateFontDrawAttr(attr) {
+    const updateAttr = {};
+    if (attr.align) {
+      updateAttr.textAlign = attr.align;
+    }
+    if (attr.verticalAlign) {
+      updateAttr.textBaseline = attr.verticalAlign;
+    }
+    if (attr.font) {
+      updateAttr.font = `${attr.font.italic ? 'italic' : ''} ${attr.font.bold ? 'bold' : ''} ${npx(attr.font.size)}px ${attr.font.name}`;
+    }
+    if (attr.color) {
+      updateAttr.fillStyle = attr.color;
+      updateAttr.strokeStyle = attr.color;
+    }
+    if (Utils.isNotEmptyObject(updateAttr)) {
+      this.draw.attr(updateAttr);
     }
   }
 
@@ -79,30 +90,15 @@ class RectText extends RectDraw {
   text(txt, attr, maxWidth = 0) {
     const { draw, rect } = this;
     const { ctx } = draw;
-    const addAttr = Utils.contrastDifference(attr, this.attr);
-    const isChange = Utils.isNotEmptyObject(addAttr);
+    const isChange = !Utils.equal(attr, this.attr);
     if (isChange) {
-      draw.save();
-      const changeAttr = {};
-      if (addAttr.align) {
-        changeAttr.align = addAttr.align;
-      }
-      if (addAttr.verticalAlign) {
-        changeAttr.textBaseline = addAttr.verticalAlign;
-      }
-      if (addAttr.font) {
-        changeAttr.font = `${addAttr.font.italic ? 'italic' : ''} ${addAttr.font.bold ? 'bold' : ''} ${npx(addAttr.font.size)}px ${addAttr.font.name}`;
-      }
-      if (addAttr.color) {
-        changeAttr.fillStyle = addAttr.color;
-        changeAttr.strokeStyle = addAttr.color;
-      }
-      draw.attr(changeAttr);
+      const addAttr = Utils.contrastDifference(attr, this.attr);
+      this.attr = Utils.mergeDeep({}, this.attr, addAttr);
+      this.updateFontDrawAttr(addAttr);
     }
-    const newAttr = Utils.mergeDeep({}, this.attr, addAttr);
     const {
       align, verticalAlign, font, strike, underline, textWrap,
-    } = newAttr;
+    } = this.attr;
     const tx = this.textAlign(align);
     const txtWidth = ctx.measureText(txt).width;
     let hOffset = 0;
@@ -168,9 +164,6 @@ class RectText extends RectDraw {
       if (underline) {
         this.drawFontLine('underline', tx, ty, align, verticalAlign, font.size, txtWidth);
       }
-    }
-    if (isChange) {
-      draw.restore();
     }
     return this;
   }
