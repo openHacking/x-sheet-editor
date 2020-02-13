@@ -210,7 +210,7 @@ class TopMenu extends Widget {
     });
   }
 
-  setFormatStatus() {
+  setFontStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -266,6 +266,21 @@ class TopMenu extends Widget {
     }
   }
 
+  setFormatStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { screen, cells } = table;
+    const screenSelector = screen.findByClass(ScreenSelector);
+    const { selectorAttr } = screenSelector;
+    if (selectorAttr) {
+      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+      const { style } = firstCell;
+      this.font.setTitle(style.font.name);
+    }
+  }
+
   setUndoStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
@@ -294,6 +309,7 @@ class TopMenu extends Widget {
     this.setRedoStatus();
     this.setPaintFormatStatus();
     this.setFormatStatus();
+    this.setFontStatus();
   }
 }
 

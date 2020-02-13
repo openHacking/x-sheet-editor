@@ -27,7 +27,7 @@ class ScrollBarY extends Widget {
     this.blockTop = 0;
     this.maxBlockTop = 0;
     this.blockHeight = 0;
-    this.minBlockHeight = 10;
+    this.minBlockHeight = 20;
     this.scrollTo = 0;
     this.contentHeight = 0;
     this.viewPortHeight = 0;

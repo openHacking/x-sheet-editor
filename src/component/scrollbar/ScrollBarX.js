@@ -27,7 +27,7 @@ class ScrollBarX extends Widget {
     this.blockLeft = 0;
     this.maxBlockLeft = 0;
     this.blockWidth = 0;
-    this.minBlockWidth = 10;
+    this.minBlockWidth = 20;
     this.scrollTo = 0;
     this.contentWidth = 0;
     this.viewPortWidth = 0;
