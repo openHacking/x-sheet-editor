@@ -51,10 +51,13 @@ class YHeightLight extends Widget {
       if (!empty.equals(ltCoincideRange)) {
         const height = rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
         const top = rows.sectionSumHeight(ltViewRange.sri, ltCoincideRange.sri - 1) + index.height;
-        this.offset({
-          height,
-          top,
-        }).show();
+        if (`${height}px` !== this.css('height')) {
+          this.css('height', `${height}px`);
+        }
+        if (`${top}px` !== this.css('top')) {
+          this.css('top', `${top}px`);
+        }
+        this.show();
       }
     } else if (Utils.arrayIncludeArray(intersectsArea, ['t'])) {
       const { rect } = selectorAttr;
@@ -67,10 +70,13 @@ class YHeightLight extends Widget {
         const top = rows.sectionSumHeight(tViewRange.sri, tCoincideRange.sri - 1) + index.height;
         // console.log('height>>>', height);
         // console.log('top>>>', top);
-        this.offset({
-          height,
-          top,
-        }).show();
+        if (`${height}px` !== this.css('height')) {
+          this.css('height', `${height}px`);
+        }
+        if (`${top}px` !== this.css('top')) {
+          this.css('top', `${top}px`);
+        }
+        this.show();
       }
     } else if (Utils.arrayIncludeArray(intersectsArea, ['l'])) {
       const { rect } = selectorAttr;
@@ -81,10 +87,13 @@ class YHeightLight extends Widget {
         const height = rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
         const top = rows.sectionSumHeight(lViewRange.sri, lCoincideRange.sri - 1)
           + table.getFixedHeight() + index.height;
-        this.offset({
-          height,
-          top,
-        }).show();
+        if (`${height}px` !== this.css('height')) {
+          this.css('height', `${height}px`);
+        }
+        if (`${top}px` !== this.css('top')) {
+          this.css('top', `${top}px`);
+        }
+        this.show();
       }
     } else if (Utils.arrayIncludeArray(intersectsArea, ['br'])) {
       const { rect } = selectorAttr;
@@ -98,10 +107,13 @@ class YHeightLight extends Widget {
           + table.getFixedHeight() + index.height;
         // console.log('height>>>', height);
         // console.log('top>>>', top);
-        this.offset({
-          height,
-          top,
-        }).show();
+        if (`${height}px` !== this.css('height')) {
+          this.css('height', `${height}px`);
+        }
+        if (`${top}px` !== this.css('top')) {
+          this.css('top', `${top}px`);
+        }
+        this.show();
       }
     } else if (Utils.arrayIncludeArray(intersectsArea, ['lt', 't'])) {
       const { rect } = selectorAttr;
@@ -111,10 +123,13 @@ class YHeightLight extends Widget {
       if (!empty.equals(ltCoincideRange)) {
         const top = rows.sectionSumHeight(ltViewRange.sri, ltCoincideRange.sri - 1) + index.height;
         const height = rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
-        this.offset({
-          height,
-          top,
-        }).show();
+        if (`${height}px` !== this.css('height')) {
+          this.css('height', `${height}px`);
+        }
+        if (`${top}px` !== this.css('top')) {
+          this.css('top', `${top}px`);
+        }
+        this.show();
       }
     } else if (Utils.arrayIncludeArray(intersectsArea, ['lt', 'l'])) {
       const { rect } = selectorAttr;
@@ -131,10 +146,13 @@ class YHeightLight extends Widget {
       if (!empty.equals(lCoincideRange)) {
         height += rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
       }
-      this.offset({
-        height,
-        top,
-      }).show();
+      if (`${height}px` !== this.css('height')) {
+        this.css('height', `${height}px`);
+      }
+      if (`${top}px` !== this.css('top')) {
+        this.css('top', `${top}px`);
+      }
+      this.show();
     } else if (Utils.arrayIncludeArray(intersectsArea, ['t', 'br'])) {
       const { rect } = selectorAttr;
       const { fixedTop, content, rows } = table;
@@ -154,10 +172,13 @@ class YHeightLight extends Widget {
       // console.log('cCoincideRange>>>', cCoincideRange);
       // console.log('top>>>', top);
       // console.log('height>>>', height);
-      this.offset({
-        height,
-        top,
-      }).show();
+      if (`${height}px` !== this.css('height')) {
+        this.css('height', `${height}px`);
+      }
+      if (`${top}px` !== this.css('top')) {
+        this.css('top', `${top}px`);
+      }
+      this.show();
     } else if (Utils.arrayIncludeArray(intersectsArea, ['l', 'br'])) {
       const { rect } = selectorAttr;
       const { fixedLeft, rows } = table;
@@ -167,10 +188,13 @@ class YHeightLight extends Widget {
         const height = rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
         const top = rows.sectionSumHeight(lViewRange.sri, lCoincideRange.sri - 1)
           + table.getFixedHeight() + index.height;
-        this.offset({
-          height,
-          top,
-        }).show();
+        if (`${height}px` !== this.css('height')) {
+          this.css('height', `${height}px`);
+        }
+        if (`${top}px` !== this.css('top')) {
+          this.css('top', `${top}px`);
+        }
+        this.show();
       }
     } else if (Utils.arrayIncludeArray(intersectsArea, ['lt', 't', 'l', 'br'])) {
       const { rect } = selectorAttr;
@@ -187,10 +211,13 @@ class YHeightLight extends Widget {
       if (!empty.equals(lCoincideRange)) {
         height += rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
       }
-      this.offset({
-        height,
-        top,
-      }).show();
+      if (`${height}px` !== this.css('height')) {
+        this.css('height', `${height}px`);
+      }
+      if (`${top}px` !== this.css('top')) {
+        this.css('top', `${top}px`);
+      }
+      this.show();
     }
   }
 

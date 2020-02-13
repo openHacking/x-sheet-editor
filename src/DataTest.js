@@ -1,17 +1,13 @@
-const Data = new Array(10000);
+const Data = [];
 
-for (let i = 0; i < Data.length; i += 1) {
-  const rows = new Array(80);
-  for (let j = 0; j < rows.length; j += 1) {
-    rows[j] = {
+for (let i = 0; i < 1000; i += 1) {
+  const rows = [];
+  for (let j = 0; j < 80; j += 1) {
+    rows.push({
       text: `行: ${i + 1} 列:${j + 1}`,
-    };
-    if (i === 0 && j === 0) {
-      rows[j].style = {};
-      rows[j].style.textWrap = true;
-    }
+    });
   }
-  Data[i] = rows;
+  Data.push(rows);
 }
 
 export { Data };

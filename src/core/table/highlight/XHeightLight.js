@@ -51,10 +51,13 @@ class XHeightLight extends Widget {
       if (!empty.equals(ltCoincideRange)) {
         const width = cols.sectionSumWidth(ltCoincideRange.sci, ltCoincideRange.eci);
         const left = cols.sectionSumWidth(ltViewRange.sci, ltCoincideRange.sci - 1) + index.width;
-        this.offset({
-          width,
-          left,
-        }).show();
+        if (`${width}px` !== this.css('width')) {
+          this.css('width', `${width}px`);
+        }
+        if (`${left}px` !== this.css('left')) {
+          this.css('left', `${left}px`);
+        }
+        this.show();
       }
     } else if (Utils.arrayIncludeArray(intersectsArea, ['t'])) {
       const { rect } = selectorAttr;
@@ -65,10 +68,13 @@ class XHeightLight extends Widget {
         const width = cols.sectionSumWidth(tCoincideRange.sci, tCoincideRange.eci);
         const left = cols.sectionSumWidth(tViewRange.sci, tCoincideRange.sci - 1)
           + table.getFixedWidth() + index.width;
-        this.offset({
-          width,
-          left,
-        }).show();
+        if (`${width}px` !== this.css('width')) {
+          this.css('width', `${width}px`);
+        }
+        if (`${left}px` !== this.css('left')) {
+          this.css('left', `${left}px`);
+        }
+        this.show();
       }
     } else if (Utils.arrayIncludeArray(intersectsArea, ['l'])) {
       const { rect } = selectorAttr;
@@ -78,10 +84,13 @@ class XHeightLight extends Widget {
       if (!empty.equals(lCoincideRange)) {
         const width = cols.sectionSumWidth(lCoincideRange.sci, lCoincideRange.eci);
         const left = cols.sectionSumWidth(lViewRange.sci, lCoincideRange.sci - 1) + index.width;
-        this.offset({
-          width,
-          left,
-        }).show();
+        if (`${width}px` !== this.css('width')) {
+          this.css('width', `${width}px`);
+        }
+        if (`${left}px` !== this.css('left')) {
+          this.css('left', `${left}px`);
+        }
+        this.show();
       }
     } else if (Utils.arrayIncludeArray(intersectsArea, ['br'])) {
       const { rect } = selectorAttr;
@@ -92,10 +101,13 @@ class XHeightLight extends Widget {
         const width = cols.sectionSumWidth(cCoincideRange.sci, cCoincideRange.eci);
         const left = cols.sectionSumWidth(cViewRange.sci, cCoincideRange.sci - 1)
           + table.getFixedWidth() + index.width;
-        this.offset({
-          width,
-          left,
-        }).show();
+        if (`${width}px` !== this.css('width')) {
+          this.css('width', `${width}px`);
+        }
+        if (`${left}px` !== this.css('left')) {
+          this.css('left', `${left}px`);
+        }
+        this.show();
       }
     } else if (Utils.arrayIncludeArray(intersectsArea, ['lt', 't'])) {
       const { rect } = selectorAttr;
@@ -112,10 +124,13 @@ class XHeightLight extends Widget {
       if (!empty.equals(tCoincideRange)) {
         width += cols.sectionSumWidth(tCoincideRange.sci, tCoincideRange.eci);
       }
-      this.offset({
-        width,
-        left,
-      }).show();
+      if (`${width}px` !== this.css('width')) {
+        this.css('width', `${width}px`);
+      }
+      if (`${left}px` !== this.css('left')) {
+        this.css('left', `${left}px`);
+      }
+      this.show();
     } else if (Utils.arrayIncludeArray(intersectsArea, ['lt', 'l'])) {
       const { rect } = selectorAttr;
       const { frozenLeftTop, cols } = table;
@@ -124,10 +139,13 @@ class XHeightLight extends Widget {
       if (!empty.equals(ltCoincideRange)) {
         const width = cols.sectionSumWidth(ltCoincideRange.sci, ltCoincideRange.eci);
         const left = cols.sectionSumWidth(ltViewRange.sci, ltCoincideRange.sci - 1) + index.width;
-        this.offset({
-          width,
-          left,
-        }).show();
+        if (`${width}px` !== this.css('width')) {
+          this.css('width', `${width}px`);
+        }
+        if (`${left}px` !== this.css('left')) {
+          this.css('left', `${left}px`);
+        }
+        this.show();
       }
     } else if (Utils.arrayIncludeArray(intersectsArea, ['t', 'br'])) {
       const { rect } = selectorAttr;
@@ -138,10 +156,13 @@ class XHeightLight extends Widget {
         const width = cols.sectionSumWidth(tCoincideRange.sci, tCoincideRange.eci);
         const left = cols.sectionSumWidth(tViewRange.sci, tCoincideRange.sci - 1)
           + table.getFixedWidth() + index.width;
-        this.offset({
-          width,
-          left,
-        }).show();
+        if (`${width}px` !== this.css('width')) {
+          this.css('width', `${width}px`);
+        }
+        if (`${left}px` !== this.css('left')) {
+          this.css('left', `${left}px`);
+        }
+        this.show();
       }
     } else if (Utils.arrayIncludeArray(intersectsArea, ['l', 'br'])) {
       const { rect } = selectorAttr;
@@ -158,10 +179,13 @@ class XHeightLight extends Widget {
       if (!empty.equals(cCoincideRange)) {
         width += cols.sectionSumWidth(cCoincideRange.sci, cCoincideRange.eci);
       }
-      this.offset({
-        width,
-        left,
-      }).show();
+      if (`${width}px` !== this.css('width')) {
+        this.css('width', `${width}px`);
+      }
+      if (`${left}px` !== this.css('left')) {
+        this.css('left', `${left}px`);
+      }
+      this.show();
     } else if (Utils.arrayIncludeArray(intersectsArea, ['lt', 't', 'l', 'br'])) {
       const { rect } = selectorAttr;
       const { frozenLeftTop, fixedTop, cols } = table;
@@ -177,10 +201,13 @@ class XHeightLight extends Widget {
       if (!empty.equals(tCoincideRange)) {
         width += cols.sectionSumWidth(tCoincideRange.sci, tCoincideRange.eci);
       }
-      this.offset({
-        width,
-        left,
-      }).show();
+      if (`${width}px` !== this.css('width')) {
+        this.css('width', `${width}px`);
+      }
+      if (`${left}px` !== this.css('left')) {
+        this.css('left', `${left}px`);
+      }
+      this.show();
     }
   }
 
