@@ -55,75 +55,9 @@ class Utils {
     }
   }
 
-  static cloneDeep() {
-    let options; let name; let src; let copy; let copyIsArray; let clone;
-    // eslint-disable-next-line prefer-rest-params
-    let target = arguments[0] || {};
-    let i = 1;
-    // eslint-disable-next-line prefer-rest-params
-    const { length } = arguments;
-    let deep = false;
-
-    // Handle a deep copy situation
-    if (typeof target === 'boolean') {
-      deep = target;
-      // eslint-disable-next-line prefer-rest-params
-      target = arguments[1] || {};
-      // skip the boolean and the target
-      i = 2;
-    }
-
-    // Handle case when target is a string or something (possible in deep copy)
-    if (typeof target !== 'object' && !Utils.isFunction(target)) {
-      target = {};
-    }
-
-    // extend jQuery itself if only one argument is passed
-    if (length === i) {
-      target = this;
-      // eslint-disable-next-line no-plusplus
-      --i;
-    }
-
-    // eslint-disable-next-line no-plusplus
-    for (; i < length; i++) {
-      // Only deal with non-null/undefined values
-      // eslint-disable-next-line prefer-rest-params,no-cond-assign
-      if ((options = arguments[i]) != null) {
-        // Extend the base object
-        // eslint-disable-next-line guard-for-in,no-restricted-syntax
-        for (name in options) {
-          src = target[name];
-          copy = options[name];
-
-          // Prevent never-ending loop
-          if (target === copy) {
-            continue;
-          }
-
-          // Recurse if we're merging plain objects or arrays
-          // eslint-disable-next-line no-cond-assign
-          if (deep && copy && (Utils.isPlainObject(copy) || (copyIsArray = Utils.isArray(copy)))) {
-            if (copyIsArray) {
-              copyIsArray = false;
-              clone = src && Utils.isArray(src) ? src : [];
-            } else {
-              clone = src && Utils.isPlainObject(src) ? src : {};
-            }
-
-            // Never move original objects, clone them
-            target[name] = Utils.cloneDeep(deep, clone, copy);
-
-            // Don't bring in undefined values
-          } else if (copy !== undefined) {
-            target[name] = copy;
-          }
-        }
-      }
-    }
-
-    // Return the modified object
-    return target;
+  static cloneDeep(object) {
+    const json = JSON.stringify(object);
+    return JSON.parse(json);
   }
 
   static mergeDeep(object = {}, ...sources) {
@@ -187,6 +121,11 @@ class Utils {
 
   static isFraction(e) {
     return /^\d+\/\d+$/.test(e);
+  }
+
+  static isFunction(e) {
+    const type = Utils.type(e);
+    return type === DATA_TYPE.Function;
   }
 
   static isArray(e) {
@@ -451,7 +390,5 @@ class Utils {
     return s.trim();
   }
 }
-
-window.Utils = Utils;
 
 export { Utils };

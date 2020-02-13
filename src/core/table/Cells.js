@@ -145,7 +145,7 @@ class Cells {
   }
 
   getDefaultStyle() {
-    return Utils.cloneDeep(true, {}, {
+    return {
       align: 'left',
       verticalAlign: 'middle',
       textWrap: false,
@@ -158,7 +158,7 @@ class Cells {
         bold: false,
         italic: false,
       },
-    });
+    };
   }
 
   getCell(ri, ci) {

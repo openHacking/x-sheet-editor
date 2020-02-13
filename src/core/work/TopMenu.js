@@ -278,6 +278,9 @@ class TopMenu extends Widget {
       const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
       const { style } = firstCell;
       this.font.setTitle(style.font.name);
+    } else {
+      const defaultStyle = cells.getDefaultStyle();
+      this.font.setTitle(defaultStyle.font.name);
     }
   }
 
