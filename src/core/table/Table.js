@@ -82,9 +82,12 @@ class Content {
   }
 
   scrollX(x) {
-    const start = Date.now();
     const { table, scroll } = this;
     const { cols, fixed, settings } = table;
+    if (settings.tipsScrollTime) {
+      // eslint-disable-next-line no-console
+      console.time();
+    }
     let { fxLeft } = fixed;
     fxLeft += 1;
     const [
@@ -94,11 +97,11 @@ class Content {
     if (x > 0) x1 += width;
     scroll.ci = ci;
     scroll.x = x1;
-    const end = Date.now();
-    const consume = end - start;
-    if (consume > 16 && settings.tipsScrollTime) {
+    if (settings.tipsScrollTime) {
       // eslint-disable-next-line no-console
-      console.log('滚动条计算消耗的时间', consume);
+      console.log('滚动条计算耗时:');
+      // eslint-disable-next-line no-console
+      console.timeEnd();
     }
   }
 
@@ -1267,8 +1270,11 @@ class Table extends Widget {
   }
 
   render() {
-    const start = Date.now();
     const { draw, settings } = this;
+    if (settings.tipsRenderTime) {
+      // eslint-disable-next-line no-console
+      console.time();
+    }
     const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.clear();
     draw.resize(width, height);
@@ -1285,11 +1291,11 @@ class Table extends Widget {
     this.frozenLeftIndex.render();
     this.frozenTopIndex.render();
     this.frozenRect.render();
-    const end = Date.now();
-    const consume = end - start;
-    if (consume > 16 && settings.tipsRenderTime) {
+    if (settings.tipsRenderTime) {
       // eslint-disable-next-line no-console
-      console.log('渲染界面消耗的时间', consume);
+      console.log('渲染界面耗时:');
+      // eslint-disable-next-line no-console
+      console.timeEnd();
     }
   }
 
