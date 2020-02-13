@@ -9,7 +9,8 @@ function thinLineWidth() {
 }
 
 function npx(px) {
-  return parseInt(px * dpr(), 10);
+  // eslint-disable-next-line no-bitwise
+  return (0.5 + (px * dpr())) << 0;
 }
 
 function npxLine(px) {
