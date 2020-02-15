@@ -15,7 +15,7 @@ function thinLineWidth() {
 
 function npxLine(px) {
   const n = npx(px);
-  return thinLineWidth() <= 1 ? n + 0.5 : n;
+  return thinLineWidth() < 2 ? n - 0.5 : 0.5;
 }
 
 class Draw {

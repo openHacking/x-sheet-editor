@@ -29,6 +29,8 @@ import { Font } from '../../canvas/Font';
 import { Rect } from '../../canvas/Rect';
 import { Crop } from '../../canvas/Crop';
 
+const tableBorderWidth = thinLineWidth();
+
 const defaultSettings = {
   tipsRenderTime: false,
   tipsScrollTime: false,
@@ -39,7 +41,6 @@ const defaultSettings = {
     color: '#000000',
   },
   table: {
-    borderWidth: thinLineWidth(),
     borderColor: '#e9e9e9',
   },
   data: [],
@@ -213,8 +214,7 @@ class Content {
     draw.save();
     draw.translate(offsetX, offsetY);
     draw.attr({
-      fillStyle: settings.table.borderColor,
-      lineWidth: settings.table.borderWidth,
+      lineWidth: tableBorderWidth,
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
@@ -254,10 +254,8 @@ class Content {
   drawMerge(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges, cols, rows, settings,
+      draw, cells, merges, cols, rows,
     } = table;
-    let { borderWidth } = settings.table;
-    borderWidth += 0.5;
     draw.save();
     draw.translate(offsetX, offsetY);
     const filter = [];
@@ -279,10 +277,10 @@ class Content {
       const width = cols.sectionSumWidth(rectRange.sci, rectRange.eci);
       const height = rows.sectionSumHeight(rectRange.sri, rectRange.eri);
       const rect = new Rect({
-        x: x + borderWidth,
-        y: y + borderWidth,
-        width: width - (borderWidth * 2),
-        height: height - (borderWidth * 2),
+        x: x + tableBorderWidth,
+        y: y + tableBorderWidth,
+        width: width - (tableBorderWidth * 2),
+        height: height - (tableBorderWidth * 2),
       });
       // 绘制文字
       const font = new Font({
@@ -365,11 +363,9 @@ class FixedLeft {
     draw.save();
     draw.translate(offsetX, offsetY);
     draw.attr({
-      fillStyle: settings.table.borderColor,
-      lineWidth: settings.table.borderWidth,
+      lineWidth: tableBorderWidth,
       strokeStyle: settings.table.borderColor,
     });
-    // console.log('width>>>', width);
     rows.eachHeight(sri, eri, (i, ch, y) => {
       draw.line([0, y], [width, y]);
       if (i === eri) draw.line([0, y + ch], [width, y + ch]);
@@ -407,10 +403,8 @@ class FixedLeft {
   drawMerge(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges, cols, rows, settings,
+      draw, cells, merges, cols, rows,
     } = table;
-    let { borderWidth } = settings.table;
-    borderWidth += 0.5;
     draw.save();
     draw.translate(offsetX, offsetY);
     const filter = [];
@@ -432,10 +426,10 @@ class FixedLeft {
       const width = cols.sectionSumWidth(rectRange.sci, rectRange.eci);
       const height = rows.sectionSumHeight(rectRange.sri, rectRange.eri);
       const rect = new Rect({
-        x: x + borderWidth,
-        y: y + borderWidth,
-        width: width - (borderWidth * 2),
-        height: height - (borderWidth * 2),
+        x: x + tableBorderWidth,
+        y: y + tableBorderWidth,
+        width: width - (tableBorderWidth * 2),
+        height: height - (tableBorderWidth * 2),
       });
       // 绘制文字
       const font = new Font({
@@ -529,8 +523,7 @@ class FixedTop {
     draw.save();
     draw.translate(offsetX, offsetY);
     draw.attr({
-      fillStyle: settings.table.borderColor,
-      lineWidth: settings.table.borderWidth,
+      lineWidth: tableBorderWidth,
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
@@ -570,10 +563,8 @@ class FixedTop {
   drawMerge(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges, cols, rows, settings,
+      draw, cells, merges, cols, rows,
     } = table;
-    let { borderWidth } = settings.table;
-    borderWidth += 0.5;
     draw.save();
     draw.translate(offsetX, offsetY);
     const filter = [];
@@ -595,10 +586,10 @@ class FixedTop {
       const width = cols.sectionSumWidth(rectRange.sci, rectRange.eci);
       const height = rows.sectionSumHeight(rectRange.sri, rectRange.eri);
       const rect = new Rect({
-        x: x + borderWidth,
-        y: y + borderWidth,
-        width: width - (borderWidth * 2),
-        height: height - (borderWidth * 2),
+        x: x + tableBorderWidth,
+        y: y + tableBorderWidth,
+        width: width - (tableBorderWidth * 2),
+        height: height - (tableBorderWidth * 2),
       });
       // 绘制文字
       const font = new Font({
@@ -692,8 +683,7 @@ class FrozenLeftTop {
     draw.save();
     draw.translate(offsetX, offsetY);
     draw.attr({
-      fillStyle: settings.table.borderColor,
-      lineWidth: settings.table.borderWidth,
+      lineWidth: tableBorderWidth,
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
@@ -733,10 +723,8 @@ class FrozenLeftTop {
   drawMerge(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges, cols, rows, settings,
+      draw, cells, merges, cols, rows,
     } = table;
-    let { borderWidth } = settings.table;
-    borderWidth += 0.5;
     draw.save();
     draw.translate(offsetX, offsetY);
     const filter = [];
@@ -758,10 +746,10 @@ class FrozenLeftTop {
       const width = cols.sectionSumWidth(rectRange.sci, rectRange.eci);
       const height = rows.sectionSumHeight(rectRange.sri, rectRange.eri);
       const rect = new Rect({
-        x: x + borderWidth,
-        y: y + borderWidth,
-        width: width - (borderWidth * 2),
-        height: height - (borderWidth * 2),
+        x: x + tableBorderWidth,
+        y: y + tableBorderWidth,
+        width: width - (tableBorderWidth * 2),
+        height: height - (tableBorderWidth * 2),
       });
       // 绘制文字
       const font = new Font({
@@ -849,7 +837,7 @@ class FixedTopIndex {
     draw.fillRect(0, 0, width, height);
     // 绘制边框
     draw.attr({
-      lineWidth: settings.table.borderWidth,
+      lineWidth: tableBorderWidth,
       strokeStyle: settings.table.borderColor,
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
@@ -926,7 +914,7 @@ class FixedLeftIndex {
     draw.fillRect(0, 0, width, height);
     // 绘制边框
     draw.attr({
-      lineWidth: settings.table.borderWidth,
+      lineWidth: tableBorderWidth,
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
@@ -1003,7 +991,7 @@ class FrozenLeftIndex {
     draw.fillRect(0, 0, width, height);
     // 绘制边框
     draw.attr({
-      lineWidth: settings.table.borderWidth,
+      lineWidth: tableBorderWidth,
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
@@ -1078,7 +1066,7 @@ class FrozenTopIndex {
     draw.fillRect(0, 0, width, height);
     // 绘制边框
     draw.attr({
-      lineWidth: settings.table.borderWidth,
+      lineWidth: tableBorderWidth,
       strokeStyle: settings.table.borderColor,
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
