@@ -15,7 +15,7 @@ function thinLineWidth() {
 
 function npxLine(px) {
   const n = npx(px);
-  return n > 0 ? n - 0.5 : 0.5;
+  return thinLineWidth() <= 1 ? n + 0.5 : n;
 }
 
 class Draw {
@@ -27,7 +27,6 @@ class Draw {
   constructor(el) {
     this.el = el;
     this.ctx = el.getContext('2d', { alpha: false });
-    this.ctx.scale(dpr(), dpr());
   }
 
   resize(width, height) {
