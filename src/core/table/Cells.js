@@ -1,7 +1,7 @@
-import { Rect } from '../../graphical/rect/Rect';
 import { Utils } from '../../utils/Utils';
-import { RectText } from '../../graphical/rect/RectText';
 import { DateUtils } from '../../utils/DateUtils';
+import { Rect } from '../../canvas/Rect';
+import { npx } from '../../canvas/Draw';
 
 const parserToDate = (text) => {
   let result = DateUtils.parserToDate(text, 'yyyy/MM/dd hh:mm:ss');
@@ -135,30 +135,38 @@ class Cells {
   }
 
   initCell(cell) {
-    if (cell.ini === true) return cell;
-    return Utils.mergeDeep({
-      text: '',
-      format: CELL_TEXT_FORMAT_TYPE.default,
-      style: this.getDefaultStyle(),
-      ini: true,
-    }, cell);
+    if (Utils.isUnDef(cell.ID)) {
+      const defaultAttr = this.getDefaultAttr();
+      return Utils.mergeDeep(defaultAttr, cell);
+    }
+    return cell;
   }
 
-  getDefaultStyle() {
+  getDefaultAttr() {
     return {
-      align: 'left',
-      verticalAlign: 'middle',
-      textWrap: false,
-      strike: false,
-      underline: false,
-      color: '#000000',
-      font: {
+      ID: Date.now().toString(),
+      text: '',
+      format: CELL_TEXT_FORMAT_TYPE.default,
+      fontAttr: {
+        align: 'left',
+        verticalAlign: 'middle',
+        textWrap: false,
+        strike: false,
+        underline: false,
+        color: '#000000',
         name: 'Arial',
-        size: 13,
+        size: npx(13),
         bold: false,
         italic: false,
       },
     };
+  }
+
+  getFormatText(cell) {
+    if (cell) {
+      return CELL_TEXT_FORMAT_FUNC[cell.format](cell.text);
+    }
+    return '';
   }
 
   getCell(ri, ci) {
@@ -181,19 +189,6 @@ class Cells {
     return this._[ri][ci];
   }
 
-  getCellContentMaxWidth(ri, ci) {
-    let total = this.cols.getWidth(ci);
-    for (let i = ci + 1; i < this.cols.len; i += 1) {
-      const cell = this.getCell(ri, i);
-      if (cell === null || Utils.isBlank(cell.text)) {
-        total += this.cols.getWidth(i);
-      } else {
-        return total;
-      }
-    }
-    return total;
-  }
-
   getRectRangeCell(rectRange, cb, { sy = 0, sx = 0 } = {}, createNew = false) {
     const {
       sri, eri, sci, eci,
@@ -214,10 +209,6 @@ class Cells {
       }
       y += height;
     }
-  }
-
-  getRectText(draw, rect = null) {
-    return new RectText(draw, rect, this.getDefaultStyle());
   }
 
   getData() {

@@ -1,3 +1,5 @@
+/* global window */
+
 import { cssPrefix } from '../../config';
 import { Utils } from '../../utils/Utils';
 import { Rows } from './Rows';
@@ -7,15 +9,10 @@ import { Fixed } from './Fixed';
 import { h } from '../../lib/Element';
 import { Widget } from '../../lib/Widget';
 import { RectRange } from './RectRange';
-import { Draw, npx, thinLineWidth } from '../../graphical/Draw';
-import { RectCut } from '../../graphical/rect/RectCut';
-import { Rect } from '../../graphical/rect/Rect';
-import { TextAttr } from '../../graphical/rect/TextAttr';
 import { Merges } from './Merges';
 import { Constant } from '../../utils/Constant';
 import { Screen } from './screen/Screen';
 import { ScreenSelector } from './selector/ScreenSelector';
-import { RectDraw } from '../../graphical/rect/RectDraw';
 import { XReSizer } from './resizer/XReSizer';
 import { YReSizer } from './resizer/YReSizer';
 import { MousePointType } from './MousePoint';
@@ -26,7 +23,11 @@ import { YHeightLight } from './highlight/YHeightLight';
 import { Edit } from './Edit';
 import { History } from './History';
 import { ScreenCopyStyle } from './copystyle/ScreenCopyStyle';
-import { CELL_TEXT_FORMAT_FUNC, Cells } from './Cells';
+import { Cells } from './Cells';
+import { Draw, npx, thinLineWidth } from '../../canvas/Draw';
+import { Font } from '../../canvas/Font';
+import { Rect } from '../../canvas/Rect';
+import { Crop } from '../../canvas/Crop';
 
 const defaultSettings = {
   tipsRenderTime: false,
@@ -234,18 +235,18 @@ class Content {
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
-    const rectText = cells.getRectText(draw);
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       // 剔除合并单元格
-      if (merges.getFirstIncludes(i, c)) {
-        return;
-      }
-      const contentMaxWidth = cells.getCellContentMaxWidth(i, c);
-      const { style } = cell;
+      if (merges.getFirstIncludes(i, c)) return;
       // 绘制文字
-      const textAttr = new TextAttr(rect);
-      rectText.setRect(textAttr);
-      rectText.text(CELL_TEXT_FORMAT_FUNC[cell.format](cell.text), style, contentMaxWidth);
+      const font = new Font({
+        text: cells.getFormatText(cell),
+        rect,
+        dw: draw,
+        overflow: null,
+        attr: cell.fontAttr,
+      });
+      font.draw();
     });
     draw.restore();
   }
@@ -260,7 +261,6 @@ class Content {
     draw.save();
     draw.translate(offsetX, offsetY);
     const filter = [];
-    const rectText = cells.getRectText(draw);
     cells.getRectRangeCell(viewRange, (i, c) => {
       const rectRange = merges.getFirstIncludes(i, c);
       if (!rectRange || filter.find(item => item === rectRange)) return;
@@ -284,14 +284,15 @@ class Content {
         width: width - (borderWidth * 2),
         height: height - (borderWidth * 2),
       });
-      const { style } = cell;
-      // 绘制背景
-      const rectDraw = new RectDraw(draw, rect);
-      rectDraw.fill('#fff');
       // 绘制文字
-      const textAttr = new TextAttr(rect);
-      rectText.setRect(textAttr);
-      rectText.text(CELL_TEXT_FORMAT_FUNC[cell.format](cell.text), style, rect.width);
+      const font = new Font({
+        text: cells.getFormatText(cell),
+        rect,
+        dw: draw,
+        overflow: null,
+        attr: cell.fontAttr,
+      });
+      font.draw();
     });
     draw.restore();
   }
@@ -310,12 +311,12 @@ class Content {
       width,
       height,
     });
-    const rectCut = new RectCut(draw, rect);
-    rectCut.outwardCut(thinLineWidth() / 2);
+    const crop = new Crop({ draw, rect });
+    crop.open();
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     this.drawMerge(viewRange, offsetX, offsetY);
-    rectCut.closeCut();
+    crop.close();
   }
 }
 
@@ -387,18 +388,18 @@ class FixedLeft {
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
-    const rectText = cells.getRectText(draw);
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       // 剔除合并单元格
-      if (merges.getFirstIncludes(i, c)) {
-        return;
-      }
-      const contentMaxWidth = cells.getCellContentMaxWidth(i, c);
-      const { style } = cell;
+      if (merges.getFirstIncludes(i, c)) return;
       // 绘制文字
-      const textAttr = new TextAttr(rect);
-      rectText.setRect(textAttr);
-      rectText.text(CELL_TEXT_FORMAT_FUNC[cell.format](cell.text), style, contentMaxWidth);
+      const font = new Font({
+        text: cells.getFormatText(cell),
+        rect,
+        dw: draw,
+        overflow: null,
+        attr: cell.fontAttr,
+      });
+      font.draw();
     });
     draw.restore();
   }
@@ -413,7 +414,6 @@ class FixedLeft {
     draw.save();
     draw.translate(offsetX, offsetY);
     const filter = [];
-    const rectText = cells.getRectText(draw);
     cells.getRectRangeCell(viewRange, (i, c) => {
       const rectRange = merges.getFirstIncludes(i, c);
       if (!rectRange || filter.find(item => item === rectRange)) return;
@@ -437,14 +437,15 @@ class FixedLeft {
         width: width - (borderWidth * 2),
         height: height - (borderWidth * 2),
       });
-      const { style } = cell;
-      // 绘制背景
-      const rectDraw = new RectDraw(draw, rect);
-      rectDraw.fill('#fff');
       // 绘制文字
-      const textAttr = new TextAttr(rect);
-      rectText.setRect(textAttr);
-      rectText.text(CELL_TEXT_FORMAT_FUNC[cell.format](cell.text), style, rect.width);
+      const font = new Font({
+        text: cells.getFormatText(cell),
+        rect,
+        dw: draw,
+        overflow: null,
+        attr: cell.fontAttr,
+      });
+      font.draw();
     });
     draw.restore();
   }
@@ -475,12 +476,12 @@ class FixedLeft {
       width: viewRange.w,
       height: viewRange.h,
     });
-    const rectCut = new RectCut(draw, rect);
-    rectCut.outwardCut(thinLineWidth() / 2);
+    const crop = new Crop({ draw, rect });
+    crop.open();
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     this.drawMerge(viewRange, offsetX, offsetY);
-    rectCut.closeCut();
+    crop.close();
   }
 }
 
@@ -550,18 +551,18 @@ class FixedTop {
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
-    const rectText = cells.getRectText(draw);
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       // 剔除合并单元格
-      if (merges.getFirstIncludes(i, c)) {
-        return;
-      }
-      const contentMaxWidth = cells.getCellContentMaxWidth(i, c);
-      const { style } = cell;
+      if (merges.getFirstIncludes(i, c)) return;
       // 绘制文字
-      const textAttr = new TextAttr(rect);
-      rectText.setRect(textAttr);
-      rectText.text(CELL_TEXT_FORMAT_FUNC[cell.format](cell.text), style, contentMaxWidth);
+      const font = new Font({
+        text: cells.getFormatText(cell),
+        rect,
+        dw: draw,
+        overflow: null,
+        attr: cell.fontAttr,
+      });
+      font.draw();
     });
     draw.restore();
   }
@@ -576,7 +577,6 @@ class FixedTop {
     draw.save();
     draw.translate(offsetX, offsetY);
     const filter = [];
-    const rectText = cells.getRectText(draw);
     cells.getRectRangeCell(viewRange, (i, c) => {
       const rectRange = merges.getFirstIncludes(i, c);
       if (!rectRange || filter.find(item => item === rectRange)) return;
@@ -600,14 +600,15 @@ class FixedTop {
         width: width - (borderWidth * 2),
         height: height - (borderWidth * 2),
       });
-      const { style } = cell;
-      // 绘制背景
-      const rectDraw = new RectDraw(draw, rect);
-      rectDraw.fill('#fff');
       // 绘制文字
-      const textAttr = new TextAttr(rect);
-      rectText.setRect(textAttr);
-      rectText.text(CELL_TEXT_FORMAT_FUNC[cell.format](cell.text), style, rect.width);
+      const font = new Font({
+        text: cells.getFormatText(cell),
+        rect,
+        dw: draw,
+        overflow: null,
+        attr: cell.fontAttr,
+      });
+      font.draw();
     });
     draw.restore();
   }
@@ -638,172 +639,12 @@ class FixedTop {
       width: viewRange.w,
       height: viewRange.h,
     });
-    const rectCut = new RectCut(draw, rect);
-    rectCut.outwardCut(thinLineWidth() / 2);
+    const crop = new Crop({ draw, rect });
+    crop.open();
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     this.drawMerge(viewRange, offsetX, offsetY);
-    rectCut.closeCut();
-  }
-}
-
-class FixedTopIndex {
-  constructor(table) {
-    this.table = table;
-  }
-
-  getXOffset() {
-    const { table } = this;
-    const { content } = table;
-    return content.getXOffset();
-  }
-
-  getYOffset() {
-    return 0;
-  }
-
-  getWidth() {
-    const { table } = this;
-    const { content } = table;
-    const viewRange = content.getViewRange();
-    const { sci, eci } = viewRange;
-    return table.cols.sectionSumWidth(sci, eci);
-  }
-
-  getHeight() {
-    const { table } = this;
-    const { settings } = table;
-    const { index } = settings;
-    return index.height;
-  }
-
-  draw(viewRange, offsetX, offsetY, width, height) {
-    const { table } = this;
-    const { draw, cols, settings } = table;
-    const { sci, eci } = viewRange;
-    draw.save();
-    draw.translate(offsetX, offsetY);
-    // 绘制背景
-    draw.attr({
-      fillStyle: '#f4f5f8',
-    });
-    draw.fillRect(0, 0, width, height);
-    // 绘制边框
-    draw.attr({
-      fillStyle: settings.table.borderColor,
-      lineWidth: settings.table.borderWidth,
-      strokeStyle: settings.table.borderColor,
-    });
-    cols.eachWidth(sci, eci, (i, cw, x) => {
-      draw.line([x, 0], [x, height]);
-      if (i === eci) draw.line([x + cw, 0], [x + cw, height]);
-    });
-    // 绘制文字
-    draw.attr({
-      textAlign: 'center',
-      textBaseline: 'middle',
-      font: `500 ${npx(11)}px Arial`,
-      fillStyle: '#585757',
-      lineWidth: thinLineWidth(),
-      strokeStyle: '#e6e6e6',
-    });
-    cols.eachWidth(sci, eci, (i, cw, x) => {
-      draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
-    });
-    draw.restore();
-  }
-
-  render() {
-    const { table } = this;
-    const { content } = table;
-    const viewRange = content.getViewRange();
-    const offsetX = this.getXOffset();
-    const offsetY = this.getYOffset();
-    const width = this.getWidth();
-    const height = this.getHeight();
-    viewRange.sri = 0;
-    viewRange.eri = 0;
-    this.draw(viewRange, offsetX, offsetY, width, height);
-  }
-}
-
-class FixedLeftIndex {
-  constructor(table) {
-    this.table = table;
-  }
-
-  getXOffset() {
-    return 0;
-  }
-
-  getYOffset() {
-    const { table } = this;
-    const { content } = table;
-    return content.getYOffset();
-  }
-
-  getWidth() {
-    const { table } = this;
-    const { settings } = table;
-    const { index } = settings;
-    return index.width;
-  }
-
-  getHeight() {
-    const { table } = this;
-    const { content } = table;
-    const viewRange = content.getViewRange();
-    const { sri, eri } = viewRange;
-    return table.rows.sectionSumHeight(sri, eri);
-  }
-
-  draw(viewRange, offsetX, offsetY, width, height) {
-    const { table } = this;
-    const { draw, rows, settings } = table;
-    const { sri, eri } = viewRange;
-    draw.save();
-    draw.translate(offsetX, offsetY);
-    // 绘制背景
-    draw.attr({
-      fillStyle: '#f4f5f8',
-    });
-    draw.fillRect(0, 0, width, height);
-    // 绘制边框
-    draw.attr({
-      fillStyle: settings.table.borderColor,
-      lineWidth: settings.table.borderWidth,
-      strokeStyle: settings.table.borderColor,
-    });
-    rows.eachHeight(sri, eri, (i, ch, y) => {
-      draw.line([0, y], [width, y]);
-      if (i === eri) draw.line([0, y + ch], [width, y + ch]);
-    });
-    // 绘制文字
-    draw.attr({
-      textAlign: 'center',
-      textBaseline: 'middle',
-      font: `500 ${npx(11)}px Arial`,
-      fillStyle: '#585757',
-      lineWidth: thinLineWidth(),
-      strokeStyle: '#e6e6e6',
-    });
-    rows.eachHeight(sri, eri, (i, ch, y) => {
-      draw.fillText(i + 1, width / 2, y + (ch / 2));
-    });
-    draw.restore();
-  }
-
-  render() {
-    const { table } = this;
-    const { content } = table;
-    const viewRange = content.getViewRange();
-    const offsetX = this.getXOffset();
-    const offsetY = this.getYOffset();
-    const width = this.getWidth();
-    const height = this.getHeight();
-    viewRange.sci = 0;
-    viewRange.eci = 0;
-    this.draw(viewRange, offsetX, offsetY, width, height);
+    crop.close();
   }
 }
 
@@ -873,18 +714,18 @@ class FrozenLeftTop {
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
-    const rectText = cells.getRectText(draw);
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       // 剔除合并单元格
-      if (merges.getFirstIncludes(i, c)) {
-        return;
-      }
-      const contentMaxWidth = cells.getCellContentMaxWidth(i, c);
-      const { style } = cell;
+      if (merges.getFirstIncludes(i, c)) return;
       // 绘制文字
-      const textAttr = new TextAttr(rect);
-      rectText.setRect(textAttr);
-      rectText.text(CELL_TEXT_FORMAT_FUNC[cell.format](cell.text), style, contentMaxWidth);
+      const font = new Font({
+        text: cells.getFormatText(cell),
+        rect,
+        dw: draw,
+        overflow: null,
+        attr: cell.fontAttr,
+      });
+      font.draw();
     });
     draw.restore();
   }
@@ -899,7 +740,6 @@ class FrozenLeftTop {
     draw.save();
     draw.translate(offsetX, offsetY);
     const filter = [];
-    const rectText = cells.getRectText(draw);
     cells.getRectRangeCell(viewRange, (i, c) => {
       const rectRange = merges.getFirstIncludes(i, c);
       if (!rectRange || filter.find(item => item === rectRange)) return;
@@ -923,14 +763,15 @@ class FrozenLeftTop {
         width: width - (borderWidth * 2),
         height: height - (borderWidth * 2),
       });
-      const { style } = cell;
-      // 绘制背景
-      const rectDraw = new RectDraw(draw, rect);
-      rectDraw.fill('#fff');
       // 绘制文字
-      const textAttr = new TextAttr(rect);
-      rectText.setRect(textAttr);
-      rectText.text(CELL_TEXT_FORMAT_FUNC[cell.format](cell.text), style, rect.width);
+      const font = new Font({
+        text: cells.getFormatText(cell),
+        rect,
+        dw: draw,
+        overflow: null,
+        attr: cell.fontAttr,
+      });
+      font.draw();
     });
     draw.restore();
   }
@@ -956,12 +797,166 @@ class FrozenLeftTop {
       width: viewRange.w,
       height: viewRange.h,
     });
-    const rectCut = new RectCut(draw, rect);
-    rectCut.outwardCut(thinLineWidth() / 2);
+    const crop = new Crop({ draw, rect });
+    crop.open();
     this.drawGrid(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     this.drawMerge(viewRange, offsetX, offsetY);
-    rectCut.closeCut();
+    crop.close();
+  }
+}
+
+class FixedTopIndex {
+  constructor(table) {
+    this.table = table;
+  }
+
+  getXOffset() {
+    const { table } = this;
+    const { content } = table;
+    return content.getXOffset();
+  }
+
+  getYOffset() {
+    return 0;
+  }
+
+  getWidth() {
+    const { table } = this;
+    const { content } = table;
+    const viewRange = content.getViewRange();
+    const { sci, eci } = viewRange;
+    return table.cols.sectionSumWidth(sci, eci);
+  }
+
+  getHeight() {
+    const { table } = this;
+    const { settings } = table;
+    const { index } = settings;
+    return index.height;
+  }
+
+  draw(viewRange, offsetX, offsetY, width, height) {
+    const { table } = this;
+    const { draw, cols, settings } = table;
+    const { sci, eci } = viewRange;
+    draw.save();
+    draw.translate(offsetX, offsetY);
+    // 绘制背景
+    draw.attr({
+      fillStyle: '#f4f5f8',
+    });
+    draw.fillRect(0, 0, width, height);
+    // 绘制边框
+    draw.attr({
+      lineWidth: settings.table.borderWidth,
+      strokeStyle: settings.table.borderColor,
+    });
+    cols.eachWidth(sci, eci, (i, cw, x) => {
+      draw.line([x, 0], [x, height]);
+      if (i === eci) draw.line([x + cw, 0], [x + cw, height]);
+    });
+    // 绘制文字
+    draw.attr({
+      textAlign: 'center',
+      textBaseline: 'middle',
+      font: `${npx(11)}px Arial`,
+      fillStyle: '#585757',
+    });
+    cols.eachWidth(sci, eci, (i, cw, x) => {
+      draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
+    });
+    draw.restore();
+  }
+
+  render() {
+    const { table } = this;
+    const { content } = table;
+    const viewRange = content.getViewRange();
+    const offsetX = this.getXOffset();
+    const offsetY = this.getYOffset();
+    const width = this.getWidth();
+    const height = this.getHeight();
+    viewRange.sri = 0;
+    viewRange.eri = 0;
+    this.draw(viewRange, offsetX, offsetY, width, height);
+  }
+}
+
+class FixedLeftIndex {
+  constructor(table) {
+    this.table = table;
+  }
+
+  getXOffset() {
+    return 0;
+  }
+
+  getYOffset() {
+    const { table } = this;
+    const { content } = table;
+    return content.getYOffset();
+  }
+
+  getWidth() {
+    const { table } = this;
+    const { settings } = table;
+    const { index } = settings;
+    return index.width;
+  }
+
+  getHeight() {
+    const { table } = this;
+    const { content } = table;
+    const viewRange = content.getViewRange();
+    const { sri, eri } = viewRange;
+    return table.rows.sectionSumHeight(sri, eri);
+  }
+
+  draw(viewRange, offsetX, offsetY, width, height) {
+    const { table } = this;
+    const { draw, rows, settings } = table;
+    const { sri, eri } = viewRange;
+    draw.save();
+    draw.translate(offsetX, offsetY);
+    // 绘制背景
+    draw.attr({
+      fillStyle: '#f4f5f8',
+    });
+    draw.fillRect(0, 0, width, height);
+    // 绘制边框
+    draw.attr({
+      lineWidth: settings.table.borderWidth,
+      strokeStyle: settings.table.borderColor,
+    });
+    rows.eachHeight(sri, eri, (i, ch, y) => {
+      draw.line([0, y], [width, y]);
+      if (i === eri) draw.line([0, y + ch], [width, y + ch]);
+    });
+    // 绘制文字
+    draw.attr({
+      textAlign: 'center',
+      textBaseline: 'middle',
+      font: `${npx(11)}px Arial`,
+      fillStyle: '#585757',
+    });
+    rows.eachHeight(sri, eri, (i, ch, y) => {
+      draw.fillText(i + 1, width / 2, y + (ch / 2));
+    });
+    draw.restore();
+  }
+
+  render() {
+    const { table } = this;
+    const { content } = table;
+    const viewRange = content.getViewRange();
+    const offsetX = this.getXOffset();
+    const offsetY = this.getYOffset();
+    const width = this.getWidth();
+    const height = this.getHeight();
+    viewRange.sci = 0;
+    viewRange.eci = 0;
+    this.draw(viewRange, offsetX, offsetY, width, height);
   }
 }
 
@@ -1008,7 +1003,6 @@ class FrozenLeftIndex {
     draw.fillRect(0, 0, width, height);
     // 绘制边框
     draw.attr({
-      fillStyle: settings.table.borderColor,
       lineWidth: settings.table.borderWidth,
       strokeStyle: settings.table.borderColor,
     });
@@ -1019,10 +1013,8 @@ class FrozenLeftIndex {
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
-      font: `500 ${npx(11)}px Arial`,
+      font: `${npx(11)}px Arial`,
       fillStyle: '#585757',
-      lineWidth: thinLineWidth(),
-      strokeStyle: '#e6e6e6',
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
       draw.fillText(i + 1, width / 2, y + (ch / 2));
@@ -1086,7 +1078,6 @@ class FrozenTopIndex {
     draw.fillRect(0, 0, width, height);
     // 绘制边框
     draw.attr({
-      fillStyle: settings.table.borderColor,
       lineWidth: settings.table.borderWidth,
       strokeStyle: settings.table.borderColor,
     });
@@ -1097,10 +1088,8 @@ class FrozenTopIndex {
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
-      font: `500 ${npx(11)}px Arial`,
+      font: `${npx(11)}px Arial`,
       fillStyle: '#585757',
-      lineWidth: thinLineWidth(),
-      strokeStyle: '#e6e6e6',
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
       draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
@@ -1227,6 +1216,7 @@ class Table extends Widget {
     this.xHeightLight.init();
     this.yHeightLight.init();
     this.edit.init();
+    this.resize();
   }
 
   initScreenWidget() {
@@ -1267,6 +1257,16 @@ class Table extends Widget {
         this.mousePointType.set('cell', 'table-cell');
       }
     });
+    EventBind.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
+      this.resize();
+    });
+  }
+
+  resize() {
+    const { draw } = this;
+    const [width, height] = [this.visualWidth(), this.visualHeight()];
+    draw.resize(width, height);
+    this.render();
   }
 
   render() {
@@ -1275,13 +1275,11 @@ class Table extends Widget {
       // eslint-disable-next-line no-console
       console.time();
     }
-    const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.clear();
-    draw.resize(width, height);
     draw.attr({
       fillStyle: '#ffffff',
     });
-    draw.fillRect(0, 0, width, height);
+    draw.fillRect(0, 0, draw.el.width, draw.el.height);
     this.frozenLeftTop.render();
     this.fixedTop.render();
     this.fixedLeft.render();

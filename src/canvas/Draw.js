@@ -4,13 +4,13 @@ function dpr() {
   return window.devicePixelRatio || 1;
 }
 
-function thinLineWidth() {
-  return dpr() - 0.5;
+function npx(px) {
+  // eslint-disable-next-line no-bitwise,no-use-before-define
+  return Draw.floor(px * dpr());
 }
 
-function npx(px) {
-  // eslint-disable-next-line no-bitwise
-  return (0.5 + (px * dpr())) << 0;
+function thinLineWidth() {
+  return dpr() - 0.5;
 }
 
 function npxLine(px) {
@@ -19,6 +19,11 @@ function npxLine(px) {
 }
 
 class Draw {
+  static floor(v) {
+    // eslint-disable-next-line no-bitwise
+    return (0.5 + v) << 0;
+  }
+
   constructor(el) {
     this.el = el;
     this.ctx = el.getContext('2d', { alpha: false });
@@ -39,16 +44,24 @@ class Draw {
   }
 
   attr(options) {
-    Object.assign(this.ctx, options);
+    // eslint-disable-next-line guard-for-in,no-restricted-syntax
+    for (const key in options) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (options.hasOwnProperty(key)) {
+        let value = options[key];
+        if (typeof value === 'string' || value instanceof String) {
+          value = value.trim();
+        }
+        if (this.ctx[key] !== value) {
+          this.ctx[key] = value;
+        }
+      }
+    }
     return this;
   }
 
   beginPath() {
     this.ctx.beginPath();
-  }
-
-  closePath() {
-    this.ctx.closePath();
   }
 
   save() {
@@ -120,6 +133,10 @@ class Draw {
   clip() {
     const { ctx } = this;
     ctx.clip();
+  }
+
+  measureText(text) {
+    return this.ctx.measureText(text);
   }
 }
 
