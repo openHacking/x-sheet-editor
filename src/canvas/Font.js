@@ -1,5 +1,6 @@
 import { Crop } from './Crop';
 import { npx } from './Draw';
+import { Utils } from '../utils/Utils';
 
 const PADDING = 8;
 const ALIGN = {
@@ -15,7 +16,13 @@ const VERTICAL_ALIGN = {
 
 class Font {
   constructor({
-    text, rect, dw, overflow, attr = {
+    text, rect, dw, overflow, attr,
+  }) {
+    this.text = text;
+    this.rect = rect;
+    this.dw = dw;
+    this.overflow = overflow;
+    this.attr = Utils.mergeDeep({}, {
       name: 'Arial',
       size: npx(13),
       color: '#000000',
@@ -26,13 +33,7 @@ class Font {
       strikethrough: false,
       align: ALIGN.left,
       verticalAlign: VERTICAL_ALIGN.center,
-    },
-  }) {
-    this.text = text;
-    this.rect = rect;
-    this.dw = dw;
-    this.overflow = overflow;
-    this.attr = attr;
+    }, attr);
   }
 
   /**
@@ -121,7 +122,7 @@ class Font {
       default: break;
     }
     if (overflow && textWidth > overflow.width) {
-      const crop = new Crop({ dw, overflow });
+      const crop = new Crop({ draw: dw, overflow });
       crop.open();
       dw.fillText(text, tx, ty);
       if (underline) {
@@ -214,7 +215,7 @@ class Font {
         ty,
       });
     }
-    const crop = new Crop({ dw, rect });
+    const crop = new Crop({ draw: dw, rect });
     crop.open();
     for (let i = 0, len = textArray.length; i < len; i += 1) {
       const item = textArray[i];
@@ -246,6 +247,14 @@ class Font {
     } else {
       this.drawText();
     }
+  }
+
+  /**
+   * 设置文字自动换行
+   * @param textWrap
+   */
+  setTextWrap(textWrap) {
+    this.attr.textWrap = textWrap;
   }
 }
 

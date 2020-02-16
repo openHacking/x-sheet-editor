@@ -271,6 +271,7 @@ class Content {
         overflow: null,
         attr: cell.fontAttr,
       });
+      font.setTextWrap(true);
       font.draw();
     });
     draw.restore();
@@ -414,6 +415,7 @@ class FixedLeft {
         overflow: null,
         attr: cell.fontAttr,
       });
+      font.setTextWrap(true);
       font.draw();
     });
     draw.restore();
@@ -568,6 +570,7 @@ class FixedTop {
         overflow: null,
         attr: cell.fontAttr,
       });
+      font.setTextWrap(true);
       font.draw();
     });
     draw.restore();
@@ -722,6 +725,7 @@ class FrozenLeftTop {
         overflow: null,
         attr: cell.fontAttr,
       });
+      font.setTextWrap(true);
       font.draw();
     });
     draw.restore();
