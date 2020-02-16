@@ -30,36 +30,6 @@ import { Rect } from '../../canvas/Rect';
 import { Crop } from '../../canvas/Crop';
 import { Box } from '../../canvas/Box';
 
-const defaultSettings = {
-  tipsRenderTime: false,
-  tipsScrollTime: false,
-  index: {
-    height: 30,
-    width: 50,
-    bgColor: '#f4f5f8',
-    color: '#000000',
-  },
-  table: {
-    background: '#ffffff',
-    borderColor: '#f1f1f1',
-  },
-  data: [],
-  rows: {
-    len: 1000,
-    height: 30,
-  },
-  cols: {
-    len: 80,
-    width: 180,
-  },
-  merges: [],
-  fixed: {
-    fxTop: -1,
-    fxLeft: -1,
-    fxRight: -1,
-  },
-};
-
 // ====================绘制内容===================
 
 class Content {
@@ -1095,6 +1065,36 @@ class FrozenRect {
   }
 }
 
+const defaultSettings = {
+  tipsRenderTime: false,
+  tipsScrollTime: false,
+  index: {
+    height: 30,
+    width: 50,
+    bgColor: '#f4f5f8',
+    color: '#000000',
+  },
+  table: {
+    background: '#ffffff',
+    borderColor: '#f1f1f1',
+  },
+  data: [],
+  rows: {
+    len: 1000,
+    height: 30,
+  },
+  cols: {
+    len: 80,
+    width: 180,
+  },
+  merges: [],
+  fixed: {
+    fxTop: -1,
+    fxLeft: -1,
+    fxRight: -1,
+  },
+};
+
 class Table extends Widget {
   constructor(settings) {
     super(`${cssPrefix}-table`);
@@ -1241,6 +1241,7 @@ class Table extends Widget {
     });
     draw.fillRect(0, 0, draw.el.width, draw.el.height);
     this.frozenRect.render();
+    // 冻结区域渲染
     if (fixed.fxLeft > -1 && fixed.fxTop > -1) {
       this.frozenLeftTop.render();
     }
@@ -1252,8 +1253,10 @@ class Table extends Widget {
       this.fixedLeft.render();
       this.frozenLeftIndex.render();
     }
+    // 固定索引渲染
     this.fixedLeftIndex.render();
     this.fixedTopIndex.render();
+    // 表格内容渲染
     this.content.render();
     if (settings.tipsRenderTime) {
       // eslint-disable-next-line no-console
