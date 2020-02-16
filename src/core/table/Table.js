@@ -36,8 +36,6 @@ class Content {
   constructor(table) {
     this.table = table;
     this.scroll = new Scroll();
-    this.scrollX(0);
-    this.scrollY(0);
   }
 
   scrollX(x) {
@@ -65,9 +63,12 @@ class Content {
   }
 
   scrollY(y) {
-    const start = Date.now();
     const { table, scroll } = this;
     const { rows, fixed, settings } = table;
+    if (settings.tipsScrollTime) {
+      // eslint-disable-next-line no-console
+      console.time();
+    }
     let { fxTop } = fixed;
     fxTop += 1;
     const [
@@ -77,11 +78,11 @@ class Content {
     if (y > 0) y1 += height;
     scroll.ri = ri;
     scroll.y = y1;
-    const end = Date.now();
-    const consume = end - start;
-    if (consume > 16 && settings.tipsScrollTime) {
+    if (settings.tipsScrollTime) {
       // eslint-disable-next-line no-console
-      console.log('滚动条计算消耗的时间', consume);
+      console.log('滚动条计算耗时:');
+      // eslint-disable-next-line no-console
+      console.timeEnd();
     }
   }
 
@@ -1222,6 +1223,15 @@ class Table extends Widget {
     });
   }
 
+  clear() {
+    const { draw, settings } = this;
+    draw.clear();
+    draw.attr({
+      fillStyle: settings.table.background,
+    });
+    draw.fillRect(0, 0, draw.el.width, draw.el.height);
+  }
+
   resize() {
     const { draw } = this;
     const [width, height] = [this.visualWidth(), this.visualHeight()];
@@ -1230,16 +1240,12 @@ class Table extends Widget {
   }
 
   render() {
-    const { draw, settings, fixed } = this;
+    const { settings, fixed } = this;
     if (settings.tipsRenderTime) {
       // eslint-disable-next-line no-console
       console.time();
     }
-    draw.clear();
-    draw.attr({
-      fillStyle: settings.table.background,
-    });
-    draw.fillRect(0, 0, draw.el.width, draw.el.height);
+    this.clear();
     this.frozenRect.render();
     // 冻结区域渲染
     if (fixed.fxLeft > -1 && fixed.fxTop > -1) {
