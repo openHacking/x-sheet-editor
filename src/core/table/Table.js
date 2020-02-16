@@ -50,7 +50,7 @@ const defaultSettings = {
   },
   cols: {
     len: 80,
-    width: 130,
+    width: 180,
   },
   merges: [],
   fixed: {
@@ -1230,7 +1230,7 @@ class Table extends Widget {
   }
 
   render() {
-    const { draw, settings } = this;
+    const { draw, settings, fixed } = this;
     if (settings.tipsRenderTime) {
       // eslint-disable-next-line no-console
       console.time();
@@ -1241,14 +1241,20 @@ class Table extends Widget {
     });
     draw.fillRect(0, 0, draw.el.width, draw.el.height);
     this.frozenRect.render();
-    this.frozenLeftTop.render();
-    this.fixedTop.render();
-    this.fixedLeft.render();
-    this.content.render();
-    this.fixedTopIndex.render();
+    if (fixed.fxLeft > -1 && fixed.fxTop > -1) {
+      this.frozenLeftTop.render();
+    }
+    if (fixed.fxTop > -1) {
+      this.fixedTop.render();
+      this.frozenTopIndex.render();
+    }
+    if (fixed.fxLeft > -1) {
+      this.fixedLeft.render();
+      this.frozenLeftIndex.render();
+    }
     this.fixedLeftIndex.render();
-    this.frozenLeftIndex.render();
-    this.frozenTopIndex.render();
+    this.fixedTopIndex.render();
+    this.content.render();
     if (settings.tipsRenderTime) {
       // eslint-disable-next-line no-console
       console.log('渲染界面耗时:');
