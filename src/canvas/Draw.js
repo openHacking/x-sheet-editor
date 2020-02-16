@@ -5,7 +5,7 @@ function dpr() {
 }
 
 function lineWidth() {
-  return 1;
+  return dpr();
 }
 
 function npx(px) {
