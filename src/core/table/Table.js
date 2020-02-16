@@ -706,7 +706,7 @@ class FixedTopIndex {
     draw.translate(offsetX, offsetY);
     // 绘制背景
     draw.attr({
-      fillStyle: '#f4f5f8',
+      fillStyle: '#f6f7fa',
     });
     draw.fillRect(0, 0, width, height);
     // 绘制边框
@@ -781,7 +781,7 @@ class FixedLeftIndex {
     draw.translate(offsetX, offsetY);
     // 绘制背景
     draw.attr({
-      fillStyle: '#f4f5f8',
+      fillStyle: '#f6f7fa',
     });
     draw.fillRect(0, 0, width, height);
     // 绘制边框
@@ -857,7 +857,7 @@ class FrozenLeftIndex {
     draw.translate(offsetX, offsetY);
     // 绘制背景
     draw.attr({
-      fillStyle: '#f4f5f8',
+      fillStyle: '#f6f7fa',
     });
     draw.fillRect(0, 0, width, height);
     // 绘制边框
@@ -932,7 +932,7 @@ class FrozenTopIndex {
     draw.translate(offsetX, offsetY);
     // 绘制背景
     draw.attr({
-      fillStyle: '#f4f5f8',
+      fillStyle: '#f6f7fa',
     });
     draw.fillRect(0, 0, width, height);
     // 绘制边框
