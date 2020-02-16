@@ -15,7 +15,7 @@ function npx(px) {
 function npxLine(px) {
   // eslint-disable-next-line no-use-before-define
   const n = Draw.floor(npx(px));
-  return lineWidth() < 2 ? n - 0.5 : 0.5;
+  return lineWidth() < 2 ? n - 0.5 : n;
 }
 
 class Draw {
