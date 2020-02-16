@@ -41,7 +41,7 @@ const defaultSettings = {
   },
   table: {
     background: '#ffffff',
-    borderColor: '#eeeeee',
+    borderColor: '#f1f1f1',
   },
   data: [],
   rows: {
@@ -1366,14 +1366,14 @@ class Table extends Widget {
 
   setWidth(ci, width) {
     const { cols } = this;
-    cols.setWidth(ci, width);
+    cols.setWidth(ci, Draw.floor(width));
     this.render();
     this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH);
   }
 
   setHeight(ri, height) {
     const { rows } = this;
-    rows.setHeight(ri, height);
+    rows.setHeight(ri, Draw.floor(height));
     this.render();
     this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT);
   }
