@@ -41,7 +41,7 @@ const defaultSettings = {
   },
   table: {
     background: '#ffffff',
-    borderColor: '#efefef',
+    borderColor: '#eeeeee',
   },
   data: [],
   rows: {
@@ -1233,7 +1233,7 @@ class Table extends Widget {
     }
     draw.clear();
     draw.attr({
-      fillStyle: '#ffffff',
+      fillStyle: settings.table.background,
     });
     draw.fillRect(0, 0, draw.el.width, draw.el.height);
     this.frozenLeftTop.render();
