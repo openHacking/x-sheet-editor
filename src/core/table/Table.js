@@ -11,25 +11,24 @@ import { Widget } from '../../lib/Widget';
 import { RectRange } from './RectRange';
 import { Merges } from './Merges';
 import { Constant } from '../../utils/Constant';
+import { EventBind } from '../../utils/EventBind';
 import { Screen } from './screen/Screen';
 import { ScreenSelector } from './selector/ScreenSelector';
+import { ScreenCopyStyle } from './copystyle/ScreenCopyStyle';
 import { XReSizer } from './resizer/XReSizer';
 import { YReSizer } from './resizer/YReSizer';
 import { MousePointType } from './MousePoint';
-import { EventBind } from '../../utils/EventBind';
 import { ScreenAutoFill } from './autofill/ScreenAutoFill';
 import { XHeightLight } from './highlight/XHeightLight';
 import { YHeightLight } from './highlight/YHeightLight';
 import { Edit } from './Edit';
 import { History } from './History';
-import { ScreenCopyStyle } from './copystyle/ScreenCopyStyle';
 import { Cells } from './Cells';
-import { Draw, npx, thinLineWidth } from '../../canvas/Draw';
+import { Draw, npx, lineWidth } from '../../canvas/Draw';
 import { Font } from '../../canvas/Font';
 import { Rect } from '../../canvas/Rect';
 import { Crop } from '../../canvas/Crop';
-
-const tableBorderWidth = thinLineWidth();
+import { Box } from '../../canvas/Box';
 
 const defaultSettings = {
   tipsRenderTime: false,
@@ -41,24 +40,10 @@ const defaultSettings = {
     color: '#000000',
   },
   table: {
+    background: '#ffffff',
     borderColor: '#e9e9e9',
   },
   data: [],
-  cell: {
-    bgColor: '#ffffff',
-    align: 'left',
-    verticalAlign: 'middle',
-    textWrap: false,
-    strike: false,
-    underline: false,
-    color: '#000000',
-    font: {
-      name: 'Arial',
-      size: 13,
-      bold: false,
-      italic: false,
-    },
-  },
   rows: {
     len: 1000,
     height: 30,
@@ -74,6 +59,8 @@ const defaultSettings = {
     fxRight: -1,
   },
 };
+
+// ====================绘制固定内容===================
 
 class Content {
   constructor(table) {
@@ -214,7 +201,7 @@ class Content {
     draw.save();
     draw.translate(offsetX, offsetY);
     draw.attr({
-      lineWidth: tableBorderWidth,
+      lineWidth: lineWidth(),
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
@@ -238,6 +225,13 @@ class Content {
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
+      // 绘制背景
+      const box = new Box({ rect: rect.expansion(lineWidth()), draw });
+      box.drawBackgroundColor(cell.background);
+    });
+    cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
+      // 剔除合并单元格
+      if (merges.getFirstIncludes(i, c)) return;
       // 绘制文字
       const font = new Font({
         text: cells.getFormatText(cell),
@@ -254,34 +248,16 @@ class Content {
   drawMerge(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges, cols, rows,
+      draw, cells, settings,
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
-    const filter = [];
-    cells.getRectRangeCell(viewRange, (i, c) => {
-      const rectRange = merges.getFirstIncludes(i, c);
-      if (!rectRange || filter.find(item => item === rectRange)) return;
-      filter.push(rectRange);
-      const cell = cells.getCell(rectRange.sri, rectRange.sci);
-      const minSri = Math.min(viewRange.sri, rectRange.sri);
-      let maxSri = Math.max(viewRange.sri, rectRange.sri);
-      const minSci = Math.min(viewRange.sci, rectRange.sci);
-      let maxSci = Math.max(viewRange.sci, rectRange.sci);
-      maxSri -= 1;
-      maxSci -= 1;
-      let x = cols.sectionSumWidth(minSci, maxSci);
-      let y = rows.sectionSumHeight(minSri, maxSri);
-      x = viewRange.sci > rectRange.sci ? x * -1 : x;
-      y = viewRange.sri > rectRange.sri ? y * -1 : y;
-      const width = cols.sectionSumWidth(rectRange.sci, rectRange.eci);
-      const height = rows.sectionSumHeight(rectRange.sri, rectRange.eri);
-      const rect = new Rect({
-        x: x + tableBorderWidth,
-        y: y + tableBorderWidth,
-        width: width - (tableBorderWidth * 2),
-        height: height - (tableBorderWidth * 2),
-      });
+    cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
+      // 绘制背景
+      const box = new Box({ rect: rect.cohesionSize(lineWidth()), draw });
+      box.drawBackgroundColor(cell.background ? cell.background : settings.table.background);
+    });
+    cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
       // 绘制文字
       const font = new Font({
         text: cells.getFormatText(cell),
@@ -363,7 +339,7 @@ class FixedLeft {
     draw.save();
     draw.translate(offsetX, offsetY);
     draw.attr({
-      lineWidth: tableBorderWidth,
+      lineWidth: lineWidth(),
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
@@ -387,6 +363,13 @@ class FixedLeft {
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
+      // 绘制背景
+      const box = new Box({ rect: rect.expansion(lineWidth()), draw });
+      box.drawBackgroundColor(cell.background);
+    });
+    cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
+      // 剔除合并单元格
+      if (merges.getFirstIncludes(i, c)) return;
       // 绘制文字
       const font = new Font({
         text: cells.getFormatText(cell),
@@ -403,34 +386,16 @@ class FixedLeft {
   drawMerge(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges, cols, rows,
+      draw, cells, settings,
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
-    const filter = [];
-    cells.getRectRangeCell(viewRange, (i, c) => {
-      const rectRange = merges.getFirstIncludes(i, c);
-      if (!rectRange || filter.find(item => item === rectRange)) return;
-      filter.push(rectRange);
-      const cell = cells.getCell(rectRange.sri, rectRange.sci);
-      const minSri = Math.min(viewRange.sri, rectRange.sri);
-      let maxSri = Math.max(viewRange.sri, rectRange.sri);
-      const minSci = Math.min(viewRange.sci, rectRange.sci);
-      let maxSci = Math.max(viewRange.sci, rectRange.sci);
-      maxSri -= 1;
-      maxSci -= 1;
-      let x = cols.sectionSumWidth(minSci, maxSci);
-      let y = rows.sectionSumHeight(minSri, maxSri);
-      x = viewRange.sci > rectRange.sci ? x * -1 : x;
-      y = viewRange.sri > rectRange.sri ? y * -1 : y;
-      const width = cols.sectionSumWidth(rectRange.sci, rectRange.eci);
-      const height = rows.sectionSumHeight(rectRange.sri, rectRange.eri);
-      const rect = new Rect({
-        x: x + tableBorderWidth,
-        y: y + tableBorderWidth,
-        width: width - (tableBorderWidth * 2),
-        height: height - (tableBorderWidth * 2),
-      });
+    cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
+      // 绘制背景
+      const box = new Box({ rect: rect.cohesionSize(lineWidth()), draw });
+      box.drawBackgroundColor(cell.background ? cell.background : settings.table.background);
+    });
+    cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
       // 绘制文字
       const font = new Font({
         text: cells.getFormatText(cell),
@@ -523,7 +488,7 @@ class FixedTop {
     draw.save();
     draw.translate(offsetX, offsetY);
     draw.attr({
-      lineWidth: tableBorderWidth,
+      lineWidth: lineWidth(),
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
@@ -547,6 +512,13 @@ class FixedTop {
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
+      // 绘制背景
+      const box = new Box({ rect: rect.expansion(lineWidth()), draw });
+      box.drawBackgroundColor(cell.background);
+    });
+    cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
+      // 剔除合并单元格
+      if (merges.getFirstIncludes(i, c)) return;
       // 绘制文字
       const font = new Font({
         text: cells.getFormatText(cell),
@@ -563,34 +535,16 @@ class FixedTop {
   drawMerge(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges, cols, rows,
+      draw, cells, settings,
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
-    const filter = [];
-    cells.getRectRangeCell(viewRange, (i, c) => {
-      const rectRange = merges.getFirstIncludes(i, c);
-      if (!rectRange || filter.find(item => item === rectRange)) return;
-      filter.push(rectRange);
-      const cell = cells.getCell(rectRange.sri, rectRange.sci);
-      const minSri = Math.min(viewRange.sri, rectRange.sri);
-      let maxSri = Math.max(viewRange.sri, rectRange.sri);
-      const minSci = Math.min(viewRange.sci, rectRange.sci);
-      let maxSci = Math.max(viewRange.sci, rectRange.sci);
-      maxSri -= 1;
-      maxSci -= 1;
-      let x = cols.sectionSumWidth(minSci, maxSci);
-      let y = rows.sectionSumHeight(minSri, maxSri);
-      x = viewRange.sci > rectRange.sci ? x * -1 : x;
-      y = viewRange.sri > rectRange.sri ? y * -1 : y;
-      const width = cols.sectionSumWidth(rectRange.sci, rectRange.eci);
-      const height = rows.sectionSumHeight(rectRange.sri, rectRange.eri);
-      const rect = new Rect({
-        x: x + tableBorderWidth,
-        y: y + tableBorderWidth,
-        width: width - (tableBorderWidth * 2),
-        height: height - (tableBorderWidth * 2),
-      });
+    cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
+      // 绘制背景
+      const box = new Box({ rect: rect.cohesionSize(lineWidth()), draw });
+      box.drawBackgroundColor(cell.background ? cell.background : settings.table.background);
+    });
+    cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
       // 绘制文字
       const font = new Font({
         text: cells.getFormatText(cell),
@@ -683,7 +637,7 @@ class FrozenLeftTop {
     draw.save();
     draw.translate(offsetX, offsetY);
     draw.attr({
-      lineWidth: tableBorderWidth,
+      lineWidth: lineWidth(),
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
@@ -707,6 +661,13 @@ class FrozenLeftTop {
     cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
+      // 绘制背景
+      const box = new Box({ rect: rect.expansion(lineWidth()), draw });
+      box.drawBackgroundColor(cell.background);
+    });
+    cells.getRectRangeCell(viewRange, (i, c, rect, cell) => {
+      // 剔除合并单元格
+      if (merges.getFirstIncludes(i, c)) return;
       // 绘制文字
       const font = new Font({
         text: cells.getFormatText(cell),
@@ -723,34 +684,16 @@ class FrozenLeftTop {
   drawMerge(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges, cols, rows,
+      draw, cells, settings,
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
-    const filter = [];
-    cells.getRectRangeCell(viewRange, (i, c) => {
-      const rectRange = merges.getFirstIncludes(i, c);
-      if (!rectRange || filter.find(item => item === rectRange)) return;
-      filter.push(rectRange);
-      const cell = cells.getCell(rectRange.sri, rectRange.sci);
-      const minSri = Math.min(viewRange.sri, rectRange.sri);
-      let maxSri = Math.max(viewRange.sri, rectRange.sri);
-      const minSci = Math.min(viewRange.sci, rectRange.sci);
-      let maxSci = Math.max(viewRange.sci, rectRange.sci);
-      maxSri -= 1;
-      maxSci -= 1;
-      let x = cols.sectionSumWidth(minSci, maxSci);
-      let y = rows.sectionSumHeight(minSri, maxSri);
-      x = viewRange.sci > rectRange.sci ? x * -1 : x;
-      y = viewRange.sri > rectRange.sri ? y * -1 : y;
-      const width = cols.sectionSumWidth(rectRange.sci, rectRange.eci);
-      const height = rows.sectionSumHeight(rectRange.sri, rectRange.eri);
-      const rect = new Rect({
-        x: x + tableBorderWidth,
-        y: y + tableBorderWidth,
-        width: width - (tableBorderWidth * 2),
-        height: height - (tableBorderWidth * 2),
-      });
+    cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
+      // 绘制背景
+      const box = new Box({ rect: rect.cohesionSize(lineWidth()), draw });
+      box.drawBackgroundColor(cell.background ? cell.background : settings.table.background);
+    });
+    cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
       // 绘制文字
       const font = new Font({
         text: cells.getFormatText(cell),
@@ -793,6 +736,8 @@ class FrozenLeftTop {
     crop.close();
   }
 }
+
+// ====================绘制索引===================
 
 class FixedTopIndex {
   constructor(table) {
@@ -837,7 +782,7 @@ class FixedTopIndex {
     draw.fillRect(0, 0, width, height);
     // 绘制边框
     draw.attr({
-      lineWidth: tableBorderWidth,
+      lineWidth: lineWidth(),
       strokeStyle: settings.table.borderColor,
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
@@ -914,7 +859,7 @@ class FixedLeftIndex {
     draw.fillRect(0, 0, width, height);
     // 绘制边框
     draw.attr({
-      lineWidth: tableBorderWidth,
+      lineWidth: lineWidth(),
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
@@ -991,7 +936,7 @@ class FrozenLeftIndex {
     draw.fillRect(0, 0, width, height);
     // 绘制边框
     draw.attr({
-      lineWidth: tableBorderWidth,
+      lineWidth: lineWidth(),
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
@@ -1066,7 +1011,7 @@ class FrozenTopIndex {
     draw.fillRect(0, 0, width, height);
     // 绘制边框
     draw.attr({
-      lineWidth: tableBorderWidth,
+      lineWidth: lineWidth(),
       strokeStyle: settings.table.borderColor,
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
@@ -1097,6 +1042,8 @@ class FrozenTopIndex {
     this.draw(viewRange, offsetX, offsetY, width, height);
   }
 }
+
+// ====================绘制固定夹角===================
 
 class FrozenRect {
   constructor(table) {
@@ -1133,6 +1080,7 @@ class Table extends Widget {
     this.rows = new Rows(this.settings.rows);
     this.cols = new Cols(this.settings.cols);
     this.cells = new Cells({
+      table: this,
       rows: this.rows,
       cols: this.cols,
       data: this.settings.data,

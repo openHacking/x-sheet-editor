@@ -2,6 +2,7 @@ import { Utils } from '../../utils/Utils';
 import { DateUtils } from '../../utils/DateUtils';
 import { Rect } from '../../canvas/Rect';
 import { npx } from '../../canvas/Draw';
+import {Font} from "../../canvas/Font";
 
 const parserToDate = (text) => {
   let result = DateUtils.parserToDate(text, 'yyyy/MM/dd hh:mm:ss');
@@ -128,7 +129,8 @@ const CELL_TEXT_FORMAT_TYPE = {
 };
 
 class Cells {
-  constructor({ cols, rows, data = [] }) {
+  constructor({ table, cols, rows, data = [] }) {
+    this.table = table;
     this.cols = cols;
     this.rows = rows;
     this._ = data;
@@ -147,6 +149,7 @@ class Cells {
       ID: Date.now().toString(),
       text: '',
       format: CELL_TEXT_FORMAT_TYPE.default,
+      background: null,
       fontAttr: {
         align: 'left',
         verticalAlign: 'middle',
@@ -202,13 +205,47 @@ class Cells {
         const cell = createNew ? this.getCellOrNew(i, j) : this.getCell(i, j);
         if (cell) {
           cb(i, j, new Rect({
-            x, y, width, height,
+            x,
+            y,
+            width,
+            height,
           }), cell);
         }
         x += width;
       }
       y += height;
     }
+  }
+
+  getRectRangeMergeCell(viewRange, cb) {
+    const { table } = this;
+    const { merges, cols, rows } = table;
+    const filter = [];
+    this.getRectRangeCell(viewRange, (i, c) => {
+      const rectRange = merges.getFirstIncludes(i, c);
+      if (!rectRange || filter.find(item => item === rectRange)) return;
+      filter.push(rectRange);
+      const cell = this.getCell(rectRange.sri, rectRange.sci);
+      const minSri = Math.min(viewRange.sri, rectRange.sri);
+      let maxSri = Math.max(viewRange.sri, rectRange.sri);
+      const minSci = Math.min(viewRange.sci, rectRange.sci);
+      let maxSci = Math.max(viewRange.sci, rectRange.sci);
+      maxSri -= 1;
+      maxSci -= 1;
+      let x = cols.sectionSumWidth(minSci, maxSci);
+      let y = rows.sectionSumHeight(minSri, maxSri);
+      x = viewRange.sci > rectRange.sci ? x * -1 : x;
+      y = viewRange.sri > rectRange.sri ? y * -1 : y;
+      const width = cols.sectionSumWidth(rectRange.sci, rectRange.eci);
+      const height = rows.sectionSumHeight(rectRange.sri, rectRange.eri);
+      const rect = new Rect({
+        x,
+        y,
+        width,
+        height,
+      });
+      cb(rect, cell);
+    });
   }
 
   getData() {

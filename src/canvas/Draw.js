@@ -9,13 +9,13 @@ function npx(px) {
   return Draw.floor(px * dpr());
 }
 
-function thinLineWidth() {
-  return dpr() - 0.5;
+function lineWidth() {
+  return 1;
 }
 
 function npxLine(px) {
   const n = npx(px);
-  return thinLineWidth() < 2 ? n - 0.5 : 0.5;
+  return lineWidth() < 2 ? n - 0.5 : 0.5;
 }
 
 class Draw {
@@ -139,4 +139,4 @@ class Draw {
   }
 }
 
-export { Draw, npx, thinLineWidth };
+export { Draw, npx, lineWidth };
