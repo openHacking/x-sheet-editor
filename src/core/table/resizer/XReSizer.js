@@ -25,9 +25,8 @@ class XReSizer extends Widget {
   getEventLeft(event) {
     const { table } = this;
     const {
-      settings, content, cols, fixed,
+      settings, cols, fixed, scroll,
     } = table;
-    const { scroll } = content;
     const { index } = settings;
     const { x, y } = table.computeEventXy(event);
     const { ri, ci } = table.getRiCiByXy(x, y);

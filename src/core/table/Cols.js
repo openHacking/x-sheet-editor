@@ -32,8 +32,8 @@ class Cols {
     this.cacheTotalWidth = -1;
   }
 
-  eachWidth(ci, ei, cb) {
-    let x = 0;
+  eachWidth(ci, ei, cb, sx = 0) {
+    let x = sx;
     for (let i = ci; i <= ei; i += 1) {
       const colWidth = this.getWidth(i);
       cb(i, colWidth, x);

@@ -35,55 +35,6 @@ import { Box } from '../../canvas/Box';
 class Content {
   constructor(table) {
     this.table = table;
-    this.scroll = new Scroll();
-  }
-
-  scrollX(x) {
-    const { table, scroll } = this;
-    const { cols, fixed, settings } = table;
-    if (settings.tipsScrollTime) {
-      // eslint-disable-next-line no-console
-      console.time();
-    }
-    let { fxLeft } = fixed;
-    fxLeft += 1;
-    const [
-      ci, left, width,
-    ] = Utils.rangeReduceIf(fxLeft, cols.len, 0, 0, x, i => cols.getWidth(i));
-    let x1 = left;
-    if (x > 0) x1 += width;
-    scroll.ci = ci;
-    scroll.x = x1;
-    if (settings.tipsScrollTime) {
-      // eslint-disable-next-line no-console
-      console.log('滚动条计算耗时:');
-      // eslint-disable-next-line no-console
-      console.timeEnd();
-    }
-  }
-
-  scrollY(y) {
-    const { table, scroll } = this;
-    const { rows, fixed, settings } = table;
-    if (settings.tipsScrollTime) {
-      // eslint-disable-next-line no-console
-      console.time();
-    }
-    let { fxTop } = fixed;
-    fxTop += 1;
-    const [
-      ri, top, height,
-    ] = Utils.rangeReduceIf(fxTop, rows.len, 0, 0, y, i => rows.getHeight(i));
-    let y1 = top;
-    if (y > 0) y1 += height;
-    scroll.ri = ri;
-    scroll.y = y1;
-    if (settings.tipsScrollTime) {
-      // eslint-disable-next-line no-console
-      console.log('滚动条计算耗时:');
-      // eslint-disable-next-line no-console
-      console.timeEnd();
-    }
   }
 
   getXOffset() {
@@ -143,22 +94,8 @@ class Content {
   }
 
   getViewRange() {
-    const { scroll, table } = this;
-    const { rows, cols } = table;
-    let [width, height] = [0, 0];
-    const { ri, ci } = scroll;
-    let [eri, eci] = [rows.len, cols.len];
-    for (let i = ri; i < rows.len; i += 1) {
-      height += rows.getHeight(i);
-      eri = i;
-      if (height > this.getHeight()) break;
-    }
-    for (let j = ci; j < cols.len; j += 1) {
-      width += cols.getWidth(j);
-      eci = j;
-      if (width > this.getWidth()) break;
-    }
-    return new RectRange(ri, ci, eri, eci, width, height);
+    const { table } = this;
+    return table.getViewRange();
   }
 
   drawGrid(viewRange, offsetX, offsetY) {
@@ -300,9 +237,22 @@ class FixedLeft {
 
   getHeight() {
     const { table } = this;
-    const { content } = table;
-    const viewRange = content.getViewRange();
+    const viewRange = table.getViewRange();
     return viewRange.h;
+  }
+
+  getViewRange() {
+    const { table } = this;
+    const { fixed } = table;
+    const { fxLeft } = fixed;
+    const viewRange = table.getViewRange();
+    const width = this.getWidth();
+    const height = this.getHeight();
+    viewRange.sci = 0;
+    viewRange.eci = fxLeft;
+    viewRange.w = width;
+    viewRange.h = height;
+    return viewRange;
   }
 
   drawGrid(viewRange, offsetX, offsetY) {
@@ -392,20 +342,6 @@ class FixedLeft {
     draw.restore();
   }
 
-  getViewRange() {
-    const { table } = this;
-    const { content, fixed } = table;
-    const { fxLeft } = fixed;
-    const viewRange = content.getViewRange();
-    const width = this.getWidth();
-    const height = this.getHeight();
-    viewRange.sci = 0;
-    viewRange.eci = fxLeft;
-    viewRange.w = width;
-    viewRange.h = height;
-    return viewRange;
-  }
-
   render() {
     const { table } = this;
     const { draw } = table;
@@ -448,8 +384,7 @@ class FixedTop {
 
   getWidth() {
     const { table } = this;
-    const { content } = table;
-    const viewRange = content.getViewRange();
+    const viewRange = table.getViewRange();
     return viewRange.w;
   }
 
@@ -458,6 +393,20 @@ class FixedTop {
     const { fixed } = table;
     const { fxTop } = fixed;
     return table.rows.sectionSumHeight(0, fxTop);
+  }
+
+  getViewRange() {
+    const { table } = this;
+    const { fixed } = table;
+    const { fxTop } = fixed;
+    const viewRange = table.getViewRange();
+    const width = this.getWidth();
+    const height = this.getHeight();
+    viewRange.sri = 0;
+    viewRange.eri = fxTop;
+    viewRange.w = width;
+    viewRange.h = height;
+    return viewRange;
   }
 
   drawGrid(viewRange, offsetX, offsetY) {
@@ -547,20 +496,6 @@ class FixedTop {
     draw.restore();
   }
 
-  getViewRange() {
-    const { table } = this;
-    const { content, fixed } = table;
-    const { fxTop } = fixed;
-    const viewRange = content.getViewRange();
-    const width = this.getWidth();
-    const height = this.getHeight();
-    viewRange.sri = 0;
-    viewRange.eri = fxTop;
-    viewRange.w = width;
-    viewRange.h = height;
-    return viewRange;
-  }
-
   render() {
     const { table } = this;
     const { draw } = table;
@@ -613,6 +548,15 @@ class FrozenLeftTop {
     const { fixed, rows } = table;
     const { fxTop } = fixed;
     return rows.sectionSumHeight(0, fxTop);
+  }
+
+  getViewRange() {
+    const width = this.getWidth();
+    const height = this.getHeight();
+    const { table } = this;
+    const { fixed } = table;
+    const { fxTop, fxLeft } = fixed;
+    return new RectRange(0, 0, fxTop, fxLeft, width, height);
   }
 
   drawGrid(viewRange, offsetX, offsetY) {
@@ -702,15 +646,6 @@ class FrozenLeftTop {
     draw.restore();
   }
 
-  getViewRange() {
-    const width = this.getWidth();
-    const height = this.getHeight();
-    const { table } = this;
-    const { fixed } = table;
-    const { fxTop, fxLeft } = fixed;
-    return new RectRange(0, 0, fxTop, fxLeft, width, height);
-  }
-
   render() {
     const { table } = this;
     const { draw } = table;
@@ -751,8 +686,7 @@ class FixedTopIndex {
 
   getWidth() {
     const { table } = this;
-    const { content } = table;
-    const viewRange = content.getViewRange();
+    const viewRange = table.getViewRange();
     const { sci, eci } = viewRange;
     return table.cols.sectionSumWidth(sci, eci);
   }
@@ -799,8 +733,7 @@ class FixedTopIndex {
 
   render() {
     const { table } = this;
-    const { content } = table;
-    const viewRange = content.getViewRange();
+    const viewRange = table.getViewRange();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
     const width = this.getWidth();
@@ -835,8 +768,7 @@ class FixedLeftIndex {
 
   getHeight() {
     const { table } = this;
-    const { content } = table;
-    const viewRange = content.getViewRange();
+    const viewRange = table.getViewRange();
     const { sri, eri } = viewRange;
     return table.rows.sectionSumHeight(sri, eri);
   }
@@ -876,8 +808,7 @@ class FixedLeftIndex {
 
   render() {
     const { table } = this;
-    const { content } = table;
-    const viewRange = content.getViewRange();
+    const viewRange = table.getViewRange();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
     const width = this.getWidth();
@@ -1077,11 +1008,11 @@ const defaultSettings = {
   },
   table: {
     background: '#ffffff',
-    borderColor: '#f1f1f1',
+    borderColor: '#eeeeee',
   },
   data: [],
   rows: {
-    len: 1000,
+    len: 10000,
     height: 30,
   },
   cols: {
@@ -1111,6 +1042,8 @@ class Table extends Widget {
       data: this.settings.data,
     });
     this.merges = new Merges(this.settings.merges);
+    this.scroll = new Scroll();
+    this.viewRange = null;
     // 撤销/反撤销
     this.undo = new History({
       onPop: (e) => {
@@ -1218,6 +1151,10 @@ class Table extends Widget {
         this.mousePointType.set('cell', 'table-cell');
       }
     });
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+      this.viewRange = null;
+      this.render();
+    });
     EventBind.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
       this.resize();
     });
@@ -1273,24 +1210,68 @@ class Table extends Widget {
   }
 
   scrollX(x) {
-    this.content.scrollX(x);
-    this.render();
+    const {
+      cols, fixed, settings, scroll,
+    } = this;
+    if (settings.tipsScrollTime) {
+      // eslint-disable-next-line no-console
+      console.time();
+    }
+    let { fxLeft } = fixed;
+    fxLeft += 1;
+    const [
+      ci, left, width,
+    ] = Utils.rangeReduceIf(fxLeft, cols.len, 0, 0, x, i => cols.getWidth(i));
+    let x1 = left;
+    if (x > 0) x1 += width;
+    scroll.ci = ci;
+    scroll.x = x1;
+    if (settings.tipsScrollTime) {
+      // eslint-disable-next-line no-console
+      console.log('滚动条计算耗时:');
+      // eslint-disable-next-line no-console
+      console.timeEnd();
+    }
     this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
   }
 
   scrollY(y) {
-    this.content.scrollY(y);
-    this.render();
+    const {
+      rows, fixed, settings, scroll,
+    } = this;
+    if (settings.tipsScrollTime) {
+      // eslint-disable-next-line no-console
+      console.time();
+    }
+    let { fxTop } = fixed;
+    fxTop += 1;
+    const [
+      ri, top, height,
+    ] = Utils.rangeReduceIf(fxTop, rows.len, 0, 0, y, i => rows.getHeight(i));
+    let y1 = top;
+    if (y > 0) y1 += height;
+    scroll.ri = ri;
+    scroll.y = y1;
+    if (settings.tipsScrollTime) {
+      // eslint-disable-next-line no-console
+      console.log('滚动条计算耗时:');
+      // eslint-disable-next-line no-console
+      console.timeEnd();
+    }
     this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
   }
 
-  getScroll() {
-    return this.content.scroll;
+  visualHeight() {
+    return this.box().height;
+  }
+
+  visualWidth() {
+    return this.box().width;
   }
 
   getRiCiByXy(x, y) {
     const {
-      settings, fixed, rows, cols, content,
+      settings, fixed, rows, cols,
     } = this;
     const { index } = settings;
     const fixedHeight = this.fixedTop.getHeight();
@@ -1313,7 +1294,7 @@ class Table extends Widget {
       }
     } else if (x > index.width) {
       let total = fixedWidth;
-      const viewRange = content.getViewRange();
+      const viewRange = this.getViewRange();
       for (let i = viewRange.sci; i <= viewRange.eci; i += 1) {
         const width = cols.getWidth(i);
         total += width;
@@ -1334,7 +1315,7 @@ class Table extends Widget {
       }
     } else if (y > index.height) {
       let total = fixedHeight;
-      const viewRange = content.getViewRange();
+      const viewRange = this.getViewRange();
       for (let i = viewRange.sri; i <= viewRange.eri; i += 1) {
         const height = rows.getHeight(i);
         total += height;
@@ -1349,12 +1330,27 @@ class Table extends Widget {
     };
   }
 
-  visualHeight() {
-    return this.box().height;
-  }
-
-  visualWidth() {
-    return this.box().width;
+  getViewRange() {
+    if (this.viewRange === null) {
+      const {
+        rows, cols, scroll, content,
+      } = this;
+      let [width, height] = [0, 0];
+      const { ri, ci } = scroll;
+      let [eri, eci] = [rows.len, cols.len];
+      for (let i = ri; i < rows.len; i += 1) {
+        height += rows.getHeight(i);
+        eri = i;
+        if (height > content.getHeight()) break;
+      }
+      for (let j = ci; j < cols.len; j += 1) {
+        width += cols.getWidth(j);
+        eci = j;
+        if (width > content.getWidth()) break;
+      }
+      this.viewRange = new RectRange(ri, ci, eri, eci, width, height);
+    }
+    return this.viewRange.clone();
   }
 
   getFixedWidth() {
@@ -1383,6 +1379,18 @@ class Table extends Widget {
     return this.content.getContentHeight();
   }
 
+  getCell(ri, ci) {
+    const { cells } = this;
+    return Utils.mergeDeep({}, cells.getCell(ri, ci));
+  }
+
+  setCell(ri, ci, cell) {
+    const { cells } = this;
+    Utils.mergeDeep(cells.getCellOrNew(ri, ci), cell);
+    this.snapshot(true);
+    this.render();
+  }
+
   setWidth(ci, width) {
     const { cols } = this;
     cols.setWidth(ci, Draw.floor(width));
@@ -1395,18 +1403,6 @@ class Table extends Widget {
     rows.setHeight(ri, Draw.floor(height));
     this.render();
     this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT);
-  }
-
-  getCell(ri, ci) {
-    const { cells } = this;
-    return Utils.mergeDeep({}, cells.getCell(ri, ci));
-  }
-
-  setCell(ri, ci, cell) {
-    const { cells } = this;
-    Utils.mergeDeep(cells.getCellOrNew(ri, ci), cell);
-    this.snapshot(true);
-    this.render();
   }
 
   snapshot(clear = false) {

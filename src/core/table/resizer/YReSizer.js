@@ -25,9 +25,8 @@ class YReSizer extends Widget {
   getEventTop(event) {
     const { table } = this;
     const {
-      settings, content, rows, fixed,
+      settings, rows, fixed, scroll,
     } = table;
-    const { scroll } = content;
     const { index } = settings;
     const { x, y } = table.computeEventXy(event);
     const { ri, ci } = table.getRiCiByXy(x, y);

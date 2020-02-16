@@ -162,9 +162,9 @@ class ScreenCopyStyle extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const {
-      content, cols, rows,
+      cols, rows,
     } = table;
-    const viewRange = content.getViewRange();
+    const viewRange = table.getViewRange();
     const { rect } = selectorAttr;
 
     const empty = new RectRange(-1, -1, -1, -1);

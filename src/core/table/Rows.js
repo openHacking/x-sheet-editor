@@ -32,8 +32,8 @@ class Rows {
     this.cacheTotalHeight = -1;
   }
 
-  eachHeight(ri, ei, cb) {
-    let y = 0;
+  eachHeight(ri, ei, cb, sy = 0) {
+    let y = sy;
     for (let i = ri; i <= ei; i += 1) {
       const rowHeight = this.getHeight(i);
       cb(i, rowHeight, y);

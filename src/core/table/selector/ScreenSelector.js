@@ -213,9 +213,9 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const {
-      content, cols, rows,
+      cols, rows,
     } = table;
-    const viewRange = content.getViewRange();
+    const viewRange = table.getViewRange();
     const { rect } = selectorAttr;
 
     const empty = new RectRange(-1, -1, -1, -1);
@@ -414,8 +414,7 @@ class ScreenSelector extends ScreenWidget {
   setBrCorner(selectorAttr, intersectsArea) {
     const { screen } = this;
     const { table } = screen;
-    const { content } = table;
-    const viewRange = content.getViewRange();
+    const viewRange = table.getViewRange();
     const { rect, edge, edgeType } = selectorAttr;
 
     const empty = new RectRange(-1, -1, -1, -1);
@@ -516,8 +515,8 @@ class ScreenSelector extends ScreenWidget {
   getViewRange() {
     const { screen } = this;
     const { table } = screen;
-    const { content, cols, rows } = table;
-    const viewRange = content.getViewRange();
+    const { cols, rows } = table;
+    const viewRange = table.getViewRange();
     let { sri, sci } = viewRange;
     const { eri, eci } = viewRange;
 

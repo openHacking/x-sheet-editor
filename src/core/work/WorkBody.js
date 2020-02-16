@@ -179,8 +179,7 @@ class WorkBody extends Widget {
     const sheet = sheetView.setActiveSheet(index);
     if (sheet) {
       const { table } = sheet;
-      const { content } = table;
-      const { scroll } = content;
+      const { scroll } = table;
       const { scrollBarX, scrollBarY } = this;
       scrollBarX.scrollMove(scroll.x);
       scrollBarY.scrollMove(scroll.y);
@@ -207,8 +206,7 @@ class WorkBody extends Widget {
       const sheet = this.sheetView.getActiveSheet();
       if (Utils.isUnDef(sheet)) return;
       const { table } = sheet;
-      const { rows, content } = table;
-      const { scroll } = content;
+      const { rows, scroll } = table;
       const { scrollTo } = this.scrollBarY;
       let { deltaY } = evt;
       if (evt.detail) deltaY = evt.detail * 40;

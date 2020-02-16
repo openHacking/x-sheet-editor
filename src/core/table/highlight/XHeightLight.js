@@ -94,8 +94,8 @@ class XHeightLight extends Widget {
       }
     } else if (Utils.arrayIncludeArray(intersectsArea, ['br'])) {
       const { rect } = selectorAttr;
-      const { content, cols } = table;
-      const cViewRange = content.getViewRange();
+      const { cols } = table;
+      const cViewRange = table.getViewRange();
       const cCoincideRange = this.coincide(rect, cViewRange);
       if (!empty.equals(cCoincideRange)) {
         const width = cols.sectionSumWidth(cCoincideRange.sci, cCoincideRange.eci);
@@ -166,9 +166,9 @@ class XHeightLight extends Widget {
       }
     } else if (Utils.arrayIncludeArray(intersectsArea, ['l', 'br'])) {
       const { rect } = selectorAttr;
-      const { fixedLeft, content, cols } = table;
+      const { fixedLeft, cols } = table;
       const lViewRange = fixedLeft.getViewRange();
-      const cViewRange = content.getViewRange();
+      const cViewRange = table.getViewRange();
       const lCoincideRange = this.coincide(rect, lViewRange);
       const cCoincideRange = this.coincide(rect, cViewRange);
       let width = 0;

@@ -1,6 +1,6 @@
 const Data = [];
 
-for (let i = 0; i < 1000; i += 1) {
+for (let i = 0; i < 10000; i += 1) {
   const rows = [];
   for (let j = 0; j < 80; j += 1) {
     const item = {

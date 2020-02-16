@@ -97,8 +97,8 @@ class YHeightLight extends Widget {
       }
     } else if (Utils.arrayIncludeArray(intersectsArea, ['br'])) {
       const { rect } = selectorAttr;
-      const { content, rows } = table;
-      const cViewRange = content.getViewRange();
+      const { rows } = table;
+      const cViewRange = table.getViewRange();
       const cCoincideRange = this.coincide(rect, cViewRange);
       // console.log('cCoincideRange>>>', cCoincideRange);
       if (!empty.equals(cCoincideRange)) {
@@ -155,9 +155,9 @@ class YHeightLight extends Widget {
       this.show();
     } else if (Utils.arrayIncludeArray(intersectsArea, ['t', 'br'])) {
       const { rect } = selectorAttr;
-      const { fixedTop, content, rows } = table;
+      const { fixedTop, rows } = table;
       const tViewRange = fixedTop.getViewRange();
-      const cViewRange = content.getViewRange();
+      const cViewRange = table.getViewRange();
       const tCoincideRange = this.coincide(rect, tViewRange);
       const cCoincideRange = this.coincide(rect, cViewRange);
       const top = rows.sectionSumHeight(tViewRange.sri, tCoincideRange.sri - 1) + index.height;

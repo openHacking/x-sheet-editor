@@ -144,8 +144,7 @@ class Edit extends Widget {
       }).show();
     } else if (Utils.arrayIncludeArray(intersectsArea, ['br'])) {
       // console.log('br');
-      const { content } = table;
-      const viewRange = content.getViewRange();
+      const viewRange = table.getViewRange();
       const coincideRange = rect.coincide(viewRange);
 
       const width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci) - offset * 2;
@@ -208,9 +207,9 @@ class Edit extends Widget {
       }).show();
     } else if (Utils.arrayIncludeArray(intersectsArea, ['t', 'br'])) {
       // console.log('t, br');
-      const { content, fixedTop } = table;
+      const { fixedTop } = table;
 
-      const cViewRange = content.getViewRange();
+      const cViewRange = table.getViewRange();
       const cCoincideRange = rect.coincide(cViewRange);
 
       const tViewRange = fixedTop.getViewRange();
@@ -231,9 +230,9 @@ class Edit extends Widget {
       }).show();
     } else if (Utils.arrayIncludeArray(intersectsArea, ['br', 'l'])) {
       // console.log('br, l');
-      const { content, fixedLeft } = table;
+      const { fixedLeft } = table;
 
-      const cViewRange = content.getViewRange();
+      const cViewRange = table.getViewRange();
       const cCoincideRange = rect.coincide(cViewRange);
 
       const lViewRange = fixedLeft.getViewRange();
