@@ -41,7 +41,7 @@ const defaultSettings = {
   },
   table: {
     background: '#ffffff',
-    borderColor: '#e9e9e9',
+    borderColor: '#efefef',
   },
   data: [],
   rows: {
@@ -252,10 +252,15 @@ class Content {
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
+    cells.getRectRangeMergeCell(viewRange, (rect) => {
+      // 覆盖表格线段
+      const box = new Box({ rect: rect.cohesion(lineWidth()), draw });
+      box.drawBackgroundColor(settings.table.background);
+    });
     cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
       // 绘制背景
-      const box = new Box({ rect: rect.cohesionSize(lineWidth()), draw });
-      box.drawBackgroundColor(cell.background ? cell.background : settings.table.background);
+      const box = new Box({ rect: rect.expansion(lineWidth()), draw });
+      box.drawBackgroundColor(cell.background);
     });
     cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
       // 绘制文字
@@ -390,10 +395,15 @@ class FixedLeft {
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
+    cells.getRectRangeMergeCell(viewRange, (rect) => {
+      // 覆盖表格线段
+      const box = new Box({ rect: rect.cohesion(lineWidth()), draw });
+      box.drawBackgroundColor(settings.table.background);
+    });
     cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
       // 绘制背景
-      const box = new Box({ rect: rect.cohesionSize(lineWidth()), draw });
-      box.drawBackgroundColor(cell.background ? cell.background : settings.table.background);
+      const box = new Box({ rect: rect.expansion(lineWidth()), draw });
+      box.drawBackgroundColor(cell.background);
     });
     cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
       // 绘制文字
@@ -539,10 +549,15 @@ class FixedTop {
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
+    cells.getRectRangeMergeCell(viewRange, (rect) => {
+      // 覆盖表格线段
+      const box = new Box({ rect: rect.cohesion(lineWidth()), draw });
+      box.drawBackgroundColor(settings.table.background);
+    });
     cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
       // 绘制背景
-      const box = new Box({ rect: rect.cohesionSize(lineWidth()), draw });
-      box.drawBackgroundColor(cell.background ? cell.background : settings.table.background);
+      const box = new Box({ rect: rect.expansion(lineWidth()), draw });
+      box.drawBackgroundColor(cell.background);
     });
     cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
       // 绘制文字
@@ -688,10 +703,15 @@ class FrozenLeftTop {
     } = table;
     draw.save();
     draw.translate(offsetX, offsetY);
+    cells.getRectRangeMergeCell(viewRange, (rect) => {
+      // 覆盖表格线段
+      const box = new Box({ rect: rect.cohesion(lineWidth()), draw });
+      box.drawBackgroundColor(settings.table.background);
+    });
     cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
       // 绘制背景
-      const box = new Box({ rect: rect.cohesionSize(lineWidth()), draw });
-      box.drawBackgroundColor(cell.background ? cell.background : settings.table.background);
+      const box = new Box({ rect: rect.expansion(lineWidth()), draw });
+      box.drawBackgroundColor(cell.background);
     });
     cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
       // 绘制文字

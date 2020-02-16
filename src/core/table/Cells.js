@@ -2,7 +2,6 @@ import { Utils } from '../../utils/Utils';
 import { DateUtils } from '../../utils/DateUtils';
 import { Rect } from '../../canvas/Rect';
 import { npx } from '../../canvas/Draw';
-import {Font} from "../../canvas/Font";
 
 const parserToDate = (text) => {
   let result = DateUtils.parserToDate(text, 'yyyy/MM/dd hh:mm:ss');
@@ -129,7 +128,9 @@ const CELL_TEXT_FORMAT_TYPE = {
 };
 
 class Cells {
-  constructor({ table, cols, rows, data = [] }) {
+  constructor({
+    table, cols, rows, data = [],
+  }) {
     this.table = table;
     this.cols = cols;
     this.rows = rows;

@@ -4,17 +4,17 @@ function dpr() {
   return window.devicePixelRatio || 1;
 }
 
-function npx(px) {
-  // eslint-disable-next-line no-bitwise,no-use-before-define
-  return Draw.floor(px * dpr());
-}
-
 function lineWidth() {
   return 1;
 }
 
+function npx(px) {
+  return px * dpr();
+}
+
 function npxLine(px) {
-  const n = npx(px);
+  // eslint-disable-next-line no-use-before-define
+  const n = Draw.floor(npx(px));
   return lineWidth() < 2 ? n - 0.5 : 0.5;
 }
 
@@ -139,4 +139,6 @@ class Draw {
   }
 }
 
-export { Draw, npx, lineWidth };
+export {
+  Draw, npx, dpr, lineWidth,
+};
