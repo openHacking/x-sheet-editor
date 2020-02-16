@@ -1236,6 +1236,7 @@ class Table extends Widget {
       fillStyle: settings.table.background,
     });
     draw.fillRect(0, 0, draw.el.width, draw.el.height);
+    this.frozenRect.render();
     this.frozenLeftTop.render();
     this.fixedTop.render();
     this.fixedLeft.render();
@@ -1244,7 +1245,6 @@ class Table extends Widget {
     this.fixedLeftIndex.render();
     this.frozenLeftIndex.render();
     this.frozenTopIndex.render();
-    this.frozenRect.render();
     if (settings.tipsRenderTime) {
       // eslint-disable-next-line no-console
       console.log('渲染界面耗时:');
