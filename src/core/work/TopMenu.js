@@ -139,12 +139,14 @@ class TopMenu extends Widget {
     EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      if (table.undo.length() > 1) table.undo.pop();
+      const { dataSnapshot } = table;
+      if (dataSnapshot.undo.length() > 1) dataSnapshot.undo.pop();
     });
     EventBind.bind(this.redo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      table.redo.pop();
+      const { dataSnapshot } = table;
+      dataSnapshot.redo.pop();
     });
     EventBind.bind(this.paintFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
@@ -167,7 +169,9 @@ class TopMenu extends Widget {
           const { selectorAttr: newSelectorAttr } = screenSelector;
           const src = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
           cells.getRectRangeCell(newSelectorAttr.rect, (r, c, rect, cell) => {
-            Utils.mergeDeep(cell.style, src.style);
+            const { text } = cell;
+            Utils.mergeDeep(cell, src);
+            cell.text = text;
           });
           table.render();
         };
@@ -182,7 +186,9 @@ class TopMenu extends Widget {
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
         cells.getRectRangeCell(selectorAttr.rect, (r, c, rect, cell) => {
-          cell.style = cells.getDefaultStyle();
+          const { text } = cell;
+          Utils.mergeDeep(cell, cells.getDefaultAttr());
+          cell.text = text;
         });
         table.render();
       }
@@ -209,7 +215,7 @@ class TopMenu extends Widget {
     });
   }
 
-  setFontStatus() {
+  setFormatStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -265,7 +271,7 @@ class TopMenu extends Widget {
     }
   }
 
-  setFormatStatus() {
+  setFontStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -287,7 +293,8 @@ class TopMenu extends Widget {
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
     const { table } = sheet;
-    this.undo.active(table.undo.length() > 1);
+    const { dataSnapshot } = table;
+    this.undo.active(dataSnapshot.undo.length() > 1);
   }
 
   setRedoStatus() {
@@ -295,7 +302,8 @@ class TopMenu extends Widget {
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
     const { table } = sheet;
-    this.redo.active(!table.redo.isEmpty());
+    const { dataSnapshot } = table;
+    this.redo.active(!dataSnapshot.redo.isEmpty());
   }
 
   setPaintFormatStatus() {

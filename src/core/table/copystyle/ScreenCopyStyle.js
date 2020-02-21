@@ -5,6 +5,7 @@ import { ScreenWidget } from '../screen/ScreenWidget';
 import { RectRange } from '../RectRange';
 import { EventBind } from '../../../utils/EventBind';
 import { Constant } from '../../../utils/Constant';
+import { Rect } from '../../../canvas/Rect';
 
 class ScreenCopyStyle extends ScreenWidget {
   constructor(screen, options = {}) {
@@ -21,7 +22,9 @@ class ScreenCopyStyle extends ScreenWidget {
   setLTOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
-    const { frozenLeftTop, cols, rows } = table;
+    const {
+      frozenLeftTop, cols, rows, gridLine,
+    } = table;
     const viewRange = frozenLeftTop.getViewRange();
     const { rect } = selectorAttr;
 
@@ -52,18 +55,24 @@ class ScreenCopyStyle extends ScreenWidget {
       this.lt.mask.cssRemoveKeys('border-bottom');
     }
 
+    const size = new Rect({
+      x: left, y: top, width, height,
+    });
+    size.expandSize(gridLine.lineWidth());
     this.lt.offset({
-      width,
-      height,
-      left,
-      top,
+      width: size.width,
+      height: size.height,
+      left: size.x,
+      top: size.y,
     }).show();
   }
 
   setTOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
-    const { fixedTop, cols, rows } = table;
+    const {
+      fixedTop, cols, rows, gridLine,
+    } = table;
     const viewRange = fixedTop.getViewRange();
     const { rect } = selectorAttr;
 
@@ -101,18 +110,24 @@ class ScreenCopyStyle extends ScreenWidget {
       this.t.mask.cssRemoveKeys('border-right');
     }
 
+    const size = new Rect({
+      x: left, y: top, width, height,
+    });
+    size.expandSize(gridLine.lineWidth());
     this.t.offset({
-      width,
-      height,
-      left,
-      top,
+      width: size.width,
+      height: size.height,
+      left: size.x,
+      top: size.y,
     }).show();
   }
 
   setLOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
-    const { fixedLeft, cols, rows } = table;
+    const {
+      fixedLeft, cols, rows, gridLine,
+    } = table;
     const viewRange = fixedLeft.getViewRange();
     const { rect } = selectorAttr;
 
@@ -150,11 +165,15 @@ class ScreenCopyStyle extends ScreenWidget {
       this.l.mask.cssRemoveKeys('border-bottom');
     }
 
+    const size = new Rect({
+      x: left, y: top, width, height,
+    });
+    size.expandSize(gridLine.lineWidth());
     this.l.offset({
-      width,
-      height,
-      left,
-      top,
+      width: size.width,
+      height: size.height,
+      left: size.x,
+      top: size.y,
     }).show();
   }
 
@@ -162,7 +181,7 @@ class ScreenCopyStyle extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const {
-      cols, rows,
+      cols, rows, gridLine,
     } = table;
     const viewRange = table.getViewRange();
     const { rect } = selectorAttr;
@@ -208,11 +227,15 @@ class ScreenCopyStyle extends ScreenWidget {
       this.br.mask.cssRemoveKeys('border-right');
     }
 
+    const size = new Rect({
+      x: left, y: top, width, height,
+    });
+    size.expandSize(gridLine.lineWidth());
     this.br.offset({
-      width,
-      height,
-      left,
-      top,
+      width: size.width,
+      height: size.height,
+      left: size.x,
+      top: size.y,
     }).show();
   }
 

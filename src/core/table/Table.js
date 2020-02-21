@@ -78,7 +78,7 @@ class FrozenLeftTop {
   drawBackGround(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges,
+      draw, gridLine, cells, merges,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -86,6 +86,13 @@ class FrozenLeftTop {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
       // 绘制背景
+      rect.expandSize(gridLine.lineWidth());
+      const box = new Box({ draw, rect });
+      box.drawBackgroundColor(cell.background);
+    });
+    cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
+      // 绘制背景
+      rect.expandSize(gridLine.lineWidth());
       const box = new Box({ draw, rect });
       box.drawBackgroundColor(cell.background);
     });
@@ -126,7 +133,7 @@ class FrozenLeftTop {
   drawCells(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges,
+      draw, cells, merges, gridLine,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -136,7 +143,7 @@ class FrozenLeftTop {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
-        rect,
+        rect: rect.expandSize(gridLine.lineWidth()),
         dw: draw,
         overflow: null,
         attr: cell.fontAttr,
@@ -147,7 +154,7 @@ class FrozenLeftTop {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
-        rect,
+        rect: rect.expandSize(gridLine.lineWidth()),
         dw: draw,
         overflow: null,
         attr: cell.fontAttr,
@@ -261,6 +268,12 @@ class Content {
       const box = new Box({ draw, rect });
       box.drawBackgroundColor(cell.background);
     });
+    cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
+      // 绘制背景
+      rect.expandSize(gridLine.lineWidth());
+      const box = new Box({ draw, rect });
+      box.drawBackgroundColor(cell.background);
+    });
     draw.offset(0, 0);
     draw.restore();
   }
@@ -298,7 +311,7 @@ class Content {
   drawCells(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges,
+      draw, cells, merges, gridLine,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -308,7 +321,7 @@ class Content {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
-        rect,
+        rect: rect.expandSize(gridLine.lineWidth()),
         dw: draw,
         overflow: null,
         attr: cell.fontAttr,
@@ -319,7 +332,7 @@ class Content {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
-        rect,
+        rect: rect.expandSize(gridLine.lineWidth()),
         dw: draw,
         overflow: null,
         attr: cell.fontAttr,
@@ -404,7 +417,7 @@ class FixedLeft {
   drawBackGround(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges,
+      draw, gridLine, cells, merges,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -412,6 +425,13 @@ class FixedLeft {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
       // 绘制背景
+      rect.expandSize(gridLine.lineWidth());
+      const box = new Box({ draw, rect });
+      box.drawBackgroundColor(cell.background);
+    });
+    cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
+      // 绘制背景
+      rect.expandSize(gridLine.lineWidth());
       const box = new Box({ draw, rect });
       box.drawBackgroundColor(cell.background);
     });
@@ -452,7 +472,7 @@ class FixedLeft {
   drawCells(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges,
+      draw, cells, merges, gridLine,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -462,7 +482,7 @@ class FixedLeft {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
-        rect,
+        rect: rect.expandSize(gridLine.lineWidth()),
         dw: draw,
         overflow: null,
         attr: cell.fontAttr,
@@ -473,7 +493,7 @@ class FixedLeft {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
-        rect,
+        rect: rect.expandSize(gridLine.lineWidth()),
         dw: draw,
         overflow: null,
         attr: cell.fontAttr,
@@ -555,7 +575,7 @@ class FixedTop {
   drawBackGround(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges,
+      draw, gridLine, cells, merges,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -563,6 +583,13 @@ class FixedTop {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
       // 绘制背景
+      rect.expandSize(gridLine.lineWidth());
+      const box = new Box({ draw, rect });
+      box.drawBackgroundColor(cell.background);
+    });
+    cells.getRectRangeMergeCell(viewRange, (rect, cell) => {
+      // 绘制背景
+      rect.expandSize(gridLine.lineWidth());
       const box = new Box({ draw, rect });
       box.drawBackgroundColor(cell.background);
     });
@@ -603,7 +630,7 @@ class FixedTop {
   drawCells(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges,
+      draw, cells, merges, gridLine,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -613,7 +640,7 @@ class FixedTop {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
-        rect,
+        rect: rect.expandSize(gridLine.lineWidth()),
         dw: draw,
         overflow: null,
         attr: cell.fontAttr,
@@ -624,7 +651,7 @@ class FixedTop {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
-        rect,
+        rect: rect.expandSize(gridLine.lineWidth()),
         dw: draw,
         overflow: null,
         attr: cell.fontAttr,
@@ -1009,7 +1036,7 @@ const defaultSettings = {
   },
   data: [],
   rows: {
-    len: 10000,
+    len: 1000,
     height: 30,
   },
   cols: {

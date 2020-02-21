@@ -10,14 +10,15 @@ class Element {
     } else {
       this.el = tag;
     }
+    this.el.data = [];
   }
 
   data(key, value) {
     if (value !== undefined) {
-      this.data[key] = value;
+      this.el.data[key] = value;
       return this;
     }
-    return this.data[key];
+    return this.el.data[key];
   }
 
   on(eventNames, handler) {
