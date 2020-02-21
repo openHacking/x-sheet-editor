@@ -1,43 +1,41 @@
-/* global window */
+/* global window Math */
 
 function dpr() {
   return window.devicePixelRatio || 1;
 }
 
-function lineWidth() {
-  return 1;
-}
-
 function npx(px) {
-  return px * dpr();
-}
-
-function npxLine(px) {
-  // eslint-disable-next-line no-use-before-define
-  const n = Draw.floor(npx(px));
-  return lineWidth() < 2 ? n - 0.5 : n;
+  return Math.round(px * dpr());
 }
 
 class Draw {
-  static floor(v) {
-    // eslint-disable-next-line no-bitwise
-    return (0.5 + v) << 0;
-  }
-
   constructor(el) {
     this.el = el;
-    this.ctx = el.getContext('2d', { alpha: false });
+    this.ctx = el.getContext('2d');
+    this.width = el.width;
+    this.height = el.height;
+    this.offsetX = 0;
+    this.offsetY = 0;
+  }
+
+  offset(offsetX = 0, offsetY = 0) {
+    this.offsetX = offsetX;
+    this.offsetY = offsetY;
   }
 
   resize(width, height) {
-    this.el.style.width = `${width}px`;
-    this.el.style.height = `${height}px`;
-    this.el.width = npx(width);
-    this.el.height = npx(height);
+    const { el } = this;
+    this.width = width;
+    this.height = height;
+    el.style.width = `${width}px`;
+    el.style.height = `${height}px`;
+    el.width = npx(width);
+    el.height = npx(height);
+    return this;
   }
 
   clear() {
-    const { width, height } = this.el;
+    const { width, height } = this;
     this.clearRect(0, 0, width, height);
     return this;
   }
@@ -61,6 +59,7 @@ class Draw {
 
   beginPath() {
     this.ctx.beginPath();
+    return this;
   }
 
   save() {
@@ -76,23 +75,9 @@ class Draw {
     return this;
   }
 
-  translate(x, y) {
-    this.ctx.translate(npx(x), npx(y));
-    return this;
-  }
-
-  clearRect(x, y, w, h) {
-    this.ctx.clearRect(x, y, w, h);
-    return this;
-  }
-
-  rect(x, y, w, h) {
-    this.ctx.rect(npx(x), npx(y), npx(w), npx(h));
-    return this;
-  }
-
-  fillRect(x, y, w, h) {
-    this.ctx.fillRect(npx(x), npx(y), npx(w), npx(h));
+  clip() {
+    const { ctx } = this;
+    ctx.clip();
     return this;
   }
 
@@ -100,45 +85,50 @@ class Draw {
     this.ctx.fill();
   }
 
-  fillText(text, x, y) {
-    this.ctx.fillText(text, npx(x), npx(y));
+  measureText(text) {
+    return this.ctx.measureText(text);
+  }
+
+  clearRect(x, y, w, h) {
+    const { offsetX, offsetY } = this;
+    this.ctx.clearRect(npx(x + offsetX), npx(y + offsetY), npx(w), npx(h));
     return this;
   }
 
-  moveTo(x, y) {
-    const { ctx } = this;
-    ctx.moveTo(npxLine(x), npxLine(y));
+  rect(x, y, w, h) {
+    const { offsetX, offsetY } = this;
+    this.ctx.rect(npx(x + offsetX), npx(y + offsetY), npx(w), npx(h));
+    return this;
   }
 
-  lineTo(x, y) {
-    const { ctx } = this;
-    ctx.lineTo(npxLine(x), npxLine(y));
+  fillRect(x, y, w, h) {
+    const { offsetX, offsetY } = this;
+    this.ctx.fillRect(npx(x + offsetX), npx(y + offsetY), npx(w), npx(h));
+    return this;
+  }
+
+  fillText(text, x, y) {
+    const { offsetX, offsetY } = this;
+    this.ctx.fillText(text, npx(x + offsetX), npx(y + offsetY));
+    return this;
   }
 
   line(...xys) {
     const { ctx } = this;
+    const { offsetX, offsetY } = this;
     if (xys.length > 1) {
       const [x, y] = xys[0];
-      this.moveTo(x, y);
+      ctx.moveTo(npx(x + offsetX), npx(y + offsetY));
       for (let i = 1, len = xys.length; i < len; i += 1) {
         const [x1, y1] = xys[i];
-        this.lineTo(x1, y1);
+        ctx.lineTo(npx(x1 + offsetX), npx(y1 + offsetY));
       }
       ctx.stroke();
     }
     return this;
   }
-
-  clip() {
-    const { ctx } = this;
-    ctx.clip();
-  }
-
-  measureText(text) {
-    return this.ctx.measureText(text);
-  }
 }
 
 export {
-  Draw, npx, dpr, lineWidth,
+  Draw, npx, dpr,
 };

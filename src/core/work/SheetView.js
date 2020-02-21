@@ -56,9 +56,11 @@ class SheetView extends Widget {
   }
 
   setActive(sheet) {
-    sheet.show().sibling().forEach((item) => {
+    sheet.show();
+    sheet.sibling().forEach((item) => {
       item.hide();
     });
+    sheet.table.resize();
     return sheet;
   }
 }

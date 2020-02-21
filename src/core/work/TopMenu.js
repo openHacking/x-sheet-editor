@@ -26,7 +26,6 @@ import { Constant } from '../../utils/Constant';
 import { ScreenCopyStyle } from '../table/copystyle/ScreenCopyStyle';
 import { ScreenSelector } from '../table/selector/ScreenSelector';
 import { Utils } from '../../utils/Utils';
-import { CELL_TEXT_FORMAT_TYPE } from '../table/Cells';
 import { ElPopUp } from '../../component/elpopup/ElPopUp';
 
 class Divider extends Widget {
@@ -51,14 +50,14 @@ class TopMenu extends Widget {
         onUpdate: (format) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          const { screen, cells } = table;
+          const { screen, cells, dataSnapshot } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           if (selectorAttr) {
             cells.getRectRangeCell(selectorAttr.rect, (r, c, rect, cell) => {
               cell.format = format;
             }, undefined, true);
-            table.snapshot();
+            dataSnapshot.snapshot();
             table.render();
           }
         },
@@ -69,14 +68,14 @@ class TopMenu extends Widget {
         onUpdate: (type) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          const { screen, cells } = table;
+          const { screen, cells, dataSnapshot } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           if (selectorAttr) {
             cells.getRectRangeCell(selectorAttr.rect, (r, c, rect, cell) => {
               cell.style.font.name = type;
             }, undefined, true);
-            table.snapshot();
+            dataSnapshot.snapshot();
             table.render();
           }
         },
@@ -189,21 +188,21 @@ class TopMenu extends Widget {
       }
     });
     EventBind.bind(this.format, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      ElPopUp.closeAll([this]);
+      ElPopUp.closeAll([this.format.formatContextMenu]);
       if (this.format.formatContextMenu.off) {
-        this.format.formatContextMenu.close();
-      } else {
         this.format.formatContextMenu.open();
+      } else {
+        this.format.formatContextMenu.close();
       }
       e.stopPropagation();
       e.preventDefault();
     });
     EventBind.bind(this.font, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      ElPopUp.closeAll([this]);
+      ElPopUp.closeAll([this.font.fontContextMenu]);
       if (this.font.fontContextMenu.off) {
-        this.font.fontContextMenu.close();
-      } else {
         this.font.fontContextMenu.open();
+      } else {
+        this.font.fontContextMenu.close();
       }
       e.stopPropagation();
       e.preventDefault();
@@ -223,41 +222,41 @@ class TopMenu extends Widget {
       const { format } = firstCell;
       let text = '常规';
       switch (format) {
-        case CELL_TEXT_FORMAT_TYPE.default:
+        case 'default':
           text = '常规';
           break;
-        case CELL_TEXT_FORMAT_TYPE.text:
+        case 'text':
           text = '文本';
           break;
-        case CELL_TEXT_FORMAT_TYPE.number:
+        case 'number':
           text = '数字';
           break;
-        case CELL_TEXT_FORMAT_TYPE.percentage:
+        case 'percentage':
           text = '百分比';
           break;
-        case CELL_TEXT_FORMAT_TYPE.fraction:
+        case 'fraction':
           text = '分数';
           break;
-        case CELL_TEXT_FORMAT_TYPE.ENotation:
+        case 'ENotation':
           text = '科学计数';
           break;
-        case CELL_TEXT_FORMAT_TYPE.rmb:
+        case 'rmb':
           text = '人民币';
           break;
-        case CELL_TEXT_FORMAT_TYPE.hk:
+        case 'hk':
           text = '港币';
           break;
-        case CELL_TEXT_FORMAT_TYPE.dollar:
+        case 'dollar':
           text = '美元';
           break;
-        case CELL_TEXT_FORMAT_TYPE.date1:
-        case CELL_TEXT_FORMAT_TYPE.date2:
-        case CELL_TEXT_FORMAT_TYPE.date3:
-        case CELL_TEXT_FORMAT_TYPE.date4:
-        case CELL_TEXT_FORMAT_TYPE.date5:
+        case 'date1':
+        case 'date2':
+        case 'date3':
+        case 'date4':
+        case 'date5':
           text = '日期';
           break;
-        case CELL_TEXT_FORMAT_TYPE.time:
+        case 'time':
           text = '时间';
           break;
         default: break;

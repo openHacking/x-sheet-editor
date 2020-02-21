@@ -75,7 +75,7 @@ class XReSizer extends Widget {
         ({ x: mx } = table.computeEventXy(e));
         // console.log('mx >>>', mx);
         mx -= this.width / 2;
-        mx = Utils.minIf(mx, min);
+        mx = Math.round(Utils.minIf(mx, min));
         this.css('left', `${mx}px`);
         this.lineEl.css('height', `${table.visualHeight()}px`);
         this.lineEl.show();

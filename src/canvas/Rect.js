@@ -8,19 +8,9 @@ class Rect {
     this.height = height;
   }
 
-  cohesion(offset) {
-    this.x += offset;
-    this.y += offset;
-    this.width -= offset * 2;
-    this.height -= offset * 2;
-    return this;
-  }
-
-  expansion(offset) {
-    this.x -= offset;
-    this.y -= offset;
-    this.width += offset * 2;
-    this.height += offset * 2;
+  expandSize(size) {
+    this.width += size;
+    this.height += size;
     return this;
   }
 }

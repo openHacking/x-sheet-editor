@@ -10,7 +10,6 @@ import { HorizontalLayerElement } from '../../lib/layer/HorizontalLayerElement';
 import { HorizontalLayer } from '../../lib/layer/HorizontalLayer';
 import { VerticalLayer } from '../../lib/layer/VerticalLayer';
 import { VerticalLayerElement } from '../../lib/layer/VerticalLayerElement';
-import { Animate } from '../../lib/animate/Animate';
 import { EventBind } from '../../utils/EventBind';
 import { Constant } from '../../utils/Constant';
 
@@ -33,13 +32,7 @@ class ElPopUp extends Widget {
     this.content = h('div', `${cssPrefix}-el-pop-up-content`);
     this.scrollBarX = new ScrollBarX();
     this.scrollBarY = new ScrollBarY();
-    this.off = false;
-
-    this.animate1 = null;
-    this.animate2 = null;
-    this.animate3 = null;
-    this.animate4 = null;
-
+    this.off = true;
     // 水平布局
     const contentLayerHorizontalElement = new HorizontalLayerElement(this.content, {
       style: {
@@ -54,14 +47,13 @@ class ElPopUp extends Widget {
     const horizontalLayer = new HorizontalLayer({
       layerElements: [contentLayerHorizontalElement, scrollBarYLayerHorizontalElement],
     });
-
     // 垂直布局
     const contentVerticalLayerElement = new VerticalLayerElement(horizontalLayer);
     const scrollBarXVerticalLayerElement = new VerticalLayerElement(this.scrollBarX);
     const verticalLayer = new VerticalLayer({
       layerElements: [contentVerticalLayerElement, scrollBarXVerticalLayerElement],
     });
-
+    // 添加布局
     super.children(verticalLayer);
     this.bind();
     pool.push(this);
@@ -148,63 +140,18 @@ class ElPopUp extends Widget {
   }
 
   open() {
-    if (this.off === false) {
+    if (this.off) {
       h(document.body).children(this);
-      this.css('opacity', 0);
       this.computePosition();
       this.computeScrollSize();
-      const popUpBox = this.box();
-      if (this.animate1) this.animate1.cancel();
-      if (this.animate2) this.animate2.cancel();
-      if (this.animate3) this.animate3.cancel();
-      if (this.animate4) this.animate4.cancel();
-      this.animate1 = new Animate({
-        begin: 0,
-        end: 1,
-        receive: (val) => {
-          this.css('opacity', val);
-        },
-      });
-      this.animate2 = new Animate({
-        begin: popUpBox.top + 10,
-        end: popUpBox.top,
-        receive: (val) => {
-          this.css('top', `${val}px`);
-        },
-      });
-      this.animate1.request();
-      this.animate2.request();
-      this.off = true;
+      this.off = false;
     }
   }
 
   close() {
-    if (this.off) {
-      const popUpBox = this.box();
-      if (this.animate1) this.animate1.cancel();
-      if (this.animate2) this.animate2.cancel();
-      if (this.animate3) this.animate3.cancel();
-      if (this.animate4) this.animate4.cancel();
-      this.animate3 = new Animate({
-        begin: 1,
-        end: 0,
-        receive: (val) => {
-          this.css('opacity', val);
-        },
-      });
-      this.animate4 = new Animate({
-        begin: popUpBox.top,
-        end: popUpBox.top + 10,
-        receive: (val) => {
-          this.css('top', `${val}px`);
-        },
-      });
-      Animate.success(this.animate3, this.animate4).then(() => {
-        h(document.body).remove(this);
-        this.off = false;
-      });
-      this.animate3.request();
-      this.animate4.request();
+    if (this.off === false) {
+      h(document.body).remove(this);
+      this.off = true;
     }
   }
 

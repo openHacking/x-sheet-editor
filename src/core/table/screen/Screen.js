@@ -1,7 +1,10 @@
+/* global window */
+
 import { ScreenElement } from './ScreenElement';
 import { Widget } from '../../../lib/Widget';
 import { cssPrefix } from '../../../config';
 import { Constant } from '../../../utils/Constant';
+import { EventBind } from '../../../utils/EventBind';
 
 class Screen extends Widget {
   constructor(table) {
@@ -23,13 +26,14 @@ class Screen extends Widget {
 
   bind() {
     const { table } = this;
-    table.on(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, (e) => {
-      // console.log('change height');
+    EventBind.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
+      this.setDivideLayer();
+    });
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, (e) => {
       this.setDivideLayer();
       e.stopPropagation();
     });
-    table.on(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, (e) => {
-      // console.log('change width');
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, (e) => {
       this.setDivideLayer();
       e.stopPropagation();
     });
@@ -45,7 +49,7 @@ class Screen extends Widget {
 
   setDivideLayer() {
     const { table } = this;
-    const { settings } = table;
+    const { settings, gridLine } = table;
     const { index } = settings;
     const fixedWidth = table.getFixedWidth();
     const fixedHeight = table.getFixedHeight();
@@ -56,16 +60,19 @@ class Screen extends Widget {
       this.lt.offset({
         left: index.width, top: index.height, width: fixedWidth, height: fixedHeight,
       }).show();
+      this.lt.css('border-width', `${gridLine.lineWidth()}px`);
     } else {
       this.lt.hide();
     }
     if (fixedWidth > 0) {
       this.l.offset({ left: index.width, top: brTop, width: fixedWidth }).show();
+      this.l.css('border-width', `${gridLine.lineWidth()}px`);
     } else {
       this.l.hide();
     }
     if (fixedHeight > 0) {
       this.t.offset({ left: brLeft, top: index.height, height: fixedHeight }).show();
+      this.t.css('border-width', `${gridLine.lineWidth()}px`);
     } else {
       this.t.hide();
     }

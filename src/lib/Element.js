@@ -10,7 +10,6 @@ class Element {
     } else {
       this.el = tag;
     }
-    this.data = {};
   }
 
   data(key, value) {

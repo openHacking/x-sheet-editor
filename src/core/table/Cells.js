@@ -1,131 +1,5 @@
 import { Utils } from '../../utils/Utils';
-import { DateUtils } from '../../utils/DateUtils';
 import { Rect } from '../../canvas/Rect';
-import { npx } from '../../canvas/Draw';
-
-const parserToDate = (text) => {
-  let result = DateUtils.parserToDate(text, 'yyyy/MM/dd hh:mm:ss');
-  if (result) return result;
-  result = DateUtils.parserToDate(text, 'yyyy/MM/dd');
-  if (result) return result;
-  result = DateUtils.parserToDate(text, 'hh:mm:ss');
-  if (result) return result;
-  result = DateUtils.parserToDate(text, 'MM月dd日');
-  if (result) return result;
-  result = DateUtils.parserToDate(text, 'yyyy年MM月');
-  if (result) return result;
-  result = DateUtils.parserToDate(text, 'yyyy年MM月dd日');
-  if (result) return result;
-  return null;
-};
-
-const CELL_TEXT_FORMAT_FUNC = {
-  default: v => v,
-  text: v => v,
-
-  number: (v) => {
-    if (Utils.isNumber(v)) {
-      if (v.toString().indexOf('.') !== -1) {
-        const lastIndex = v.toString().lastIndexOf('.') + 1;
-        return v.toString().substring(0, lastIndex + 2);
-      }
-      return `${v}.00`;
-    }
-    return v;
-  },
-  percentage: (v) => {
-    if (Utils.isNumber(v)) {
-      return `${v}%`;
-    }
-    return v;
-  },
-  fraction: (v) => {
-    if (Utils.isFraction(v)) {
-      const left = v.split('/')[0];
-      const right = v.split('/')[1];
-      return Utils.parseInt(left) / Utils.parseInt(right);
-    }
-    return v;
-  },
-  ENotation: (v) => {
-    if (Utils.isNumber(v)) {
-      const number = Utils.parseFloat(v);
-      return number.toExponential(2);
-    }
-    return v;
-  },
-
-  rmb: (v) => {
-    if (Utils.isNumber(v)) {
-      return `￥${v}`;
-    }
-    return v;
-  },
-  hk: (v) => {
-    if (Utils.isNumber(v)) {
-      return `HK${v}`;
-    }
-    return v;
-  },
-  dollar: (v) => {
-    if (Utils.isNumber(v)) {
-      return `$${v}`;
-    }
-    return v;
-  },
-
-  date1: (v) => {
-    const result = parserToDate(v);
-    if (result) return DateUtils.dateFormat('yyyy/MM/dd', result);
-    return v;
-  },
-  date2: (v) => {
-    const result = parserToDate(v);
-    if (result) return DateUtils.dateFormat('MM月dd日', result);
-    return v;
-  },
-  date3: (v) => {
-    const result = parserToDate(v);
-    if (result) return DateUtils.dateFormat('yyyy年MM月', result);
-    return v;
-  },
-  date4: (v) => {
-    const result = parserToDate(v);
-    if (result) return DateUtils.dateFormat('yyyy年MM月dd日', result);
-    return v;
-  },
-  date5: (v) => {
-    const result = parserToDate(v);
-    if (result) return DateUtils.dateFormat('yyyy/MM/dd hh:mm:ss', result);
-    return v;
-  },
-  time: (v) => {
-    const result = parserToDate(v);
-    if (result) return DateUtils.dateFormat('hh:mm:ss', result);
-    return v;
-  },
-};
-
-const CELL_TEXT_FORMAT_TYPE = {
-  default: 'default',
-  text: 'text',
-
-  number: 'number',
-  percentage: 'percentage',
-  fraction: 'fraction',
-  ENotation: 'ENotation',
-
-  rmb: 'rmb',
-  hk: 'hk',
-  dollar: 'dollar',
-
-  date1: 'date1',
-  date2: 'date2',
-  date3: 'date3',
-  date4: 'date4',
-  date5: 'date5',
-  time: 'time',
-};
 
 class Cells {
   constructor({
@@ -138,18 +12,14 @@ class Cells {
   }
 
   initCell(cell) {
-    if (Utils.isUnDef(cell.ID)) {
-      const defaultAttr = this.getDefaultAttr();
-      return Utils.mergeDeep(defaultAttr, cell);
-    }
-    return cell;
+    return Utils.isUnDef(cell.ID) ? Utils.mergeDeep(this.getDefaultAttr(), cell) : cell;
   }
 
   getDefaultAttr() {
     return {
       ID: Date.now().toString(),
       text: '',
-      format: CELL_TEXT_FORMAT_TYPE.default,
+      format: 'default',
       background: null,
       fontAttr: {
         align: 'left',
@@ -159,18 +29,11 @@ class Cells {
         underline: false,
         color: '#000000',
         name: 'Arial',
-        size: npx(13),
+        size: 13,
         bold: false,
         italic: false,
       },
     };
-  }
-
-  getFormatText(cell) {
-    if (cell) {
-      return CELL_TEXT_FORMAT_FUNC[cell.format](cell.text);
-    }
-    return '';
   }
 
   getCell(ri, ci) {
@@ -259,4 +122,4 @@ class Cells {
   }
 }
 
-export { Cells, CELL_TEXT_FORMAT_FUNC, CELL_TEXT_FORMAT_TYPE };
+export { Cells };

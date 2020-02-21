@@ -3,11 +3,13 @@ import { npx } from './Draw';
 import { Utils } from '../utils/Utils';
 
 const PADDING = 8;
+
 const ALIGN = {
   left: 'left',
   center: 'center',
   right: 'right',
 };
+
 const VERTICAL_ALIGN = {
   top: 'top',
   center: 'middle',
@@ -239,7 +241,7 @@ class Font {
     dw.attr({
       textAlign: attr.align,
       textBaseline: attr.verticalAlign,
-      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`,
+      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${npx(attr.size)}px ${attr.name}`,
       fillStyle: attr.color,
     });
     if (textWrap) {

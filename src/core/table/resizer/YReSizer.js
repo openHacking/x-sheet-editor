@@ -73,7 +73,7 @@ class YReSizer extends Widget {
         ({ y: my } = table.computeEventXy(e));
         // console.log('my >>>', my);
         my -= this.height / 2;
-        my = Utils.minIf(my, min);
+        my = Math.round(Utils.minIf(my, min));
         this.css('top', `${my}px`);
         this.lineEl.css('width', `${table.visualWidth()}px`);
         this.lineEl.show();
@@ -88,8 +88,8 @@ class YReSizer extends Widget {
         if (x <= 0) {
           this.hide();
         }
-        const newLeft = my - (top - rows.getHeight(ri)) + this.height;
-        table.setHeight(ri, newLeft);
+        const newTop = my - (top - rows.getHeight(ri)) + this.height;
+        table.setHeight(ri, newTop);
       });
       e.stopPropagation();
       e.preventDefault();

@@ -5,7 +5,12 @@ for (let i = 0; i < 10000; i += 1) {
   for (let j = 0; j < 80; j += 1) {
     const item = {
       text: `行: ${i + 1} 列:${j + 1}`,
+      fontAttr: {},
     };
+    if (i === 3 && j === 3) {
+      item.fontAttr.color = '#fff';
+      item.background = 'red';
+    }
     rows.push(item);
   }
   Data.push(rows);

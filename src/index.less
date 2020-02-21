@@ -48,7 +48,13 @@
   display: block;
   position: absolute; /** flex bug chrome 79.0.3945.88 **/
   left: 0;
-  top: 0
+  top: 0;
+  image-rendering: optimizeSpeed;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: -o-crisp-edges;
+  image-rendering: pixelated;
+  -ms-interpolation-mode: nearest-neighbor;
 }
 .@{css-prefix}-screen {
   display: block;
@@ -64,17 +70,16 @@
   left: 0;
   top: 0;
   overflow: hidden;
-  box-sizing: border-box;
 }
 .@{css-prefix}-screen-element-lt {
-  border-right: 2px solid #42a642;
-  border-bottom: 2px solid #42a642;
+  border-right: 1px solid #42a642;
+  border-bottom: 1px solid #42a642;
 }
 .@{css-prefix}-screen-element-t {
-  border-bottom: 2px solid #42a642;
+  border-bottom: 1px solid #42a642;
 }
 .@{css-prefix}-screen-element-l {
-  border-right: 2px solid #42a642;
+  border-right: 1px solid #42a642;
 }
 
 // 表格编辑框
@@ -451,6 +456,11 @@
 .@{css-prefix}-icon-img.functions {
   background-position: -6 * @icon-size -1 * @icon-size;
 }
+.@{css-prefix}-icon-img.checked {
+  background-image: url('../assets/img/checkmark.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+}
 
 // 工具菜单激活 状态/关闭状态
 .@{css-prefix}-tools-undo {
@@ -518,18 +528,28 @@
   margin-top: 2px;
   margin-bottom: 2px;
   font-size: 13px;
-  padding: 5px;
+  padding: 3px 10px 3px 10px;
 }
 .@{css-prefix}-format-context-menu-item-title {
   float: left;
   line-height: 20px;
-  margin-right: 20px;
-  font-weight: bold;
+  margin-right: 40px;
+  font-size: 14px;
 }
 .@{css-prefix}-format-context-menu-item-desc {
   float: right;
   color: #4f4f4f;
   line-height: 20px;
+  font-size: 13px;
+  font-weight: bold;
+}
+.@{css-prefix}-format-context-menu-item-icon {
+  float: left;
+  margin: 2px 10px 2px 0;
+  opacity: 0;
+}
+.@{css-prefix}-format-context-menu-item.active .@{css-prefix}-format-context-menu-item-icon {
+  opacity: 1;
 }
 
 // 字体工具上下文菜单
@@ -547,7 +567,7 @@
   float: left;
   line-height: 20px;
   margin-right: 20px;
-  font-weight: bold;
+  font-size: 15px;
 }
 .@{css-prefix}-font-context-menu-item-desc {
   float: right;

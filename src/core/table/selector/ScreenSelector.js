@@ -6,6 +6,7 @@ import { Constant } from '../../../utils/Constant';
 import { ScreenWidget } from '../screen/ScreenWidget';
 import { RectRange } from '../RectRange';
 import { Utils } from '../../../utils/Utils';
+import { Rect } from '../../../canvas/Rect';
 
 class ScreenSelector extends ScreenWidget {
   constructor(screen, options = {}) {
@@ -89,7 +90,9 @@ class ScreenSelector extends ScreenWidget {
   setLTOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
-    const { frozenLeftTop, cols, rows } = table;
+    const {
+      frozenLeftTop, cols, rows, gridLine,
+    } = table;
     const viewRange = frozenLeftTop.getViewRange();
     const { rect } = selectorAttr;
 
@@ -104,6 +107,7 @@ class ScreenSelector extends ScreenWidget {
     const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri);
     const top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
     const left = cols.sectionSumWidth(viewRange.sci, coincideRange.sci - 1);
+
     if (rect.eci > viewRange.eci) {
       this.lt.areaEl.css('border-right', 'none');
     } else {
@@ -115,18 +119,24 @@ class ScreenSelector extends ScreenWidget {
       this.lt.areaEl.cssRemoveKeys('border-bottom');
     }
 
+    const size = new Rect({
+      x: left, y: top, width, height,
+    });
+    size.expandSize(gridLine.lineWidth());
     this.lt.offset({
-      width,
-      height,
-      left,
-      top,
+      width: size.width,
+      height: size.height,
+      left: size.x,
+      top: size.y,
     }).show();
   }
 
   setTOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
-    const { fixedTop, cols, rows } = table;
+    const {
+      fixedTop, cols, rows, gridLine,
+    } = table;
     const viewRange = fixedTop.getViewRange();
     const { rect } = selectorAttr;
 
@@ -158,18 +168,24 @@ class ScreenSelector extends ScreenWidget {
       this.t.areaEl.cssRemoveKeys('border-right');
     }
 
+    const size = new Rect({
+      x: left, y: top, width, height,
+    });
+    size.expandSize(gridLine.lineWidth());
     this.t.offset({
-      width,
-      height,
-      left,
-      top,
+      width: size.width,
+      height: size.height,
+      left: size.x,
+      top: size.y,
     }).show();
   }
 
   setLOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
-    const { fixedLeft, cols, rows } = table;
+    const {
+      fixedLeft, cols, rows, gridLine,
+    } = table;
     const viewRange = fixedLeft.getViewRange();
     const { rect } = selectorAttr;
 
@@ -201,11 +217,15 @@ class ScreenSelector extends ScreenWidget {
       this.l.areaEl.cssRemoveKeys('border-bottom');
     }
 
+    const size = new Rect({
+      x: left, y: top, width, height,
+    });
+    size.expandSize(gridLine.lineWidth());
     this.l.offset({
-      width,
-      height,
-      left,
-      top,
+      width: size.width,
+      height: size.height,
+      left: size.x,
+      top: size.y,
     }).show();
   }
 
@@ -213,7 +233,7 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const {
-      cols, rows,
+      cols, rows, gridLine,
     } = table;
     const viewRange = table.getViewRange();
     const { rect } = selectorAttr;
@@ -251,11 +271,15 @@ class ScreenSelector extends ScreenWidget {
       this.br.areaEl.cssRemoveKeys('border-right');
     }
 
+    const size = new Rect({
+      x: left, y: top, width, height,
+    });
+    size.expandSize(gridLine.lineWidth());
     this.br.offset({
-      width,
-      height,
-      left,
-      top,
+      width: size.width,
+      height: size.height,
+      left: size.x,
+      top: size.y,
     }).show();
   }
 
