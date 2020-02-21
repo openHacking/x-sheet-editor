@@ -22,7 +22,6 @@ import { ScreenAutoFill } from './autofill/ScreenAutoFill';
 import { XHeightLight } from './highlight/XHeightLight';
 import { YHeightLight } from './highlight/YHeightLight';
 import { Edit } from './Edit';
-import { History } from './History';
 import { Cells } from './Cells';
 import { Draw, npx } from '../../canvas/Draw';
 import { Font } from '../../canvas/Font';
