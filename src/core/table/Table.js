@@ -669,7 +669,7 @@ class FixedTop {
 
   render() {
     const { table } = this;
-    const { draw } = table;
+    const { draw, gridLine } = table;
     const viewRange = this.getViewRange();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
@@ -679,7 +679,7 @@ class FixedTop {
       width: viewRange.w,
       height: viewRange.h,
     });
-    const crop = new Crop({ draw, rect });
+    const crop = new Crop({ draw, rect, offset: gridLine.lineWidth() });
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
     this.drawGrid(viewRange, offsetX, offsetY);
