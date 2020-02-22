@@ -742,13 +742,16 @@ class FrozenLeftIndex {
       draw.fillText(i + 1, width / 2, y + (ch / 2));
     });
     // 绘制边框
+    let lineHeight = 0;
     draw.attr({
       globalAlpha: 0.3,
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
+      lineHeight += ch;
       gridLine.horizontalLine(y, 0, width);
     });
+    gridLine.verticalLine(width, 0, lineHeight);
     draw.offset(0, 0);
     draw.restore();
   }
@@ -820,13 +823,16 @@ class FrozenTopIndex {
       draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
     });
     // 绘制边框
+    let lineWidth = 0;
     draw.attr({
       globalAlpha: 0.3,
       strokeStyle: settings.table.borderColor,
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
+      lineWidth += cw;
       gridLine.verticalLine(x, 0, height);
     });
+    gridLine.horizontalLine(height, 0, lineWidth);
     draw.offset(0, 0);
     draw.restore();
   }
@@ -897,13 +903,17 @@ class FixedTopIndex {
       draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
     });
     // 绘制边框
+    let lineWidth = 0;
     draw.attr({
       globalAlpha: 0.3,
       strokeStyle: settings.table.borderColor,
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
+      lineWidth += cw;
       gridLine.verticalLine(x, 0, height);
+      if (i === eci) gridLine.verticalLine(x + cw, 0, height);
     });
+    gridLine.horizontalLine(height, 0, lineWidth);
     draw.offset(0, 0);
     draw.restore();
   }
@@ -974,13 +984,17 @@ class FixedLeftIndex {
       draw.fillText(i + 1, width / 2, y + (ch / 2));
     });
     // 绘制边框
+    let lineHeight = 0;
     draw.attr({
       globalAlpha: 0.3,
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
+      lineHeight += ch;
       gridLine.horizontalLine(y, 0, width);
+      if (i === eri) gridLine.horizontalLine(y + ch, 0, width);
     });
+    gridLine.verticalLine(width, 0, lineHeight);
     draw.offset(0, 0);
     draw.restore();
   }

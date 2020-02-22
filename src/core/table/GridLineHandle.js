@@ -74,7 +74,7 @@ class GridLineHandle {
     for (let i = sri; i <= eri; i += 1) {
       let x = 0;
       const rowsHeight = rows.getHeight(i);
-      for (let j = sci; j < eci; j += 1) {
+      for (let j = sci; j <= eci; j += 1) {
         const colsWidth = cols.getWidth(j);
         const merge = merges.getFirstIncludes(i, j);
         if (merge && filter.indexOf(merge) === -1) {
