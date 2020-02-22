@@ -60,18 +60,48 @@ class GridLineHandle {
     }
   }
 
+  getMergesInfoByRectRange(rectRange) {
+    const filter = [];
+    const result = [];
+    const { table } = this;
+    const {
+      merges, rows, cols, cells,
+    } = table;
+    const {
+      sri, eri, sci, eci,
+    } = rectRange;
+    let y = 0;
+    for (let i = sri; i <= eri; i += 1) {
+      let x = 0;
+      const rowsHeight = rows.getHeight(i);
+      for (let j = sci; j < eci; j += 1) {
+        const colsWidth = cols.getWidth(j);
+        const merge = merges.getFirstIncludes(i, j);
+        if (merge && filter.indexOf(merge) === -1) {
+          const cell = cells.getCell(merge.sri, merge.sci);
+          const rect = rectRange.coincide(merge);
+          const width = cols.sectionSumWidth(rect.sci, rect.eci);
+          const height = rows.sectionSumHeight(rect.sri, rect.eri);
+          filter.push(merge);
+          result.push({
+            x, y, width, height, cell, rect,
+          });
+        }
+        x += colsWidth;
+      }
+      y += rowsHeight;
+    }
+    return result;
+  }
+
   getHorizontalLineByRectRange(rectRange) {
     const lineArray = [];
     const { table } = this;
-    const { cells, merges } = table;
+    const { cells } = table;
     let targetX = 0;
     let targetY = 0;
     let targetWidth = 0;
-    this.horizontalLineEach(rectRange, (i, j) => {
-      const cell = cells.getCell(i, j);
-      const merge = merges.getFirstIncludes(i, j);
-      return cell && merge;
-    }, (y, height) => {
+    this.horizontalLineEach(rectRange, (i, j) => cells.isMergeCell(i, j), (y, height) => {
       targetY = y + height;
       targetX = 0;
       targetWidth = 0;
@@ -101,15 +131,11 @@ class GridLineHandle {
   getVerticalLineByRectRange(rectRange) {
     const lineArray = [];
     const { table } = this;
-    const { cells, merges } = table;
+    const { cells } = table;
     let targetX = 0;
     let targetY = 0;
     let targetHeight = 0;
-    this.verticalLineEach(rectRange, (i, j) => {
-      const cell = cells.getCell(j, i);
-      const merge = merges.getFirstIncludes(j, i);
-      return cell && merge;
-    }, (x, width) => {
+    this.verticalLineEach(rectRange, (i, j) => cells.isMergeCell(j, i), (x, width) => {
       targetX = x + width;
       targetY = 0;
       targetHeight = 0;
@@ -136,66 +162,84 @@ class GridLineHandle {
     return lineArray;
   }
 
-  getMergeHorizontalLineByRectRange(rectRange) {
-    const lineArray = [];
-    const filter = [];
-    const { table } = this;
-    const {
-      merges, cols, rows,
-    } = table;
-    let merge = null;
-    let targetY = 0;
-    this.horizontalLineEach(rectRange, (i, j) => {
-      merge = merges.getFirstIncludes(i, j);
-      if (merge && filter.indexOf(merge) === -1) {
-        filter.push(merge);
-        return true;
-      }
-      return false;
-    }, (y) => {
-      targetY = y;
-    }, () => {}, (x) => {
-      const rect = rectRange.coincide(merge);
-      const width = cols.sectionSumWidth(rect.sci, rect.eci);
-      const height = rows.sectionSumHeight(rect.sri, rect.eri);
-      lineArray.push({
-        x,
-        y: targetY + height,
-        width: x + width,
+  getMergesHorizontalLineByMergesInfo(mergesInfo) {
+    const horizontalLines = [];
+    for (let i = 0; i < mergesInfo.length; i += 1) {
+      const info = mergesInfo[i];
+      const {
+        x, y, height, rect,
+      } = info;
+      const cloneNewRect = rect.clone();
+      cloneNewRect.sri = cloneNewRect.eri;
+      let targetWidth;
+      let targetX;
+      let targetY;
+      this.horizontalLineEach(cloneNewRect, () => {}, () => {
+        targetWidth = x;
+        targetX = x;
+        targetY = y + height;
+      }, (width) => {
+        targetWidth += width;
+      }, (x, width, continuous) => {
+        if (!continuous) {
+          horizontalLines.push({
+            y: targetY,
+            x: targetX,
+            width: targetWidth,
+          });
+        }
+        targetX = x + width;
+      }, (continuous) => {
+        if (!continuous) {
+          horizontalLines.push({
+            y: targetY,
+            x: targetX,
+            width: targetWidth,
+          });
+        }
       });
-    }, () => {});
-    return lineArray;
+    }
+    return horizontalLines;
   }
 
-  getMergeVerticalLineByRectRange(rectRange) {
-    const lineArray = [];
-    const filter = [];
-    const { table } = this;
-    const {
-      merges, cols, rows,
-    } = table;
-    let merge = null;
-    let targetX = 0;
-    this.verticalLineEach(rectRange, (i, j) => {
-      merge = merges.getFirstIncludes(j, i);
-      if (merge && filter.indexOf(merge) === -1) {
-        filter.push(merge);
-        return true;
-      }
-      return false;
-    }, (x) => {
-      targetX = x;
-    }, () => {}, (y) => {
-      const rect = rectRange.coincide(merge);
-      const width = cols.sectionSumWidth(rect.sci, rect.eci);
-      const height = rows.sectionSumHeight(rect.sri, rect.eri);
-      lineArray.push({
-        x: targetX + width,
-        y,
-        height: y + height,
+  getMergesVerticalLineByMergesInfo(mergesInfo) {
+    const verticalLines = [];
+    for (let i = 0; i < mergesInfo.length; i += 1) {
+      const info = mergesInfo[i];
+      const {
+        x, y, width, rect,
+      } = info;
+      const cloneNewRect = rect.clone();
+      cloneNewRect.sci = cloneNewRect.eci;
+      let targetHeight;
+      let targetX;
+      let targetY;
+      this.verticalLineEach(cloneNewRect, () => {}, () => {
+        targetX = x + width;
+        targetY = y;
+        targetHeight = y;
+      }, (height) => {
+        targetHeight += height;
+      }, (y, height, continuous) => {
+        if (!continuous) {
+          verticalLines.push({
+            x: targetX,
+            y: targetY,
+            height: targetHeight,
+          });
+        }
+        targetY = y + height;
+      }, (continuous) => {
+        if (!continuous) {
+          verticalLines.push({
+            x: targetX,
+            y: targetY,
+            height: targetHeight,
+          });
+        }
       });
-    }, () => {});
-    return lineArray;
+    }
+    return verticalLines;
   }
 }
 

@@ -112,18 +112,19 @@ class FrozenLeftTop {
     });
     const horizontalLines = gridLineHandle.getHorizontalLineByRectRange(viewRange);
     const verticalLines = gridLineHandle.getVerticalLineByRectRange(viewRange);
-    const mergeHorizontalLines = gridLineHandle.getMergeHorizontalLineByRectRange(viewRange);
-    const mergeVerticalLines = gridLineHandle.getMergeVerticalLineByRectRange(viewRange);
     horizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.y, item.x, item.width);
-    });
-    mergeHorizontalLines.forEach((item) => {
       gridLine.horizontalLine(item.y, item.x, item.width);
     });
     verticalLines.forEach((item) => {
       gridLine.verticalLine(item.x, item.y, item.height);
     });
-    mergeVerticalLines.forEach((item) => {
+    const mergesInfo = gridLineHandle.getMergesInfoByRectRange(viewRange);
+    const mergesHorizontalLines = gridLineHandle.getMergesHorizontalLineByMergesInfo(mergesInfo);
+    const mergesVerticalLines = gridLineHandle.getMergesVerticalLineByMergesInfo(mergesInfo);
+    mergesHorizontalLines.forEach((item) => {
+      gridLine.horizontalLine(item.y, item.x, item.width);
+    });
+    mergesVerticalLines.forEach((item) => {
       gridLine.verticalLine(item.x, item.y, item.height);
     });
     draw.offset(0, 0);
@@ -290,18 +291,19 @@ class Content {
     });
     const horizontalLines = gridLineHandle.getHorizontalLineByRectRange(viewRange);
     const verticalLines = gridLineHandle.getVerticalLineByRectRange(viewRange);
-    const mergeHorizontalLines = gridLineHandle.getMergeHorizontalLineByRectRange(viewRange);
-    const mergeVerticalLines = gridLineHandle.getMergeVerticalLineByRectRange(viewRange);
     horizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.y, item.x, item.width);
-    });
-    mergeHorizontalLines.forEach((item) => {
       gridLine.horizontalLine(item.y, item.x, item.width);
     });
     verticalLines.forEach((item) => {
       gridLine.verticalLine(item.x, item.y, item.height);
     });
-    mergeVerticalLines.forEach((item) => {
+    const mergesInfo = gridLineHandle.getMergesInfoByRectRange(viewRange);
+    const mergesHorizontalLines = gridLineHandle.getMergesHorizontalLineByMergesInfo(mergesInfo);
+    const mergesVerticalLines = gridLineHandle.getMergesVerticalLineByMergesInfo(mergesInfo);
+    mergesHorizontalLines.forEach((item) => {
+      gridLine.horizontalLine(item.y, item.x, item.width);
+    });
+    mergesVerticalLines.forEach((item) => {
       gridLine.verticalLine(item.x, item.y, item.height);
     });
     draw.offset(0, 0);
@@ -451,18 +453,19 @@ class FixedLeft {
     });
     const horizontalLines = gridLineHandle.getHorizontalLineByRectRange(viewRange);
     const verticalLines = gridLineHandle.getVerticalLineByRectRange(viewRange);
-    const mergeHorizontalLines = gridLineHandle.getMergeHorizontalLineByRectRange(viewRange);
-    const mergeVerticalLines = gridLineHandle.getMergeVerticalLineByRectRange(viewRange);
     horizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.y, item.x, item.width);
-    });
-    mergeHorizontalLines.forEach((item) => {
       gridLine.horizontalLine(item.y, item.x, item.width);
     });
     verticalLines.forEach((item) => {
       gridLine.verticalLine(item.x, item.y, item.height);
     });
-    mergeVerticalLines.forEach((item) => {
+    const mergesInfo = gridLineHandle.getMergesInfoByRectRange(viewRange);
+    const mergesHorizontalLines = gridLineHandle.getMergesHorizontalLineByMergesInfo(mergesInfo);
+    const mergesVerticalLines = gridLineHandle.getMergesVerticalLineByMergesInfo(mergesInfo);
+    mergesHorizontalLines.forEach((item) => {
+      gridLine.horizontalLine(item.y, item.x, item.width);
+    });
+    mergesVerticalLines.forEach((item) => {
       gridLine.verticalLine(item.x, item.y, item.height);
     });
     draw.offset(0, 0);
@@ -609,18 +612,19 @@ class FixedTop {
     });
     const horizontalLines = gridLineHandle.getHorizontalLineByRectRange(viewRange);
     const verticalLines = gridLineHandle.getVerticalLineByRectRange(viewRange);
-    const mergeHorizontalLines = gridLineHandle.getMergeHorizontalLineByRectRange(viewRange);
-    const mergeVerticalLines = gridLineHandle.getMergeVerticalLineByRectRange(viewRange);
     horizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.y, item.x, item.width);
-    });
-    mergeHorizontalLines.forEach((item) => {
       gridLine.horizontalLine(item.y, item.x, item.width);
     });
     verticalLines.forEach((item) => {
       gridLine.verticalLine(item.x, item.y, item.height);
     });
-    mergeVerticalLines.forEach((item) => {
+    const mergesInfo = gridLineHandle.getMergesInfoByRectRange(viewRange);
+    const mergesHorizontalLines = gridLineHandle.getMergesHorizontalLineByMergesInfo(mergesInfo);
+    const mergesVerticalLines = gridLineHandle.getMergesVerticalLineByMergesInfo(mergesInfo);
+    mergesHorizontalLines.forEach((item) => {
+      gridLine.horizontalLine(item.y, item.x, item.width);
+    });
+    mergesVerticalLines.forEach((item) => {
       gridLine.verticalLine(item.x, item.y, item.height);
     });
     draw.offset(0, 0);

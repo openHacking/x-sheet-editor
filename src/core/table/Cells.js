@@ -15,6 +15,12 @@ class Cells {
     return Utils.isUnDef(cell.ID) ? Utils.mergeDeep(this.getDefaultAttr(), cell) : cell;
   }
 
+  isMergeCell(i, j) {
+    const { table } = this;
+    const { merges } = table;
+    return merges.getFirstIncludes(i, j) !== null;
+  }
+
   getDefaultAttr() {
     return {
       ID: Date.now().toString(),
