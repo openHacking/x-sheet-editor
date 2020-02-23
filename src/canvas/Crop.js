@@ -13,7 +13,7 @@ class Crop {
       x, y, width, height,
     } = rect;
     draw.save();
-    draw.rect(x - offset, y - offset, width + offset * 2, height + offset * 2);
+    draw.rect(x, y, width + offset, height + offset);
     draw.clip();
   }
 
