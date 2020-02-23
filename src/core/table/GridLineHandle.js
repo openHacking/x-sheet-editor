@@ -4,7 +4,9 @@ class GridLineHandle {
     this.table = table;
   }
 
-  horizontalLineEach(rectRange, interruptCkCb, startRowCb, handleCb, interruptHandleCb, endRowCb) {
+  horizontalLineEach({
+    rectRange, interruptCkCb, startRowCb, handleCb, interruptHandleCb, endRowCb,
+  }) {
     const { table } = this;
     const { cols, rows } = table;
     const {
@@ -32,7 +34,9 @@ class GridLineHandle {
     }
   }
 
-  verticalLineEach(rectRange, interruptCkCb, startColCb, handleCb, interruptHandleCb, endColCb) {
+  verticalLineEach({
+    rectRange, interruptCkCb, startColCb, handleCb, interruptHandleCb, endColCb,
+  }) {
     const { table } = this;
     const { cols, rows } = table;
     const {
@@ -101,29 +105,36 @@ class GridLineHandle {
     let targetX = 0;
     let targetY = 0;
     let targetWidth = 0;
-    this.horizontalLineEach(rectRange, (i, j) => cells.isMergeCell(i, j), (y, height) => {
-      targetY = y + height;
-      targetX = 0;
-      targetWidth = 0;
-    }, (width) => {
-      targetWidth += width;
-    }, (x, width, continuous) => {
-      if (!continuous) {
-        lineArray.push({
-          y: targetY,
-          x: targetX,
-          width: targetWidth,
-        });
-      }
-      targetX = x + width;
-    }, (continuous) => {
-      if (!continuous) {
-        lineArray.push({
-          y: targetY,
-          x: targetX,
-          width: targetWidth,
-        });
-      }
+    this.horizontalLineEach({
+      rectRange,
+      interruptCkCb: (i, j) => cells.isMergeCell(i, j),
+      startRowCb: (y, height) => {
+        targetY = y + height;
+        targetX = 0;
+        targetWidth = 0;
+      },
+      handleCb: (width) => {
+        targetWidth += width;
+      },
+      interruptHandleCb: (x, width, continuous) => {
+        if (!continuous) {
+          lineArray.push({
+            y: targetY,
+            x: targetX,
+            width: targetWidth,
+          });
+        }
+        targetX = x + width;
+      },
+      endRowCb: (continuous) => {
+        if (!continuous) {
+          lineArray.push({
+            y: targetY,
+            x: targetX,
+            width: targetWidth,
+          });
+        }
+      },
     });
     return lineArray;
   }
@@ -135,29 +146,36 @@ class GridLineHandle {
     let targetX = 0;
     let targetY = 0;
     let targetHeight = 0;
-    this.verticalLineEach(rectRange, (i, j) => cells.isMergeCell(j, i), (x, width) => {
-      targetX = x + width;
-      targetY = 0;
-      targetHeight = 0;
-    }, (height) => {
-      targetHeight += height;
-    }, (y, height, continuous) => {
-      if (!continuous) {
-        lineArray.push({
-          x: targetX,
-          y: targetY,
-          height: targetHeight,
-        });
-      }
-      targetY = y + height;
-    }, (continuous) => {
-      if (!continuous) {
-        lineArray.push({
-          x: targetX,
-          y: targetY,
-          height: targetHeight,
-        });
-      }
+    this.verticalLineEach({
+      rectRange,
+      interruptCkCb: (i, j) => cells.isMergeCell(j, i),
+      startColCb: (x, width) => {
+        targetX = x + width;
+        targetY = 0;
+        targetHeight = 0;
+      },
+      handleCb: (height) => {
+        targetHeight += height;
+      },
+      interruptHandleCb: (y, height, continuous) => {
+        if (!continuous) {
+          lineArray.push({
+            x: targetX,
+            y: targetY,
+            height: targetHeight,
+          });
+        }
+        targetY = y + height;
+      },
+      endColCb: (continuous) => {
+        if (!continuous) {
+          lineArray.push({
+            x: targetX,
+            y: targetY,
+            height: targetHeight,
+          });
+        }
+      },
     });
     return lineArray;
   }
@@ -174,29 +192,36 @@ class GridLineHandle {
       let targetWidth;
       let targetX;
       let targetY;
-      this.horizontalLineEach(cloneNewRect, () => {}, () => {
-        targetWidth = x;
-        targetX = x;
-        targetY = y + height;
-      }, (width) => {
-        targetWidth += width;
-      }, (x, width, continuous) => {
-        if (!continuous) {
-          horizontalLines.push({
-            y: targetY,
-            x: targetX,
-            width: targetWidth,
-          });
-        }
-        targetX = x + width;
-      }, (continuous) => {
-        if (!continuous) {
-          horizontalLines.push({
-            y: targetY,
-            x: targetX,
-            width: targetWidth,
-          });
-        }
+      this.horizontalLineEach({
+        rectRange: cloneNewRect,
+        interruptCkCb: () => false,
+        startRowCb: () => {
+          targetWidth = x;
+          targetX = x;
+          targetY = y + height;
+        },
+        handleCb: (width) => {
+          targetWidth += width;
+        },
+        interruptHandleCb: (x, width, continuous) => {
+          if (!continuous) {
+            horizontalLines.push({
+              y: targetY,
+              x: targetX,
+              width: targetWidth,
+            });
+          }
+          targetX = x + width;
+        },
+        endRowCb: (continuous) => {
+          if (!continuous) {
+            horizontalLines.push({
+              y: targetY,
+              x: targetX,
+              width: targetWidth,
+            });
+          }
+        },
       });
     }
     return horizontalLines;
@@ -214,29 +239,36 @@ class GridLineHandle {
       let targetHeight;
       let targetX;
       let targetY;
-      this.verticalLineEach(cloneNewRect, () => {}, () => {
-        targetX = x + width;
-        targetY = y;
-        targetHeight = y;
-      }, (height) => {
-        targetHeight += height;
-      }, (y, height, continuous) => {
-        if (!continuous) {
-          verticalLines.push({
-            x: targetX,
-            y: targetY,
-            height: targetHeight,
-          });
-        }
-        targetY = y + height;
-      }, (continuous) => {
-        if (!continuous) {
-          verticalLines.push({
-            x: targetX,
-            y: targetY,
-            height: targetHeight,
-          });
-        }
+      this.verticalLineEach({
+        rectRange: cloneNewRect,
+        interruptCkCb: () => false,
+        startColCb: () => {
+          targetX = x + width;
+          targetY = y;
+          targetHeight = y;
+        },
+        handleCb: (height) => {
+          targetHeight += height;
+        },
+        interruptHandleCb: (y, height, continuous) => {
+          if (!continuous) {
+            verticalLines.push({
+              x: targetX,
+              y: targetY,
+              height: targetHeight,
+            });
+          }
+          targetY = y + height;
+        },
+        endColCb: (continuous) => {
+          if (!continuous) {
+            verticalLines.push({
+              x: targetX,
+              y: targetY,
+              height: targetHeight,
+            });
+          }
+        },
       });
     }
     return verticalLines;
