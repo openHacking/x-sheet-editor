@@ -39,6 +39,12 @@ class Cells {
         bold: false,
         italic: false,
       },
+      borderAttr: {
+        left: { display: true },
+        top: { display: true },
+        right: { display: true },
+        bottom: { display: true },
+      },
     };
   }
 
