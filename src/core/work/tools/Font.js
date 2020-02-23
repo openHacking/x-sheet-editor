@@ -1,6 +1,5 @@
 import { DropDownItem } from './base/DropDownItem';
 import { cssPrefix } from '../../../config';
-import { FormatContextMenu } from '../contextmenu/FormatContextMenu';
 import { Utils } from '../../../utils/Utils';
 import { EL_POPUP_POSITION } from '../../../component/elpopup/ElPopUp';
 import { FontContextMenu } from '../contextmenu/FontContextMenu';
@@ -20,4 +19,5 @@ class Font extends DropDownItem {
     }, this.options.contextMenu));
   }
 }
+
 export { Font };

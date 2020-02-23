@@ -9,35 +9,37 @@ class FontContextMenu extends ELContextMenu {
     super(`${cssPrefix}-font-context-menu`, Utils.copyProp({
       onUpdate: () => {},
     }, options));
-    this.addItem(new FontContextMenuItem('Arial').on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-      this.update('Arial');
-    }));
-    this.addItem(new FontContextMenuItem('Helvetica').on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-      this.update('Helvetica');
-    }));
-    this.addItem(new FontContextMenuItem('Source Sans Pro').on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-      this.update('Source Sans Pro');
-    }));
-    this.addItem(new FontContextMenuItem('Comic Sans Ms').on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-      this.update('Comic Sans Ms');
-    }));
-    this.addItem(new FontContextMenuItem('Courier New').on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-      this.update('Courier New');
-    }));
-    this.addItem(new FontContextMenuItem('Verdana').on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-      this.update('Verdana');
-    }));
-    this.addItem(new FontContextMenuItem('Lalo').on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-      this.update('Lalo');
-    }));
+    this.items = [
+      new FontContextMenuItem('Arial'),
+      new FontContextMenuItem('Helvetica'),
+      new FontContextMenuItem('Source Sans Pro'),
+      new FontContextMenuItem('Comic Sans Ms'),
+      new FontContextMenuItem('Courier New'),
+      new FontContextMenuItem('Verdana'),
+      new FontContextMenuItem('Lalo'),
+    ];
+    this.items.forEach((item) => {
+      item.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+        this.update(item.title);
+        item.setActive();
+      });
+      this.addItem(item);
+    });
+    this.setActiveByType(this.items[0].title);
   }
 
   update(type) {
     const { options } = this;
-    const { el } = options;
     options.onUpdate(type);
-    el.setTitle(type);
     this.close();
+  }
+
+  setActiveByType(type) {
+    this.items.forEach((item) => {
+      if (item.title === type) {
+        item.setActive();
+      }
+    });
   }
 }
 

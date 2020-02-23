@@ -54,10 +54,16 @@ class FormatContextMenu extends ELContextMenu {
 
   update(format, title) {
     const { options } = this;
-    const { el } = options;
-    options.onUpdate(format);
-    el.setTitle(title);
+    options.onUpdate(format, title);
     this.close();
+  }
+
+  setActiveByType(type) {
+    this.items.forEach((item) => {
+      if (item.data('type') === type) {
+        item.setActive();
+      }
+    });
   }
 }
 

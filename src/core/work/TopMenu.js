@@ -47,12 +47,13 @@ class TopMenu extends Widget {
     this.clearFormat = new ClearFormat();
     this.format = new Format({
       contextMenu: {
-        onUpdate: (format) => {
+        onUpdate: (format, title) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
           const { screen, cells, dataSnapshot } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
+          this.format.setTitle(title);
           if (selectorAttr) {
             cells.getRectRangeCell(selectorAttr.rect, (r, c, rect, cell) => {
               cell.format = format;
@@ -71,9 +72,10 @@ class TopMenu extends Widget {
           const { screen, cells, dataSnapshot } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
+          this.font.setTitle(type);
           if (selectorAttr) {
             cells.getRectRangeCell(selectorAttr.rect, (r, c, rect, cell) => {
-              cell.style.font.name = type;
+              cell.fontAttr.name = type;
             }, undefined, true);
             dataSnapshot.snapshot();
             table.render();
@@ -135,6 +137,7 @@ class TopMenu extends Widget {
     });
     EventBind.bind(body, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, () => {
       this.setFormatStatus();
+      this.setFontStatus();
     });
     EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
@@ -268,6 +271,7 @@ class TopMenu extends Widget {
         default: break;
       }
       this.format.setTitle(text);
+      this.format.formatContextMenu.setActiveByType(format);
     }
   }
 
@@ -282,9 +286,11 @@ class TopMenu extends Widget {
     if (selectorAttr) {
       const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
       this.font.setTitle(firstCell.fontAttr.name);
+      this.font.fontContextMenu.setActiveByType(firstCell.fontAttr.name);
     } else {
       const attr = cells.getDefaultAttr();
       this.font.setTitle(attr.fontAttr.name);
+      this.font.fontContextMenu.setActiveByType(attr.fontAttr.name);
     }
   }
 
