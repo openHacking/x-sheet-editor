@@ -226,10 +226,12 @@ class TopMenu extends Widget {
     const { screen, cells } = table;
     const screenSelector = screen.findByClass(ScreenSelector);
     const { selectorAttr } = screenSelector;
+    let text = '常规';
+    let format = 'default';
     if (selectorAttr) {
       const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
-      const { format } = firstCell;
-      let text = '常规';
+      // eslint-disable-next-line prefer-destructuring
+      format = firstCell.format;
       switch (format) {
         case 'default':
           text = '常规';
@@ -270,9 +272,9 @@ class TopMenu extends Widget {
           break;
         default: break;
       }
-      this.format.setTitle(text);
-      this.format.formatContextMenu.setActiveByType(format);
     }
+    this.format.setTitle(text);
+    this.format.formatContextMenu.setActiveByType(format);
   }
 
   setFontStatus() {
@@ -283,15 +285,14 @@ class TopMenu extends Widget {
     const { screen, cells } = table;
     const screenSelector = screen.findByClass(ScreenSelector);
     const { selectorAttr } = screenSelector;
+    let name = 'Arial';
     if (selectorAttr) {
       const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
-      this.font.setTitle(firstCell.fontAttr.name);
-      this.font.fontContextMenu.setActiveByType(firstCell.fontAttr.name);
-    } else {
-      const attr = cells.getDefaultAttr();
-      this.font.setTitle(attr.fontAttr.name);
-      this.font.fontContextMenu.setActiveByType(attr.fontAttr.name);
+      // eslint-disable-next-line prefer-destructuring
+      name = firstCell.fontAttr.name;
     }
+    this.font.setTitle(name);
+    this.font.fontContextMenu.setActiveByType(name);
   }
 
   setUndoStatus() {
