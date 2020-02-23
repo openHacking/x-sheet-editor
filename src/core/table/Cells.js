@@ -21,6 +21,26 @@ class Cells {
     return merges.getFirstIncludes(i, j) !== null;
   }
 
+  isLeftBorder(i, j) {
+    const cell = this.getCell(i, j);
+    return cell && cell.borderAttr.left.display;
+  }
+
+  isTopBorder(i, j) {
+    const cell = this.getCell(i, j);
+    return cell && cell.borderAttr.top.display;
+  }
+
+  isRightBorder(i, j) {
+    const cell = this.getCell(i, j);
+    return cell && cell.borderAttr.right.display;
+  }
+
+  isBottomBorder(i, j) {
+    const cell = this.getCell(i, j);
+    return cell && cell.borderAttr.bottom.display;
+  }
+
   getDefaultAttr() {
     return {
       ID: Date.now().toString(),
