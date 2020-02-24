@@ -150,7 +150,7 @@ class GridLineHandle {
     this.verticalLineEach({
       rectRange,
       // eslint-disable-next-line max-len
-      interruptCkCb: (i, j) => cells.isMergeCell(j, i) || cells.isDisplayLeftBorder(j, i) || cells.isDisplayRightBorder(j, i + 1),
+      interruptCkCb: (i, j) => cells.isMergeCell(j, i) || cells.isDisplayRightBorder(j, i) || cells.isDisplayLeftBorder(j, i + 1),
       startColCb: (x, width) => {
         targetX = x + width;
         targetY = 0;
@@ -216,7 +216,7 @@ class GridLineHandle {
               width: targetWidth,
             });
           }
-          targetX = x + width;
+          targetX += x + width;
         },
         endRowCb: (continuous) => {
           if (!continuous) {
@@ -249,7 +249,7 @@ class GridLineHandle {
       this.verticalLineEach({
         rectRange: cloneNewRect,
         // eslint-disable-next-line max-len
-        interruptCkCb: (i, j) => cells.isDisplayLeftBorder(j, i) || cells.isDisplayRightBorder(j, i + 1),
+        interruptCkCb: (i, j) => cells.isDisplayRightBorder(j, i) || cells.isDisplayLeftBorder(j, i + 1),
         startColCb: () => {
           targetX = x + width;
           targetY = y;
@@ -266,7 +266,7 @@ class GridLineHandle {
               height: targetHeight,
             });
           }
-          targetY = y + height;
+          targetY += y + height;
         },
         endColCb: (continuous) => {
           if (!continuous) {

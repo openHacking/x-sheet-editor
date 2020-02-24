@@ -6,7 +6,13 @@ for (let i = 0; i < 1000; i += 1) {
     const item = {
       text: `行: ${i + 1} 列:${j + 1}`,
       fontAttr: {},
+      borderAttr: {
+        left: {},
+      },
     };
+    if (i === 3 && j === 5) {
+      item.borderAttr.left.display = true;
+    }
     rows.push(item);
   }
   Data.push(rows);
