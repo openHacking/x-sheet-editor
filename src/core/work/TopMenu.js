@@ -84,7 +84,13 @@ class TopMenu extends Widget {
         },
       },
     });
-    this.fontSize = new FontSize();
+    this.fontSize = new FontSize({
+      contextMenu: {
+        onUpdate: (size) => {
+
+        },
+      },
+    });
     this.fontBold = new FontBold();
     this.fontItalic = new FontItalic();
     this.underLine = new UnderLine();
@@ -213,6 +219,16 @@ class TopMenu extends Widget {
         this.font.fontContextMenu.open();
       } else {
         this.font.fontContextMenu.close();
+      }
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(this.fontSize, Constant.SYSTEM_EVENT_TYPE.CLICK, (e) => {
+      ElPopUp.closeAll([this.fontSize.fontSizeContextMenu]);
+      if (this.fontSize.fontSizeContextMenu.off) {
+        this.fontSize.fontSizeContextMenu.open();
+      } else {
+        this.fontSize.fontSizeContextMenu.close();
       }
       e.stopPropagation();
       e.preventDefault();

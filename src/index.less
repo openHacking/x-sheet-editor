@@ -49,12 +49,6 @@
   position: absolute; /** flex bug chrome 79.0.3945.88 **/
   left: 0;
   top: 0;
-  image-rendering: optimizeSpeed;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: -o-crisp-edges;
-  image-rendering: pixelated;
-  -ms-interpolation-mode: nearest-neighbor;
 }
 .@{css-prefix}-screen {
   display: block;
@@ -581,4 +575,22 @@
 }
 .@{css-prefix}-font-context-menu-item.active .@{css-prefix}-font-context-menu-item-icon {
   opacity: 1;
+}
+
+// 字体大小工具上下文菜单
+.@{css-prefix}-font-size-context-menu {
+  background: #ffffff;
+}
+.@{css-prefix}-font-size-context-menu-item {
+  overflow: hidden;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  font-size: 13px;
+  padding: 5px;
+}
+.@{css-prefix}-font-size-context-menu-item-title {
+  float: left;
+  line-height: 20px;
+  margin-right: 20px;
+  font-size: 15px;
 }
