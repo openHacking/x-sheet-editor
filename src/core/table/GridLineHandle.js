@@ -107,7 +107,8 @@ class GridLineHandle {
     let targetWidth = 0;
     this.horizontalLineEach({
       rectRange,
-      interruptCkCb: (i, j) => cells.isMergeCell(i, j),
+      // eslint-disable-next-line max-len
+      interruptCkCb: (i, j) => cells.isMergeCell(i, j) || cells.isDisplayBottomBorder(i, j) || cells.isDisplayTopBorder(i + 1, j),
       startRowCb: (y, height) => {
         targetY = y + height;
         targetX = 0;
@@ -148,7 +149,8 @@ class GridLineHandle {
     let targetHeight = 0;
     this.verticalLineEach({
       rectRange,
-      interruptCkCb: (i, j) => cells.isMergeCell(j, i),
+      // eslint-disable-next-line max-len
+      interruptCkCb: (i, j) => cells.isMergeCell(j, i) || cells.isDisplayLeftBorder(j, i) || cells.isDisplayRightBorder(j, i + 1),
       startColCb: (x, width) => {
         targetX = x + width;
         targetY = 0;
@@ -181,6 +183,8 @@ class GridLineHandle {
   }
 
   getMergesHorizontalLineByMergesInfo(mergesInfo) {
+    const { table } = this;
+    const { cells } = table;
     const horizontalLines = [];
     for (let i = 0; i < mergesInfo.length; i += 1) {
       const info = mergesInfo[i];
@@ -194,7 +198,8 @@ class GridLineHandle {
       let targetY;
       this.horizontalLineEach({
         rectRange: cloneNewRect,
-        interruptCkCb: () => false,
+        // eslint-disable-next-line max-len
+        interruptCkCb: (i, j) => cells.isDisplayBottomBorder(i, j) || cells.isDisplayTopBorder(i + 1, j),
         startRowCb: () => {
           targetWidth = x;
           targetX = x;
@@ -228,6 +233,8 @@ class GridLineHandle {
   }
 
   getMergesVerticalLineByMergesInfo(mergesInfo) {
+    const { table } = this;
+    const { cells } = table;
     const verticalLines = [];
     for (let i = 0; i < mergesInfo.length; i += 1) {
       const info = mergesInfo[i];
@@ -241,7 +248,8 @@ class GridLineHandle {
       let targetY;
       this.verticalLineEach({
         rectRange: cloneNewRect,
-        interruptCkCb: () => false,
+        // eslint-disable-next-line max-len
+        interruptCkCb: (i, j) => cells.isDisplayLeftBorder(j, i) || cells.isDisplayRightBorder(j, i + 1),
         startColCb: () => {
           targetX = x + width;
           targetY = y;

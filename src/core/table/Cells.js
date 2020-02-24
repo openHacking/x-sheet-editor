@@ -108,7 +108,7 @@ class Cells {
    * @returns {null|boolean}
    */
   isDisplayLeftBorder(ri, ci) {
-    const cell = this.getCell(ri, ci);
+    const cell = this.getMergeCellOrCell(ri, ci);
     return cell && cell.borderAttr.left.display;
   }
 
@@ -119,7 +119,7 @@ class Cells {
    * @returns {null|boolean}
    */
   isDisplayTopBorder(ri, ci) {
-    const cell = this.getCell(ri, ci);
+    const cell = this.getMergeCellOrCell(ri, ci);
     return cell && cell.borderAttr.top.display;
   }
 
@@ -130,7 +130,7 @@ class Cells {
    * @returns {null|boolean}
    */
   isDisplayRightBorder(ri, ci) {
-    const cell = this.getCell(ri, ci);
+    const cell = this.getMergeCellOrCell(ri, ci);
     return cell && cell.borderAttr.right.display;
   }
 
@@ -141,7 +141,7 @@ class Cells {
    * @returns {null|boolean}
    */
   isDisplayBottomBorder(ri, ci) {
-    const cell = this.getCell(ri, ci);
+    const cell = this.getMergeCellOrCell(ri, ci);
     return cell && cell.borderAttr.bottom.display;
   }
 
@@ -168,10 +168,10 @@ class Cells {
         italic: false,
       },
       borderAttr: {
-        left: { display: true },
-        top: { display: true },
-        right: { display: true },
-        bottom: { display: true },
+        left: { display: false },
+        top: { display: false },
+        right: { display: false },
+        bottom: { display: false },
       },
     };
   }
