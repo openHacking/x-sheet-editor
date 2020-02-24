@@ -55,7 +55,7 @@ class TopMenu extends Widget {
           const { selectorAttr } = screenSelector;
           this.format.setTitle(title);
           if (selectorAttr) {
-            cells.getRectRangeCell(selectorAttr.rect, (r, c, rect, cell) => {
+            cells.getCellInRectRange(selectorAttr.rect, (r, c, rect, cell) => {
               cell.format = format;
             }, undefined, true);
             dataSnapshot.snapshot();
@@ -74,7 +74,7 @@ class TopMenu extends Widget {
           const { selectorAttr } = screenSelector;
           this.font.setTitle(type);
           if (selectorAttr) {
-            cells.getRectRangeCell(selectorAttr.rect, (r, c, rect, cell) => {
+            cells.getCellInRectRange(selectorAttr.rect, (r, c, rect, cell) => {
               cell.fontAttr.name = type;
             }, undefined, true);
             dataSnapshot.snapshot();
@@ -171,7 +171,7 @@ class TopMenu extends Widget {
           // 复制样式
           const { selectorAttr: newSelectorAttr } = screenSelector;
           const src = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
-          cells.getRectRangeCell(newSelectorAttr.rect, (r, c, rect, cell) => {
+          cells.getCellInRectRange(newSelectorAttr.rect, (r, c, rect, cell) => {
             const { text } = cell;
             Utils.mergeDeep(cell, src);
             cell.text = text;
@@ -188,7 +188,7 @@ class TopMenu extends Widget {
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
-        cells.getRectRangeCell(selectorAttr.rect, (r, c, rect, cell) => {
+        cells.getCellInRectRange(selectorAttr.rect, (r, c, rect, cell) => {
           const { text } = cell;
           Utils.mergeDeep(cell, cells.getDefaultAttr());
           cell.text = text;

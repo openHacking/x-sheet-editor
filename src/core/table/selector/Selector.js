@@ -9,9 +9,9 @@ class Selector extends Widget {
     this.areaEl = h('div', `${cssPrefix}-selector-area`);
     this.transfromData = h('div', `${cssPrefix}-selector-transform-data`);
     this.areaEl.children(this.cornerEl);
-    this.hide();
     this.children(this.transfromData);
     this.children(this.areaEl);
+    this.hide();
   }
 }
 
