@@ -87,7 +87,7 @@ class TopMenu extends Widget {
     this.fontSize = new FontSize({
       contextMenu: {
         onUpdate: (size) => {
-
+          this.fontSize.setTitle(size);
         },
       },
     });
@@ -223,7 +223,7 @@ class TopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.fontSize, Constant.SYSTEM_EVENT_TYPE.CLICK, (e) => {
+    EventBind.bind(this.fontSize, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       ElPopUp.closeAll([this.fontSize.fontSizeContextMenu]);
       if (this.fontSize.fontSizeContextMenu.off) {
         this.fontSize.fontSizeContextMenu.open();
