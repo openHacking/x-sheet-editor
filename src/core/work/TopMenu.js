@@ -27,6 +27,7 @@ import { ScreenCopyStyle } from '../table/copystyle/ScreenCopyStyle';
 import { ScreenSelector } from '../table/selector/ScreenSelector';
 import { Utils } from '../../utils/Utils';
 import { ElPopUp } from '../../component/elpopup/ElPopUp';
+import { Cells } from '../table/Cells';
 
 class Divider extends Widget {
   constructor() {
@@ -190,7 +191,7 @@ class TopMenu extends Widget {
       if (selectorAttr) {
         cells.getCellInRectRange(selectorAttr.rect, (r, c, rect, cell) => {
           const { text } = cell;
-          Utils.mergeDeep(cell, cells.getDefaultAttr());
+          Utils.mergeDeep(cell, Cells.getDefaultAttr());
           cell.text = text;
         });
         table.render();

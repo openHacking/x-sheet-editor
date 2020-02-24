@@ -86,7 +86,7 @@ class Cells {
    * @returns {*}
    */
   initCell(cell) {
-    return Utils.isUnDef(cell.ID) ? Utils.mergeDeep(this.getDefaultAttr(), cell) : cell;
+    return Utils.isUnDef(cell.ID) ? Utils.mergeDeep(Cells.getDefaultAttr(), cell) : cell;
   }
 
   /**
@@ -149,7 +149,7 @@ class Cells {
    * 获取单元格的基本属性
    * @returns {Object}
    */
-  getDefaultAttr() {
+  static getDefaultAttr() {
     return {
       ID: Date.now().toString(),
       text: '',

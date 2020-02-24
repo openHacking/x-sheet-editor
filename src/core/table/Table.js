@@ -306,7 +306,6 @@ class Content {
     mergesVerticalLines.forEach((item) => {
       gridLine.verticalLine(item.x, item.y, item.height);
     });
-    console.log(mergesVerticalLines);
     draw.offset(0, 0);
     draw.restore();
   }
