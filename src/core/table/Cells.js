@@ -8,7 +8,6 @@ class Cells {
     this.table = table;
     this.cols = cols;
     this.rows = rows;
-    this.borderArray = [];
     this._ = data;
   }
 
