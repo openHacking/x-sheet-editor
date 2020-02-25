@@ -8,6 +8,7 @@ class Cells {
     this.table = table;
     this.cols = cols;
     this.rows = rows;
+    this.borderArray = [];
     this._ = data;
   }
 
@@ -150,29 +151,32 @@ class Cells {
    * @returns {Object}
    */
   static getDefaultAttr() {
+    const fontAttr = {
+      align: 'left',
+      verticalAlign: 'middle',
+      textWrap: false,
+      strike: false,
+      underline: false,
+      color: '#000000',
+      name: 'Arial',
+      size: 14,
+      bold: false,
+      italic: false,
+    };
+    const borderAttr = {
+      time: Utils.now(),
+      left: { display: false },
+      top: { display: false },
+      right: { display: false },
+      bottom: { display: false },
+    };
     return {
-      ID: Date.now().toString(),
+      ID: Utils.now(),
       text: '',
       format: 'default',
       background: null,
-      fontAttr: {
-        align: 'left',
-        verticalAlign: 'middle',
-        textWrap: false,
-        strike: false,
-        underline: false,
-        color: '#000000',
-        name: 'Arial',
-        size: 13,
-        bold: false,
-        italic: false,
-      },
-      borderAttr: {
-        left: { display: false },
-        top: { display: false },
-        right: { display: false },
-        bottom: { display: false },
-      },
+      fontAttr,
+      borderAttr,
     };
   }
 

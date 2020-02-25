@@ -389,6 +389,10 @@ class Utils {
     if (this.isBlank(s)) return '';
     return s.trim();
   }
+
+  static now() {
+    return Date.now().toString();
+  }
 }
 
 export { Utils };

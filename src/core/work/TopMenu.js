@@ -87,7 +87,19 @@ class TopMenu extends Widget {
     this.fontSize = new FontSize({
       contextMenu: {
         onUpdate: (size) => {
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          const { screen, cells, dataSnapshot } = table;
+          const screenSelector = screen.findByClass(ScreenSelector);
+          const { selectorAttr } = screenSelector;
           this.fontSize.setTitle(size);
+          if (selectorAttr) {
+            cells.getCellInRectRange(selectorAttr.rect, (r, c, rect, cell) => {
+              cell.fontAttr.size = size;
+            }, undefined, true);
+            dataSnapshot.snapshot();
+            table.render();
+          }
         },
       },
     });
@@ -145,6 +157,7 @@ class TopMenu extends Widget {
     EventBind.bind(body, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, () => {
       this.setFormatStatus();
       this.setFontStatus();
+      this.setFontSizeStatus();
     });
     EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
@@ -312,6 +325,23 @@ class TopMenu extends Widget {
     this.font.fontContextMenu.setActiveByType(name);
   }
 
+  setFontSizeStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { screen, cells } = table;
+    const screenSelector = screen.findByClass(ScreenSelector);
+    const { selectorAttr } = screenSelector;
+    let size = '12';
+    if (selectorAttr) {
+      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+      // eslint-disable-next-line prefer-destructuring
+      size = firstCell.fontAttr.size;
+    }
+    this.fontSize.setTitle(size);
+  }
+
   setUndoStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
@@ -343,6 +373,7 @@ class TopMenu extends Widget {
     this.setPaintFormatStatus();
     this.setFormatStatus();
     this.setFontStatus();
+    this.setFontSizeStatus();
   }
 }
 
