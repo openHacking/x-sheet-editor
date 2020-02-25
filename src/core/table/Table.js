@@ -27,10 +27,10 @@ import { Draw, npx } from '../../canvas/Draw';
 import { Font } from '../../canvas/Font';
 import { Rect } from '../../canvas/Rect';
 import { Crop } from '../../canvas/Crop';
-import { GridLine } from '../../canvas/GridLine';
+import { GridLine } from '../../canvas/Line';
 import { Box } from '../../canvas/Box';
 import Format from './Format';
-import { GridLineHandle } from './GridLineHandle';
+import { GridLineHandle } from './LineHandle';
 import { DataSnapshot } from './DataSnapshot';
 
 class FrozenLeftTop {
