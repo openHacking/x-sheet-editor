@@ -1,6 +1,6 @@
 class BorderLineHandle {
-  constructor({ draw }) {
-    this.draw = draw;
+  constructor(table) {
+    this.table = table;
   }
 
   horizontalLineEach({
@@ -106,12 +106,203 @@ class BorderLineHandle {
     let targetWidth = 0;
     this.horizontalLineEach({
       rectRange,
-      // eslint-disable-next-line max-len
       interruptCkCb: (i, j) => {
         const isMergeCell = cells.checkedMergeCell(i, j);
-        const isDisplay = cells.isDisplayTopBorder(i, j);
-        const isDraw = cells.borderComparisonOfTime(i, j, i + 1, j) === 1;
-        return isMergeCell || (isDisplay && isDraw);
+        const isDisplayTopBorder = cells.isDisplayTopBorder(i, j);
+        const isDisplayBottomBorder = cells.isDisplayBottomBorder(i - 1, j);
+        const priorityComparison = cells.borderComparisonOfTime(i, j, i - 1, j);
+        if (isMergeCell) {
+          return true;
+        }
+        if (isDisplayTopBorder) {
+          return false;
+        }
+        if (isDisplayTopBorder && isDisplayBottomBorder) {
+          if (priorityComparison === 1) {
+            return false;
+          }
+        }
+        return true;
+      },
+      startRowCb: (y) => {
+        targetY = y;
+        targetX = 0;
+        targetWidth = 0;
+      },
+      handleCb: (width) => {
+        targetWidth += width;
+      },
+      interruptHandleCb: (x, width, continuous) => {
+        if (!continuous) {
+          horizontalLines.push({
+            sy: targetY,
+            sx: targetX,
+            ey: targetY,
+            ex: targetWidth,
+          });
+        }
+        targetX = x + width;
+      },
+      endRowCb: (continuous) => {
+        if (!continuous) {
+          horizontalLines.push({
+            sy: targetY,
+            sx: targetX,
+            ey: targetY,
+            ex: targetWidth,
+          });
+        }
+      },
+    });
+    return horizontalLines;
+  }
+
+  getLeftLineByRectRange(rectRange) {
+    const verticalLines = [];
+    const { table } = this;
+    const { cells } = table;
+    let targetX = 0;
+    let targetY = 0;
+    let targetHeight = 0;
+    this.verticalLineEach({
+      rectRange,
+      interruptCkCb: (i, j) => {
+        const isMergeCell = cells.checkedMergeCell(j, i);
+        const isDisplayLeftBorder = cells.isDisplayLeftBorder(j, i);
+        const isDisplayRightBorder = cells.isDisplayRightBorder(j, i - 1);
+        const priorityComparison = cells.borderComparisonOfTime(j, i, j, i - 1);
+        if (isMergeCell) {
+          return true;
+        }
+        if (isDisplayLeftBorder) {
+          return false;
+        }
+        if (isDisplayLeftBorder && isDisplayRightBorder) {
+          if (priorityComparison === 1 || priorityComparison === 0) {
+            return false;
+          }
+        }
+        return true;
+      },
+      startColCb: (x) => {
+        targetX = x;
+        targetY = 0;
+        targetHeight = 0;
+      },
+      handleCb: (height) => {
+        targetHeight += height;
+      },
+      interruptHandleCb: (y, height, continuous) => {
+        if (!continuous) {
+          verticalLines.push({
+            sx: targetX,
+            sy: targetY,
+            ex: targetX,
+            ey: targetHeight,
+          });
+        }
+        targetY = y + height;
+      },
+      endColCb: (continuous) => {
+        if (!continuous) {
+          verticalLines.push({
+            sx: targetX,
+            sy: targetY,
+            ex: targetX,
+            ey: targetHeight,
+          });
+        }
+      },
+    });
+    return verticalLines;
+  }
+
+  getRightLineByRectRange(rectRange) {
+    const verticalLines = [];
+    const { table } = this;
+    const { cells } = table;
+    let targetX = 0;
+    let targetY = 0;
+    let targetHeight = 0;
+    this.verticalLineEach({
+      rectRange,
+      interruptCkCb: (i, j) => {
+        const isMergeCell = cells.checkedMergeCell(j, i);
+        const isDisplayLeftBorder = cells.isDisplayLeftBorder(j, i);
+        const isDisplayRightBorder = cells.isDisplayRightBorder(j, i - 1);
+        const priorityComparison = cells.borderComparisonOfTime(j, i, j, i - 1);
+        if (isMergeCell) {
+          return true;
+        }
+        if (isDisplayLeftBorder) {
+          return false;
+        }
+        if (isDisplayLeftBorder && isDisplayRightBorder) {
+          if (priorityComparison === 1) {
+            return false;
+          }
+        }
+        return true;
+      },
+      startColCb: (x, width) => {
+        targetX = x + width;
+        targetY = 0;
+        targetHeight = 0;
+      },
+      handleCb: (height) => {
+        targetHeight += height;
+      },
+      interruptHandleCb: (y, height, continuous) => {
+        if (!continuous) {
+          verticalLines.push({
+            sx: targetX,
+            sy: targetY,
+            ex: targetX,
+            ey: targetHeight,
+          });
+        }
+        targetY = y + height;
+      },
+      endColCb: (continuous) => {
+        if (!continuous) {
+          verticalLines.push({
+            sx: targetX,
+            sy: targetY,
+            ex: targetX,
+            ey: targetHeight,
+          });
+        }
+      },
+    });
+    return verticalLines;
+  }
+
+  getBottomLineByRectRange(rectRange) {
+    const horizontalLines = [];
+    const { table } = this;
+    const { cells } = table;
+    let targetX = 0;
+    let targetY = 0;
+    let targetWidth = 0;
+    this.horizontalLineEach({
+      rectRange,
+      interruptCkCb: (i, j) => {
+        const isMergeCell = cells.checkedMergeCell(i, j);
+        const isDisplayTopBorder = cells.isDisplayTopBorder(i, j);
+        const isDisplayBottomBorder = cells.isDisplayBottomBorder(i + 1, j);
+        const priorityComparison = cells.borderComparisonOfTime(i, j, i + 1, j);
+        if (isMergeCell) {
+          return true;
+        }
+        if (isDisplayTopBorder) {
+          return false;
+        }
+        if (isDisplayTopBorder && isDisplayBottomBorder) {
+          if (priorityComparison === 1 || priorityComparison === 0) {
+            return false;
+          }
+        }
+        return true;
       },
       startRowCb: (y, height) => {
         targetY = y + height;
@@ -124,9 +315,10 @@ class BorderLineHandle {
       interruptHandleCb: (x, width, continuous) => {
         if (!continuous) {
           horizontalLines.push({
-            y: targetY,
-            x: targetX,
-            width: targetWidth,
+            sy: targetY,
+            sx: targetX,
+            ey: targetY,
+            ex: targetWidth,
           });
         }
         targetX = x + width;
@@ -134,21 +326,16 @@ class BorderLineHandle {
       endRowCb: (continuous) => {
         if (!continuous) {
           horizontalLines.push({
-            y: targetY,
-            x: targetX,
-            width: targetWidth,
+            sy: targetY,
+            sx: targetX,
+            ey: targetY,
+            ex: targetWidth,
           });
         }
       },
     });
     return horizontalLines;
   }
-
-  getLeftLineByRectRange() {}
-
-  getRightLineByRectRange() {}
-
-  getBottomLineByRectRange() {}
 }
 
 export { BorderLineHandle };

@@ -31,6 +31,8 @@ import { Box } from '../../canvas/Box';
 import Format from './Format';
 import { GridLineHandle } from './GridLineHandle';
 import { DataSnapshot } from './DataSnapshot';
+import { BorderLineHandle } from './BorderLineHandle';
+import { Line } from '../../canvas/Line';
 
 class FrozenLeftTop {
   constructor(table) {
@@ -278,6 +280,31 @@ class Content {
     draw.restore();
   }
 
+  drawBorder(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const { draw, line } = table;
+    draw.save();
+    draw.offset(offsetX, offsetY);
+    const topLines = table.borderLineHandle.getTopLineByRectRange(viewRange);
+    const bottomLines = table.borderLineHandle.getBottomLineByRectRange(viewRange);
+    const leftLines = table.borderLineHandle.getLeftLineByRectRange(viewRange);
+    const rightLines = table.borderLineHandle.getRightLineByRectRange(viewRange);
+    topLines.forEach((item) => {
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    bottomLines.forEach((item) => {
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    leftLines.forEach((item) => {
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    rightLines.forEach((item) => {
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
   drawGrid(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
@@ -363,6 +390,7 @@ class Content {
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
     this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawBorder(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     crop.close();
   }
@@ -1084,6 +1112,7 @@ class Table extends Widget {
     this.merges = new Merges(this.settings.merges);
     this.scroll = new Scroll();
     this.gridLineHandle = new GridLineHandle(this);
+    this.borderLineHandle = new BorderLineHandle(this);
     // 撤销/反撤销
     this.dataSnapshot = new DataSnapshot(this);
     // 鼠标指针
@@ -1093,6 +1122,9 @@ class Table extends Widget {
     this.gridLine = new GridLine({
       draw: this.draw,
       color: this.settings.table.borderColor,
+    });
+    this.line = new Line({
+      draw: this.draw,
     });
     // table表绘制的各个部分
     this.content = new Content(this);
