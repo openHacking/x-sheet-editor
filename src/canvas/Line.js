@@ -4,6 +4,8 @@ class SolidLine {
     this.draw = draw;
     this.color = color;
   }
+
+  line(...xys) {}
 }
 
 class DottedLine {
@@ -11,6 +13,8 @@ class DottedLine {
     this.draw = draw;
     this.color = color;
   }
+
+  line(...xys) {}
 }
 
 class DoubleLine {
@@ -18,6 +22,8 @@ class DoubleLine {
     this.draw = draw;
     this.color = color;
   }
+
+  line(...xys) {}
 }
 
 export {
