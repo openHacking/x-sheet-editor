@@ -11,24 +11,30 @@ class GridLine {
     return width < 1 ? 1 : width;
   }
 
-  verticalLine(x, sy, ey) {
+  verticalLine(sx, sy, ex, ey) {
+    if (sx !== ex) {
+      throw new Error('coordinate errors sx should be equal to ex !!!');
+    }
     const { draw, color } = this;
     const width = this.lineWidth();
     draw.attr({
       fillStyle: color,
     });
     const diff = ey - sy;
-    draw.fillRect(x, sy, width, diff);
+    draw.fillRect(sx, sy, width, diff);
   }
 
-  horizontalLine(y, sx, ex) {
+  horizontalLine(sx, sy, ex, ey) {
+    if (sy !== ey) {
+      throw new Error('coordinate errors sy should be equal to ey !!!');
+    }
     const { draw, color } = this;
     const width = this.lineWidth();
     draw.attr({
       fillStyle: color,
     });
     const diff = ex - sx;
-    draw.fillRect(sx, y, diff, width);
+    draw.fillRect(sx, sy, diff, width);
   }
 }
 

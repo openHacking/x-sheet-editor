@@ -99,7 +99,7 @@ class GridLineHandle {
   }
 
   getHorizontalLineByRectRange(rectRange) {
-    const lineArray = [];
+    const horizontalLines = [];
     const { table } = this;
     const { cells } = table;
     let targetX = 0;
@@ -107,8 +107,12 @@ class GridLineHandle {
     let targetWidth = 0;
     this.horizontalLineEach({
       rectRange,
-      // eslint-disable-next-line max-len
-      interruptCkCb: (i, j) => cells.checkedMergeCell(i, j) || cells.isDisplayBottomBorder(i, j) || cells.isDisplayTopBorder(i + 1, j),
+      interruptCkCb: (i, j) => {
+        const isMergeCell = cells.checkedMergeCell(i, j);
+        const isDisplayBottomBorder = cells.isDisplayBottomBorder(i, j);
+        const isDisplayTopBorder = cells.isDisplayTopBorder(i + 1, j);
+        return isMergeCell || isDisplayBottomBorder || isDisplayTopBorder;
+      },
       startRowCb: (y, height) => {
         targetY = y + height;
         targetX = 0;
@@ -119,29 +123,31 @@ class GridLineHandle {
       },
       interruptHandleCb: (x, width, continuous) => {
         if (!continuous) {
-          lineArray.push({
-            y: targetY,
-            x: targetX,
-            width: targetWidth,
+          horizontalLines.push({
+            sy: targetY,
+            sx: targetX,
+            ey: targetY,
+            ex: targetWidth,
           });
         }
         targetX = x + width;
       },
       endRowCb: (continuous) => {
         if (!continuous) {
-          lineArray.push({
-            y: targetY,
-            x: targetX,
-            width: targetWidth,
+          horizontalLines.push({
+            sy: targetY,
+            sx: targetX,
+            ey: targetY,
+            ex: targetWidth,
           });
         }
       },
     });
-    return lineArray;
+    return horizontalLines;
   }
 
   getVerticalLineByRectRange(rectRange) {
-    const lineArray = [];
+    const verticalLines = [];
     const { table } = this;
     const { cells } = table;
     let targetX = 0;
@@ -149,8 +155,12 @@ class GridLineHandle {
     let targetHeight = 0;
     this.verticalLineEach({
       rectRange,
-      // eslint-disable-next-line max-len
-      interruptCkCb: (i, j) => cells.checkedMergeCell(j, i) || cells.isDisplayRightBorder(j, i) || cells.isDisplayLeftBorder(j, i + 1),
+      interruptCkCb: (i, j) => {
+        const isMergeCell = cells.checkedMergeCell(j, i);
+        const isDisplayRightBorder = cells.isDisplayRightBorder(j, i);
+        const isDisplayLeftBorder = cells.isDisplayLeftBorder(j, i + 1);
+        return isMergeCell || isDisplayRightBorder || isDisplayLeftBorder;
+      },
       startColCb: (x, width) => {
         targetX = x + width;
         targetY = 0;
@@ -161,25 +171,27 @@ class GridLineHandle {
       },
       interruptHandleCb: (y, height, continuous) => {
         if (!continuous) {
-          lineArray.push({
-            x: targetX,
-            y: targetY,
-            height: targetHeight,
+          verticalLines.push({
+            sx: targetX,
+            sy: targetY,
+            ex: targetX,
+            ey: targetHeight,
           });
         }
         targetY = y + height;
       },
       endColCb: (continuous) => {
         if (!continuous) {
-          lineArray.push({
-            x: targetX,
-            y: targetY,
-            height: targetHeight,
+          verticalLines.push({
+            sx: targetX,
+            sy: targetY,
+            ex: targetX,
+            ey: targetHeight,
           });
         }
       },
     });
-    return lineArray;
+    return verticalLines;
   }
 
   getMergesHorizontalLineByMergesInfo(mergesInfo) {
@@ -198,8 +210,11 @@ class GridLineHandle {
       let targetY;
       this.horizontalLineEach({
         rectRange: cloneNewRect,
-        // eslint-disable-next-line max-len
-        interruptCkCb: (i, j) => cells.isDisplayBottomBorder(i, j) || cells.isDisplayTopBorder(i + 1, j),
+        interruptCkCb: (i, j) => {
+          const isDisplayBottomBorder = cells.isDisplayBottomBorder(i, j);
+          const isDisplayTopBorder = cells.isDisplayTopBorder(i + 1, j);
+          return isDisplayBottomBorder || isDisplayTopBorder;
+        },
         startRowCb: () => {
           targetWidth = x;
           targetX = x;
@@ -211,9 +226,10 @@ class GridLineHandle {
         interruptHandleCb: (x, width, continuous) => {
           if (!continuous) {
             horizontalLines.push({
-              y: targetY,
-              x: targetX,
-              width: targetWidth,
+              sy: targetY,
+              sx: targetX,
+              ey: targetY,
+              ex: targetWidth,
             });
           }
           targetX += x + width;
@@ -221,9 +237,10 @@ class GridLineHandle {
         endRowCb: (continuous) => {
           if (!continuous) {
             horizontalLines.push({
-              y: targetY,
-              x: targetX,
-              width: targetWidth,
+              sy: targetY,
+              sx: targetX,
+              ey: targetY,
+              ex: targetWidth,
             });
           }
         },
@@ -248,8 +265,11 @@ class GridLineHandle {
       let targetY;
       this.verticalLineEach({
         rectRange: cloneNewRect,
-        // eslint-disable-next-line max-len
-        interruptCkCb: (i, j) => cells.isDisplayRightBorder(j, i) || cells.isDisplayLeftBorder(j, i + 1),
+        interruptCkCb: (i, j) => {
+          const isDisplayRightBorder = cells.isDisplayRightBorder(j, i);
+          const isDisplayLeftBorder = cells.isDisplayLeftBorder(j, i + 1);
+          return isDisplayRightBorder || isDisplayLeftBorder;
+        },
         startColCb: () => {
           targetX = x + width;
           targetY = y;
@@ -261,9 +281,10 @@ class GridLineHandle {
         interruptHandleCb: (y, height, continuous) => {
           if (!continuous) {
             verticalLines.push({
-              x: targetX,
-              y: targetY,
-              height: targetHeight,
+              sx: targetX,
+              sy: targetY,
+              ex: targetX,
+              ey: targetHeight,
             });
           }
           targetY += y + height;
@@ -271,9 +292,10 @@ class GridLineHandle {
         endColCb: (continuous) => {
           if (!continuous) {
             verticalLines.push({
-              x: targetX,
-              y: targetY,
-              height: targetHeight,
+              sx: targetX,
+              sy: targetY,
+              ex: targetX,
+              ey: targetHeight,
             });
           }
         },

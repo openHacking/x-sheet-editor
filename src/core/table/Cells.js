@@ -21,6 +21,15 @@ class Cells {
     return merges.getFirstIncludes(ri, ci) !== null;
   }
 
+  borderComparisonOfTime(sri, sci, tri, tci) {
+    const srcCell = this.getMergeCellOrCell(sri, sci);
+    const targetCell = this.getMergeCellOrCell(tri, tci);
+    if (Utils.isUnDef(srcCell) || Utils.isUnDef(targetCell)) return -2;
+    if (srcCell.time > targetCell.time) return 1;
+    if (targetCell.time > srcCell.time) return -1;
+    return 0;
+  }
+
   isDisplayLeftBorder(ri, ci) {
     const cell = this.getMergeCellOrCell(ri, ci);
     return cell && cell.borderAttr.left.display;

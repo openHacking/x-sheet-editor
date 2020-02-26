@@ -112,19 +112,19 @@ class FrozenLeftTop {
     const horizontalLines = gridLineHandle.getHorizontalLineByRectRange(viewRange);
     const verticalLines = gridLineHandle.getVerticalLineByRectRange(viewRange);
     horizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.y, item.x, item.width);
+      gridLine.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     verticalLines.forEach((item) => {
-      gridLine.verticalLine(item.x, item.y, item.height);
+      gridLine.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     const mergesInfo = gridLineHandle.getMergesInfoByRectRange(viewRange);
     const mergesHorizontalLines = gridLineHandle.getMergesHorizontalLineByMergesInfo(mergesInfo);
     const mergesVerticalLines = gridLineHandle.getMergesVerticalLineByMergesInfo(mergesInfo);
     mergesHorizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.y, item.x, item.width);
+      gridLine.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     mergesVerticalLines.forEach((item) => {
-      gridLine.verticalLine(item.x, item.y, item.height);
+      gridLine.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
     draw.restore();
@@ -291,19 +291,19 @@ class Content {
     const horizontalLines = gridLineHandle.getHorizontalLineByRectRange(viewRange);
     const verticalLines = gridLineHandle.getVerticalLineByRectRange(viewRange);
     horizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.y, item.x, item.width);
+      gridLine.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     verticalLines.forEach((item) => {
-      gridLine.verticalLine(item.x, item.y, item.height);
+      gridLine.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     const mergesInfo = gridLineHandle.getMergesInfoByRectRange(viewRange);
     const mergesHorizontalLines = gridLineHandle.getMergesHorizontalLineByMergesInfo(mergesInfo);
     const mergesVerticalLines = gridLineHandle.getMergesVerticalLineByMergesInfo(mergesInfo);
     mergesHorizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.y, item.x, item.width);
+      gridLine.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     mergesVerticalLines.forEach((item) => {
-      gridLine.verticalLine(item.x, item.y, item.height);
+      gridLine.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
     draw.restore();
@@ -453,19 +453,19 @@ class FixedLeft {
     const horizontalLines = gridLineHandle.getHorizontalLineByRectRange(viewRange);
     const verticalLines = gridLineHandle.getVerticalLineByRectRange(viewRange);
     horizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.y, item.x, item.width);
+      gridLine.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     verticalLines.forEach((item) => {
-      gridLine.verticalLine(item.x, item.y, item.height);
+      gridLine.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     const mergesInfo = gridLineHandle.getMergesInfoByRectRange(viewRange);
     const mergesHorizontalLines = gridLineHandle.getMergesHorizontalLineByMergesInfo(mergesInfo);
     const mergesVerticalLines = gridLineHandle.getMergesVerticalLineByMergesInfo(mergesInfo);
     mergesHorizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.y, item.x, item.width);
+      gridLine.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     mergesVerticalLines.forEach((item) => {
-      gridLine.verticalLine(item.x, item.y, item.height);
+      gridLine.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
     draw.restore();
@@ -612,19 +612,19 @@ class FixedTop {
     const horizontalLines = gridLineHandle.getHorizontalLineByRectRange(viewRange);
     const verticalLines = gridLineHandle.getVerticalLineByRectRange(viewRange);
     horizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.y, item.x, item.width);
+      gridLine.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     verticalLines.forEach((item) => {
-      gridLine.verticalLine(item.x, item.y, item.height);
+      gridLine.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     const mergesInfo = gridLineHandle.getMergesInfoByRectRange(viewRange);
     const mergesHorizontalLines = gridLineHandle.getMergesHorizontalLineByMergesInfo(mergesInfo);
     const mergesVerticalLines = gridLineHandle.getMergesVerticalLineByMergesInfo(mergesInfo);
     mergesHorizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.y, item.x, item.width);
+      gridLine.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     mergesVerticalLines.forEach((item) => {
-      gridLine.verticalLine(item.x, item.y, item.height);
+      gridLine.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
     draw.restore();
@@ -748,9 +748,9 @@ class FrozenLeftIndex {
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
       lineHeight += ch;
-      gridLine.horizontalLine(y, 0, width);
+      gridLine.horizontalLine(0, y, width, y);
     });
-    gridLine.verticalLine(width, 0, lineHeight);
+    gridLine.verticalLine(width, 0, width, lineHeight);
     draw.offset(0, 0);
     draw.restore();
   }
@@ -829,9 +829,9 @@ class FrozenTopIndex {
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
       lineWidth += cw;
-      gridLine.verticalLine(x, 0, height);
+      gridLine.verticalLine(x, 0, x, height);
     });
-    gridLine.horizontalLine(height, 0, lineWidth);
+    gridLine.horizontalLine(0, height, lineWidth, height);
     draw.offset(0, 0);
     draw.restore();
   }
@@ -909,10 +909,9 @@ class FixedTopIndex {
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
       lineWidth += cw;
-      gridLine.verticalLine(x, 0, height);
-      if (i === eci) gridLine.verticalLine(x + cw, 0, height);
+      gridLine.verticalLine(x, 0, x, height);
     });
-    gridLine.horizontalLine(height, 0, lineWidth);
+    gridLine.horizontalLine(0, height, lineWidth, height);
     draw.offset(0, 0);
     draw.restore();
   }
@@ -990,10 +989,9 @@ class FixedLeftIndex {
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
       lineHeight += ch;
-      gridLine.horizontalLine(y, 0, width);
-      if (i === eri) gridLine.horizontalLine(y + ch, 0, width);
+      gridLine.horizontalLine(0, y, width, y);
     });
-    gridLine.verticalLine(width, 0, lineHeight);
+    gridLine.verticalLine(width, 0, width, lineHeight);
     draw.offset(0, 0);
     draw.restore();
   }

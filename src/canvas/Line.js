@@ -5,7 +5,10 @@ class SolidLine {
     this.color = color;
   }
 
-  line(...xys) {}
+  line(sx, sy, ex, ey) {
+    const { draw } = this;
+    draw.line([sx, sy], [ex, ey]);
+  }
 }
 
 class DottedLine {
