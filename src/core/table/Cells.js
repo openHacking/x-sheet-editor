@@ -32,22 +32,22 @@ class Cells {
 
   isDisplayLeftBorder(ri, ci) {
     const cell = this.getMergeCellOrCell(ri, ci);
-    return cell && cell.borderAttr.left.display;
+    return cell !== null && cell.borderAttr.left.display;
   }
 
   isDisplayTopBorder(ri, ci) {
     const cell = this.getMergeCellOrCell(ri, ci);
-    return cell && cell.borderAttr.top.display;
+    return cell !== null && cell.borderAttr.top.display;
   }
 
   isDisplayRightBorder(ri, ci) {
     const cell = this.getMergeCellOrCell(ri, ci);
-    return cell && cell.borderAttr.right.display;
+    return cell !== null && cell.borderAttr.right.display;
   }
 
   isDisplayBottomBorder(ri, ci) {
     const cell = this.getMergeCellOrCell(ri, ci);
-    return cell && cell.borderAttr.bottom.display;
+    return cell !== null && cell.borderAttr.bottom.display;
   }
 
   setDisplayLeftBorder(ri, ci, attr) {

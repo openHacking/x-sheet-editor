@@ -114,15 +114,12 @@ class BorderLineHandle {
         if (isMergeCell) {
           return true;
         }
-        if (isDisplayTopBorder) {
-          return false;
-        }
         if (isDisplayTopBorder && isDisplayBottomBorder) {
           if (priorityComparison === 1) {
             return false;
           }
         }
-        return true;
+        return !isDisplayTopBorder;
       },
       startRowCb: (y) => {
         targetY = y;
@@ -174,15 +171,12 @@ class BorderLineHandle {
         if (isMergeCell) {
           return true;
         }
-        if (isDisplayLeftBorder) {
-          return false;
-        }
         if (isDisplayLeftBorder && isDisplayRightBorder) {
           if (priorityComparison === 1 || priorityComparison === 0) {
             return false;
           }
         }
-        return true;
+        return !isDisplayLeftBorder;
       },
       startColCb: (x) => {
         targetX = x;
@@ -228,21 +222,21 @@ class BorderLineHandle {
       rectRange,
       interruptCkCb: (i, j) => {
         const isMergeCell = cells.checkedMergeCell(j, i);
-        const isDisplayLeftBorder = cells.isDisplayLeftBorder(j, i);
-        const isDisplayRightBorder = cells.isDisplayRightBorder(j, i - 1);
-        const priorityComparison = cells.borderComparisonOfTime(j, i, j, i - 1);
+        const isDisplayRightBorder = cells.isDisplayRightBorder(j, i);
+        const isDisplayLeftBorder = cells.isDisplayLeftBorder(j, i + 1);
+        const priorityComparison = cells.borderComparisonOfTime(j, i, j, i + 1);
         if (isMergeCell) {
           return true;
         }
-        if (isDisplayLeftBorder) {
-          return false;
-        }
-        if (isDisplayLeftBorder && isDisplayRightBorder) {
+        if (isDisplayRightBorder && isDisplayLeftBorder) {
           if (priorityComparison === 1) {
             return false;
           }
         }
-        return true;
+        if (isDisplayRightBorder) {
+          return false;
+        }
+        return !isDisplayRightBorder;
       },
       startColCb: (x, width) => {
         targetX = x + width;
@@ -288,21 +282,18 @@ class BorderLineHandle {
       rectRange,
       interruptCkCb: (i, j) => {
         const isMergeCell = cells.checkedMergeCell(i, j);
-        const isDisplayTopBorder = cells.isDisplayTopBorder(i, j);
-        const isDisplayBottomBorder = cells.isDisplayBottomBorder(i + 1, j);
+        const isDisplayBottomBorder = cells.isDisplayBottomBorder(i, j);
+        const isDisplayTopBorder = cells.isDisplayTopBorder(i + 1, j);
         const priorityComparison = cells.borderComparisonOfTime(i, j, i + 1, j);
         if (isMergeCell) {
           return true;
         }
-        if (isDisplayTopBorder) {
-          return false;
-        }
-        if (isDisplayTopBorder && isDisplayBottomBorder) {
+        if (isDisplayBottomBorder && isDisplayTopBorder) {
           if (priorityComparison === 1 || priorityComparison === 0) {
             return false;
           }
         }
-        return true;
+        return !isDisplayBottomBorder;
       },
       startRowCb: (y, height) => {
         targetY = y + height;
