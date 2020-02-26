@@ -8,7 +8,7 @@ class SolidLine {
     Utils.mergeDeep(this, attr);
   }
 
-  line(sx, sy, ex, ey) {
+  drawLine(sx, sy, ex, ey) {
     const { draw, width } = this;
     draw.attr({ lineWidth: width });
     draw.line([sx, sy], [ex, ey]);
@@ -16,6 +16,10 @@ class SolidLine {
 
   setColor(color) {
     this.color = color;
+  }
+
+  setWidth(width) {
+    this.width = width;
   }
 }
 
@@ -26,6 +30,14 @@ class DottedLine {
     this.width = 1;
     Utils.mergeDeep(this, attr);
   }
+
+  setColor(color) {
+    this.color = color;
+  }
+
+  setWidth(width) {
+    this.width = width;
+  }
 }
 
 class DoubleLine {
@@ -34,6 +46,14 @@ class DoubleLine {
     this.color = '#000000';
     this.width = 1;
     Utils.mergeDeep(this, attr);
+  }
+
+  setColor(color) {
+    this.color = color;
+  }
+
+  setWidth(width) {
+    this.width = width;
   }
 }
 
@@ -44,7 +64,7 @@ const LINE_TYPE = {
 };
 
 class Line {
-  constructor(draw, attr) {
+  constructor(draw, attr = {}) {
     this.draw = draw;
     this.width = 1;
     this.color = '#000000';
@@ -59,7 +79,7 @@ class Line {
     const { type, solidLine } = this;
     switch (type) {
       case LINE_TYPE.SOLID_LINE:
-        solidLine.line(sx, sy, ex, ey);
+        solidLine.drawLine(sx, sy, ex, ey);
         break;
       case LINE_TYPE.DOTTED_LINE:
         // TODO ...
@@ -79,10 +99,16 @@ class Line {
 
   setWidth(width) {
     this.width = width;
+    this.solidLine.setWidth(width);
+    this.dottedLine.setWidth(width);
+    this.doubleLine.setWidth(width);
   }
 
   setColor(color) {
     this.color = color;
+    this.solidLine.setColor(color);
+    this.dottedLine.setColor(color);
+    this.doubleLine.setColor(color);
   }
 }
 

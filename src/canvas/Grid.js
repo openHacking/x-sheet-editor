@@ -1,9 +1,11 @@
 import { dpr } from './Draw';
+import { Utils } from '../utils/Utils';
 
-class GridLine {
-  constructor({ draw, color }) {
+class Grid {
+  constructor(draw, attr = {}) {
     this.draw = draw;
-    this.color = color;
+    this.color = '#000000';
+    Utils.mergeDeep(this, attr);
   }
 
   lineWidth() {
@@ -38,4 +40,4 @@ class GridLine {
   }
 }
 
-export { GridLine };
+export { Grid };

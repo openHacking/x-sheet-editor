@@ -91,7 +91,7 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const {
-      frozenLeftTop, cols, rows, gridLine,
+      frozenLeftTop, cols, rows, grid,
     } = table;
     const viewRange = frozenLeftTop.getViewRange();
     const { rect } = selectorAttr;
@@ -122,7 +122,7 @@ class ScreenSelector extends ScreenWidget {
     const size = new Rect({
       x: left, y: top, width, height,
     });
-    size.expandSize(gridLine.lineWidth());
+    size.expandSize(grid.lineWidth());
     this.lt.offset({
       width: size.width,
       height: size.height,
@@ -135,7 +135,7 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const {
-      fixedTop, cols, rows, gridLine,
+      fixedTop, cols, rows, grid,
     } = table;
     const viewRange = fixedTop.getViewRange();
     const { rect } = selectorAttr;
@@ -171,7 +171,7 @@ class ScreenSelector extends ScreenWidget {
     const size = new Rect({
       x: left, y: top, width, height,
     });
-    size.expandSize(gridLine.lineWidth());
+    size.expandSize(grid.lineWidth());
     this.t.offset({
       width: size.width,
       height: size.height,
@@ -184,7 +184,7 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const {
-      fixedLeft, cols, rows, gridLine,
+      fixedLeft, cols, rows, grid,
     } = table;
     const viewRange = fixedLeft.getViewRange();
     const { rect } = selectorAttr;
@@ -220,7 +220,7 @@ class ScreenSelector extends ScreenWidget {
     const size = new Rect({
       x: left, y: top, width, height,
     });
-    size.expandSize(gridLine.lineWidth());
+    size.expandSize(grid.lineWidth());
     this.l.offset({
       width: size.width,
       height: size.height,
@@ -233,7 +233,7 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const {
-      cols, rows, gridLine,
+      cols, rows, grid,
     } = table;
     const viewRange = table.getViewRange();
     const { rect } = selectorAttr;
@@ -274,7 +274,7 @@ class ScreenSelector extends ScreenWidget {
     const size = new Rect({
       x: left, y: top, width, height,
     });
-    size.expandSize(gridLine.lineWidth());
+    size.expandSize(grid.lineWidth());
     this.br.offset({
       width: size.width,
       height: size.height,

@@ -26,7 +26,7 @@ import { Draw, npx } from '../../canvas/Draw';
 import { Font } from '../../canvas/Font';
 import { Rect } from '../../canvas/Rect';
 import { Crop } from '../../canvas/Crop';
-import { GridLine } from '../../canvas/GridLine';
+import { Grid } from '../../canvas/Grid';
 import { Box } from '../../canvas/Box';
 import Format from './Format';
 import { GridLineHandle } from './GridLineHandle';
@@ -79,7 +79,7 @@ class FrozenLeftTop {
   drawBackGround(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, gridLine, cells, merges,
+      draw, grid, cells, merges,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -87,13 +87,13 @@ class FrozenLeftTop {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
       // 绘制背景
-      rect.expandSize(gridLine.lineWidth());
+      rect.expandSize(grid.lineWidth());
       const box = new Box({ draw, rect });
       box.drawBackgroundColor(cell.background);
     });
     cells.getMergeCellInRectRange(viewRange, (rect, cell) => {
       // 绘制背景
-      rect.expandSize(gridLine.lineWidth());
+      rect.expandSize(grid.lineWidth());
       const box = new Box({ draw, rect });
       box.drawBackgroundColor(cell.background);
     });
@@ -104,7 +104,7 @@ class FrozenLeftTop {
   drawGrid(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, gridLine, gridLineHandle,
+      draw, grid, gridLineHandle,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -114,19 +114,19 @@ class FrozenLeftTop {
     const horizontalLines = gridLineHandle.getHorizontalLineByRectRange(viewRange);
     const verticalLines = gridLineHandle.getVerticalLineByRectRange(viewRange);
     horizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     verticalLines.forEach((item) => {
-      gridLine.verticalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     const mergesInfo = gridLineHandle.getMergesInfoByRectRange(viewRange);
     const mergesHorizontalLines = gridLineHandle.getMergesHorizontalLineByMergesInfo(mergesInfo);
     const mergesVerticalLines = gridLineHandle.getMergesVerticalLineByMergesInfo(mergesInfo);
     mergesHorizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     mergesVerticalLines.forEach((item) => {
-      gridLine.verticalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
     draw.restore();
@@ -135,7 +135,7 @@ class FrozenLeftTop {
   drawCells(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges, gridLine,
+      draw, cells, merges, grid,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -145,7 +145,7 @@ class FrozenLeftTop {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
-        rect: rect.expandSize(gridLine.lineWidth()),
+        rect: rect.expandSize(grid.lineWidth()),
         dw: draw,
         overflow: null,
         attr: cell.fontAttr,
@@ -156,7 +156,7 @@ class FrozenLeftTop {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
-        rect: rect.expandSize(gridLine.lineWidth()),
+        rect: rect.expandSize(grid.lineWidth()),
         dw: draw,
         overflow: null,
         attr: cell.fontAttr,
@@ -258,7 +258,7 @@ class Content {
   drawBackGround(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, gridLine, cells, merges,
+      draw, grid, cells, merges,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -266,13 +266,13 @@ class Content {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
       // 绘制背景
-      rect.expandSize(gridLine.lineWidth());
+      rect.expandSize(grid.lineWidth());
       const box = new Box({ draw, rect });
       box.drawBackgroundColor(cell.background);
     });
     cells.getMergeCellInRectRange(viewRange, (rect, cell) => {
       // 绘制背景
-      rect.expandSize(gridLine.lineWidth());
+      rect.expandSize(grid.lineWidth());
       const box = new Box({ draw, rect });
       box.drawBackgroundColor(cell.background);
     });
@@ -282,13 +282,14 @@ class Content {
 
   drawBorder(viewRange, offsetX, offsetY) {
     const { table } = this;
-    const { draw, line } = table;
+    const { draw, line, grid } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
     const topLines = table.borderLineHandle.getTopLineByRectRange(viewRange);
     const bottomLines = table.borderLineHandle.getBottomLineByRectRange(viewRange);
     const leftLines = table.borderLineHandle.getLeftLineByRectRange(viewRange);
     const rightLines = table.borderLineHandle.getRightLineByRectRange(viewRange);
+    line.setWidth(grid.lineWidth());
     topLines.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
@@ -308,7 +309,7 @@ class Content {
   drawGrid(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, gridLine, gridLineHandle,
+      draw, grid, gridLineHandle,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -318,19 +319,19 @@ class Content {
     const horizontalLines = gridLineHandle.getHorizontalLineByRectRange(viewRange);
     const verticalLines = gridLineHandle.getVerticalLineByRectRange(viewRange);
     horizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     verticalLines.forEach((item) => {
-      gridLine.verticalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     const mergesInfo = gridLineHandle.getMergesInfoByRectRange(viewRange);
     const mergesHorizontalLines = gridLineHandle.getMergesHorizontalLineByMergesInfo(mergesInfo);
     const mergesVerticalLines = gridLineHandle.getMergesVerticalLineByMergesInfo(mergesInfo);
     mergesHorizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     mergesVerticalLines.forEach((item) => {
-      gridLine.verticalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
     draw.restore();
@@ -339,7 +340,7 @@ class Content {
   drawCells(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges, gridLine,
+      draw, cells, merges, grid,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -349,7 +350,7 @@ class Content {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
-        rect: rect.expandSize(gridLine.lineWidth()),
+        rect: rect.expandSize(grid.lineWidth()),
         dw: draw,
         overflow: null,
         attr: cell.fontAttr,
@@ -360,7 +361,7 @@ class Content {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
-        rect: rect.expandSize(gridLine.lineWidth()),
+        rect: rect.expandSize(grid.lineWidth()),
         dw: draw,
         overflow: null,
         attr: cell.fontAttr,
@@ -374,7 +375,7 @@ class Content {
 
   render() {
     const { table } = this;
-    const { draw, gridLine } = table;
+    const { draw, grid } = table;
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
     const viewRange = this.getViewRange();
@@ -386,7 +387,7 @@ class Content {
       width,
       height,
     });
-    const crop = new Crop({ draw, rect, offset: gridLine.lineWidth() });
+    const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
     this.drawGrid(viewRange, offsetX, offsetY);
@@ -446,7 +447,7 @@ class FixedLeft {
   drawBackGround(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, gridLine, cells, merges,
+      draw, grid, cells, merges,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -454,13 +455,13 @@ class FixedLeft {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
       // 绘制背景
-      rect.expandSize(gridLine.lineWidth());
+      rect.expandSize(grid.lineWidth());
       const box = new Box({ draw, rect });
       box.drawBackgroundColor(cell.background);
     });
     cells.getMergeCellInRectRange(viewRange, (rect, cell) => {
       // 绘制背景
-      rect.expandSize(gridLine.lineWidth());
+      rect.expandSize(grid.lineWidth());
       const box = new Box({ draw, rect });
       box.drawBackgroundColor(cell.background);
     });
@@ -471,7 +472,7 @@ class FixedLeft {
   drawGrid(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, gridLine, gridLineHandle,
+      draw, grid, gridLineHandle,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -481,19 +482,19 @@ class FixedLeft {
     const horizontalLines = gridLineHandle.getHorizontalLineByRectRange(viewRange);
     const verticalLines = gridLineHandle.getVerticalLineByRectRange(viewRange);
     horizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     verticalLines.forEach((item) => {
-      gridLine.verticalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     const mergesInfo = gridLineHandle.getMergesInfoByRectRange(viewRange);
     const mergesHorizontalLines = gridLineHandle.getMergesHorizontalLineByMergesInfo(mergesInfo);
     const mergesVerticalLines = gridLineHandle.getMergesVerticalLineByMergesInfo(mergesInfo);
     mergesHorizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     mergesVerticalLines.forEach((item) => {
-      gridLine.verticalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
     draw.restore();
@@ -502,7 +503,7 @@ class FixedLeft {
   drawCells(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges, gridLine,
+      draw, cells, merges, grid,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -512,7 +513,7 @@ class FixedLeft {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
-        rect: rect.expandSize(gridLine.lineWidth()),
+        rect: rect.expandSize(grid.lineWidth()),
         dw: draw,
         overflow: null,
         attr: cell.fontAttr,
@@ -523,7 +524,7 @@ class FixedLeft {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
-        rect: rect.expandSize(gridLine.lineWidth()),
+        rect: rect.expandSize(grid.lineWidth()),
         dw: draw,
         overflow: null,
         attr: cell.fontAttr,
@@ -605,7 +606,7 @@ class FixedTop {
   drawBackGround(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, gridLine, cells, merges,
+      draw, grid, cells, merges,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -613,13 +614,13 @@ class FixedTop {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
       // 绘制背景
-      rect.expandSize(gridLine.lineWidth());
+      rect.expandSize(grid.lineWidth());
       const box = new Box({ draw, rect });
       box.drawBackgroundColor(cell.background);
     });
     cells.getMergeCellInRectRange(viewRange, (rect, cell) => {
       // 绘制背景
-      rect.expandSize(gridLine.lineWidth());
+      rect.expandSize(grid.lineWidth());
       const box = new Box({ draw, rect });
       box.drawBackgroundColor(cell.background);
     });
@@ -630,7 +631,7 @@ class FixedTop {
   drawGrid(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, gridLine, gridLineHandle,
+      draw, grid, gridLineHandle,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -640,19 +641,19 @@ class FixedTop {
     const horizontalLines = gridLineHandle.getHorizontalLineByRectRange(viewRange);
     const verticalLines = gridLineHandle.getVerticalLineByRectRange(viewRange);
     horizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     verticalLines.forEach((item) => {
-      gridLine.verticalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     const mergesInfo = gridLineHandle.getMergesInfoByRectRange(viewRange);
     const mergesHorizontalLines = gridLineHandle.getMergesHorizontalLineByMergesInfo(mergesInfo);
     const mergesVerticalLines = gridLineHandle.getMergesVerticalLineByMergesInfo(mergesInfo);
     mergesHorizontalLines.forEach((item) => {
-      gridLine.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     mergesVerticalLines.forEach((item) => {
-      gridLine.verticalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
     draw.restore();
@@ -661,7 +662,7 @@ class FixedTop {
   drawCells(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges, gridLine,
+      draw, cells, merges, grid,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -671,7 +672,7 @@ class FixedTop {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
-        rect: rect.expandSize(gridLine.lineWidth()),
+        rect: rect.expandSize(grid.lineWidth()),
         dw: draw,
         overflow: null,
         attr: cell.fontAttr,
@@ -682,7 +683,7 @@ class FixedTop {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
-        rect: rect.expandSize(gridLine.lineWidth()),
+        rect: rect.expandSize(grid.lineWidth()),
         dw: draw,
         overflow: null,
         attr: cell.fontAttr,
@@ -696,7 +697,7 @@ class FixedTop {
 
   render() {
     const { table } = this;
-    const { draw, gridLine } = table;
+    const { draw, grid } = table;
     const viewRange = this.getViewRange();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
@@ -706,7 +707,7 @@ class FixedTop {
       width: viewRange.w,
       height: viewRange.h,
     });
-    const crop = new Crop({ draw, rect, offset: gridLine.lineWidth() });
+    const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
     this.drawGrid(viewRange, offsetX, offsetY);
@@ -748,7 +749,7 @@ class FrozenLeftIndex {
   draw(viewRange, offsetX, offsetY, width, height) {
     const { table } = this;
     const {
-      draw, gridLine, rows, settings,
+      draw, grid, rows, settings,
     } = table;
     const { sri, eri } = viewRange;
     draw.save();
@@ -776,9 +777,9 @@ class FrozenLeftIndex {
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
       lineHeight += ch;
-      gridLine.horizontalLine(0, y, width, y);
+      grid.horizontalLine(0, y, width, y);
     });
-    gridLine.verticalLine(width, 0, width, lineHeight);
+    grid.verticalLine(width, 0, width, lineHeight);
     draw.offset(0, 0);
     draw.restore();
   }
@@ -829,7 +830,7 @@ class FrozenTopIndex {
   draw(viewRange, offsetX, offsetY, width, height) {
     const { table } = this;
     const {
-      draw, gridLine, cols, settings,
+      draw, grid, cols, settings,
     } = table;
     const { sci, eci } = viewRange;
     draw.save();
@@ -857,9 +858,9 @@ class FrozenTopIndex {
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
       lineWidth += cw;
-      gridLine.verticalLine(x, 0, x, height);
+      grid.verticalLine(x, 0, x, height);
     });
-    gridLine.horizontalLine(0, height, lineWidth, height);
+    grid.horizontalLine(0, height, lineWidth, height);
     draw.offset(0, 0);
     draw.restore();
   }
@@ -909,7 +910,7 @@ class FixedTopIndex {
   draw(viewRange, offsetX, offsetY, width, height) {
     const { table } = this;
     const {
-      draw, gridLine, cols, settings,
+      draw, grid, cols, settings,
     } = table;
     const { sci, eci } = viewRange;
     draw.save();
@@ -937,9 +938,9 @@ class FixedTopIndex {
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
       lineWidth += cw;
-      gridLine.verticalLine(x, 0, x, height);
+      grid.verticalLine(x, 0, x, height);
     });
-    gridLine.horizontalLine(0, height, lineWidth, height);
+    grid.horizontalLine(0, height, lineWidth, height);
     draw.offset(0, 0);
     draw.restore();
   }
@@ -989,7 +990,7 @@ class FixedLeftIndex {
   draw(viewRange, offsetX, offsetY, width, height) {
     const { table } = this;
     const {
-      draw, gridLine, rows, settings,
+      draw, grid, rows, settings,
     } = table;
     const { sri, eri } = viewRange;
     draw.save();
@@ -1017,9 +1018,9 @@ class FixedLeftIndex {
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
       lineHeight += ch;
-      gridLine.horizontalLine(0, y, width, y);
+      grid.horizontalLine(0, y, width, y);
     });
-    gridLine.verticalLine(width, 0, width, lineHeight);
+    grid.verticalLine(width, 0, width, lineHeight);
     draw.offset(0, 0);
     draw.restore();
   }
@@ -1119,12 +1120,9 @@ class Table extends Widget {
     this.mousePointType = new MousePointType(this);
     // canvas 绘制资源
     this.draw = new Draw(this.canvas.el);
-    this.gridLine = new GridLine({
-      draw: this.draw,
+    this.line = new Line(this.draw, {});
+    this.grid = new Grid(this.draw, {
       color: this.settings.table.borderColor,
-    });
-    this.line = new Line({
-      draw: this.draw,
     });
     // table表绘制的各个部分
     this.content = new Content(this);

@@ -18,6 +18,12 @@ class Draw {
     this.offsetY = 0;
   }
 
+  npxLine(px) {
+    const lineWidth = this.ctx.lineWidth || 1;
+    const n = npx(px);
+    return lineWidth % 2 === 0 ? n : n + 0.5;
+  }
+
   offset(offsetX = 0, offsetY = 0) {
     this.offsetX = offsetX;
     this.offsetY = offsetY;
@@ -118,10 +124,10 @@ class Draw {
     const { offsetX, offsetY } = this;
     if (xys.length > 1) {
       const [x, y] = xys[0];
-      ctx.moveTo(npx(x + offsetX), npx(y + offsetY));
+      ctx.moveTo(this.npxLine(x + offsetX), this.npxLine(y + offsetY));
       for (let i = 1, len = xys.length; i < len; i += 1) {
         const [x1, y1] = xys[i];
-        ctx.lineTo(npx(x1 + offsetX), npx(y1 + offsetY));
+        ctx.lineTo(this.npxLine(x1 + offsetX), this.npxLine(y1 + offsetY));
       }
       ctx.stroke();
     }
