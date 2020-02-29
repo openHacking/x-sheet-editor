@@ -141,25 +141,22 @@ class FrozenLeftTop {
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    draw.attr({
-      globalAlpha: 0.3,
-    });
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
     const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
     const htLine = borderLineHandle.htLine(viewRange);
-    const hlLine = borderLineHandle.vlLine(viewRange);
     const hbLine = borderLineHandle.hbLine(viewRange);
-    const hrLine = borderLineHandle.vrLine(viewRange);
+    const vlLine = borderLineHandle.vlLine(viewRange);
+    const vrLine = borderLineHandle.vrLine(viewRange);
     htLine.forEach((item) => {
-      line.drawLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    hlLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
-    hrLine.forEach((item) => {
+    vlLine.forEach((item) => {
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vrLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
@@ -370,13 +367,8 @@ class Content {
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    draw.attr({
-      globalAlpha: 0.3,
-    });
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
     const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
-    // console.log('coincideView', coincideView);
-    // console.log('coincideViewBrink', coincideViewBrink);
     const htLine = borderLineHandle.htLine(viewRange);
     const hbLine = borderLineHandle.hbLine(viewRange);
     const vlLine = borderLineHandle.vlLine(viewRange);
@@ -384,10 +376,10 @@ class Content {
     htLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
-    vlLine.forEach((item) => {
+    hbLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
-    hbLine.forEach((item) => {
+    vlLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vrLine.forEach((item) => {
@@ -584,25 +576,22 @@ class FixedLeft {
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    draw.attr({
-      globalAlpha: 0.3,
-    });
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
     const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
     const htLine = borderLineHandle.htLine(viewRange);
-    const hlLine = borderLineHandle.vlLine(viewRange);
     const hbLine = borderLineHandle.hbLine(viewRange);
-    const hrLine = borderLineHandle.vrLine(viewRange);
+    const vlLine = borderLineHandle.vlLine(viewRange);
+    const vrLine = borderLineHandle.vrLine(viewRange);
     htLine.forEach((item) => {
-      line.drawLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    hlLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
-    hrLine.forEach((item) => {
+    vlLine.forEach((item) => {
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vrLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
@@ -793,25 +782,22 @@ class FixedTop {
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    draw.attr({
-      globalAlpha: 0.3,
-    });
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
     const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
     const htLine = borderLineHandle.htLine(viewRange);
-    const hlLine = borderLineHandle.vlLine(viewRange);
     const hbLine = borderLineHandle.hbLine(viewRange);
-    const hrLine = borderLineHandle.vrLine(viewRange);
+    const vlLine = borderLineHandle.vlLine(viewRange);
+    const vrLine = borderLineHandle.vrLine(viewRange);
     htLine.forEach((item) => {
-      line.drawLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    hlLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
-    hrLine.forEach((item) => {
+    vlLine.forEach((item) => {
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vrLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
