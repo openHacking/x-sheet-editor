@@ -917,6 +917,7 @@ class FixedTopIndex {
     cols.eachWidth(sci, eci, (i, cw, x) => {
       lineWidth += cw;
       grid.verticalLine(x, 0, x, height);
+      if (i === eci) grid.verticalLine(x + cw, 0, x + cw, height);
     });
     grid.horizontalLine(0, height, lineWidth, height);
     draw.offset(0, 0);
@@ -997,6 +998,7 @@ class FixedLeftIndex {
     rows.eachHeight(sri, eri, (i, ch, y) => {
       lineHeight += ch;
       grid.horizontalLine(0, y, width, y);
+      if (i === eri) grid.horizontalLine(0, y + ch, width, y + ch);
     });
     grid.verticalLine(width, 0, width, lineHeight);
     draw.offset(0, 0);
