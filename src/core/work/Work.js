@@ -43,8 +43,8 @@ class Work extends Widget {
   }
 
   init() {
-    this.top.init();
     this.body.init();
+    this.top.init();
     this.bottom.init();
   }
 }
