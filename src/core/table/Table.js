@@ -1,4 +1,5 @@
 /* global window */
+
 import { cssPrefix } from '../../config';
 import { Utils } from '../../utils/Utils';
 import { Rows } from './Rows';
