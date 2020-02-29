@@ -158,7 +158,7 @@ class BorderLineHandle {
       const borderTop = cells.isDisplayTopBorder(row + 1, col);
       const borderDiff = cells.borderComparisonOfTime(row, col, row + 1, col);
       if (borderBottom && borderTop) {
-        return borderDiff === 1;
+        return borderDiff === 1 || borderDiff === 0;
       }
       return notMerges && borderBottom;
     });
@@ -167,7 +167,7 @@ class BorderLineHandle {
   vlLine(viewRange) {
     const { table } = this;
     const { merges, cells } = table;
-    return this.borderVLLine(viewRange, 0, 0, (row, col) => {
+    return this.borderVLLine(viewRange, 0, 0, (col, row) => {
       const notMerges = merges.getFirstIncludes(row, col) === null;
       const borderLeft = cells.isDisplayLeftBorder(row, col);
       const borderRight = cells.isDisplayRightBorder(row, col - 1);
@@ -182,13 +182,13 @@ class BorderLineHandle {
   vrLine(viewRange) {
     const { table } = this;
     const { merges, cells } = table;
-    return this.borderVRLine(viewRange, 0, 0, (row, col) => {
+    return this.borderVRLine(viewRange, 0, 0, (col, row) => {
       const notMerges = merges.getFirstIncludes(row, col) === null;
       const borderRight = cells.isDisplayRightBorder(row, col);
-      const borderLeft = cells.isDisplayLeftBorder(row + 1, col);
-      const borderDiff = cells.borderComparisonOfTime(row, col, row + 1, col);
+      const borderLeft = cells.isDisplayLeftBorder(row, col + 1);
+      const borderDiff = cells.borderComparisonOfTime(row, col, row, col + 1);
       if (borderRight && borderLeft) {
-        return borderDiff === 1;
+        return borderDiff === 1 || borderDiff === 0;
       }
       return notMerges && borderRight;
     });
