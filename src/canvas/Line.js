@@ -1,5 +1,11 @@
 import { Utils } from '../utils/Utils';
 
+const LINE_TYPE = {
+  SOLID_LINE: 0,
+  DOTTED_LINE: 1,
+  DOUBLE_LINE: 2,
+};
+
 class SolidLine {
   constructor(draw, attr) {
     this.draw = draw;
@@ -56,12 +62,6 @@ class DoubleLine {
     this.width = width;
   }
 }
-
-const LINE_TYPE = {
-  SOLID_LINE: 0,
-  DOTTED_LINE: 1,
-  DOUBLE_LINE: 2,
-};
 
 class Line {
   constructor(draw, attr = {}) {
