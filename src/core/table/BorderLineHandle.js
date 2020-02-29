@@ -158,7 +158,7 @@ class BorderLineHandle {
       const borderTop = cells.isDisplayTopBorder(row + 1, col);
       const borderDiff = cells.borderComparisonOfTime(row, col, row + 1, col);
       if (borderBottom && borderTop) {
-        return borderDiff === 1;
+        return borderDiff === 1 || borderDiff === 0;
       }
       return notMerges && borderBottom;
     });
@@ -188,7 +188,7 @@ class BorderLineHandle {
       const borderLeft = cells.isDisplayLeftBorder(row + 1, col);
       const borderDiff = cells.borderComparisonOfTime(row, col, row + 1, col);
       if (borderRight && borderLeft) {
-        return borderDiff === 1;
+        return borderDiff === 1 && borderDiff === 0;
       }
       return notMerges && borderRight;
     });
@@ -226,7 +226,7 @@ class BorderLineHandle {
         const borderTop = cells.isDisplayTopBorder(row + 1, col);
         const borderDiff = cells.borderComparisonOfTime(row, col, row + 1, col);
         if (borderBottom && borderTop) {
-          return borderDiff === 1;
+          return borderDiff === 1 && borderDiff === 0;
         }
         return borderBottom;
       }));
@@ -266,7 +266,7 @@ class BorderLineHandle {
         const borderLeft = cells.isDisplayLeftBorder(row, col + 1);
         const borderDiff = cells.borderComparisonOfTime(row, col, row, col + 1);
         if (borderRight && borderLeft) {
-          return borderDiff === 1;
+          return borderDiff === 1 && borderDiff === 0;
         }
         return borderRight;
       }));
