@@ -147,9 +147,9 @@ class FrozenLeftTop {
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
     const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
     const htLine = borderLineHandle.htLine(viewRange);
-    const hlLine = borderLineHandle.hlLine(viewRange);
+    const hlLine = borderLineHandle.vlLine(viewRange);
     const hbLine = borderLineHandle.hbLine(viewRange);
-    const hrLine = borderLineHandle.hrLine(viewRange);
+    const hrLine = borderLineHandle.vrLine(viewRange);
     htLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
@@ -163,19 +163,19 @@ class FrozenLeftTop {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
-    const hlMergeLine = borderLineHandle.hlMergeLine(coincideViewBrink);
     const hbMergeLine = borderLineHandle.hbMergeLine(coincideViewBrink);
-    const hrMergeLine = borderLineHandle.hrMergeLine(coincideViewBrink);
+    const vlMergeLine = borderLineHandle.vlMergeLine(coincideViewBrink);
+    const vrMergeLine = borderLineHandle.vrMergeLine(coincideViewBrink);
     htMergeLine.forEach((item) => {
-      line.drawLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    hlMergeLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbMergeLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
-    hrMergeLine.forEach((item) => {
+    vlMergeLine.forEach((item) => {
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vrMergeLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
@@ -234,6 +234,7 @@ class FrozenLeftTop {
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
     this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawBorder(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     crop.close();
   }
@@ -375,9 +376,9 @@ class Content {
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
     const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
     const htLine = borderLineHandle.htLine(viewRange);
-    const hlLine = borderLineHandle.hlLine(viewRange);
+    const hlLine = borderLineHandle.vlLine(viewRange);
     const hbLine = borderLineHandle.hbLine(viewRange);
-    const hrLine = borderLineHandle.hrLine(viewRange);
+    const hrLine = borderLineHandle.vrLine(viewRange);
     htLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
@@ -391,19 +392,19 @@ class Content {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
-    const hlMergeLine = borderLineHandle.hlMergeLine(coincideViewBrink);
     const hbMergeLine = borderLineHandle.hbMergeLine(coincideViewBrink);
-    const hrMergeLine = borderLineHandle.hrMergeLine(coincideViewBrink);
+    const vlMergeLine = borderLineHandle.vlMergeLine(coincideViewBrink);
+    const vrMergeLine = borderLineHandle.vrMergeLine(coincideViewBrink);
     htMergeLine.forEach((item) => {
-      line.drawLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    hlMergeLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbMergeLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
-    hrMergeLine.forEach((item) => {
+    vlMergeLine.forEach((item) => {
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vrMergeLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
@@ -464,6 +465,7 @@ class Content {
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
     this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawBorder(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     crop.close();
   }
@@ -586,9 +588,9 @@ class FixedLeft {
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
     const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
     const htLine = borderLineHandle.htLine(viewRange);
-    const hlLine = borderLineHandle.hlLine(viewRange);
+    const hlLine = borderLineHandle.vlLine(viewRange);
     const hbLine = borderLineHandle.hbLine(viewRange);
-    const hrLine = borderLineHandle.hrLine(viewRange);
+    const hrLine = borderLineHandle.vrLine(viewRange);
     htLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
@@ -602,19 +604,19 @@ class FixedLeft {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
-    const hlMergeLine = borderLineHandle.hlMergeLine(coincideViewBrink);
     const hbMergeLine = borderLineHandle.hbMergeLine(coincideViewBrink);
-    const hrMergeLine = borderLineHandle.hrMergeLine(coincideViewBrink);
+    const vlMergeLine = borderLineHandle.vlMergeLine(coincideViewBrink);
+    const vrMergeLine = borderLineHandle.vrMergeLine(coincideViewBrink);
     htMergeLine.forEach((item) => {
-      line.drawLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    hlMergeLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbMergeLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
-    hrMergeLine.forEach((item) => {
+    vlMergeLine.forEach((item) => {
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vrMergeLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
@@ -673,6 +675,7 @@ class FixedLeft {
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
     this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawBorder(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     crop.close();
   }
@@ -794,9 +797,9 @@ class FixedTop {
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
     const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
     const htLine = borderLineHandle.htLine(viewRange);
-    const hlLine = borderLineHandle.hlLine(viewRange);
+    const hlLine = borderLineHandle.vlLine(viewRange);
     const hbLine = borderLineHandle.hbLine(viewRange);
-    const hrLine = borderLineHandle.hrLine(viewRange);
+    const hrLine = borderLineHandle.vrLine(viewRange);
     htLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
@@ -810,19 +813,19 @@ class FixedTop {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
-    const hlMergeLine = borderLineHandle.hlMergeLine(coincideViewBrink);
     const hbMergeLine = borderLineHandle.hbMergeLine(coincideViewBrink);
-    const hrMergeLine = borderLineHandle.hrMergeLine(coincideViewBrink);
+    const vlMergeLine = borderLineHandle.vlMergeLine(coincideViewBrink);
+    const vrMergeLine = borderLineHandle.vrMergeLine(coincideViewBrink);
     htMergeLine.forEach((item) => {
-      line.drawLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    hlMergeLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbMergeLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
-    hrMergeLine.forEach((item) => {
+    vlMergeLine.forEach((item) => {
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vrMergeLine.forEach((item) => {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
@@ -881,6 +884,7 @@ class FixedTop {
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
     this.drawGrid(viewRange, offsetX, offsetY);
+    this.drawBorder(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     crop.close();
   }

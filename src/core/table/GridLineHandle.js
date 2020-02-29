@@ -108,7 +108,7 @@ class GridLineHandle {
     return this.gridVLine(viewRange, 0, 0, (col, row) => {
       const notMerges = merges.getFirstIncludes(row, col) === null;
       const notBorderRight = cells.isDisplayRightBorder(row, col) === false;
-      const notBorderLeft = cells.isDisplayLeftBorder(row + 1, col) === false;
+      const notBorderLeft = cells.isDisplayLeftBorder(row, col + 1) === false;
       return notMerges && notBorderRight && notBorderLeft;
     });
   }
