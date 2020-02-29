@@ -155,6 +155,7 @@ class TopMenu extends Widget {
       this.setStatus();
     });
     EventBind.bind(body, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, () => {
+      // console.log('TABLE_EVENT_TYPE.SELECT_DOWN');
       this.setFormatStatus();
       this.setFontStatus();
       this.setFontSizeStatus();
