@@ -1076,6 +1076,7 @@ const defaultSettings = {
 };
 
 class Table extends Widget {
+
   constructor(settings) {
     super(`${cssPrefix}-table`);
     this.viewRange = null;

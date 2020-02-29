@@ -1,4 +1,5 @@
 class Scroll {
+
   constructor() {
     this.x = 0; // left
     this.y = 0; // top

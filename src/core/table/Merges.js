@@ -1,6 +1,7 @@
 import { RectRange } from './RectRange';
 
 class Merges {
+
   /**
    *  Merges
    * @param {RectRange[]} d 区域数组

@@ -1,6 +1,7 @@
 import { Utils } from '../../utils/Utils';
 
 class Cols {
+
   constructor({ len, width }) {
     this._ = [];
     this.minWidth = 90;

@@ -2,6 +2,7 @@ import { Utils } from '../../utils/Utils';
 import { Rect } from '../../canvas/Rect';
 
 class Cells {
+
   constructor({
     table, cols, rows, data = [],
   }) {

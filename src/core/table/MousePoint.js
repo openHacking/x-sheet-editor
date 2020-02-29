@@ -3,6 +3,7 @@ import sResize from '../../../assets/svg/s-resize.png';
 import eResize from '../../../assets/svg/e-resize.png';
 
 class MousePointType {
+
   constructor(table) {
     this.table = table;
     this.switch = false;

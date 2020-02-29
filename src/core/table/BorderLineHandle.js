@@ -1,4 +1,5 @@
 class BorderLineHandle {
+
   constructor(table) {
     this.table = table;
   }

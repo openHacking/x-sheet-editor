@@ -1,6 +1,7 @@
 import { Utils } from '../../utils/Utils';
 
 class Rows {
+
   constructor({ len, height }) {
     this._ = [];
     this.minHeight = 20;

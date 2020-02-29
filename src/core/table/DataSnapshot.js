@@ -3,6 +3,7 @@ import { Utils } from '../../utils/Utils';
 import { Constant } from '../../utils/Constant';
 
 class DataSnapshot {
+
   constructor(table) {
     this.table = table;
     const { cells, merges } = table;

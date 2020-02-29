@@ -1,6 +1,7 @@
 import { Utils } from '../../utils/Utils';
 
 class History {
+
   constructor(option) {
     this._ = [];
     this.option = Utils.mergeDeep({}, {

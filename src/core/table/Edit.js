@@ -7,6 +7,7 @@ import { ScreenSelector } from './selector/ScreenSelector';
 import { Utils } from '../../utils/Utils';
 
 class Edit extends Widget {
+
   constructor(table) {
     super(`${cssPrefix}-table-edit`);
     this.input = h('div', `${cssPrefix}-table-edit-input`);

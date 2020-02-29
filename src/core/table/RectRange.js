@@ -1,6 +1,7 @@
 import { Utils } from '../../utils/Utils';
 
 class RectRange {
+
   /**
    * RectRange
    * @param {int} sri 起始行
