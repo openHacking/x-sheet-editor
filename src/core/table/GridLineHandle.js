@@ -1,307 +1,148 @@
 
 class GridLineHandle {
+
   constructor(table) {
     this.table = table;
   }
 
-  horizontalLineEach({
-    rectRange, interruptCkCb, startRowCb, handleCb, interruptHandleCb, endRowCb,
-  }) {
+  gridHLine(viewRange, bx = 0, by = 0, filter = () => true) {
     const { table } = this;
-    const { cols, rows } = table;
-    const {
-      sri, eri, sci, eci,
-    } = rectRange;
-    let y = 0;
-    for (let i = sri; i <= eri; i += 1) {
-      const height = rows.getHeight(i);
-      let x = 0;
-      let continuous = true;
-      startRowCb(y, height);
-      for (let j = sci; j <= eci; j += 1) {
-        const width = cols.getWidth(j);
-        if (interruptCkCb(i, j)) {
-          interruptHandleCb(x, width, continuous);
-          continuous = true;
-        } else {
-          continuous = false;
+    const { lineHandle, cols, rows } = table;
+    const line = [];
+    let sx;
+    let sy;
+    let ex;
+    let ey;
+    let breakpoint;
+    lineHandle.hEach({
+      viewRange,
+      newRow: (row, y) => {
+        const height = rows.getHeight(row);
+        sx = bx;
+        sy = by + y + height;
+        ex = sx;
+        ey = sy;
+        breakpoint = false;
+      },
+      filter,
+      jump: (row, col) => {
+        if (breakpoint) {
+          breakpoint = false;
+          line.push({ sx, sy, ex, ey });
         }
-        handleCb(width);
-        x += width;
-      }
-      endRowCb(continuous);
-      y += height;
-    }
+        const width = cols.getWidth(col);
+        sx = ex + width;
+        ex = sx;
+      },
+      handle: (row, col) => {
+        breakpoint = true;
+        const width = cols.getWidth(col);
+        ex += width;
+      },
+      endRow: () => {
+        if (breakpoint) {
+          line.push({ sx, sy, ex, ey });
+        }
+      },
+    });
+    return line;
   }
 
-  verticalLineEach({
-    rectRange, interruptCkCb, startColCb, handleCb, interruptHandleCb, endColCb,
-  }) {
+  gridVLine(viewRange, bx = 0, by = 0, filter = () => true) {
     const { table } = this;
-    const { cols, rows } = table;
-    const {
-      sri, eri, sci, eci,
-    } = rectRange;
-    let x = 0;
-    for (let i = sci; i <= eci; i += 1) {
-      const width = cols.getWidth(i);
-      let y = 0;
-      let continuous = true;
-      startColCb(x, width);
-      for (let j = sri; j <= eri; j += 1) {
-        const height = rows.getHeight(j);
-        if (interruptCkCb(i, j)) {
-          interruptHandleCb(y, height, continuous);
-          continuous = true;
-        } else {
-          continuous = false;
+    const { lineHandle, cols, rows } = table;
+    const line = [];
+    let sx;
+    let sy;
+    let ex;
+    let ey;
+    let breakpoint;
+    lineHandle.vEach({
+      viewRange,
+      newCol: (col, x) => {
+        const width = cols.getWidth(col);
+        sx = bx + x + width;
+        sy = by;
+        ex = sx;
+        ey = sy;
+        breakpoint = false;
+      },
+      filter,
+      jump: (col, row) => {
+        if (breakpoint) {
+          breakpoint = false;
+          line.push({ sx, sy, ex, ey });
         }
-        handleCb(height);
-        y += height;
-      }
-      endColCb(continuous);
-      x += width;
-    }
+        const height = rows.getHeight(row);
+        sy = ey + height;
+        ey = sy;
+      },
+      handle: (col, row) => {
+        breakpoint = true;
+        const height = rows.getHeight(row);
+        ey += height;
+      },
+      endCol: () => {
+        if (breakpoint) {
+          line.push({ sx, sy, ex, ey });
+        }
+      },
+    });
+    return line;
   }
 
-  getMergesInfoByRectRange(rectRange) {
-    const filter = [];
-    const result = [];
+  hLine(viewRange) {
     const { table } = this;
-    const {
-      merges, rows, cols, cells,
-    } = table;
-    const {
-      sri, eri, sci, eci,
-    } = rectRange;
-    let y = 0;
-    for (let i = sri; i <= eri; i += 1) {
-      let x = 0;
-      const rowsHeight = rows.getHeight(i);
-      for (let j = sci; j <= eci; j += 1) {
-        const colsWidth = cols.getWidth(j);
-        const merge = merges.getFirstIncludes(i, j);
-        if (merge && filter.indexOf(merge) === -1) {
-          const cell = cells.getCell(merge.sri, merge.sci);
-          const rect = rectRange.coincide(merge);
-          const width = cols.sectionSumWidth(rect.sci, rect.eci);
-          const height = rows.sectionSumHeight(rect.sri, rect.eri);
-          filter.push(merge);
-          result.push({
-            x, y, width, height, cell, rect,
-          });
-        }
-        x += colsWidth;
-      }
-      y += rowsHeight;
+    const { merges, cells } = table;
+    return this.gridHLine(viewRange, 0, 0, (row, col) => {
+      const notMerges = merges.getFirstIncludes(row, col) === null;
+      const notBorderBottom = cells.isDisplayBottomBorder(row, col) === false;
+      const notBorderTop = cells.isDisplayTopBorder(row + 1, col) === false;
+      return notMerges && notBorderBottom && notBorderTop;
+    });
+  }
+
+  vLine(viewRange) {
+    const { table } = this;
+    const { merges, cells } = table;
+    return this.gridVLine(viewRange, 0, 0, (col, row) => {
+      const notMerges = merges.getFirstIncludes(row, col) === null;
+      const notBorderRight = cells.isDisplayRightBorder(row, col) === false;
+      const notBorderLeft = cells.isDisplayLeftBorder(row + 1, col) === false;
+      return notMerges && notBorderRight && notBorderLeft;
+    });
+  }
+
+  hMergeLine(mergesBrink) {
+    const { table } = this;
+    const { cells } = table;
+    let result = [];
+    for (let i = 0; i < mergesBrink.length; i += 1) {
+      const brink = mergesBrink[i];
+      const { bottom } = brink;
+      result = result.concat(this.gridHLine(bottom.view, bottom.x, bottom.y, (row, col) => {
+        const notBorderBottom = cells.isDisplayBottomBorder(row, col) === false;
+        const notBorderTop = cells.isDisplayTopBorder(row + 1, col) === false;
+        return notBorderBottom && notBorderTop;
+      }));
     }
     return result;
   }
 
-  getHorizontalLineByRectRange(rectRange) {
-    const horizontalLines = [];
+  vMergeLine(mergesBrink) {
     const { table } = this;
     const { cells } = table;
-    let targetX = 0;
-    let targetY = 0;
-    let targetWidth = 0;
-    this.horizontalLineEach({
-      rectRange,
-      interruptCkCb: (i, j) => {
-        const isMergeCell = cells.checkedMergeCell(i, j);
-        const isDisplayBottomBorder = cells.isDisplayBottomBorder(i, j);
-        const isDisplayTopBorder = cells.isDisplayTopBorder(i + 1, j);
-        return isMergeCell || isDisplayBottomBorder || isDisplayTopBorder;
-      },
-      startRowCb: (y, height) => {
-        targetY = y + height;
-        targetX = 0;
-        targetWidth = 0;
-      },
-      handleCb: (width) => {
-        targetWidth += width;
-      },
-      interruptHandleCb: (x, width, continuous) => {
-        if (!continuous) {
-          horizontalLines.push({
-            sy: targetY,
-            sx: targetX,
-            ey: targetY,
-            ex: targetWidth,
-          });
-        }
-        targetX = x + width;
-      },
-      endRowCb: (continuous) => {
-        if (!continuous) {
-          horizontalLines.push({
-            sy: targetY,
-            sx: targetX,
-            ey: targetY,
-            ex: targetWidth,
-          });
-        }
-      },
-    });
-    return horizontalLines;
-  }
-
-  getVerticalLineByRectRange(rectRange) {
-    const verticalLines = [];
-    const { table } = this;
-    const { cells } = table;
-    let targetX = 0;
-    let targetY = 0;
-    let targetHeight = 0;
-    this.verticalLineEach({
-      rectRange,
-      interruptCkCb: (i, j) => {
-        const isMergeCell = cells.checkedMergeCell(j, i);
-        const isDisplayRightBorder = cells.isDisplayRightBorder(j, i);
-        const isDisplayLeftBorder = cells.isDisplayLeftBorder(j, i + 1);
-        return isMergeCell || isDisplayRightBorder || isDisplayLeftBorder;
-      },
-      startColCb: (x, width) => {
-        targetX = x + width;
-        targetY = 0;
-        targetHeight = 0;
-      },
-      handleCb: (height) => {
-        targetHeight += height;
-      },
-      interruptHandleCb: (y, height, continuous) => {
-        if (!continuous) {
-          verticalLines.push({
-            sx: targetX,
-            sy: targetY,
-            ex: targetX,
-            ey: targetHeight,
-          });
-        }
-        targetY = y + height;
-      },
-      endColCb: (continuous) => {
-        if (!continuous) {
-          verticalLines.push({
-            sx: targetX,
-            sy: targetY,
-            ex: targetX,
-            ey: targetHeight,
-          });
-        }
-      },
-    });
-    return verticalLines;
-  }
-
-  getMergesHorizontalLineByMergesInfo(mergesInfo) {
-    const { table } = this;
-    const { cells } = table;
-    const horizontalLines = [];
-    for (let i = 0; i < mergesInfo.length; i += 1) {
-      const info = mergesInfo[i];
-      const {
-        x, y, height, rect,
-      } = info;
-      const cloneNewRect = rect.clone();
-      cloneNewRect.sri = cloneNewRect.eri;
-      let targetWidth;
-      let targetX;
-      let targetY;
-      this.horizontalLineEach({
-        rectRange: cloneNewRect,
-        interruptCkCb: (i, j) => {
-          const isDisplayBottomBorder = cells.isDisplayBottomBorder(i, j);
-          const isDisplayTopBorder = cells.isDisplayTopBorder(i + 1, j);
-          return isDisplayBottomBorder || isDisplayTopBorder;
-        },
-        startRowCb: () => {
-          targetWidth = x;
-          targetX = x;
-          targetY = y + height;
-        },
-        handleCb: (width) => {
-          targetWidth += width;
-        },
-        interruptHandleCb: (x, width, continuous) => {
-          if (!continuous) {
-            horizontalLines.push({
-              sy: targetY,
-              sx: targetX,
-              ey: targetY,
-              ex: targetWidth,
-            });
-          }
-          targetX += x + width;
-        },
-        endRowCb: (continuous) => {
-          if (!continuous) {
-            horizontalLines.push({
-              sy: targetY,
-              sx: targetX,
-              ey: targetY,
-              ex: targetWidth,
-            });
-          }
-        },
-      });
+    let result = [];
+    for (let i = 0; i < mergesBrink.length; i += 1) {
+      const brink = mergesBrink[i];
+      const { right } = brink;
+      result = result.concat(this.gridVLine(right.view, right.x, right.y, (col, row) => {
+        const notBorderRight = cells.isDisplayRightBorder(row, col) === false;
+        const notBorderLeft = cells.isDisplayLeftBorder(row + 1, col) === false;
+        return notBorderRight && notBorderLeft;
+      }));
     }
-    return horizontalLines;
-  }
-
-  getMergesVerticalLineByMergesInfo(mergesInfo) {
-    const { table } = this;
-    const { cells } = table;
-    const verticalLines = [];
-    for (let i = 0; i < mergesInfo.length; i += 1) {
-      const info = mergesInfo[i];
-      const {
-        x, y, width, rect,
-      } = info;
-      const cloneNewRect = rect.clone();
-      cloneNewRect.sci = cloneNewRect.eci;
-      let targetHeight;
-      let targetX;
-      let targetY;
-      this.verticalLineEach({
-        rectRange: cloneNewRect,
-        interruptCkCb: (i, j) => {
-          const isDisplayRightBorder = cells.isDisplayRightBorder(j, i);
-          const isDisplayLeftBorder = cells.isDisplayLeftBorder(j, i + 1);
-          return isDisplayRightBorder || isDisplayLeftBorder;
-        },
-        startColCb: () => {
-          targetX = x + width;
-          targetY = y;
-          targetHeight = y;
-        },
-        handleCb: (height) => {
-          targetHeight += height;
-        },
-        interruptHandleCb: (y, height, continuous) => {
-          if (!continuous) {
-            verticalLines.push({
-              sx: targetX,
-              sy: targetY,
-              ex: targetX,
-              ey: targetHeight,
-            });
-          }
-          targetY += y + height;
-        },
-        endColCb: (continuous) => {
-          if (!continuous) {
-            verticalLines.push({
-              sx: targetX,
-              sy: targetY,
-              ex: targetX,
-              ey: targetHeight,
-            });
-          }
-        },
-      });
-    }
-    return verticalLines;
+    return result;
   }
 }
 

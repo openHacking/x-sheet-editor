@@ -33,6 +33,7 @@ import { GridLineHandle } from './GridLineHandle';
 import { DataSnapshot } from './DataSnapshot';
 import { BorderLineHandle } from './BorderLineHandle';
 import { Line } from '../../canvas/Line';
+import { LineHandle } from './LineHandle';
 
 class FrozenLeftTop {
   constructor(table) {
@@ -104,28 +105,29 @@ class FrozenLeftTop {
   drawGrid(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, grid, gridLineHandle,
+      draw, grid, lineHandle, gridLineHandle,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
     draw.attr({
       globalAlpha: 0.3,
     });
-    const horizontalLines = gridLineHandle.getHorizontalLineByRectRange(viewRange);
-    const verticalLines = gridLineHandle.getVerticalLineByRectRange(viewRange);
-    horizontalLines.forEach((item) => {
+    const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
+    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
+    const hLine = gridLineHandle.hLine(viewRange);
+    const vLine = gridLineHandle.vLine(viewRange);
+    hLine.forEach((item) => {
       grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
-    verticalLines.forEach((item) => {
+    vLine.forEach((item) => {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
-    const mergesInfo = gridLineHandle.getMergesInfoByRectRange(viewRange);
-    const mergesHorizontalLines = gridLineHandle.getMergesHorizontalLineByMergesInfo(mergesInfo);
-    const mergesVerticalLines = gridLineHandle.getMergesVerticalLineByMergesInfo(mergesInfo);
-    mergesHorizontalLines.forEach((item) => {
+    const hMergeLine = gridLineHandle.hMergeLine(coincideViewBrink);
+    const vMergeLine = gridLineHandle.vMergeLine(coincideViewBrink);
+    hMergeLine.forEach((item) => {
       grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
-    mergesVerticalLines.forEach((item) => {
+    vMergeLine.forEach((item) => {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
@@ -280,57 +282,32 @@ class Content {
     draw.restore();
   }
 
-  drawBorder(viewRange, offsetX, offsetY) {
-    const { table } = this;
-    const { draw, line, grid } = table;
-    draw.save();
-    draw.offset(offsetX, offsetY);
-    const topLines = table.borderLineHandle.getTopLineByRectRange(viewRange);
-    const bottomLines = table.borderLineHandle.getBottomLineByRectRange(viewRange);
-    const leftLines = table.borderLineHandle.getLeftLineByRectRange(viewRange);
-    const rightLines = table.borderLineHandle.getRightLineByRectRange(viewRange);
-    line.setWidth(grid.lineWidth());
-    topLines.forEach((item) => {
-      line.drawLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    bottomLines.forEach((item) => {
-      line.drawLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    leftLines.forEach((item) => {
-      line.drawLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    rightLines.forEach((item) => {
-      line.drawLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    draw.offset(0, 0);
-    draw.restore();
-  }
-
   drawGrid(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, grid, gridLineHandle,
+      draw, grid, lineHandle, gridLineHandle,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
     draw.attr({
       globalAlpha: 0.3,
     });
-    const horizontalLines = gridLineHandle.getHorizontalLineByRectRange(viewRange);
-    const verticalLines = gridLineHandle.getVerticalLineByRectRange(viewRange);
-    horizontalLines.forEach((item) => {
+    const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
+    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
+    const hLine = gridLineHandle.hLine(viewRange);
+    const vLine = gridLineHandle.vLine(viewRange);
+    hLine.forEach((item) => {
       grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
-    verticalLines.forEach((item) => {
+    vLine.forEach((item) => {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
-    const mergesInfo = gridLineHandle.getMergesInfoByRectRange(viewRange);
-    const mergesHorizontalLines = gridLineHandle.getMergesHorizontalLineByMergesInfo(mergesInfo);
-    const mergesVerticalLines = gridLineHandle.getMergesVerticalLineByMergesInfo(mergesInfo);
-    mergesHorizontalLines.forEach((item) => {
+    const hMergeLine = gridLineHandle.hMergeLine(coincideViewBrink);
+    const vMergeLine = gridLineHandle.vMergeLine(coincideViewBrink);
+    hMergeLine.forEach((item) => {
       grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
-    mergesVerticalLines.forEach((item) => {
+    vMergeLine.forEach((item) => {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
@@ -391,7 +368,6 @@ class Content {
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
     this.drawGrid(viewRange, offsetX, offsetY);
-    this.drawBorder(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     crop.close();
   }
@@ -472,28 +448,29 @@ class FixedLeft {
   drawGrid(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, grid, gridLineHandle,
+      draw, grid, lineHandle, gridLineHandle,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
     draw.attr({
       globalAlpha: 0.3,
     });
-    const horizontalLines = gridLineHandle.getHorizontalLineByRectRange(viewRange);
-    const verticalLines = gridLineHandle.getVerticalLineByRectRange(viewRange);
-    horizontalLines.forEach((item) => {
+    const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
+    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
+    const hLine = gridLineHandle.hLine(viewRange);
+    const vLine = gridLineHandle.vLine(viewRange);
+    hLine.forEach((item) => {
       grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
-    verticalLines.forEach((item) => {
+    vLine.forEach((item) => {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
-    const mergesInfo = gridLineHandle.getMergesInfoByRectRange(viewRange);
-    const mergesHorizontalLines = gridLineHandle.getMergesHorizontalLineByMergesInfo(mergesInfo);
-    const mergesVerticalLines = gridLineHandle.getMergesVerticalLineByMergesInfo(mergesInfo);
-    mergesHorizontalLines.forEach((item) => {
+    const hMergeLine = gridLineHandle.hMergeLine(coincideViewBrink);
+    const vMergeLine = gridLineHandle.vMergeLine(coincideViewBrink);
+    hMergeLine.forEach((item) => {
       grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
-    mergesVerticalLines.forEach((item) => {
+    vMergeLine.forEach((item) => {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
@@ -631,28 +608,29 @@ class FixedTop {
   drawGrid(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, grid, gridLineHandle,
+      draw, grid, lineHandle, gridLineHandle,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
     draw.attr({
       globalAlpha: 0.3,
     });
-    const horizontalLines = gridLineHandle.getHorizontalLineByRectRange(viewRange);
-    const verticalLines = gridLineHandle.getVerticalLineByRectRange(viewRange);
-    horizontalLines.forEach((item) => {
+    const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
+    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
+    const hLine = gridLineHandle.hLine(viewRange);
+    const vLine = gridLineHandle.vLine(viewRange);
+    hLine.forEach((item) => {
       grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
-    verticalLines.forEach((item) => {
+    vLine.forEach((item) => {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
-    const mergesInfo = gridLineHandle.getMergesInfoByRectRange(viewRange);
-    const mergesHorizontalLines = gridLineHandle.getMergesHorizontalLineByMergesInfo(mergesInfo);
-    const mergesVerticalLines = gridLineHandle.getMergesVerticalLineByMergesInfo(mergesInfo);
-    mergesHorizontalLines.forEach((item) => {
+    const hMergeLine = gridLineHandle.hMergeLine(coincideViewBrink);
+    const vMergeLine = gridLineHandle.vMergeLine(coincideViewBrink);
+    hMergeLine.forEach((item) => {
       grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
-    mergesVerticalLines.forEach((item) => {
+    vMergeLine.forEach((item) => {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
@@ -1112,6 +1090,8 @@ class Table extends Widget {
     });
     this.merges = new Merges(this.settings.merges);
     this.scroll = new Scroll();
+    // 表格线段处理
+    this.lineHandle = new LineHandle(this);
     this.gridLineHandle = new GridLineHandle(this);
     this.borderLineHandle = new BorderLineHandle(this);
     // 撤销/反撤销

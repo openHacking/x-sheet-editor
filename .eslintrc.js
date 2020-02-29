@@ -7,5 +7,7 @@ module.exports = {
     "no-empty-pattern": 0,
     "no-shadow": 0,
     "no-continue": 0,
+    'object-curly-newline': 0,
+    'padded-blocks': 0,
   }
 };

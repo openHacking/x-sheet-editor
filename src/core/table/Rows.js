@@ -45,6 +45,10 @@ class Rows {
     return Utils.rangeSum(sri, eri + 1, i => this.getHeight(i));
   }
 
+  rectRangeSumHeight(rectRange) {
+    return this.sectionSumHeight(rectRange.sri, rectRange.eri);
+  }
+
   totalHeight() {
     if (this.cacheTotalHeight === -1) {
       this.cacheTotalHeight = Utils.rangeSum(0, this.len, i => this.getHeight(i));

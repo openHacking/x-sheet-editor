@@ -45,6 +45,10 @@ class Cols {
     return Utils.rangeSum(sci, eci + 1, i => this.getWidth(i));
   }
 
+  rectRangeSumWidth(rectRange) {
+    return this.sectionSumWidth(rectRange.sci, rectRange.eci);
+  }
+
   totalWidth() {
     if (this.cacheTotalWidth === -1) {
       this.cacheTotalWidth = Utils.rangeSum(0, this.len, i => this.getWidth(i));

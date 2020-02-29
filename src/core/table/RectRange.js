@@ -248,6 +248,15 @@ class RectRange {
     ];
   }
 
+  brink() {
+    const { sri, eri, sci, eci } = this;
+    const top = new RectRange(sri, sci, sri, eci);
+    const right = new RectRange(sri, eci, eri, eci);
+    const bottom = new RectRange(eri, sci, eri, eci);
+    const left = new RectRange(sri, sci, eri, sci);
+    return { top, right, bottom, left };
+  }
+
   toString() {
     const {
       sri, sci, eri, eci,
