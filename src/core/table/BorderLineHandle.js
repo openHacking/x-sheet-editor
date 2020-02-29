@@ -30,6 +30,7 @@ class BorderLineHandle {
         const width = cols.getWidth(col);
         ex += width;
         line.push({ sx, sy, ex, ey });
+        sx = ex;
       },
     });
     return line;
@@ -62,6 +63,7 @@ class BorderLineHandle {
         const width = cols.getWidth(col);
         ex += width;
         line.push({ sx, sy, ex, ey });
+        sx = ex;
       },
     });
     return line;
@@ -93,6 +95,7 @@ class BorderLineHandle {
         const height = rows.getHeight(row);
         ey += height;
         line.push({ sx, sy, ex, ey });
+        sy = ey;
       },
     });
     return line;
@@ -125,6 +128,7 @@ class BorderLineHandle {
         const height = rows.getHeight(row);
         ey += height;
         line.push({ sx, sy, ex, ey });
+        sy = ey;
       },
     });
     return line;

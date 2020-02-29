@@ -774,6 +774,8 @@ class FixedTop {
     });
     const hMergeLine = gridLineHandle.hMergeLine(coincideViewBrink);
     const vMergeLine = gridLineHandle.vMergeLine(coincideViewBrink);
+    console.log(coincideViewBrink);
+    console.log(vMergeLine);
     hMergeLine.forEach((item) => {
       grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });

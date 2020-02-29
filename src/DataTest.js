@@ -9,7 +9,13 @@ for (let i = 0; i < 1000; i += 1) {
     const item = Utils.mergeDeep(Cells.getDefaultAttr(), {
       text: `行: ${i + 1} 列:${j + 1}`,
     });
-    if (i === 3 && j === 3) {
+    if (i === 2 && j === 2) {
+      item.borderAttr.top.display = true;
+      item.borderAttr.left.display = true;
+      item.borderAttr.bottom.display = true;
+      item.borderAttr.right.display = true;
+    }
+    if (i === 1 && j === 1) {
       item.borderAttr.top.display = true;
       item.borderAttr.left.display = true;
       item.borderAttr.bottom.display = true;

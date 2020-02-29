@@ -138,7 +138,7 @@ class GridLineHandle {
       const { right } = brink;
       result = result.concat(this.gridVLine(right.view, right.x, right.y, (col, row) => {
         const notBorderRight = cells.isDisplayRightBorder(row, col) === false;
-        const notBorderLeft = cells.isDisplayLeftBorder(row + 1, col) === false;
+        const notBorderLeft = cells.isDisplayLeftBorder(row, col + 1) === false;
         return notBorderRight && notBorderLeft;
       }));
     }
