@@ -72,7 +72,7 @@ class Font {
     dw.line(s, e);
   }
 
-  drawText(overflow) {
+  drawTextTruncate() {
     const {
       text, dw, attr, rect,
     } = this;
@@ -107,8 +107,55 @@ class Font {
         break;
       default: break;
     }
+    const crop = new Crop({ draw: dw, rect });
+    crop.open();
+    dw.fillText(text, tx, ty);
+    if (underline) {
+      this.drawLine('underline', tx, ty, textWidth);
+    }
+    if (strikethrough) {
+      this.drawLine('strike', tx, ty, textWidth);
+    }
+    crop.close();
+  }
+
+  drawTextOverFlow() {
+    const {
+      text, dw, attr, rect,
+    } = this;
+    const {
+      overflow, underline, strikethrough, align, verticalAlign,
+    } = attr;
+    const { width, height } = rect;
+    const textWidth = this.textWidth(text);
+    let tx = rect.x;
+    let ty = rect.y;
+    switch (align) {
+      case ALIGN.left:
+        tx += PADDING;
+        break;
+      case ALIGN.center:
+        tx += width / 2;
+        break;
+      case ALIGN.right:
+        tx += width - PADDING;
+        break;
+      default: break;
+    }
+    switch (verticalAlign) {
+      case VERTICAL_ALIGN.top:
+        ty += PADDING;
+        break;
+      case VERTICAL_ALIGN.center:
+        ty += height / 2;
+        break;
+      case VERTICAL_ALIGN.bottom:
+        ty += height - PADDING;
+        break;
+      default: break;
+    }
     if (overflow && textWidth > overflow.width) {
-      const crop = new Crop({ draw: dw, overflow });
+      const crop = new Crop({ draw: dw, rect: overflow });
       crop.open();
       dw.fillText(text, tx, ty);
       if (underline) {
@@ -213,7 +260,7 @@ class Font {
 
   draw() {
     const { dw, attr } = this;
-    const { textWrap, overflow } = attr;
+    const { textWrap } = attr;
     dw.attr({
       textAlign: attr.align,
       textBaseline: attr.verticalAlign,
@@ -222,13 +269,14 @@ class Font {
     });
     switch (textWrap) {
       case TEXT_WRAP.TRUNCATE:
-        this.drawText(overflow);
+        this.drawTextTruncate();
         break;
       case TEXT_WRAP.WORD_WRAP:
         this.drawTextWarp();
         break;
+      case TEXT_WRAP.OVER_FLOW:
       default:
-        this.drawText();
+        this.drawTextOverFlow();
     }
   }
 
