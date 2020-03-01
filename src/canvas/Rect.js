@@ -13,6 +13,11 @@ class Rect {
     this.height += size;
     return this;
   }
+
+  clone() {
+    const { x, y, width, height } = this;
+    return new Rect({ x, y, width, height });
+  }
 }
 
 

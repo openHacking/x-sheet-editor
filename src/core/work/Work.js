@@ -14,14 +14,11 @@ let verticalLayer;
 class Work extends Widget {
   constructor(options = { body: {} }) {
     super(`${cssPrefix}-work`);
-
     this.options = options.workConfig;
-
     // 组件
     this.body = new WorkBody(this, this.options.body);
     this.bottom = new WorkBottom(this);
     this.top = new WorkTop(this);
-
     // 布局
     topLayerVerticalElement = new VerticalLayerElement(this.top);
     bodyLayerVerticalElement = new VerticalLayerElement(this.body, {
@@ -34,9 +31,7 @@ class Work extends Widget {
       layerElements: [topLayerVerticalElement,
         bodyLayerVerticalElement, bottomLayerVerticalElement],
     });
-
     this.children(verticalLayer);
-
     this.bottom.bottomMenu.setSum(100);
     this.bottom.bottomMenu.setAvg(100);
     this.bottom.bottomMenu.setNumber(100);

@@ -1,5 +1,6 @@
 import { Utils } from '../../utils/Utils';
 import { Rect } from '../../canvas/Rect';
+import { ALIGN, VERTICAL_ALIGN } from '../../canvas/Font';
 
 class Cells {
 
@@ -85,8 +86,8 @@ class Cells {
 
   static getDefaultAttr() {
     const fontAttr = {
-      align: 'left',
-      verticalAlign: 'middle',
+      align: ALIGN.left,
+      verticalAlign: VERTICAL_ALIGN.center,
       textWrap: false,
       strike: false,
       underline: false,

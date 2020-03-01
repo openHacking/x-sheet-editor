@@ -39,17 +39,14 @@ let layerVerticalLayer;
 class WorkBody extends Widget {
   constructor(work, options = { sheets: [] }) {
     super(`${cssPrefix}-work-body`);
-
     this.work = work;
     this.workConfig = options;
     this.sheets = this.workConfig.sheets;
     this.tabAndSheet = [];
-
     // 产品标识
     this.poweredBy = h('div', `${cssPrefix}-powered-by-tips`);
     this.poweredBy.text('X-Sheet Powered by ©深为科技(Svell)');
     this.children(this.poweredBy);
-
     // 组件
     this.sheetView = new SheetView();
     this.tabView = new TabView({
@@ -78,7 +75,6 @@ class WorkBody extends Widget {
         this.sheetView.getActiveSheet().table.scrollY(move);
       },
     });
-
     // sheet表和垂直滚动条
     sheetViewLayerHorizontalElement = new HorizontalLayerElement(this.sheetView, {
       style: {
@@ -93,7 +89,6 @@ class WorkBody extends Widget {
     horizontalLayer1 = new HorizontalLayer({
       layerElements: [sheetViewLayerHorizontalElement, scrollBarYLayerHorizontalElement],
     });
-
     // sheetTab选修卡和水平滚动条
     scrollBarXLayerVerticalCenterElement = new VerticalCenterElement(this.scrollBarX);
     scrollBarXVerticalCenter = new VerticalCenter({
@@ -112,7 +107,6 @@ class WorkBody extends Widget {
     horizontalLayer2 = new HorizontalLayer({
       layerElements: [sheetSwitchTabLayerHorizontalElement, scrollBarXLayerHorizontalElement],
     });
-
     // 根布局
     horizontalLayer1LayerVerticalElement = new VerticalLayerElement(horizontalLayer1, {
       style: {
@@ -124,7 +118,6 @@ class WorkBody extends Widget {
       layerElements: [horizontalLayer1LayerVerticalElement,
         horizontalLayer2Layer1LayerVerticalElement],
     });
-
     // 添加布局
     this.children(layerVerticalLayer);
     this.bind();

@@ -18,12 +18,6 @@ class Draw {
     this.offsetY = 0;
   }
 
-  npxLine(px) {
-    const lineWidth = this.ctx.lineWidth || 1;
-    const n = npx(px);
-    return lineWidth % 2 === 0 ? n : n + 0.5;
-  }
-
   offset(offsetX = 0, offsetY = 0) {
     this.offsetX = offsetX;
     this.offsetY = offsetY;
@@ -95,6 +89,20 @@ class Draw {
     return this.ctx.measureText(text);
   }
 
+  line(...xys) {
+    const { ctx } = this;
+    if (xys.length > 1) {
+      const [x, y] = xys[0];
+      this.moveTo(x, y);
+      for (let i = 1, len = xys.length; i < len; i += 1) {
+        const [x1, y1] = xys[i];
+        this.lineTo(x1, y1);
+      }
+      ctx.stroke();
+    }
+    return this;
+  }
+
   clearRect(x, y, w, h) {
     const { offsetX, offsetY } = this;
     this.ctx.clearRect(npx(x + offsetX), npx(y + offsetY), npx(w), npx(h));
@@ -119,19 +127,22 @@ class Draw {
     return this;
   }
 
-  line(...xys) {
+  moveTo(x, y) {
     const { ctx } = this;
     const { offsetX, offsetY } = this;
-    if (xys.length > 1) {
-      const [x, y] = xys[0];
-      ctx.moveTo(this.npxLine(x + offsetX), this.npxLine(y + offsetY));
-      for (let i = 1, len = xys.length; i < len; i += 1) {
-        const [x1, y1] = xys[i];
-        ctx.lineTo(this.npxLine(x1 + offsetX), this.npxLine(y1 + offsetY));
-      }
-      ctx.stroke();
-    }
-    return this;
+    const even = ctx.lineWidth % 2 === 0;
+    const nx = even ? npx(x + offsetX) : npx(x + offsetX) + 0.5;
+    const ny = even ? npx(y + offsetY) : npx(y + offsetY) + 0.5;
+    ctx.moveTo(nx, ny);
+  }
+
+  lineTo(x, y) {
+    const { ctx } = this;
+    const { offsetX, offsetY } = this;
+    const even = ctx.lineWidth % 2 === 0;
+    const nx = even ? npx(x + offsetX) : npx(x + offsetX) + 0.5;
+    const ny = even ? npx(y + offsetY) : npx(y + offsetY) + 0.5;
+    ctx.lineTo(nx, ny);
   }
 }
 
