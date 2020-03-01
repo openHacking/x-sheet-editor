@@ -1277,7 +1277,7 @@ class Table extends Widget {
       data: this.settings.data,
     });
     this.merges = new Merges(this.settings.merges);
-    this.scroll = new Scroll();
+    this.scroll = new Scroll(this);
     // 表格线段处理
     this.lineHandle = new LineHandle(this);
     this.gridLineHandle = new GridLineHandle(this);
