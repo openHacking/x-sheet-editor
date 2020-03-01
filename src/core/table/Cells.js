@@ -1,94 +1,25 @@
 import { Utils } from '../../utils/Utils';
 import { Rect } from '../../canvas/Rect';
-import { ALIGN, VERTICAL_ALIGN } from '../../canvas/Font';
+import { CellsBorder } from './CellsBorder';
+import { ALIGN, TEXT_WRAP, VERTICAL_ALIGN } from '../../canvas/Font';
 
-class Cells {
+class Cells extends CellsBorder {
 
   constructor({
     table, cols, rows, data = [],
   }) {
+    super();
     this.table = table;
     this.cols = cols;
     this.rows = rows;
     this._ = data;
   }
 
-  checkAttributeIntegrity(cell) {
-    return Utils.isUnDef(cell.ID) ? Utils.mergeDeep(Cells.getDefaultAttr(), cell) : cell;
-  }
-
-  checkedMergeCell(ri, ci) {
-    const { table } = this;
-    const { merges } = table;
-    return merges.getFirstIncludes(ri, ci) !== null;
-  }
-
-  borderComparisonOfTime(sri, sci, tri, tci) {
-    const srcCell = this.getMergeCellOrCell(sri, sci);
-    const targetCell = this.getMergeCellOrCell(tri, tci);
-    if (Utils.isUnDef(srcCell) || Utils.isUnDef(targetCell)) return -2;
-    if (srcCell.time > targetCell.time) return 1;
-    if (targetCell.time > srcCell.time) return -1;
-    return 0;
-  }
-
-  isDisplayLeftBorder(ri, ci) {
-    const cell = this.getMergeCellOrCell(ri, ci);
-    return cell !== null && cell.borderAttr.left.display;
-  }
-
-  isDisplayTopBorder(ri, ci) {
-    const cell = this.getMergeCellOrCell(ri, ci);
-    return cell !== null && cell.borderAttr.top.display;
-  }
-
-  isDisplayRightBorder(ri, ci) {
-    const cell = this.getMergeCellOrCell(ri, ci);
-    return cell !== null && cell.borderAttr.right.display;
-  }
-
-  isDisplayBottomBorder(ri, ci) {
-    const cell = this.getMergeCellOrCell(ri, ci);
-    return cell !== null && cell.borderAttr.bottom.display;
-  }
-
-  setDisplayLeftBorder(ri, ci, attr) {
-    const cell = this.getMergeCellOrCell(ri, ci);
-    if (cell) {
-      cell.borderAttr.time = Utils.now();
-      cell.borderAttr.left = attr;
-    }
-  }
-
-  setDisplayTopBorder(ri, ci, attr) {
-    const cell = this.getMergeCellOrCell(ri, ci);
-    if (cell) {
-      cell.borderAttr.time = Utils.now();
-      cell.borderAttr.top = attr;
-    }
-  }
-
-  setDisplayRightBorder(ri, ci, attr) {
-    const cell = this.getMergeCellOrCell(ri, ci);
-    if (cell) {
-      cell.borderAttr.time = Utils.now();
-      cell.borderAttr.right = attr;
-    }
-  }
-
-  setDisplayBottomBorder(ri, ci, attr) {
-    const cell = this.getMergeCellOrCell(ri, ci);
-    if (cell) {
-      cell.borderAttr.time = Utils.now();
-      cell.borderAttr.bottom = attr;
-    }
-  }
-
   static getDefaultAttr() {
     const fontAttr = {
       align: ALIGN.left,
       verticalAlign: VERTICAL_ALIGN.center,
-      textWrap: false,
+      textWrap: TEXT_WRAP.OVER_FLOW,
       strike: false,
       underline: false,
       color: '#000000',
@@ -112,6 +43,16 @@ class Cells {
       fontAttr,
       borderAttr,
     };
+  }
+
+  checkAttributeIntegrity(cell) {
+    return Utils.isUnDef(cell.ID) ? Utils.mergeDeep(Cells.getDefaultAttr(), cell) : cell;
+  }
+
+  checkedMergeCell(ri, ci) {
+    const { table } = this;
+    const { merges } = table;
+    return merges.getFirstIncludes(ri, ci) !== null;
   }
 
   getCell(ri, ci) {

@@ -6,7 +6,7 @@ class BorderLineHandle {
 
   borderHTLine(viewRange, bx = 0, by = 0, filter = () => true) {
     const { table } = this;
-    const { lineHandle, cols } = table;
+    const { lineHandle, cols, cells } = table;
     const line = [];
     let sx;
     let sy;
@@ -28,8 +28,10 @@ class BorderLineHandle {
       },
       handle: (row, col) => {
         const width = cols.getWidth(col);
+        const cell = cells.getCell(row, col);
+        const { borderAttr } = cell;
         ex += width;
-        line.push({ sx, sy, ex, ey });
+        line.push({ sx, sy, ex, ey, borderAttr });
         sx = ex;
       },
     });
@@ -38,7 +40,7 @@ class BorderLineHandle {
 
   borderHBLine(viewRange, bx = 0, by = 0, filter = () => true) {
     const { table } = this;
-    const { lineHandle, cols, rows } = table;
+    const { lineHandle, cols, rows, cells } = table;
     const line = [];
     let sx;
     let sy;
@@ -61,8 +63,10 @@ class BorderLineHandle {
       },
       handle: (row, col) => {
         const width = cols.getWidth(col);
+        const cell = cells.getCell(row, col);
+        const { borderAttr } = cell;
         ex += width;
-        line.push({ sx, sy, ex, ey });
+        line.push({ sx, sy, ex, ey, borderAttr });
         sx = ex;
       },
     });
@@ -71,7 +75,7 @@ class BorderLineHandle {
 
   borderVLLine(viewRange, bx = 0, by = 0, filter = () => true) {
     const { table } = this;
-    const { lineHandle, rows } = table;
+    const { lineHandle, rows, cells } = table;
     const line = [];
     let sx;
     let sy;
@@ -93,8 +97,10 @@ class BorderLineHandle {
       },
       handle: (col, row) => {
         const height = rows.getHeight(row);
+        const cell = cells.getCell(row, col);
+        const { borderAttr } = cell;
         ey += height;
-        line.push({ sx, sy, ex, ey });
+        line.push({ sx, sy, ex, ey, borderAttr });
         sy = ey;
       },
     });
@@ -103,7 +109,7 @@ class BorderLineHandle {
 
   borderVRLine(viewRange, bx = 0, by = 0, filter = () => true) {
     const { table } = this;
-    const { lineHandle, rows, cols } = table;
+    const { lineHandle, rows, cols, cells } = table;
     const line = [];
     let sx;
     let sy;
@@ -126,8 +132,10 @@ class BorderLineHandle {
       },
       handle: (col, row) => {
         const height = rows.getHeight(row);
+        const cell = cells.getCell(row, col);
+        const { borderAttr } = cell;
         ey += height;
-        line.push({ sx, sy, ex, ey });
+        line.push({ sx, sy, ex, ey, borderAttr });
         sy = ey;
       },
     });

@@ -16,6 +16,12 @@ const VERTICAL_ALIGN = {
   bottom: 'bottom',
 };
 
+const TEXT_WRAP = {
+  OVER_FLOW: 1,
+  WORD_WRAP: 2,
+  TRUNCATE: 3,
+};
+
 class Font {
   constructor({
     text, rect, dw, overflow, attr,
@@ -66,12 +72,12 @@ class Font {
     dw.line(s, e);
   }
 
-  drawText() {
+  drawText(overflow) {
     const {
       text, dw, attr, rect,
     } = this;
     const {
-      underline, strikethrough, align, verticalAlign, overflow,
+      underline, strikethrough, align, verticalAlign,
     } = attr;
     const { width, height } = rect;
     const textWidth = this.textWidth(text);
@@ -207,17 +213,22 @@ class Font {
 
   draw() {
     const { dw, attr } = this;
-    const { textWrap } = attr;
+    const { textWrap, overflow } = attr;
     dw.attr({
       textAlign: attr.align,
       textBaseline: attr.verticalAlign,
       font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${npx(attr.size)}px ${attr.name}`,
       fillStyle: attr.color,
     });
-    if (textWrap) {
-      this.drawTextWarp();
-    } else {
-      this.drawText();
+    switch (textWrap) {
+      case TEXT_WRAP.TRUNCATE:
+        this.drawText(overflow);
+        break;
+      case TEXT_WRAP.WORD_WRAP:
+        this.drawTextWarp();
+        break;
+      default:
+        this.drawText();
     }
   }
 
@@ -226,4 +237,4 @@ class Font {
   }
 }
 
-export { Font, VERTICAL_ALIGN, ALIGN };
+export { Font, VERTICAL_ALIGN, ALIGN, TEXT_WRAP };
