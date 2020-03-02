@@ -22,7 +22,7 @@ class Cells extends CellsBorder {
       textWrap: TEXT_WRAP.OVER_FLOW,
       strikethrough: false,
       underline: false,
-      color: '#000000',
+      color: 'rgb(0,0,0)',
       name: 'Arial',
       size: 14,
       bold: false,

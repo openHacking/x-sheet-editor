@@ -107,7 +107,25 @@ class TopMenu extends Widget {
     this.fontItalic = new FontItalic();
     this.underLine = new UnderLine();
     this.fontStrike = new FontStrike();
-    this.fontColor = new FontColor();
+    this.fontColor = new FontColor({
+      contextMenu: {
+        onUpdate: (color) => {
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          const { screen, cells, dataSnapshot } = table;
+          const screenSelector = screen.findByClass(ScreenSelector);
+          const { selectorAttr } = screenSelector;
+          this.fontColor.setColor(color);
+          if (selectorAttr) {
+            cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+              cell.fontAttr.color = color;
+            }, undefined, true);
+            dataSnapshot.snapshot();
+            table.render();
+          }
+        },
+      },
+    });
     this.fillColor = new FillColor();
     this.border = new Border();
     this.merge = new Merge();
@@ -163,6 +181,7 @@ class TopMenu extends Widget {
       this.setFontItalic();
       this.setUnderLine();
       this.setFontStrike();
+      this.setFontColor();
     });
     EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
@@ -515,6 +534,23 @@ class TopMenu extends Widget {
     this.fontStrike.active(strikethrough);
   }
 
+  setFontColor() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { screen, cells } = table;
+    const screenSelector = screen.findByClass(ScreenSelector);
+    const { selectorAttr } = screenSelector;
+    let color = 'rgb(0, 0, 0)';
+    if (selectorAttr) {
+      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+      // eslint-disable-next-line prefer-destructuring
+      color = firstCell.fontAttr.color;
+    }
+    this.fontColor.setColor(color);
+  }
+
   setStatus() {
     this.setUndoStatus();
     this.setRedoStatus();
@@ -526,6 +562,7 @@ class TopMenu extends Widget {
     this.setFontItalic();
     this.setUnderLine();
     this.setFontStrike();
+    this.setFontColor();
   }
 }
 

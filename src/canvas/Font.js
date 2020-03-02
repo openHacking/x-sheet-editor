@@ -121,6 +121,7 @@ class Font {
         default: break;
       }
     }
+    dw.beginPath();
     dw.line(s, e);
   }
 
@@ -318,6 +319,7 @@ class Font {
       textBaseline: attr.verticalAlign,
       font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${npx(attr.size)}px ${attr.name}`,
       fillStyle: attr.color,
+      strokeStyle: attr.color,
     });
     switch (textWrap) {
       case TEXT_WRAP.TRUNCATE:

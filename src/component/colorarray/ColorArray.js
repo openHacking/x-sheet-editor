@@ -2,6 +2,7 @@ import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../config';
 import { ColorItem } from './ColorItem';
 import { Utils } from '../../utils/Utils';
+import { Constant } from '../../utils/Constant';
 
 class ColorArray extends Widget {
   constructor(options) {
@@ -95,10 +96,14 @@ class ColorArray extends Widget {
         new ColorItem({ color: 'rgb(32, 18, 77)' }),
         new ColorItem({ color: 'rgb(76, 17, 48)' }),
       ],
+      selectCb: () => {},
     }, options);
     this.colors = this.options.colors;
     this.colors.forEach((item) => {
       this.children(item);
+      item.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+        this.options.selectCb(item);
+      });
     });
   }
 

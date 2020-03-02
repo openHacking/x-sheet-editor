@@ -11,12 +11,16 @@ class FontColor extends DropDownItem {
     this.options = Utils.mergeDeep({ contextMenu: {} }, options);
     this.drop.hide();
     this.icon = new Icon('color');
-    this.icon.css('border-bottom', '3px solid #000000');
     this.fontColorContextMenu = new FontColorContextMenu(Utils.copyProp({
       el: this,
       position: EL_POPUP_POSITION.BOTTOM,
     }, this.options.contextMenu));
     this.setIcon(this.icon);
+    this.setColor('#000000');
+  }
+
+  setColor(color) {
+    this.icon.css('border-bottom', `3px solid ${color}`);
   }
 }
 

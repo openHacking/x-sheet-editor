@@ -73,7 +73,7 @@ class Utils {
         const v = source[key];
         if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') {
           object[key] = v;
-        } else if (typeof v !== 'function' && !Array.isArray(v) && v instanceof Object) {
+        } else if (typeof v !== 'function' && !Array.isArray(v) && Utils.isPlainObject(v)) {
           object[key] = object[key] || {};
           Utils.mergeDeep(object[key], v);
         } else {

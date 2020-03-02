@@ -6,9 +6,15 @@ class ColorItem extends Widget {
   constructor(options) {
     super(`${cssPrefix}-color-array-item`);
     this.options = Utils.mergeDeep({
-      color: 'rgb(0,0,0)',
+      color: null,
+      icon: null,
     }, options);
-    this.css('backgroundColor', this.options.color);
+    if (this.options.color) {
+      this.css('backgroundColor', this.options.color);
+    }
+    if (this.options.icon) {
+      this.children(this.options.icon);
+    }
   }
 }
 
