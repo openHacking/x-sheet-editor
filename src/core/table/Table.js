@@ -24,7 +24,7 @@ import { YHeightLight } from './highlight/YHeightLight';
 import { Edit } from './Edit';
 import { Cells } from './Cells';
 import { Draw, npx } from '../../canvas/Draw';
-import { Font } from '../../canvas/Font';
+import { Font, TEXT_WRAP } from '../../canvas/Font';
 import { Rect } from '../../canvas/Rect';
 import { Crop } from '../../canvas/Crop';
 import { Grid } from '../../canvas/Grid';
@@ -209,7 +209,7 @@ class FrozenLeftTop {
         overflow: null,
         attr: cell.fontAttr,
       });
-      font.setTextWrap(true);
+      font.setTextWrap(TEXT_WRAP.WORD_WRAP);
       font.draw();
     });
     draw.offset(0, 0);
@@ -435,7 +435,7 @@ class Content {
         overflow: null,
         attr: cell.fontAttr,
       });
-      font.setTextWrap(true);
+      font.setTextWrap(TEXT_WRAP.WORD_WRAP);
       font.draw();
     });
     draw.offset(0, 0);
@@ -644,7 +644,7 @@ class FixedLeft {
         overflow: null,
         attr: cell.fontAttr,
       });
-      font.setTextWrap(true);
+      font.setTextWrap(TEXT_WRAP.WORD_WRAP);
       font.draw();
     });
     draw.offset(0, 0);
@@ -850,7 +850,7 @@ class FixedTop {
         overflow: null,
         attr: cell.fontAttr,
       });
-      font.setTextWrap(true);
+      font.setTextWrap(TEXT_WRAP.WORD_WRAP);
       font.draw();
     });
     draw.offset(0, 0);

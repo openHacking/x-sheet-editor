@@ -4,6 +4,8 @@ import { Utils } from '../utils/Utils';
 
 const PADDING = 8;
 
+const LIEN_HEIGHT = 4;
+
 const ALIGN = {
   left: 'left',
   center: 'center',
@@ -249,7 +251,7 @@ class Font {
           tx: 0,
           ty: hOffset,
         });
-        hOffset += size;
+        hOffset += size + LIEN_HEIGHT;
         textLine.len = 0;
         textLine.start = i;
       } else {
@@ -302,7 +304,7 @@ class Font {
         this.drawLine('underline', item.tx, item.ty, item.len);
       }
       if (strikethrough) {
-        this.drawLine('strike', item.tx, item.ty, size, item.len);
+        this.drawLine('strike', item.tx, item.ty, item.len);
       }
     }
     crop.close();
