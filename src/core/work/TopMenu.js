@@ -159,6 +159,10 @@ class TopMenu extends Widget {
       this.setFormatStatus();
       this.setFontStatus();
       this.setFontSizeStatus();
+      this.setFontBold();
+      this.setFontItalic();
+      this.setUnderLine();
+      this.setFontStrike();
     });
     EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
@@ -247,6 +251,70 @@ class TopMenu extends Widget {
       }
       e.stopPropagation();
       e.preventDefault();
+    });
+    EventBind.bind(this.fontBold, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      const { screen, cells, dataSnapshot } = table;
+      const screenSelector = screen.findByClass(ScreenSelector);
+      const { selectorAttr } = screenSelector;
+      if (selectorAttr) {
+        const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+        const bold = !firstCell.fontAttr.bold;
+        cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+          cell.fontAttr.bold = bold;
+        }, undefined, true);
+        dataSnapshot.snapshot();
+        table.render();
+      }
+    });
+    EventBind.bind(this.fontItalic, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      const { screen, cells, dataSnapshot } = table;
+      const screenSelector = screen.findByClass(ScreenSelector);
+      const { selectorAttr } = screenSelector;
+      if (selectorAttr) {
+        const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+        const italic = !firstCell.fontAttr.italic;
+        cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+          cell.fontAttr.italic = italic;
+        }, undefined, true);
+        dataSnapshot.snapshot();
+        table.render();
+      }
+    });
+    EventBind.bind(this.underLine, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      const { screen, cells, dataSnapshot } = table;
+      const screenSelector = screen.findByClass(ScreenSelector);
+      const { selectorAttr } = screenSelector;
+      if (selectorAttr) {
+        const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+        const underline = !firstCell.fontAttr.underline;
+        cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+          cell.fontAttr.underline = underline;
+        }, undefined, true);
+        dataSnapshot.snapshot();
+        table.render();
+      }
+    });
+    EventBind.bind(this.fontStrike, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      const { screen, cells, dataSnapshot } = table;
+      const screenSelector = screen.findByClass(ScreenSelector);
+      const { selectorAttr } = screenSelector;
+      if (selectorAttr) {
+        const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+        const strikethrough = !firstCell.fontAttr.strikethrough;
+        cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+          cell.fontAttr.strikethrough = strikethrough;
+        }, undefined, true);
+        dataSnapshot.snapshot();
+        table.render();
+      }
     });
   }
 
@@ -369,6 +437,74 @@ class TopMenu extends Widget {
     this.fontSize.setTitle(size);
   }
 
+  setFontBold() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { screen, cells } = table;
+    const screenSelector = screen.findByClass(ScreenSelector);
+    const { selectorAttr } = screenSelector;
+    let bold = false;
+    if (selectorAttr) {
+      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+      // eslint-disable-next-line prefer-destructuring
+      bold = firstCell.fontAttr.bold;
+    }
+    this.fontBold.active(bold);
+  }
+
+  setFontItalic() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { screen, cells } = table;
+    const screenSelector = screen.findByClass(ScreenSelector);
+    const { selectorAttr } = screenSelector;
+    let italic = false;
+    if (selectorAttr) {
+      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+      // eslint-disable-next-line prefer-destructuring
+      italic = firstCell.fontAttr.italic;
+    }
+    this.fontItalic.active(italic);
+  }
+
+  setUnderLine() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { screen, cells } = table;
+    const screenSelector = screen.findByClass(ScreenSelector);
+    const { selectorAttr } = screenSelector;
+    let underline = false;
+    if (selectorAttr) {
+      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+      // eslint-disable-next-line prefer-destructuring
+      underline = firstCell.fontAttr.underline;
+    }
+    this.underLine.active(underline);
+  }
+
+  setFontStrike() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { screen, cells } = table;
+    const screenSelector = screen.findByClass(ScreenSelector);
+    const { selectorAttr } = screenSelector;
+    let strikethrough = false;
+    if (selectorAttr) {
+      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+      // eslint-disable-next-line prefer-destructuring
+      strikethrough = firstCell.fontAttr.strikethrough;
+    }
+    this.fontStrike.active(strikethrough);
+  }
+
   setStatus() {
     this.setUndoStatus();
     this.setRedoStatus();
@@ -376,6 +512,10 @@ class TopMenu extends Widget {
     this.setFormatStatus();
     this.setFontStatus();
     this.setFontSizeStatus();
+    this.setFontBold();
+    this.setFontItalic();
+    this.setUnderLine();
+    this.setFontStrike();
   }
 }
 

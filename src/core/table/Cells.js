@@ -20,7 +20,7 @@ class Cells extends CellsBorder {
       align: ALIGN.left,
       verticalAlign: VERTICAL_ALIGN.center,
       textWrap: TEXT_WRAP.OVER_FLOW,
-      strike: false,
+      strikethrough: false,
       underline: false,
       color: '#000000',
       name: 'Arial',

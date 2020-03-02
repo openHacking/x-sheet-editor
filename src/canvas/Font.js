@@ -1,5 +1,5 @@
 import { Crop } from './Crop';
-import { npx } from './Draw';
+import { dpr, npx } from './Draw';
 import { Utils } from '../utils/Utils';
 
 const PADDING = 8;
@@ -49,25 +49,75 @@ class Font {
     return dw.measureText(text).width;
   }
 
-  drawLine(type, tx, ty, textWidth) {
-    const { dw, size } = this;
+  drawLine(type, tx, ty, width) {
+    const { dw, attr } = this;
+    const { size, verticalAlign, align } = attr;
     const s = [0, 0];
     const e = [0, 0];
-    switch (type) {
-      case 'strike':
-        s[0] = tx;
-        s[1] = ty - size / 2;
-        e[0] = tx + textWidth;
-        e[1] = ty - size / 2;
-        break;
-      case 'underline':
-        s[0] = tx;
-        s[1] = ty + 2;
-        e[0] = tx + textWidth;
-        e[1] = ty + 2;
-        break;
-      default:
-        break;
+    const textWidth = width / dpr();
+    if (type === 'strike') {
+      switch (align) {
+        case ALIGN.right:
+          s[0] = tx - textWidth;
+          e[0] = tx;
+          break;
+        case ALIGN.center:
+          s[0] = tx - textWidth / 2;
+          e[0] = tx + textWidth / 2;
+          break;
+        case ALIGN.left:
+          s[0] = tx;
+          e[0] = tx + textWidth;
+          break;
+        default: break;
+      }
+      switch (verticalAlign) {
+        case VERTICAL_ALIGN.top:
+          s[1] = ty + size / 2;
+          e[1] = ty + size / 2;
+          break;
+        case VERTICAL_ALIGN.center:
+          s[1] = ty;
+          e[1] = ty;
+          break;
+        case VERTICAL_ALIGN.bottom:
+          s[1] = ty - size / 2;
+          e[1] = ty - size / 2;
+          break;
+        default: break;
+      }
+    }
+    if (type === 'underline') {
+      switch (align) {
+        case ALIGN.right:
+          s[0] = tx - textWidth;
+          e[0] = tx;
+          break;
+        case ALIGN.center:
+          s[0] = tx - textWidth / 2;
+          e[0] = tx + textWidth / 2;
+          break;
+        case ALIGN.left:
+          s[0] = tx;
+          e[0] = tx + textWidth;
+          break;
+        default: break;
+      }
+      switch (verticalAlign) {
+        case VERTICAL_ALIGN.top:
+          s[1] = ty + size;
+          e[1] = ty + size;
+          break;
+        case VERTICAL_ALIGN.center:
+          s[1] = ty + size / 2;
+          e[1] = ty + size / 2;
+          break;
+        case VERTICAL_ALIGN.bottom:
+          s[1] = ty;
+          e[1] = ty;
+          break;
+        default: break;
+      }
     }
     dw.line(s, e);
   }
