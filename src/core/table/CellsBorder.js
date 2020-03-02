@@ -63,6 +63,12 @@ class CellsBorder {
     }
   }
 
+  borderEqual(src, target) {
+    const color = src.color === target.color;
+    const width = src.width === target.width;
+    const type = src.type === target.type;
+    return color && width && type;
+  }
 }
 
 export { CellsBorder };

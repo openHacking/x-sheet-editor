@@ -378,6 +378,7 @@ class Content {
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbLine.forEach((item) => {
+      console.log(item);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vlLine.forEach((item) => {

@@ -9,6 +9,18 @@ for (let i = 0; i < 1000; i += 1) {
     const item = Utils.mergeDeep(Cells.getDefaultAttr(), {
       text: `行: ${i + 1} 列:${j + 1}`,
     });
+    if (i === 5 && j === 5) {
+      item.borderAttr.top.display = true;
+      item.borderAttr.left.display = true;
+      item.borderAttr.right.display = true;
+      item.borderAttr.bottom.display = true;
+    }
+    if (i === 5 && j === 6) {
+      item.borderAttr.top.display = true;
+      item.borderAttr.left.display = true;
+      item.borderAttr.right.display = true;
+      item.borderAttr.bottom.display = true;
+    }
     rows.push(item);
   }
   Data.push(rows);

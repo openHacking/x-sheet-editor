@@ -1,3 +1,4 @@
+
 class BorderLineHandle {
 
   constructor(table) {
@@ -31,10 +32,23 @@ class BorderLineHandle {
         const cell = cells.getCell(row, col);
         const { borderAttr } = cell;
         ex += width;
-        line.push({ sx, sy, ex, ey, borderAttr });
+        line.push({ sx, sy, ex, ey, row, col, borderAttr });
         sx = ex;
       },
     });
+    for (let i = 1; i < line.length;) {
+      const item = line[i];
+      const last = line[i - 1];
+      const ck1 = cells.borderEqual(item.borderAttr.bottom, last.borderAttr.bottom);
+      const ck2 = item.col - last.col === 1;
+      if (ck1 && ck2) {
+        last.ex = item.ex;
+        last.col = item.col;
+        line.splice(i, 1);
+      } else {
+        i += 1;
+      }
+    }
     return line;
   }
 
@@ -66,10 +80,23 @@ class BorderLineHandle {
         const cell = cells.getCell(row, col);
         const { borderAttr } = cell;
         ex += width;
-        line.push({ sx, sy, ex, ey, borderAttr });
+        line.push({ sx, sy, ex, ey, row, col, borderAttr });
         sx = ex;
       },
     });
+    for (let i = 1; i < line.length;) {
+      const item = line[i];
+      const last = line[i - 1];
+      const ck1 = cells.borderEqual(item.borderAttr.bottom, last.borderAttr.bottom);
+      const ck2 = item.col - last.col === 1;
+      if (ck1 && ck2) {
+        last.ex = item.ex;
+        last.col = item.col;
+        line.splice(i, 1);
+      } else {
+        i += 1;
+      }
+    }
     return line;
   }
 
@@ -100,10 +127,23 @@ class BorderLineHandle {
         const cell = cells.getCell(row, col);
         const { borderAttr } = cell;
         ey += height;
-        line.push({ sx, sy, ex, ey, borderAttr });
+        line.push({ sx, sy, ex, ey, row, col, borderAttr });
         sy = ey;
       },
     });
+    for (let i = 1; i < line.length;) {
+      const item = line[i];
+      const last = line[i - 1];
+      const ck1 = cells.borderEqual(item.borderAttr.left, last.borderAttr.left);
+      const ck2 = item.row - last.row === 1;
+      if (ck1 && ck2) {
+        last.ey = item.ey;
+        last.row = item.row;
+        line.splice(i, 1);
+      } else {
+        i += 1;
+      }
+    }
     return line;
   }
 
@@ -135,10 +175,23 @@ class BorderLineHandle {
         const cell = cells.getCell(row, col);
         const { borderAttr } = cell;
         ey += height;
-        line.push({ sx, sy, ex, ey, borderAttr });
+        line.push({ sx, sy, ex, ey, row, col, borderAttr });
         sy = ey;
       },
     });
+    for (let i = 1; i < line.length;) {
+      const item = line[i];
+      const last = line[i - 1];
+      const ck1 = cells.borderEqual(item.borderAttr.right, last.borderAttr.right);
+      const ck2 = item.row - last.row === 1;
+      if (ck1 && ck2) {
+        last.ey = item.ey;
+        last.row = item.row;
+        line.splice(i, 1);
+      } else {
+        i += 1;
+      }
+    }
     return line;
   }
 
