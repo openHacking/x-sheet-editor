@@ -85,11 +85,9 @@ class Cells extends CellsBorder {
           break;
         }
       }
-      for (let i = ci; i >= 0; i -= 1) {
+      for (let i = ci - 1; i >= 0; i -= 1) {
         const cell = this.getCell(ri, i);
-        if (i === ci) {
-          width += cols.getWidth(i);
-        } else if (Utils.isBlank(cell.text)) {
+        if (Utils.isBlank(cell.text)) {
           const tmp = cols.getWidth(i);
           width += tmp;
           offset -= tmp;
