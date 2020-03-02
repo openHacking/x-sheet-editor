@@ -175,7 +175,7 @@ class TopMenu extends Widget {
     EventBind.bind(this.paintFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      const { screen, cells } = table;
+      const { screen, cells, dataSnapshot } = table;
       const screenCopyStyle = screen.findByClass(ScreenCopyStyle);
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
@@ -197,6 +197,7 @@ class TopMenu extends Widget {
             Utils.mergeDeep(cell, src);
             cell.text = text;
           });
+          dataSnapshot.snapshot();
           table.render();
         };
         screenSelector.addSelectChangeOverCb(cb);

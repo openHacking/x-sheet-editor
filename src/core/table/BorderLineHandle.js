@@ -41,7 +41,8 @@ class BorderLineHandle {
       const last = line[i - 1];
       const ck1 = cells.borderEqual(item.borderAttr.bottom, last.borderAttr.bottom);
       const ck2 = item.col - last.col === 1;
-      if (ck1 && ck2) {
+      const ck3 = item.row === last.row;
+      if (ck1 && ck2 && ck3) {
         last.ex = item.ex;
         last.col = item.col;
         line.splice(i, 1);
@@ -89,7 +90,8 @@ class BorderLineHandle {
       const last = line[i - 1];
       const ck1 = cells.borderEqual(item.borderAttr.bottom, last.borderAttr.bottom);
       const ck2 = item.col - last.col === 1;
-      if (ck1 && ck2) {
+      const ck3 = item.row === last.row;
+      if (ck1 && ck2 && ck3) {
         last.ex = item.ex;
         last.col = item.col;
         line.splice(i, 1);
@@ -136,7 +138,8 @@ class BorderLineHandle {
       const last = line[i - 1];
       const ck1 = cells.borderEqual(item.borderAttr.left, last.borderAttr.left);
       const ck2 = item.row - last.row === 1;
-      if (ck1 && ck2) {
+      const ck3 = item.col === last.col;
+      if (ck1 && ck2 && ck3) {
         last.ey = item.ey;
         last.row = item.row;
         line.splice(i, 1);
@@ -184,7 +187,8 @@ class BorderLineHandle {
       const last = line[i - 1];
       const ck1 = cells.borderEqual(item.borderAttr.right, last.borderAttr.right);
       const ck2 = item.row - last.row === 1;
-      if (ck1 && ck2) {
+      const ck3 = item.col === last.col;
+      if (ck1 && ck2 && ck3) {
         last.ey = item.ey;
         last.row = item.row;
         line.splice(i, 1);
