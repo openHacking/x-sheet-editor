@@ -3,7 +3,7 @@ import { cssPrefix } from '../../config';
 
 class ELContextMenuItem extends Widget {
   constructor(className = '') {
-    super(`${cssPrefix}-el-context-menu-item ${className}`);
+    super(`${cssPrefix}-el-context-menu-item hover ${className}`);
   }
 }
 

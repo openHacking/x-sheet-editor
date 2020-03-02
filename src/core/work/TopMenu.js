@@ -316,6 +316,16 @@ class TopMenu extends Widget {
         table.render();
       }
     });
+    EventBind.bind(this.fontColor, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      ElPopUp.closeAll([this.fontColor.fontColorContextMenu]);
+      if (this.fontColor.fontColorContextMenu.off) {
+        this.fontColor.fontColorContextMenu.open();
+      } else {
+        this.fontColor.fontColorContextMenu.close();
+      }
+      e.stopPropagation();
+      e.preventDefault();
+    });
   }
 
   setUndoStatus() {
