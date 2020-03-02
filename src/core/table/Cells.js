@@ -55,6 +55,76 @@ class Cells extends CellsBorder {
     return merges.getFirstIncludes(ri, ci) !== null;
   }
 
+  getCellOverFlowRect(ri, ci) {
+    const cell = this.getCell(ri, ci);
+    const { cols } = this;
+    const { fontAttr } = cell;
+    const { align } = fontAttr;
+    let width = 0;
+    let offset = 0;
+    if (align === ALIGN.left) {
+      for (let i = ci, { len } = cols; i <= len; i += 1) {
+        const cell = this.getCell(ri, i);
+        if (i === ci) {
+          width += cols.getWidth(i);
+        } else if (Utils.isBlank(cell.text)) {
+          width += cols.getWidth(i);
+        } else {
+          break;
+        }
+      }
+    }
+    if (align === ALIGN.center) {
+      for (let i = ci, { len } = cols; i <= len; i += 1) {
+        const cell = this.getCell(ri, i);
+        if (i === ci) {
+          width += cols.getWidth(i);
+        } else if (Utils.isBlank(cell.text)) {
+          width += cols.getWidth(i);
+        } else {
+          break;
+        }
+      }
+      for (let i = ci; i >= 0; i -= 1) {
+        const cell = this.getCell(ri, i);
+        if (i === ci) {
+          width += cols.getWidth(i);
+        } else if (Utils.isBlank(cell.text)) {
+          const tmp = cols.getWidth(i);
+          width += tmp;
+          offset -= tmp;
+        } else {
+          break;
+        }
+      }
+    }
+    if (align === ALIGN.right) {
+      for (let i = ci; i >= 0; i -= 1) {
+        const cell = this.getCell(ri, i);
+        if (i === ci) {
+          width += cols.getWidth(i);
+        } else if (Utils.isBlank(cell.text)) {
+          const tmp = cols.getWidth(i);
+          width += tmp;
+          offset -= tmp;
+        } else {
+          break;
+        }
+      }
+    }
+    return { width, offset };
+  }
+
+  getMergeCellOrCell(ri, ci) {
+    const { table } = this;
+    const { merges } = table;
+    const merge = merges.getFirstIncludes(ri, ci);
+    if (merge) {
+      return this.getCell(merge.sri, merge.sci);
+    }
+    return this.getCell(ri, ci);
+  }
+
   getCell(ri, ci) {
     const row = this._[ri];
     if (row && row[ci]) {
@@ -75,34 +145,31 @@ class Cells extends CellsBorder {
     return this._[ri][ci];
   }
 
-  getMergeCellOrCell(ri, ci) {
-    const { table } = this;
-    const { merges } = table;
-    const merge = merges.getFirstIncludes(ri, ci);
-    if (merge) {
-      return this.getCell(merge.sri, merge.sci);
-    }
-    return this.getCell(ri, ci);
-  }
-
   getCellInRectRange(rectRange, cb, { sy = 0, sx = 0 } = {}, createNew = false) {
     const {
       sri, eri, sci, eci,
     } = rectRange;
+    const getCell = createNew ? this.getCellOrNew : this.getCell;
     let y = sy;
     for (let i = sri; i <= eri; i += 1) {
       const height = this.rows.getHeight(i);
       let x = sx;
       for (let j = sci; j <= eci; j += 1) {
         const width = this.cols.getWidth(j);
-        const cell = createNew ? this.getCellOrNew(i, j) : this.getCell(i, j);
+        const cell = getCell.call(this, i, j);
         if (cell) {
-          cb(i, j, new Rect({
+          const overFlow = this.getCellOverFlowRect(i, j);
+          cb(i, j, cell, new Rect({
             x,
             y,
             width,
             height,
-          }), cell);
+          }), new Rect({
+            x: x + overFlow.offset,
+            y,
+            width: overFlow.width,
+            height,
+          }));
         }
         x += width;
       }

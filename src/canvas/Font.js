@@ -121,10 +121,10 @@ class Font {
 
   drawTextOverFlow() {
     const {
-      text, dw, attr, rect,
+      text, dw, attr, rect, overflow,
     } = this;
     const {
-      overflow, underline, strikethrough, align, verticalAlign,
+      underline, strikethrough, align, verticalAlign,
     } = attr;
     const { width, height } = rect;
     const textWidth = this.textWidth(text);

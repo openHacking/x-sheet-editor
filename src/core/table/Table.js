@@ -85,7 +85,7 @@ class FrozenLeftTop {
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInRectRange(viewRange, (i, c, rect, cell) => {
+    cells.getCellInRectRange(viewRange, (i, c, cell, rect) => {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
       // 绘制背景
@@ -187,7 +187,7 @@ class FrozenLeftTop {
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInRectRange(viewRange, (i, c, rect, cell) => {
+    cells.getCellInRectRange(viewRange, (i, c, cell, rect, overflow) => {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
       // 绘制文字
@@ -195,7 +195,7 @@ class FrozenLeftTop {
         text: Format(cell.format, cell.text),
         rect: rect.expandSize(grid.lineWidth()),
         dw: draw,
-        overflow: null,
+        overflow,
         attr: cell.fontAttr,
       });
       font.draw();
@@ -311,7 +311,7 @@ class Content {
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInRectRange(viewRange, (i, c, rect, cell) => {
+    cells.getCellInRectRange(viewRange, (i, c, cell, rect) => {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
       // 绘制背景
@@ -413,7 +413,7 @@ class Content {
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInRectRange(viewRange, (i, c, rect, cell) => {
+    cells.getCellInRectRange(viewRange, (i, c, cell, rect, overflow) => {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
       // 绘制文字
@@ -421,7 +421,7 @@ class Content {
         text: Format(cell.format, cell.text),
         rect: rect.expandSize(grid.lineWidth()),
         dw: draw,
-        overflow: null,
+        overflow,
         attr: cell.fontAttr,
       });
       font.draw();
@@ -520,7 +520,7 @@ class FixedLeft {
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInRectRange(viewRange, (i, c, rect, cell) => {
+    cells.getCellInRectRange(viewRange, (i, c, cell, rect) => {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
       // 绘制背景
@@ -622,7 +622,7 @@ class FixedLeft {
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInRectRange(viewRange, (i, c, rect, cell) => {
+    cells.getCellInRectRange(viewRange, (i, c, cell, rect, overflow) => {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
       // 绘制文字
@@ -630,7 +630,7 @@ class FixedLeft {
         text: Format(cell.format, cell.text),
         rect: rect.expandSize(grid.lineWidth()),
         dw: draw,
-        overflow: null,
+        overflow,
         attr: cell.fontAttr,
       });
       font.draw();
@@ -726,7 +726,7 @@ class FixedTop {
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInRectRange(viewRange, (i, c, rect, cell) => {
+    cells.getCellInRectRange(viewRange, (i, c, cell, rect) => {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
       // 绘制背景
@@ -828,7 +828,7 @@ class FixedTop {
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInRectRange(viewRange, (i, c, rect, cell) => {
+    cells.getCellInRectRange(viewRange, (i, c, cell, rect, overflow) => {
       // 剔除合并单元格
       if (merges.getFirstIncludes(i, c)) return;
       // 绘制文字
@@ -836,7 +836,7 @@ class FixedTop {
         text: Format(cell.format, cell.text),
         rect: rect.expandSize(grid.lineWidth()),
         dw: draw,
-        overflow: null,
+        overflow,
         attr: cell.fontAttr,
       });
       font.draw();
