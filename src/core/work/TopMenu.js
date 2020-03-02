@@ -249,6 +249,31 @@ class TopMenu extends Widget {
     });
   }
 
+  setUndoStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { dataSnapshot } = table;
+    this.undo.active(dataSnapshot.undo.length() > 1);
+  }
+
+  setRedoStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { dataSnapshot } = table;
+    this.redo.active(!dataSnapshot.redo.isEmpty());
+  }
+
+  setPaintFormatStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    this.paintFormat.active(this.paintFormat.includeSheet(sheet));
+  }
+
   setFormatStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
@@ -341,31 +366,6 @@ class TopMenu extends Widget {
       size = firstCell.fontAttr.size;
     }
     this.fontSize.setTitle(size);
-  }
-
-  setUndoStatus() {
-    const { body } = this.workTop.work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    const { dataSnapshot } = table;
-    this.undo.active(dataSnapshot.undo.length() > 1);
-  }
-
-  setRedoStatus() {
-    const { body } = this.workTop.work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    const { dataSnapshot } = table;
-    this.redo.active(!dataSnapshot.redo.isEmpty());
-  }
-
-  setPaintFormatStatus() {
-    const { body } = this.workTop.work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    this.paintFormat.active(this.paintFormat.includeSheet(sheet));
   }
 
   setStatus() {
