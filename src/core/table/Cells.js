@@ -67,7 +67,7 @@ class Cells extends CellsBorder {
         const cell = this.getCell(ri, i);
         if (i === ci) {
           width += cols.getWidth(i);
-        } else if (Utils.isBlank(cell.text)) {
+        } else if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
           width += cols.getWidth(i);
         } else {
           break;
@@ -79,7 +79,7 @@ class Cells extends CellsBorder {
         const cell = this.getCell(ri, i);
         if (i === ci) {
           width += cols.getWidth(i);
-        } else if (Utils.isBlank(cell.text)) {
+        } else if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
           width += cols.getWidth(i);
         } else {
           break;
@@ -87,7 +87,7 @@ class Cells extends CellsBorder {
       }
       for (let i = ci - 1; i >= 0; i -= 1) {
         const cell = this.getCell(ri, i);
-        if (Utils.isBlank(cell.text)) {
+        if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
           const tmp = cols.getWidth(i);
           width += tmp;
           offset -= tmp;
@@ -101,7 +101,7 @@ class Cells extends CellsBorder {
         const cell = this.getCell(ri, i);
         if (i === ci) {
           width += cols.getWidth(i);
-        } else if (Utils.isBlank(cell.text)) {
+        } else if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
           const tmp = cols.getWidth(i);
           width += tmp;
           offset -= tmp;
