@@ -121,7 +121,6 @@ class Font {
         default: break;
       }
     }
-    dw.beginPath();
     dw.line(s, e);
   }
 
@@ -163,6 +162,9 @@ class Font {
     const crop = new Crop({ draw: dw, rect });
     crop.open();
     dw.fillText(text, tx, ty);
+    if (underline || strikethrough) {
+      dw.beginPath();
+    }
     if (underline) {
       this.drawLine('underline', tx, ty, textWidth);
     }
@@ -211,6 +213,9 @@ class Font {
       const crop = new Crop({ draw: dw, rect: overflow });
       crop.open();
       dw.fillText(text, tx, ty);
+      if (underline || strikethrough) {
+        dw.beginPath();
+      }
       if (underline) {
         this.drawLine('underline', tx, ty, textWidth);
       }
@@ -220,6 +225,9 @@ class Font {
       crop.close();
     } else {
       dw.fillText(text, tx, ty);
+      if (underline || strikethrough) {
+        dw.beginPath();
+      }
       if (underline) {
         this.drawLine('underline', tx, ty, textWidth);
       }
@@ -301,6 +309,9 @@ class Font {
       item.tx += bx;
       item.ty += by;
       dw.fillText(item.text, item.tx, item.ty);
+      if (underline || strikethrough) {
+        dw.beginPath();
+      }
       if (underline) {
         this.drawLine('underline', item.tx, item.ty, item.len);
       }
