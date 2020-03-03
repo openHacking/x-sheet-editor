@@ -179,7 +179,7 @@ class Font {
       text, dw, attr, rect, overflow,
     } = this;
     const {
-      underline, strikethrough, align, verticalAlign,
+      size, underline, strikethrough, align, verticalAlign,
     } = attr;
     const { width, height } = rect;
     const textWidth = this.textWidth(text);
@@ -209,7 +209,7 @@ class Font {
         break;
       default: break;
     }
-    if (overflow && textWidth > overflow.width) {
+    if (overflow && (textWidth > overflow.width || size > overflow.height)) {
       const crop = new Crop({ draw: dw, rect: overflow });
       crop.open();
       dw.fillText(text, tx, ty);
