@@ -16,6 +16,7 @@ Constant.SYSTEM_EVENT_TYPE = {
   RESIZE: 'resize'.toLocaleLowerCase(),
   CHANGE: 'change'.toLocaleLowerCase(),
   INPUT: 'input'.toLocaleLowerCase(),
+  VISIBILITY_CHANGE: 'visibilityChange'.toLocaleLowerCase(),
 };
 
 Constant.TABLE_EVENT_TYPE = {

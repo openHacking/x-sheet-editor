@@ -1,5 +1,3 @@
-/* global window */
-
 import { cssPrefix } from '../../config';
 import { Utils } from '../../utils/Utils';
 import { Rows } from './Rows';
@@ -1372,9 +1370,6 @@ class Table extends Widget {
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       this.viewRange = null;
       this.render();
-    });
-    EventBind.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
-      this.resize();
     });
   }
 

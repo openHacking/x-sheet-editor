@@ -1,4 +1,4 @@
-/* global window */
+/* global window document */
 
 import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../config';
@@ -216,7 +216,19 @@ class WorkBody extends Widget {
       }
     });
     EventBind.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
+      const { sheetView } = this;
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      table.resize();
       this.initScroll();
+    });
+    EventBind.bind(document, Constant.SYSTEM_EVENT_TYPE.VISIBILITY_CHANGE, () => {
+      const { sheetView } = this;
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      if (!document.hidden) {
+        table.resize();
+      }
     });
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       // console.log('change height');
