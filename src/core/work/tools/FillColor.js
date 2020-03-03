@@ -1,14 +1,27 @@
 import { DropDownItem } from './base/DropDownItem';
 import { cssPrefix } from '../../../config';
 import { Icon } from './Icon';
+import { Utils } from '../../../utils/Utils';
+import { EL_POPUP_POSITION } from '../../../component/elpopup/ElPopUp';
+import { FillColorContextMenu } from '../contextmenu/FillColorContextMenu';
 
 class FillColor extends DropDownItem {
-  constructor() {
+  constructor(options) {
     super(`${cssPrefix}-tools-fill-color`);
+    this.options = Utils.mergeDeep({ contextMenu: {} }, options);
     this.drop.hide();
     this.icon = new Icon('fill-color');
-    this.icon.css('border-bottom', '3px solid #000000');
+    this.fillColorContextMenu = new FillColorContextMenu(Utils.copyProp({
+      el: this,
+      position: EL_POPUP_POSITION.BOTTOM,
+    }, this.options.contextMenu));
     this.setIcon(this.icon);
+    this.setColor('rgb(255, 255, 255)');
+    this.fillColorContextMenu.setActiveByColor('rgb(255, 255, 255)');
+  }
+
+  setColor(color) {
+    this.icon.css('border-bottom', `3px solid ${color}`);
   }
 }
 

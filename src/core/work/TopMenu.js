@@ -126,7 +126,25 @@ class TopMenu extends Widget {
         },
       },
     });
-    this.fillColor = new FillColor();
+    this.fillColor = new FillColor({
+      contextMenu: {
+        onUpdate: (color) => {
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          const { screen, cells, dataSnapshot } = table;
+          const screenSelector = screen.findByClass(ScreenSelector);
+          const { selectorAttr } = screenSelector;
+          this.fillColor.setColor(color);
+          if (selectorAttr) {
+            cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+              cell.background = color;
+            }, undefined, true);
+            dataSnapshot.snapshot();
+            table.render();
+          }
+        },
+      },
+    });
     this.border = new Border();
     this.merge = new Merge();
     this.horizontalAlign = new HorizontalAlign();
@@ -182,6 +200,7 @@ class TopMenu extends Widget {
       this.setUnderLine();
       this.setFontStrike();
       this.setFontColor();
+      this.setFillColor();
     });
     EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
@@ -341,6 +360,16 @@ class TopMenu extends Widget {
         this.fontColor.fontColorContextMenu.open();
       } else {
         this.fontColor.fontColorContextMenu.close();
+      }
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(this.fillColor, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      ElPopUp.closeAll([this.fillColor.fillColorContextMenu]);
+      if (this.fillColor.fillColorContextMenu.off) {
+        this.fillColor.fillColorContextMenu.open();
+      } else {
+        this.fillColor.fillColorContextMenu.close();
       }
       e.stopPropagation();
       e.preventDefault();
@@ -552,6 +581,26 @@ class TopMenu extends Widget {
     this.fontColor.fontColorContextMenu.setActiveByColor(color);
   }
 
+  setFillColor() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { screen, cells } = table;
+    const screenSelector = screen.findByClass(ScreenSelector);
+    const { selectorAttr } = screenSelector;
+    let color = 'rgb(255, 255, 255)';
+    if (selectorAttr) {
+      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+      // eslint-disable-next-line prefer-destructuring
+      if (firstCell.background) {
+        color = firstCell.background;
+      }
+    }
+    this.fillColor.setColor(color);
+    this.fillColor.fillColorContextMenu.setActiveByColor(color);
+  }
+
   setStatus() {
     this.setUndoStatus();
     this.setRedoStatus();
@@ -564,6 +613,7 @@ class TopMenu extends Widget {
     this.setUnderLine();
     this.setFontStrike();
     this.setFontColor();
+    this.setFillColor();
   }
 }
 

@@ -16,7 +16,8 @@ class FontColor extends DropDownItem {
       position: EL_POPUP_POSITION.BOTTOM,
     }, this.options.contextMenu));
     this.setIcon(this.icon);
-    this.setColor('#000000');
+    this.setColor('rgb(0,0,0)');
+    this.fontColorContextMenu.setActiveByColor('rgb(0,0,0)');
   }
 
   setColor(color) {
