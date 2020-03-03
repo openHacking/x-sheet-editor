@@ -103,13 +103,28 @@ class ColorArray extends Widget {
       this.children(item);
       item.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
         this.options.selectCb(item);
+        this.setActiveByColor(item.options.color);
       });
     });
+    if (this.colors.length > 0) {
+      this.setActiveByColor(this.colors[0].options.color);
+    }
   }
 
   add(item) {
     this.colors.push(item);
     this.children(item);
+  }
+
+  setActiveByColor(color) {
+    this.colors.forEach((item) => {
+      const { options } = item;
+      if (options.color === color) {
+        item.setActive(true);
+      } else {
+        item.setActive(false);
+      }
+    });
   }
 }
 

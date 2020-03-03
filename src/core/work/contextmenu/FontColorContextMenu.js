@@ -7,6 +7,7 @@ import { ColorItem } from '../../../component/colorarray/ColorItem';
 import { ELContextMenuDivider } from '../../../component/elcontextmenu/ELContextMenuDivider';
 import { Icon } from '../tools/Icon';
 import { Utils } from '../../../utils/Utils';
+import { Constant } from '../../../utils/Constant';
 
 class FontColorContextMenu extends ELContextMenu {
   constructor(options = {}) {
@@ -15,6 +16,11 @@ class FontColorContextMenu extends ELContextMenu {
     }, options));
     // 重置
     this.reset = new FontColorContextMenuItem('重置', new Icon('clear-color'));
+    this.reset.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      this.options.onUpdate('rgb(0,0,0)');
+      this.customizeColorArray.setActiveByColor(null);
+      this.colorArray.setActiveByColor(null);
+    });
     // 颜色筛选
     this.array = new FontColorContextMenuItem();
     this.array.removeClass('hover');
@@ -22,6 +28,7 @@ class FontColorContextMenu extends ELContextMenu {
       selectCb: (item) => {
         const { color } = item.options;
         if (color) this.options.onUpdate(color);
+        this.customizeColorArray.setActiveByColor(null);
         this.close();
       },
     });
@@ -30,22 +37,22 @@ class FontColorContextMenu extends ELContextMenu {
     this.title = h('div', `${cssPrefix}-font-color-context-menu-color-title`);
     this.title.text('自定义');
     this.plus = new Icon('plus');
-    this.customizeColorArray = new ColorArray({ colors: [
-      new ColorItem({ color: 'rgb(0,0,0)' }),
-      new ColorItem({ color: 'rgb(67, 67, 67)' }),
-      new ColorItem({ color: 'rgb(102, 102, 102)' }),
-      new ColorItem({ color: 'rgb(230, 184, 175)' }),
-      new ColorItem({ color: 'rgb(244, 204, 204)' }),
-      new ColorItem({ color: 'rgb(252, 229, 205)' }),
-      new ColorItem({ color: 'rgb(204, 65, 37)' }),
-      new ColorItem({ color: 'rgb(224, 102, 102)' }),
-      new ColorItem({ color: 'rgb(246, 178, 107)' }),
-      new ColorItem({ color: 'rgb(255, 217, 102)' }),
-      new ColorItem({ color: 'rgb(147, 196, 125)' }),
-      new ColorItem({ color: 'rgb(118, 165, 175)' }),
-      new ColorItem({ color: 'rgb(109, 158, 235)' }),
-      new ColorItem({ icon: this.plus }),
-    ] });
+    this.customizeColorArray = new ColorArray({
+      colors: [
+        new ColorItem({ icon: this.plus }),
+      ],
+      selectCb: (item) => {
+        const { color } = item.options;
+        if (color) {
+          this.options.onUpdate(color);
+          this.colorArray.setActiveByColor(null);
+          this.close();
+        } else {
+          // TODO ...
+          // 打开颜色筛选 ....
+        }
+      },
+    });
     this.customize = new FontColorContextMenuItem();
     this.customize.removeClass('hover');
     this.customize.children(this.title);
@@ -55,6 +62,11 @@ class FontColorContextMenu extends ELContextMenu {
     this.children(this.array);
     this.children(new ELContextMenuDivider());
     this.children(this.customize);
+  }
+
+  setActiveByColor(color) {
+    this.customizeColorArray.setActiveByColor(color);
+    this.colorArray.setActiveByColor(color);
   }
 }
 

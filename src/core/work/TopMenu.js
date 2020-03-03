@@ -549,6 +549,7 @@ class TopMenu extends Widget {
       color = firstCell.fontAttr.color;
     }
     this.fontColor.setColor(color);
+    this.fontColor.fontColorContextMenu.setActiveByColor(color);
   }
 
   setStatus() {

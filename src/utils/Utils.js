@@ -140,11 +140,21 @@ class Utils {
   }
 
   static isPlainObject(obj) {
+    if (Utils.isUnDef(obj)) return false;
     const prototype = Object.getPrototypeOf(obj);
     const type = Utils.type(obj);
     // eslint-disable-next-line no-return-assign
     return type === DATA_TYPE.Object
       && (prototype === null || prototype === Object.getPrototypeOf({}));
+  }
+
+  static isDarkRGB(rgb) {
+    const rxp = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/;
+    if (Utils.isBlank(rgb)) {
+      return false;
+    }
+    const result = rgb.match(rxp);
+    return result[1] * 0.299 + result[2] * 0.578 + result[3] * 0.114 >= 192;
   }
 
   static sum(objOrAry, cb = value => value) {
