@@ -2,16 +2,23 @@
 import { cssPrefix } from '../../config';
 import { EventBind } from '../../utils/EventBind';
 import { Constant } from '../../utils/Constant';
+import { Widget } from '../../lib/Widget';
 import { ElPopUp } from '../elpopup/ElPopUp';
+import { Utils } from '../../utils/Utils';
 
-class ELContextMenu extends ElPopUp {
+class ELContextMenu extends Widget {
+
   constructor(className = '', options = {}) {
-    super(`${cssPrefix}-el-context-menu ${className}`, options);
-    this.contextMenuArray = [];
+    super(`${cssPrefix}-el-context-menu ${className}`);
+    this.options = Utils.mergeDeep({}, options);
+    this.menus = [];
+    // 环绕元素弹层组件
+    this.elPopUp = new ElPopUp(this.options);
+    this.elPopUp.children(this);
+    this.bind();
   }
 
   bind() {
-    super.bind();
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (event) => {
       event.stopPropagation();
       event.preventDefault();
@@ -21,9 +28,25 @@ class ELContextMenu extends ElPopUp {
     });
   }
 
-  addItem(contextMenuItem) {
-    this.contextMenuArray.push(contextMenuItem);
-    this.content.children(contextMenuItem);
+  addItem(item) {
+    const { menus } = this;
+    menus.push(item);
+    this.children(item);
+    return this;
+  }
+
+  open() {
+    this.elPopUp.open();
+    return this;
+  }
+
+  close() {
+    this.elPopUp.close();
+    return this;
+  }
+
+  isOpen() {
+    return this.elPopUp.off;
   }
 }
 

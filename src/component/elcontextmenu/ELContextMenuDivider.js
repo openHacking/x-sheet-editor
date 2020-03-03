@@ -1,7 +1,7 @@
 import { cssPrefix } from '../../config';
-import { ELContextMenuItem } from './ELContextMenuItem';
+import { Widget } from '../../lib/Widget';
 
-class ELContextMenuDivider extends ELContextMenuItem {
+class ELContextMenuDivider extends Widget {
   constructor() {
     super(`${cssPrefix}-el-context-menu-item-divider`);
   }

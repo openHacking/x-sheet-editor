@@ -1,7 +1,6 @@
 import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../config';
 import { Utils } from '../../utils/Utils';
-import { h } from '../../lib/Element';
 import { Icon } from '../../core/work/tools/Icon';
 
 class ColorItem extends Widget {
@@ -11,28 +10,29 @@ class ColorItem extends Widget {
       color: null,
       icon: null,
     }, options);
-    if (this.options.color) {
-      this.css('backgroundColor', this.options.color);
-      this.mask = h('div', `${cssPrefix}-color-array-item-mask`);
-      this.children(this.mask);
-      this.mask.hide();
+    this.color = this.options.color;
+    this.icon = this.options.icon;
+    if (this.color) {
+      this.css('backgroundColor', this.color);
       if (Utils.isDarkRGB(this.options.color)) {
-        this.mask.children(new Icon('checked-dark'));
+        this.checkedIcon = new Icon('checked-dark');
+        this.children(this.checkedIcon);
       } else {
-        this.mask.children(new Icon('checked-light'));
+        this.checkedIcon = new Icon('checked-light');
+        this.children(this.checkedIcon);
       }
     }
-    if (this.options.icon) {
+    if (this.icon) {
       this.children(this.options.icon);
     }
   }
 
   setActive(active) {
-    if (this.mask) {
+    if (this.checkedIcon) {
       if (active) {
-        this.mask.show();
+        this.checkedIcon.show();
       } else {
-        this.mask.hide();
+        this.checkedIcon.hide();
       }
     }
   }

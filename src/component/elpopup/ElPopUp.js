@@ -20,20 +20,20 @@ const EL_POPUP_POSITION = {
   RIGHT: 4,
 };
 
-const pool = [];
+const POOL = [];
 
 class ElPopUp extends Widget {
-  constructor(className, options) {
-    super(`${cssPrefix}-el-pop-up ${className}`);
-    this.options = Utils.copyProp({
+
+  constructor(options) {
+    super(`${cssPrefix}-el-pop-up`);
+    this.options = Utils.mergeDeep({
       position: EL_POPUP_POSITION.BOTTOM,
       el: null,
     }, options);
+    this.off = true;
     this.content = h('div', `${cssPrefix}-el-pop-up-content`);
     this.scrollBarX = new ScrollBarX();
     this.scrollBarY = new ScrollBarY();
-    this.off = true;
-    // 水平布局
     const contentLayerHorizontalElement = new HorizontalLayerElement(this.content, {
       style: {
         flexGrow: 1,
@@ -47,16 +47,14 @@ class ElPopUp extends Widget {
     const horizontalLayer = new HorizontalLayer({
       layerElements: [contentLayerHorizontalElement, scrollBarYLayerHorizontalElement],
     });
-    // 垂直布局
     const contentVerticalLayerElement = new VerticalLayerElement(horizontalLayer);
     const scrollBarXVerticalLayerElement = new VerticalLayerElement(this.scrollBarX);
     const verticalLayer = new VerticalLayer({
       layerElements: [contentVerticalLayerElement, scrollBarXVerticalLayerElement],
     });
-    // 添加布局
     super.children(verticalLayer);
     this.bind();
-    pool.push(this);
+    POOL.push(this);
   }
 
   bind() {
@@ -156,7 +154,7 @@ class ElPopUp extends Widget {
   }
 
   static closeAll(filter = []) {
-    pool.forEach((item) => {
+    POOL.forEach((item) => {
       if (filter.indexOf(item) === -1) {
         item.close();
       }

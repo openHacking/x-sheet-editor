@@ -261,31 +261,40 @@ class TopMenu extends Widget {
       }
     });
     EventBind.bind(this.format, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      ElPopUp.closeAll([this.format.formatContextMenu]);
-      if (this.format.formatContextMenu.off) {
-        this.format.formatContextMenu.open();
+      const { format } = this;
+      const { formatContextMenu } = format;
+      const { elPopUp } = formatContextMenu;
+      ElPopUp.closeAll([elPopUp]);
+      if (formatContextMenu.isOpen()) {
+        formatContextMenu.open();
       } else {
-        this.format.formatContextMenu.close();
+        formatContextMenu.close();
       }
       e.stopPropagation();
       e.preventDefault();
     });
     EventBind.bind(this.font, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      ElPopUp.closeAll([this.font.fontContextMenu]);
-      if (this.font.fontContextMenu.off) {
-        this.font.fontContextMenu.open();
+      const { font } = this;
+      const { fontContextMenu } = font;
+      const { elPopUp } = fontContextMenu;
+      ElPopUp.closeAll([elPopUp]);
+      if (fontContextMenu.isOpen()) {
+        fontContextMenu.open();
       } else {
-        this.font.fontContextMenu.close();
+        fontContextMenu.close();
       }
       e.stopPropagation();
       e.preventDefault();
     });
     EventBind.bind(this.fontSize, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      ElPopUp.closeAll([this.fontSize.fontSizeContextMenu]);
-      if (this.fontSize.fontSizeContextMenu.off) {
-        this.fontSize.fontSizeContextMenu.open();
+      const { fontSize } = this;
+      const { fontSizeContextMenu } = fontSize;
+      const { elPopUp } = fontSizeContextMenu;
+      ElPopUp.closeAll([elPopUp]);
+      if (fontSizeContextMenu.isOpen()) {
+        fontSizeContextMenu.open();
       } else {
-        this.fontSize.fontSizeContextMenu.close();
+        fontSizeContextMenu.close();
       }
       e.stopPropagation();
       e.preventDefault();
@@ -355,21 +364,28 @@ class TopMenu extends Widget {
       }
     });
     EventBind.bind(this.fontColor, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      ElPopUp.closeAll([this.fontColor.fontColorContextMenu]);
-      if (this.fontColor.fontColorContextMenu.off) {
-        this.fontColor.fontColorContextMenu.open();
+      const { fontColor } = this;
+      const { fontColorContextMenu } = fontColor;
+      const { elPopUp } = fontColorContextMenu;
+      ElPopUp.closeAll([elPopUp]);
+      if (fontColorContextMenu.isOpen()) {
+        fontColorContextMenu.open();
       } else {
-        this.fontColor.fontColorContextMenu.close();
+        fontColorContextMenu.close();
       }
       e.stopPropagation();
       e.preventDefault();
     });
     EventBind.bind(this.fillColor, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       ElPopUp.closeAll([this.fillColor.fillColorContextMenu]);
-      if (this.fillColor.fillColorContextMenu.off) {
-        this.fillColor.fillColorContextMenu.open();
+      const { fillColor } = this;
+      const { fillColorContextMenu } = fillColor;
+      const { elPopUp } = fillColorContextMenu;
+      ElPopUp.closeAll([elPopUp]);
+      if (fillColorContextMenu.isOpen()) {
+        fillColorContextMenu.open();
       } else {
-        this.fillColor.fillColorContextMenu.close();
+        fillColorContextMenu.close();
       }
       e.stopPropagation();
       e.preventDefault();

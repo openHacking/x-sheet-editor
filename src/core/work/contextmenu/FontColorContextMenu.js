@@ -64,6 +64,8 @@ class FontColorContextMenu extends ELContextMenu {
     this.children(this.customize);
   }
 
+  bind() {}
+
   setActiveByColor(color) {
     this.customizeColorArray.setActiveByColor(color);
     this.colorArray.setActiveByColor(color);
