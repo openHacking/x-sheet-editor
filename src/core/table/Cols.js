@@ -4,7 +4,7 @@ class Cols {
 
   constructor({ len, width }) {
     this._ = [];
-    this.minWidth = 20;
+    this.minWidth = 5;
     this.width = Utils.minIf(width, this.minWidth);
     this.len = len;
     this.cacheTotalWidth = -1;

@@ -4,7 +4,7 @@ class Rows {
 
   constructor({ len, height }) {
     this._ = [];
-    this.minHeight = 20;
+    this.minHeight = 5;
     this.height = Utils.minIf(height, this.minHeight);
     this.len = len;
     this.cacheTotalHeight = -1;
