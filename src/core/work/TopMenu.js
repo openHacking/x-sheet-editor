@@ -377,7 +377,6 @@ class TopMenu extends Widget {
       e.preventDefault();
     });
     EventBind.bind(this.fillColor, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      ElPopUp.closeAll([this.fillColor.fillColorContextMenu]);
       const { fillColor } = this;
       const { fillColorContextMenu } = fillColor;
       const { elPopUp } = fillColorContextMenu;
