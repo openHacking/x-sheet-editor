@@ -140,12 +140,10 @@ class Utils {
   }
 
   static isPlainObject(obj) {
-    if (Utils.isUnDef(obj)) return false;
-    const prototype = Object.getPrototypeOf(obj);
-    const type = Utils.type(obj);
-    // eslint-disable-next-line no-return-assign
-    return type === DATA_TYPE.Object
-      && (prototype === null || prototype === Object.getPrototypeOf({}));
+    if (Utils.isUnDef(obj)) {
+      return false;
+    }
+    return Object.getPrototypeOf(obj) === Object.getPrototypeOf({});
   }
 
   static isDarkRGB(rgb) {
