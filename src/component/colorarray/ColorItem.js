@@ -2,6 +2,7 @@ import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../config';
 import { Utils } from '../../utils/Utils';
 import { Icon } from '../../core/work/tools/Icon';
+import { ColorPicker } from '../colorpicker/ColorPicker';
 
 class ColorItem extends Widget {
   constructor(options) {
@@ -14,13 +15,14 @@ class ColorItem extends Widget {
     this.icon = this.options.icon;
     if (this.color) {
       this.css('backgroundColor', this.color);
-      if (Utils.isDarkRGB(this.options.color)) {
+      if (ColorPicker.isDark(this.options.color)) {
         this.checkedIcon = new Icon('checked-dark');
         this.children(this.checkedIcon);
       } else {
         this.checkedIcon = new Icon('checked-light');
         this.children(this.checkedIcon);
       }
+      this.checkedIcon.hide();
     }
     if (this.icon) {
       this.children(this.options.icon);

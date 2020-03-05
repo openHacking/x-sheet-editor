@@ -2,7 +2,7 @@ import { DropDownItem } from './base/DropDownItem';
 import { cssPrefix } from '../../../config';
 import { Utils } from '../../../utils/Utils';
 import { EL_POPUP_POSITION } from '../../../component/elpopup/ElPopUp';
-import { FontContextMenu } from '../contextmenu/FontContextMenu';
+import { FontContextMenu } from '../contextmenu/font/FontContextMenu';
 
 class Font extends DropDownItem {
   constructor(options) {

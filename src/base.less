@@ -161,6 +161,25 @@
 }
 .@{css-prefix}-el-pop-up-content {}
 
+// 拖拽层
+.@{css-prefix}-drag-panel {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  cursor: move;
+}
+.@{css-prefix}-drag-panel-content {}
+.@{css-prefix}-drag-panel-mask {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 2;
+}
+
 // 上下文菜单
 .@{css-prefix}-el-context-menu {
   padding: 10px;
@@ -197,22 +216,128 @@
 }
 
 // 颜色选择器
-.@{css-prefix}-color-picker-pre-view-color-point {}
-.@{css-prefix}-color-picker-color-value-tips {}
-.@{css-prefix}-color-picker-color-input {}
+.@{css-prefix}-color-picker {
+  background: #ffffff;
+  cursor: default;
+  user-select: none;
+  padding: 0 5px 0 5px;
+}
+.@{css-prefix}-color-picker-pre-view-color-point {
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  background: black;
+}
+.@{css-prefix}-color-picker-color-value-tips {
+  font-size: 14px;
+  color: #787878;
+}
+.@{css-prefix}-color-picker-color-input {
+  border: 1px solid #dadce0;
+  width: 90px;
+  height: 36px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  padding: 0 3px 0 3px;
+  font-size: 15px;
+}
 .@{css-prefix}-color-picker-top {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
+  height: 45px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
-.@{css-prefix}-color-picker-select-color-point {}
-.@{css-prefix}-color-picker-select-color-area {}
-.@{css-prefix}-color-picker-center {}
-.@{css-prefix}-color-picker-color-hux-tips {}
-.@{css-prefix}-color-picker-color-bar {}
-.@{css-prefix}-color-picker-bar-point {}
-.@{css-prefix}-color-picker-bottom {}
-.@{css-prefix}-color-picker-cancel-button {}
-.@{css-prefix}-color-picker-select-button {}
-.@{css-prefix}-color-picker-buttons {}
+.@{css-prefix}-color-picker-select-color-point {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 20px;
+  height: 20px;
+  background: #ff8000;
+  border: 2px solid white;
+  border-radius: 20px;
+  box-shadow: 0 0 3px 1px #bdc1c6;
+  cursor: pointer;
+}
+.@{css-prefix}-color-picker-select-color-area {
+  background: #42a642;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+}
+.@{css-prefix}-color-picker-select-color-area.area2 {
+  background: linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,0));
+}
+.@{css-prefix}-color-picker-select-color-area.area3 {
+  background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,1));
+}
+.@{css-prefix}-color-picker-center {
+  position: relative;
+  height: 246px;
+  width: 246px;
+  margin: 10px;
+}
+.@{css-prefix}-color-picker-color-hux-tips {
+  color: #787878;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+.@{css-prefix}-color-picker-color-bar {
+  width: 100%;
+  height: 15px;
+  border-radius: 15px;
+  position: relative;
+  background: linear-gradient(to right,#ff0000,#ff0080,#ff00ff,#8000ff,#0000ff,#0080ff,#00ffff,#00ff80,#00ff00,#80ff00,#ffff00,#ff8000,#ff0000);
+}
+.@{css-prefix}-color-picker-bar-point {
+  position: absolute;
+  top: -5px;
+  left: -10px;
+  width: 20px;
+  height: 20px;
+  background: #ff8000;
+  border: 2px solid white;
+  border-radius: 20px;
+  box-shadow: 0 0 3px 1px #bdc1c6;
+  cursor: pointer;
+}
+.@{css-prefix}-color-picker-bottom {
+  margin: 10px;
+}
+.@{css-prefix}-color-picker-button {
+  height: 35px;
+  width: 90px;
+  float: right;
+  cursor: pointer;
+  line-height: 35px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #dadce0!important;
+  font-family: "Google Sans",Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+  border-radius: 4px;
+}
+.@{css-prefix}-color-picker-button.cancel {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 5px;
+  background: white;
+  color: #188038;
+}
+.@{css-prefix}-color-picker-button.select {
+  margin-right: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background: #188038;
+  color: #ffffff;
+}
+.@{css-prefix}-color-picker-buttons {
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
 

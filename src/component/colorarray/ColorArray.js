@@ -112,6 +112,10 @@ class ColorArray extends Widget {
   }
 
   add(item) {
+    item.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      this.options.selectCb(item);
+      this.setActiveByColor(item.options.color);
+    });
     this.colors.push(item);
     this.children(item);
   }

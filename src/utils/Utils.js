@@ -146,15 +146,6 @@ class Utils {
     return Object.getPrototypeOf(obj) === Object.getPrototypeOf({});
   }
 
-  static isDarkRGB(rgb) {
-    const rxp = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/;
-    if (Utils.isBlank(rgb)) {
-      return false;
-    }
-    const result = rgb.match(rxp);
-    return result[1] * 0.299 + result[2] * 0.578 + result[3] * 0.114 >= 192;
-  }
-
   static sum(objOrAry, cb = value => value) {
     let total = 0;
     let size = 0;
@@ -400,6 +391,13 @@ class Utils {
 
   static now() {
     return Date.now().toString();
+  }
+
+  static viewPort() {
+    return {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    };
   }
 }
 

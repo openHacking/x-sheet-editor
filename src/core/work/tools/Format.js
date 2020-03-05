@@ -1,6 +1,6 @@
 import { DropDownItem } from './base/DropDownItem';
 import { cssPrefix } from '../../../config';
-import { FormatContextMenu } from '../contextmenu/FormatContextMenu';
+import { FormatContextMenu } from '../contextmenu/format/FormatContextMenu';
 import { EL_POPUP_POSITION } from '../../../component/elpopup/ElPopUp';
 import { Utils } from '../../../utils/Utils';
 

@@ -59,8 +59,8 @@ class ElPopUp extends Widget {
 
   bind() {
     EventBind.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
-      this.computePosition();
-      this.computeScrollSize();
+      this.position();
+      this.scrollbar();
     });
   }
 
@@ -68,7 +68,7 @@ class ElPopUp extends Widget {
     this.content.children(...args);
   }
 
-  computePosition() {
+  position() {
     const { content } = this;
     const { el, position } = this.options;
     const elBox = el.box();
@@ -129,7 +129,7 @@ class ElPopUp extends Widget {
     });
   }
 
-  computeScrollSize() {
+  scrollbar() {
     const { content } = this;
     const contentBox = content.box();
     const box = this.box();
@@ -140,8 +140,8 @@ class ElPopUp extends Widget {
   open() {
     if (this.off) {
       h(document.body).children(this);
-      this.computePosition();
-      this.computeScrollSize();
+      this.position();
+      this.scrollbar();
       this.off = false;
     }
   }

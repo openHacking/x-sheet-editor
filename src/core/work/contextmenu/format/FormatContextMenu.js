@@ -1,13 +1,13 @@
-import { cssPrefix } from '../../../config';
-import { ELContextMenu } from '../../../component/elcontextmenu/ELContextMenu';
+import { cssPrefix } from '../../../../config';
+import { ELContextMenu } from '../../../../component/elcontextmenu/ELContextMenu';
 import { FormatContextMenuItem } from './FormatContextMenuItem';
-import { ELContextMenuDivider } from '../../../component/elcontextmenu/ELContextMenuDivider';
-import { Constant } from '../../../utils/Constant';
-import { Utils } from '../../../utils/Utils';
+import { ELContextMenuDivider } from '../../../../component/elcontextmenu/ELContextMenuDivider';
+import { Constant } from '../../../../utils/Constant';
+import { Utils } from '../../../../utils/Utils';
 
 class FormatContextMenu extends ELContextMenu {
   constructor(options = {}) {
-    super(`${cssPrefix}-format-context-menu`, Utils.copyProp({
+    super(`${cssPrefix}-format-context-menu`, Utils.mergeDeep({
       onUpdate: () => {},
     }, options));
     this.items = [
@@ -39,7 +39,7 @@ class FormatContextMenu extends ELContextMenu {
           item.setActive();
         });
       }
-      this.children(item);
+      this.addItem(item);
     });
     this.init();
   }

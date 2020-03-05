@@ -3,7 +3,7 @@ import { cssPrefix } from '../../../config';
 import { Icon } from './Icon';
 import { Utils } from '../../../utils/Utils';
 import { EL_POPUP_POSITION } from '../../../component/elpopup/ElPopUp';
-import { FontColorContextMenu } from '../contextmenu/FontColorContextMenu';
+import { FontColorContextMenu } from '../contextmenu/fontcolor/FontColorContextMenu';
 
 class FontColor extends DropDownItem {
   constructor(options) {

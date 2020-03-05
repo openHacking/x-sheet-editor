@@ -1,6 +1,6 @@
-import { ELContextMenuItem } from '../../../component/elcontextmenu/ELContextMenuItem';
-import { cssPrefix } from '../../../config';
-import { h } from '../../../lib/Element';
+import { ELContextMenuItem } from '../../../../component/elcontextmenu/ELContextMenuItem';
+import { cssPrefix } from '../../../../config';
+import { h } from '../../../../lib/Element';
 
 class FontColorContextMenuItem extends ELContextMenuItem {
   constructor(title, icon) {

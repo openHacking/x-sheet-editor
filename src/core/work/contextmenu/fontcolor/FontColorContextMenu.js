@@ -1,23 +1,34 @@
-import { ELContextMenu } from '../../../component/elcontextmenu/ELContextMenu';
-import { cssPrefix } from '../../../config';
+import { ELContextMenu } from '../../../../component/elcontextmenu/ELContextMenu';
+import { cssPrefix } from '../../../../config';
 import { FontColorContextMenuItem } from './FontColorContextMenuItem';
-import { ColorArray } from '../../../component/colorarray/ColorArray';
-import { h } from '../../../lib/Element';
-import { ColorItem } from '../../../component/colorarray/ColorItem';
-import { ELContextMenuDivider } from '../../../component/elcontextmenu/ELContextMenuDivider';
-import { Icon } from '../tools/Icon';
-import { Utils } from '../../../utils/Utils';
-import { Constant } from '../../../utils/Constant';
+import { ColorArray } from '../../../../component/colorarray/ColorArray';
+import { h } from '../../../../lib/Element';
+import { ColorItem } from '../../../../component/colorarray/ColorItem';
+import { ELContextMenuDivider } from '../../../../component/elcontextmenu/ELContextMenuDivider';
+import { Icon } from '../../tools/Icon';
+import { Utils } from '../../../../utils/Utils';
+import { Constant } from '../../../../utils/Constant';
+import { ColorPicker } from '../../../../component/colorpicker/ColorPicker';
 
-class FillColorContextMenu extends ELContextMenu {
+class FontColorContextMenu extends ELContextMenu {
   constructor(options = {}) {
-    super(`${cssPrefix}-fill-color-context-menu`, Utils.copyProp({
+    super(`${cssPrefix}-font-color-context-menu`, Utils.mergeDeep({
       onUpdate: () => {},
     }, options));
+    this.colorPicker = new ColorPicker({
+      selectCb: (color) => {
+        const item = new ColorItem({ color });
+        this.customizeColorArray.add(item);
+        this.customizeColorArray.setActiveByColor(color);
+        this.colorArray.setActiveByColor(null);
+        this.options.onUpdate(color);
+        this.close();
+      },
+    });
     // 重置
     this.reset = new FontColorContextMenuItem('重置', new Icon('clear-color'));
     this.reset.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-      this.options.onUpdate(null);
+      this.options.onUpdate('rgb(0,0,0)');
       this.customizeColorArray.setActiveByColor(null);
       this.colorArray.setActiveByColor(null);
     });
@@ -34,7 +45,7 @@ class FillColorContextMenu extends ELContextMenu {
     });
     this.array.children(this.colorArray);
     // 历史选中
-    this.title = h('div', `${cssPrefix}-fill-color-context-menu-color-title`);
+    this.title = h('div', `${cssPrefix}-font-color-context-menu-color-title`);
     this.title.text('自定义');
     this.plus = new Icon('plus');
     this.customizeColorArray = new ColorArray({
@@ -48,8 +59,7 @@ class FillColorContextMenu extends ELContextMenu {
           this.colorArray.setActiveByColor(null);
           this.close();
         } else {
-          // TODO ...
-          // 打开颜色筛选 ....
+          this.colorPicker.open();
         }
       },
     });
@@ -58,10 +68,10 @@ class FillColorContextMenu extends ELContextMenu {
     this.customize.children(this.title);
     this.customize.children(this.customizeColorArray);
     // 菜单元素追加子节点
-    this.children(this.reset);
-    this.children(this.array);
-    this.children(new ELContextMenuDivider());
-    this.children(this.customize);
+    this.addItem(this.reset);
+    this.addItem(this.array);
+    this.addItem(new ELContextMenuDivider());
+    this.addItem(this.customize);
   }
 
   setActiveByColor(color) {
@@ -70,4 +80,4 @@ class FillColorContextMenu extends ELContextMenu {
   }
 }
 
-export { FillColorContextMenu };
+export { FontColorContextMenu };
