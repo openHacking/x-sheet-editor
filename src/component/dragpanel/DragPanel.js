@@ -31,8 +31,9 @@ class DragPanel extends Widget {
 
   bind() {
     const { mask } = this;
-    EventBind.bind(mask, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    EventBind.bind(mask, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.close();
+      e.stopPropagation();
     });
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
       const downEventXy = this.computeEventXy(evt1, this);
