@@ -13,7 +13,7 @@ import { UnderLine } from './tools/UnderLine';
 import { FontStrike } from './tools/FontStrike';
 import { FontColor } from './tools/FontColor';
 import { FillColor } from './tools/FillColor';
-import { Border } from './tools/Border';
+import { Border } from './tools/border/Border';
 import { Merge } from './tools/Merge';
 import { HorizontalAlign } from './tools/HorizontalAlign';
 import { VerticalAlign } from './tools/VerticalAlign';
@@ -385,6 +385,19 @@ class TopMenu extends Widget {
         fillColorContextMenu.open();
       } else {
         fillColorContextMenu.close();
+      }
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(this.border, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const { border } = this;
+      const { borderTypeContextMenu } = border;
+      const { elPopUp } = borderTypeContextMenu;
+      ElPopUp.closeAll([elPopUp]);
+      if (borderTypeContextMenu.isOpen()) {
+        borderTypeContextMenu.open();
+      } else {
+        borderTypeContextMenu.close();
       }
       e.stopPropagation();
       e.preventDefault();

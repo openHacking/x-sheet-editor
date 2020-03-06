@@ -9,7 +9,6 @@ class FillColor extends DropDownItem {
   constructor(options) {
     super(`${cssPrefix}-tools-fill-color`);
     this.options = Utils.mergeDeep({ contextMenu: {} }, options);
-    this.drop.hide();
     this.icon = new Icon('fill-color');
     this.fillColorContextMenu = new FillColorContextMenu(Utils.copyProp({
       el: this,

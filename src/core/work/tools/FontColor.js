@@ -9,7 +9,6 @@ class FontColor extends DropDownItem {
   constructor(options) {
     super(`${cssPrefix}-tools-font-color`);
     this.options = Utils.mergeDeep({ contextMenu: {} }, options);
-    this.drop.hide();
     this.icon = new Icon('color');
     this.fontColorContextMenu = new FontColorContextMenu(Utils.copyProp({
       el: this,
