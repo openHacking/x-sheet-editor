@@ -10,11 +10,11 @@ class Icon extends Widget {
   }
 
   setWidth(width) {
-    this.css('width', `${width}px`);
+    this.iconNameEl.css('width', `${width}px`);
   }
 
   setHeight(height) {
-    this.css('height', `${height}px`);
+    this.iconNameEl.css('height', `${height}px`);
   }
 }
 

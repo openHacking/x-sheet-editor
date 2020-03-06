@@ -10,13 +10,12 @@ class LineTypeContextMenu extends ELContextMenu {
       onUpdate: () => {},
     }, options));
     this.items = [
-      new LineTypeContextMenuItem('Arial'),
-      new LineTypeContextMenuItem('Helvetica'),
-      new LineTypeContextMenuItem('Source Sans Pro'),
-      new LineTypeContextMenuItem('Comic Sans Ms'),
-      new LineTypeContextMenuItem('Courier New'),
-      new LineTypeContextMenuItem('Verdana'),
-      new LineTypeContextMenuItem('Lalo'),
+      new LineTypeContextMenuItem('line1'),
+      new LineTypeContextMenuItem('line2'),
+      new LineTypeContextMenuItem('line3'),
+      new LineTypeContextMenuItem('line4'),
+      new LineTypeContextMenuItem('line5'),
+      new LineTypeContextMenuItem('line6')
     ];
     this.items.forEach((item) => {
       item.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {

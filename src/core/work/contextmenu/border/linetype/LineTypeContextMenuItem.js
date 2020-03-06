@@ -6,15 +6,15 @@ import { ELContextMenuItem } from '../../../../../component/elcontextmenu/ELCont
 const pool = [];
 
 class LineTypeContextMenuItem extends ELContextMenuItem {
-  constructor(title) {
+  constructor(type) {
     super(`${cssPrefix}-font-context-menu-item`);
-    this.title = title;
     this.icon = new Icon('checked');
+    this.type = new Icon(type);
+    this.type.setWidth(50);
     this.iconElement = h('div', `${cssPrefix}-font-context-menu-item-icon`);
-    this.iconElement.children(this.icon);
     this.titleElement = h('div', `${cssPrefix}-font-context-menu-item-title`);
-    this.titleElement.text(title);
-    this.titleElement.css('font-family', title);
+    this.iconElement.children(this.icon);
+    this.titleElement.children(this.type);
     this.children(this.iconElement);
     this.children(this.titleElement);
     pool.push(this);
