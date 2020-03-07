@@ -104,10 +104,6 @@ class TopMenu extends Widget {
         },
       },
     });
-    this.fontBold = new FontBold();
-    this.fontItalic = new FontItalic();
-    this.underLine = new UnderLine();
-    this.fontStrike = new FontStrike();
     this.fontColor = new FontColor({
       contextMenu: {
         onUpdate: (color) => {
@@ -283,6 +279,10 @@ class TopMenu extends Widget {
         },
       },
     });
+    this.fontBold = new FontBold();
+    this.fontItalic = new FontItalic();
+    this.underLine = new UnderLine();
+    this.fontStrike = new FontStrike();
     this.merge = new Merge();
     this.horizontalAlign = new HorizontalAlign();
     this.verticalAlign = new VerticalAlign();
