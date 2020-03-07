@@ -148,7 +148,44 @@ class TopMenu extends Widget {
     this.border = new Border({
       contextMenu: {
         onUpdate: (borderType, color, lineType) => {
-          console.log(borderType, color, lineType);
+          switch (borderType) {
+            case 'border1':
+              break;
+            case 'border2':
+              break;
+            case 'border3':
+              break;
+            case 'border4':
+              break;
+            case 'border5':
+              break;
+            case 'border6':
+              break;
+            case 'border7':
+              break;
+            case 'border8':
+              break;
+            case 'border9':
+              break;
+            case 'border10':
+              break;
+            default: break;
+          }
+          switch (lineType) {
+            case 'line1':
+              break;
+            case 'line2':
+              break;
+            case 'line3':
+              break;
+            case 'line4':
+              break;
+            case 'line5':
+              break;
+            case 'line6':
+              break;
+            default: break;
+          }
         },
       },
     });
