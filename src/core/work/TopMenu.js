@@ -154,7 +154,7 @@ class TopMenu extends Widget {
             const now = Utils.now();
             switch (borderType) {
               case 'border1':
-                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   cell.borderAttr.left.display = true;
                   cell.borderAttr.top.display = true;
@@ -163,7 +163,7 @@ class TopMenu extends Widget {
                 }, true);
                 break;
               case 'border2':
-                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   if (selectorAttr.rect.sri === r) {
                     cell.borderAttr.bottom.display = true;
@@ -184,7 +184,7 @@ class TopMenu extends Widget {
                 }, true);
                 break;
               case 'border3':
-                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   if (selectorAttr.rect.sri === r) {
                     cell.borderAttr.bottom.display = true;
@@ -197,7 +197,7 @@ class TopMenu extends Widget {
                 }, true);
                 break;
               case 'border4':
-                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   if (selectorAttr.rect.sci === c) {
                     cell.borderAttr.right.display = true;
@@ -210,7 +210,7 @@ class TopMenu extends Widget {
                 }, true);
                 break;
               case 'border5':
-                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   if (selectorAttr.rect.sci === c) {
                     cell.borderAttr.left.display = true;
@@ -225,31 +225,31 @@ class TopMenu extends Widget {
                 }, true);
                 break;
               case 'border6':
-                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   cell.borderAttr.left.display = true;
                 }, true);
                 break;
               case 'border7':
-                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   cell.borderAttr.top.display = true;
                 }, true);
                 break;
               case 'border8':
-                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   cell.borderAttr.right.display = true;
                 }, true);
                 break;
               case 'border9':
-                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   cell.borderAttr.bottom.display = true;
                 }, true);
                 break;
               case 'border10':
-                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   cell.borderAttr.left.display = false;
                   cell.borderAttr.top.display = false;

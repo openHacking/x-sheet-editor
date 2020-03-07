@@ -133,7 +133,7 @@ class Cells extends CellsBorder {
     return this._[ri][ci];
   }
 
-  getCellInRectRange(rectRange, cb, { sy = 0, sx = 0 } = {}, createNew = false) {
+  getCellInRectRange(rectRange, cb, createNew = false, { sy = 0, sx = 0 } = {}) {
     const {
       sri, eri, sci, eci,
     } = rectRange;
