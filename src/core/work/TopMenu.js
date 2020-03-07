@@ -375,7 +375,7 @@ class TopMenu extends Widget {
             const { text } = cell;
             Utils.mergeDeep(cell, src);
             cell.text = text;
-          });
+          }, true);
           dataSnapshot.snapshot();
           table.render();
         };
