@@ -212,7 +212,7 @@ class FrozenLeftTop {
 
   render() {
     const { table } = this;
-    const { draw } = table;
+    const { draw, grid } = table;
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
     const viewRange = this.getViewRange();
@@ -222,7 +222,7 @@ class FrozenLeftTop {
       width: viewRange.w,
       height: viewRange.h,
     });
-    const crop = new Crop({ draw, rect });
+    const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
     this.drawGrid(viewRange, offsetX, offsetY);

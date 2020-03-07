@@ -197,38 +197,14 @@ class Cells extends CellsBorder {
   }
 
   getCellInViewRange(rectRange, cb, createNew = false, { sy = 0, sx = 0 } = {}) {
-    const {
-      sri, eri, sci, eci,
-    } = rectRange;
     const { table } = this;
     const { merges } = table;
-    const getCell = createNew ? this.getCellOrNew : this.getCell;
-    let y = sy;
-    for (let i = sri; i <= eri; i += 1) {
-      const height = this.rows.getHeight(i);
-      let x = sx;
-      for (let j = sci; j <= eci; j += 1) {
-        const width = this.cols.getWidth(j);
-        const cell = getCell.call(this, i, j);
-        const merge = merges.getFirstIncludes(i, j);
-        if (cell && merge === null) {
-          const overFlow = this.getCellOverFlowRect(i, j);
-          cb(i, j, cell, new Rect({
-            x,
-            y,
-            width,
-            height,
-          }), new Rect({
-            x: x + overFlow.offset,
-            y,
-            width: overFlow.width,
-            height,
-          }));
-        }
-        x += width;
+    this.getCellInRectRange(rectRange, (i, j, cell, rect, overflow) => {
+      const merge = merges.getFirstIncludes(i, j);
+      if (merge === null) {
+        cb(i, j, cell, rect, overflow);
       }
-      y += height;
-    }
+    }, createNew, { sy, sx });
   }
 
   getData() {
