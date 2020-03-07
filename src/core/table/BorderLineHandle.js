@@ -278,15 +278,17 @@ class BorderLineHandle {
     for (let i = 0; i < mergesBrink.length; i += 1) {
       const brink = mergesBrink[i];
       const { top } = brink;
-      result = result.concat(this.borderHTLine(top.view, top.x, top.y, (row, col) => {
-        const borderTop = cells.isDisplayTopBorder(row, col);
-        const borderBottom = cells.isDisplayBottomBorder(row - 1, col);
-        const borderDiff = cells.borderComparisonOfTime(row, col, row - 1, col);
-        if (borderTop && borderBottom) {
-          return borderDiff === 1;
-        }
-        return borderTop;
-      }));
+      if (top) {
+        result = result.concat(this.borderHTLine(top.view, top.x, top.y, (row, col) => {
+          const borderTop = cells.isDisplayTopBorder(row, col);
+          const borderBottom = cells.isDisplayBottomBorder(row - 1, col);
+          const borderDiff = cells.borderComparisonOfTime(row, col, row - 1, col);
+          if (borderTop && borderBottom) {
+            return borderDiff === 1;
+          }
+          return borderTop;
+        }));
+      }
     }
     return result;
   }
@@ -298,15 +300,17 @@ class BorderLineHandle {
     for (let i = 0; i < mergesBrink.length; i += 1) {
       const brink = mergesBrink[i];
       const { bottom } = brink;
-      result = result.concat(this.borderHBLine(bottom.view, bottom.x, bottom.y, (row, col) => {
-        const borderBottom = cells.isDisplayBottomBorder(row, col);
-        const borderTop = cells.isDisplayTopBorder(row + 1, col);
-        const borderDiff = cells.borderComparisonOfTime(row, col, row + 1, col);
-        if (borderBottom && borderTop) {
-          return borderDiff === 1 || borderDiff === 0;
-        }
-        return borderBottom;
-      }));
+      if (bottom) {
+        result = result.concat(this.borderHBLine(bottom.view, bottom.x, bottom.y, (row, col) => {
+          const borderBottom = cells.isDisplayBottomBorder(row, col);
+          const borderTop = cells.isDisplayTopBorder(row + 1, col);
+          const borderDiff = cells.borderComparisonOfTime(row, col, row + 1, col);
+          if (borderBottom && borderTop) {
+            return borderDiff === 1 || borderDiff === 0;
+          }
+          return borderBottom;
+        }));
+      }
     }
     return result;
   }
@@ -318,15 +322,17 @@ class BorderLineHandle {
     for (let i = 0; i < mergesBrink.length; i += 1) {
       const brink = mergesBrink[i];
       const { left } = brink;
-      result = result.concat(this.borderVLLine(left.view, left.x, left.y, (col, row) => {
-        const borderLeft = cells.isDisplayLeftBorder(row, col);
-        const borderRight = cells.isDisplayRightBorder(row, col - 1);
-        const borderDiff = cells.borderComparisonOfTime(row, col, row, col - 1);
-        if (borderLeft && borderRight) {
-          return borderDiff === 1;
-        }
-        return borderLeft;
-      }));
+      if (left) {
+        result = result.concat(this.borderVLLine(left.view, left.x, left.y, (col, row) => {
+          const borderLeft = cells.isDisplayLeftBorder(row, col);
+          const borderRight = cells.isDisplayRightBorder(row, col - 1);
+          const borderDiff = cells.borderComparisonOfTime(row, col, row, col - 1);
+          if (borderLeft && borderRight) {
+            return borderDiff === 1;
+          }
+          return borderLeft;
+        }));
+      }
     }
     return result;
   }
@@ -338,15 +344,17 @@ class BorderLineHandle {
     for (let i = 0; i < mergesBrink.length; i += 1) {
       const brink = mergesBrink[i];
       const { right } = brink;
-      result = result.concat(this.borderVRLine(right.view, right.x, right.y, (col, row) => {
-        const borderRight = cells.isDisplayRightBorder(row, col);
-        const borderLeft = cells.isDisplayLeftBorder(row, col + 1);
-        const borderDiff = cells.borderComparisonOfTime(row, col, row, col + 1);
-        if (borderRight && borderLeft) {
-          return borderDiff === 1 || borderDiff === 0;
-        }
-        return borderRight;
-      }));
+      if (right) {
+        result = result.concat(this.borderVRLine(right.view, right.x, right.y, (col, row) => {
+          const borderRight = cells.isDisplayRightBorder(row, col);
+          const borderLeft = cells.isDisplayLeftBorder(row, col + 1);
+          const borderDiff = cells.borderComparisonOfTime(row, col, row, col + 1);
+          if (borderRight && borderLeft) {
+            return borderDiff === 1 || borderDiff === 0;
+          }
+          return borderRight;
+        }));
+      }
     }
     return result;
   }

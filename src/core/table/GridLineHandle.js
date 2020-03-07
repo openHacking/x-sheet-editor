@@ -120,11 +120,13 @@ class GridLineHandle {
     for (let i = 0; i < mergesBrink.length; i += 1) {
       const brink = mergesBrink[i];
       const { bottom } = brink;
-      result = result.concat(this.gridHLine(bottom.view, bottom.x, bottom.y, (row, col) => {
-        const notBorderBottom = cells.isDisplayBottomBorder(row, col) === false;
-        const notBorderTop = cells.isDisplayTopBorder(row + 1, col) === false;
-        return notBorderBottom && notBorderTop;
-      }));
+      if (bottom) {
+        result = result.concat(this.gridHLine(bottom.view, bottom.x, bottom.y, (row, col) => {
+          const notBorderBottom = cells.isDisplayBottomBorder(row, col) === false;
+          const notBorderTop = cells.isDisplayTopBorder(row + 1, col) === false;
+          return notBorderBottom && notBorderTop;
+        }));
+      }
     }
     return result;
   }
@@ -136,11 +138,13 @@ class GridLineHandle {
     for (let i = 0; i < mergesBrink.length; i += 1) {
       const brink = mergesBrink[i];
       const { right } = brink;
-      result = result.concat(this.gridVLine(right.view, right.x, right.y, (col, row) => {
-        const notBorderRight = cells.isDisplayRightBorder(row, col) === false;
-        const notBorderLeft = cells.isDisplayLeftBorder(row, col + 1) === false;
-        return notBorderRight && notBorderLeft;
-      }));
+      if (right) {
+        result = result.concat(this.gridVLine(right.view, right.x, right.y, (col, row) => {
+          const notBorderRight = cells.isDisplayRightBorder(row, col) === false;
+          const notBorderLeft = cells.isDisplayLeftBorder(row, col + 1) === false;
+          return notBorderRight && notBorderLeft;
+        }));
+      }
     }
     return result;
   }

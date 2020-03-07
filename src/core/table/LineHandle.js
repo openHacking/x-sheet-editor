@@ -86,29 +86,15 @@ class LineHandle {
     const result = [];
     this.hEach({
       viewRange,
-      handle: (row, col) => {
-        const view = merges.getFirstIncludes(row, col);
-        if (view && filter.indexOf(view) === -1) {
-          filter.push(view);
-          const minSri = Math.min(viewRange.sri, view.sri);
-          let maxSri = Math.max(viewRange.sri, view.sri);
-          const minSci = Math.min(viewRange.sci, view.sci);
-          let maxSci = Math.max(viewRange.sci, view.sci);
-          maxSri -= 1;
-          maxSci -= 1;
-          let x = cols.sectionSumWidth(minSci, maxSci);
-          let y = rows.sectionSumHeight(minSri, maxSri);
-          x = viewRange.sci > view.sci ? x * -1 : x;
-          y = viewRange.sri > view.sri ? y * -1 : y;
+      handle: (row, col, x, y) => {
+        const merge = merges.getFirstIncludes(row, col);
+        if (merge && filter.indexOf(merge) === -1) {
+          filter.push(merge);
+          const view = viewRange.coincide(merge);
           const width = cols.sectionSumWidth(view.sci, view.eci);
           const height = rows.sectionSumHeight(view.sri, view.eri);
-          const rect = new Rect({
-            x,
-            y,
-            width,
-            height,
-          });
-          result.push({ rect, view });
+          const rect = new Rect({ x, y, width, height });
+          result.push({ rect, view, merge });
         }
       },
     });
@@ -122,7 +108,7 @@ class LineHandle {
     const { cols, rows } = table;
     const result = [];
     for (let i = 0; i < coincideView.length; i += 1) {
-      const { view, rect } = coincideView[i];
+      const { view, rect, merge } = coincideView[i];
       const brink = view.brink();
       const top = {
         view: brink.top,
@@ -144,7 +130,20 @@ class LineHandle {
         x: rect.x + rect.width - cols.rectRangeSumWidth(brink.right),
         y: rect.y,
       };
-      result.push({ top, left, bottom, right });
+      const item = {};
+      if (merge.sri === view.sri) {
+        item.top = top;
+      }
+      if (merge.sci === view.sci) {
+        item.left = left;
+      }
+      if (merge.eri === view.eri) {
+        item.bottom = bottom;
+      }
+      if (merge.eci === view.eci) {
+        item.right = right;
+      }
+      result.push(item);
     }
     return result;
   }
