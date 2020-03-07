@@ -6,6 +6,7 @@ import { h } from '../../../lib/Element';
 import { EventBind } from '../../../utils/EventBind';
 import { Constant } from '../../../utils/Constant';
 import { Utils } from '../../../utils/Utils';
+import { floor } from '../../../canvas/Draw';
 
 class YReSizer extends Widget {
   constructor(table, options = { height: 5 }) {
@@ -73,7 +74,7 @@ class YReSizer extends Widget {
         ({ y: my } = table.computeEventXy(e));
         // console.log('my >>>', my);
         my -= this.height / 2;
-        my = Math.round(Utils.minIf(my, min));
+        my = floor(Utils.minIf(my, min));
         this.css('top', `${my}px`);
         this.lineEl.css('width', `${table.visualWidth()}px`);
         this.lineEl.show();

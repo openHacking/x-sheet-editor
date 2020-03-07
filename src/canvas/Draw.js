@@ -1,11 +1,16 @@
-/* global window Math */
+/* global window */
 
 function dpr() {
   return window.devicePixelRatio || 1;
 }
 
+function floor(n) {
+  // eslint-disable-next-line no-bitwise
+  return (0.5 + n) << 0;
+}
+
 function npx(px) {
-  return Math.round(px * dpr());
+  return floor(px * dpr());
 }
 
 class Draw {
@@ -147,5 +152,5 @@ class Draw {
 }
 
 export {
-  Draw, npx, dpr,
+  Draw, npx, dpr, floor,
 };
