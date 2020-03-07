@@ -86,14 +86,28 @@ class LineHandle {
     const result = [];
     this.hEach({
       viewRange,
-      handle: (row, col, x, y) => {
-        const merge = merges.getFirstIncludes(row, col);
-        if (merge && filter.indexOf(merge) === -1) {
-          filter.push(merge);
-          const view = viewRange.coincide(merge);
+      handle: (row, col) => {
+        const view = merges.getFirstIncludes(row, col);
+        if (view && filter.indexOf(view) === -1) {
+          filter.push(view);
+          const minSri = Math.min(viewRange.sri, view.sri);
+          let maxSri = Math.max(viewRange.sri, view.sri);
+          const minSci = Math.min(viewRange.sci, view.sci);
+          let maxSci = Math.max(viewRange.sci, view.sci);
+          maxSri -= 1;
+          maxSci -= 1;
+          let x = cols.sectionSumWidth(minSci, maxSci);
+          let y = rows.sectionSumHeight(minSri, maxSri);
+          x = viewRange.sci > view.sci ? x * -1 : x;
+          y = viewRange.sri > view.sri ? y * -1 : y;
           const width = cols.sectionSumWidth(view.sci, view.eci);
           const height = rows.sectionSumHeight(view.sri, view.eri);
-          const rect = new Rect({ x, y, width, height });
+          const rect = new Rect({
+            x,
+            y,
+            width,
+            height,
+          });
           result.push({ rect, view });
         }
       },
