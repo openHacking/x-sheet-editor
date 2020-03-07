@@ -2,6 +2,16 @@ import { Utils } from '../../utils/Utils';
 
 class CellsBorder {
 
+  getMergeCellOrCell(ri, ci) {
+    const { table } = this;
+    const { merges } = table;
+    const merge = merges.getFirstIncludes(ri, ci);
+    if (merge) {
+      return this.getCell(merge.sri, merge.sci);
+    }
+    return this.getCell(ri, ci);
+  }
+
   borderComparisonOfTime(sri, sci, tri, tci) {
     const srcCell = this.getMergeCellOrCell(sri, sci);
     const targetCell = this.getMergeCellOrCell(tri, tci);
@@ -29,38 +39,6 @@ class CellsBorder {
   isDisplayBottomBorder(ri, ci) {
     const cell = this.getMergeCellOrCell(ri, ci);
     return cell !== null && cell.borderAttr.bottom.display;
-  }
-
-  setDisplayLeftBorder(ri, ci, attr) {
-    const cell = this.getMergeCellOrCell(ri, ci);
-    if (cell) {
-      cell.borderAttr.time = Utils.now();
-      cell.borderAttr.left = attr;
-    }
-  }
-
-  setDisplayTopBorder(ri, ci, attr) {
-    const cell = this.getMergeCellOrCell(ri, ci);
-    if (cell) {
-      cell.borderAttr.time = Utils.now();
-      cell.borderAttr.top = attr;
-    }
-  }
-
-  setDisplayRightBorder(ri, ci, attr) {
-    const cell = this.getMergeCellOrCell(ri, ci);
-    if (cell) {
-      cell.borderAttr.time = Utils.now();
-      cell.borderAttr.right = attr;
-    }
-  }
-
-  setDisplayBottomBorder(ri, ci, attr) {
-    const cell = this.getMergeCellOrCell(ri, ci);
-    if (cell) {
-      cell.borderAttr.time = Utils.now();
-      cell.borderAttr.bottom = attr;
-    }
   }
 
   borderEqual(src, target) {

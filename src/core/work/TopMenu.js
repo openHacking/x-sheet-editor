@@ -148,43 +148,136 @@ class TopMenu extends Widget {
     this.border = new Border({
       contextMenu: {
         onUpdate: (borderType, color, lineType) => {
-          switch (borderType) {
-            case 'border1':
-              break;
-            case 'border2':
-              break;
-            case 'border3':
-              break;
-            case 'border4':
-              break;
-            case 'border5':
-              break;
-            case 'border6':
-              break;
-            case 'border7':
-              break;
-            case 'border8':
-              break;
-            case 'border9':
-              break;
-            case 'border10':
-              break;
-            default: break;
-          }
-          switch (lineType) {
-            case 'line1':
-              break;
-            case 'line2':
-              break;
-            case 'line3':
-              break;
-            case 'line4':
-              break;
-            case 'line5':
-              break;
-            case 'line6':
-              break;
-            default: break;
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          const { screen, cells } = table;
+          const screenSelector = screen.findByClass(ScreenSelector);
+          const { selectorAttr } = screenSelector;
+          if (selectorAttr) {
+            const now = Utils.now();
+            switch (borderType) {
+              case 'border1':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.left.display = true;
+                  cell.borderAttr.top.display = true;
+                  cell.borderAttr.right.display = true;
+                  cell.borderAttr.bottom.display = true;
+                }, undefined, true);
+                break;
+              case 'border2':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  if (selectorAttr.rect.sri === r) {
+                    cell.borderAttr.bottom.display = true;
+                  } else if (selectorAttr.rect.eri === r) {
+                    cell.borderAttr.top.display = true;
+                  } else {
+                    cell.borderAttr.bottom.display = true;
+                    cell.borderAttr.top.display = true;
+                  }
+                  if (selectorAttr.rect.sci === c) {
+                    cell.borderAttr.right.display = true;
+                  } else if (selectorAttr.rect.eci === c) {
+                    cell.borderAttr.left.display = true;
+                  } else {
+                    cell.borderAttr.right.display = true;
+                    cell.borderAttr.left.display = true;
+                  }
+                }, undefined, true);
+                break;
+              case 'border3':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  if (selectorAttr.rect.sri === r) {
+                    cell.borderAttr.bottom.display = true;
+                  } else if (selectorAttr.rect.eri === r) {
+                    cell.borderAttr.top.display = true;
+                  } else {
+                    cell.borderAttr.bottom.display = true;
+                    cell.borderAttr.top.display = true;
+                  }
+                }, undefined, true);
+                break;
+              case 'border4':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  if (selectorAttr.rect.sci === c) {
+                    cell.borderAttr.right.display = true;
+                  } else if (selectorAttr.rect.eci === c) {
+                    cell.borderAttr.left.display = true;
+                  } else {
+                    cell.borderAttr.right.display = true;
+                    cell.borderAttr.left.display = true;
+                  }
+                }, undefined, true);
+                break;
+              case 'border5':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  if (selectorAttr.rect.sci === c) {
+                    cell.borderAttr.left.display = true;
+                  } else if (selectorAttr.rect.eci === c) {
+                    cell.borderAttr.right.display = true;
+                  }
+                  if (selectorAttr.rect.sri === r) {
+                    cell.borderAttr.top.display = true;
+                  } else if (selectorAttr.rect.eri === r) {
+                    cell.borderAttr.bottom.display = true;
+                  }
+                }, undefined, true);
+                break;
+              case 'border6':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.left.display = true;
+                }, undefined, true);
+                break;
+              case 'border7':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.top.display = true;
+                }, undefined, true);
+                break;
+              case 'border8':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.right.display = true;
+                }, undefined, true);
+                break;
+              case 'border9':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.bottom.display = true;
+                }, undefined, true);
+                break;
+              case 'border10':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.left.display = false;
+                  cell.borderAttr.top.display = false;
+                  cell.borderAttr.right.display = false;
+                  cell.borderAttr.bottom.display = false;
+                }, undefined, true);
+                break;
+              default: break;
+            }
+            switch (lineType) {
+              case 'line1':
+                break;
+              case 'line2':
+                break;
+              case 'line3':
+                break;
+              case 'line4':
+                break;
+              case 'line5':
+                break;
+              case 'line6':
+                break;
+              default: break;
+            }
+            table.render();
           }
         },
       },
