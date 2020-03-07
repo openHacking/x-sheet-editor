@@ -15,16 +15,16 @@ class LineTypeContextMenu extends ELContextMenu {
       new LineTypeContextMenuItem('line3'),
       new LineTypeContextMenuItem('line4'),
       new LineTypeContextMenuItem('line5'),
-      new LineTypeContextMenuItem('line6')
+      new LineTypeContextMenuItem('line6'),
     ];
     this.items.forEach((item) => {
       item.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-        this.update(item.title);
+        this.update(item.type);
         item.setActive();
       });
       this.addItem(item);
     });
-    this.setActiveByType(this.items[0].title);
+    this.setActiveByType(this.items[0].type);
   }
 
   update(type) {
@@ -35,7 +35,7 @@ class LineTypeContextMenu extends ELContextMenu {
 
   setActiveByType(type) {
     this.items.forEach((item) => {
-      if (item.title === type) {
+      if (item.type === type) {
         item.setActive();
       }
     });

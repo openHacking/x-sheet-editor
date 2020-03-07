@@ -8,13 +8,14 @@ const pool = [];
 class LineTypeContextMenuItem extends ELContextMenuItem {
   constructor(type) {
     super(`${cssPrefix}-font-context-menu-item`);
+    this.type = type;
     this.icon = new Icon('checked');
-    this.type = new Icon(type);
-    this.type.setWidth(50);
+    this.typeIcon = new Icon(type);
+    this.typeIcon.setWidth(50);
     this.iconElement = h('div', `${cssPrefix}-font-context-menu-item-icon`);
     this.titleElement = h('div', `${cssPrefix}-font-context-menu-item-title`);
     this.iconElement.children(this.icon);
-    this.titleElement.children(this.type);
+    this.titleElement.children(this.typeIcon);
     this.children(this.iconElement);
     this.children(this.titleElement);
     pool.push(this);

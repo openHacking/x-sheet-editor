@@ -27,6 +27,8 @@ class BorderTypeContextMenu extends ELContextMenu {
     super(`${cssPrefix}-border-type-context-menu`, Utils.mergeDeep({
       onUpdate: () => {},
     }, options));
+    this.type = null;
+    this.color = null;
     // 边框样式
     this.borderIcon1 = new BorderIcon1();
     this.borderIcon2 = new BorderIcon2();
@@ -71,12 +73,21 @@ class BorderTypeContextMenu extends ELContextMenu {
     this.borderColorContextMenu = new BorderColorContextMenu(Utils.copyProp({
       el: this.borderColor,
       position: EL_POPUP_POSITION.BOTTOM,
-    }, this.options.contextMenu));
+    }, {
+      onUpdate: (color) => {
+        this.color = color;
+        this.borderColor.setColor(color);
+      },
+    }));
     // 边框类型
     this.lineTypeContextMenu = new LineTypeContextMenu(Utils.copyProp({
       el: this.borderType,
       position: EL_POPUP_POSITION.BOTTOM,
-    }, this.options.contextMenu));
+    }, {
+      onUpdate: (type) => {
+        this.type = type;
+      },
+    }));
     // 添加事件
     EventBind.bind(this.borderColor, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { borderColorContextMenu } = this;
@@ -99,6 +110,56 @@ class BorderTypeContextMenu extends ELContextMenu {
       } else {
         lineTypeContextMenu.close();
       }
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(this.borderIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      this.options.onUpdate('border1', this.color, this.type);
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(this.borderIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      this.options.onUpdate('border2', this.color, this.type);
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(this.borderIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      this.options.onUpdate('border3', this.color, this.type);
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(this.borderIcon4, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      this.options.onUpdate('border4', this.color, this.type);
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(this.borderIcon5, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      this.options.onUpdate('border5', this.color, this.type);
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(this.borderIcon6, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      this.options.onUpdate('border6', this.color, this.type);
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(this.borderIcon7, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      this.options.onUpdate('border7', this.color, this.type);
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(this.borderIcon8, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      this.options.onUpdate('border8', this.color, this.type);
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(this.borderIcon9, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      this.options.onUpdate('border9', this.color, this.type);
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(this.borderIcon10, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      this.options.onUpdate('border10', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });

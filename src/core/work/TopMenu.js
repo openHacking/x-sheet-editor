@@ -145,7 +145,13 @@ class TopMenu extends Widget {
         },
       },
     });
-    this.border = new Border();
+    this.border = new Border({
+      contextMenu: {
+        onUpdate: (borderType, color, lineType) => {
+          console.log(borderType, color, lineType);
+        },
+      },
+    });
     this.merge = new Merge();
     this.horizontalAlign = new HorizontalAlign();
     this.verticalAlign = new VerticalAlign();
