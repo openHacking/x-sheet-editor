@@ -79,19 +79,17 @@ class FrozenLeftTop {
   drawBackGround(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, grid, cells, merges,
+      draw, grid, cells,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInRectRange(viewRange, (i, c, cell, rect) => {
-      // 剔除合并单元格
-      if (merges.getFirstIncludes(i, c)) return;
+    cells.getCellInViewRange(viewRange, (i, c, cell, rect) => {
       // 绘制背景
       rect.expandSize(grid.lineWidth());
       const box = new Box({ draw, rect });
       box.drawBackgroundColor(cell.background);
     });
-    cells.getMergeCellInRectRange(viewRange, (rect, cell) => {
+    cells.getMergeCellInViewRange(viewRange, (rect, cell) => {
       // 绘制背景
       rect.expandSize(grid.lineWidth());
       const box = new Box({ draw, rect });
@@ -181,13 +179,11 @@ class FrozenLeftTop {
   drawCells(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges, grid,
+      draw, cells, grid,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInRectRange(viewRange, (i, c, cell, rect, overflow) => {
-      // 剔除合并单元格
-      if (merges.getFirstIncludes(i, c)) return;
+    cells.getCellInViewRange(viewRange, (i, c, cell, rect, overflow) => {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
@@ -198,7 +194,7 @@ class FrozenLeftTop {
       });
       font.draw();
     });
-    cells.getMergeCellInRectRange(viewRange, (rect, cell) => {
+    cells.getMergeCellInViewRange(viewRange, (rect, cell) => {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
@@ -305,19 +301,17 @@ class Content {
   drawBackGround(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, grid, cells, merges,
+      draw, grid, cells,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInRectRange(viewRange, (i, c, cell, rect) => {
-      // 剔除合并单元格
-      if (merges.getFirstIncludes(i, c)) return;
+    cells.getCellInViewRange(viewRange, (i, c, cell, rect) => {
       // 绘制背景
       rect.expandSize(grid.lineWidth());
       const box = new Box({ draw, rect });
       box.drawBackgroundColor(cell.background);
     });
-    cells.getMergeCellInRectRange(viewRange, (rect, cell) => {
+    cells.getMergeCellInViewRange(viewRange, (rect, cell) => {
       // 绘制背景
       rect.expandSize(grid.lineWidth());
       const box = new Box({ draw, rect });
@@ -407,13 +401,11 @@ class Content {
   drawCells(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges, grid,
+      draw, cells, grid,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInRectRange(viewRange, (i, c, cell, rect, overflow) => {
-      // 剔除合并单元格
-      if (merges.getFirstIncludes(i, c)) return;
+    cells.getCellInViewRange(viewRange, (i, c, cell, rect, overflow) => {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
@@ -424,7 +416,7 @@ class Content {
       });
       font.draw();
     });
-    cells.getMergeCellInRectRange(viewRange, (rect, cell) => {
+    cells.getMergeCellInViewRange(viewRange, (rect, cell) => {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
@@ -514,19 +506,17 @@ class FixedLeft {
   drawBackGround(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, grid, cells, merges,
+      draw, grid, cells,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInRectRange(viewRange, (i, c, cell, rect) => {
-      // 剔除合并单元格
-      if (merges.getFirstIncludes(i, c)) return;
+    cells.getCellInViewRange(viewRange, (i, c, cell, rect) => {
       // 绘制背景
       rect.expandSize(grid.lineWidth());
       const box = new Box({ draw, rect });
       box.drawBackgroundColor(cell.background);
     });
-    cells.getMergeCellInRectRange(viewRange, (rect, cell) => {
+    cells.getMergeCellInViewRange(viewRange, (rect, cell) => {
       // 绘制背景
       rect.expandSize(grid.lineWidth());
       const box = new Box({ draw, rect });
@@ -616,13 +606,11 @@ class FixedLeft {
   drawCells(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges, grid,
+      draw, cells, grid,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInRectRange(viewRange, (i, c, cell, rect, overflow) => {
-      // 剔除合并单元格
-      if (merges.getFirstIncludes(i, c)) return;
+    cells.getCellInViewRange(viewRange, (i, c, cell, rect, overflow) => {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
@@ -633,7 +621,7 @@ class FixedLeft {
       });
       font.draw();
     });
-    cells.getMergeCellInRectRange(viewRange, (rect, cell) => {
+    cells.getMergeCellInViewRange(viewRange, (rect, cell) => {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
@@ -720,19 +708,17 @@ class FixedTop {
   drawBackGround(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, grid, cells, merges,
+      draw, grid, cells,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInRectRange(viewRange, (i, c, cell, rect) => {
-      // 剔除合并单元格
-      if (merges.getFirstIncludes(i, c)) return;
+    cells.getCellInViewRange(viewRange, (i, c, cell, rect) => {
       // 绘制背景
       rect.expandSize(grid.lineWidth());
       const box = new Box({ draw, rect });
       box.drawBackgroundColor(cell.background);
     });
-    cells.getMergeCellInRectRange(viewRange, (rect, cell) => {
+    cells.getMergeCellInViewRange(viewRange, (rect, cell) => {
       // 绘制背景
       rect.expandSize(grid.lineWidth());
       const box = new Box({ draw, rect });
@@ -822,13 +808,11 @@ class FixedTop {
   drawCells(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, merges, grid,
+      draw, cells, grid,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInRectRange(viewRange, (i, c, cell, rect, overflow) => {
-      // 剔除合并单元格
-      if (merges.getFirstIncludes(i, c)) return;
+    cells.getCellInViewRange(viewRange, (i, c, cell, rect, overflow) => {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),
@@ -839,7 +823,7 @@ class FixedTop {
       });
       font.draw();
     });
-    cells.getMergeCellInRectRange(viewRange, (rect, cell) => {
+    cells.getMergeCellInViewRange(viewRange, (rect, cell) => {
       // 绘制文字
       const font = new Font({
         text: Format(cell.format, cell.text),

@@ -36,6 +36,7 @@ class Divider extends Widget {
 }
 
 class TopMenu extends Widget {
+
   constructor(workTop) {
     super(`${cssPrefix}-tools-menu`);
     this.workTop = workTop;
@@ -56,9 +57,9 @@ class TopMenu extends Widget {
           const { selectorAttr } = screenSelector;
           this.format.setTitle(title);
           if (selectorAttr) {
-            cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+            cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
               cell.format = format;
-            }, undefined, true);
+            }, true);
             dataSnapshot.snapshot();
             table.render();
           }
@@ -75,9 +76,9 @@ class TopMenu extends Widget {
           const { selectorAttr } = screenSelector;
           this.font.setTitle(type);
           if (selectorAttr) {
-            cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+            cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
               cell.fontAttr.name = type;
-            }, undefined, true);
+            }, true);
             dataSnapshot.snapshot();
             table.render();
           }
@@ -94,9 +95,9 @@ class TopMenu extends Widget {
           const { selectorAttr } = screenSelector;
           this.fontSize.setTitle(size);
           if (selectorAttr) {
-            cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+            cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
               cell.fontAttr.size = size;
-            }, undefined, true);
+            }, true);
             dataSnapshot.snapshot();
             table.render();
           }
@@ -117,9 +118,9 @@ class TopMenu extends Widget {
           const { selectorAttr } = screenSelector;
           this.fontColor.setColor(color);
           if (selectorAttr) {
-            cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+            cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
               cell.fontAttr.color = color;
-            }, undefined, true);
+            }, true);
             dataSnapshot.snapshot();
             table.render();
           }
@@ -136,9 +137,9 @@ class TopMenu extends Widget {
           const { selectorAttr } = screenSelector;
           this.fillColor.setColor(color);
           if (selectorAttr) {
-            cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+            cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
               cell.background = color;
-            }, undefined, true);
+            }, true);
             dataSnapshot.snapshot();
             table.render();
           }
@@ -157,16 +158,16 @@ class TopMenu extends Widget {
             const now = Utils.now();
             switch (borderType) {
               case 'border1':
-                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   cell.borderAttr.left.display = true;
                   cell.borderAttr.top.display = true;
                   cell.borderAttr.right.display = true;
                   cell.borderAttr.bottom.display = true;
-                }, undefined, true);
+                }, true);
                 break;
               case 'border2':
-                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   if (selectorAttr.rect.sri === r) {
                     cell.borderAttr.bottom.display = true;
@@ -184,10 +185,10 @@ class TopMenu extends Widget {
                     cell.borderAttr.right.display = true;
                     cell.borderAttr.left.display = true;
                   }
-                }, undefined, true);
+                }, true);
                 break;
               case 'border3':
-                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   if (selectorAttr.rect.sri === r) {
                     cell.borderAttr.bottom.display = true;
@@ -197,10 +198,10 @@ class TopMenu extends Widget {
                     cell.borderAttr.bottom.display = true;
                     cell.borderAttr.top.display = true;
                   }
-                }, undefined, true);
+                }, true);
                 break;
               case 'border4':
-                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   if (selectorAttr.rect.sci === c) {
                     cell.borderAttr.right.display = true;
@@ -210,10 +211,10 @@ class TopMenu extends Widget {
                     cell.borderAttr.right.display = true;
                     cell.borderAttr.left.display = true;
                   }
-                }, undefined, true);
+                }, true);
                 break;
               case 'border5':
-                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   if (selectorAttr.rect.sci === c) {
                     cell.borderAttr.left.display = true;
@@ -225,40 +226,40 @@ class TopMenu extends Widget {
                   } else if (selectorAttr.rect.eri === r) {
                     cell.borderAttr.bottom.display = true;
                   }
-                }, undefined, true);
+                }, true);
                 break;
               case 'border6':
-                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   cell.borderAttr.left.display = true;
-                }, undefined, true);
+                }, true);
                 break;
               case 'border7':
-                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   cell.borderAttr.top.display = true;
-                }, undefined, true);
+                }, true);
                 break;
               case 'border8':
-                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   cell.borderAttr.right.display = true;
-                }, undefined, true);
+                }, true);
                 break;
               case 'border9':
-                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   cell.borderAttr.bottom.display = true;
-                }, undefined, true);
+                }, true);
                 break;
               case 'border10':
-                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   cell.borderAttr.left.display = false;
                   cell.borderAttr.top.display = false;
                   cell.borderAttr.right.display = false;
                   cell.borderAttr.bottom.display = false;
-                }, undefined, true);
+                }, true);
                 break;
               default: break;
             }
@@ -370,7 +371,7 @@ class TopMenu extends Widget {
           // 复制样式
           const { selectorAttr: newSelectorAttr } = screenSelector;
           const src = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
-          cells.getCellInRectRange(newSelectorAttr.rect, (r, c, cell) => {
+          cells.getCellInViewRange(newSelectorAttr.rect, (r, c, cell) => {
             const { text } = cell;
             Utils.mergeDeep(cell, src);
             cell.text = text;
@@ -388,7 +389,7 @@ class TopMenu extends Widget {
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
-        cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+        cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
           const { text } = cell;
           Utils.mergeDeep(cell, Cells.getDefaultAttr());
           cell.text = text;
@@ -444,9 +445,9 @@ class TopMenu extends Widget {
       if (selectorAttr) {
         const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
         const bold = !firstCell.fontAttr.bold;
-        cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+        cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
           cell.fontAttr.bold = bold;
-        }, undefined, true);
+        }, true);
         dataSnapshot.snapshot();
         table.render();
       }
@@ -460,9 +461,9 @@ class TopMenu extends Widget {
       if (selectorAttr) {
         const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
         const italic = !firstCell.fontAttr.italic;
-        cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+        cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
           cell.fontAttr.italic = italic;
-        }, undefined, true);
+        }, true);
         dataSnapshot.snapshot();
         table.render();
       }
@@ -476,9 +477,9 @@ class TopMenu extends Widget {
       if (selectorAttr) {
         const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
         const underline = !firstCell.fontAttr.underline;
-        cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+        cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
           cell.fontAttr.underline = underline;
-        }, undefined, true);
+        }, true);
         dataSnapshot.snapshot();
         table.render();
       }
@@ -492,9 +493,9 @@ class TopMenu extends Widget {
       if (selectorAttr) {
         const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
         const strikethrough = !firstCell.fontAttr.strikethrough;
-        cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+        cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
           cell.fontAttr.strikethrough = strikethrough;
-        }, undefined, true);
+        }, true);
         dataSnapshot.snapshot();
         table.render();
       }
