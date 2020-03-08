@@ -15,8 +15,13 @@ class SolidLine {
   }
 
   drawLine(sx, sy, ex, ey) {
-    const { draw, width } = this;
-    draw.attr({ lineWidth: width });
+    const { draw } = this;
+    const { width, color } = this;
+    draw.beginPath();
+    draw.attr({
+      lineWidth: width,
+      strokeStyle: color,
+    });
     draw.line([sx, sy], [ex, ey]);
   }
 

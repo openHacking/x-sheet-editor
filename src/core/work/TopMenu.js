@@ -259,6 +259,113 @@ class TopMenu extends Widget {
                 break;
               default: break;
             }
+            switch (borderType) {
+              case 'border1':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.left.color = color;
+                  cell.borderAttr.top.color = color;
+                  cell.borderAttr.right.color = color;
+                  cell.borderAttr.bottom.color = color;
+                }, color);
+                break;
+              case 'border2':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  if (selectorAttr.rect.sri === r) {
+                    cell.borderAttr.bottom.color = color;
+                  } else if (selectorAttr.rect.eri === r) {
+                    cell.borderAttr.top.color = color;
+                  } else {
+                    cell.borderAttr.bottom.color = color;
+                    cell.borderAttr.top.color = color;
+                  }
+                  if (selectorAttr.rect.sci === c) {
+                    cell.borderAttr.right.color = color;
+                  } else if (selectorAttr.rect.eci === c) {
+                    cell.borderAttr.left.color = color;
+                  } else {
+                    cell.borderAttr.right.color = color;
+                    cell.borderAttr.left.color = color;
+                  }
+                }, color);
+                break;
+              case 'border3':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  if (selectorAttr.rect.sri === r) {
+                    cell.borderAttr.bottom.color = color;
+                  } else if (selectorAttr.rect.eri === r) {
+                    cell.borderAttr.top.color = color;
+                  } else {
+                    cell.borderAttr.bottom.color = color;
+                    cell.borderAttr.top.color = color;
+                  }
+                }, color);
+                break;
+              case 'border4':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  if (selectorAttr.rect.sci === c) {
+                    cell.borderAttr.right.color = color;
+                  } else if (selectorAttr.rect.eci === c) {
+                    cell.borderAttr.left.color = color;
+                  } else {
+                    cell.borderAttr.right.color = color;
+                    cell.borderAttr.left.color = color;
+                  }
+                }, color);
+                break;
+              case 'border5':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  if (selectorAttr.rect.sci === c) {
+                    cell.borderAttr.left.color = color;
+                  } else if (selectorAttr.rect.eci === c) {
+                    cell.borderAttr.right.color = color;
+                  }
+                  if (selectorAttr.rect.sri === r) {
+                    cell.borderAttr.top.color = color;
+                  } else if (selectorAttr.rect.eri === r) {
+                    cell.borderAttr.bottom.color = color;
+                  }
+                }, color);
+                break;
+              case 'border6':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.left.color = color;
+                }, color);
+                break;
+              case 'border7':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.top.color = color;
+                }, color);
+                break;
+              case 'border8':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.right.color = color;
+                }, color);
+                break;
+              case 'border9':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.bottom.color = color;
+                }, color);
+                break;
+              case 'border10':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.left.color = false;
+                  cell.borderAttr.top.color = false;
+                  cell.borderAttr.right.color = false;
+                  cell.borderAttr.bottom.color = false;
+                }, color);
+                break;
+              default: break;
+            }
             switch (lineType) {
               case 'line1':
                 break;

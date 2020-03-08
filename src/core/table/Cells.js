@@ -30,10 +30,10 @@ class Cells extends CellsBorder {
     };
     const borderAttr = {
       time: Utils.now(),
-      left: { display: false },
-      top: { display: false },
-      right: { display: false },
-      bottom: { display: false },
+      left: { display: false, width: 1, color: '#000000' },
+      top: { display: false, width: 1, color: '#000000' },
+      right: { display: false, width: 1, color: '#000000' },
+      bottom: { display: false, width: 1, color: '#000000' },
     };
     return {
       ID: Utils.now(),
