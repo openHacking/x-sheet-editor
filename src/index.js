@@ -15,16 +15,16 @@ class XSheet extends Widget {
       body: {
         sheets: [
           {
-            name: 'coffee cloud 二次迭代开发',
+            name: 'sheet1',
           },
           {
-            name: '80列1000行',
+            name: 'sheet2',
             tableConfig: {
               data: Data,
             },
           },
           {
-            name: 'jerry测试',
+            name: 'sheet3',
             tableConfig: {
               merges: [
                 new RectRange(0, 0, 0, 1),
@@ -35,7 +35,7 @@ class XSheet extends Widget {
             },
           },
           {
-            name: '白云测试',
+            name: 'sheet4',
             tableConfig: {
               merges: [
                 new RectRange(1, 0, 2, 0),
