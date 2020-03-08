@@ -147,7 +147,7 @@ class TopMenu extends Widget {
         onUpdate: (borderType, color, lineType) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          const { screen, cells } = table;
+          const { screen, cells, dataSnapshot } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           if (selectorAttr) {
@@ -381,6 +381,7 @@ class TopMenu extends Widget {
                 break;
               default: break;
             }
+            dataSnapshot.snapshot();
             table.render();
           }
         },
