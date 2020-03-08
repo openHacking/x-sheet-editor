@@ -144,7 +144,7 @@ class TopMenu extends Widget {
     });
     this.border = new Border({
       contextMenu: {
-        onUpdate: (borderType, color, lineType) => {
+        onUpdate: (borderType, color) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
           const { screen, cells, dataSnapshot } = table;
@@ -226,31 +226,60 @@ class TopMenu extends Widget {
                 break;
               case 'border6':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
-                  cell.borderAttr.time = now;
-                  cell.borderAttr.left.display = true;
+                  if (c === selectorAttr.rect.sci) {
+                    cell.borderAttr.time = now;
+                    cell.borderAttr.left.display = true;
+                  }
                 }, true);
                 break;
               case 'border7':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
-                  cell.borderAttr.time = now;
-                  cell.borderAttr.top.display = true;
+                  if (r === selectorAttr.rect.sri) {
+                    cell.borderAttr.time = now;
+                    cell.borderAttr.top.display = true;
+                  }
                 }, true);
                 break;
               case 'border8':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
-                  cell.borderAttr.time = now;
-                  cell.borderAttr.right.display = true;
+                  if (c === selectorAttr.rect.eci) {
+                    cell.borderAttr.time = now;
+                    cell.borderAttr.right.display = true;
+                  }
                 }, true);
                 break;
               case 'border9':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
-                  cell.borderAttr.time = now;
-                  cell.borderAttr.bottom.display = true;
+                  if (r === selectorAttr.rect.eri) {
+                    cell.borderAttr.time = now;
+                    cell.borderAttr.bottom.display = true;
+                  }
                 }, true);
                 break;
               case 'border10':
-                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                cells.getCellInRectRange(selectorAttr.rect, (r, c) => {
+                  const cell = cells.getCellOrNew(r, c);
                   cell.borderAttr.time = now;
+                  if (selectorAttr.rect.sri === r) {
+                    const top = cells.getCellOrNew(r - 1, c);
+                    top.borderAttr.time = now;
+                    top.borderAttr.bottom.display = false;
+                  }
+                  if (selectorAttr.rect.eri === r) {
+                    const bottom = cells.getCellOrNew(r + 1, c);
+                    bottom.borderAttr.time = now;
+                    bottom.borderAttr.top.display = false;
+                  }
+                  if (selectorAttr.rect.sci === c) {
+                    const left = cells.getCellOrNew(r, c - 1);
+                    left.borderAttr.time = now;
+                    left.borderAttr.right.display = false;
+                  }
+                  if (selectorAttr.rect.eci === c) {
+                    const right = cells.getCellOrNew(r, c + 1);
+                    right.borderAttr.time = now;
+                    right.borderAttr.left.display = false;
+                  }
                   cell.borderAttr.left.display = false;
                   cell.borderAttr.top.display = false;
                   cell.borderAttr.right.display = false;
@@ -363,21 +392,6 @@ class TopMenu extends Widget {
                   cell.borderAttr.right.color = false;
                   cell.borderAttr.bottom.color = false;
                 }, color);
-                break;
-              default: break;
-            }
-            switch (lineType) {
-              case 'line1':
-                break;
-              case 'line2':
-                break;
-              case 'line3':
-                break;
-              case 'line4':
-                break;
-              case 'line5':
-                break;
-              case 'line6':
                 break;
               default: break;
             }
