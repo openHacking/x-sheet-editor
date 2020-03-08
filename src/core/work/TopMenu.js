@@ -57,7 +57,7 @@ class TopMenu extends Widget {
           const { selectorAttr } = screenSelector;
           this.format.setTitle(title);
           if (selectorAttr) {
-            cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+            cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
               cell.format = format;
             }, true);
             dataSnapshot.snapshot();
@@ -76,7 +76,7 @@ class TopMenu extends Widget {
           const { selectorAttr } = screenSelector;
           this.font.setTitle(type);
           if (selectorAttr) {
-            cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+            cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
               cell.fontAttr.name = type;
             }, true);
             dataSnapshot.snapshot();
@@ -95,7 +95,7 @@ class TopMenu extends Widget {
           const { selectorAttr } = screenSelector;
           this.fontSize.setTitle(size);
           if (selectorAttr) {
-            cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+            cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
               cell.fontAttr.size = size;
             }, true);
             dataSnapshot.snapshot();
@@ -114,7 +114,7 @@ class TopMenu extends Widget {
           const { selectorAttr } = screenSelector;
           this.fontColor.setColor(color);
           if (selectorAttr) {
-            cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+            cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
               cell.fontAttr.color = color;
             }, true);
             dataSnapshot.snapshot();
@@ -133,7 +133,7 @@ class TopMenu extends Widget {
           const { selectorAttr } = screenSelector;
           this.fillColor.setColor(color);
           if (selectorAttr) {
-            cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+            cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
               cell.background = color;
             }, true);
             dataSnapshot.snapshot();
@@ -371,7 +371,7 @@ class TopMenu extends Widget {
           // 复制样式
           const { selectorAttr: newSelectorAttr } = screenSelector;
           const src = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
-          cells.getCellInViewRange(newSelectorAttr.rect, (r, c, cell) => {
+          cells.getCellInRectRange(newSelectorAttr.rect, (r, c, cell) => {
             const { text } = cell;
             Utils.mergeDeep(cell, src);
             cell.text = text;
@@ -389,7 +389,7 @@ class TopMenu extends Widget {
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
-        cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+        cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
           const { text } = cell;
           Utils.mergeDeep(cell, Cells.getDefaultAttr());
           cell.text = text;
@@ -445,7 +445,7 @@ class TopMenu extends Widget {
       if (selectorAttr) {
         const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
         const bold = !firstCell.fontAttr.bold;
-        cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+        cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
           cell.fontAttr.bold = bold;
         }, true);
         dataSnapshot.snapshot();
@@ -461,7 +461,7 @@ class TopMenu extends Widget {
       if (selectorAttr) {
         const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
         const italic = !firstCell.fontAttr.italic;
-        cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+        cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
           cell.fontAttr.italic = italic;
         }, true);
         dataSnapshot.snapshot();
@@ -477,7 +477,7 @@ class TopMenu extends Widget {
       if (selectorAttr) {
         const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
         const underline = !firstCell.fontAttr.underline;
-        cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+        cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
           cell.fontAttr.underline = underline;
         }, true);
         dataSnapshot.snapshot();
@@ -493,7 +493,7 @@ class TopMenu extends Widget {
       if (selectorAttr) {
         const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
         const strikethrough = !firstCell.fontAttr.strikethrough;
-        cells.getCellInViewRange(selectorAttr.rect, (r, c, cell) => {
+        cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
           cell.fontAttr.strikethrough = strikethrough;
         }, true);
         dataSnapshot.snapshot();
