@@ -147,29 +147,37 @@ class FrozenLeftTop {
     htLine.forEach((item) => {
       const { borderAttr } = item;
       const { top } = borderAttr;
-      const { color } = top;
+      const { color, width, type } = top;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbLine.forEach((item) => {
       const { borderAttr } = item;
       const { bottom } = borderAttr;
-      const { color } = bottom;
+      const { color, width, type } = bottom;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vlLine.forEach((item) => {
       const { borderAttr } = item;
       const { left } = borderAttr;
-      const { color } = left;
+      const { color, width, type } = left;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vrLine.forEach((item) => {
       const { borderAttr } = item;
       const { right } = borderAttr;
-      const { color } = right;
+      const { color, width, type } = right;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
@@ -179,29 +187,37 @@ class FrozenLeftTop {
     htMergeLine.forEach((item) => {
       const { borderAttr } = item;
       const { top } = borderAttr;
-      const { color } = top;
+      const { color, width, type } = top;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbMergeLine.forEach((item) => {
       const { borderAttr } = item;
       const { bottom } = borderAttr;
-      const { color } = bottom;
+      const { color, width, type } = bottom;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vlMergeLine.forEach((item) => {
       const { borderAttr } = item;
       const { left } = borderAttr;
-      const { color } = left;
+      const { color, width, type } = left;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vrMergeLine.forEach((item) => {
       const { borderAttr } = item;
       const { right } = borderAttr;
-      const { color } = right;
+      const { color, width, type } = right;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
@@ -401,29 +417,37 @@ class Content {
     htLine.forEach((item) => {
       const { borderAttr } = item;
       const { top } = borderAttr;
-      const { color } = top;
+      const { color, width, type } = top;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbLine.forEach((item) => {
       const { borderAttr } = item;
       const { bottom } = borderAttr;
-      const { color } = bottom;
+      const { color, width, type } = bottom;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vlLine.forEach((item) => {
       const { borderAttr } = item;
       const { left } = borderAttr;
-      const { color } = left;
+      const { color, width, type } = left;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vrLine.forEach((item) => {
       const { borderAttr } = item;
       const { right } = borderAttr;
-      const { color } = right;
+      const { color, width, type } = right;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
@@ -433,29 +457,37 @@ class Content {
     htMergeLine.forEach((item) => {
       const { borderAttr } = item;
       const { top } = borderAttr;
-      const { color } = top;
+      const { color, width, type } = top;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbMergeLine.forEach((item) => {
       const { borderAttr } = item;
       const { bottom } = borderAttr;
-      const { color } = bottom;
+      const { color, width, type } = bottom;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vlMergeLine.forEach((item) => {
       const { borderAttr } = item;
       const { left } = borderAttr;
-      const { color } = left;
+      const { color, width, type } = left;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vrMergeLine.forEach((item) => {
       const { borderAttr } = item;
       const { right } = borderAttr;
-      const { color } = right;
+      const { color, width, type } = right;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
@@ -638,29 +670,37 @@ class FixedLeft {
     htLine.forEach((item) => {
       const { borderAttr } = item;
       const { top } = borderAttr;
-      const { color } = top;
+      const { color, width, type } = top;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbLine.forEach((item) => {
       const { borderAttr } = item;
       const { bottom } = borderAttr;
-      const { color } = bottom;
+      const { color, width, type } = bottom;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vlLine.forEach((item) => {
       const { borderAttr } = item;
       const { left } = borderAttr;
-      const { color } = left;
+      const { color, width, type } = left;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vrLine.forEach((item) => {
       const { borderAttr } = item;
       const { right } = borderAttr;
-      const { color } = right;
+      const { color, width, type } = right;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
@@ -670,29 +710,37 @@ class FixedLeft {
     htMergeLine.forEach((item) => {
       const { borderAttr } = item;
       const { top } = borderAttr;
-      const { color } = top;
+      const { color, width, type } = top;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbMergeLine.forEach((item) => {
       const { borderAttr } = item;
       const { bottom } = borderAttr;
-      const { color } = bottom;
+      const { color, width, type } = bottom;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vlMergeLine.forEach((item) => {
       const { borderAttr } = item;
       const { left } = borderAttr;
-      const { color } = left;
+      const { color, width, type } = left;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vrMergeLine.forEach((item) => {
       const { borderAttr } = item;
       const { right } = borderAttr;
-      const { color } = right;
+      const { color, width, type } = right;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
@@ -872,29 +920,37 @@ class FixedTop {
     htLine.forEach((item) => {
       const { borderAttr } = item;
       const { top } = borderAttr;
-      const { color } = top;
+      const { color, width, type } = top;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbLine.forEach((item) => {
       const { borderAttr } = item;
       const { bottom } = borderAttr;
-      const { color } = bottom;
+      const { color, width, type } = bottom;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vlLine.forEach((item) => {
       const { borderAttr } = item;
       const { left } = borderAttr;
-      const { color } = left;
+      const { color, width, type } = left;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vrLine.forEach((item) => {
       const { borderAttr } = item;
       const { right } = borderAttr;
-      const { color } = right;
+      const { color, width, type } = right;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
@@ -904,29 +960,37 @@ class FixedTop {
     htMergeLine.forEach((item) => {
       const { borderAttr } = item;
       const { top } = borderAttr;
-      const { color } = top;
+      const { color, width, type } = top;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbMergeLine.forEach((item) => {
       const { borderAttr } = item;
       const { bottom } = borderAttr;
-      const { color } = bottom;
+      const { color, width, type } = bottom;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vlMergeLine.forEach((item) => {
       const { borderAttr } = item;
       const { left } = borderAttr;
-      const { color } = left;
+      const { color, width, type } = left;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vrMergeLine.forEach((item) => {
       const { borderAttr } = item;
       const { right } = borderAttr;
-      const { color } = right;
+      const { color, width, type } = right;
       line.setColor(color);
+      line.setWidth(width);
+      line.setType(type);
       line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);

@@ -90,6 +90,10 @@ class Draw {
     this.ctx.fill();
   }
 
+  setLineDash(dash) {
+    this.ctx.setLineDash(dash);
+  }
+
   measureText(text) {
     return this.ctx.measureText(text);
   }

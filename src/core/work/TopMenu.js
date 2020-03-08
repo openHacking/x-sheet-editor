@@ -28,6 +28,7 @@ import { ScreenSelector } from '../table/selector/ScreenSelector';
 import { Utils } from '../../utils/Utils';
 import { ElPopUp } from '../../component/elpopup/ElPopUp';
 import { Cells } from '../table/Cells';
+import { LINE_TYPE } from '../../canvas/Line';
 
 class Divider extends Widget {
   constructor() {
@@ -144,14 +145,38 @@ class TopMenu extends Widget {
     });
     this.border = new Border({
       contextMenu: {
-        onUpdate: (borderType, color) => {
+        onUpdate: (borderType, color, lineType) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
           const { screen, cells, dataSnapshot } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
+          const now = Utils.now();
           if (selectorAttr) {
-            const now = Utils.now();
+            let width = 1;
+            let type = LINE_TYPE.SOLID_LINE;
+            switch (lineType) {
+              case 'line1':
+                width = 1;
+                type = LINE_TYPE.SOLID_LINE;
+                break;
+              case 'line2':
+                width = 2;
+                type = LINE_TYPE.SOLID_LINE;
+                break;
+              case 'line3':
+                width = 3;
+                type = LINE_TYPE.SOLID_LINE;
+                break;
+              case 'line4':
+                type = LINE_TYPE.DOTTED_LINE;
+                break;
+              case 'line5':
+                type = LINE_TYPE.POINT_LINE;
+                break;
+              default: break;
+            }
+            // display
             switch (borderType) {
               case 'border1':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
@@ -288,6 +313,7 @@ class TopMenu extends Widget {
                 break;
               default: break;
             }
+            // color
             switch (borderType) {
               case 'border1':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
@@ -296,7 +322,7 @@ class TopMenu extends Widget {
                   cell.borderAttr.top.color = color;
                   cell.borderAttr.right.color = color;
                   cell.borderAttr.bottom.color = color;
-                }, color);
+                }, true);
                 break;
               case 'border2':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
@@ -317,7 +343,7 @@ class TopMenu extends Widget {
                     cell.borderAttr.right.color = color;
                     cell.borderAttr.left.color = color;
                   }
-                }, color);
+                }, true);
                 break;
               case 'border3':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
@@ -330,7 +356,7 @@ class TopMenu extends Widget {
                     cell.borderAttr.bottom.color = color;
                     cell.borderAttr.top.color = color;
                   }
-                }, color);
+                }, true);
                 break;
               case 'border4':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
@@ -343,7 +369,7 @@ class TopMenu extends Widget {
                     cell.borderAttr.right.color = color;
                     cell.borderAttr.left.color = color;
                   }
-                }, color);
+                }, true);
                 break;
               case 'border5':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
@@ -358,31 +384,31 @@ class TopMenu extends Widget {
                   } else if (selectorAttr.rect.eri === r) {
                     cell.borderAttr.bottom.color = color;
                   }
-                }, color);
+                }, true);
                 break;
               case 'border6':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   cell.borderAttr.left.color = color;
-                }, color);
+                }, true);
                 break;
               case 'border7':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   cell.borderAttr.top.color = color;
-                }, color);
+                }, true);
                 break;
               case 'border8':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   cell.borderAttr.right.color = color;
-                }, color);
+                }, true);
                 break;
               case 'border9':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
                   cell.borderAttr.time = now;
                   cell.borderAttr.bottom.color = color;
-                }, color);
+                }, true);
                 break;
               case 'border10':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
@@ -391,11 +417,229 @@ class TopMenu extends Widget {
                   cell.borderAttr.top.color = false;
                   cell.borderAttr.right.color = false;
                   cell.borderAttr.bottom.color = false;
-                }, color);
+                }, true);
                 break;
               default: break;
             }
+            // width
+            switch (borderType) {
+              case 'border1':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.left.width = width;
+                  cell.borderAttr.top.width = width;
+                  cell.borderAttr.right.width = width;
+                  cell.borderAttr.bottom.width = width;
+                }, true);
+                break;
+              case 'border2':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  if (selectorAttr.rect.sri === r) {
+                    cell.borderAttr.bottom.width = width;
+                  } else if (selectorAttr.rect.eri === r) {
+                    cell.borderAttr.top.width = width;
+                  } else {
+                    cell.borderAttr.bottom.width = width;
+                    cell.borderAttr.top.width = width;
+                  }
+                  if (selectorAttr.rect.sci === c) {
+                    cell.borderAttr.right.width = width;
+                  } else if (selectorAttr.rect.eci === c) {
+                    cell.borderAttr.left.width = width;
+                  } else {
+                    cell.borderAttr.right.width = width;
+                    cell.borderAttr.left.width = width;
+                  }
+                }, true);
+                break;
+              case 'border3':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  if (selectorAttr.rect.sri === r) {
+                    cell.borderAttr.bottom.width = width;
+                  } else if (selectorAttr.rect.eri === r) {
+                    cell.borderAttr.top.width = width;
+                  } else {
+                    cell.borderAttr.bottom.width = width;
+                    cell.borderAttr.top.width = width;
+                  }
+                }, true);
+                break;
+              case 'border4':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  if (selectorAttr.rect.sci === c) {
+                    cell.borderAttr.right.width = width;
+                  } else if (selectorAttr.rect.eci === c) {
+                    cell.borderAttr.left.width = width;
+                  } else {
+                    cell.borderAttr.right.width = width;
+                    cell.borderAttr.left.width = width;
+                  }
+                }, true);
+                break;
+              case 'border5':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  if (selectorAttr.rect.sci === c) {
+                    cell.borderAttr.left.width = width;
+                  } else if (selectorAttr.rect.eci === c) {
+                    cell.borderAttr.right.width = width;
+                  }
+                  if (selectorAttr.rect.sri === r) {
+                    cell.borderAttr.top.width = width;
+                  } else if (selectorAttr.rect.eri === r) {
+                    cell.borderAttr.bottom.width = width;
+                  }
+                }, true);
+                break;
+              case 'border6':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.left.width = width;
+                }, true);
+                break;
+              case 'border7':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.top.width = width;
+                }, true);
+                break;
+              case 'border8':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.right.width = width;
+                }, true);
+                break;
+              case 'border9':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.bottom.width = width;
+                }, true);
+                break;
+              case 'border10':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.left.width = false;
+                  cell.borderAttr.top.width = false;
+                  cell.borderAttr.right.width = false;
+                  cell.borderAttr.bottom.width = false;
+                }, true);
+                break;
+              default: break;
+            }
+            // type
+            switch (borderType) {
+              case 'border1':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.left.type = type;
+                  cell.borderAttr.top.type = type;
+                  cell.borderAttr.right.type = type;
+                  cell.borderAttr.bottom.type = type;
+                }, true);
+                break;
+              case 'border2':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  if (selectorAttr.rect.sri === r) {
+                    cell.borderAttr.bottom.type = type;
+                  } else if (selectorAttr.rect.eri === r) {
+                    cell.borderAttr.top.type = type;
+                  } else {
+                    cell.borderAttr.bottom.type = type;
+                    cell.borderAttr.top.type = type;
+                  }
+                  if (selectorAttr.rect.sci === c) {
+                    cell.borderAttr.right.type = type;
+                  } else if (selectorAttr.rect.eci === c) {
+                    cell.borderAttr.left.type = type;
+                  } else {
+                    cell.borderAttr.right.type = type;
+                    cell.borderAttr.left.type = type;
+                  }
+                }, true);
+                break;
+              case 'border3':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  if (selectorAttr.rect.sri === r) {
+                    cell.borderAttr.bottom.type = type;
+                  } else if (selectorAttr.rect.eri === r) {
+                    cell.borderAttr.top.type = type;
+                  } else {
+                    cell.borderAttr.bottom.type = type;
+                    cell.borderAttr.top.type = type;
+                  }
+                }, true);
+                break;
+              case 'border4':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  if (selectorAttr.rect.sci === c) {
+                    cell.borderAttr.right.type = type;
+                  } else if (selectorAttr.rect.eci === c) {
+                    cell.borderAttr.left.type = type;
+                  } else {
+                    cell.borderAttr.right.type = type;
+                    cell.borderAttr.left.type = type;
+                  }
+                }, true);
+                break;
+              case 'border5':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  if (selectorAttr.rect.sci === c) {
+                    cell.borderAttr.left.type = type;
+                  } else if (selectorAttr.rect.eci === c) {
+                    cell.borderAttr.right.type = type;
+                  }
+                  if (selectorAttr.rect.sri === r) {
+                    cell.borderAttr.top.type = type;
+                  } else if (selectorAttr.rect.eri === r) {
+                    cell.borderAttr.bottom.type = type;
+                  }
+                }, true);
+                break;
+              case 'border6':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.left.type = type;
+                }, true);
+                break;
+              case 'border7':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.top.type = type;
+                }, true);
+                break;
+              case 'border8':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.right.type = type;
+                }, true);
+                break;
+              case 'border9':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.bottom.type = type;
+                }, true);
+                break;
+              case 'border10':
+                cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  cell.borderAttr.time = now;
+                  cell.borderAttr.left.type = false;
+                  cell.borderAttr.top.type = false;
+                  cell.borderAttr.right.type = false;
+                  cell.borderAttr.bottom.type = false;
+                }, true);
+                break;
+              default: break;
+            }
+            // 快照
             dataSnapshot.snapshot();
+            // render
             table.render();
           }
         },
