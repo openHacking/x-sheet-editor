@@ -151,6 +151,7 @@ class Line {
       this.color = color;
       this.solidLine.setColor(color);
       this.dottedLine.setColor(color);
+      this.pointLine.setColor(color);
       this.doubleLine.setColor(color);
     }
   }

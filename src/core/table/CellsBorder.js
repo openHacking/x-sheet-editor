@@ -16,8 +16,12 @@ class CellsBorder {
     const srcCell = this.getMergeCellOrCell(sri, sci);
     const targetCell = this.getMergeCellOrCell(tri, tci);
     if (Utils.isUnDef(srcCell) || Utils.isUnDef(targetCell)) return -2;
-    if (srcCell.time > targetCell.time) return 1;
-    if (targetCell.time > srcCell.time) return -1;
+    const srcBorderAttr = srcCell.borderAttr;
+    const targetBorderAttr = targetCell.borderAttr;
+    const srcTime = srcBorderAttr.time;
+    const targetTime = targetBorderAttr.time;
+    if (srcTime > targetTime) return 1;
+    if (targetTime > srcTime) return -1;
     return 0;
   }
 
