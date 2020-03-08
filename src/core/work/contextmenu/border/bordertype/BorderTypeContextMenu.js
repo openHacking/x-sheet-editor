@@ -21,14 +21,15 @@ import { Constant } from '../../../../../utils/Constant';
 import { EL_POPUP_POSITION, ElPopUp } from '../../../../../component/elpopup/ElPopUp';
 import { BorderColorContextMenu } from '../bordercolor/BorderColorContextMenu';
 import { LineTypeContextMenu } from '../linetype/LineTypeContextMenu';
+import { LINE_TYPE } from '../../../../../canvas/Line';
 
 class BorderTypeContextMenu extends ELContextMenu {
   constructor(options = {}) {
     super(`${cssPrefix}-border-type-context-menu`, Utils.mergeDeep({
       onUpdate: () => {},
     }, options));
-    this.type = null;
-    this.color = null;
+    this.type = LINE_TYPE.SOLID_LINE;
+    this.color = '#000000';
     // 边框样式
     this.borderIcon1 = new BorderIcon1();
     this.borderIcon2 = new BorderIcon2();

@@ -163,10 +163,12 @@ class Font {
     crop.open();
     dw.fillText(text, tx, ty);
     if (underline || strikethrough) {
-      dw.beginPath();
-      dw.attr({
+      const change = dw.attr({
         strokeStyle: attr.color,
       });
+      if (change) {
+        dw.beginPath();
+      }
     }
     if (underline) {
       this.drawLine('underline', tx, ty, textWidth);
@@ -217,10 +219,12 @@ class Font {
       crop.open();
       dw.fillText(text, tx, ty);
       if (underline || strikethrough) {
-        dw.beginPath();
-        dw.attr({
+        const change = dw.attr({
           strokeStyle: attr.color,
         });
+        if (change) {
+          dw.beginPath();
+        }
       }
       if (underline) {
         this.drawLine('underline', tx, ty, textWidth);
@@ -319,10 +323,12 @@ class Font {
       item.ty += by;
       dw.fillText(item.text, item.tx, item.ty);
       if (underline || strikethrough) {
-        dw.beginPath();
-        dw.attr({
+        const change = dw.attr({
           strokeStyle: attr.color,
         });
+        if (change) {
+          dw.beginPath();
+        }
       }
       if (underline) {
         this.drawLine('underline', item.tx, item.ty, item.len);

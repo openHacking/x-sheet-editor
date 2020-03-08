@@ -46,6 +46,7 @@ class Draw {
   }
 
   attr(options) {
+    let change = false;
     // eslint-disable-next-line guard-for-in,no-restricted-syntax
     for (const key in options) {
       // eslint-disable-next-line no-prototype-builtins
@@ -56,10 +57,11 @@ class Draw {
         }
         if (this.ctx[key] !== value) {
           this.ctx[key] = value;
+          change = true;
         }
       }
     }
-    return this;
+    return change;
   }
 
   beginPath() {

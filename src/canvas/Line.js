@@ -18,11 +18,13 @@ class SolidLine {
   drawLine(sx, sy, ex, ey) {
     const { draw } = this;
     const { width, color } = this;
-    draw.beginPath();
-    draw.attr({
+    const change = draw.attr({
       lineWidth: width,
       strokeStyle: color,
     });
+    if (change) {
+      draw.beginPath();
+    }
     draw.line([sx, sy], [ex, ey]);
   }
 
@@ -48,10 +50,13 @@ class DottedLine {
     const { draw, dash } = this;
     const { width, color } = this;
     draw.beginPath();
-    draw.attr({
+    const change = draw.attr({
       lineWidth: width,
       strokeStyle: color,
     });
+    if (change) {
+      draw.beginPath();
+    }
     draw.setLineDash(dash);
     draw.line([sx, sy], [ex, ey]);
   }
