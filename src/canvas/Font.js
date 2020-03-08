@@ -163,11 +163,7 @@ class Font {
     crop.open();
     dw.fillText(text, tx, ty);
     if (underline || strikethrough) {
-      if (dw.attr({
-        strokeStyle: attr.color,
-      })) {
-        dw.beginPath();
-      }
+      dw.beginPath();
     }
     if (underline) {
       this.drawLine('underline', tx, ty, textWidth);
@@ -218,11 +214,7 @@ class Font {
       crop.open();
       dw.fillText(text, tx, ty);
       if (underline || strikethrough) {
-        if (dw.attr({
-          strokeStyle: attr.color,
-        })) {
-          dw.beginPath();
-        }
+        dw.beginPath();
       }
       if (underline) {
         this.drawLine('underline', tx, ty, textWidth);
@@ -234,11 +226,7 @@ class Font {
     } else {
       dw.fillText(text, tx, ty);
       if (underline || strikethrough) {
-        if (dw.attr({
-          strokeStyle: attr.color,
-        })) {
-          dw.beginPath();
-        }
+        dw.beginPath();
       }
       if (underline) {
         this.drawLine('underline', tx, ty, textWidth);
@@ -322,11 +310,7 @@ class Font {
       item.ty += by;
       dw.fillText(item.text, item.tx, item.ty);
       if (underline || strikethrough) {
-        if (dw.attr({
-          strokeStyle: attr.color,
-        })) {
-          dw.beginPath();
-        }
+        dw.beginPath();
       }
       if (underline) {
         this.drawLine('underline', item.tx, item.ty, item.len);
@@ -346,6 +330,7 @@ class Font {
       textBaseline: attr.verticalAlign,
       font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${npx(attr.size)}px ${attr.name}`,
       fillStyle: attr.color,
+      strokeStyle: attr.color,
     });
     switch (textWrap) {
       case TEXT_WRAP.TRUNCATE:
