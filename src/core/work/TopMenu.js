@@ -730,12 +730,12 @@ class TopMenu extends Widget {
       this.setFormatStatus();
       this.setFontStatus();
       this.setFontSizeStatus();
-      this.setFontBold();
-      this.setFontItalic();
-      this.setUnderLine();
-      this.setFontStrike();
-      this.setFontColor();
-      this.setFillColor();
+      this.setFontBoldStatus();
+      this.setFontItalicStatus();
+      this.setUnderLineStatus();
+      this.setFontStrikeStatus();
+      this.setFontColorStatus();
+      this.setFillColorStatus();
     });
     EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
@@ -1058,7 +1058,7 @@ class TopMenu extends Widget {
     this.fontSize.setTitle(size);
   }
 
-  setFontBold() {
+  setFontBoldStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1075,7 +1075,7 @@ class TopMenu extends Widget {
     this.fontBold.active(bold);
   }
 
-  setFontItalic() {
+  setFontItalicStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1092,7 +1092,7 @@ class TopMenu extends Widget {
     this.fontItalic.active(italic);
   }
 
-  setUnderLine() {
+  setUnderLineStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1109,7 +1109,7 @@ class TopMenu extends Widget {
     this.underLine.active(underline);
   }
 
-  setFontStrike() {
+  setFontStrikeStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1126,7 +1126,7 @@ class TopMenu extends Widget {
     this.fontStrike.active(strikethrough);
   }
 
-  setFontColor() {
+  setFontColorStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1144,7 +1144,7 @@ class TopMenu extends Widget {
     this.fontColor.fontColorContextMenu.setActiveByColor(color);
   }
 
-  setFillColor() {
+  setFillColorStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1171,12 +1171,12 @@ class TopMenu extends Widget {
     this.setFormatStatus();
     this.setFontStatus();
     this.setFontSizeStatus();
-    this.setFontBold();
-    this.setFontItalic();
-    this.setUnderLine();
-    this.setFontStrike();
-    this.setFontColor();
-    this.setFillColor();
+    this.setFontBoldStatus();
+    this.setFontItalicStatus();
+    this.setUnderLineStatus();
+    this.setFontStrikeStatus();
+    this.setFontColorStatus();
+    this.setFillColorStatus();
   }
 }
 
