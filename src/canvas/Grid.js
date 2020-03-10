@@ -1,4 +1,4 @@
-import { dpr } from './Draw';
+import {dpr, floor} from './Draw';
 import { Utils } from '../utils/Utils';
 
 class Grid {
@@ -9,8 +9,8 @@ class Grid {
   }
 
   lineWidth() {
-    const width = Math.floor(dpr());
-    return width < 1 ? 1 : width;
+    const n = floor(dpr());
+    return n > 2 ? n : 1;
   }
 
   verticalLine(sx, sy, ex, ey) {

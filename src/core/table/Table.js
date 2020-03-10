@@ -783,7 +783,7 @@ class FixedLeft {
 
   render() {
     const { table } = this;
-    const { draw } = table;
+    const { draw, grid } = table;
     const viewRange = this.getViewRange();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
@@ -793,7 +793,7 @@ class FixedLeft {
       width: viewRange.w,
       height: viewRange.h,
     });
-    const crop = new Crop({ draw, rect });
+    const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
     this.drawGrid(viewRange, offsetX, offsetY);
