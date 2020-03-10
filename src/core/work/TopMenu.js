@@ -148,7 +148,7 @@ class TopMenu extends Widget {
         onUpdate: (borderType, color, lineType) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          const { screen, cells, dataSnapshot } = table;
+          const { screen, cells, dataSnapshot, merges } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           const now = Utils.now();
@@ -236,16 +236,24 @@ class TopMenu extends Widget {
                 break;
               case 'border5':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  const merge = merges.getFirstIncludes(r, c);
                   cell.borderAttr.time = now;
-                  if (selectorAttr.rect.sci === c) {
+                  if (merge && selectorAttr.rect.equals(merge)) {
                     cell.borderAttr.left.display = true;
-                  } else if (selectorAttr.rect.eci === c) {
                     cell.borderAttr.right.display = true;
-                  }
-                  if (selectorAttr.rect.sri === r) {
                     cell.borderAttr.top.display = true;
-                  } else if (selectorAttr.rect.eri === r) {
                     cell.borderAttr.bottom.display = true;
+                  } else {
+                    if (selectorAttr.rect.sci === c) {
+                      cell.borderAttr.left.display = true;
+                    } else if (selectorAttr.rect.eci === c) {
+                      cell.borderAttr.right.display = true;
+                    }
+                    if (selectorAttr.rect.sri === r) {
+                      cell.borderAttr.top.display = true;
+                    } else if (selectorAttr.rect.eri === r) {
+                      cell.borderAttr.bottom.display = true;
+                    }
                   }
                 }, true);
                 break;
@@ -373,16 +381,24 @@ class TopMenu extends Widget {
                 break;
               case 'border5':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  const merge = merges.getFirstIncludes(r, c);
                   cell.borderAttr.time = now;
-                  if (selectorAttr.rect.sci === c) {
+                  if (merge && selectorAttr.rect.equals(merge)) {
                     cell.borderAttr.left.color = color;
-                  } else if (selectorAttr.rect.eci === c) {
                     cell.borderAttr.right.color = color;
-                  }
-                  if (selectorAttr.rect.sri === r) {
                     cell.borderAttr.top.color = color;
-                  } else if (selectorAttr.rect.eri === r) {
                     cell.borderAttr.bottom.color = color;
+                  } else {
+                    if (selectorAttr.rect.sci === c) {
+                      cell.borderAttr.left.color = color;
+                    } else if (selectorAttr.rect.eci === c) {
+                      cell.borderAttr.right.color = color;
+                    }
+                    if (selectorAttr.rect.sri === r) {
+                      cell.borderAttr.top.color = color;
+                    } else if (selectorAttr.rect.eri === r) {
+                      cell.borderAttr.bottom.color = color;
+                    }
                   }
                 }, true);
                 break;
@@ -481,16 +497,24 @@ class TopMenu extends Widget {
                 break;
               case 'border5':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  const merge = merges.getFirstIncludes(r, c);
                   cell.borderAttr.time = now;
-                  if (selectorAttr.rect.sci === c) {
+                  if (merge && selectorAttr.rect.equals(merge)) {
                     cell.borderAttr.left.width = width;
-                  } else if (selectorAttr.rect.eci === c) {
                     cell.borderAttr.right.width = width;
-                  }
-                  if (selectorAttr.rect.sri === r) {
                     cell.borderAttr.top.width = width;
-                  } else if (selectorAttr.rect.eri === r) {
                     cell.borderAttr.bottom.width = width;
+                  } else {
+                    if (selectorAttr.rect.sci === c) {
+                      cell.borderAttr.left.width = width;
+                    } else if (selectorAttr.rect.eci === c) {
+                      cell.borderAttr.right.width = width;
+                    }
+                    if (selectorAttr.rect.sri === r) {
+                      cell.borderAttr.top.width = width;
+                    } else if (selectorAttr.rect.eri === r) {
+                      cell.borderAttr.bottom.width = width;
+                    }
                   }
                 }, true);
                 break;
@@ -589,16 +613,24 @@ class TopMenu extends Widget {
                 break;
               case 'border5':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+                  const merge = merges.getFirstIncludes(r, c);
                   cell.borderAttr.time = now;
-                  if (selectorAttr.rect.sci === c) {
+                  if (merge && selectorAttr.rect.equals(merge)) {
                     cell.borderAttr.left.type = type;
-                  } else if (selectorAttr.rect.eci === c) {
                     cell.borderAttr.right.type = type;
-                  }
-                  if (selectorAttr.rect.sri === r) {
                     cell.borderAttr.top.type = type;
-                  } else if (selectorAttr.rect.eri === r) {
                     cell.borderAttr.bottom.type = type;
+                  } else {
+                    if (selectorAttr.rect.sci === c) {
+                      cell.borderAttr.left.type = type;
+                    } else if (selectorAttr.rect.eci === c) {
+                      cell.borderAttr.right.type = type;
+                    }
+                    if (selectorAttr.rect.sri === r) {
+                      cell.borderAttr.top.type = type;
+                    } else if (selectorAttr.rect.eri === r) {
+                      cell.borderAttr.bottom.type = type;
+                    }
                   }
                 }, true);
                 break;
