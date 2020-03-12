@@ -10,7 +10,7 @@ class Grid {
 
   lineWidth() {
     const width = Math.floor(dpr());
-    return width < 1 ? 1 : width;
+    return width > 2 ? width : 1;
   }
 
   verticalLine(sx, sy, ex, ey) {
