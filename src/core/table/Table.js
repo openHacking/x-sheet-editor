@@ -1468,134 +1468,6 @@ class Table extends Widget {
         const padding = 2;
         const merge = this.merges.getFirstIncludes(row, col);
         let external = { sx, sy, ex, ey };
-        if (merge) {
-          switch (pos) {
-            case 'top': {
-              const left = this.cells.isDisplayLeftBorder(row, col);
-              const right = this.cells.isDisplayRightBorder(row, col);
-              const left1 = this.cells.isDisplayLeftBorder(row - 1, col + 1);
-              const right1 = this.cells.isDisplayRightBorder(row - 1, col - 1);
-              const left2 = this.cells.isDisplayLeftBorder(row - 1, col);
-              const right2 = this.cells.isDisplayRightBorder(row - 1, col);
-              external.sy -= padding;
-              external.ey -= padding;
-              if (left) external.sx = sx - padding;
-              if (right1 || left2) external.sx = sx + padding;
-              if (right) external.ex = ex + padding;
-              if (left1 || right2) external.ex = ex - padding;
-              break;
-            }
-            case 'left': {
-              const top = this.cells.isDisplayTopBorder(row, col);
-              const bottom = this.cells.isDisplayBottomBorder(row, col);
-              const top1 = this.cells.isDisplayTopBorder(row + 1, col - 1);
-              const bottom1 = this.cells.isDisplayBottomBorder(row - 1, col - 1);
-              const top2 = this.cells.isDisplayTopBorder(row, col - 1);
-              const bottom2 = this.cells.isDisplayBottomBorder(row, col - 1);
-              external.sx -= padding;
-              external.ex -= padding;
-              if (top) external.sy = sy - padding;
-              if (bottom1 || top2) external.sy = sy + padding;
-              if (bottom) external.ey = ey + padding;
-              if (top1 || bottom2) external.ey = ey - padding;
-              break;
-            }
-            case 'bottom': {
-              const left = this.cells.isDisplayLeftBorder(row, col);
-              const right = this.cells.isDisplayRightBorder(row, col);
-              const left1 = this.cells.isDisplayLeftBorder(row + 1, col + 1);
-              const right1 = this.cells.isDisplayRightBorder(row + 1, col - 1);
-              const left2 = this.cells.isDisplayLeftBorder(row + 1, col);
-              const right2 = this.cells.isDisplayRightBorder(row + 1, col);
-              external.sy += padding;
-              external.ey += padding;
-              if (left) external.sx = sx - padding;
-              if (right1 || left2) external.sx = sx + padding;
-              if (right) external.ex = ex + padding;
-              if (left1 || right2) external.ex = ex - padding;
-              break;
-            }
-            case 'right': {
-              const top = this.cells.isDisplayTopBorder(row, col);
-              const bottom = this.cells.isDisplayBottomBorder(row, col);
-              const top1 = this.cells.isDisplayTopBorder(row + 1, col + 1);
-              const bottom1 = this.cells.isDisplayBottomBorder(row - 1, col + 1);
-              const top2 = this.cells.isDisplayTopBorder(row, col + 1);
-              const bottom2 = this.cells.isDisplayBottomBorder(row, col + 1);
-              external.sx += padding;
-              external.ex += padding;
-              if (top) external.sy = sy - padding;
-              if (bottom1 || top2) external.sy = sy + padding;
-              if (bottom) external.ey = ey + padding;
-              if (top1 || bottom2) external.ey = ey - padding;
-              break;
-            }
-            default: break;
-          }
-          switch (pos) {
-            case 'top': {
-              const lastCol = merge.eci === col;
-              internal.sx += padding;
-              internal.ex += padding;
-              internal.sy += padding;
-              internal.ey += padding;
-              if (lastCol) internal.ex = ex - padding;
-              break;
-            }
-            case 'left': {
-              const lastRow = merge.eri === row;
-              internal.sx += padding;
-              internal.ex += padding;
-              internal.sy += padding;
-              internal.ey += padding;
-              if (lastRow) internal.ey = ey - padding;
-              break;
-            }
-            case 'bottom': {
-              const lastCol = merge.eci === col;
-              internal.sx += padding;
-              internal.ex += padding;
-              internal.sy -= padding;
-              internal.ey -= padding;
-              if (lastCol) internal.ex = ex - padding;
-              break;
-            }
-            case 'right': {
-              const lastRow = merge.eri === row;
-              internal.sx -= padding;
-              internal.ex -= padding;
-              internal.sy += padding;
-              internal.ey += padding;
-              if (lastRow) internal.ey = ey - padding;
-              break;
-            }
-            default: break;
-          }
-          switch (pos) {
-            case 'top': {
-              const bottom = this.cells.isDisplayBottomBorder(row - 1, col);
-              if (bottom) external = null;
-              break;
-            }
-            case 'left': {
-              const right = this.cells.isDisplayRightBorder(row, col - 1);
-              if (right) external = null;
-              break;
-            }
-            case 'bottom': {
-              const top = this.cells.isDisplayTopBorder(row + 1, col);
-              if (top) external = null;
-              break;
-            }
-            case 'right': {
-              const left = this.cells.isDisplayLeftBorder(row, col + 1);
-              if (left) external = null;
-              break;
-            }
-            default: break;
-          }
-          return { external, internal };
-        }
         switch (pos) {
           case 'top': {
             const left = this.cells.isDisplayLeftBorder(row, col);
@@ -1659,76 +1531,118 @@ class Table extends Widget {
           }
           default: break;
         }
-        switch (pos) {
-          case 'top': {
-            const left = this.cells.isDisplayLeftBorder(row, col);
-            const right = this.cells.isDisplayRightBorder(row, col);
-            const left1 = this.cells.isDisplayLeftBorder(row, col + 1);
-            const right1 = this.cells.isDisplayRightBorder(row, col - 1);
-            const left2 = this.cells.isDisplayLeftBorder(row - 1, col + 1);
-            const right2 = this.cells.isDisplayRightBorder(row - 1, col - 1);
-            const left3 = this.cells.isDisplayLeftBorder(row - 1, col);
-            const right3 = this.cells.isDisplayRightBorder(row - 1, col);
-            internal.sy += padding;
-            internal.ey += padding;
-            if (right2 || left3) internal.sx = sx - padding;
-            if (left || right1) internal.sx = sx + padding;
-            if (left2 || right3) internal.ex = ex + padding;
-            if (right || left1) internal.ex = ex - padding;
-            break;
+        if (merge) {
+          switch (pos) {
+            case 'top': {
+              const lastCol = merge.eci === col;
+              internal.sx += padding;
+              internal.ex += padding;
+              internal.sy += padding;
+              internal.ey += padding;
+              if (lastCol) internal.ex = ex - padding;
+              break;
+            }
+            case 'left': {
+              const lastRow = merge.eri === row;
+              internal.sx += padding;
+              internal.ex += padding;
+              internal.sy += padding;
+              internal.ey += padding;
+              if (lastRow) internal.ey = ey - padding;
+              break;
+            }
+            case 'bottom': {
+              const lastCol = merge.eci === col;
+              internal.sx += padding;
+              internal.ex += padding;
+              internal.sy -= padding;
+              internal.ey -= padding;
+              if (lastCol) internal.ex = ex - padding;
+              break;
+            }
+            case 'right': {
+              const lastRow = merge.eri === row;
+              internal.sx -= padding;
+              internal.ex -= padding;
+              internal.sy += padding;
+              internal.ey += padding;
+              if (lastRow) internal.ey = ey - padding;
+              break;
+            }
+            default: break;
           }
-          case 'left': {
-            const top = this.cells.isDisplayTopBorder(row, col);
-            const bottom = this.cells.isDisplayBottomBorder(row, col);
-            const top1 = this.cells.isDisplayTopBorder(row + 1, col);
-            const bottom1 = this.cells.isDisplayBottomBorder(row - 1, col);
-            const top2 = this.cells.isDisplayTopBorder(row + 1, col - 1);
-            const bottom2 = this.cells.isDisplayBottomBorder(row - 1, col - 1);
-            const top3 = this.cells.isDisplayTopBorder(row, col - 1);
-            const bottom3 = this.cells.isDisplayBottomBorder(row, col - 1);
-            internal.sx += padding;
-            internal.ex += padding;
-            if (bottom2 || top3) internal.sy = sy - padding;
-            if (top || bottom1) internal.sy = sy + padding;
-            if (top2 || bottom3) internal.ey = ey + padding;
-            if (bottom || top1) internal.ey = ey - padding;
-            break;
+        } else {
+          switch (pos) {
+            case 'top': {
+              const left = this.cells.isDisplayLeftBorder(row, col);
+              const right = this.cells.isDisplayRightBorder(row, col);
+              const left1 = this.cells.isDisplayLeftBorder(row, col + 1);
+              const right1 = this.cells.isDisplayRightBorder(row, col - 1);
+              const left2 = this.cells.isDisplayLeftBorder(row - 1, col + 1);
+              const right2 = this.cells.isDisplayRightBorder(row - 1, col - 1);
+              const left3 = this.cells.isDisplayLeftBorder(row - 1, col);
+              const right3 = this.cells.isDisplayRightBorder(row - 1, col);
+              internal.sy += padding;
+              internal.ey += padding;
+              if (right2 || left3) internal.sx = sx - padding;
+              if (left || right1) internal.sx = sx + padding;
+              if (left2 || right3) internal.ex = ex + padding;
+              if (right || left1) internal.ex = ex - padding;
+              break;
+            }
+            case 'left': {
+              const top = this.cells.isDisplayTopBorder(row, col);
+              const bottom = this.cells.isDisplayBottomBorder(row, col);
+              const top1 = this.cells.isDisplayTopBorder(row + 1, col);
+              const bottom1 = this.cells.isDisplayBottomBorder(row - 1, col);
+              const top2 = this.cells.isDisplayTopBorder(row + 1, col - 1);
+              const bottom2 = this.cells.isDisplayBottomBorder(row - 1, col - 1);
+              const top3 = this.cells.isDisplayTopBorder(row, col - 1);
+              const bottom3 = this.cells.isDisplayBottomBorder(row, col - 1);
+              internal.sx += padding;
+              internal.ex += padding;
+              if (bottom2 || top3) internal.sy = sy - padding;
+              if (top || bottom1) internal.sy = sy + padding;
+              if (top2 || bottom3) internal.ey = ey + padding;
+              if (bottom || top1) internal.ey = ey - padding;
+              break;
+            }
+            case 'bottom': {
+              const left = this.cells.isDisplayLeftBorder(row, col);
+              const right = this.cells.isDisplayRightBorder(row, col);
+              const left1 = this.cells.isDisplayLeftBorder(row, col + 1);
+              const right1 = this.cells.isDisplayRightBorder(row, col - 1);
+              const left2 = this.cells.isDisplayLeftBorder(row + 1, col + 1);
+              const right2 = this.cells.isDisplayRightBorder(row + 1, col - 1);
+              const left3 = this.cells.isDisplayLeftBorder(row + 1, col);
+              const right3 = this.cells.isDisplayRightBorder(row + 1, col);
+              internal.sy -= padding;
+              internal.ey -= padding;
+              if (right2 || left3) internal.sx = sx - padding;
+              if (left || right1) internal.sx = sx + padding;
+              if (left2 || right3) internal.ex = ex + padding;
+              if (right || left1) internal.ex = ex - padding;
+              break;
+            }
+            case 'right': {
+              const top = this.cells.isDisplayTopBorder(row, col);
+              const bottom = this.cells.isDisplayBottomBorder(row, col);
+              const top1 = this.cells.isDisplayTopBorder(row + 1, col);
+              const bottom1 = this.cells.isDisplayBottomBorder(row - 1, col);
+              const top2 = this.cells.isDisplayTopBorder(row + 1, col + 1);
+              const bottom2 = this.cells.isDisplayBottomBorder(row - 1, col + 1);
+              const top3 = this.cells.isDisplayTopBorder(row, col + 1);
+              const bottom3 = this.cells.isDisplayBottomBorder(row, col + 1);
+              internal.sx -= padding;
+              internal.ex -= padding;
+              if (bottom2 || top3) internal.sy = sy - padding;
+              if (top || bottom1) internal.sy = sy + padding;
+              if (top2 || bottom3) internal.ey = ey + padding;
+              if (bottom || top1) internal.ey = ey - padding;
+              break;
+            }
+            default: break;
           }
-          case 'bottom': {
-            const left = this.cells.isDisplayLeftBorder(row, col);
-            const right = this.cells.isDisplayRightBorder(row, col);
-            const left1 = this.cells.isDisplayLeftBorder(row, col + 1);
-            const right1 = this.cells.isDisplayRightBorder(row, col - 1);
-            const left2 = this.cells.isDisplayLeftBorder(row + 1, col + 1);
-            const right2 = this.cells.isDisplayRightBorder(row + 1, col - 1);
-            const left3 = this.cells.isDisplayLeftBorder(row + 1, col);
-            const right3 = this.cells.isDisplayRightBorder(row + 1, col);
-            internal.sy -= padding;
-            internal.ey -= padding;
-            if (right2 || left3) internal.sx = sx - padding;
-            if (left || right1) internal.sx = sx + padding;
-            if (left2 || right3) internal.ex = ex + padding;
-            if (right || left1) internal.ex = ex - padding;
-            break;
-          }
-          case 'right': {
-            const top = this.cells.isDisplayTopBorder(row, col);
-            const bottom = this.cells.isDisplayBottomBorder(row, col);
-            const top1 = this.cells.isDisplayTopBorder(row + 1, col);
-            const bottom1 = this.cells.isDisplayBottomBorder(row - 1, col);
-            const top2 = this.cells.isDisplayTopBorder(row + 1, col + 1);
-            const bottom2 = this.cells.isDisplayBottomBorder(row - 1, col + 1);
-            const top3 = this.cells.isDisplayTopBorder(row, col + 1);
-            const bottom3 = this.cells.isDisplayBottomBorder(row, col + 1);
-            internal.sx -= padding;
-            internal.ex -= padding;
-            if (bottom2 || top3) internal.sy = sy - padding;
-            if (top || bottom1) internal.sy = sy + padding;
-            if (top2 || bottom3) internal.ey = ey + padding;
-            if (bottom || top1) internal.ey = ey - padding;
-            break;
-          }
-          default: break;
         }
         switch (pos) {
           case 'top': {
