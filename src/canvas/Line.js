@@ -71,7 +71,26 @@ class DoubleLine {
     this.draw = draw;
     this.color = '#000000';
     this.width = 1;
+    this.doubleLineFilter = () => ({});
     Utils.mergeDeep(this, attr);
+  }
+
+  drawLine(sx, sy, ex, ey, r, c, d) {
+    const { draw, dash } = this;
+    const { width, color } = this;
+    draw.beginPath();
+    draw.attr({
+      lineWidth: width,
+      strokeStyle: color,
+    });
+    draw.setLineDash([]);
+    const { external, internal } = this.doubleLineFilter(sx, sy, ex, ey, r, c, d);
+    if (external) {
+      draw.line([external.sx, external.sy], [external.ex, external.ey]);
+    }
+    if (internal) {
+      draw.line([internal.sx, internal.sy], [internal.ex, internal.ey]);
+    }
   }
 
   setColor(color) {
@@ -89,6 +108,7 @@ class Line {
     this.width = 1;
     this.color = '#000000';
     this.type = LINE_TYPE.SOLID_LINE;
+    this.doubleLineFilter = () => ({});
     Utils.mergeDeep(this, attr);
     this.solidLine = new SolidLine(draw, {
       color: this.color,
@@ -107,15 +127,17 @@ class Line {
     this.doubleLine = new DoubleLine(draw, {
       color: this.color,
       width: this.width,
+      doubleLineFilter: this.doubleLineFilter,
     });
   }
 
-  drawLine(sx, sy, ex, ey) {
+  drawLine(sx, sy, ex, ey, r, c, d) {
     const {
       type,
       solidLine,
       dottedLine,
       pointLine,
+      doubleLine,
     } = this;
     switch (type) {
       case LINE_TYPE.SOLID_LINE:
@@ -128,8 +150,7 @@ class Line {
         pointLine.drawLine(sx, sy, ex, ey);
         break;
       case LINE_TYPE.DOUBLE_LINE:
-        // TODO ...
-        // ....
+        doubleLine.drawLine(sx, sy, ex, ey, r, c, d);
         break;
       default: break;
     }

@@ -148,7 +148,13 @@ class TopMenu extends Widget {
         onUpdate: (borderType, color, lineType) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          const { screen, cells, dataSnapshot, merges } = table;
+          const {
+            screen,
+            cells,
+            dataSnapshot,
+            merges,
+            borderLineHandle,
+          } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           const now = Utils.now();
@@ -159,20 +165,35 @@ class TopMenu extends Widget {
               case 'line1':
                 width = 1;
                 type = LINE_TYPE.SOLID_LINE;
+                borderLineHandle.openDrawOptimization();
+                borderLineHandle.openBorderOptimization();
                 break;
               case 'line2':
                 width = 2;
                 type = LINE_TYPE.SOLID_LINE;
+                borderLineHandle.openDrawOptimization();
+                borderLineHandle.openBorderOptimization();
                 break;
               case 'line3':
                 width = 3;
                 type = LINE_TYPE.SOLID_LINE;
+                borderLineHandle.openDrawOptimization();
+                borderLineHandle.openBorderOptimization();
                 break;
               case 'line4':
                 type = LINE_TYPE.DOTTED_LINE;
+                borderLineHandle.openDrawOptimization();
+                borderLineHandle.openBorderOptimization();
                 break;
               case 'line5':
                 type = LINE_TYPE.POINT_LINE;
+                borderLineHandle.openDrawOptimization();
+                borderLineHandle.openBorderOptimization();
+                break;
+              case 'line6':
+                type = LINE_TYPE.DOUBLE_LINE;
+                borderLineHandle.closeDrawOptimization();
+                borderLineHandle.closeBorderOptimization();
                 break;
               default: break;
             }
