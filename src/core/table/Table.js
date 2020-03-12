@@ -145,80 +145,80 @@ class FrozenLeftTop {
     const vlLine = borderLineHandle.vlLine(viewRange);
     const vrLine = borderLineHandle.vrLine(viewRange);
     htLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { top } = borderAttr;
       const { color, width, type } = top;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { bottom } = borderAttr;
       const { color, width, type } = bottom;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vlLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { left } = borderAttr;
       const { color, width, type } = left;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vrLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { right } = borderAttr;
       const { color, width, type } = right;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
     const hbMergeLine = borderLineHandle.hbMergeLine(coincideViewBrink);
     const vlMergeLine = borderLineHandle.vlMergeLine(coincideViewBrink);
     const vrMergeLine = borderLineHandle.vrMergeLine(coincideViewBrink);
     htMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { top } = borderAttr;
       const { color, width, type } = top;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { bottom } = borderAttr;
       const { color, width, type } = bottom;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vlMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { left } = borderAttr;
       const { color, width, type } = left;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vrMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { right } = borderAttr;
       const { color, width, type } = right;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
     draw.restore();
@@ -415,80 +415,80 @@ class Content {
     const vlLine = borderLineHandle.vlLine(viewRange);
     const vrLine = borderLineHandle.vrLine(viewRange);
     htLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { top } = borderAttr;
       const { color, width, type } = top;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { bottom } = borderAttr;
       const { color, width, type } = bottom;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vlLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { left } = borderAttr;
       const { color, width, type } = left;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vrLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { right } = borderAttr;
       const { color, width, type } = right;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
     const hbMergeLine = borderLineHandle.hbMergeLine(coincideViewBrink);
     const vlMergeLine = borderLineHandle.vlMergeLine(coincideViewBrink);
     const vrMergeLine = borderLineHandle.vrMergeLine(coincideViewBrink);
     htMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { top } = borderAttr;
       const { color, width, type } = top;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { bottom } = borderAttr;
       const { color, width, type } = bottom;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vlMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { left } = borderAttr;
       const { color, width, type } = left;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vrMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { right } = borderAttr;
       const { color, width, type } = right;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
     draw.restore();
@@ -668,80 +668,80 @@ class FixedLeft {
     const vlLine = borderLineHandle.vlLine(viewRange);
     const vrLine = borderLineHandle.vrLine(viewRange);
     htLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { top } = borderAttr;
       const { color, width, type } = top;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { bottom } = borderAttr;
       const { color, width, type } = bottom;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vlLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { left } = borderAttr;
       const { color, width, type } = left;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vrLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { right } = borderAttr;
       const { color, width, type } = right;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
     const hbMergeLine = borderLineHandle.hbMergeLine(coincideViewBrink);
     const vlMergeLine = borderLineHandle.vlMergeLine(coincideViewBrink);
     const vrMergeLine = borderLineHandle.vrMergeLine(coincideViewBrink);
     htMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { top } = borderAttr;
       const { color, width, type } = top;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { bottom } = borderAttr;
       const { color, width, type } = bottom;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vlMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { left } = borderAttr;
       const { color, width, type } = left;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vrMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { right } = borderAttr;
       const { color, width, type } = right;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
     draw.restore();
@@ -783,7 +783,7 @@ class FixedLeft {
 
   render() {
     const { table } = this;
-    const { draw, grid } = table;
+    const { draw } = table;
     const viewRange = this.getViewRange();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
@@ -793,7 +793,7 @@ class FixedLeft {
       width: viewRange.w,
       height: viewRange.h,
     });
-    const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
+    const crop = new Crop({ draw, rect });
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
     this.drawGrid(viewRange, offsetX, offsetY);
@@ -918,80 +918,80 @@ class FixedTop {
     const vlLine = borderLineHandle.vlLine(viewRange);
     const vrLine = borderLineHandle.vrLine(viewRange);
     htLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { top } = borderAttr;
       const { color, width, type } = top;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { bottom } = borderAttr;
       const { color, width, type } = bottom;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vlLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { left } = borderAttr;
       const { color, width, type } = left;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vrLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { right } = borderAttr;
       const { color, width, type } = right;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
     const hbMergeLine = borderLineHandle.hbMergeLine(coincideViewBrink);
     const vlMergeLine = borderLineHandle.vlMergeLine(coincideViewBrink);
     const vrMergeLine = borderLineHandle.vrMergeLine(coincideViewBrink);
     htMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { top } = borderAttr;
       const { color, width, type } = top;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     hbMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { bottom } = borderAttr;
       const { color, width, type } = bottom;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vlMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { left } = borderAttr;
       const { color, width, type } = left;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     vrMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
+      const { borderAttr } = item;
       const { right } = borderAttr;
       const { color, width, type } = right;
       line.setType(type);
       line.setColor(color);
       line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+      line.drawLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
     draw.restore();
@@ -1462,301 +1462,7 @@ class Table extends Widget {
     this.mousePointType = new MousePointType(this);
     // canvas 绘制资源
     this.draw = new Draw(this.canvas.el);
-    this.line = new Line(this.draw, {
-      doubleLineFilter: (sx, sy, ex, ey, r, c, d) => {
-        const internal = {sx, sy, ex, ey};
-        const padding = 2;
-        const merge = this.merges.getFirstIncludes(r, c);
-        let external = {sx, sy, ex, ey};
-        if (merge) {
-          switch (d) {
-            case 'top': {
-              const left = this.cells.isDisplayLeftBorder(r, c);
-              const right = this.cells.isDisplayRightBorder(r, c);
-              const left1 = this.cells.isDisplayLeftBorder(r - 1, c + 1);
-              const right1 = this.cells.isDisplayRightBorder(r - 1, c - 1);
-              const left2 = this.cells.isDisplayLeftBorder(r - 1, c);
-              const right2 = this.cells.isDisplayRightBorder(r - 1, c);
-              external.sy -= padding;
-              external.ey -= padding;
-              if (left) external.sx = sx - padding;
-              if (right1 || left2) external.sx = sx + padding;
-              if (right) external.ex = ex + padding;
-              if (left1 || right2) external.ex = ex - padding;
-              break;
-            }
-            case 'left': {
-              const top = this.cells.isDisplayTopBorder(r, c);
-              const bottom = this.cells.isDisplayBottomBorder(r, c);
-              const top1 = this.cells.isDisplayTopBorder(r + 1, c - 1);
-              const bottom1 = this.cells.isDisplayBottomBorder(r - 1, c - 1);
-              const top2 = this.cells.isDisplayTopBorder(r, c - 1);
-              const bottom2 = this.cells.isDisplayBottomBorder(r, c - 1);
-              external.sx -= padding;
-              external.ex -= padding;
-              if (top) external.sy = sy - padding;
-              if (bottom1 || top2) external.sy = sy + padding;
-              if (bottom) external.ey = ey + padding;
-              if (top1 || bottom2) external.ey = ey - padding;
-              break;
-            }
-            case 'bottom': {
-              const left = this.cells.isDisplayLeftBorder(r, c);
-              const right = this.cells.isDisplayRightBorder(r, c);
-              const left1 = this.cells.isDisplayLeftBorder(r + 1, c + 1);
-              const right1 = this.cells.isDisplayRightBorder(r + 1, c - 1);
-              const left2 = this.cells.isDisplayLeftBorder(r + 1, c);
-              const right2 = this.cells.isDisplayRightBorder(r + 1, c);
-              external.sy += padding;
-              external.ey += padding;
-              if (left) external.sx = sx - padding;
-              if (right1 || left2) external.sx = sx + padding;
-              if (right) external.ex = ex + padding;
-              if (left1 || right2) external.ex = ex - padding;
-              break;
-            }
-            case 'right': {
-              const top = this.cells.isDisplayTopBorder(r, c);
-              const bottom = this.cells.isDisplayBottomBorder(r, c);
-              const top1 = this.cells.isDisplayTopBorder(r + 1, c + 1);
-              const bottom1 = this.cells.isDisplayBottomBorder(r - 1, c + 1);
-              const top2 = this.cells.isDisplayTopBorder(r, c + 1);
-              const bottom2 = this.cells.isDisplayBottomBorder(r, c + 1);
-              external.sx += padding;
-              external.ex += padding;
-              if (top) external.sy = sy - padding;
-              if (bottom1 || top2) external.sy = sy + padding;
-              if (bottom) external.ey = ey + padding;
-              if (top1 || bottom2) external.ey = ey - padding;
-              break;
-            }
-            default: break;
-          }
-          switch (d) {
-            case 'top': {
-              const lastCol = merge.eci === c;
-              internal.sx += padding;
-              internal.ex += padding;
-              internal.sy += padding;
-              internal.ey += padding;
-              if (lastCol) internal.ex = ex - padding;
-              break;
-            }
-            case 'left': {
-              const lastRow = merge.eri === r;
-              internal.sx += padding;
-              internal.ex += padding;
-              internal.sy += padding;
-              internal.ey += padding;
-              if (lastRow) internal.ey = ey - padding;
-              break;
-            }
-            case 'bottom': {
-              const lastCol = merge.eci === c;
-              internal.sx += padding;
-              internal.ex += padding;
-              internal.sy -= padding;
-              internal.ey -= padding;
-              if (lastCol) internal.ex = ex - padding;
-              break;
-            }
-            case 'right': {
-              const lastRow = merge.eri === r;
-              internal.sx -= padding;
-              internal.ex -= padding;
-              internal.sy += padding;
-              internal.ey += padding;
-              if (lastRow) internal.ey = ey - padding;
-              break;
-            }
-            default: break;
-          }
-          switch (d) {
-            case 'top': {
-              const bottom = this.cells.isDisplayBottomBorder(r - 1, c);
-              if (bottom) external = null;
-              break;
-            }
-            case 'left': {
-              const right = this.cells.isDisplayRightBorder(r, c - 1);
-              if (right) external = null;
-              break;
-            }
-            case 'bottom': {
-              const top = this.cells.isDisplayTopBorder(r + 1, c);
-              if (top) external = null;
-              break;
-            }
-            case 'right': {
-              const left = this.cells.isDisplayLeftBorder(r, c + 1);
-              if (left) external = null;
-              break;
-            }
-            default: break;
-          }
-          return { external, internal };
-        } else {
-          switch (d) {
-            case 'top': {
-              const left = this.cells.isDisplayLeftBorder(r, c);
-              const right = this.cells.isDisplayRightBorder(r, c);
-              const left1 = this.cells.isDisplayLeftBorder(r - 1, c + 1);
-              const right1 = this.cells.isDisplayRightBorder(r - 1, c - 1);
-              const left2 = this.cells.isDisplayLeftBorder(r - 1, c);
-              const right2 = this.cells.isDisplayRightBorder(r - 1, c);
-              external.sy -= padding;
-              external.ey -= padding;
-              if (left) external.sx = sx - padding;
-              if (right1 || left2) external.sx = sx + padding;
-              if (right) external.ex = ex + padding;
-              if (left1 || right2) external.ex = ex - padding;
-              break;
-            }
-            case 'left': {
-              const top = this.cells.isDisplayTopBorder(r, c);
-              const bottom = this.cells.isDisplayBottomBorder(r, c);
-              const top1 = this.cells.isDisplayTopBorder(r + 1, c - 1);
-              const bottom1 = this.cells.isDisplayBottomBorder(r - 1, c - 1);
-              const top2 = this.cells.isDisplayTopBorder(r, c - 1);
-              const bottom2 = this.cells.isDisplayBottomBorder(r, c - 1);
-              external.sx -= padding;
-              external.ex -= padding;
-              if (top) external.sy = sy - padding;
-              if (bottom1 || top2) external.sy = sy + padding;
-              if (bottom) external.ey = ey + padding;
-              if (top1 || bottom2) external.ey = ey - padding;
-              break;
-            }
-            case 'bottom': {
-              const left = this.cells.isDisplayLeftBorder(r, c);
-              const right = this.cells.isDisplayRightBorder(r, c);
-              const left1 = this.cells.isDisplayLeftBorder(r + 1, c + 1);
-              const right1 = this.cells.isDisplayRightBorder(r + 1, c - 1);
-              const left2 = this.cells.isDisplayLeftBorder(r + 1, c);
-              const right2 = this.cells.isDisplayRightBorder(r + 1, c);
-              external.sy += padding;
-              external.ey += padding;
-              if (left) external.sx = sx - padding;
-              if (right1 || left2) external.sx = sx + padding;
-              if (right) external.ex = ex + padding;
-              if (left1 || right2) external.ex = ex - padding;
-              break;
-            }
-            case 'right': {
-              const top = this.cells.isDisplayTopBorder(r, c);
-              const bottom = this.cells.isDisplayBottomBorder(r, c);
-              const top1 = this.cells.isDisplayTopBorder(r + 1, c + 1);
-              const bottom1 = this.cells.isDisplayBottomBorder(r - 1, c + 1);
-              const top2 = this.cells.isDisplayTopBorder(r, c + 1);
-              const bottom2 = this.cells.isDisplayBottomBorder(r, c + 1);
-              external.sx += padding;
-              external.ex += padding;
-              if (top) external.sy = sy - padding;
-              if (bottom1 || top2) external.sy = sy + padding;
-              if (bottom) external.ey = ey + padding;
-              if (top1 || bottom2) external.ey = ey - padding;
-              break;
-            }
-            default: break;
-          }
-          switch (d) {
-            case 'top': {
-              const left = this.cells.isDisplayLeftBorder(r, c);
-              const right = this.cells.isDisplayRightBorder(r, c);
-              const left1 = this.cells.isDisplayLeftBorder(r, c + 1);
-              const right1 = this.cells.isDisplayRightBorder(r, c - 1);
-              const left2 = this.cells.isDisplayLeftBorder(r - 1, c + 1);
-              const right2 = this.cells.isDisplayRightBorder(r - 1, c - 1);
-              const left3 = this.cells.isDisplayLeftBorder(r - 1, c);
-              const right3 = this.cells.isDisplayRightBorder(r - 1, c);
-              internal.sy += padding;
-              internal.ey += padding;
-              if (right2 || left3) internal.sx = sx - padding;
-              if (left || right1) internal.sx = sx + padding;
-              if (left2 || right3) internal.ex = ex + padding;
-              if (right || left1) internal.ex = ex - padding;
-              break;
-            }
-            case 'left': {
-              const top = this.cells.isDisplayTopBorder(r, c);
-              const bottom = this.cells.isDisplayBottomBorder(r, c);
-              const top1 = this.cells.isDisplayTopBorder(r + 1, c);
-              const bottom1 = this.cells.isDisplayBottomBorder(r - 1, c);
-              const top2 = this.cells.isDisplayTopBorder(r + 1, c - 1);
-              const bottom2 = this.cells.isDisplayBottomBorder(r - 1, c - 1);
-              const top3 = this.cells.isDisplayTopBorder(r, c - 1);
-              const bottom3 = this.cells.isDisplayBottomBorder(r, c - 1);
-              internal.sx += padding;
-              internal.ex += padding;
-              if (bottom2 || top3) internal.sy = sy - padding;
-              if (top || bottom1) internal.sy = sy + padding;
-              if (top2 || bottom3) internal.ey = ey + padding;
-              if (bottom || top1) internal.ey = ey - padding;
-              break;
-            }
-            case 'bottom': {
-              const left = this.cells.isDisplayLeftBorder(r, c);
-              const right = this.cells.isDisplayRightBorder(r, c);
-              const left1 = this.cells.isDisplayLeftBorder(r, c + 1);
-              const right1 = this.cells.isDisplayRightBorder(r, c - 1);
-              const left2 = this.cells.isDisplayLeftBorder(r + 1, c + 1);
-              const right2 = this.cells.isDisplayRightBorder(r + 1, c - 1);
-              const left3 = this.cells.isDisplayLeftBorder(r + 1, c);
-              const right3 = this.cells.isDisplayRightBorder(r + 1, c);
-              internal.sy -= padding;
-              internal.ey -= padding;
-              if (right2 || left3) internal.sx = sx - padding;
-              if (left || right1) internal.sx = sx + padding;
-              if (left2 || right3) internal.ex = ex + padding;
-              if (right || left1) internal.ex = ex - padding;
-              break;
-            }
-            case 'right': {
-              const top = this.cells.isDisplayTopBorder(r, c);
-              const bottom = this.cells.isDisplayBottomBorder(r, c);
-              const top1 = this.cells.isDisplayTopBorder(r + 1, c);
-              const bottom1 = this.cells.isDisplayBottomBorder(r - 1, c);
-              const top2 = this.cells.isDisplayTopBorder(r + 1, c + 1);
-              const bottom2 = this.cells.isDisplayBottomBorder(r - 1, c + 1);
-              const top3 = this.cells.isDisplayTopBorder(r, c + 1);
-              const bottom3 = this.cells.isDisplayBottomBorder(r, c + 1);
-              internal.sx -= padding;
-              internal.ex -= padding;
-              if (bottom2 || top3) internal.sy = sy - padding;
-              if (top || bottom1) internal.sy = sy + padding;
-              if (top2 || bottom3) internal.ey = ey + padding;
-              if (bottom || top1) internal.ey = ey - padding;
-              break;
-            }
-            default: break;
-          }
-          switch (d) {
-            case 'top': {
-              const bottom = this.cells.isDisplayBottomBorder(r - 1, c);
-              if (bottom) external = null;
-              break;
-            }
-            case 'left': {
-              const right = this.cells.isDisplayRightBorder(r, c - 1);
-              if (right) external = null;
-              break;
-            }
-            case 'bottom': {
-              const top = this.cells.isDisplayTopBorder(r + 1, c);
-              if (top) external = null;
-              break;
-            }
-            case 'right': {
-              const left = this.cells.isDisplayLeftBorder(r, c + 1);
-              if (left) external = null;
-              break;
-            }
-            default: break;
-          }
-          return { external, internal };
-        }
-      }
-    });
+    this.line = new Line(this.draw, {});
     this.grid = new Grid(this.draw, {
       color: this.settings.table.borderColor,
     });

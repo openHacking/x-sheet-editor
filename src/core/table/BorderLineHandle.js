@@ -3,12 +3,10 @@ class BorderLineHandle {
 
   constructor(table) {
     this.table = table;
-    this.drawOptimization = true;
-    this.borderOptimization = true;
   }
 
   borderHTLine(viewRange, bx = 0, by = 0, filter = () => true) {
-    const { table, drawOptimization } = this;
+    const { table } = this;
     const { lineHandle, cols, cells } = table;
     const line = [];
     let sx;
@@ -38,27 +36,25 @@ class BorderLineHandle {
         sx = ex;
       },
     });
-    if (drawOptimization) {
-      for (let i = 1; i < line.length;) {
-        const item = line[i];
-        const last = line[i - 1];
-        const ck1 = cells.borderEqual(item.borderAttr.bottom, last.borderAttr.bottom);
-        const ck2 = item.col - last.col === 1;
-        const ck3 = item.row === last.row;
-        if (ck1 && ck2 && ck3) {
-          last.ex = item.ex;
-          last.col = item.col;
-          line.splice(i, 1);
-        } else {
-          i += 1;
-        }
+    for (let i = 1; i < line.length;) {
+      const item = line[i];
+      const last = line[i - 1];
+      const ck1 = cells.borderEqual(item.borderAttr.bottom, last.borderAttr.bottom);
+      const ck2 = item.col - last.col === 1;
+      const ck3 = item.row === last.row;
+      if (ck1 && ck2 && ck3) {
+        last.ex = item.ex;
+        last.col = item.col;
+        line.splice(i, 1);
+      } else {
+        i += 1;
       }
     }
     return line;
   }
 
   borderHBLine(viewRange, bx = 0, by = 0, filter = () => true) {
-    const { table, drawOptimization } = this;
+    const { table } = this;
     const { lineHandle, cols, rows, cells } = table;
     const line = [];
     let sx;
@@ -89,27 +85,25 @@ class BorderLineHandle {
         sx = ex;
       },
     });
-    if (drawOptimization) {
-      for (let i = 1; i < line.length;) {
-        const item = line[i];
-        const last = line[i - 1];
-        const ck1 = cells.borderEqual(item.borderAttr.bottom, last.borderAttr.bottom);
-        const ck2 = item.col - last.col === 1;
-        const ck3 = item.row === last.row;
-        if (ck1 && ck2 && ck3) {
-          last.ex = item.ex;
-          last.col = item.col;
-          line.splice(i, 1);
-        } else {
-          i += 1;
-        }
+    for (let i = 1; i < line.length;) {
+      const item = line[i];
+      const last = line[i - 1];
+      const ck1 = cells.borderEqual(item.borderAttr.bottom, last.borderAttr.bottom);
+      const ck2 = item.col - last.col === 1;
+      const ck3 = item.row === last.row;
+      if (ck1 && ck2 && ck3) {
+        last.ex = item.ex;
+        last.col = item.col;
+        line.splice(i, 1);
+      } else {
+        i += 1;
       }
     }
     return line;
   }
 
   borderVLLine(viewRange, bx = 0, by = 0, filter = () => true) {
-    const { table, drawOptimization } = this;
+    const { table } = this;
     const { lineHandle, rows, cells } = table;
     const line = [];
     let sx;
@@ -139,27 +133,25 @@ class BorderLineHandle {
         sy = ey;
       },
     });
-    if (drawOptimization) {
-      for (let i = 1; i < line.length;) {
-        const item = line[i];
-        const last = line[i - 1];
-        const ck1 = cells.borderEqual(item.borderAttr.left, last.borderAttr.left);
-        const ck2 = item.row - last.row === 1;
-        const ck3 = item.col === last.col;
-        if (ck1 && ck2 && ck3) {
-          last.ey = item.ey;
-          last.row = item.row;
-          line.splice(i, 1);
-        } else {
-          i += 1;
-        }
+    for (let i = 1; i < line.length;) {
+      const item = line[i];
+      const last = line[i - 1];
+      const ck1 = cells.borderEqual(item.borderAttr.left, last.borderAttr.left);
+      const ck2 = item.row - last.row === 1;
+      const ck3 = item.col === last.col;
+      if (ck1 && ck2 && ck3) {
+        last.ey = item.ey;
+        last.row = item.row;
+        line.splice(i, 1);
+      } else {
+        i += 1;
       }
     }
     return line;
   }
 
   borderVRLine(viewRange, bx = 0, by = 0, filter = () => true) {
-    const { table, drawOptimization } = this;
+    const { table } = this;
     const { lineHandle, rows, cols, cells } = table;
     const line = [];
     let sx;
@@ -190,27 +182,25 @@ class BorderLineHandle {
         sy = ey;
       },
     });
-    if (drawOptimization) {
-      for (let i = 1; i < line.length;) {
-        const item = line[i];
-        const last = line[i - 1];
-        const ck1 = cells.borderEqual(item.borderAttr.right, last.borderAttr.right);
-        const ck2 = item.row - last.row === 1;
-        const ck3 = item.col === last.col;
-        if (ck1 && ck2 && ck3) {
-          last.ey = item.ey;
-          last.row = item.row;
-          line.splice(i, 1);
-        } else {
-          i += 1;
-        }
+    for (let i = 1; i < line.length;) {
+      const item = line[i];
+      const last = line[i - 1];
+      const ck1 = cells.borderEqual(item.borderAttr.right, last.borderAttr.right);
+      const ck2 = item.row - last.row === 1;
+      const ck3 = item.col === last.col;
+      if (ck1 && ck2 && ck3) {
+        last.ey = item.ey;
+        last.row = item.row;
+        line.splice(i, 1);
+      } else {
+        i += 1;
       }
     }
     return line;
   }
 
   htLine(viewRange) {
-    const { table, borderOptimization } = this;
+    const { table } = this;
     const { merges, cells } = table;
     return this.borderHTLine(viewRange, 0, 0, (row, col) => {
       const merge = merges.getFirstIncludes(row, col);
@@ -220,17 +210,15 @@ class BorderLineHandle {
       if (merge) {
         return false;
       }
-      if (borderOptimization){
-        if (borderTop && borderBottom) {
-          return borderDiff === 1;
-        }
+      if (borderTop && borderBottom) {
+        return borderDiff === 1;
       }
       return borderTop;
     });
   }
 
   hbLine(viewRange) {
-    const { table, borderOptimization } = this;
+    const { table } = this;
     const { merges, cells } = table;
     return this.borderHBLine(viewRange, 0, 0, (row, col) => {
       const merge = merges.getFirstIncludes(row, col);
@@ -240,17 +228,15 @@ class BorderLineHandle {
       if (merge) {
         return false;
       }
-      if (borderOptimization) {
-        if (borderBottom && borderTop) {
-          return borderDiff === 1 || borderDiff === 0;
-        }
+      if (borderBottom && borderTop) {
+        return borderDiff === 1 || borderDiff === 0;
       }
       return borderBottom;
     });
   }
 
   vlLine(viewRange) {
-    const { table, borderOptimization } = this;
+    const { table } = this;
     const { merges, cells } = table;
     return this.borderVLLine(viewRange, 0, 0, (col, row) => {
       const merge = merges.getFirstIncludes(row, col);
@@ -260,17 +246,15 @@ class BorderLineHandle {
       if (merge) {
         return false;
       }
-      if (borderOptimization) {
-        if (borderLeft && borderRight) {
-          return borderDiff === 1;
-        }
+      if (borderLeft && borderRight) {
+        return borderDiff === 1;
       }
       return borderLeft;
     });
   }
 
   vrLine(viewRange) {
-    const { table, borderOptimization } = this;
+    const { table } = this;
     const { merges, cells } = table;
     return this.borderVRLine(viewRange, 0, 0, (col, row) => {
       const merge = merges.getFirstIncludes(row, col);
@@ -280,17 +264,15 @@ class BorderLineHandle {
       if (merge) {
         return false;
       }
-      if (borderOptimization) {
-        if (borderRight && borderLeft) {
-          return borderDiff === 1 || borderDiff === 0;
-        }
+      if (borderRight && borderLeft) {
+        return borderDiff === 1 || borderDiff === 0;
       }
       return borderRight;
     });
   }
 
   htMergeLine(mergesBrink) {
-    const { table, borderOptimization } = this;
+    const { table } = this;
     const { cells } = table;
     let result = [];
     for (let i = 0; i < mergesBrink.length; i += 1) {
@@ -301,10 +283,8 @@ class BorderLineHandle {
           const borderTop = cells.isDisplayTopBorder(row, col);
           const borderBottom = cells.isDisplayBottomBorder(row - 1, col);
           const borderDiff = cells.borderComparisonOfTime(row, col, row - 1, col);
-          if (borderOptimization){
-            if (borderTop && borderBottom) {
-              return borderDiff === 1;
-            }
+          if (borderTop && borderBottom) {
+            return borderDiff === 1;
           }
           return borderTop;
         }));
@@ -314,7 +294,7 @@ class BorderLineHandle {
   }
 
   hbMergeLine(mergesBrink) {
-    const { table, borderOptimization } = this;
+    const { table } = this;
     const { cells } = table;
     let result = [];
     for (let i = 0; i < mergesBrink.length; i += 1) {
@@ -325,10 +305,8 @@ class BorderLineHandle {
           const borderBottom = cells.isDisplayBottomBorder(row, col);
           const borderTop = cells.isDisplayTopBorder(row + 1, col);
           const borderDiff = cells.borderComparisonOfTime(row, col, row + 1, col);
-          if (borderOptimization) {
-            if (borderBottom && borderTop) {
-              return borderDiff === 1 || borderDiff === 0;
-            }
+          if (borderBottom && borderTop) {
+            return borderDiff === 1 || borderDiff === 0;
           }
           return borderBottom;
         }));
@@ -338,7 +316,7 @@ class BorderLineHandle {
   }
 
   vlMergeLine(mergesBrink) {
-    const { table, borderOptimization } = this;
+    const { table } = this;
     const { cells } = table;
     let result = [];
     for (let i = 0; i < mergesBrink.length; i += 1) {
@@ -349,10 +327,8 @@ class BorderLineHandle {
           const borderLeft = cells.isDisplayLeftBorder(row, col);
           const borderRight = cells.isDisplayRightBorder(row, col - 1);
           const borderDiff = cells.borderComparisonOfTime(row, col, row, col - 1);
-          if (borderOptimization) {
-            if (borderLeft && borderRight) {
-              return borderDiff === 1;
-            }
+          if (borderLeft && borderRight) {
+            return borderDiff === 1;
           }
           return borderLeft;
         }));
@@ -362,7 +338,7 @@ class BorderLineHandle {
   }
 
   vrMergeLine(mergesBrink) {
-    const { table, borderOptimization } = this;
+    const { table } = this;
     const { cells } = table;
     let result = [];
     for (let i = 0; i < mergesBrink.length; i += 1) {
@@ -373,32 +349,14 @@ class BorderLineHandle {
           const borderRight = cells.isDisplayRightBorder(row, col);
           const borderLeft = cells.isDisplayLeftBorder(row, col + 1);
           const borderDiff = cells.borderComparisonOfTime(row, col, row, col + 1);
-          if (borderOptimization) {
-            if (borderRight && borderLeft) {
-              return borderDiff === 1 || borderDiff === 0;
-            }
+          if (borderRight && borderLeft) {
+            return borderDiff === 1 || borderDiff === 0;
           }
           return borderRight;
         }));
       }
     }
     return result;
-  }
-
-  openDrawOptimization() {
-    this.drawOptimization = true;
-  }
-
-  closeDrawOptimization() {
-    this.drawOptimization = false;
-  }
-
-  openBorderOptimization() {
-    this.borderOptimization = true;
-  }
-
-  closeBorderOptimization() {
-    this.borderOptimization = false;
   }
 }
 

@@ -21,7 +21,6 @@ class Draw {
     this.height = el.height;
     this.offsetX = 0;
     this.offsetY = 0;
-    this.dash = [];
   }
 
   offset(offsetX = 0, offsetY = 0) {
@@ -92,10 +91,7 @@ class Draw {
   }
 
   setLineDash(dash) {
-    if (dash.sort().toString() !== this.dash.sort().toString()) {
-      this.dash = dash;
-      this.ctx.setLineDash(dash);
-    }
+    this.ctx.setLineDash(dash);
   }
 
   measureText(text) {

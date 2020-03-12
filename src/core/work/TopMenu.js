@@ -148,13 +148,7 @@ class TopMenu extends Widget {
         onUpdate: (borderType, color, lineType) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          const {
-            screen,
-            cells,
-            dataSnapshot,
-            merges,
-            borderLineHandle,
-          } = table;
+          const { screen, cells, dataSnapshot } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           const now = Utils.now();
@@ -165,35 +159,20 @@ class TopMenu extends Widget {
               case 'line1':
                 width = 1;
                 type = LINE_TYPE.SOLID_LINE;
-                borderLineHandle.openDrawOptimization();
-                borderLineHandle.openBorderOptimization();
                 break;
               case 'line2':
                 width = 2;
                 type = LINE_TYPE.SOLID_LINE;
-                borderLineHandle.openDrawOptimization();
-                borderLineHandle.openBorderOptimization();
                 break;
               case 'line3':
                 width = 3;
                 type = LINE_TYPE.SOLID_LINE;
-                borderLineHandle.openDrawOptimization();
-                borderLineHandle.openBorderOptimization();
                 break;
               case 'line4':
                 type = LINE_TYPE.DOTTED_LINE;
-                borderLineHandle.openDrawOptimization();
-                borderLineHandle.openBorderOptimization();
                 break;
               case 'line5':
                 type = LINE_TYPE.POINT_LINE;
-                borderLineHandle.openDrawOptimization();
-                borderLineHandle.openBorderOptimization();
-                break;
-              case 'line6':
-                type = LINE_TYPE.DOUBLE_LINE;
-                borderLineHandle.closeDrawOptimization();
-                borderLineHandle.closeBorderOptimization();
                 break;
               default: break;
             }
@@ -257,24 +236,16 @@ class TopMenu extends Widget {
                 break;
               case 'border5':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
-                  const merge = merges.getFirstIncludes(r, c);
                   cell.borderAttr.time = now;
-                  if (merge && selectorAttr.rect.equals(merge)) {
+                  if (selectorAttr.rect.sci === c) {
                     cell.borderAttr.left.display = true;
+                  } else if (selectorAttr.rect.eci === c) {
                     cell.borderAttr.right.display = true;
+                  }
+                  if (selectorAttr.rect.sri === r) {
                     cell.borderAttr.top.display = true;
+                  } else if (selectorAttr.rect.eri === r) {
                     cell.borderAttr.bottom.display = true;
-                  } else {
-                    if (selectorAttr.rect.sci === c) {
-                      cell.borderAttr.left.display = true;
-                    } else if (selectorAttr.rect.eci === c) {
-                      cell.borderAttr.right.display = true;
-                    }
-                    if (selectorAttr.rect.sri === r) {
-                      cell.borderAttr.top.display = true;
-                    } else if (selectorAttr.rect.eri === r) {
-                      cell.borderAttr.bottom.display = true;
-                    }
                   }
                 }, true);
                 break;
@@ -402,24 +373,16 @@ class TopMenu extends Widget {
                 break;
               case 'border5':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
-                  const merge = merges.getFirstIncludes(r, c);
                   cell.borderAttr.time = now;
-                  if (merge && selectorAttr.rect.equals(merge)) {
+                  if (selectorAttr.rect.sci === c) {
                     cell.borderAttr.left.color = color;
+                  } else if (selectorAttr.rect.eci === c) {
                     cell.borderAttr.right.color = color;
+                  }
+                  if (selectorAttr.rect.sri === r) {
                     cell.borderAttr.top.color = color;
+                  } else if (selectorAttr.rect.eri === r) {
                     cell.borderAttr.bottom.color = color;
-                  } else {
-                    if (selectorAttr.rect.sci === c) {
-                      cell.borderAttr.left.color = color;
-                    } else if (selectorAttr.rect.eci === c) {
-                      cell.borderAttr.right.color = color;
-                    }
-                    if (selectorAttr.rect.sri === r) {
-                      cell.borderAttr.top.color = color;
-                    } else if (selectorAttr.rect.eri === r) {
-                      cell.borderAttr.bottom.color = color;
-                    }
                   }
                 }, true);
                 break;
@@ -518,24 +481,16 @@ class TopMenu extends Widget {
                 break;
               case 'border5':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
-                  const merge = merges.getFirstIncludes(r, c);
                   cell.borderAttr.time = now;
-                  if (merge && selectorAttr.rect.equals(merge)) {
+                  if (selectorAttr.rect.sci === c) {
                     cell.borderAttr.left.width = width;
+                  } else if (selectorAttr.rect.eci === c) {
                     cell.borderAttr.right.width = width;
+                  }
+                  if (selectorAttr.rect.sri === r) {
                     cell.borderAttr.top.width = width;
+                  } else if (selectorAttr.rect.eri === r) {
                     cell.borderAttr.bottom.width = width;
-                  } else {
-                    if (selectorAttr.rect.sci === c) {
-                      cell.borderAttr.left.width = width;
-                    } else if (selectorAttr.rect.eci === c) {
-                      cell.borderAttr.right.width = width;
-                    }
-                    if (selectorAttr.rect.sri === r) {
-                      cell.borderAttr.top.width = width;
-                    } else if (selectorAttr.rect.eri === r) {
-                      cell.borderAttr.bottom.width = width;
-                    }
                   }
                 }, true);
                 break;
@@ -634,24 +589,16 @@ class TopMenu extends Widget {
                 break;
               case 'border5':
                 cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
-                  const merge = merges.getFirstIncludes(r, c);
                   cell.borderAttr.time = now;
-                  if (merge && selectorAttr.rect.equals(merge)) {
+                  if (selectorAttr.rect.sci === c) {
                     cell.borderAttr.left.type = type;
+                  } else if (selectorAttr.rect.eci === c) {
                     cell.borderAttr.right.type = type;
+                  }
+                  if (selectorAttr.rect.sri === r) {
                     cell.borderAttr.top.type = type;
+                  } else if (selectorAttr.rect.eri === r) {
                     cell.borderAttr.bottom.type = type;
-                  } else {
-                    if (selectorAttr.rect.sci === c) {
-                      cell.borderAttr.left.type = type;
-                    } else if (selectorAttr.rect.eci === c) {
-                      cell.borderAttr.right.type = type;
-                    }
-                    if (selectorAttr.rect.sri === r) {
-                      cell.borderAttr.top.type = type;
-                    } else if (selectorAttr.rect.eri === r) {
-                      cell.borderAttr.bottom.type = type;
-                    }
                   }
                 }, true);
                 break;
@@ -751,12 +698,12 @@ class TopMenu extends Widget {
       this.setFormatStatus();
       this.setFontStatus();
       this.setFontSizeStatus();
-      this.setFontBoldStatus();
-      this.setFontItalicStatus();
-      this.setUnderLineStatus();
-      this.setFontStrikeStatus();
-      this.setFontColorStatus();
-      this.setFillColorStatus();
+      this.setFontBold();
+      this.setFontItalic();
+      this.setUnderLine();
+      this.setFontStrike();
+      this.setFontColor();
+      this.setFillColor();
     });
     EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
@@ -1079,7 +1026,7 @@ class TopMenu extends Widget {
     this.fontSize.setTitle(size);
   }
 
-  setFontBoldStatus() {
+  setFontBold() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1096,7 +1043,7 @@ class TopMenu extends Widget {
     this.fontBold.active(bold);
   }
 
-  setFontItalicStatus() {
+  setFontItalic() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1113,7 +1060,7 @@ class TopMenu extends Widget {
     this.fontItalic.active(italic);
   }
 
-  setUnderLineStatus() {
+  setUnderLine() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1130,7 +1077,7 @@ class TopMenu extends Widget {
     this.underLine.active(underline);
   }
 
-  setFontStrikeStatus() {
+  setFontStrike() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1147,7 +1094,7 @@ class TopMenu extends Widget {
     this.fontStrike.active(strikethrough);
   }
 
-  setFontColorStatus() {
+  setFontColor() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1165,7 +1112,7 @@ class TopMenu extends Widget {
     this.fontColor.fontColorContextMenu.setActiveByColor(color);
   }
 
-  setFillColorStatus() {
+  setFillColor() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1192,12 +1139,12 @@ class TopMenu extends Widget {
     this.setFormatStatus();
     this.setFontStatus();
     this.setFontSizeStatus();
-    this.setFontBoldStatus();
-    this.setFontItalicStatus();
-    this.setUnderLineStatus();
-    this.setFontStrikeStatus();
-    this.setFontColorStatus();
-    this.setFillColorStatus();
+    this.setFontBold();
+    this.setFontItalic();
+    this.setUnderLine();
+    this.setFontStrike();
+    this.setFontColor();
+    this.setFillColor();
   }
 }
 
