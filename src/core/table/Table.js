@@ -1736,7 +1736,7 @@ class Table extends Widget {
     this.resize();
   }
 
-  checkedEnableBorderDrawOptimization() {
+  checkedEnableBorderOptimization() {
     const viewRange = this.getViewRange();
     let enable = true;
     this.cells.getCellInRectRange(viewRange, (r, c, cell) => {
@@ -1811,7 +1811,7 @@ class Table extends Widget {
       // eslint-disable-next-line no-console
       console.time();
     }
-    this.checkedEnableBorderDrawOptimization();
+    this.checkedEnableBorderOptimization();
     this.clear();
     this.frozenRect.render();
     // 冻结区域渲染
