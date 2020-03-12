@@ -174,6 +174,9 @@ class TopMenu extends Widget {
               case 'line5':
                 type = LINE_TYPE.POINT_LINE;
                 break;
+              case 'line6':
+                type = LINE_TYPE.DOUBLE_LINE;
+                break;
               default: break;
             }
             // display

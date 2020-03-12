@@ -147,7 +147,7 @@ class Cells extends CellsBorder {
         const cell = getCell.call(this, i, j);
         if (cell) {
           const overFlow = this.getCellOverFlowRect(i, j);
-          cb(i, j, cell, new Rect({
+          const result = cb(i, j, cell, new Rect({
             x,
             y,
             width,
@@ -158,6 +158,9 @@ class Cells extends CellsBorder {
             width: overFlow.width,
             height,
           }));
+          if (result === false) {
+            return;
+          }
         }
         x += width;
       }
