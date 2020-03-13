@@ -122,6 +122,16 @@ class Cells extends CellsBorder {
     return null;
   }
 
+  getMergeCellOrCell(ri, ci) {
+    const { table } = this;
+    const { merges } = table;
+    const merge = merges.getFirstIncludes(ri, ci);
+    if (merge) {
+      return this.getCell(merge.sri, merge.sci);
+    }
+    return this.getCell(ri, ci);
+  }
+
   getCellOrNew(ri, ci) {
     if (!this._[ri]) {
       this._[ri] = [];

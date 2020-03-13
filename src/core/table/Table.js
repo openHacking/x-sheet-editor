@@ -1469,64 +1469,304 @@ class Table extends Widget {
         const merge = this.merges.getFirstIncludes(row, col);
         let external = { sx, sy, ex, ey };
         switch (pos) {
-          case 'top': {
-            const left = this.cells.isDisplayLeftBorder(row, col);
-            const right = this.cells.isDisplayRightBorder(row, col);
-            const left1 = this.cells.isDisplayLeftBorder(row - 1, col + 1);
-            const right1 = this.cells.isDisplayRightBorder(row - 1, col - 1);
-            const left2 = this.cells.isDisplayLeftBorder(row - 1, col);
-            const right2 = this.cells.isDisplayRightBorder(row - 1, col);
-            external.sy -= padding;
-            external.ey -= padding;
-            if (left) external.sx = sx - padding;
-            if (right1 || left2) external.sx = sx + padding;
-            if (right) external.ex = ex + padding;
-            if (left1 || right2) external.ex = ex - padding;
-            break;
-          }
           case 'left': {
-            const top = this.cells.isDisplayTopBorder(row, col);
-            const bottom = this.cells.isDisplayBottomBorder(row, col);
+            // 当前
+            const top2 = this.cells.isDisplayTopBorder(row, col);
+            const topType2 = this.cells.getTopBorderType(row, col);
+            const bottom2 = this.cells.isDisplayBottomBorder(row, col);
+            const bottomType2 = this.cells.getBottomBorderType(row, col);
+            const topCk2 = top2 && topType2 === LINE_TYPE.DOUBLE_LINE;
+            const bottomCk2 = bottom2 && bottomType2 === LINE_TYPE.DOUBLE_LINE;
+            // 合并单元格
+            const merge = this.merges.getFirstIncludes(row, col - 1);
+            // 左边
+            const right = this.cells.isDisplayRightBorder(row, col - 1);
+            const rightType = this.cells.getRightBorderType(row, col - 1);
+            const top = this.cells.isDisplayTopBorder(row, col - 1);
+            const topType = this.cells.getTopBorderType(row, col - 1);
+            const bottom = this.cells.isDisplayBottomBorder(row, col - 1);
+            const bottomType = this.cells.getBottomBorderType(row, col - 1);
+            const rightCk = right && rightType === LINE_TYPE.DOUBLE_LINE;
+            const topCk = top && topType === LINE_TYPE.DOUBLE_LINE;
+            const bottomCk = bottom && bottomType === LINE_TYPE.DOUBLE_LINE;
+            // 左上下
             const top1 = this.cells.isDisplayTopBorder(row + 1, col - 1);
+            const topType1 = this.cells.getTopBorderType(row + 1, col - 1);
             const bottom1 = this.cells.isDisplayBottomBorder(row - 1, col - 1);
-            const top2 = this.cells.isDisplayTopBorder(row, col - 1);
-            const bottom2 = this.cells.isDisplayBottomBorder(row, col - 1);
-            external.sx -= padding;
-            external.ex -= padding;
-            if (top) external.sy = sy - padding;
-            if (bottom1 || top2) external.sy = sy + padding;
-            if (bottom) external.ey = ey + padding;
-            if (top1 || bottom2) external.ey = ey - padding;
+            const bottomType1 = this.cells.getBottomBorderType(row - 1, col - 1);
+            const topCk1 = top1 && topType1 === LINE_TYPE.DOUBLE_LINE;
+            const bottomCk1 = bottom1 && bottomType1 === LINE_TYPE.DOUBLE_LINE;
+            if (merge === null) {
+              if (rightCk || topCk || bottomCk || topCk1 || bottomCk1) {
+                external.sx = sx - padding;
+                external.ex = ex - padding;
+                if (topCk || bottomCk1) {
+                  external.sy = sy + padding;
+                } else if (topCk) {
+                  external.sy = sy - padding;
+                } else if (topCk2) {
+                  external.sy = sy - padding;
+                } else {
+                  external.sy = sy;
+                }
+                if (bottomCk || topCk1) {
+                  external.ey = ey - padding;
+                } else if (bottomCk) {
+                  external.ey = ey + padding;
+                } else if (bottomCk2) {
+                  external.ey = ey + padding;
+                } else {
+                  external.ey = ey;
+                }
+              } else if (right === false) {
+                external.sx = sx - padding;
+                external.ex = ex - padding;
+                if (top2) external.sy = sy - padding; else external.sy = sy;
+                if (bottom2) external.ey = ey + padding; else external.ey = ey;
+              } else {
+                external = null;
+              }
+            } else {
+              const first = merge.sri === row;
+              const last = merge.eri === row;
+              external.sx = sx - padding;
+              external.ex = ex - padding;
+              if (first) {
+                external.sy = sy + padding;
+                external.ey = ey + padding;
+              } else if (last) {
+                external.sy = sy - padding;
+                external.ey = ey - padding;
+              } else {
+                external.sy = sy - padding;
+                external.ey = ey + padding;
+              }
+            }
             break;
           }
-          case 'bottom': {
-            const left = this.cells.isDisplayLeftBorder(row, col);
-            const right = this.cells.isDisplayRightBorder(row, col);
-            const left1 = this.cells.isDisplayLeftBorder(row + 1, col + 1);
-            const right1 = this.cells.isDisplayRightBorder(row + 1, col - 1);
-            const left2 = this.cells.isDisplayLeftBorder(row + 1, col);
-            const right2 = this.cells.isDisplayRightBorder(row + 1, col);
-            external.sy += padding;
-            external.ey += padding;
-            if (left) external.sx = sx - padding;
-            if (right1 || left2) external.sx = sx + padding;
-            if (right) external.ex = ex + padding;
-            if (left1 || right2) external.ex = ex - padding;
+          case 'top': {
+            // 当前
+            const left2 = this.cells.isDisplayLeftBorder(row, col);
+            const leftType2 = this.cells.getLeftBorderType(row, col);
+            const right2 = this.cells.isDisplayRightBorder(row, col);
+            const rightType2 = this.cells.getRightBorderType(row, col);
+            const leftCk2 = left2 && leftType2 === LINE_TYPE.DOUBLE_LINE;
+            const rightCk2 = right2 && rightType2 === LINE_TYPE.DOUBLE_LINE;
+            // 合并单元格
+            const merge = this.merges.getFirstIncludes(row - 1, col);
+            // 上边
+            const bottom = this.cells.isDisplayBottomBorder(row - 1, col);
+            const bottomType = this.cells.getBottomBorderType(row - 1, col);
+            const left = this.cells.isDisplayLeftBorder(row - 1, col);
+            const leftType = this.cells.getLeftBorderType(row - 1, col);
+            const right = this.cells.isDisplayRightBorder(row - 1, col);
+            const rightType = this.cells.getRightBorderType(row - 1, col);
+            const bottomCk = bottom && bottomType === LINE_TYPE.DOUBLE_LINE;
+            const leftCk = left && leftType === LINE_TYPE.DOUBLE_LINE;
+            const rightCk = right && rightType === LINE_TYPE.DOUBLE_LINE;
+            // 上左右
+            const left1 = this.cells.isDisplayLeftBorder(row - 1, col + 1);
+            const leftType1 = this.cells.getLeftBorderType(row - 1, col + 1);
+            const right1 = this.cells.isDisplayRightBorder(row - 1, col - 1);
+            const rightType1 = this.cells.getRightBorderType(row - 1, col - 1);
+            const leftCk1 = left1 && leftType1 === LINE_TYPE.DOUBLE_LINE;
+            const rightCk1 = right1 && rightType1 === LINE_TYPE.DOUBLE_LINE;
+            if (merge === null) {
+              if (bottomCk || leftCk || rightCk || leftCk1 || rightCk1) {
+                external.sy = sy - padding;
+                external.ey = ey - padding;
+                if (leftCk || rightCk1) {
+                  external.sx = sx + padding;
+                } else if (leftCk) {
+                  external.sx = sx - padding;
+                } else if (leftCk2) {
+                  external.sx = sx - padding;
+                } else {
+                  external.sx = sx;
+                }
+                if (rightCk || leftCk1) {
+                  external.ex = ex - padding;
+                } else if (rightCk) {
+                  external.ex = ex + padding;
+                } else if (rightCk2) {
+                  external.ex = ex + padding;
+                } else {
+                  external.ex = ex;
+                }
+              } else if (bottom === false) {
+                external.sy = sy - padding;
+                external.ey = ey - padding;
+                if (left2) external.sx = sx - padding; else external.sx = sx;
+                if (right2) external.ex = ex + padding; else external.ex = ex;
+              } else {
+                external = null;
+              }
+            } else {
+              const first = merge.sci === col;
+              const last = merge.eci === col;
+              external.sy = sy - padding;
+              external.ey = ey - padding;
+              if (first) {
+                external.sx = sx + padding;
+                external.ex = ex + padding;
+              } else if (last) {
+                external.sx = sx - padding;
+                external.ex = ex - padding;
+              } else {
+                external.sx = sx - padding;
+                external.ex = ex + padding;
+              }
+            }
             break;
           }
           case 'right': {
-            const top = this.cells.isDisplayTopBorder(row, col);
-            const bottom = this.cells.isDisplayBottomBorder(row, col);
+            // 当前
+            const top2 = this.cells.isDisplayTopBorder(row, col);
+            const topType2 = this.cells.getTopBorderType(row, col);
+            const bottom2 = this.cells.isDisplayBottomBorder(row, col);
+            const bottomType2 = this.cells.getBottomBorderType(row, col);
+            const topCk2 = top2 && topType2 === LINE_TYPE.DOUBLE_LINE;
+            const bottomCk2 = bottom2 && bottomType2 === LINE_TYPE.DOUBLE_LINE;
+            // 合并单元格
+            const merge = this.merges.getFirstIncludes(row, col + 1);
+            // 右边
+            const left = this.cells.isDisplayLeftBorder(row, col + 1);
+            const leftType = this.cells.getLeftBorderType(row, col + 1);
+            const top = this.cells.isDisplayTopBorder(row, col + 1);
+            const topType = this.cells.getTopBorderType(row, col + 1);
+            const bottom = this.cells.isDisplayBottomBorder(row, col + 1);
+            const bottomType = this.cells.getBottomBorderType(row, col + 1);
+            const leftCk = left && leftType === LINE_TYPE.DOUBLE_LINE;
+            const topCk = top && topType === LINE_TYPE.DOUBLE_LINE;
+            const bottomCk = bottom && bottomType === LINE_TYPE.DOUBLE_LINE;
+            // 右上下
             const top1 = this.cells.isDisplayTopBorder(row + 1, col + 1);
+            const topType1 = this.cells.getTopBorderType(row + 1, col + 1);
             const bottom1 = this.cells.isDisplayBottomBorder(row - 1, col + 1);
-            const top2 = this.cells.isDisplayTopBorder(row, col + 1);
-            const bottom2 = this.cells.isDisplayBottomBorder(row, col + 1);
-            external.sx += padding;
-            external.ex += padding;
-            if (top) external.sy = sy - padding;
-            if (bottom1 || top2) external.sy = sy + padding;
-            if (bottom) external.ey = ey + padding;
-            if (top1 || bottom2) external.ey = ey - padding;
+            const bottomType1 = this.cells.getBottomBorderType(row - 1, col + 1);
+            const topCk1 = top1 && topType1 === LINE_TYPE.DOUBLE_LINE;
+            const bottomCk1 = bottom1 && bottomType1 === LINE_TYPE.DOUBLE_LINE;
+            if (merge === null) {
+              if (leftCk || topCk || bottomCk || topCk1 || bottomCk1) {
+                external.sx = sx + padding;
+                external.ex = ex + padding;
+                if (topCk || bottomCk1) {
+                  external.sy = sy + padding;
+                } else if (topCk) {
+                  external.sy = sy - padding;
+                } else if (topCk2) {
+                  external.sy = sy - padding;
+                } else {
+                  external.sy = sy;
+                }
+                if (bottomCk || topCk1) {
+                  external.ey = ey - padding;
+                } else if (bottomCk) {
+                  external.ey = ey + padding;
+                } else if (bottomCk2) {
+                  external.ey = ey + padding;
+                } else {
+                  external.ey = ey;
+                }
+              } else if (left === false) {
+                external.sx = sx + padding;
+                external.ex = ex + padding;
+                if (top2) external.sy = sy - padding; else external.sy = sy;
+                if (bottom2) external.ey = ey + padding; else external.ey = ey;
+              } else {
+                external = null;
+              }
+            } else {
+              const first = merge.sri === row;
+              const last = merge.eri === row;
+              external.sx = sx + padding;
+              external.ex = ex + padding;
+              if (first) {
+                external.sy = sy + padding;
+                external.ey = ey + padding;
+              } else if (last) {
+                external.sy = sy - padding;
+                external.ey = ey - padding;
+              } else {
+                external.sy = sy - padding;
+                external.ey = ey + padding;
+              }
+            }
+            break;
+          }
+          case 'bottom': {
+            // 当前
+            const left2 = this.cells.isDisplayLeftBorder(row, col);
+            const leftType2 = this.cells.getLeftBorderType(row, col);
+            const right2 = this.cells.isDisplayRightBorder(row, col);
+            const rightType2 = this.cells.getRightBorderType(row, col);
+            const leftCk2 = left2 && leftType2 === LINE_TYPE.DOUBLE_LINE;
+            const rightCk2 = right2 && rightType2 === LINE_TYPE.DOUBLE_LINE;
+            // 合并单元格
+            const merge = this.merges.getFirstIncludes(row + 1, col);
+            // 底边
+            const top = this.cells.isDisplayTopBorder(row + 1, col);
+            const topType = this.cells.getTopBorderType(row + 1, col);
+            const left = this.cells.isDisplayLeftBorder(row + 1, col);
+            const leftType = this.cells.getLeftBorderType(row + 1, col);
+            const right = this.cells.isDisplayRightBorder(row + 1, col);
+            const rightType = this.cells.getRightBorderType(row + 1, col);
+            const topCk = top && topType === LINE_TYPE.DOUBLE_LINE;
+            const leftCk = left && leftType === LINE_TYPE.DOUBLE_LINE;
+            const rightCk = right && rightType === LINE_TYPE.DOUBLE_LINE;
+            // 下左右
+            const left1 = this.cells.isDisplayLeftBorder(row + 1, col + 1);
+            const leftType1 = this.cells.getLeftBorderType(row + 1, col + 1);
+            const right1 = this.cells.isDisplayRightBorder(row + 1, col - 1);
+            const rightType1 = this.cells.getRightBorderType(row + 1, col - 1);
+            const leftCk1 = left1 && leftType1 === LINE_TYPE.DOUBLE_LINE;
+            const rightCk1 = right1 && rightType1 === LINE_TYPE.DOUBLE_LINE;
+            if (merge === null) {
+              if (topCk || leftCk || rightCk || leftCk1 || rightCk1) {
+                external.sy = sy + padding;
+                external.ey = ey + padding;
+                if (leftCk || rightCk1) {
+                  external.sx = sx + padding;
+                } else if (leftCk) {
+                  external.sx = sx - padding;
+                } else if (leftCk2) {
+                  external.sx = sx - padding;
+                } else {
+                  external.sx = sx;
+                }
+                if (rightCk || leftCk1) {
+                  external.ex = ex - padding;
+                } else if (rightCk) {
+                  external.ex = ex + padding;
+                } else if (rightCk2) {
+                  external.ex = ex + padding;
+                } else {
+                  external.ex = ex;
+                }
+              } else if (top === false) {
+                external.sy = sy + padding;
+                external.ey = ey + padding;
+                if (left2) external.sx = sx - padding; else external.sx = sx;
+                if (right2) external.ex = ex + padding; else external.ex = ex;
+              } else {
+                external = null;
+              }
+            } else {
+              const first = merge.sci === col;
+              const last = merge.eci === col;
+              external.sy = sy + padding;
+              external.ey = ey + padding;
+              if (first) {
+                external.sx = sx + padding;
+                external.ex = ex + padding;
+              } else if (last) {
+                external.sx = sx - padding;
+                external.ex = ex - padding;
+              } else {
+                external.sx = sx - padding;
+                external.ex = ex + padding;
+              }
+            }
             break;
           }
           default: break;
@@ -1573,99 +1813,184 @@ class Table extends Widget {
           }
         } else {
           switch (pos) {
-            case 'top': {
-              const left = this.cells.isDisplayLeftBorder(row, col);
-              const right = this.cells.isDisplayRightBorder(row, col);
-              const left1 = this.cells.isDisplayLeftBorder(row, col + 1);
-              const right1 = this.cells.isDisplayRightBorder(row, col - 1);
-              const left2 = this.cells.isDisplayLeftBorder(row - 1, col + 1);
-              const right2 = this.cells.isDisplayRightBorder(row - 1, col - 1);
-              const left3 = this.cells.isDisplayLeftBorder(row - 1, col);
-              const right3 = this.cells.isDisplayRightBorder(row - 1, col);
-              internal.sy += padding;
-              internal.ey += padding;
-              if (right2 || left3) internal.sx = sx - padding;
-              if (left || right1) internal.sx = sx + padding;
-              if (left2 || right3) internal.ex = ex + padding;
-              if (right || left1) internal.ex = ex - padding;
-              break;
-            }
             case 'left': {
+              // 当前
               const top = this.cells.isDisplayTopBorder(row, col);
+              const topType = this.cells.getTopBorderType(row, col);
               const bottom = this.cells.isDisplayBottomBorder(row, col);
+              const bottomType = this.cells.getBottomBorderType(row, col);
+              const topCk = top && topType === LINE_TYPE.DOUBLE_LINE;
+              const bottomCk = bottom && bottomType === LINE_TYPE.DOUBLE_LINE;
+              // 上下
               const top1 = this.cells.isDisplayTopBorder(row + 1, col);
+              const topType1 = this.cells.getTopBorderType(row + 1, col);
               const bottom1 = this.cells.isDisplayBottomBorder(row - 1, col);
+              const bottomType1 = this.cells.getBottomBorderType(row - 1, col);
+              const topCk1 = top1 && topType1 === LINE_TYPE.DOUBLE_LINE;
+              const bottomCk1 = bottom1 && bottomType1 === LINE_TYPE.DOUBLE_LINE;
+              // 左边上下
               const top2 = this.cells.isDisplayTopBorder(row + 1, col - 1);
+              const topType2 = this.cells.getTopBorderType(row + 1, col - 1);
               const bottom2 = this.cells.isDisplayBottomBorder(row - 1, col - 1);
-              const top3 = this.cells.isDisplayTopBorder(row, col - 1);
-              const bottom3 = this.cells.isDisplayBottomBorder(row, col - 1);
-              internal.sx += padding;
-              internal.ex += padding;
-              if (bottom2 || top3) internal.sy = sy - padding;
-              if (top || bottom1) internal.sy = sy + padding;
-              if (top2 || bottom3) internal.ey = ey + padding;
-              if (bottom || top1) internal.ey = ey - padding;
+              const bottomType2 = this.cells.getBottomBorderType(row - 1, col - 1);
+              const topCk2 = top2 && topType2 === LINE_TYPE.DOUBLE_LINE;
+              const bottomCk2 = bottom2 && bottomType2 === LINE_TYPE.DOUBLE_LINE;
+              internal.sx = sx + padding;
+              internal.ex = ex + padding;
+              if (topCk || bottomCk1) {
+                internal.sy = sy + padding;
+              } else if (topCk) {
+                internal.sy = sy - padding;
+              } else if (bottomCk2) {
+                internal.sy = sy - padding;
+              } else {
+                internal.sy = sy;
+              }
+              if (bottomCk || topCk1) {
+                internal.ey = ey - padding;
+              } else if (bottomCk) {
+                internal.ey = ey + padding;
+              } else if (topCk2) {
+                internal.ey = ey + padding;
+              } else {
+                internal.ey = ey;
+              }
               break;
             }
-            case 'bottom': {
+            case 'top': {
+              // 当前
               const left = this.cells.isDisplayLeftBorder(row, col);
+              const leftType = this.cells.getLeftBorderType(row, col);
               const right = this.cells.isDisplayRightBorder(row, col);
+              const rightType = this.cells.getRightBorderType(row, col);
+              const leftCk = left && leftType === LINE_TYPE.DOUBLE_LINE;
+              const rightCk = right && rightType === LINE_TYPE.DOUBLE_LINE;
+              // 左右
               const left1 = this.cells.isDisplayLeftBorder(row, col + 1);
+              const leftType1 = this.cells.getLeftBorderType(row, col + 1);
               const right1 = this.cells.isDisplayRightBorder(row, col - 1);
-              const left2 = this.cells.isDisplayLeftBorder(row + 1, col + 1);
-              const right2 = this.cells.isDisplayRightBorder(row + 1, col - 1);
-              const left3 = this.cells.isDisplayLeftBorder(row + 1, col);
-              const right3 = this.cells.isDisplayRightBorder(row + 1, col);
-              internal.sy -= padding;
-              internal.ey -= padding;
-              if (right2 || left3) internal.sx = sx - padding;
-              if (left || right1) internal.sx = sx + padding;
-              if (left2 || right3) internal.ex = ex + padding;
-              if (right || left1) internal.ex = ex - padding;
+              const rightType1 = this.cells.getRightBorderType(row, col - 1);
+              const leftCk1 = left1 && leftType1 === LINE_TYPE.DOUBLE_LINE;
+              const rightCk1 = right1 && rightType1 === LINE_TYPE.DOUBLE_LINE;
+              // 上左右
+              const left2 = this.cells.isDisplayLeftBorder(row - 1, col + 1);
+              const leftType2 = this.cells.getLeftBorderType(row - 1, col + 1);
+              const right2 = this.cells.isDisplayRightBorder(row - 1, col - 1);
+              const rightType2 = this.cells.getRightBorderType(row - 1, col - 1);
+              const leftCk2 = left2 && leftType2 === LINE_TYPE.DOUBLE_LINE;
+              const rightCk2 = right2 && rightType2 === LINE_TYPE.DOUBLE_LINE;
+              if (leftCk || rightCk1) {
+                internal.sx = sx + padding;
+              } else if (leftCk) {
+                internal.sx = sx - padding;
+              } else if (rightCk2) {
+                internal.sx = sx - padding;
+              } else {
+                internal.sx = sx;
+              }
+              if (rightCk || leftCk1) {
+                internal.ex = ex - padding;
+              } else if (rightCk) {
+                internal.ex = ex + padding;
+              } else if (leftCk2) {
+                internal.ex = ex + padding;
+              } else {
+                internal.ex = ex;
+              }
+              internal.sy = sy + padding;
+              internal.ey = ey + padding;
               break;
             }
             case 'right': {
+              // 当前
               const top = this.cells.isDisplayTopBorder(row, col);
+              const topType = this.cells.getTopBorderType(row, col);
               const bottom = this.cells.isDisplayBottomBorder(row, col);
+              const bottomType = this.cells.getBottomBorderType(row, col);
+              const topCk = top && topType === LINE_TYPE.DOUBLE_LINE;
+              const bottomCk = bottom && bottomType === LINE_TYPE.DOUBLE_LINE;
+              // 上下
               const top1 = this.cells.isDisplayTopBorder(row + 1, col);
+              const topType1 = this.cells.getTopBorderType(row + 1, col);
               const bottom1 = this.cells.isDisplayBottomBorder(row - 1, col);
+              const bottomType1 = this.cells.getBottomBorderType(row - 1, col);
+              const topCk1 = top1 && topType1 === LINE_TYPE.DOUBLE_LINE;
+              const bottomCk1 = bottom1 && bottomType1 === LINE_TYPE.DOUBLE_LINE;
+              // 右边上下
               const top2 = this.cells.isDisplayTopBorder(row + 1, col + 1);
+              const topType2 = this.cells.getTopBorderType(row + 1, col + 1);
               const bottom2 = this.cells.isDisplayBottomBorder(row - 1, col + 1);
-              const top3 = this.cells.isDisplayTopBorder(row, col + 1);
-              const bottom3 = this.cells.isDisplayBottomBorder(row, col + 1);
-              internal.sx -= padding;
-              internal.ex -= padding;
-              if (bottom2 || top3) internal.sy = sy - padding;
-              if (top || bottom1) internal.sy = sy + padding;
-              if (top2 || bottom3) internal.ey = ey + padding;
-              if (bottom || top1) internal.ey = ey - padding;
+              const bottomType2 = this.cells.getBottomBorderType(row - 1, col + 1);
+              const topCk2 = top2 && topType2 === LINE_TYPE.DOUBLE_LINE;
+              const bottomCk2 = bottom2 && bottomType2 === LINE_TYPE.DOUBLE_LINE;
+              internal.sx = sx - padding;
+              internal.ex = ex - padding;
+              if (topCk || bottomCk1) {
+                internal.sy = sy + padding;
+              } else if (topCk) {
+                internal.sy = sy - padding;
+              } else if (bottomCk2) {
+                internal.sy = sy - padding;
+              } else {
+                internal.sy = sy;
+              }
+              if (bottomCk || topCk1) {
+                internal.ey = ey - padding;
+              } else if (bottomCk) {
+                internal.ey = ey + padding;
+              } else if (topCk2) {
+                internal.ey = ey + padding;
+              } else {
+                internal.ey = ey;
+              }
+              break;
+            }
+            case 'bottom': {
+              // 当前
+              const left = this.cells.isDisplayLeftBorder(row, col);
+              const leftType = this.cells.getLeftBorderType(row, col);
+              const right = this.cells.isDisplayRightBorder(row, col);
+              const rightType = this.cells.getRightBorderType(row, col);
+              const leftCk = left && leftType === LINE_TYPE.DOUBLE_LINE;
+              const rightCk = right && rightType === LINE_TYPE.DOUBLE_LINE;
+              // 左右
+              const left1 = this.cells.isDisplayLeftBorder(row, col + 1);
+              const leftType1 = this.cells.getLeftBorderType(row, col + 1);
+              const right1 = this.cells.isDisplayRightBorder(row, col - 1);
+              const rightType1 = this.cells.getRightBorderType(row, col - 1);
+              const leftCk1 = left1 && leftType1 === LINE_TYPE.DOUBLE_LINE;
+              const rightCk1 = right1 && rightType1 === LINE_TYPE.DOUBLE_LINE;
+              // 下左右
+              const left2 = this.cells.isDisplayLeftBorder(row + 1, col + 1);
+              const leftType2 = this.cells.getLeftBorderType(row + 1, col + 1);
+              const right2 = this.cells.isDisplayRightBorder(row + 1, col - 1);
+              const rightType2 = this.cells.getRightBorderType(row + 1, col - 1);
+              const leftCk2 = left2 && leftType2 === LINE_TYPE.DOUBLE_LINE;
+              const rightCk2 = right2 && rightType2 === LINE_TYPE.DOUBLE_LINE;
+              if (leftCk || rightCk1) {
+                internal.sx = sx + padding;
+              } else if (leftCk) {
+                internal.sx = sx - padding;
+              } else if (rightCk2) {
+                internal.sx = sx - padding;
+              } else {
+                internal.sx = sx;
+              }
+              if (rightCk || leftCk1) {
+                internal.ex = ex - padding;
+              } else if (rightCk) {
+                internal.ex = ex + padding;
+              } else if (leftCk2) {
+                internal.ex = ex + padding;
+              } else {
+                internal.ex = ex;
+              }
+              internal.sy = sy - padding;
+              internal.ey = ey - padding;
               break;
             }
             default: break;
           }
-        }
-        switch (pos) {
-          case 'top': {
-            const bottom = this.cells.isDisplayBottomBorder(row - 1, col);
-            if (bottom) external = null;
-            break;
-          }
-          case 'left': {
-            const right = this.cells.isDisplayRightBorder(row, col - 1);
-            if (right) external = null;
-            break;
-          }
-          case 'bottom': {
-            const top = this.cells.isDisplayTopBorder(row + 1, col);
-            if (top) external = null;
-            break;
-          }
-          case 'right': {
-            const left = this.cells.isDisplayLeftBorder(row, col + 1);
-            if (left) external = null;
-            break;
-          }
-          default: break;
         }
         return { external, internal };
       },
@@ -1736,7 +2061,7 @@ class Table extends Widget {
     this.resize();
   }
 
-  checkedEnableBorderOptimization() {
+  checkedEnableBorderDrawOptimization() {
     const viewRange = this.getViewRange();
     let enable = true;
     this.cells.getCellInRectRange(viewRange, (r, c, cell) => {
@@ -1762,10 +2087,8 @@ class Table extends Widget {
     });
     if (enable) {
       this.borderLineHandle.openDrawOptimization();
-      this.borderLineHandle.openBorderOptimization();
     } else {
       this.borderLineHandle.closeDrawOptimization();
-      this.borderLineHandle.closeBorderOptimization();
     }
   }
 
@@ -1811,7 +2134,7 @@ class Table extends Widget {
       // eslint-disable-next-line no-console
       console.time();
     }
-    this.checkedEnableBorderOptimization();
+    this.checkedEnableBorderDrawOptimization();
     this.clear();
     this.frozenRect.render();
     // 冻结区域渲染

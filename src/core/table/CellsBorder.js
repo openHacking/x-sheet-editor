@@ -2,14 +2,16 @@ import { Utils } from '../../utils/Utils';
 
 class CellsBorder {
 
+  // eslint-disable-next-line no-unused-vars
   getMergeCellOrCell(ri, ci) {
-    const { table } = this;
-    const { merges } = table;
-    const merge = merges.getFirstIncludes(ri, ci);
-    if (merge) {
-      return this.getCell(merge.sri, merge.sci);
-    }
-    return this.getCell(ri, ci);
+    throw new TypeError('child class implement');
+  }
+
+  borderEqual(src, target) {
+    const color = src.color === target.color;
+    const width = src.width === target.width;
+    const type = src.type === target.type;
+    return color && width && type;
   }
 
   borderComparisonOfTime(sri, sci, tri, tci) {
@@ -27,29 +29,42 @@ class CellsBorder {
 
   isDisplayLeftBorder(ri, ci) {
     const cell = this.getMergeCellOrCell(ri, ci);
-    return cell !== null && cell.borderAttr.left.display;
+    return !Utils.isUnDef(cell) && cell.borderAttr.left.display;
   }
 
   isDisplayTopBorder(ri, ci) {
     const cell = this.getMergeCellOrCell(ri, ci);
-    return cell !== null && cell.borderAttr.top.display;
+    return !Utils.isUnDef(cell) && cell.borderAttr.top.display;
   }
 
   isDisplayRightBorder(ri, ci) {
     const cell = this.getMergeCellOrCell(ri, ci);
-    return cell !== null && cell.borderAttr.right.display;
+    return !Utils.isUnDef(cell) && cell.borderAttr.right.display;
   }
 
   isDisplayBottomBorder(ri, ci) {
     const cell = this.getMergeCellOrCell(ri, ci);
-    return cell !== null && cell.borderAttr.bottom.display;
+    return !Utils.isUnDef(cell) && cell.borderAttr.bottom.display;
   }
 
-  borderEqual(src, target) {
-    const color = src.color === target.color;
-    const width = src.width === target.width;
-    const type = src.type === target.type;
-    return color && width && type;
+  getLeftBorderType(ri, ci) {
+    const cell = this.getMergeCellOrCell(ri, ci);
+    return cell && cell.borderAttr.left.type;
+  }
+
+  getRightBorderType(ri, ci) {
+    const cell = this.getMergeCellOrCell(ri, ci);
+    return cell && cell.borderAttr.right.type;
+  }
+
+  getTopBorderType(ri, ci) {
+    const cell = this.getMergeCellOrCell(ri, ci);
+    return cell && cell.borderAttr.top.type;
+  }
+
+  getBottomBorderType(ri, ci) {
+    const cell = this.getMergeCellOrCell(ri, ci);
+    return cell && cell.borderAttr.bottom.type;
   }
 }
 
