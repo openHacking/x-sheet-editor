@@ -36,6 +36,7 @@ class DragPanel extends Widget {
       e.stopPropagation();
     });
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
+      if (evt1.button !== 0) return;
       const downEventXy = this.computeEventXy(evt1, this);
       EventBind.mouseMoveUp(h(document), (evt2) => {
         // 计算移动的距离

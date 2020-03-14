@@ -34,6 +34,7 @@ class ScreenSelector extends ScreenWidget {
       }
     });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
+      if (e1.button !== 0) return;
       const { x, y } = table.computeEventXy(e1);
       const downSelectAttr = this.getDownXYSelectorAttr(x, y);
       // console.log('downSelectAttr >>>', downSelectAttr);

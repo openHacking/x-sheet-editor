@@ -916,9 +916,11 @@ class TopMenu extends Widget {
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
         const merge = selectorAttr.rect.clone();
-        merges.add(merge);
-        dataSnapshot.snapshot();
-        table.render();
+        if (merge.eri > merge.sri || merge.eci > merge.sci) {
+          merges.add(merge);
+          dataSnapshot.snapshot();
+          table.render();
+        }
       }
       e.stopPropagation();
       e.preventDefault();
