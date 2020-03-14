@@ -85,16 +85,143 @@ class DoubleLine {
       bottomShow: () => false,
       iFMerge: () => false,
       iFMergeFirstRow: () => false,
-      ifMergeLastRow: () => false,
+      iFMergeLastRow: () => false,
       iFMergeFirstCol: () => false,
-      ifMergeLastCol: () => false,
+      iFMergeLastCol: () => false,
     }, attr);
   }
 
   handleExternal(sx, sy, ex, ey, row, col, pos) {
     const external = {};
     const { leftShow, topShow, rightShow, bottomShow } = this;
+    const { iFMerge, iFMergeFirstRow, iFMergeLastRow, iFMergeFirstCol, iFMergeLastCol } = this;
     const { spacing } = this;
+    let ifMerge = null;
+    let firstRow = null;
+    let lastRow = null;
+    let firstCol = null;
+    let lastCol = null;
+    switch (pos) {
+      case 'left':
+        ifMerge = iFMerge(row, col - 1);
+        if (ifMerge) {
+          firstRow = iFMergeFirstRow(row, col - 1);
+          lastRow = iFMergeLastRow(row, col - 1);
+          firstCol = iFMergeFirstCol(row, col - 1);
+          lastCol = iFMergeLastCol(row, col - 1);
+        }
+        break;
+      case 'top':
+        ifMerge = iFMerge(row - 1, col);
+        if (ifMerge) {
+          firstRow = iFMergeFirstRow(row - 1, col);
+          lastRow = iFMergeLastRow(row - 1, col);
+          firstCol = iFMergeFirstCol(row - 1, col);
+          lastCol = iFMergeLastCol(row - 1, col);
+        }
+        break;
+      case 'right':
+        ifMerge = iFMerge(row, col + 1);
+        if (ifMerge) {
+          firstRow = iFMergeFirstRow(row, col + 1);
+          lastRow = iFMergeLastRow(row, col + 1);
+          firstCol = iFMergeFirstCol(row, col + 1);
+          lastCol = iFMergeLastCol(row, col + 1);
+        }
+        break;
+      case 'bottom':
+        ifMerge = iFMerge(row + 1, col);
+        if (ifMerge) {
+          firstRow = iFMergeFirstRow(row + 1, col);
+          lastRow = iFMergeLastRow(row + 1, col);
+          firstCol = iFMergeFirstCol(row + 1, col);
+          lastCol = iFMergeLastCol(row + 1, col);
+        }
+        break;
+      default: break;
+    }
+    if (ifMerge) {
+      switch (pos) {
+        case 'left': {
+          external.sx = sx - spacing;
+          external.ex = ex - spacing;
+          // 检查顶边和上底边及左上角底边及左顶边
+          const sTopLeftCorner = bottomShow(row - 1, col - 1) || topShow(row, col - 1);
+          const sTop = topShow(row, col);
+          const sBottom = bottomShow(row - 1, col);
+          external.sy = sy;
+          if (sTop || sBottom) external.sy = sy - spacing;
+          if (sTopLeftCorner && firstRow) external.sy = sy + spacing;
+          // 检查底边和下顶边及左下角顶边和左底边
+          const eBottomLeftCorner = topShow(row + 1, col - 1) || bottomShow(row, col - 1);
+          const eBottom = bottomShow(row, col);
+          const eTop = topShow(row + 1, col);
+          external.ey = ey;
+          if (eBottom || eTop) external.ey = ey + spacing;
+          if (eBottomLeftCorner && lastRow) external.ey = ey - spacing;
+          break;
+        }
+        case 'top': {
+          external.sy = sy - spacing;
+          external.ey = ey - spacing;
+          // 检查左边和左右边及左上角右边及上左边
+          const sTopLeftCorner = rightShow(row - 1, col - 1) || leftShow(row - 1, col);
+          const sLeft = leftShow(row, col);
+          const sRight = rightShow(row, col - 1);
+          external.sx = sx;
+          if (sLeft || sRight) external.sx = sx - spacing;
+          if (sTopLeftCorner && firstCol) external.sx = sx + spacing;
+          // 检查右边和右左边及右上角左边及上右边
+          const eTopRightCorner = leftShow(row - 1, col + 1) || rightShow(row - 1, col);
+          const eRight = rightShow(row, col);
+          const eLeft = leftShow(row, col + 1);
+          external.ex = ex;
+          if (eRight || eLeft) external.ex = ex + spacing;
+          if (eTopRightCorner && lastCol) external.ex = ex - spacing;
+          break;
+        }
+        case 'right': {
+          external.sx = sx + spacing;
+          external.ex = ex + spacing;
+          // 检查顶边和上底边及右上角底边及右顶边
+          const sTopRightCorner = bottomShow(row - 1, col + 1) || topShow(row, col + 1);
+          const sTop = topShow(row, col);
+          const sBottom = bottomShow(row - 1, col);
+          external.sy = sy;
+          if (sTop || sBottom) external.sy = sy - spacing;
+          if (sTopRightCorner && firstRow) external.sy = sy + spacing;
+          // 检查底边和下顶边及右下角顶边及右底边
+          const eBottomRightCorner = topShow(row + 1, col + 1) || bottomShow(row, col + 1);
+          const eBottom = bottomShow(row, col);
+          const eTop = topShow(row + 1, col);
+          external.ey = ey;
+          if (eBottom || eTop) external.ey = ey + spacing;
+          if (eBottomRightCorner && lastRow) external.ey = ey - spacing;
+          break;
+        }
+        case 'bottom': {
+          external.sy = sy + spacing;
+          external.ey = ey + spacing;
+          // 检查左边和左右边及左下角右边及下左边
+          const sBottomLeftCorner = rightShow(row + 1, col - 1) || leftShow(row + 1, col);
+          const sLeft = leftShow(row, col);
+          const sRight = rightShow(row, col - 1);
+          external.sx = sx;
+          if (sLeft || sRight) external.sx = sx - spacing;
+          if (sBottomLeftCorner && firstCol) external.sx = sx + spacing;
+          // 检查右边和右左边及右下角左边及下右边
+          const eBottomRightCorner = leftShow(row + 1, col + 1) || rightShow(row + 1, col);
+          const eRight = rightShow(row, col);
+          const eLeft = leftShow(row, col + 1);
+          external.ex = ex;
+          if (eRight || eLeft) external.ex = ex + spacing;
+          if (eBottomRightCorner && lastCol) external.ex = ex - spacing;
+          break;
+        }
+        default: break;
+      }
+      return external;
+    }
     switch (pos) {
       case 'left': {
         external.sx = sx - spacing;
@@ -183,16 +310,89 @@ class DoubleLine {
     const { iFMerge, iFMergeFirstRow, iFMergeLastRow, iFMergeFirstCol, iFMergeLastCol } = this;
     const { spacing } = this;
     const ifMerge = iFMerge(row, col);
+    // merge
     if (ifMerge) {
       const firstRow = iFMergeFirstRow(row, col);
       const lastRow = iFMergeLastRow(row, col);
       const firstCol = iFMergeFirstCol(row, col);
       const lastCol = iFMergeLastCol(row, col);
       switch (pos) {
-        case 'left': { break; }
-        case 'top': { break; }
-        case 'right': { break; }
-        case 'bottom': { break; }
+        case 'left': {
+          internal.sx = sx + spacing;
+          internal.ex = ex + spacing;
+          // 检查顶边和上底边及左上角底边及左顶边
+          const sTopLeftCorner = bottomShow(row - 1, col - 1) || topShow(row, col - 1);
+          const sTop = topShow(row, col);
+          const sBottom = bottomShow(row - 1, col);
+          internal.sy = sy;
+          if (sTopLeftCorner) internal.sy = sy - spacing;
+          if ((sTop || sBottom) && firstRow) internal.sy = sy + spacing;
+          // 检查底边和下顶边及左下角顶边和左底边
+          const eBottomLeftCorner = topShow(row + 1, col - 1) || bottomShow(row, col - 1);
+          const eBottom = bottomShow(row, col);
+          const eTop = topShow(row + 1, col);
+          internal.ey = ey;
+          if (eBottomLeftCorner) internal.ey = ey + spacing;
+          if ((eBottom || eTop) && lastRow) internal.ey = ey - spacing;
+          break;
+        }
+        case 'top': {
+          internal.sy = sy + spacing;
+          internal.ey = ey + spacing;
+          // 检查左边和左右边及左上角右边及上左边
+          const sTopLeftCorner = rightShow(row - 1, col - 1) || leftShow(row - 1, col);
+          const sLeft = leftShow(row, col);
+          const sRight = rightShow(row, col - 1);
+          internal.sx = sx;
+          if (sTopLeftCorner) internal.sx = sx - spacing;
+          if ((sLeft || sRight) && firstCol) internal.sx = sx + spacing;
+          // 检查右边和右左边及右上角左边及上右边
+          const eTopRightCorner = leftShow(row - 1, col + 1) || rightShow(row - 1, col);
+          const eRight = rightShow(row, col);
+          const eLeft = leftShow(row, col + 1);
+          internal.ex = ex;
+          if (eTopRightCorner) internal.ex = ex + spacing;
+          if ((eRight || eLeft) && lastCol) internal.ex = ex - spacing;
+          break;
+        }
+        case 'right': {
+          internal.sx = sx - spacing;
+          internal.ex = ex - spacing;
+          // 检查顶边和上底边及右上角底边及右上边
+          const sTopRightCorner = bottomShow(row - 1, col + 1) || topShow(row, col + 1);
+          const sTop = topShow(row, col);
+          const sBottom = bottomShow(row - 1, col);
+          internal.sy = sy;
+          if (sTopRightCorner) internal.sy = sy - spacing;
+          if ((sTop || sBottom) && firstRow) internal.sy = sy + spacing;
+          // 检查底边和下顶边右下角顶边及右下边
+          const eBottomRightCorner = topShow(row + 1, col + 1) || bottomShow(row, col + 1);
+          const eBottom = bottomShow(row, col);
+          const eTop = topShow(row + 1, col);
+          internal.ey = ey;
+          if (eBottomRightCorner) internal.ey = ey + spacing;
+          if ((eBottom || eTop) && lastRow) internal.ey = ey - spacing;
+          break;
+        }
+        case 'bottom': {
+          internal.sy = sy - spacing;
+          internal.ey = ey - spacing;
+          // 检查左边和左右边及左下角右边及下左边
+          const sBottomLeftCorner = rightShow(row + 1, col - 1) || leftShow(row + 1, col);
+          const sLeft = leftShow(row, col);
+          const sRight = rightShow(row, col - 1);
+          internal.sx = sx;
+          if (sBottomLeftCorner) internal.sx = sx - spacing;
+          if ((sLeft || sRight) && firstCol) internal.sx = sx + spacing;
+          // 检查右边和右左边及右下角左边及下右边
+          const eBottomRightCorner = leftShow(row + 1, col + 1) || rightShow(row + 1, col);
+          const eRight = rightShow(row, col);
+          const eLeft = leftShow(row, col + 1);
+          internal.ex = ex;
+          if (eBottomRightCorner) internal.ex = ex + spacing;
+          if ((eRight || eLeft) && lastCol) internal.ex = ex - spacing;
+          break;
+        }
         default: break;
       }
       return internal;

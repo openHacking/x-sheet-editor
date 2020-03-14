@@ -1469,9 +1469,9 @@ class Table extends Widget {
       bottomShow: (row, col) => this.cells.isDisplayBottomBorder(row, col),
       iFMerge: (row, col) => this.merges.getFirstIncludes(row, col) !== null,
       iFMergeFirstRow: (row, col) => this.merges.getFirstIncludes(row, col).sri === row,
-      ifMergeLastRow: (row, col) => this.merges.getFirstIncludes(row, col).eri === row,
+      iFMergeLastRow: (row, col) => this.merges.getFirstIncludes(row, col).eri === row,
       iFMergeFirstCol: (row, col) => this.merges.getFirstIncludes(row, col).sci === col,
-      ifMergeLastCol: (row, col) => this.merges.getFirstIncludes(row, col).eci === col,
+      iFMergeLastCol: (row, col) => this.merges.getFirstIncludes(row, col).eci === col,
     });
     this.grid = new Grid(this.draw, {
       color: this.settings.table.borderColor,
