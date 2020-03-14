@@ -1,5 +1,0 @@
-class HorizontalMenuItem {
-
-}
-
-export { HorizontalMenuItem };
