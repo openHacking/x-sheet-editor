@@ -908,6 +908,21 @@ class TopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
+    EventBind.bind(this.merge, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      const { screen, dataSnapshot, merges } = table;
+      const screenSelector = screen.findByClass(ScreenSelector);
+      const { selectorAttr } = screenSelector;
+      if (selectorAttr) {
+        const merge = selectorAttr.rect.clone();
+        merges.add(merge);
+        dataSnapshot.snapshot();
+        table.render();
+      }
+      e.stopPropagation();
+      e.preventDefault();
+    });
   }
 
   setUndoStatus() {
