@@ -126,6 +126,11 @@ class ColorPicker extends Widget {
     const { dragPanel } = this;
     dragPanel.open();
     if (hex) {
+      if (ColorPicker.isRgb(hex)) {
+        const rgb = ColorPicker.parseRgb(hex);
+        // eslint-disable-next-line no-param-reassign
+        hex = ColorPicker.rgbToHex(rgb);
+      }
       this.hexColor(hex);
     } else {
       this.change();
@@ -363,8 +368,17 @@ class ColorPicker extends Widget {
     return hex.startsWith('#');
   }
 
-  static isDark(rgb) {
+  static parseRgb(rgb) {
     const rxp = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/;
+    const result = rgb.match(rxp);
+    return {
+      r: result[1],
+      g: result[2],
+      b: result[3],
+    };
+  }
+
+  static isDark(rgb) {
     if (Utils.isBlank(rgb)) {
       return false;
     }
@@ -373,8 +387,8 @@ class ColorPicker extends Widget {
       // eslint-disable-next-line no-param-reassign
       rgb = `rgb(${v.r}, ${v.g}, ${v.b})`;
     }
-    const result = rgb.match(rxp);
-    return result[1] * 0.299 + result[2] * 0.578 + result[3] * 0.114 >= 192;
+    const result = ColorPicker.parseRgb(rgb);
+    return result.r * 0.299 + result.g * 0.578 + result.b * 0.114 >= 192;
   }
 }
 

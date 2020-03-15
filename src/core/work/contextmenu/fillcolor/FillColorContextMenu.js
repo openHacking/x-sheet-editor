@@ -59,7 +59,7 @@ class FillColorContextMenu extends ELContextMenu {
           this.colorArray.setActiveByColor(null);
           this.close();
         } else {
-          this.colorPicker.open();
+          this.colorPicker.open(this.customizeColorArray.activeColor);
         }
       },
     });

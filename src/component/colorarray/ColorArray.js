@@ -99,11 +99,14 @@ class ColorArray extends Widget {
       selectCb: () => {},
     }, options);
     this.colors = this.options.colors;
+    this.activeColor = null;
     this.colors.forEach((item) => {
       this.children(item);
-      item.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      item.on(Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
         this.options.selectCb(item);
-        this.setActiveByColor(item.options.color);
+        if (item.options.color) {
+          this.setActiveByColor(item.options.color);
+        }
       });
     });
     if (this.colors.length > 0) {
@@ -114,7 +117,9 @@ class ColorArray extends Widget {
   add(item) {
     item.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
       this.options.selectCb(item);
-      this.setActiveByColor(item.options.color);
+      if (item.options.color) {
+        this.setActiveByColor(item.options.color);
+      }
     });
     this.colors.push(item);
     this.children(item);
@@ -125,6 +130,7 @@ class ColorArray extends Widget {
       const { options } = item;
       if (options.color === color) {
         item.setActive(true);
+        this.activeColor = options.color;
       } else {
         item.setActive(false);
       }
