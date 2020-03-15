@@ -551,7 +551,7 @@ const purchaseOrder = {
         underline: false,
         color: '#6e65e6',
         name: 'Arial',
-        size: '24',
+        size: '36',
         bold: false,
         italic: false,
       },
