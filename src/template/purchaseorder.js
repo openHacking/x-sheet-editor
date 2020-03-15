@@ -3719,7 +3719,7 @@ const purchaseOrder = {
         color: 'rgb(0,0,0)',
         name: 'Arial',
         size: '18',
-        bold: false,
+        bold: true,
         italic: false,
       },
       borderAttr: {
