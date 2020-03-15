@@ -6,6 +6,8 @@ import { Work } from './core/work/Work';
 import { Widget } from './lib/Widget';
 import './base.less';
 import './index.less';
+import './template/calendar';
+import './template/purchaseorder';
 
 class XSheet extends Widget {
   constructor(selectors, options = {
