@@ -29,6 +29,8 @@ import { Utils } from '../../utils/Utils';
 import { ElPopUp } from '../../component/elpopup/ElPopUp';
 import { Cells } from '../table/Cells';
 import { LINE_TYPE } from '../../canvas/Line';
+import { Icon } from './tools/Icon';
+import { ALIGN, VERTICAL_ALIGN } from '../../canvas/Font';
 
 class Divider extends Widget {
   constructor() {
@@ -653,8 +655,66 @@ class TopMenu extends Widget {
     this.underLine = new UnderLine();
     this.fontStrike = new FontStrike();
     this.merge = new Merge();
-    this.horizontalAlign = new HorizontalAlign();
-    this.verticalAlign = new VerticalAlign();
+    this.horizontalAlign = new HorizontalAlign({
+      contextMenu: {
+        onUpdate: (type) => {
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          const { screen, cells, dataSnapshot } = table;
+          const screenSelector = screen.findByClass(ScreenSelector);
+          const { selectorAttr } = screenSelector;
+          switch (type) {
+            case ALIGN.left:
+              this.horizontalAlign.setIcon(new Icon('align-left'));
+              break;
+            case ALIGN.center:
+              this.horizontalAlign.setIcon(new Icon('align-center'));
+              break;
+            case ALIGN.right:
+              this.horizontalAlign.setIcon(new Icon('align-right'));
+              break;
+            default: break;
+          }
+          if (selectorAttr) {
+            cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+              cell.fontAttr.align = type;
+            }, true);
+            dataSnapshot.snapshot();
+            table.render();
+          }
+        },
+      },
+    });
+    this.verticalAlign = new VerticalAlign({
+      contextMenu: {
+        onUpdate: (type) => {
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          const { screen, cells, dataSnapshot } = table;
+          const screenSelector = screen.findByClass(ScreenSelector);
+          const { selectorAttr } = screenSelector;
+          switch (type) {
+            case VERTICAL_ALIGN.top:
+              this.verticalAlign.setIcon(new Icon('align-top'));
+              break;
+            case VERTICAL_ALIGN.center:
+              this.verticalAlign.setIcon(new Icon('align-middle'));
+              break;
+            case VERTICAL_ALIGN.bottom:
+              this.verticalAlign.setIcon(new Icon('align-bottom'));
+              break;
+            default: break;
+          }
+          if (selectorAttr) {
+            cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+              cell.fontAttr.verticalAlign = type;
+            }, true);
+            dataSnapshot.snapshot();
+            table.render();
+          }
+        },
+      },
+    });
     this.textWrapping = new TextWrapping();
     this.fixed = new Fixed();
     this.filter = new Filter();
@@ -701,12 +761,14 @@ class TopMenu extends Widget {
       this.setFormatStatus();
       this.setFontStatus();
       this.setFontSizeStatus();
-      this.setFontBold();
-      this.setFontItalic();
-      this.setUnderLine();
-      this.setFontStrike();
-      this.setFontColor();
-      this.setFillColor();
+      this.setFontBoldStatus();
+      this.setFontItalicStatus();
+      this.setUnderLineStatus();
+      this.setFontStrikeStatus();
+      this.setFontColorStatus();
+      this.setFillColorStatus();
+      this.setHorizontalAlignStatus();
+      this.setVerticalAlignStatus();
     });
     EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
@@ -916,11 +978,40 @@ class TopMenu extends Widget {
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
         const merge = selectorAttr.rect.clone();
-        if (merge.eri > merge.sri || merge.eci > merge.sci) {
+        const find = merges.getFirstIncludes(merge.sri, merge.sci);
+        if (find !== null) {
+          merges.deleteIntersects(find);
+        } else if (merge.multiple()) {
           merges.add(merge);
-          dataSnapshot.snapshot();
-          table.render();
         }
+        dataSnapshot.snapshot();
+        table.render();
+      }
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(this.horizontalAlign, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const { horizontalAlign } = this;
+      const { horizontalContextMenu } = horizontalAlign;
+      const { elPopUp } = horizontalContextMenu;
+      ElPopUp.closeAll([elPopUp]);
+      if (horizontalContextMenu.isOpen()) {
+        horizontalContextMenu.open();
+      } else {
+        horizontalContextMenu.close();
+      }
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(this.verticalAlign, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const { verticalAlign } = this;
+      const { verticalContextMenu } = verticalAlign;
+      const { elPopUp } = verticalContextMenu;
+      ElPopUp.closeAll([elPopUp]);
+      if (verticalContextMenu.isOpen()) {
+        verticalContextMenu.open();
+      } else {
+        verticalContextMenu.close();
       }
       e.stopPropagation();
       e.preventDefault();
@@ -1046,7 +1137,7 @@ class TopMenu extends Widget {
     this.fontSize.setTitle(size);
   }
 
-  setFontBold() {
+  setFontBoldStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1063,7 +1154,7 @@ class TopMenu extends Widget {
     this.fontBold.active(bold);
   }
 
-  setFontItalic() {
+  setFontItalicStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1080,7 +1171,7 @@ class TopMenu extends Widget {
     this.fontItalic.active(italic);
   }
 
-  setUnderLine() {
+  setUnderLineStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1097,7 +1188,7 @@ class TopMenu extends Widget {
     this.underLine.active(underline);
   }
 
-  setFontStrike() {
+  setFontStrikeStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1114,7 +1205,7 @@ class TopMenu extends Widget {
     this.fontStrike.active(strikethrough);
   }
 
-  setFontColor() {
+  setFontColorStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1132,7 +1223,7 @@ class TopMenu extends Widget {
     this.fontColor.fontColorContextMenu.setActiveByColor(color);
   }
 
-  setFillColor() {
+  setFillColorStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
@@ -1152,6 +1243,60 @@ class TopMenu extends Widget {
     this.fillColor.fillColorContextMenu.setActiveByColor(color);
   }
 
+  setHorizontalAlignStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { screen, cells } = table;
+    const screenSelector = screen.findByClass(ScreenSelector);
+    const { selectorAttr } = screenSelector;
+    let icon = new Icon('align-left');
+    if (selectorAttr) {
+      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+      switch (firstCell.fontAttr.align) {
+        case ALIGN.left:
+          icon = new Icon('align-left');
+          break;
+        case ALIGN.center:
+          icon = new Icon('align-center');
+          break;
+        case ALIGN.right:
+          icon = new Icon('align-right');
+          break;
+        default: break;
+      }
+    }
+    this.horizontalAlign.setIcon(icon);
+  }
+
+  setVerticalAlignStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { screen, cells } = table;
+    const screenSelector = screen.findByClass(ScreenSelector);
+    const { selectorAttr } = screenSelector;
+    let icon = new Icon('align-middle');
+    if (selectorAttr) {
+      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+      switch (firstCell.fontAttr.verticalAlign) {
+        case VERTICAL_ALIGN.top:
+          icon = new Icon('align-top');
+          break;
+        case VERTICAL_ALIGN.center:
+          icon = new Icon('align-middle');
+          break;
+        case VERTICAL_ALIGN.bottom:
+          icon = new Icon('align-bottom');
+          break;
+        default: break;
+      }
+    }
+    this.verticalAlign.setIcon(icon);
+  }
+
   setStatus() {
     this.setUndoStatus();
     this.setRedoStatus();
@@ -1159,12 +1304,14 @@ class TopMenu extends Widget {
     this.setFormatStatus();
     this.setFontStatus();
     this.setFontSizeStatus();
-    this.setFontBold();
-    this.setFontItalic();
-    this.setUnderLine();
-    this.setFontStrike();
-    this.setFontColor();
-    this.setFillColor();
+    this.setFontBoldStatus();
+    this.setFontItalicStatus();
+    this.setUnderLineStatus();
+    this.setFontStrikeStatus();
+    this.setFontColorStatus();
+    this.setFillColorStatus();
+    this.setHorizontalAlignStatus();
+    this.setVerticalAlignStatus();
   }
 }
 

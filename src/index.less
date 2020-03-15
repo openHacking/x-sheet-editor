@@ -433,8 +433,20 @@
 .@{css-prefix}-icon-img.align-left {
   background-position: -12 * @icon-size 0;
 }
+.@{css-prefix}-icon-img.align-center {
+  background-position: -13 * @icon-size 0;
+}
+.@{css-prefix}-icon-img.align-right {
+  background-position: 0 -1 * @icon-size;
+}
+.@{css-prefix}-icon-img.align-top {
+  background-position: -1 * @icon-size -1 * @icon-size;
+}
 .@{css-prefix}-icon-img.align-middle {
   background-position: -2 * @icon-size -1 * @icon-size;
+}
+.@{css-prefix}-icon-img.align-bottom {
+  background-position: -3 * @icon-size -1 * @icon-size;
 }
 .@{css-prefix}-icon-img.text-wrap {
   background-position: -4 * @icon-size -1 * @icon-size;
@@ -828,4 +840,60 @@
 }
 .@{css-prefix}-line-type-context-menu-item.active .@{css-prefix}-line-type-context-menu-item-icon {
   opacity: 1;
+}
+
+// 水平对齐类型工具上下文菜单
+.@{css-prefix}-horizontal-type-context-menu {
+  background: #ffffff;
+}
+.@{css-prefix}-horizontal-type-context-menu-item {
+  overflow: hidden;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  font-size: 13px;
+  padding: 3px 10px 3px 10px;
+}
+.@{css-prefix}-horizontal-type-context-menu-item-icon {
+  float: left;
+  margin: 2px 10px 2px 0;
+}
+.@{css-prefix}-horizontal-type-context-menu-color-title {
+  margin-bottom: 5px;
+}
+.@{css-prefix}-horizontal-type-context-menu-item-title {
+  float: left;
+  line-height: 20px;
+  margin-right: 40px;
+  font-size: 14px;
+}
+.@{css-prefix}-horizontal-type-context-menu-type-icon-line {
+  display: flex;
+}
+
+// 垂直对齐类型工具上下文菜单
+.@{css-prefix}-vertical-type-context-menu {
+  background: #ffffff;
+}
+.@{css-prefix}-vertical-type-context-menu-item {
+  overflow: hidden;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  font-size: 13px;
+  padding: 3px 10px 3px 10px;
+}
+.@{css-prefix}-vertical-type-context-menu-item-icon {
+  float: left;
+  margin: 2px 10px 2px 0;
+}
+.@{css-prefix}-vertical-type-context-menu-color-title {
+  margin-bottom: 5px;
+}
+.@{css-prefix}-vertical-type-context-menu-item-title {
+  float: left;
+  line-height: 20px;
+  margin-right: 40px;
+  font-size: 14px;
+}
+.@{css-prefix}-vertical-type-context-menu-type-icon-line {
+  display: flex;
 }

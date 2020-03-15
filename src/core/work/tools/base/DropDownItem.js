@@ -18,6 +18,7 @@ class DropDownItem extends Item {
   }
 
   setIcon(icon) {
+    this.title.html('');
     this.title.children(icon);
   }
 

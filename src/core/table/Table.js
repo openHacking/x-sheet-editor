@@ -1615,23 +1615,28 @@ class Table extends Widget {
     this.checkedEnableBorderDrawOptimization();
     this.clear();
     this.frozenRect.render();
-    // 冻结区域渲染
+    // 渲染固定冻结的内容
     if (fixed.fxLeft > -1 && fixed.fxTop > -1) {
       this.frozenLeftTop.render();
     }
     if (fixed.fxTop > -1) {
       this.fixedTop.render();
-      this.frozenTopIndex.render();
     }
     if (fixed.fxLeft > -1) {
       this.fixedLeft.render();
+    }
+    // 表格内容渲染
+    this.content.render();
+    // 冻结索引渲染
+    if (fixed.fxTop > -1) {
+      this.frozenTopIndex.render();
+    }
+    if (fixed.fxLeft > -1) {
       this.frozenLeftIndex.render();
     }
     // 固定索引渲染
     this.fixedLeftIndex.render();
     this.fixedTopIndex.render();
-    // 表格内容渲染
-    this.content.render();
     if (settings.tipsRenderTime) {
       // eslint-disable-next-line no-console
       console.log('渲染界面耗时:');
