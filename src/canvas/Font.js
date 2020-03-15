@@ -24,7 +24,12 @@ const TEXT_WRAP = {
   TRUNCATE: 3,
 };
 
-class Font {
+const TEXT_DIRECTION = {
+  HORIZONTAL: 'horizontal',
+  VERTICAL: 'vertical',
+};
+
+class HorizontalFontDraw {
   constructor({
     text, rect, dw, overflow, attr,
   }) {
@@ -32,18 +37,7 @@ class Font {
     this.dw = dw;
     this.rect = rect;
     this.overflow = overflow;
-    this.attr = Utils.mergeDeep({}, {
-      name: 'Arial',
-      size: npx(13),
-      color: '#000000',
-      bold: false,
-      italic: false,
-      textWrap: false,
-      underline: false,
-      strikethrough: false,
-      align: ALIGN.left,
-      verticalAlign: VERTICAL_ALIGN.center,
-    }, attr);
+    this.attr = attr;
   }
 
   textWidth(text) {
@@ -349,4 +343,46 @@ class Font {
   }
 }
 
-export { Font, VERTICAL_ALIGN, ALIGN, TEXT_WRAP };
+class Font {
+  constructor({
+    text, rect, dw, overflow, attr,
+  }) {
+    this.attr = Utils.mergeDeep({}, {
+      name: 'Arial',
+      size: npx(13),
+      color: '#000000',
+      bold: false,
+      italic: false,
+      textWrap: false,
+      underline: false,
+      strikethrough: false,
+      align: ALIGN.left,
+      verticalAlign: VERTICAL_ALIGN.center,
+      direction: TEXT_DIRECTION.HORIZONTAL,
+      angle: 0,
+    }, attr);
+    this.horizontalFontDraw = new HorizontalFontDraw({
+      text, rect, dw, overflow, attr: this.attr,
+    });
+  }
+
+  draw() {
+    const { attr } = this;
+    switch (attr.direction) {
+      case TEXT_DIRECTION.VERTICAL:
+        // TODO ....
+        break;
+      case TEXT_DIRECTION.HORIZONTAL:
+      default:
+        this.horizontalFontDraw.draw();
+    }
+  }
+
+  setTextWrap(textWrap) {
+    this.horizontalFontDraw.setTextWrap(textWrap);
+  }
+}
+
+export { VERTICAL_ALIGN, ALIGN, TEXT_WRAP, TEXT_DIRECTION };
+
+export { Font };
