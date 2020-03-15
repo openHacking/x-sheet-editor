@@ -320,6 +320,7 @@ class Font {
       }
     }
     crop.close();
+    return hOffset;
   }
 
   draw() {
@@ -334,14 +335,12 @@ class Font {
     });
     switch (textWrap) {
       case TEXT_WRAP.TRUNCATE:
-        this.drawTextTruncate();
-        break;
+        return this.drawTextTruncate();
       case TEXT_WRAP.WORD_WRAP:
-        this.drawTextWarp();
-        break;
+        return this.drawTextWarp();
       case TEXT_WRAP.OVER_FLOW:
       default:
-        this.drawTextOverFlow();
+        return this.drawTextOverFlow();
     }
   }
 
