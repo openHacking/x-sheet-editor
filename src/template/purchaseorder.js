@@ -1,7 +1,7 @@
 /* global window */
 
 const purchaseOrder = {
-  name: '采购订货单',
+  name: '采购',
   tableConfig: {
     table: {
       showGrid: false,
