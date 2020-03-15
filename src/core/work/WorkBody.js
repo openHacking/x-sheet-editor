@@ -136,10 +136,12 @@ class WorkBody extends Widget {
     const sheet = this.sheetView.getActiveSheet();
     if (Utils.isUnDef(sheet)) return;
     const { table } = sheet;
-    const { content } = table;
+    const { content, scroll } = table;
+    scrollBarXLayerHorizontalElement.display(content.getWidth() < content.getContentWidth());
+    this.scrollBarX.scrollMove(scroll.x);
+    this.scrollBarY.scrollMove(scroll.y);
     this.scrollBarY.setSize(content.getHeight(), content.getContentHeight());
     this.scrollBarX.setSize(content.getWidth(), content.getContentWidth());
-    scrollBarXLayerHorizontalElement.display(!this.scrollBarX.isHide);
   }
 
   initSheet() {
@@ -169,14 +171,11 @@ class WorkBody extends Widget {
 
   setActiveSheetIndex(index) {
     const { sheetView } = this;
-    const sheet = sheetView.setActiveSheet(index);
-    if (sheet) {
-      const { table } = sheet;
-      const { scroll } = table;
-      const { scrollBarX, scrollBarY } = this;
-      scrollBarX.scrollMove(scroll.x);
-      scrollBarY.scrollMove(scroll.y);
-    }
+    sheetView.setActiveSheet(index);
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    table.resize();
+    this.initScroll();
   }
 
   setActiveTabIndex(index) {

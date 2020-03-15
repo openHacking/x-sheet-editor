@@ -2,12 +2,13 @@ import { Utils } from '../../utils/Utils';
 
 class Cols {
 
-  constructor({ len, width }) {
+  constructor({ data = [], len = 10, width }) {
     this._ = [];
     this.minWidth = 5;
     this.width = Utils.minIf(width, this.minWidth);
     this.len = len;
     this.cacheTotalWidth = -1;
+    this.setData(data);
   }
 
   get(ci) {

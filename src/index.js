@@ -6,8 +6,6 @@ import { Work } from './core/work/Work';
 import { Widget } from './lib/Widget';
 import './base.less';
 import './index.less';
-import { Data } from './DataTest';
-import { RectRange } from './core/table/RectRange';
 
 class XSheet extends Widget {
   constructor(selectors, options = {
@@ -15,41 +13,7 @@ class XSheet extends Widget {
       body: {
         sheets: [
           {
-            name: 'sheet1',
-          },
-          {
-            name: 'sheet2',
-            tableConfig: {
-              data: Data,
-            },
-          },
-          {
-            name: 'sheet3',
-            tableConfig: {
-              merges: [
-                new RectRange(0, 0, 0, 1),
-                new RectRange(1, 1, 2, 2),
-                new RectRange(3, 3, 4, 4),
-              ],
-              data: Data,
-            },
-          },
-          {
-            name: 'sheet4',
-            tableConfig: {
-              merges: [
-                new RectRange(1, 0, 2, 0),
-                new RectRange(0, 1, 0, 2),
-                new RectRange(0, 3, 2, 3),
-                new RectRange(5, 0, 5, 5),
-                new RectRange(1, 1, 2, 2),
-              ],
-              fixed: {
-                fxTop: 1,
-                fxLeft: 1,
-              },
-              data: Data,
-            },
+            name: 'default',
           },
         ],
       },

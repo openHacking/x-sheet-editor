@@ -70,8 +70,9 @@
 // 水平滚动条
 .@{css-prefix}-scroll-bar-x {
   width: 100%;
-  height: 15px;
+  height: 17px;
   background: #dfdfdf;
+  position: relative;
 }
 .@{css-prefix}-scroll-bar-x-last-but {
   width: 15px;
@@ -90,9 +91,11 @@
   background-color: #dfdfdf;
 }
 .@{css-prefix}-scroll-bar-x-content {
-  margin: 0 15px 0 15px;
-  height: 100%;
-  position: relative;
+  position: absolute;
+  left: 15px;
+  right: 15px;
+  top: 2px;
+  bottom: 2px;
 }
 .@{css-prefix}-scroll-bar-x-block {
   position: absolute;
@@ -101,13 +104,13 @@
   box-sizing: border-box;
   left: 0;
   background: #ffffff;
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid #bbb;
 }
 
 // 垂直滚动条
 .@{css-prefix}-scroll-bar-y {
-  width: 15px;
+  width: 17px;
   height: 100%;
   background: #dfdfdf;
   position: relative;
@@ -133,8 +136,8 @@
 .@{css-prefix}-scroll-bar-y-content {
   position: absolute;
   top: 15px;
-  left: 0;
-  right: 0;
+  left: 2px;
+  right: 2px;
   bottom: 15px;
   z-index: 2;
 }
@@ -145,7 +148,7 @@
   box-sizing: border-box;
   top: 0;
   background: #ffffff;
-  border-radius: 8px;
+  border-radius:6px;
   border: 1px solid #bbb;
 }
 

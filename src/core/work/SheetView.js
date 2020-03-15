@@ -60,7 +60,6 @@ class SheetView extends Widget {
     sheet.sibling().forEach((item) => {
       item.hide();
     });
-    sheet.table.resize();
     return sheet;
   }
 }

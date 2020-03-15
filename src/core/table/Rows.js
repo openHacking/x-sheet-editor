@@ -2,12 +2,13 @@ import { Utils } from '../../utils/Utils';
 
 class Rows {
 
-  constructor({ len, height }) {
+  constructor({ data = [], len = 10, height }) {
     this._ = [];
     this.minHeight = 5;
     this.height = Utils.minIf(height, this.minHeight);
     this.len = len;
     this.cacheTotalHeight = -1;
+    this.setData(data);
   }
 
   get(ri) {

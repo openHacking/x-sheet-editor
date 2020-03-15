@@ -4,10 +4,11 @@ class Merges {
 
   /**
    *  Merges
-   * @param {RectRange[]} d 区域数组
+   * @param {RectRange[]} data 区域数组
    */
-  constructor(d = []) {
-    this._ = d;
+  constructor({ data = [] }) {
+    this._ = [];
+    this.setData(data);
   }
 
   /**

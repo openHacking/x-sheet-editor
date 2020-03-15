@@ -260,7 +260,7 @@ class FrozenLeftTop {
 
   render() {
     const { table } = this;
-    const { draw, grid } = table;
+    const { draw, grid, settings } = table;
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
     const viewRange = this.getViewRange();
@@ -273,7 +273,9 @@ class FrozenLeftTop {
     const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
-    this.drawGrid(viewRange, offsetX, offsetY);
+    if (settings.table.showGrid) {
+      this.drawGrid(viewRange, offsetX, offsetY);
+    }
     this.drawBorder(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     crop.close();
@@ -530,7 +532,7 @@ class Content {
 
   render() {
     const { table } = this;
-    const { draw, grid } = table;
+    const { draw, grid, settings } = table;
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
     const viewRange = this.getViewRange();
@@ -545,7 +547,9 @@ class Content {
     const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
-    this.drawGrid(viewRange, offsetX, offsetY);
+    if (settings.table.showGrid) {
+      this.drawGrid(viewRange, offsetX, offsetY);
+    }
     this.drawBorder(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     crop.close();
@@ -783,7 +787,7 @@ class FixedLeft {
 
   render() {
     const { table } = this;
-    const { draw } = table;
+    const { draw, settings } = table;
     const viewRange = this.getViewRange();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
@@ -796,7 +800,9 @@ class FixedLeft {
     const crop = new Crop({ draw, rect });
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
-    this.drawGrid(viewRange, offsetX, offsetY);
+    if (settings.table.showGrid) {
+      this.drawGrid(viewRange, offsetX, offsetY);
+    }
     this.drawBorder(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     crop.close();
@@ -1033,7 +1039,7 @@ class FixedTop {
 
   render() {
     const { table } = this;
-    const { draw, grid } = table;
+    const { draw, grid, settings } = table;
     const viewRange = this.getViewRange();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
@@ -1046,7 +1052,9 @@ class FixedTop {
     const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
-    this.drawGrid(viewRange, offsetX, offsetY);
+    if (settings.table.showGrid) {
+      this.drawGrid(viewRange, offsetX, offsetY);
+    }
     this.drawBorder(viewRange, offsetX, offsetY);
     this.drawCells(viewRange, offsetX, offsetY);
     crop.close();
@@ -1416,6 +1424,7 @@ const defaultSettings = {
   table: {
     background: '#ffffff',
     borderColor: '#a7a7a7',
+    showGrid: true,
   },
   data: [],
   rows: {
