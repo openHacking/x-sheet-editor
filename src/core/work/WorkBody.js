@@ -67,12 +67,14 @@ class WorkBody extends Widget {
     });
     this.scrollBarX = new ScrollBarX({
       scroll: (move) => {
-        this.sheetView.getActiveSheet().table.scrollX(move);
+        const sheet = this.sheetView.getActiveSheet();
+        sheet.table.scrollX(move);
       },
     });
     this.scrollBarY = new ScrollBarY({
       scroll: (move) => {
-        this.sheetView.getActiveSheet().table.scrollY(move);
+        const sheet = this.sheetView.getActiveSheet();
+        sheet.table.scrollY(move);
       },
     });
     // sheet表和垂直滚动条
@@ -138,10 +140,10 @@ class WorkBody extends Widget {
     const { table } = sheet;
     const { content, scroll } = table;
     scrollBarXLayerHorizontalElement.display(content.getWidth() < content.getContentWidth());
-    this.scrollBarX.scrollMove(scroll.x);
-    this.scrollBarY.scrollMove(scroll.y);
     this.scrollBarY.setSize(content.getHeight(), content.getContentHeight());
     this.scrollBarX.setSize(content.getWidth(), content.getContentWidth());
+    this.scrollBarY.scrollMove(scroll.y);
+    this.scrollBarX.scrollMove(scroll.x);
   }
 
   initSheet() {

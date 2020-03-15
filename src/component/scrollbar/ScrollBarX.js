@@ -77,7 +77,6 @@ class ScrollBarX extends Widget {
       this.blockLeft = blockLeft > this.maxBlockLeft ? this.maxBlockLeft : blockLeft;
       this.scrollTo = this.computeScrollTo(this.blockLeft);
       this.block.css('left', `${this.blockLeft}px`);
-      this.option.scroll(this.scrollTo);
     } else {
       this.isHide = true;
       this.hide();
