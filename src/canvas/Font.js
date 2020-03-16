@@ -610,6 +610,8 @@ class VerticalFontDraw {
     let i = 0;
     while (i < len) {
       const textHeight = textLen + textSize + VERTICAL_SPACING;
+      const char = text.charAt(i);
+      const charWidth = this.textWidth(char);
       if (textHeight > maxTextHeight) {
         textArray.push(textItem);
         textLen = 0;
@@ -617,23 +619,22 @@ class VerticalFontDraw {
         textItem = [];
         if (i > 0) wOffset += size + VERTICAL_LIEN_HEIGHT;
         columnNum += 1;
-        const char = text.charAt(i);
         textItem.push({
-          len: this.textWidth(char),
+          len: charWidth,
           text: char,
           tx: wOffset,
           ty: hOffset,
         });
+        textLen = textSize + VERTICAL_SPACING;
       } else {
-        const char = text.charAt(i);
         textItem.push({
-          len: this.textWidth(char),
+          len: charWidth,
           text: char,
           tx: wOffset,
           ty: hOffset,
         });
+        textLen = textHeight;
       }
-      textLen = textHeight;
       if (i < text.length - 1) {
         hOffset += size + VERTICAL_SPACING;
       }
