@@ -22,7 +22,7 @@ const testData = {
         fontAttr: {
           align: 'left',
           verticalAlign: 'middle',
-          textWrap: 2,
+          textWrap: 1,
           strikethrough: true,
           underline: true,
           color: 'rgb(0,0,0)',

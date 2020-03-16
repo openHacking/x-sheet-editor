@@ -1,7 +1,7 @@
 import { Utils } from '../../utils/Utils';
 import { Rect } from '../../canvas/Rect';
 import { CellsBorder } from './CellsBorder';
-import { ALIGN, TEXT_WRAP, VERTICAL_ALIGN } from '../../canvas/Font';
+import { ALIGN, TEXT_DIRECTION, TEXT_WRAP, VERTICAL_ALIGN } from '../../canvas/Font';
 
 class Cells extends CellsBorder {
 
@@ -27,6 +27,7 @@ class Cells extends CellsBorder {
       size: 14,
       bold: false,
       italic: false,
+      direction: TEXT_DIRECTION.HORIZONTAL,
     };
     const borderAttr = {
       time: Utils.now(),
@@ -49,13 +50,7 @@ class Cells extends CellsBorder {
     return Utils.isUnDef(cell.ID) ? Utils.mergeDeep(Cells.getDefaultAttr(), cell) : cell;
   }
 
-  checkedMergeCell(ri, ci) {
-    const { table } = this;
-    const { merges } = table;
-    return merges.getFirstIncludes(ri, ci) !== null;
-  }
-
-  getCellOverFlowRect(ri, ci) {
+  getCellHorizontalOverFlowRect(ri, ci) {
     const cell = this.getCell(ri, ci);
     const { cols } = this;
     const { fontAttr } = cell;
@@ -113,6 +108,64 @@ class Cells extends CellsBorder {
     return { width, offset };
   }
 
+  getCellVerticalOverFlowRect(ri, ci) {
+    const cell = this.getCell(ri, ci);
+    const { rows } = this;
+    const { fontAttr } = cell;
+    const { verticalAlign } = fontAttr;
+    let height = 0;
+    let offset = 0;
+    if (verticalAlign === VERTICAL_ALIGN.top) {
+      for (let i = ri, { len } = rows; i <= len; i += 1) {
+        const cell = this.getCell(i, ci);
+        if (i === ci) {
+          height += rows.getHeight(i);
+        } else if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+          height += rows.getHeight(i);
+        } else {
+          break;
+        }
+      }
+    }
+    if (verticalAlign === VERTICAL_ALIGN.center) {
+      for (let i = ri, { len } = rows; i <= len; i += 1) {
+        const cell = this.getCell(i, ci);
+        if (i === ci) {
+          height += rows.getHeight(i);
+        } else if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+          height += rows.getHeight(i);
+        } else {
+          break;
+        }
+      }
+      for (let i = ri - 1; i >= 0; i -= 1) {
+        const cell = this.getCell(ri, i);
+        if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+          const tmp = rows.getHeight(i);
+          height += tmp;
+          offset -= tmp;
+        } else {
+          break;
+        }
+      }
+    }
+    if (verticalAlign === VERTICAL_ALIGN.bottom) {
+      for (let i = ri; i >= 0; i -= 1) {
+        const cell = this.getCell(ri, i);
+        if (i === ci) {
+          height += rows.getHeight(i);
+        } else if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+          const tmp = rows.getHeight(i);
+          height += tmp;
+          offset -= tmp;
+        } else {
+          break;
+        }
+      }
+    }
+    return { height, offset };
+  }
+
   getCell(ri, ci) {
     const row = this._[ri];
     if (row && row[ci]) {
@@ -147,27 +200,36 @@ class Cells extends CellsBorder {
     const {
       sri, eri, sci, eci,
     } = rectRange;
-    const getCell = createNew ? this.getCellOrNew : this.getCell;
     let y = sy;
     for (let i = sri; i <= eri; i += 1) {
       const height = this.rows.getHeight(i);
       let x = sx;
       for (let j = sci; j <= eci; j += 1) {
         const width = this.cols.getWidth(j);
-        const cell = getCell.call(this, i, j);
+        let cell = null;
+        if (createNew) {
+          cell = this.getCellOrNew(i, j);
+        } else {
+          cell = this.getCell(i, j);
+        }
         if (cell) {
-          const overFlow = this.getCellOverFlowRect(i, j);
-          const result = cb(i, j, cell, new Rect({
+          const { fontAttr } = cell;
+          const { direction } = fontAttr;
+          const rect = new Rect({
             x,
             y,
             width,
             height,
-          }), new Rect({
-            x: x + overFlow.offset,
-            y,
-            width: overFlow.width,
-            height,
-          }));
+          });
+          let overFlow = null;
+          if (direction === TEXT_DIRECTION.VERTICAL) {
+            const result = this.getCellVerticalOverFlowRect(i, j);
+            overFlow = new Rect({ x, y: y + result.offset, width, height: result.height });
+          } else {
+            const result = this.getCellHorizontalOverFlowRect(i, j);
+            overFlow = new Rect({ x: x + result.offset, y, width: result.width, height });
+          }
+          const result = cb(i, j, cell, rect, overFlow);
           if (result === false) {
             return;
           }

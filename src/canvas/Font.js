@@ -505,6 +505,7 @@ class VerticalFontDraw {
   }
 
   drawTextOverFlow() {
+    debugger;
     const {
       text, dw, attr, rect, overflow,
     } = this;
