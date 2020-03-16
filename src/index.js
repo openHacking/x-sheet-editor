@@ -8,6 +8,7 @@ import './base.less';
 import './index.less';
 import './template/calendar';
 import './template/purchaseorder';
+import './template/testdata';
 
 class XSheet extends Widget {
   constructor(selectors, options = {

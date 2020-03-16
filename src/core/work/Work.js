@@ -32,9 +32,9 @@ class Work extends Widget {
         bodyLayerVerticalElement, bottomLayerVerticalElement],
     });
     this.children(verticalLayer);
-    this.bottom.bottomMenu.setSum(100);
-    this.bottom.bottomMenu.setAvg(100);
-    this.bottom.bottomMenu.setNumber(100);
+    this.bottom.bottomMenu.setSum(0);
+    this.bottom.bottomMenu.setAvg(0);
+    this.bottom.bottomMenu.setNumber(0);
   }
 
   init() {

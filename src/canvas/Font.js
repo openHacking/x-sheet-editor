@@ -6,6 +6,8 @@ const PADDING = 8;
 
 const LIEN_HEIGHT = 4;
 
+const VERTICAL_SPACING = 2;
+
 const ALIGN = {
   left: 'left',
   center: 'center',
@@ -343,6 +345,277 @@ class HorizontalFontDraw {
   }
 }
 
+class VerticalFontDraw {
+  constructor({
+    text, rect, dw, overflow, attr,
+  }) {
+    this.text = text;
+    this.dw = dw;
+    this.rect = rect;
+    this.overflow = overflow;
+    this.attr = attr;
+  }
+
+  textWidth(text) {
+    const { dw } = this;
+    return dw.measureText(text).width;
+  }
+
+  drawLine(type, tx, ty, width) {
+    const { dw, attr } = this;
+    const { size, verticalAlign, align } = attr;
+    const s = [0, 0];
+    const e = [0, 0];
+    const textWidth = width / dpr();
+    if (type === 'strike') {
+      switch (align) {
+        case ALIGN.right:
+          s[0] = tx - textWidth;
+          e[0] = tx;
+          break;
+        case ALIGN.center:
+          s[0] = tx - textWidth / 2;
+          e[0] = tx + textWidth / 2;
+          break;
+        case ALIGN.left:
+          s[0] = tx;
+          e[0] = tx + textWidth;
+          break;
+        default: break;
+      }
+      switch (verticalAlign) {
+        case VERTICAL_ALIGN.top:
+          s[1] = ty + size / 2;
+          e[1] = ty + size / 2;
+          break;
+        case VERTICAL_ALIGN.center:
+          s[1] = ty;
+          e[1] = ty;
+          break;
+        case VERTICAL_ALIGN.bottom:
+          s[1] = ty - size / 2;
+          e[1] = ty - size / 2;
+          break;
+        default: break;
+      }
+    }
+    if (type === 'underline') {
+      switch (align) {
+        case ALIGN.right:
+          s[0] = tx - textWidth;
+          e[0] = tx;
+          break;
+        case ALIGN.center:
+          s[0] = tx - textWidth / 2;
+          e[0] = tx + textWidth / 2;
+          break;
+        case ALIGN.left:
+          s[0] = tx;
+          e[0] = tx + textWidth;
+          break;
+        default: break;
+      }
+      switch (verticalAlign) {
+        case VERTICAL_ALIGN.top:
+          s[1] = ty + size;
+          e[1] = ty + size;
+          break;
+        case VERTICAL_ALIGN.center:
+          s[1] = ty + size / 2;
+          e[1] = ty + size / 2;
+          break;
+        case VERTICAL_ALIGN.bottom:
+          s[1] = ty;
+          e[1] = ty;
+          break;
+        default: break;
+      }
+    }
+    dw.line(s, e);
+  }
+
+  drawTextTruncate() {
+    const {
+      text, dw, attr, rect,
+    } = this;
+    const {
+      underline, strikethrough, align, verticalAlign, size,
+    } = attr;
+    const { width, height } = rect;
+    const textArray = [];
+    let hOffset = 0;
+    for (let i = 0; i < text.length; i += 1) {
+      const char = text.charAt(i);
+      textArray.push({
+        len: this.textWidth(char),
+        text: char,
+        tx: 0,
+        ty: hOffset,
+      });
+      if (i < text.length - 1) {
+        hOffset += size + VERTICAL_SPACING;
+      }
+    }
+    let bx = rect.x;
+    let by = rect.y;
+    switch (align) {
+      case ALIGN.left:
+        bx += PADDING;
+        break;
+      case ALIGN.center:
+        bx += width / 2;
+        break;
+      case ALIGN.right:
+        bx += width - PADDING;
+        break;
+      default: break;
+    }
+    switch (verticalAlign) {
+      case VERTICAL_ALIGN.top:
+        by += PADDING;
+        break;
+      case VERTICAL_ALIGN.center:
+        by += height / 2 - hOffset / 2;
+        break;
+      case VERTICAL_ALIGN.bottom:
+        by += height - hOffset - PADDING;
+        break;
+      default: break;
+    }
+    const crop = new Crop({ draw: dw, rect });
+    crop.open();
+    for (let i = 0, len = textArray.length; i < len; i += 1) {
+      const item = textArray[i];
+      item.tx += bx;
+      item.ty += by;
+      dw.fillText(item.text, item.tx, item.ty);
+      if (underline || strikethrough) {
+        dw.beginPath();
+      }
+      if (underline) {
+        this.drawLine('underline', item.tx, item.ty, item.len);
+      }
+      if (strikethrough) {
+        this.drawLine('strike', item.tx, item.ty, item.len);
+      }
+    }
+    crop.close();
+  }
+
+  drawTextOverFlow() {
+    const {
+      text, dw, attr, rect, overflow,
+    } = this;
+    const {
+      underline, strikethrough, align, verticalAlign, size,
+    } = attr;
+    const { width, height } = rect;
+    const textArray = [];
+    let hOffset = 0;
+    for (let i = 0; i < text.length; i += 1) {
+      const char = text.charAt(i);
+      textArray.push({
+        len: this.textWidth(char),
+        text: char,
+        tx: 0,
+        ty: hOffset,
+      });
+      if (i < text.length - 1) {
+        hOffset += size + VERTICAL_SPACING;
+      }
+    }
+    let bx = rect.x;
+    let by = rect.y;
+    switch (align) {
+      case ALIGN.left:
+        bx += PADDING;
+        break;
+      case ALIGN.center:
+        bx += width / 2;
+        break;
+      case ALIGN.right:
+        bx += width - PADDING;
+        break;
+      default: break;
+    }
+    switch (verticalAlign) {
+      case VERTICAL_ALIGN.top:
+        by += PADDING;
+        break;
+      case VERTICAL_ALIGN.center:
+        by += height / 2 - hOffset / 2;
+        break;
+      case VERTICAL_ALIGN.bottom:
+        by += height - hOffset - PADDING;
+        break;
+      default: break;
+    }
+    if (overflow && (hOffset > overflow.height || size > overflow.width)) {
+      const crop = new Crop({ draw: dw, rect: overflow });
+      crop.open();
+      for (let i = 0, len = textArray.length; i < len; i += 1) {
+        const item = textArray[i];
+        item.tx += bx;
+        item.ty += by;
+        dw.fillText(item.text, item.tx, item.ty);
+        if (underline || strikethrough) {
+          dw.beginPath();
+        }
+        if (underline) {
+          this.drawLine('underline', item.tx, item.ty, item.len);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', item.tx, item.ty, item.len);
+        }
+      }
+      crop.close();
+    } else {
+      for (let i = 0, len = textArray.length; i < len; i += 1) {
+        const item = textArray[i];
+        item.tx += bx;
+        item.ty += by;
+        dw.fillText(item.text, item.tx, item.ty);
+        if (underline || strikethrough) {
+          dw.beginPath();
+        }
+        if (underline) {
+          this.drawLine('underline', item.tx, item.ty, item.len);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', item.tx, item.ty, item.len);
+        }
+      }
+    }
+  }
+
+  drawTextWarp() {}
+
+  draw() {
+    const { dw, attr } = this;
+    const { textWrap } = attr;
+    dw.attr({
+      textAlign: attr.align,
+      textBaseline: attr.verticalAlign,
+      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${npx(attr.size)}px ${attr.name}`,
+      fillStyle: attr.color,
+      strokeStyle: attr.color,
+    });
+    switch (textWrap) {
+      case TEXT_WRAP.TRUNCATE:
+        return this.drawTextTruncate();
+      case TEXT_WRAP.WORD_WRAP:
+        return this.drawTextWarp();
+      case TEXT_WRAP.OVER_FLOW:
+      default:
+        return this.drawTextOverFlow();
+    }
+  }
+
+  setTextWrap(textWrap) {
+    this.attr.textWrap = textWrap;
+  }
+}
+
 class Font {
   constructor({
     text, rect, dw, overflow, attr,
@@ -364,13 +637,16 @@ class Font {
     this.horizontalFontDraw = new HorizontalFontDraw({
       text, rect, dw, overflow, attr: this.attr,
     });
+    this.verticalFontDraw = new VerticalFontDraw({
+      text, rect, dw, overflow, attr: this.attr,
+    });
   }
 
   draw() {
     const { attr } = this;
     switch (attr.direction) {
       case TEXT_DIRECTION.VERTICAL:
-        // TODO ....
+        this.verticalFontDraw.draw();
         break;
       case TEXT_DIRECTION.HORIZONTAL:
       default:
@@ -379,7 +655,15 @@ class Font {
   }
 
   setTextWrap(textWrap) {
-    this.horizontalFontDraw.setTextWrap(textWrap);
+    const { attr } = this;
+    switch (attr.direction) {
+      case TEXT_DIRECTION.VERTICAL:
+        this.verticalFontDraw.setTextWrap(textWrap);
+        break;
+      case TEXT_DIRECTION.HORIZONTAL:
+      default:
+        this.horizontalFontDraw.setTextWrap(textWrap);
+    }
   }
 }
 
