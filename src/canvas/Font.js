@@ -6,7 +6,7 @@ const PADDING = 8;
 
 const LIEN_HEIGHT = 4;
 
-const VERTICAL_SPACING = 2;
+const VERTICAL_SPACING = 4;
 
 const VERTICAL_LIEN_HEIGHT = 0;
 
