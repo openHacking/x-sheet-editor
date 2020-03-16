@@ -456,6 +456,8 @@ class VerticalFontDraw {
       });
       if (i < text.length - 1) {
         hOffset += size + VERTICAL_SPACING;
+      } else {
+        hOffset += size;
       }
     }
     let bx = rect.x;
@@ -477,10 +479,10 @@ class VerticalFontDraw {
         by += PADDING;
         break;
       case VERTICAL_ALIGN.center:
-        by += height / 2 - hOffset / 2;
+        by += height / 2 - hOffset / 2 + PADDING;
         break;
       case VERTICAL_ALIGN.bottom:
-        by += height - hOffset - PADDING;
+        by += height - hOffset + PADDING;
         break;
       default: break;
     }
@@ -505,7 +507,6 @@ class VerticalFontDraw {
   }
 
   drawTextOverFlow() {
-    debugger;
     const {
       text, dw, attr, rect, overflow,
     } = this;
@@ -525,35 +526,43 @@ class VerticalFontDraw {
       });
       if (i < text.length - 1) {
         hOffset += size + VERTICAL_SPACING;
+      } else {
+        hOffset += size;
       }
     }
     let bx = rect.x;
     let by = rect.y;
+    let paddingH = 0;
+    let paddingV = 0;
     switch (align) {
       case ALIGN.left:
         bx += PADDING;
+        paddingH = PADDING;
         break;
       case ALIGN.center:
         bx += width / 2;
         break;
       case ALIGN.right:
         bx += width - PADDING;
+        paddingH = PADDING;
         break;
       default: break;
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
         by += PADDING;
+        paddingV = PADDING;
         break;
       case VERTICAL_ALIGN.center:
-        by += height / 2 - hOffset / 2;
+        by += height / 2 - hOffset / 2 + PADDING;
         break;
       case VERTICAL_ALIGN.bottom:
-        by += height - hOffset - PADDING;
+        by += height - hOffset + PADDING;
+        paddingV = PADDING;
         break;
       default: break;
     }
-    if (overflow && (hOffset > overflow.height || size > overflow.width)) {
+    if (overflow && (hOffset + paddingV > overflow.height || size + paddingH > overflow.width)) {
       const crop = new Crop({ draw: dw, rect: overflow });
       crop.open();
       for (let i = 0, len = textArray.length; i < len; i += 1) {
@@ -599,34 +608,33 @@ class VerticalFontDraw {
       underline, strikethrough, align, verticalAlign, size,
     } = attr;
     const { width, height } = rect;
-    const maxTextHeight = npx(height) - PADDING * 2;
-    const textSize = npx(size);
     const textArray = [];
     const len = text.length;
+    const boxHeight = height - PADDING * 2;
     let textItem = [];
     let textLen = 0;
     let hOffset = 0;
     let wOffset = 0;
-    let columnNum = 0;
+    let column = 0;
     let i = 0;
     while (i < len) {
-      const textHeight = textLen + textSize + VERTICAL_SPACING;
+      const textHeight = textLen + size + VERTICAL_SPACING;
       const char = text.charAt(i);
       const charWidth = this.textWidth(char);
-      if (textHeight > maxTextHeight) {
+      if (textHeight > boxHeight) {
         textArray.push(textItem);
         textLen = 0;
         hOffset = 0;
         textItem = [];
         if (i > 0) wOffset += size + VERTICAL_LIEN_HEIGHT;
-        columnNum += 1;
+        column += 1;
         textItem.push({
           len: charWidth,
           text: char,
           tx: wOffset,
           ty: hOffset,
         });
-        textLen = textSize + VERTICAL_SPACING;
+        textLen = size + VERTICAL_SPACING;
       } else {
         textItem.push({
           len: charWidth,
@@ -638,6 +646,8 @@ class VerticalFontDraw {
       }
       if (i < text.length - 1) {
         hOffset += size + VERTICAL_SPACING;
+      } else {
+        hOffset += size;
       }
       i += 1;
     }
@@ -668,11 +678,11 @@ class VerticalFontDraw {
         verticalAlignValue = VERTICAL_ALIGN.top;
         break;
       case VERTICAL_ALIGN.center:
-        if (columnNum === 0) {
+        if (column === 0) {
           dw.attr({
             textBaseline: attr.verticalAlign,
           });
-          by += height / 2 - hOffset / 2;
+          by += height / 2 - hOffset / 2 + PADDING;
           verticalAlignValue = VERTICAL_ALIGN.center;
         } else {
           dw.attr({
@@ -683,11 +693,11 @@ class VerticalFontDraw {
         }
         break;
       case VERTICAL_ALIGN.bottom:
-        if (columnNum === 0) {
+        if (column === 0) {
           dw.attr({
             textBaseline: VERTICAL_ALIGN.bottom,
           });
-          by += height - hOffset - PADDING;
+          by += height - hOffset + PADDING;
           verticalAlignValue = VERTICAL_ALIGN.bottom;
         } else {
           dw.attr({
