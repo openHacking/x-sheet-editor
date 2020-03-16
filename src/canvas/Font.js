@@ -363,9 +363,9 @@ class VerticalFontDraw {
     return dw.measureText(text).width;
   }
 
-  drawLine(type, tx, ty, width) {
+  drawLine(type, tx, ty, width, align, verticalAlign) {
     const { dw, attr } = this;
-    const { size, verticalAlign, align } = attr;
+    const { size } = attr;
     const s = [0, 0];
     const e = [0, 0];
     const textWidth = width / dpr();
@@ -495,10 +495,10 @@ class VerticalFontDraw {
         dw.beginPath();
       }
       if (underline) {
-        this.drawLine('underline', item.tx, item.ty, item.len);
+        this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
       }
       if (strikethrough) {
-        this.drawLine('strike', item.tx, item.ty, item.len);
+        this.drawLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
       }
     }
     crop.close();
@@ -564,10 +564,10 @@ class VerticalFontDraw {
           dw.beginPath();
         }
         if (underline) {
-          this.drawLine('underline', item.tx, item.ty, item.len);
+          this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
         }
         if (strikethrough) {
-          this.drawLine('strike', item.tx, item.ty, item.len);
+          this.drawLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
         }
       }
       crop.close();
@@ -581,10 +581,10 @@ class VerticalFontDraw {
           dw.beginPath();
         }
         if (underline) {
-          this.drawLine('underline', item.tx, item.ty, item.len);
+          this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
         }
         if (strikethrough) {
-          this.drawLine('strike', item.tx, item.ty, item.len);
+          this.drawLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
         }
       }
     }
@@ -615,7 +615,7 @@ class VerticalFontDraw {
         textLen = 0;
         hOffset = 0;
         textItem = [];
-        wOffset += size + VERTICAL_LIEN_HEIGHT;
+        if (i > 0) wOffset += size + VERTICAL_LIEN_HEIGHT;
         columnNum += 1;
         const char = text.charAt(i);
         textItem.push({
@@ -644,6 +644,7 @@ class VerticalFontDraw {
     }
     let bx = rect.x;
     let by = rect.y;
+    let verticalAlignValue = verticalAlign;
     switch (align) {
       case ALIGN.left:
         bx += PADDING;
@@ -658,10 +659,11 @@ class VerticalFontDraw {
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
-        by += PADDING;
         dw.attr({
           textBaseline: attr.verticalAlign,
         });
+        by += PADDING;
+        verticalAlignValue = VERTICAL_ALIGN.top;
         break;
       case VERTICAL_ALIGN.center:
         if (columnNum === 0) {
@@ -669,11 +671,13 @@ class VerticalFontDraw {
             textBaseline: attr.verticalAlign,
           });
           by += height / 2 - hOffset / 2;
+          verticalAlignValue = VERTICAL_ALIGN.center;
         } else {
           dw.attr({
             textBaseline: VERTICAL_ALIGN.top,
           });
           by += PADDING;
+          verticalAlignValue = VERTICAL_ALIGN.top;
         }
         break;
       case VERTICAL_ALIGN.bottom:
@@ -682,11 +686,13 @@ class VerticalFontDraw {
             textBaseline: VERTICAL_ALIGN.bottom,
           });
           by += height - hOffset - PADDING;
+          verticalAlignValue = VERTICAL_ALIGN.bottom;
         } else {
           dw.attr({
             textBaseline: VERTICAL_ALIGN.top,
           });
           by += PADDING;
+          verticalAlignValue = VERTICAL_ALIGN.top;
         }
         break;
       default: break;
@@ -704,10 +710,10 @@ class VerticalFontDraw {
           dw.beginPath();
         }
         if (underline) {
-          this.drawLine('underline', item.tx, item.ty, item.len);
+          this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlignValue);
         }
         if (strikethrough) {
-          this.drawLine('strike', item.tx, item.ty, item.len);
+          this.drawLine('strike', item.tx, item.ty, item.len, align, verticalAlignValue);
         }
       }
     }

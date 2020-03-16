@@ -21,7 +21,7 @@ const testData = {
         background: null,
         fontAttr: {
           align: 'center',
-          verticalAlign: 'middle',
+          verticalAlign: 'top',
           textWrap: 2,
           strikethrough: false,
           underline: false,
