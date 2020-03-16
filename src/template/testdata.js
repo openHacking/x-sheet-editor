@@ -16,13 +16,13 @@ const testData = {
     data: [
       [{
         ID: '1584265551097',
-        text: 'Jerry',
+        text: '项目管理',
         format: 'default',
         background: null,
         fontAttr: {
-          align: 'left',
+          align: 'center',
           verticalAlign: 'middle',
-          textWrap: 3,
+          textWrap: 2,
           strikethrough: false,
           underline: false,
           color: 'rgb(0,0,0)',

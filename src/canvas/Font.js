@@ -8,6 +8,8 @@ const LIEN_HEIGHT = 4;
 
 const VERTICAL_SPACING = 2;
 
+const VERTICAL_LIEN_HEIGHT = 0;
+
 const ALIGN = {
   left: 'left',
   center: 'center',
@@ -588,25 +590,160 @@ class VerticalFontDraw {
     }
   }
 
-  drawTextWarp() {}
+  drawTextWarp() {
+    const {
+      text, dw, attr, rect,
+    } = this;
+    const {
+      underline, strikethrough, align, verticalAlign, size,
+    } = attr;
+    const { width, height } = rect;
+    const maxTextHeight = npx(height) - PADDING * 2;
+    const textSize = npx(size);
+    const textArray = [];
+    const len = text.length;
+    let textItem = [];
+    let textLen = 0;
+    let hOffset = 0;
+    let wOffset = 0;
+    let columnNum = 0;
+    let i = 0;
+    while (i < len) {
+      const textHeight = textLen + textSize + VERTICAL_SPACING;
+      if (textHeight > maxTextHeight) {
+        textArray.push(textItem);
+        textLen = 0;
+        hOffset = 0;
+        textItem = [];
+        wOffset += size + VERTICAL_LIEN_HEIGHT;
+        columnNum += 1;
+        const char = text.charAt(i);
+        textItem.push({
+          len: this.textWidth(char),
+          text: char,
+          tx: wOffset,
+          ty: hOffset,
+        });
+      } else {
+        const char = text.charAt(i);
+        textItem.push({
+          len: this.textWidth(char),
+          text: char,
+          tx: wOffset,
+          ty: hOffset,
+        });
+      }
+      textLen = textHeight;
+      if (i < text.length - 1) {
+        hOffset += size + VERTICAL_SPACING;
+      }
+      i += 1;
+    }
+    if (textItem.length > 0) {
+      textArray.push(textItem);
+    }
+    let bx = rect.x;
+    let by = rect.y;
+    switch (align) {
+      case ALIGN.left:
+        bx += PADDING;
+        break;
+      case ALIGN.center:
+        bx += width / 2 - wOffset / 2;
+        break;
+      case ALIGN.right:
+        bx += width - wOffset - PADDING;
+        break;
+      default: break;
+    }
+    switch (verticalAlign) {
+      case VERTICAL_ALIGN.top:
+        by += PADDING;
+        dw.attr({
+          textBaseline: attr.verticalAlign,
+        });
+        break;
+      case VERTICAL_ALIGN.center:
+        if (columnNum === 0) {
+          dw.attr({
+            textBaseline: attr.verticalAlign,
+          });
+          by += height / 2 - hOffset / 2;
+        } else {
+          dw.attr({
+            textBaseline: VERTICAL_ALIGN.top,
+          });
+          by += PADDING;
+        }
+        break;
+      case VERTICAL_ALIGN.bottom:
+        if (columnNum === 0) {
+          dw.attr({
+            textBaseline: VERTICAL_ALIGN.bottom,
+          });
+          by += height - hOffset - PADDING;
+        } else {
+          dw.attr({
+            textBaseline: VERTICAL_ALIGN.top,
+          });
+          by += PADDING;
+        }
+        break;
+      default: break;
+    }
+    const crop = new Crop({ draw: dw, rect });
+    crop.open();
+    for (let i = 0, len = textArray.length; i < len; i += 1) {
+      const textItem = textArray[i];
+      for (let j = 0; j < textItem.length; j += 1) {
+        const item = textItem[j];
+        item.tx += bx;
+        item.ty += by;
+        dw.fillText(item.text, item.tx, item.ty);
+        if (underline || strikethrough) {
+          dw.beginPath();
+        }
+        if (underline) {
+          this.drawLine('underline', item.tx, item.ty, item.len);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', item.tx, item.ty, item.len);
+        }
+      }
+    }
+    crop.close();
+  }
 
   draw() {
     const { dw, attr } = this;
     const { textWrap } = attr;
-    dw.attr({
-      textAlign: attr.align,
-      textBaseline: attr.verticalAlign,
-      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${npx(attr.size)}px ${attr.name}`,
-      fillStyle: attr.color,
-      strokeStyle: attr.color,
-    });
     switch (textWrap) {
       case TEXT_WRAP.TRUNCATE:
+        dw.attr({
+          textAlign: attr.align,
+          textBaseline: attr.verticalAlign,
+          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${npx(attr.size)}px ${attr.name}`,
+          fillStyle: attr.color,
+          strokeStyle: attr.color,
+        });
         return this.drawTextTruncate();
       case TEXT_WRAP.WORD_WRAP:
+        dw.attr({
+          textAlign: attr.align,
+          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${npx(attr.size)}px ${attr.name}`,
+          fillStyle: attr.color,
+          strokeStyle: attr.color,
+        });
         return this.drawTextWarp();
       case TEXT_WRAP.OVER_FLOW:
       default:
+        dw.attr({
+          textAlign: attr.align,
+          textBaseline: attr.verticalAlign,
+          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${npx(attr.size)}px ${attr.name}`,
+          fillStyle: attr.color,
+          strokeStyle: attr.color,
+        });
         return this.drawTextOverFlow();
     }
   }
