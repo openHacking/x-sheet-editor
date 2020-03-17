@@ -30,7 +30,7 @@ import { ElPopUp } from '../../component/elpopup/ElPopUp';
 import { Cells } from '../table/Cells';
 import { LINE_TYPE } from '../../canvas/Line';
 import { Icon } from './tools/Icon';
-import { ALIGN, VERTICAL_ALIGN } from '../../canvas/Font';
+import { ALIGN, TEXT_WRAP, VERTICAL_ALIGN } from '../../canvas/Font';
 
 class Divider extends Widget {
   constructor() {
@@ -715,7 +715,38 @@ class TopMenu extends Widget {
         },
       },
     });
-    this.textWrapping = new TextWrapping();
+    this.textWrapping = new TextWrapping({
+      contextMenu: {
+        onUpdate: (type) => {
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          const { screen, cells, dataSnapshot } = table;
+          const screenSelector = screen.findByClass(ScreenSelector);
+          const { selectorAttr } = screenSelector;
+          let icon;
+          switch (type) {
+            case TEXT_WRAP.TRUNCATE:
+              icon = new Icon('truncate');
+              break;
+            case TEXT_WRAP.WORD_WRAP:
+              icon = new Icon('text-wrap');
+              break;
+            case TEXT_WRAP.OVER_FLOW:
+            default:
+              icon = new Icon('overflow');
+              break;
+          }
+          this.textWrapping.setIcon(icon);
+          if (selectorAttr) {
+            cells.getCellInRectRange(selectorAttr.rect, (r, c, cell) => {
+              cell.fontAttr.textWrap = type;
+            }, true);
+            dataSnapshot.snapshot();
+            table.render();
+          }
+        },
+      },
+    });
     this.fixed = new Fixed();
     this.filter = new Filter();
     this.functions = new Functions();
@@ -769,6 +800,7 @@ class TopMenu extends Widget {
       this.setFillColorStatus();
       this.setHorizontalAlignStatus();
       this.setVerticalAlignStatus();
+      this.setTextWrappingStatus();
     });
     EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
@@ -1012,6 +1044,19 @@ class TopMenu extends Widget {
         verticalContextMenu.open();
       } else {
         verticalContextMenu.close();
+      }
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    EventBind.bind(this.textWrapping, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const { textWrapping } = this;
+      const { textWrappingContextMenu } = textWrapping;
+      const { elPopUp } = textWrappingContextMenu;
+      ElPopUp.closeAll([elPopUp]);
+      if (textWrappingContextMenu.isOpen()) {
+        textWrappingContextMenu.open();
+      } else {
+        textWrappingContextMenu.close();
       }
       e.stopPropagation();
       e.preventDefault();
@@ -1297,6 +1342,33 @@ class TopMenu extends Widget {
     this.verticalAlign.setIcon(icon);
   }
 
+  setTextWrappingStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { screen, cells } = table;
+    const screenSelector = screen.findByClass(ScreenSelector);
+    const { selectorAttr } = screenSelector;
+    let icon = new Icon('text-wrap');
+    if (selectorAttr) {
+      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+      switch (firstCell.fontAttr.textWrap) {
+        case TEXT_WRAP.TRUNCATE:
+          icon = new Icon('truncate');
+          break;
+        case TEXT_WRAP.WORD_WRAP:
+          icon = new Icon('text-wrap');
+          break;
+        case TEXT_WRAP.OVER_FLOW:
+        default:
+          icon = new Icon('overflow');
+          break;
+      }
+    }
+    this.textWrapping.setIcon(icon);
+  }
+
   setStatus() {
     this.setUndoStatus();
     this.setRedoStatus();
@@ -1312,6 +1384,7 @@ class TopMenu extends Widget {
     this.setFillColorStatus();
     this.setHorizontalAlignStatus();
     this.setVerticalAlignStatus();
+    this.setTextWrappingStatus();
   }
 }
 
