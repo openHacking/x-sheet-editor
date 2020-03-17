@@ -11,9 +11,9 @@ const purchaseOrder = {
       data: [{ height: 10 }, null, { height: 55 }, null, null, null, null, { height: 76 }],
     },
     cols: {
-      len: 9,
+      len: 8,
       // eslint-disable-next-line max-len
-      data: [{ width: 54 }, { width: 100 }, { width: 98 }, { width: 93 }, { width: 81 }, { width: 114 }, { width: 105 }, { width: 97 }],
+      data: [{ width: 54 }, { width: 100 }, { width: 98 }, { width: 93 }, { width: 81 }, { width: 114 }, { width: 105 }],
     },
     merges: {
       data: ['B3:E3', 'B4:D4', 'B5:D5', 'B6:E6', 'B8:H8', 'B10:C10', 'D10:E10', 'B11:C11', 'D11:E11', 'F10:G10', 'F11:G11', 'B13:C13', 'B14:C14', 'D13:E13', 'D14:E14', 'F13:G13', 'F14:G14', 'B17:C17', 'B18:C18', 'B19:C19', 'B20:C20', 'B21:C21', 'B22:E22', 'B23:E23', 'F17:H17', 'F18:H18', 'F19:H19', 'F20:H20', 'F21:H21', 'F22:H22', 'F23:H23', 'F31:G31', 'F32:G32', 'F33:G33', 'F34:G34', 'G35:H35'],

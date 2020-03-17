@@ -46,7 +46,7 @@ class WorkBody extends Widget {
     // 产品标识
     this.poweredBy = h('div', `${cssPrefix}-powered-by-tips`);
     this.poweredBy.text('X-Sheet Powered by ©深为科技(Svell)');
-    this.children(this.poweredBy);
+    // this.children(this.poweredBy);
     // 组件
     this.sheetView = new SheetView();
     this.tabView = new TabView({
