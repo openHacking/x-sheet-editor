@@ -49,12 +49,11 @@ class HorizontalFontDraw {
     return dw.measureText(text).width;
   }
 
-  drawLine(type, tx, ty, width) {
+  drawLine(type, tx, ty, textWidth) {
     const { dw, attr } = this;
     const { size, verticalAlign, align } = attr;
     const s = [0, 0];
     const e = [0, 0];
-    const textWidth = width / dpr();
     if (type === 'strike') {
       switch (align) {
         case ALIGN.right:
@@ -130,7 +129,7 @@ class HorizontalFontDraw {
       underline, strikethrough, align, verticalAlign,
     } = attr;
     const { width, height } = rect;
-    const textWidth = this.textWidth(text);
+    const textWidth = this.textWidth(text) / dpr();
     let tx = rect.x;
     let ty = rect.y;
     switch (align) {
@@ -180,34 +179,40 @@ class HorizontalFontDraw {
       size, underline, strikethrough, align, verticalAlign,
     } = attr;
     const { width, height } = rect;
-    const textWidth = this.textWidth(text);
+    const textWidth = this.textWidth(text) / dpr();
     let tx = rect.x;
     let ty = rect.y;
+    let paddingH = 0;
+    let paddingV = 0;
     switch (align) {
       case ALIGN.left:
         tx += PADDING;
+        paddingH = PADDING;
         break;
       case ALIGN.center:
         tx += width / 2;
         break;
       case ALIGN.right:
         tx += width - PADDING;
+        paddingH = PADDING;
         break;
       default: break;
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
         ty += PADDING;
+        paddingV = PADDING;
         break;
       case VERTICAL_ALIGN.center:
         ty += height / 2;
         break;
       case VERTICAL_ALIGN.bottom:
         ty += height - PADDING;
+        paddingV = PADDING;
         break;
       default: break;
     }
-    if (overflow && (textWidth > overflow.width || size > overflow.height)) {
+    if (overflow && (textWidth + paddingH > overflow.width || size + paddingV > overflow.height)) {
       const crop = new Crop({ draw: dw, rect: overflow });
       crop.open();
       dw.fillText(text, tx, ty);
@@ -239,7 +244,7 @@ class HorizontalFontDraw {
     const { text, dw, attr, rect } = this;
     const { size, underline, strikethrough, align, verticalAlign } = attr;
     const { width, height } = rect;
-    const maxTextWidth = npx(width) - PADDING * 2;
+    const maxTextWidth = width - PADDING * 2;
     const textArray = [];
     const textLine = {
       len: 0,
@@ -249,7 +254,7 @@ class HorizontalFontDraw {
     let hOffset = 0;
     let i = 0;
     while (i < len) {
-      const charWidth = this.textWidth(text.charAt(i));
+      const charWidth = this.textWidth(text.charAt(i)) / dpr();
       const textWidth = textLine.len + charWidth;
       if (textWidth > maxTextWidth) {
         textArray.push({
@@ -363,12 +368,11 @@ class VerticalFontDraw {
     return dw.measureText(text).width;
   }
 
-  drawLine(type, tx, ty, width, align, verticalAlign) {
+  drawLine(type, tx, ty, textWidth, align, verticalAlign) {
     const { dw, attr } = this;
     const { size } = attr;
     const s = [0, 0];
     const e = [0, 0];
-    const textWidth = width / dpr();
     if (type === 'strike') {
       switch (align) {
         case ALIGN.right:
@@ -449,7 +453,7 @@ class VerticalFontDraw {
     for (let i = 0; i < text.length; i += 1) {
       const char = text.charAt(i);
       textArray.push({
-        len: this.textWidth(char),
+        len: this.textWidth(char) / dpr(),
         text: char,
         tx: 0,
         ty: hOffset,
@@ -519,7 +523,7 @@ class VerticalFontDraw {
     for (let i = 0; i < text.length; i += 1) {
       const char = text.charAt(i);
       textArray.push({
-        len: this.textWidth(char),
+        len: this.textWidth(char) / dpr(),
         text: char,
         tx: 0,
         ty: hOffset,
@@ -620,7 +624,7 @@ class VerticalFontDraw {
     while (i < len) {
       const textHeight = textLen + size + VERTICAL_SPACING;
       const char = text.charAt(i);
-      const charWidth = this.textWidth(char);
+      const charWidth = this.textWidth(char) / dpr();
       if (textHeight > boxHeight) {
         textArray.push(textItem);
         textLen = 0;
