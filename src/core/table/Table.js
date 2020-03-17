@@ -1849,6 +1849,21 @@ class Table extends Widget {
     this.render();
     this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT);
   }
+
+  toString() {
+    const data = {
+      rows: {
+        data: this.rows.getData(),
+      },
+      cols: {
+        data: this.cols.getData(),
+      },
+      merges: {
+        data: this.merges.getData(),
+      },
+    };
+    return JSON.stringify(data);
+  }
 }
 
 export { Table };
