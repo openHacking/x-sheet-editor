@@ -1597,12 +1597,21 @@ class Table extends Widget {
       this.viewRange = null;
       this.render();
     });
+    EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+      this.viewRange = null;
+      this.render();
+    });
+    EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+      this.viewRange = null;
+      this.render();
+    });
   }
 
   resize() {
     const { draw } = this;
     const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.resize(width, height);
+    this.viewRange = null;
     this.render();
   }
 
@@ -1839,14 +1848,12 @@ class Table extends Widget {
   setWidth(ci, width) {
     const { cols } = this;
     cols.setWidth(ci, floor(width));
-    this.render();
     this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH);
   }
 
   setHeight(ri, height) {
     const { rows } = this;
     rows.setHeight(ri, floor(height));
-    this.render();
     this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT);
   }
 

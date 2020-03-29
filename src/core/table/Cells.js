@@ -214,7 +214,7 @@ class Cells extends CellsBorder {
         }
         if (cell) {
           const { fontAttr } = cell;
-          const { direction } = fontAttr;
+          const { direction, textWrap } = fontAttr;
           const rect = new Rect({
             x,
             y,
@@ -222,12 +222,14 @@ class Cells extends CellsBorder {
             height,
           });
           let overFlow = null;
-          if (direction === TEXT_DIRECTION.VERTICAL) {
-            const result = this.getCellVerticalOverFlowRect(i, j);
-            overFlow = new Rect({ x, y: y + result.offset, width, height: result.height });
-          } else {
-            const result = this.getCellHorizontalOverFlowRect(i, j);
-            overFlow = new Rect({ x: x + result.offset, y, width: result.width, height });
+          if (textWrap === TEXT_WRAP.OVER_FLOW) {
+            if (direction === TEXT_DIRECTION.VERTICAL) {
+              const result = this.getCellVerticalOverFlowRect(i, j);
+              overFlow = new Rect({ x, y: y + result.offset, width, height: result.height });
+            } else {
+              const result = this.getCellHorizontalOverFlowRect(i, j);
+              overFlow = new Rect({ x: x + result.offset, y, width: result.width, height });
+            }
           }
           const result = cb(i, j, cell, rect, overFlow);
           if (result === false) {

@@ -620,10 +620,16 @@
 .@{css-prefix}-tools-item:hover {
   background: #e4e4e4;
 }
-.@{css-prefix}-tools-drop-down-item {}
+.@{css-prefix}-tools-drop-down-item {
+  position: relative;
+}
 .@{css-prefix}-tools-drop-down-item-mark {
   display: inline-block;
   vertical-align: middle;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  margin-top: -9px;
 }
 .@{css-prefix}-tools-drop-down-item-title {
   display: inline-block;
@@ -631,6 +637,7 @@
   font-size: 14px;
   font-family: 'Lato', 'Source Sans Pro', Roboto, Helvetica, Arial, sans-serif;
   vertical-align: middle;
+  padding-right: 20px;
 }
 .@{css-prefix}-tools-toggle-item {}
 

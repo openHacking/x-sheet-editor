@@ -15,11 +15,13 @@ class Crop {
     draw.save();
     draw.rect(x, y, width + offset, height + offset);
     draw.clip();
+    return this;
   }
 
   close() {
     const { draw } = this;
     draw.restore();
+    return this;
   }
 }
 

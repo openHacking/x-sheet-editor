@@ -13,6 +13,10 @@ function npx(px) {
   return floor(px * dpr());
 }
 
+function angleToRadian(angle) {
+  return -angle * (Math.PI / 180);
+}
+
 class Draw {
   constructor(el) {
     this.el = el;
@@ -21,6 +25,12 @@ class Draw {
     this.height = el.height;
     this.offsetX = 0;
     this.offsetY = 0;
+  }
+
+  rotate(angle) {
+    const { ctx } = this;
+    ctx.rotate(angleToRadian(angle));
+    return this;
   }
 
   offset(offsetX = 0, offsetY = 0) {
@@ -156,5 +166,5 @@ class Draw {
 }
 
 export {
-  Draw, npx, dpr, floor,
+  Draw, npx, dpr, floor, angleToRadian,
 };

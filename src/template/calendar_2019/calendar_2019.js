@@ -1,7 +1,7 @@
 /* global window */
 
-const calendar = {
-  name: '日历',
+const calendar_2019 = {
+  name: '2019日历',
   tableConfig: {
     table: {
       showGrid: false,
@@ -16360,6 +16360,6 @@ const calendar = {
   },
 };
 
-window.calendar = calendar;
+window.calendar_2019 = calendar_2019;
 
-export { calendar };
+export { calendar_2019 };

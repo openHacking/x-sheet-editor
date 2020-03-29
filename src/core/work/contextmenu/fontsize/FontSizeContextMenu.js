@@ -18,6 +18,7 @@ class FontSizeContextMenu extends ELContextMenu {
       new FontSizeContextMenuItem(11),
       new FontSizeContextMenuItem(12),
       new FontSizeContextMenuItem(14),
+      new FontSizeContextMenuItem(15),
       new FontSizeContextMenuItem(18),
       new FontSizeContextMenuItem(24),
       new FontSizeContextMenuItem(36),
