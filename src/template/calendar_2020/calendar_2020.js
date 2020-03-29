@@ -36,7 +36,7 @@ const calendar_2020 = {
         { width: 35 },
         { width: 38 },
         { width: 40 },
-        { width: 415 }],
+        { width: 420 }],
     },
     merges: {
       data: ['B3:H3', 'J3:P3', 'R3:X3', 'B13:H13', 'J13:P13', 'R13:X13', 'Z1:Z39', 'B23:H23', 'J23:P23', 'R23:X23', 'B33:H33', 'J33:P33', 'R33:X33'],

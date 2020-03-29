@@ -72,7 +72,7 @@ const testData = {
           size: 14,
           bold: false,
           italic: false,
-          angle: 0,
+          angle: 90,
           direction: 'angle',
         },
         borderAttr: {
