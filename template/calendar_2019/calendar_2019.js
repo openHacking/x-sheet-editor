@@ -16361,5 +16361,3 @@ const calendar_2019 = {
 };
 
 window.calendar_2019 = calendar_2019;
-
-export { calendar_2019 };

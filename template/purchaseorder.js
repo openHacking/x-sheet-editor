@@ -8552,5 +8552,3 @@ const purchaseOrder = {
 };
 
 window.purchaseOrder = purchaseOrder;
-
-export { purchaseOrder };
