@@ -4,7 +4,7 @@ import { cssPrefix } from '../../config';
 let number = 0;
 
 class Tab extends Widget {
-  constructor(name = `${number += 1}-tab`) {
+  constructor(name = `Sheet${number += 1}`) {
     super(`${cssPrefix}-sheet-tab`);
     this.setName(name);
   }

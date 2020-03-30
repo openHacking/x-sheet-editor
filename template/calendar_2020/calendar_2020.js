@@ -42883,5 +42883,3 @@ const calendar_2020 = {
 };
 
 window.calendar_2020 = calendar_2020;
-
-export { calendar_2020 };

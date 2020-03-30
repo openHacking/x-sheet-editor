@@ -1,7 +1,7 @@
 /* global window */
 
-const calendar_2020_9 = {
-  name: '2020年9月',
+const calendar_2020_12 = {
+  name: '2020年12月',
   tableConfig: {
     table: {
       showGrid: false,
@@ -60,7 +60,7 @@ const calendar_2020_9 = {
       },
     }, {
       ID: '1585441606430',
-      text: '九月',
+      text: '十二月',
       format: 'default',
       background: '#00535c',
       fontAttr: {
@@ -388,7 +388,7 @@ const calendar_2020_9 = {
       },
     }, {
       ID: '1585441866750',
-      text: '九月',
+      text: '十二月',
       format: 'default',
       background: '#00535c',
       fontAttr: {
@@ -8229,6 +8229,4 @@ const calendar_2020_9 = {
   },
 };
 
-window.calendar_2020_9 = calendar_2020_9;
-
-export { calendar_2020_9 };
+window.calendar_2020_12 = calendar_2020_12;

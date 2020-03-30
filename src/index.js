@@ -6,17 +6,12 @@ import { Work } from './core/work/Work';
 import { Widget } from './lib/Widget';
 import './base.less';
 import './index.less';
-import './template/template';
 
 class XSheet extends Widget {
   constructor(selectors, options = {
     workConfig: {
       body: {
-        sheets: [
-          {
-            name: 'default',
-          },
-        ],
+        sheets: [{}],
       },
     },
   }) {
