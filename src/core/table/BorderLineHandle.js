@@ -49,7 +49,7 @@ class BorderLineHandle {
       for (let i = 1; i < line.length;) {
         const item = line[i];
         const last = line[i - 1];
-        const ck1 = cells.borderEqual(item.borderAttr.bottom, last.borderAttr.bottom);
+        const ck1 = cells.borderEqual(item.borderAttr.top, last.borderAttr.top);
         const ck2 = item.col - last.col === 1;
         const ck3 = item.row === last.row;
         if (ck1 && ck2 && ck3) {

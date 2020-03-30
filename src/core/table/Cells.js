@@ -2,6 +2,7 @@ import { Utils } from '../../utils/Utils';
 import { Rect } from '../../canvas/Rect';
 import { CellsBorder } from './CellsBorder';
 import { ALIGN, TEXT_DIRECTION, TEXT_WRAP, VERTICAL_ALIGN } from '../../canvas/Font';
+import { LINE_TYPE } from '../../canvas/Line';
 
 class Cells extends CellsBorder {
 
@@ -31,10 +32,10 @@ class Cells extends CellsBorder {
     };
     const borderAttr = {
       time: Utils.now(),
-      left: { display: false, width: 1, color: '#000000' },
-      top: { display: false, width: 1, color: '#000000' },
-      right: { display: false, width: 1, color: '#000000' },
-      bottom: { display: false, width: 1, color: '#000000' },
+      left: { display: false, width: 1, color: '#000000', type: LINE_TYPE.SOLID_LINE },
+      top: { display: false, width: 1, color: '#000000', type: LINE_TYPE.SOLID_LINE },
+      right: { display: false, width: 1, color: '#000000', type: LINE_TYPE.SOLID_LINE },
+      bottom: { display: false, width: 1, color: '#000000', type: LINE_TYPE.SOLID_LINE },
     };
     return {
       ID: Utils.now(),
