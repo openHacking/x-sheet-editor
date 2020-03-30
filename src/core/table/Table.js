@@ -33,6 +33,7 @@ import { DataSnapshot } from './DataSnapshot';
 import { BorderLineHandle } from './BorderLineHandle';
 import { Line, LINE_TYPE } from '../../canvas/Line';
 import { LineHandle } from './LineHandle';
+import { KeyboardManage } from './KeyboardManage';
 
 class FrozenLeftTop {
   constructor(table) {
@@ -1469,6 +1470,8 @@ class Table extends Widget {
     this.dataSnapshot = new DataSnapshot(this);
     // 鼠标指针
     this.mousePointType = new MousePointType(this);
+    // 键盘快捷键
+    this.keyboardManage = new KeyboardManage();
     // canvas 绘制资源
     this.draw = new Draw(this.canvas.el);
     this.line = new Line(this.draw, {

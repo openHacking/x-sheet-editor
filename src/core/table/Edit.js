@@ -14,6 +14,8 @@ class Edit extends Widget {
     this.input.attr('contenteditable', true);
     this.input.html('<p>&nbsp;</p>');
     this.table = table;
+    this.text = '';
+    this.select = null;
     this.children(this.input);
     this.hide();
   }
@@ -24,11 +26,8 @@ class Edit extends Widget {
 
   bind() {
     const { table } = this;
-    const { screen, cells } = table;
+    const { screen } = table;
     const selector = screen.findByClass(ScreenSelector);
-    let text = '';
-    let selectRect = null;
-    let editModel = false;
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       e.stopPropagation();
     });
@@ -36,60 +35,62 @@ class Edit extends Widget {
       e.stopPropagation();
     });
     EventBind.bind(this.input, Constant.SYSTEM_EVENT_TYPE.INPUT, () => {
+      const { input } = this;
       if (Utils.isBlank(this.input.text())) {
-        this.input.html('<p>&nbsp;</p>');
+        input.html('<p>&nbsp;</p>');
       }
-      text = this.input.text();
-    });
-    EventBind.bind([
-      selector.lt.cornerEl,
-      selector.t.cornerEl,
-      selector.l.cornerEl,
-      selector.br.cornerEl,
-      table,
-    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const { selectorAttr } = selector;
-      if (editModel) {
-        text = Utils.trim(text);
-        const cell = cells.getCellOrNew(selectRect.sri, selectRect.sci);
-        if (cell.text !== text) {
-          table.setCell(selectRect.sri, selectRect.sci, {
-            text,
-          });
-        }
-      }
-      if (selectorAttr) {
-        const { rect } = selectorAttr;
-        selectRect = rect;
-      }
-      this.hide();
-      editModel = false;
+      this.text = input.text();
     });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      this.hide();
+      this.hideEdit();
     });
-    EventBind.dbClick(table, () => {
-      const { screen } = table;
-      const selector = screen.findByClass(ScreenSelector);
-      const { selectorAttr } = selector;
-      if (selectorAttr && selectRect) {
-        const { rect } = selectorAttr;
-        const cell = table.getCell(rect.sri, rect.sci);
-        if (rect.equals(selectRect)) {
-          editModel = true;
-          this.editOffset(rect);
-          if (cell) {
-            ({ text } = cell);
-            if (Utils.isBlank(text)) {
-              this.input.html('<p>&nbsp;</p>');
-            } else {
-              this.input.text(text);
-            }
-            Utils.keepLastIndex(this.input.el);
-          }
-        }
+    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      this.hideEdit();
+    });
+    EventBind.dbClick([
+      selector.lt,
+      selector.t,
+      selector.l,
+      selector.br,
+    ], () => {
+      this.showEdit();
+    });
+  }
+
+  showEdit() {
+    const { table, input } = this;
+    const { screen, cells } = table;
+    const selector = screen.findByClass(ScreenSelector);
+    const { selectorAttr } = selector;
+    if (selectorAttr) {
+      const { rect } = selectorAttr;
+      const cell = cells.getCellOrNew(rect.sri, rect.sci);
+      this.select = rect;
+      this.editOffset(rect);
+      this.text = cell.text;
+      if (Utils.isBlank(this.text)) {
+        input.html('<p>&nbsp;</p>');
+      } else {
+        input.text(this.text);
       }
-    });
+      Utils.keepLastIndex(this.input.el);
+    }
+  }
+
+  hideEdit() {
+    const { select } = this;
+    const { table } = this;
+    const { cells } = table;
+    if (select) {
+      const cell = cells.getCellOrNew(select.sri, select.sci);
+      const text = Utils.trim(this.text);
+      if (cell.text !== text) {
+        table.setCell(select.sri, select.sci, {
+          text,
+        });
+      }
+    }
+    this.hide();
   }
 
   editOffset() {

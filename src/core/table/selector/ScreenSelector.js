@@ -27,7 +27,7 @@ class ScreenSelector extends ScreenWidget {
   bind() {
     const { screen } = this;
     const { table } = screen;
-    const { mousePointType } = table;
+    const { mousePointType, keyboardManage, cols, rows, edit } = table;
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       if (this.selectorAttr) {
         this.setOffset(this.selectorAttr);
@@ -85,6 +85,35 @@ class ScreenSelector extends ScreenWidget {
         this.onChangeStack.forEach(cb => cb());
       }
       e.stopPropagation();
+    });
+    keyboardManage.register({
+      el: table,
+      code: 9,
+      callback: () => {
+        edit.hideEdit();
+        const { rect } = this.selectorAttr;
+        const { len: cLen } = cols;
+        const { len: rLen } = rows;
+        let { sri } = rect;
+        let { sci } = rect;
+        if (sri === rLen - 1 && sci === cLen - 1) {
+          return;
+        }
+        if (sci === cLen - 1) {
+          sri += 1;
+          sci = 0;
+        } else {
+          sci += 1;
+        }
+        rect.sri = sri;
+        rect.sci = sci;
+        rect.eri = sri;
+        rect.eci = sci;
+        this.setOffset(this.selectorAttr);
+        this.onChangeStack.forEach(cb => cb());
+        this.onSelectChangeStack.forEach(cb => cb());
+        edit.showEdit();
+      },
     });
   }
 
