@@ -11,7 +11,14 @@ class XSheet extends Widget {
   constructor(selectors, options = {
     workConfig: {
       body: {
-        sheets: [{}],
+        sheets: [{
+          tableConfig: {
+            fixed: {
+              fxTop: 1,
+              fxLeft: 1,
+            },
+          },
+        }],
       },
     },
   }) {

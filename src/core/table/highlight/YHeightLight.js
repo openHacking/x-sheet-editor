@@ -1,7 +1,6 @@
 import { Widget } from '../../../lib/Widget';
 import { cssPrefix } from '../../../config';
 import { RectRange } from '../RectRange';
-import { Utils } from '../../../utils/Utils';
 import { ScreenSelector } from '../selector/ScreenSelector';
 import { EventBind } from '../../../utils/EventBind';
 import { Constant } from '../../../utils/Constant';
@@ -43,14 +42,122 @@ class YHeightLight extends Widget {
     const { index } = settings;
     const empty = new RectRange(-1, 0, -1, 0);
     this.hide();
-    if (Utils.arrayIncludeArray(intersectsArea, ['lt'])) {
-      const { rect } = selectorAttr;
-      const { frozenLeftTop, rows } = table;
-      const ltViewRange = frozenLeftTop.getViewRange();
-      const ltCoincideRange = this.coincide(rect, ltViewRange);
-      if (!empty.equals(ltCoincideRange)) {
-        const height = rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
+    switch (intersectsArea) {
+      case 'lt': {
+        const { rect } = selectorAttr;
+        const { frozenLeftTop, rows } = table;
+        const ltViewRange = frozenLeftTop.getViewRange();
+        const ltCoincideRange = this.coincide(rect, ltViewRange);
+        if (!empty.equals(ltCoincideRange)) {
+          const height = rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
+          // eslint-disable-next-line max-len
+          const top = rows.sectionSumHeight(ltViewRange.sri, ltCoincideRange.sri - 1) + index.height;
+          if (`${height}px` !== this.css('height')) {
+            this.css('height', `${height}px`);
+          }
+          if (`${top}px` !== this.css('top')) {
+            this.css('top', `${top}px`);
+          }
+          this.show();
+        }
+        break;
+      }
+      case 't': {
+        const { rect } = selectorAttr;
+        const { fixedTop, rows } = table;
+        const tViewRange = fixedTop.getViewRange();
+        const tCoincideRange = this.coincide(rect, tViewRange);
+        // console.log('tCoincideRange>>>', tCoincideRange);
+        if (!empty.equals(tCoincideRange)) {
+          const height = rows.sectionSumHeight(tCoincideRange.sri, tCoincideRange.eri);
+          const top = rows.sectionSumHeight(tViewRange.sri, tCoincideRange.sri - 1) + index.height;
+          // console.log('height>>>', height);
+          // console.log('top>>>', top);
+          if (`${height}px` !== this.css('height')) {
+            this.css('height', `${height}px`);
+          }
+          if (`${top}px` !== this.css('top')) {
+            this.css('top', `${top}px`);
+          }
+          this.show();
+        }
+        break;
+      }
+      case 'l': {
+        const { rect } = selectorAttr;
+        const { fixedLeft, rows } = table;
+        const lViewRange = fixedLeft.getViewRange();
+        const lCoincideRange = this.coincide(rect, lViewRange);
+        if (!empty.equals(lCoincideRange)) {
+          const height = rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
+          const top = rows.sectionSumHeight(lViewRange.sri, lCoincideRange.sri - 1)
+            + table.getFixedHeight() + index.height;
+          if (`${height}px` !== this.css('height')) {
+            this.css('height', `${height}px`);
+          }
+          if (`${top}px` !== this.css('top')) {
+            this.css('top', `${top}px`);
+          }
+          this.show();
+        }
+        break;
+      }
+      case 'br': {
+        const { rect } = selectorAttr;
+        const { rows } = table;
+        const cViewRange = table.getViewRange();
+        const cCoincideRange = this.coincide(rect, cViewRange);
+        // console.log('cCoincideRange>>>', cCoincideRange);
+        if (!empty.equals(cCoincideRange)) {
+          const height = rows.sectionSumHeight(cCoincideRange.sri, cCoincideRange.eri);
+          const top = rows.sectionSumHeight(cViewRange.sri, cCoincideRange.sri - 1)
+            + table.getFixedHeight() + index.height;
+          // console.log('height>>>', height);
+          // console.log('top>>>', top);
+          if (`${height}px` !== this.css('height')) {
+            this.css('height', `${height}px`);
+          }
+          if (`${top}px` !== this.css('top')) {
+            this.css('top', `${top}px`);
+          }
+          this.show();
+        }
+        break;
+      }
+      case 'ltt': {
+        const { rect } = selectorAttr;
+        const { frozenLeftTop, rows } = table;
+        const ltViewRange = frozenLeftTop.getViewRange();
+        const ltCoincideRange = this.coincide(rect, ltViewRange);
+        if (!empty.equals(ltCoincideRange)) {
+          // eslint-disable-next-line max-len
+          const top = rows.sectionSumHeight(ltViewRange.sri, ltCoincideRange.sri - 1) + index.height;
+          const height = rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
+          if (`${height}px` !== this.css('height')) {
+            this.css('height', `${height}px`);
+          }
+          if (`${top}px` !== this.css('top')) {
+            this.css('top', `${top}px`);
+          }
+          this.show();
+        }
+        break;
+      }
+      case 'ltl': {
+        const { rect } = selectorAttr;
+        const { frozenLeftTop, fixedLeft, rows } = table;
+        const ltViewRange = frozenLeftTop.getViewRange();
+        const lViewRange = fixedLeft.getViewRange();
+        const ltCoincideRange = this.coincide(rect, ltViewRange);
+        const lCoincideRange = this.coincide(rect, lViewRange);
         const top = rows.sectionSumHeight(ltViewRange.sri, ltCoincideRange.sri - 1) + index.height;
+        let height = 0;
+        if (!empty.equals(ltCoincideRange)) {
+          height += rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
+        }
+        if (!empty.equals(lCoincideRange)) {
+          height += rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
+        }
         if (`${height}px` !== this.css('height')) {
           this.css('height', `${height}px`);
         }
@@ -58,55 +165,27 @@ class YHeightLight extends Widget {
           this.css('top', `${top}px`);
         }
         this.show();
+        break;
       }
-    } else if (Utils.arrayIncludeArray(intersectsArea, ['t'])) {
-      const { rect } = selectorAttr;
-      const { fixedTop, rows } = table;
-      const tViewRange = fixedTop.getViewRange();
-      const tCoincideRange = this.coincide(rect, tViewRange);
-      // console.log('tCoincideRange>>>', tCoincideRange);
-      if (!empty.equals(tCoincideRange)) {
-        const height = rows.sectionSumHeight(tCoincideRange.sri, tCoincideRange.eri);
+      case 'tbr': {
+        const { rect } = selectorAttr;
+        const { fixedTop, rows } = table;
+        const tViewRange = fixedTop.getViewRange();
+        const cViewRange = table.getViewRange();
+        const tCoincideRange = this.coincide(rect, tViewRange);
+        const cCoincideRange = this.coincide(rect, cViewRange);
         const top = rows.sectionSumHeight(tViewRange.sri, tCoincideRange.sri - 1) + index.height;
-        // console.log('height>>>', height);
+        let height = 0;
+        if (!empty.equals(tCoincideRange)) {
+          height += rows.sectionSumHeight(tCoincideRange.sri, tCoincideRange.eri);
+        }
+        if (!empty.equals(cCoincideRange)) {
+          height += rows.sectionSumHeight(cCoincideRange.sri, cCoincideRange.eri);
+        }
+        // console.log('tCoincideRange>>>', tCoincideRange);
+        // console.log('cCoincideRange>>>', cCoincideRange);
         // console.log('top>>>', top);
-        if (`${height}px` !== this.css('height')) {
-          this.css('height', `${height}px`);
-        }
-        if (`${top}px` !== this.css('top')) {
-          this.css('top', `${top}px`);
-        }
-        this.show();
-      }
-    } else if (Utils.arrayIncludeArray(intersectsArea, ['l'])) {
-      const { rect } = selectorAttr;
-      const { fixedLeft, rows } = table;
-      const lViewRange = fixedLeft.getViewRange();
-      const lCoincideRange = this.coincide(rect, lViewRange);
-      if (!empty.equals(lCoincideRange)) {
-        const height = rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
-        const top = rows.sectionSumHeight(lViewRange.sri, lCoincideRange.sri - 1)
-          + table.getFixedHeight() + index.height;
-        if (`${height}px` !== this.css('height')) {
-          this.css('height', `${height}px`);
-        }
-        if (`${top}px` !== this.css('top')) {
-          this.css('top', `${top}px`);
-        }
-        this.show();
-      }
-    } else if (Utils.arrayIncludeArray(intersectsArea, ['br'])) {
-      const { rect } = selectorAttr;
-      const { rows } = table;
-      const cViewRange = table.getViewRange();
-      const cCoincideRange = this.coincide(rect, cViewRange);
-      // console.log('cCoincideRange>>>', cCoincideRange);
-      if (!empty.equals(cCoincideRange)) {
-        const height = rows.sectionSumHeight(cCoincideRange.sri, cCoincideRange.eri);
-        const top = rows.sectionSumHeight(cViewRange.sri, cCoincideRange.sri - 1)
-          + table.getFixedHeight() + index.height;
         // console.log('height>>>', height);
-        // console.log('top>>>', top);
         if (`${height}px` !== this.css('height')) {
           this.css('height', `${height}px`);
         }
@@ -114,15 +193,42 @@ class YHeightLight extends Widget {
           this.css('top', `${top}px`);
         }
         this.show();
+        break;
       }
-    } else if (Utils.arrayIncludeArray(intersectsArea, ['lt', 't'])) {
-      const { rect } = selectorAttr;
-      const { frozenLeftTop, rows } = table;
-      const ltViewRange = frozenLeftTop.getViewRange();
-      const ltCoincideRange = this.coincide(rect, ltViewRange);
-      if (!empty.equals(ltCoincideRange)) {
+      case 'lbr': {
+        const { rect } = selectorAttr;
+        const { fixedLeft, rows } = table;
+        const lViewRange = fixedLeft.getViewRange();
+        const lCoincideRange = this.coincide(rect, lViewRange);
+        if (!empty.equals(lCoincideRange)) {
+          const height = rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
+          const top = rows.sectionSumHeight(lViewRange.sri, lCoincideRange.sri - 1)
+            + table.getFixedHeight() + index.height;
+          if (`${height}px` !== this.css('height')) {
+            this.css('height', `${height}px`);
+          }
+          if (`${top}px` !== this.css('top')) {
+            this.css('top', `${top}px`);
+          }
+          this.show();
+        }
+        break;
+      }
+      case 'lttlbr': {
+        const { rect } = selectorAttr;
+        const { frozenLeftTop, fixedLeft, rows } = table;
+        const ltViewRange = frozenLeftTop.getViewRange();
+        const lViewRange = fixedLeft.getViewRange();
+        const ltCoincideRange = this.coincide(rect, ltViewRange);
+        const lCoincideRange = this.coincide(rect, lViewRange);
+        let height = 0;
         const top = rows.sectionSumHeight(ltViewRange.sri, ltCoincideRange.sri - 1) + index.height;
-        const height = rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
+        if (!empty.equals(ltCoincideRange)) {
+          height += rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
+        }
+        if (!empty.equals(lCoincideRange)) {
+          height += rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
+        }
         if (`${height}px` !== this.css('height')) {
           this.css('height', `${height}px`);
         }
@@ -130,94 +236,9 @@ class YHeightLight extends Widget {
           this.css('top', `${top}px`);
         }
         this.show();
+        break;
       }
-    } else if (Utils.arrayIncludeArray(intersectsArea, ['lt', 'l'])) {
-      const { rect } = selectorAttr;
-      const { frozenLeftTop, fixedLeft, rows } = table;
-      const ltViewRange = frozenLeftTop.getViewRange();
-      const lViewRange = fixedLeft.getViewRange();
-      const ltCoincideRange = this.coincide(rect, ltViewRange);
-      const lCoincideRange = this.coincide(rect, lViewRange);
-      const top = rows.sectionSumHeight(ltViewRange.sri, ltCoincideRange.sri - 1) + index.height;
-      let height = 0;
-      if (!empty.equals(ltCoincideRange)) {
-        height += rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
-      }
-      if (!empty.equals(lCoincideRange)) {
-        height += rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
-      }
-      if (`${height}px` !== this.css('height')) {
-        this.css('height', `${height}px`);
-      }
-      if (`${top}px` !== this.css('top')) {
-        this.css('top', `${top}px`);
-      }
-      this.show();
-    } else if (Utils.arrayIncludeArray(intersectsArea, ['t', 'br'])) {
-      const { rect } = selectorAttr;
-      const { fixedTop, rows } = table;
-      const tViewRange = fixedTop.getViewRange();
-      const cViewRange = table.getViewRange();
-      const tCoincideRange = this.coincide(rect, tViewRange);
-      const cCoincideRange = this.coincide(rect, cViewRange);
-      const top = rows.sectionSumHeight(tViewRange.sri, tCoincideRange.sri - 1) + index.height;
-      let height = 0;
-      if (!empty.equals(tCoincideRange)) {
-        height += rows.sectionSumHeight(tCoincideRange.sri, tCoincideRange.eri);
-      }
-      if (!empty.equals(cCoincideRange)) {
-        height += rows.sectionSumHeight(cCoincideRange.sri, cCoincideRange.eri);
-      }
-      // console.log('tCoincideRange>>>', tCoincideRange);
-      // console.log('cCoincideRange>>>', cCoincideRange);
-      // console.log('top>>>', top);
-      // console.log('height>>>', height);
-      if (`${height}px` !== this.css('height')) {
-        this.css('height', `${height}px`);
-      }
-      if (`${top}px` !== this.css('top')) {
-        this.css('top', `${top}px`);
-      }
-      this.show();
-    } else if (Utils.arrayIncludeArray(intersectsArea, ['l', 'br'])) {
-      const { rect } = selectorAttr;
-      const { fixedLeft, rows } = table;
-      const lViewRange = fixedLeft.getViewRange();
-      const lCoincideRange = this.coincide(rect, lViewRange);
-      if (!empty.equals(lCoincideRange)) {
-        const height = rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
-        const top = rows.sectionSumHeight(lViewRange.sri, lCoincideRange.sri - 1)
-          + table.getFixedHeight() + index.height;
-        if (`${height}px` !== this.css('height')) {
-          this.css('height', `${height}px`);
-        }
-        if (`${top}px` !== this.css('top')) {
-          this.css('top', `${top}px`);
-        }
-        this.show();
-      }
-    } else if (Utils.arrayIncludeArray(intersectsArea, ['lt', 't', 'l', 'br'])) {
-      const { rect } = selectorAttr;
-      const { frozenLeftTop, fixedLeft, rows } = table;
-      const ltViewRange = frozenLeftTop.getViewRange();
-      const lViewRange = fixedLeft.getViewRange();
-      const ltCoincideRange = this.coincide(rect, ltViewRange);
-      const lCoincideRange = this.coincide(rect, lViewRange);
-      let height = 0;
-      const top = rows.sectionSumHeight(ltViewRange.sri, ltCoincideRange.sri - 1) + index.height;
-      if (!empty.equals(ltCoincideRange)) {
-        height += rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
-      }
-      if (!empty.equals(lCoincideRange)) {
-        height += rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
-      }
-      if (`${height}px` !== this.css('height')) {
-        this.css('height', `${height}px`);
-      }
-      if (`${top}px` !== this.css('top')) {
-        this.css('top', `${top}px`);
-      }
-      this.show();
+      default: break;
     }
   }
 

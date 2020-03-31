@@ -5,7 +5,6 @@ import { EventBind } from '../../../utils/EventBind';
 import { Constant } from '../../../utils/Constant';
 import { ScreenWidget } from '../screen/ScreenWidget';
 import { RectRange } from '../RectRange';
-import { Utils } from '../../../utils/Utils';
 import { Rect } from '../../../canvas/Rect';
 
 class ScreenSelector extends ScreenWidget {
@@ -13,6 +12,7 @@ class ScreenSelector extends ScreenWidget {
     super(screen);
     this.options = options;
     this.selectorAttr = null;
+    this.downSelectorAttr = null;
     this.onChangeStack = [];
     this.onSelectChangeStack = [];
     this.onSelectChangeOver = [];
@@ -39,6 +39,7 @@ class ScreenSelector extends ScreenWidget {
       const downSelectAttr = this.getDownXYSelectorAttr(x, y);
       // console.log('downSelectAttr >>>', downSelectAttr);
       this.setSelectAttr(downSelectAttr);
+      this.setDownSelectAttr(downSelectAttr);
       this.setOffset(downSelectAttr);
       this.onDownSelectStack.forEach(cb => cb());
       this.onChangeStack.forEach(cb => cb());
@@ -356,8 +357,8 @@ class ScreenSelector extends ScreenWidget {
     this.lt.cornerEl.hide();
 
     if (edge) {
-      const ltT = Utils.arrayIncludeArray(intersectsArea, ['lt', 't']);
-      const ltL = Utils.arrayIncludeArray(intersectsArea, ['lt', 'l']);
+      const ltT = intersectsArea === 'ltt';
+      const ltL = intersectsArea === 'ltl';
       if (edgeType === 'left' && ltT) {
         this.lt.cornerEl.show();
         this.lt.cornerEl.css('left', '0px');
@@ -369,7 +370,7 @@ class ScreenSelector extends ScreenWidget {
         this.lt.cornerEl.css('top', '0px');
       }
     } else {
-      const lt = Utils.arrayIncludeArray(intersectsArea, ['lt']);
+      const lt = intersectsArea === 'lt';
       if (lt) {
         this.lt.cornerEl.show();
         this.lt.cornerEl.css('right', '0px');
@@ -404,8 +405,8 @@ class ScreenSelector extends ScreenWidget {
     this.t.cornerEl.hide();
 
     if (edge) {
-      const tBr = Utils.arrayIncludeArray(intersectsArea, ['t', 'br']);
-      const ltTBrL = Utils.arrayIncludeArray(intersectsArea, ['lt', 't', 'l', 'br']);
+      const tBr = intersectsArea === 'tbr';
+      const ltTBrL = intersectsArea === 'lttlbr';
       if (edgeType === 'top' && tBr) {
         this.t.cornerEl.show();
         this.t.cornerEl.css('right', '0px');
@@ -420,8 +421,8 @@ class ScreenSelector extends ScreenWidget {
         this.t.cornerEl.hide();
       }
     } else {
-      const t = Utils.arrayIncludeArray(intersectsArea, ['t']);
-      const ltT = Utils.arrayIncludeArray(intersectsArea, ['lt', 't']);
+      const t = intersectsArea === 't';
+      const ltT = intersectsArea === 'ltt';
       if (t || ltT) {
         this.t.cornerEl.show();
         this.t.cornerEl.css('right', '0px');
@@ -456,8 +457,8 @@ class ScreenSelector extends ScreenWidget {
     this.l.cornerEl.hide();
 
     if (edge) {
-      const lBr = Utils.arrayIncludeArray(intersectsArea, ['l', 'br']);
-      const ltTBrL = Utils.arrayIncludeArray(intersectsArea, ['lt', 't', 'l', 'br']);
+      const lBr = intersectsArea === 'lbr';
+      const ltTBrL = intersectsArea === 'lttlbr';
       if (edgeType === 'left' && lBr) {
         this.l.cornerEl.show();
         this.l.cornerEl.css('left', '0');
@@ -472,8 +473,8 @@ class ScreenSelector extends ScreenWidget {
         this.l.cornerEl.hide();
       }
     } else {
-      const l = Utils.arrayIncludeArray(intersectsArea, ['l']);
-      const ltL = Utils.arrayIncludeArray(intersectsArea, ['lt', 'l']);
+      const l = intersectsArea === 'l';
+      const ltL = intersectsArea === 'ltl';
       if (l || ltL) {
         this.l.cornerEl.show();
         this.l.cornerEl.css('right', '0px');
@@ -507,8 +508,8 @@ class ScreenSelector extends ScreenWidget {
     this.br.cornerEl.hide();
 
     if (edge) {
-      const br = Utils.arrayIncludeArray(intersectsArea, ['br']);
-      const ltTLBr = Utils.arrayIncludeArray(intersectsArea, ['lt', 't', 'l', 'br']);
+      const br = intersectsArea === 'br';
+      const ltTLBr = intersectsArea === 'lttlbr';
       if (edgeType === 'left' && br) {
         this.br.cornerEl.show();
         this.br.cornerEl.css('left', '0');
@@ -536,10 +537,10 @@ class ScreenSelector extends ScreenWidget {
         this.br.cornerEl.hide();
       }
     } else {
-      const br = Utils.arrayIncludeArray(intersectsArea, ['br']);
-      const tBr = Utils.arrayIncludeArray(intersectsArea, ['t', 'br']);
-      const lBr = Utils.arrayIncludeArray(intersectsArea, ['l', 'br']);
-      const ltTLBr = Utils.arrayIncludeArray(intersectsArea, ['lt', 't', 'l', 'br']);
+      const br = intersectsArea === 'br';
+      const tBr = intersectsArea === 'tbr';
+      const lBr = intersectsArea === 'lbr';
+      const ltTLBr = intersectsArea === 'lttlbr';
       if (br || tBr || lBr || lBr || ltTLBr) {
         this.br.cornerEl.show();
         this.br.cornerEl.css('right', '0px');
@@ -559,24 +560,25 @@ class ScreenSelector extends ScreenWidget {
     this.selectorAttr.id = Date.now();
   }
 
+  setDownSelectAttr(downSelectorAttr) {
+    this.downSelectorAttr = downSelectorAttr;
+  }
+
   getIntersectsArea(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
     const { fixed, cols, rows } = table;
     const { rect } = selectorAttr;
-    const area = [];
-
+    let type = '';
     const tlRange = new RectRange(0, 0, fixed.fxTop, fixed.fxLeft);
     const tRange = new RectRange(0, fixed.fxLeft + 1, fixed.fxTop, cols.len);
     const lRange = new RectRange(fixed.fxTop + 1, 0, rows.len, fixed.fxLeft);
     const brRange = new RectRange(fixed.fxTop + 1, fixed.fxLeft + 1, rows.len, cols.len);
-
-    if (rect.intersects(tlRange)) area.push('lt');
-    if (rect.intersects(tRange)) area.push('t');
-    if (rect.intersects(lRange)) area.push('l');
-    if (rect.intersects(brRange)) area.push('br');
-
-    return area;
+    if (rect.intersects(tlRange)) type += 'lt';
+    if (rect.intersects(tRange)) type += 't';
+    if (rect.intersects(lRange)) type += 'l';
+    if (rect.intersects(brRange)) type += 'br';
+    return type;
   }
 
   setOffset(selectorAttr) {
