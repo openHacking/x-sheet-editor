@@ -38,7 +38,7 @@ class ScreenSelector extends ScreenWidget {
       const { x, y } = table.computeEventXy(e1);
       const downSelectAttr = this.getDownXYSelectorAttr(x, y);
       // console.log('downSelectAttr >>>', downSelectAttr);
-      this.selectorAttr = downSelectAttr;
+      this.setSelectAttr(downSelectAttr);
       this.setOffset(downSelectAttr);
       this.onDownSelectStack.forEach(cb => cb());
       this.onChangeStack.forEach(cb => cb());
@@ -61,7 +61,7 @@ class ScreenSelector extends ScreenWidget {
       EventBind.mouseMoveUp(document, (e2) => {
         const { x, y } = table.computeEventXy(e2);
         const moveSelectorAttr = this.getMoveXySelectorAttr(downSelectAttr, x, y);
-        this.selectorAttr = moveSelectorAttr;
+        this.setSelectAttr(moveSelectorAttr);
         this.setOffset(moveSelectorAttr);
         this.onChangeStack.forEach(cb => cb());
         this.onSelectChangeStack.forEach(cb => cb());
@@ -86,42 +86,52 @@ class ScreenSelector extends ScreenWidget {
       }
       e.stopPropagation();
     });
+    let tabId = 0;
+    let tabNext = null;
     keyboardManage.register({
       el: table,
       code: 9,
       callback: () => {
         edit.hideEdit();
-        const { rect } = this.selectorAttr;
-        const { len: cLen } = cols;
-        const { len: rLen } = rows;
-        let { sri } = rect;
-        let { sci } = rect;
+        const id = this.selectorAttr;
+        const rect = this.selectorAttr.rect.clone();
+        if (tabId !== id) {
+          const { sri, sci } = rect;
+          tabId = id;
+          tabNext = { sri, sci };
+        }
+        const cLen = cols.len - 1;
+        const rLen = rows.len - 1;
+        let { sri, sci } = tabNext;
         const srcMerges = merges.getFirstIncludes(sri, sci);
         if (srcMerges) {
-          // eslint-disable-next-line prefer-destructuring
-          sri = srcMerges.sri;
           sci = srcMerges.eci;
         }
-        if (sri >= rLen - 1 && sci >= cLen - 1) {
+        if (sci >= cLen && sri >= rLen) {
           return;
         }
-        if (sci >= cLen - 1) {
+        if (sci >= cLen) {
           sri += 1;
           sci = 0;
         } else {
           sci += 1;
         }
-        rect.sri = sri;
-        rect.sci = sci;
-        rect.eri = sri;
-        rect.eci = sci;
+        tabNext.sri = sri;
+        tabNext.sci = sci;
+        let eri = sri;
+        let eci = sci;
         const targetMerges = merges.getFirstIncludes(sri, sci);
         if (targetMerges) {
-          rect.sri = targetMerges.sri;
-          rect.sci = targetMerges.sci;
-          rect.eri = targetMerges.eri;
-          rect.eci = targetMerges.eci;
+          sri = targetMerges.sri;
+          sci = targetMerges.sci;
+          eri = targetMerges.eri;
+          eci = targetMerges.eci;
         }
+        rect.sri = sri;
+        rect.sci = sci;
+        rect.eri = eri;
+        rect.eci = eci;
+        this.selectorAttr.rect = rect;
         this.setOffset(this.selectorAttr);
         this.onChangeStack.forEach(cb => cb());
         this.onSelectChangeStack.forEach(cb => cb());
@@ -542,6 +552,11 @@ class ScreenSelector extends ScreenWidget {
         this.br.cornerEl.hide();
       }
     }
+  }
+
+  setSelectAttr(selectorAttr) {
+    this.selectorAttr = selectorAttr;
+    this.selectorAttr.id = Date.now();
   }
 
   getIntersectsArea(selectorAttr) {
