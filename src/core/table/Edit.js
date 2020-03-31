@@ -5,6 +5,7 @@ import { EventBind } from '../../utils/EventBind';
 import { Constant } from '../../utils/Constant';
 import { ScreenSelector } from './selector/ScreenSelector';
 import { Utils } from '../../utils/Utils';
+import { RectRange } from './RectRange';
 
 class Edit extends Widget {
 
@@ -107,6 +108,11 @@ class Edit extends Widget {
         const { frozenLeftTop } = table;
         const viewRange = frozenLeftTop.getViewRange();
         const coincideRange = rect.coincide(viewRange);
+        const empty = new RectRange(-1, -1, -1, -1);
+        if (empty.equals(coincideRange)) {
+          this.hide();
+          return;
+        }
         const width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci) - offset * 2;
         const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri) - offset * 2;
         let top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
@@ -125,6 +131,11 @@ class Edit extends Widget {
         const { fixedTop } = table;
         const viewRange = fixedTop.getViewRange();
         const coincideRange = rect.coincide(viewRange);
+        const empty = new RectRange(-1, -1, -1, -1);
+        if (empty.equals(coincideRange)) {
+          this.hide();
+          return;
+        }
         const width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci) - offset * 2;
         const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri) - offset * 2;
         let top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
@@ -142,6 +153,11 @@ class Edit extends Widget {
       case 'br': {
         const viewRange = table.getViewRange();
         const coincideRange = rect.coincide(viewRange);
+        const empty = new RectRange(-1, -1, -1, -1);
+        if (empty.equals(coincideRange)) {
+          this.hide();
+          return;
+        }
         const width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci) - offset * 2;
         const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri) - offset * 2;
         let top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
@@ -160,6 +176,11 @@ class Edit extends Widget {
         const { fixedLeft } = table;
         const viewRange = fixedLeft.getViewRange();
         const coincideRange = rect.coincide(viewRange);
+        const empty = new RectRange(-1, -1, -1, -1);
+        if (empty.equals(coincideRange)) {
+          this.hide();
+          return;
+        }
         const width = cols.sectionSumWidth(coincideRange.sci, coincideRange.eci) - offset * 2;
         const height = rows.sectionSumHeight(coincideRange.sri, coincideRange.eri) - offset * 2;
         let top = rows.sectionSumHeight(viewRange.sri, coincideRange.sri - 1);
@@ -180,6 +201,11 @@ class Edit extends Widget {
         const ltCoincideRange = rect.coincide(ltViewRange);
         const tViewRange = fixedTop.getViewRange();
         const tCoincideRange = rect.coincide(tViewRange);
+        const empty = new RectRange(-1, -1, -1, -1);
+        if (empty.equals(tCoincideRange) && empty.equals(ltCoincideRange)) {
+          this.hide();
+          return;
+        }
         const ltWidth = cols.sectionSumWidth(ltCoincideRange.sci, ltCoincideRange.eci);
         const ltHeight = rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
         const ltTop = rows.sectionSumHeight(ltViewRange.sri, ltCoincideRange.sri - 1);
@@ -199,6 +225,11 @@ class Edit extends Widget {
         const ltCoincideRange = rect.coincide(ltViewRange);
         const lViewRange = fixedLeft.getViewRange();
         const lCoincideRange = rect.coincide(lViewRange);
+        const empty = new RectRange(-1, -1, -1, -1);
+        if (empty.equals(ltCoincideRange) && empty.equals(lCoincideRange)) {
+          this.hide();
+          return;
+        }
         const ltWidth = cols.sectionSumWidth(ltCoincideRange.sci, ltCoincideRange.eci);
         const ltHeight = rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
         const lHeight = rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
@@ -220,6 +251,11 @@ class Edit extends Widget {
         const cCoincideRange = rect.coincide(cViewRange);
         const tViewRange = fixedTop.getViewRange();
         const tCoincideRange = rect.coincide(tViewRange);
+        const empty = new RectRange(-1, -1, -1, -1);
+        if (empty.equals(cCoincideRange) && empty.equals(tCoincideRange)) {
+          this.hide();
+          return;
+        }
         const tWidth = cols.sectionSumWidth(tCoincideRange.sci, tCoincideRange.eci);
         const tHeight = rows.sectionSumHeight(tCoincideRange.sri, tCoincideRange.eri);
         const tTop = rows.sectionSumHeight(tViewRange.sri, tCoincideRange.sri - 1);
@@ -239,6 +275,11 @@ class Edit extends Widget {
         const cCoincideRange = rect.coincide(cViewRange);
         const lViewRange = fixedLeft.getViewRange();
         const lCoincideRange = rect.coincide(lViewRange);
+        const empty = new RectRange(-1, -1, -1, -1);
+        if (empty.equals(cCoincideRange) && empty.equals(lCoincideRange)) {
+          this.hide();
+          return;
+        }
         const lWidth = cols.sectionSumWidth(lCoincideRange.sci, lCoincideRange.eci);
         const lHeight = rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
         const lTop = rows.sectionSumHeight(lViewRange.sri, lCoincideRange.sri - 1);
@@ -262,6 +303,13 @@ class Edit extends Widget {
         const { fixedLeft } = table;
         const lViewRange = fixedLeft.getViewRange();
         const lCoincideRange = rect.coincide(lViewRange);
+        const empty = new RectRange(-1, -1, -1, -1);
+        if (empty.equals(ltCoincideRange)
+          && empty.equals(tCoincideRange)
+          && empty.equals(lCoincideRange)) {
+          this.hide();
+          return;
+        }
         const ltWidth = cols.sectionSumWidth(ltCoincideRange.sci, ltCoincideRange.eci);
         const ltHeight = rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
         const tWidth = cols.sectionSumWidth(tCoincideRange.sci, tCoincideRange.eci);
