@@ -27,7 +27,7 @@ class ScreenSelector extends ScreenWidget {
   bind() {
     const { screen } = this;
     const { table } = screen;
-    const { mousePointType, keyboardManage, cols, rows, edit } = table;
+    const { mousePointType, keyboardManage, cols, rows, edit, merges } = table;
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       if (this.selectorAttr) {
         this.setOffset(this.selectorAttr);
@@ -91,7 +91,7 @@ class ScreenSelector extends ScreenWidget {
       code: 9,
       callback: () => {
         edit.hideEdit();
-        const { rect } = this.selectorAttr;
+        let { rect } = this.selectorAttr;
         const { len: cLen } = cols;
         const { len: rLen } = rows;
         let { sri } = rect;
@@ -109,6 +109,11 @@ class ScreenSelector extends ScreenWidget {
         rect.sci = sci;
         rect.eri = sri;
         rect.eci = sci;
+        const mergesRect = merges.getFirstIncludes(sri, sci);
+        if (mergesRect) {
+          rect = mergesRect;
+          this.selectorAttr.rect = rect;
+        }
         this.setOffset(this.selectorAttr);
         this.onChangeStack.forEach(cb => cb());
         this.onSelectChangeStack.forEach(cb => cb());
