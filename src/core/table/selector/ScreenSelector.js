@@ -91,15 +91,21 @@ class ScreenSelector extends ScreenWidget {
       code: 9,
       callback: () => {
         edit.hideEdit();
-        let { rect } = this.selectorAttr;
+        const { rect } = this.selectorAttr;
         const { len: cLen } = cols;
         const { len: rLen } = rows;
         let { sri } = rect;
         let { sci } = rect;
-        if (sri === rLen - 1 && sci === cLen - 1) {
+        const srcMerges = merges.getFirstIncludes(sri, sci);
+        if (srcMerges) {
+          // eslint-disable-next-line prefer-destructuring
+          sri = srcMerges.sri;
+          sci = srcMerges.eci;
+        }
+        if (sri >= rLen - 1 && sci >= cLen - 1) {
           return;
         }
-        if (sci === cLen - 1) {
+        if (sci >= cLen - 1) {
           sri += 1;
           sci = 0;
         } else {
@@ -109,10 +115,12 @@ class ScreenSelector extends ScreenWidget {
         rect.sci = sci;
         rect.eri = sri;
         rect.eci = sci;
-        const mergesRect = merges.getFirstIncludes(sri, sci);
-        if (mergesRect) {
-          rect = mergesRect;
-          this.selectorAttr.rect = rect;
+        const targetMerges = merges.getFirstIncludes(sri, sci);
+        if (targetMerges) {
+          rect.sri = targetMerges.sri;
+          rect.sci = targetMerges.sci;
+          rect.eri = targetMerges.eri;
+          rect.eci = targetMerges.eci;
         }
         this.setOffset(this.selectorAttr);
         this.onChangeStack.forEach(cb => cb());
