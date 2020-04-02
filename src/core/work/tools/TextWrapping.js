@@ -3,7 +3,7 @@ import { Icon } from './Icon';
 import { Utils } from '../../../utils/Utils';
 import { EL_POPUP_POSITION } from '../../../component/elpopup/ElPopUp';
 import { DropDownItem } from './base/DropDownItem';
-import { TextWrappingContextMenu } from '../contextmenu/textwrapping/TextWrappingContextMenu';
+import { TextWrappingContextMenu } from './contextmenu/textwrapping/TextWrappingContextMenu';
 
 class TextWrapping extends DropDownItem {
   constructor(options = {}) {

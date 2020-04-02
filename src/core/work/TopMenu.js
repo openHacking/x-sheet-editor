@@ -13,7 +13,7 @@ import { UnderLine } from './tools/UnderLine';
 import { FontStrike } from './tools/FontStrike';
 import { FontColor } from './tools/FontColor';
 import { FillColor } from './tools/FillColor';
-import { Border } from './tools/border/Border';
+import { Border } from './tools/contextmenu/icon/border/Border';
 import { Merge } from './tools/Merge';
 import { HorizontalAlign } from './tools/HorizontalAlign';
 import { VerticalAlign } from './tools/VerticalAlign';

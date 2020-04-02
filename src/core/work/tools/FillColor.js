@@ -3,7 +3,7 @@ import { cssPrefix } from '../../../config';
 import { Icon } from './Icon';
 import { Utils } from '../../../utils/Utils';
 import { EL_POPUP_POSITION } from '../../../component/elpopup/ElPopUp';
-import { FillColorContextMenu } from '../contextmenu/fillcolor/FillColorContextMenu';
+import { FillColorContextMenu } from './contextmenu/fillcolor/FillColorContextMenu';
 
 class FillColor extends DropDownItem {
   constructor(options) {

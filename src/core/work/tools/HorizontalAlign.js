@@ -1,7 +1,7 @@
 import { DropDownItem } from './base/DropDownItem';
 import { cssPrefix } from '../../../config';
 import { Icon } from './Icon';
-import { HorizontalContextMenu } from '../contextmenu/horizontal/HorizontalContextMenu';
+import { HorizontalContextMenu } from './contextmenu/horizontal/HorizontalContextMenu';
 import { Utils } from '../../../utils/Utils';
 import { EL_POPUP_POSITION } from '../../../component/elpopup/ElPopUp';
 

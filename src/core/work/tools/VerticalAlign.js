@@ -3,7 +3,7 @@ import { cssPrefix } from '../../../config';
 import { Icon } from './Icon';
 import { Utils } from '../../../utils/Utils';
 import { EL_POPUP_POSITION } from '../../../component/elpopup/ElPopUp';
-import { VerticalContextMenu } from '../contextmenu/vertical/VerticalContextMenu';
+import { VerticalContextMenu } from './contextmenu/vertical/VerticalContextMenu';
 
 class VerticalAlign extends DropDownItem {
   constructor(options = {}) {
