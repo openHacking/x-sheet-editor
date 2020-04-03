@@ -101,7 +101,7 @@ class Edit extends Widget {
     const { selectorAttr } = selector;
     const { rect } = selectorAttr;
     const { cols, rows } = table;
-    const offset = 4;
+    const offset = 3;
     const intersectsArea = selector.getIntersectsArea(selectorAttr);
     switch (intersectsArea) {
       case 'lt': {
