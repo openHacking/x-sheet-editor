@@ -18,6 +18,7 @@ function parserToDate(text) {
 }
 
 class Format {
+
   default(value) {
     return value;
   }

@@ -13,7 +13,7 @@ class Edit extends Widget {
     super(`${cssPrefix}-table-edit`);
     this.input = h('div', `${cssPrefix}-table-edit-input`);
     this.input.attr('contenteditable', true);
-    this.input.html('<p>&nbsp;</p>');
+    this.input.html('<p></p>');
     this.table = table;
     this.text = '';
     this.select = null;
@@ -38,7 +38,7 @@ class Edit extends Widget {
     EventBind.bind(this.input, Constant.SYSTEM_EVENT_TYPE.INPUT, () => {
       const { input } = this;
       if (Utils.isBlank(this.input.text())) {
-        input.html('<p>&nbsp;</p>');
+        input.html('<p></p>');
       }
       this.text = input.text();
     });
@@ -70,7 +70,7 @@ class Edit extends Widget {
       this.editOffset(rect);
       this.text = cell.text;
       if (Utils.isBlank(this.text)) {
-        input.html('<p>&nbsp;</p>');
+        input.html('<p></p>');
       } else {
         input.text(this.text);
       }

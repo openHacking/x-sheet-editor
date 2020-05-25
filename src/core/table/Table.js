@@ -20,7 +20,6 @@ import { ScreenAutoFill } from './autofill/ScreenAutoFill';
 import { XHeightLight } from './highlight/XHeightLight';
 import { YHeightLight } from './highlight/YHeightLight';
 import { Edit } from './Edit';
-import { Cells } from './Cells';
 import { Draw, floor, npx } from '../../canvas/Draw';
 import { Font, TEXT_WRAP } from '../../canvas/Font';
 import { Rect } from '../../canvas/Rect';
@@ -28,13 +27,18 @@ import { Crop } from '../../canvas/Crop';
 import { Grid } from '../../canvas/Grid';
 import { Box } from '../../canvas/Box';
 import Format from './Format';
-import { GridLineHandle } from './GridLineHandle';
 import { DataSnapshot } from './DataSnapshot';
-import { BorderLineHandle } from './BorderLineHandle';
 import { Line, LINE_TYPE } from '../../canvas/Line';
-import { LineHandle } from './LineHandle';
+import { LineHandle } from './gridborder/LineHandle';
 import { KeyboardManage } from './KeyboardManage';
+import { Cells } from './cells/Cells';
+import { CellsHelper } from './cells/CellsHelper';
+import { GridLineHandle } from './gridborder/GridLineHandle';
+import { BorderLineHandle } from './gridborder/BorderLineHandle';
 
+/**
+ * 绘制图表左上固定的部分
+ */
 class FrozenLeftTop {
   constructor(table) {
     this.table = table;
@@ -80,21 +84,29 @@ class FrozenLeftTop {
   drawBackGround(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, grid, cells,
+      draw, grid, cellsHelper,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInViewRange(viewRange, (i, c, cell, rect) => {
-      // 绘制背景
-      rect.expandSize(grid.lineWidth());
-      const box = new Box({ draw, rect });
-      box.drawBackgroundColor(cell.background);
+    // 绘制单元格背景
+    cellsHelper.getCellByViewRange({
+      rectRange: viewRange,
+      callback: (i, c, cell, rect) => {
+        // 绘制背景
+        rect.expandSize(grid.lineWidth());
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(cell.background);
+      },
     });
-    cells.getMergeCellInViewRange(viewRange, (rect, cell) => {
-      // 绘制背景
-      rect.expandSize(grid.lineWidth());
-      const box = new Box({ draw, rect });
-      box.drawBackgroundColor(cell.background);
+    // 绘制合并单元格背景
+    cellsHelper.getMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (rect, cell) => {
+        // 绘制背景
+        rect.expandSize(grid.lineWidth());
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(cell.background);
+      },
     });
     draw.offset(0, 0);
     draw.restore();
@@ -228,32 +240,40 @@ class FrozenLeftTop {
   drawCells(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, grid,
+      draw, grid, cellsHelper,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInViewRange(viewRange, (i, c, cell, rect, overflow) => {
-      // 绘制文字
-      const font = new Font({
-        text: Format(cell.format, cell.text),
-        rect: rect.expandSize(grid.lineWidth()),
-        dw: draw,
-        overflow,
-        attr: cell.fontAttr,
-      });
-      font.draw();
+    // 绘制单元格文字
+    cellsHelper.getCellSkipMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (i, c, cell, rect, overflow) => {
+        // 绘制文字
+        const font = new Font({
+          text: Format(cell.format, cell.text),
+          rect: rect.expandSize(grid.lineWidth()),
+          dw: draw,
+          overflow,
+          attr: cell.fontAttr,
+        });
+        font.draw();
+      },
     });
-    cells.getMergeCellInViewRange(viewRange, (rect, cell) => {
-      // 绘制文字
-      const font = new Font({
-        text: Format(cell.format, cell.text),
-        rect: rect.expandSize(grid.lineWidth()),
-        dw: draw,
-        overflow: null,
-        attr: cell.fontAttr,
-      });
-      font.setTextWrap(TEXT_WRAP.WORD_WRAP);
-      font.draw();
+    // 绘制合并单元格文字
+    cellsHelper.getMergeCellOrNewCellByViewRange({
+      rectRange: viewRange,
+      callback: (rect, cell) => {
+        // 绘制文字
+        const font = new Font({
+          text: Format(cell.format, cell.text),
+          rect: rect.expandSize(grid.lineWidth()),
+          dw: draw,
+          overflow: null,
+          attr: cell.fontAttr,
+        });
+        font.setTextWrap(TEXT_WRAP.WORD_WRAP);
+        font.draw();
+      },
     });
     draw.offset(0, 0);
     draw.restore();
@@ -274,15 +294,18 @@ class FrozenLeftTop {
     const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
+    this.drawCells(viewRange, offsetX, offsetY);
     if (settings.table.showGrid) {
       this.drawGrid(viewRange, offsetX, offsetY);
     }
     this.drawBorder(viewRange, offsetX, offsetY);
-    this.drawCells(viewRange, offsetX, offsetY);
     crop.close();
   }
 }
 
+/**
+ * 绘制图表的主体内容
+ */
 class Content {
   constructor(table) {
     this.table = table;
@@ -352,21 +375,29 @@ class Content {
   drawBackGround(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, grid, cells,
+      draw, grid, cellsHelper,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInViewRange(viewRange, (i, c, cell, rect) => {
-      // 绘制背景
-      rect.expandSize(grid.lineWidth());
-      const box = new Box({ draw, rect });
-      box.drawBackgroundColor(cell.background);
+    // 绘制单元格背景
+    cellsHelper.getCellByViewRange({
+      rectRange: viewRange,
+      callback: (i, c, cell, rect) => {
+        // 绘制背景
+        rect.expandSize(grid.lineWidth());
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(cell.background);
+      },
     });
-    cells.getMergeCellInViewRange(viewRange, (rect, cell) => {
-      // 绘制背景
-      rect.expandSize(grid.lineWidth());
-      const box = new Box({ draw, rect });
-      box.drawBackgroundColor(cell.background);
+    // 绘制合并单元格背景
+    cellsHelper.getMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (rect, cell) => {
+        // 绘制背景
+        rect.expandSize(grid.lineWidth());
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(cell.background);
+      },
     });
     draw.offset(0, 0);
     draw.restore();
@@ -500,32 +531,40 @@ class Content {
   drawCells(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, grid,
+      draw, cellsHelper, grid,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInViewRange(viewRange, (i, c, cell, rect, overflow) => {
-      // 绘制文字
-      const font = new Font({
-        text: Format(cell.format, cell.text),
-        rect: rect.expandSize(grid.lineWidth()),
-        dw: draw,
-        overflow,
-        attr: cell.fontAttr,
-      });
-      font.draw();
+    // 绘制单元格文字
+    cellsHelper.getCellSkipMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (i, c, cell, rect, overflow) => {
+        // 绘制文字
+        const font = new Font({
+          text: Format(cell.format, cell.text),
+          rect: rect.expandSize(grid.lineWidth()),
+          dw: draw,
+          overflow,
+          attr: cell.fontAttr,
+        });
+        font.draw();
+      },
     });
-    cells.getMergeCellInViewRange(viewRange, (rect, cell) => {
-      // 绘制文字
-      const font = new Font({
-        text: Format(cell.format, cell.text),
-        rect: rect.expandSize(grid.lineWidth()),
-        dw: draw,
-        overflow: null,
-        attr: cell.fontAttr,
-      });
-      font.setTextWrap(TEXT_WRAP.WORD_WRAP);
-      font.draw();
+    // 绘制合并单元格文字
+    cellsHelper.getMergeCellOrNewCellByViewRange({
+      rectRange: viewRange,
+      callback: (rect, cell) => {
+        // 绘制文字
+        const font = new Font({
+          text: Format(cell.format, cell.text),
+          rect: rect.expandSize(grid.lineWidth()),
+          dw: draw,
+          overflow: null,
+          attr: cell.fontAttr,
+        });
+        font.setTextWrap(TEXT_WRAP.WORD_WRAP);
+        font.draw();
+      },
     });
     draw.offset(0, 0);
     draw.restore();
@@ -548,15 +587,18 @@ class Content {
     const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
+    this.drawCells(viewRange, offsetX, offsetY);
     if (settings.table.showGrid) {
       this.drawGrid(viewRange, offsetX, offsetY);
     }
     this.drawBorder(viewRange, offsetX, offsetY);
-    this.drawCells(viewRange, offsetX, offsetY);
     crop.close();
   }
 }
 
+/**
+ * 绘制图表左边冻结的部分
+ */
 class FixedLeft {
   constructor(table) {
     this.table = table;
@@ -607,21 +649,29 @@ class FixedLeft {
   drawBackGround(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, grid, cells,
+      draw, grid, cellsHelper,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInViewRange(viewRange, (i, c, cell, rect) => {
-      // 绘制背景
-      rect.expandSize(grid.lineWidth());
-      const box = new Box({ draw, rect });
-      box.drawBackgroundColor(cell.background);
+    // 绘制单元格背景
+    cellsHelper.getCellByViewRange({
+      rectRange: viewRange,
+      callback: (i, c, cell, rect) => {
+        // 绘制背景
+        rect.expandSize(grid.lineWidth());
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(cell.background);
+      },
     });
-    cells.getMergeCellInViewRange(viewRange, (rect, cell) => {
-      // 绘制背景
-      rect.expandSize(grid.lineWidth());
-      const box = new Box({ draw, rect });
-      box.drawBackgroundColor(cell.background);
+    // 绘制合并单元格背景
+    cellsHelper.getMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (rect, cell) => {
+        // 绘制背景
+        rect.expandSize(grid.lineWidth());
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(cell.background);
+      },
     });
     draw.offset(0, 0);
     draw.restore();
@@ -755,32 +805,40 @@ class FixedLeft {
   drawCells(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, grid,
+      draw, cellsHelper, grid,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInViewRange(viewRange, (i, c, cell, rect, overflow) => {
-      // 绘制文字
-      const font = new Font({
-        text: Format(cell.format, cell.text),
-        rect: rect.expandSize(grid.lineWidth()),
-        dw: draw,
-        overflow,
-        attr: cell.fontAttr,
-      });
-      font.draw();
+    // 绘制单元格文字
+    cellsHelper.getCellSkipMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (i, c, cell, rect, overflow) => {
+        // 绘制文字
+        const font = new Font({
+          text: Format(cell.format, cell.text),
+          rect: rect.expandSize(grid.lineWidth()),
+          dw: draw,
+          overflow,
+          attr: cell.fontAttr,
+        });
+        font.draw();
+      },
     });
-    cells.getMergeCellInViewRange(viewRange, (rect, cell) => {
-      // 绘制文字
-      const font = new Font({
-        text: Format(cell.format, cell.text),
-        rect: rect.expandSize(grid.lineWidth()),
-        dw: draw,
-        overflow: null,
-        attr: cell.fontAttr,
-      });
-      font.setTextWrap(TEXT_WRAP.WORD_WRAP);
-      font.draw();
+    // 绘制合并单元格文字
+    cellsHelper.getMergeCellOrNewCellByViewRange({
+      rectRange: viewRange,
+      callback: (rect, cell) => {
+        // 绘制文字
+        const font = new Font({
+          text: Format(cell.format, cell.text),
+          rect: rect.expandSize(grid.lineWidth()),
+          dw: draw,
+          overflow: null,
+          attr: cell.fontAttr,
+        });
+        font.setTextWrap(TEXT_WRAP.WORD_WRAP);
+        font.draw();
+      },
     });
     draw.offset(0, 0);
     draw.restore();
@@ -801,15 +859,18 @@ class FixedLeft {
     const crop = new Crop({ draw, rect });
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
+    this.drawCells(viewRange, offsetX, offsetY);
     if (settings.table.showGrid) {
       this.drawGrid(viewRange, offsetX, offsetY);
     }
     this.drawBorder(viewRange, offsetX, offsetY);
-    this.drawCells(viewRange, offsetX, offsetY);
     crop.close();
   }
 }
 
+/**
+ * 绘制图表顶部冻结的部分
+ */
 class FixedTop {
   constructor(table) {
     this.table = table;
@@ -859,21 +920,29 @@ class FixedTop {
   drawBackGround(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, grid, cells,
+      draw, grid, cellsHelper,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInViewRange(viewRange, (i, c, cell, rect) => {
-      // 绘制背景
-      rect.expandSize(grid.lineWidth());
-      const box = new Box({ draw, rect });
-      box.drawBackgroundColor(cell.background);
+    // 绘制单元格背景
+    cellsHelper.getCellByViewRange({
+      rectRange: viewRange,
+      callback: (i, c, cell, rect) => {
+        // 绘制背景
+        rect.expandSize(grid.lineWidth());
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(cell.background);
+      },
     });
-    cells.getMergeCellInViewRange(viewRange, (rect, cell) => {
-      // 绘制背景
-      rect.expandSize(grid.lineWidth());
-      const box = new Box({ draw, rect });
-      box.drawBackgroundColor(cell.background);
+    // 绘制合并单元格背景
+    cellsHelper.getMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (rect, cell) => {
+        // 绘制背景
+        rect.expandSize(grid.lineWidth());
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(cell.background);
+      },
     });
     draw.offset(0, 0);
     draw.restore();
@@ -1007,32 +1076,40 @@ class FixedTop {
   drawCells(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, cells, grid,
+      draw, cellsHelper, grid,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    cells.getCellInViewRange(viewRange, (i, c, cell, rect, overflow) => {
-      // 绘制文字
-      const font = new Font({
-        text: Format(cell.format, cell.text),
-        rect: rect.expandSize(grid.lineWidth()),
-        dw: draw,
-        overflow,
-        attr: cell.fontAttr,
-      });
-      font.draw();
+    // 绘制单元格文字
+    cellsHelper.getCellSkipMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (i, c, cell, rect, overflow) => {
+        // 绘制文字
+        const font = new Font({
+          text: Format(cell.format, cell.text),
+          rect: rect.expandSize(grid.lineWidth()),
+          dw: draw,
+          overflow,
+          attr: cell.fontAttr,
+        });
+        font.draw();
+      },
     });
-    cells.getMergeCellInViewRange(viewRange, (rect, cell) => {
-      // 绘制文字
-      const font = new Font({
-        text: Format(cell.format, cell.text),
-        rect: rect.expandSize(grid.lineWidth()),
-        dw: draw,
-        overflow: null,
-        attr: cell.fontAttr,
-      });
-      font.setTextWrap(TEXT_WRAP.WORD_WRAP);
-      font.draw();
+    // 绘制合并单元格文字
+    cellsHelper.getMergeCellOrNewCellByViewRange({
+      rectRange: viewRange,
+      callback: (rect, cell) => {
+        // 绘制文字
+        const font = new Font({
+          text: Format(cell.format, cell.text),
+          rect: rect.expandSize(grid.lineWidth()),
+          dw: draw,
+          overflow: null,
+          attr: cell.fontAttr,
+        });
+        font.setTextWrap(TEXT_WRAP.WORD_WRAP);
+        font.draw();
+      },
     });
     draw.offset(0, 0);
     draw.restore();
@@ -1053,15 +1130,18 @@ class FixedTop {
     const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
     crop.open();
     this.drawBackGround(viewRange, offsetX, offsetY);
+    this.drawCells(viewRange, offsetX, offsetY);
     if (settings.table.showGrid) {
       this.drawGrid(viewRange, offsetX, offsetY);
     }
     this.drawBorder(viewRange, offsetX, offsetY);
-    this.drawCells(viewRange, offsetX, offsetY);
     crop.close();
   }
 }
 
+/**
+ * 绘制图表左边固定的索引栏
+ */
 class FrozenLeftIndex {
   constructor(table) {
     this.table = table;
@@ -1143,6 +1223,9 @@ class FrozenLeftIndex {
   }
 }
 
+/**
+ * 绘制图表顶部的索引栏
+ */
 class FrozenTopIndex {
   constructor(table) {
     this.table = table;
@@ -1224,6 +1307,9 @@ class FrozenTopIndex {
   }
 }
 
+/**
+ * 绘制图表顶部固定的索引栏
+ */
 class FixedTopIndex {
   constructor(table) {
     this.table = table;
@@ -1305,6 +1391,9 @@ class FixedTopIndex {
   }
 }
 
+/**
+ * 绘制图表左边固定的索引栏
+ */
 class FixedLeftIndex {
   constructor(table) {
     this.table = table;
@@ -1386,6 +1475,9 @@ class FixedLeftIndex {
   }
 }
 
+/**
+ * 绘制图片固定区域
+ */
 class FrozenRect {
   constructor(table) {
     this.table = table;
@@ -1413,6 +1505,27 @@ class FrozenRect {
   }
 }
 
+/**
+ * 默认设置
+ * @type {{tipsRenderTime: boolean,
+ * data: [],
+ * tipsScrollTime: boolean,
+ * index: {
+ * bgColor: string,
+ * color: string,
+ * width: number,
+ * height: number},
+ * fixed: {fxLeft: number,
+ * fxTop: number,
+ * fxRight: number},
+ * rows: {len: number,
+ * height: number},
+ * cols: {len: number,
+ * width: number},
+ * table: {borderColor: string,
+ * background: string,
+ * showGrid: boolean}, merges: []}}
+ */
 const defaultSettings = {
   tipsRenderTime: false,
   tipsScrollTime: false,
@@ -1444,6 +1557,10 @@ const defaultSettings = {
   },
 };
 
+/**
+ * Table
+ * @author jerry
+ */
 class Table extends Widget {
 
   constructor(settings) {
@@ -1451,17 +1568,24 @@ class Table extends Widget {
     this.viewRange = null;
     this.canvas = h('canvas', `${cssPrefix}-table-canvas`);
     this.settings = Utils.mergeDeep({}, defaultSettings, settings);
-    this.fixed = new Fixed(this.settings.fixed);
-    this.rows = new Rows(this.settings.rows);
-    this.cols = new Cols(this.settings.cols);
     this.cells = new Cells({
       table: this,
       rows: this.rows,
       cols: this.cols,
       data: this.settings.data,
     });
+    this.fixed = new Fixed(this.settings.fixed);
+    this.rows = new Rows(this.settings.rows);
+    this.cols = new Cols(this.settings.cols);
     this.merges = new Merges(this.settings.merges);
     this.scroll = new Scroll(this);
+    // 帮助类
+    this.cellsHelper = new CellsHelper({
+      cells: this.cells,
+      merges: this.merges,
+      rows: this.rows,
+      cols: this.cols,
+    });
     // 表格线段处理
     this.lineHandle = new LineHandle(this);
     this.gridLineHandle = new GridLineHandle(this);
@@ -1475,10 +1599,22 @@ class Table extends Widget {
     // canvas 绘制资源
     this.draw = new Draw(this.canvas.el);
     this.line = new Line(this.draw, {
-      leftShow: (row, col) => this.cells.isDisplayLeftBorder(row, col),
-      topShow: (row, col) => this.cells.isDisplayTopBorder(row, col),
-      rightShow: (row, col) => this.cells.isDisplayRightBorder(row, col),
-      bottomShow: (row, col) => this.cells.isDisplayBottomBorder(row, col),
+      leftShow: (ri, ci) => {
+        const cell = this.cells.getMergeCellOrCell(ri, ci);
+        return cell && cell.borderAttr.left.display;
+      },
+      topShow: (ri, ci) => {
+        const cell = this.cells.getMergeCellOrCell(ri, ci);
+        return cell && cell.borderAttr.top.display;
+      },
+      rightShow: (ri, ci) => {
+        const cell = this.cells.getMergeCellOrCell(ri, ci);
+        return cell && cell.borderAttr.right.display;
+      },
+      bottomShow: (ri, ci) => {
+        const cell = this.cells.getMergeCellOrCell(ri, ci);
+        return cell && cell.borderAttr.bottom.display;
+      },
       iFMerge: (row, col) => this.merges.getFirstIncludes(row, col) !== null,
       iFMergeFirstRow: (row, col) => this.merges.getFirstIncludes(row, col).sri === row,
       iFMergeLastRow: (row, col) => this.merges.getFirstIncludes(row, col).eri === row,
@@ -1552,34 +1688,90 @@ class Table extends Widget {
   }
 
   checkedEnableBorderDrawOptimization() {
+    const { cellsHelper } = this;
     const viewRange = this.getViewRange();
     let enable = true;
-    this.cells.getCellInRectRange(viewRange, (r, c, cell) => {
-      const { borderAttr } = cell;
-      const { top, left, right, bottom } = borderAttr;
-      if (top.type === LINE_TYPE.DOUBLE_LINE) {
-        enable = false;
-        return enable;
-      }
-      if (left.type === LINE_TYPE.DOUBLE_LINE) {
-        enable = false;
-        return enable;
-      }
-      if (right.type === LINE_TYPE.DOUBLE_LINE) {
-        enable = false;
-        return enable;
-      }
-      if (bottom.type === LINE_TYPE.DOUBLE_LINE) {
-        enable = false;
-        return enable;
-      }
-      return true;
+    cellsHelper.getCellByViewRange({
+      rectRange: viewRange,
+      callback: (r, c, cell) => {
+        const { borderAttr } = cell;
+        const { top, left, right, bottom } = borderAttr;
+        if (top.type === LINE_TYPE.DOUBLE_LINE) {
+          enable = false;
+          return enable;
+        }
+        if (left.type === LINE_TYPE.DOUBLE_LINE) {
+          enable = false;
+          return enable;
+        }
+        if (right.type === LINE_TYPE.DOUBLE_LINE) {
+          enable = false;
+          return enable;
+        }
+        if (bottom.type === LINE_TYPE.DOUBLE_LINE) {
+          enable = false;
+          return enable;
+        }
+        return true;
+      },
     });
     if (enable) {
       this.borderLineHandle.openDrawOptimization();
     } else {
       this.borderLineHandle.closeDrawOptimization();
     }
+  }
+
+  scrollX(x) {
+    const {
+      cols, fixed, settings, scroll,
+    } = this;
+    if (settings.tipsScrollTime) {
+      // eslint-disable-next-line no-console
+      console.time();
+    }
+    let { fxLeft } = fixed;
+    fxLeft += 1;
+    const [
+      ci, left, width,
+    ] = Utils.rangeReduceIf(fxLeft, cols.len, 0, 0, x, i => cols.getWidth(i));
+    let x1 = left;
+    if (x > 0) x1 += width;
+    scroll.ci = ci;
+    scroll.x = x1;
+    if (settings.tipsScrollTime) {
+      // eslint-disable-next-line no-console
+      console.log('滚动条计算耗时:');
+      // eslint-disable-next-line no-console
+      console.timeEnd();
+    }
+    this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
+  }
+
+  scrollY(y) {
+    const {
+      rows, fixed, settings, scroll,
+    } = this;
+    if (settings.tipsScrollTime) {
+      // eslint-disable-next-line no-console
+      console.time();
+    }
+    let { fxTop } = fixed;
+    fxTop += 1;
+    const [
+      ri, top, height,
+    ] = Utils.rangeReduceIf(fxTop, rows.len, 0, 0, y, i => rows.getHeight(i));
+    let y1 = top;
+    if (y > 0) y1 += height;
+    scroll.ri = ri;
+    scroll.y = y1;
+    if (settings.tipsScrollTime) {
+      // eslint-disable-next-line no-console
+      console.log('滚动条计算耗时:');
+      // eslint-disable-next-line no-console
+      console.timeEnd();
+    }
+    this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
   }
 
   bind() {
@@ -1664,58 +1856,6 @@ class Table extends Widget {
       // eslint-disable-next-line no-console
       console.timeEnd();
     }
-  }
-
-  scrollX(x) {
-    const {
-      cols, fixed, settings, scroll,
-    } = this;
-    if (settings.tipsScrollTime) {
-      // eslint-disable-next-line no-console
-      console.time();
-    }
-    let { fxLeft } = fixed;
-    fxLeft += 1;
-    const [
-      ci, left, width,
-    ] = Utils.rangeReduceIf(fxLeft, cols.len, 0, 0, x, i => cols.getWidth(i));
-    let x1 = left;
-    if (x > 0) x1 += width;
-    scroll.ci = ci;
-    scroll.x = x1;
-    if (settings.tipsScrollTime) {
-      // eslint-disable-next-line no-console
-      console.log('滚动条计算耗时:');
-      // eslint-disable-next-line no-console
-      console.timeEnd();
-    }
-    this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
-  }
-
-  scrollY(y) {
-    const {
-      rows, fixed, settings, scroll,
-    } = this;
-    if (settings.tipsScrollTime) {
-      // eslint-disable-next-line no-console
-      console.time();
-    }
-    let { fxTop } = fixed;
-    fxTop += 1;
-    const [
-      ri, top, height,
-    ] = Utils.rangeReduceIf(fxTop, rows.len, 0, 0, y, i => rows.getHeight(i));
-    let y1 = top;
-    if (y > 0) y1 += height;
-    scroll.ri = ri;
-    scroll.y = y1;
-    if (settings.tipsScrollTime) {
-      // eslint-disable-next-line no-console
-      console.log('滚动条计算耗时:');
-      // eslint-disable-next-line no-console
-      console.timeEnd();
-    }
-    this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
   }
 
   visualHeight() {
@@ -1842,6 +1982,13 @@ class Table extends Widget {
   }
 
   setCell(ri, ci, cell) {
+    const { cells, dataSnapshot } = this;
+    cells.setCellOrNew(ri, ci, cell);
+    dataSnapshot.snapshot(true);
+    this.render();
+  }
+
+  copyAttrToCell(ri, ci, cell) {
     const { cells, dataSnapshot } = this;
     Utils.mergeDeep(cells.getCellOrNew(ri, ci), cell);
     dataSnapshot.snapshot(true);

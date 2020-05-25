@@ -1,5 +1,5 @@
-import { RectRange } from './RectRange';
-import { Rect } from '../../canvas/Rect';
+import { RectRange } from '../RectRange';
+import { Rect } from '../../../canvas/Rect';
 
 class LineHandle {
 

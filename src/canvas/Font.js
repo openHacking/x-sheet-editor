@@ -172,6 +172,7 @@ class HorizontalFontDraw {
       this.drawLine('strike', tx, ty, textWidth);
     }
     crop.close();
+    return textWidth;
   }
 
   drawTextOverFlow() {
@@ -241,6 +242,7 @@ class HorizontalFontDraw {
         this.drawLine('strike', tx, ty, textWidth);
       }
     }
+    return textWidth;
   }
 
   drawTextWarp() {
@@ -320,6 +322,7 @@ class HorizontalFontDraw {
     }
     const crop = new Crop({ draw: dw, rect });
     crop.open();
+    let maxLen = 0;
     for (let i = 0, len = textArray.length; i < len; i += 1) {
       const item = textArray[i];
       item.tx += bx;
@@ -334,9 +337,12 @@ class HorizontalFontDraw {
       if (strikethrough) {
         this.drawLine('strike', item.tx, item.ty, item.len);
       }
+      if (item.len > maxLen) {
+        maxLen = item.len;
+      }
     }
     crop.close();
-    return hOffset;
+    return maxLen;
   }
 
   draw() {
@@ -521,6 +527,7 @@ class VerticalFontDraw {
       }
     }
     crop.close();
+    return size;
   }
 
   drawTextOverFlow() {
@@ -615,6 +622,7 @@ class VerticalFontDraw {
         }
       }
     }
+    return size;
   }
 
   drawTextWarp() {
@@ -760,6 +768,7 @@ class VerticalFontDraw {
       }
     }
     crop.close();
+    return wOffset + size;
   }
 
   draw() {
@@ -899,6 +908,7 @@ class AngleFontDraw {
     }
     dwAngle.revert();
     crop.close();
+    return trigonometricWidth;
   }
 
   drawTextOverFlow() {
@@ -987,6 +997,7 @@ class AngleFontDraw {
       }
       dwAngle.revert();
     }
+    return trigonometricWidth;
   }
 
   drawTextWarp() {

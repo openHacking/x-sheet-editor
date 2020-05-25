@@ -12,12 +12,7 @@ class XSheet extends Widget {
     workConfig: {
       body: {
         sheets: [{
-          tableConfig: {
-            fixed: {
-              fxTop: 1,
-              fxLeft: 1,
-            },
-          },
+          tableConfig: {},
         }],
       },
     },

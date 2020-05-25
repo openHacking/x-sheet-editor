@@ -23,6 +23,7 @@ const DATA_TYPE = {
 };
 
 class Utils {
+
   static type(arg) {
     const type = Object.prototype.toString.call(arg);
     switch (type) {
@@ -144,6 +145,10 @@ class Utils {
       return false;
     }
     return Object.getPrototypeOf(obj) === Object.getPrototypeOf({});
+  }
+
+  static isString(obj) {
+    return Utils.type(obj) === DATA_TYPE.String;
   }
 
   static sum(objOrAry, cb = value => value) {
@@ -400,5 +405,9 @@ class Utils {
     };
   }
 }
+
+Utils.EMPTY = '';
+Utils.Nul = null;
+Utils.Undef = undefined;
 
 export { Utils };

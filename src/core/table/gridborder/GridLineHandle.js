@@ -1,4 +1,8 @@
 
+/**
+ * GridLineHandle
+ * @author jerry
+ */
 class GridLineHandle {
 
   constructor(table) {
@@ -94,22 +98,52 @@ class GridLineHandle {
   hLine(viewRange) {
     const { table } = this;
     const { merges, cells } = table;
-    return this.gridHLine(viewRange, 0, 0, (row, col) => {
-      const notMerges = merges.getFirstIncludes(row, col) === null;
-      const notBorderBottom = cells.isDisplayBottomBorder(row, col) === false;
-      const notBorderTop = cells.isDisplayTopBorder(row + 1, col) === false;
-      return notMerges && notBorderBottom && notBorderTop;
+    return this.gridHLine(viewRange, 0, 0, (ri, ci) => {
+      const merge = merges.getFirstIncludes(ri, ci);
+      const cell = cells.getMergeCellOrCell(ri, ci);
+      const nextCell = cells.getMergeCellOrCell(ri + 1, ci);
+      // 跳过合并单元格
+      if (merge) {
+        return false;
+      }
+      // 跳过绘制边框的单元格
+      if (cell && nextCell) {
+        return !cell.borderAttr.bottom.display
+          || !nextCell.borderAttr.top.display;
+      }
+      if (cell) {
+        return !cell.borderAttr.bottom.display;
+      }
+      if (nextCell) {
+        return !nextCell.borderAttr.top.display;
+      }
+      return true;
     });
   }
 
   vLine(viewRange) {
     const { table } = this;
     const { merges, cells } = table;
-    return this.gridVLine(viewRange, 0, 0, (col, row) => {
-      const notMerges = merges.getFirstIncludes(row, col) === null;
-      const notBorderRight = cells.isDisplayRightBorder(row, col) === false;
-      const notBorderLeft = cells.isDisplayLeftBorder(row, col + 1) === false;
-      return notMerges && notBorderRight && notBorderLeft;
+    return this.gridVLine(viewRange, 0, 0, (ci, ri) => {
+      const merge = merges.getFirstIncludes(ri, ci);
+      const cell = cells.getMergeCellOrCell(ri, ci);
+      const nextCell = cells.getMergeCellOrCell(ri, ci + 1);
+      // 跳过合并单元格
+      if (merge) {
+        return false;
+      }
+      // 跳过绘制边框的单元格
+      if (cell && nextCell) {
+        return !cell.borderAttr.right.display
+          || !nextCell.borderAttr.left.display;
+      }
+      if (cell) {
+        return !cell.borderAttr.right.display;
+      }
+      if (nextCell) {
+        return !nextCell.borderAttr.left.display;
+      }
+      return true;
     });
   }
 
@@ -121,11 +155,23 @@ class GridLineHandle {
       const brink = mergesBrink[i];
       const { bottom } = brink;
       if (bottom) {
-        result = result.concat(this.gridHLine(bottom.view, bottom.x, bottom.y, (row, col) => {
-          const notBorderBottom = cells.isDisplayBottomBorder(row, col) === false;
-          const notBorderTop = cells.isDisplayTopBorder(row + 1, col) === false;
-          return notBorderBottom && notBorderTop;
-        }));
+        const item = this.gridHLine(bottom.view, bottom.x, bottom.y, (ri, ci) => {
+          const cell = cells.getCell(ri, ci);
+          const nextCell = cells.getCell(ri + 1, ci);
+          // 跳过绘制边框的单元格
+          if (cell && nextCell) {
+            return !cell.borderAttr.bottom.display
+              || !nextCell.borderAttr.top.display;
+          }
+          if (cell) {
+            return !cell.borderAttr.bottom.display;
+          }
+          if (nextCell) {
+            return !nextCell.borderAttr.top.display;
+          }
+          return true;
+        });
+        result = result.concat(item);
       }
     }
     return result;
@@ -139,11 +185,23 @@ class GridLineHandle {
       const brink = mergesBrink[i];
       const { right } = brink;
       if (right) {
-        result = result.concat(this.gridVLine(right.view, right.x, right.y, (col, row) => {
-          const notBorderRight = cells.isDisplayRightBorder(row, col) === false;
-          const notBorderLeft = cells.isDisplayLeftBorder(row, col + 1) === false;
-          return notBorderRight && notBorderLeft;
-        }));
+        const item = this.gridVLine(right.view, right.x, right.y, (ci, ri) => {
+          const cell = cells.getCell(ri, ci);
+          const nextCell = cells.getCell(ri, ci + 1);
+          // 跳过绘制边框的单元格
+          if (cell && nextCell) {
+            return !cell.borderAttr.right.display
+              || !nextCell.borderAttr.left.display;
+          }
+          if (cell) {
+            return !cell.borderAttr.right.display;
+          }
+          if (nextCell) {
+            return !nextCell.borderAttr.left.display;
+          }
+          return true;
+        });
+        result = result.concat(item);
       }
     }
     return result;

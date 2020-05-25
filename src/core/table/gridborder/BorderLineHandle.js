@@ -1,3 +1,8 @@
+
+/**
+ * BorderLineHandle
+ * @author jerry
+ */
 class BorderLineHandle {
 
   constructor(table) {
@@ -49,7 +54,7 @@ class BorderLineHandle {
       for (let i = 1; i < line.length;) {
         const item = line[i];
         const last = line[i - 1];
-        const ck1 = cells.borderEqual(item.borderAttr.top, last.borderAttr.top);
+        const ck1 = item.borderAttr.top.equal(last.borderAttr.top);
         const ck2 = item.col - last.col === 1;
         const ck3 = item.row === last.row;
         if (ck1 && ck2 && ck3) {
@@ -108,7 +113,7 @@ class BorderLineHandle {
       for (let i = 1; i < line.length;) {
         const item = line[i];
         const last = line[i - 1];
-        const ck1 = cells.borderEqual(item.borderAttr.bottom, last.borderAttr.bottom);
+        const ck1 = item.borderAttr.bottom.equal(last.borderAttr.bottom);
         const ck2 = item.col - last.col === 1;
         const ck3 = item.row === last.row;
         if (ck1 && ck2 && ck3) {
@@ -166,7 +171,7 @@ class BorderLineHandle {
       for (let i = 1; i < line.length;) {
         const item = line[i];
         const last = line[i - 1];
-        const ck1 = cells.borderEqual(item.borderAttr.left, last.borderAttr.left);
+        const ck1 = item.borderAttr.left.equal(last.borderAttr.left);
         const ck2 = item.row - last.row === 1;
         const ck3 = item.col === last.col;
         if (ck1 && ck2 && ck3) {
@@ -225,7 +230,7 @@ class BorderLineHandle {
       for (let i = 1; i < line.length;) {
         const item = line[i];
         const last = line[i - 1];
-        const ck1 = cells.borderEqual(item.borderAttr.right, last.borderAttr.right);
+        const ck1 = item.borderAttr.right.equal(last.borderAttr.right);
         const ck2 = item.row - last.row === 1;
         const ck3 = item.col === last.col;
         if (ck1 && ck2 && ck3) {
@@ -243,80 +248,104 @@ class BorderLineHandle {
   htLine(viewRange) {
     const { table, borderOptimization } = this;
     const { merges, cells } = table;
-    return this.borderHTLine(viewRange, 0, 0, (row, col) => {
-      const merge = merges.getFirstIncludes(row, col);
-      const borderTop = cells.isDisplayTopBorder(row, col);
-      const borderBottom = cells.isDisplayBottomBorder(row - 1, col);
-      const borderDiff = cells.borderComparisonOfTime(row, col, row - 1, col);
-      if (merge) {
+    return this.borderHTLine(viewRange, 0, 0, (ri, ci) => {
+      const merge = merges.getFirstIncludes(ri, ci);
+      const cell = cells.getMergeCellOrCell(ri, ci);
+      const nextCell = cells.getMergeCellOrCell(ri - 1, ci);
+      // 跳过合并单元格
+      if (!cell || merge) {
         return false;
       }
-      if (borderOptimization) {
-        if (borderTop && borderBottom) {
-          return borderDiff === 1;
+      // 边框绘制优先级比较
+      if (nextCell && borderOptimization) {
+        const display = cell.borderAttr.top.display
+          && nextCell.borderAttr.bottom.display;
+        const compareTime = cell.borderAttr.top
+          .compareTime(nextCell.borderAttr.bottom);
+        if (display) {
+          return compareTime === 1;
         }
       }
-      return borderTop;
+      // 边框是否显示
+      return cell.borderAttr.top.display;
     });
   }
 
   hbLine(viewRange) {
     const { table, borderOptimization } = this;
     const { merges, cells } = table;
-    return this.borderHBLine(viewRange, 0, 0, (row, col) => {
-      const merge = merges.getFirstIncludes(row, col);
-      const borderBottom = cells.isDisplayBottomBorder(row, col);
-      const borderTop = cells.isDisplayTopBorder(row + 1, col);
-      const borderDiff = cells.borderComparisonOfTime(row, col, row + 1, col);
-      if (merge) {
+    return this.borderHBLine(viewRange, 0, 0, (ri, ci) => {
+      const merge = merges.getFirstIncludes(ri, ci);
+      const cell = cells.getMergeCellOrCell(ri, ci);
+      const nextCell = cells.getMergeCellOrCell(ri + 1, ci);
+      // 跳过合并单元格
+      if (!cell || merge) {
         return false;
       }
-      if (borderOptimization) {
-        if (borderBottom && borderTop) {
-          return borderDiff === 1 || borderDiff === 0;
+      // 边框绘制优先级比较
+      if (nextCell && borderOptimization) {
+        const display = cell.borderAttr.bottom.display
+          && nextCell.borderAttr.top.display;
+        const compareTime = cell.borderAttr.bottom
+          .compareTime(nextCell.borderAttr.top);
+        if (display) {
+          return compareTime === 1 || compareTime === 0;
         }
       }
-      return borderBottom;
+      // 边框是否显示
+      return cell.borderAttr.bottom.display;
     });
   }
 
   vlLine(viewRange) {
     const { table, borderOptimization } = this;
     const { merges, cells } = table;
-    return this.borderVLLine(viewRange, 0, 0, (col, row) => {
-      const merge = merges.getFirstIncludes(row, col);
-      const borderLeft = cells.isDisplayLeftBorder(row, col);
-      const borderRight = cells.isDisplayRightBorder(row, col - 1);
-      const borderDiff = cells.borderComparisonOfTime(row, col, row, col - 1);
-      if (merge) {
+    return this.borderVLLine(viewRange, 0, 0, (ci, ri) => {
+      const merge = merges.getFirstIncludes(ri, ci);
+      const cell = cells.getMergeCellOrCell(ri, ci);
+      const nextCell = cells.getMergeCellOrCell(ri, ci - 1);
+      // 跳过合并单元格
+      if (!cell || merge) {
         return false;
       }
-      if (borderOptimization) {
-        if (borderLeft && borderRight) {
-          return borderDiff === 1;
+      // 边框绘制优先级比较
+      if (nextCell && borderOptimization) {
+        const display = cell.borderAttr.left.display
+          && nextCell.borderAttr.right.display;
+        const compareTime = cell.borderAttr.left
+          .compareTime(nextCell.borderAttr.right);
+        if (display) {
+          return compareTime === 1;
         }
       }
-      return borderLeft;
+      // 边框是否显示
+      return cell.borderAttr.left.display;
     });
   }
 
   vrLine(viewRange) {
     const { table, borderOptimization } = this;
     const { merges, cells } = table;
-    return this.borderVRLine(viewRange, 0, 0, (col, row) => {
-      const merge = merges.getFirstIncludes(row, col);
-      const borderRight = cells.isDisplayRightBorder(row, col);
-      const borderLeft = cells.isDisplayLeftBorder(row, col + 1);
-      const borderDiff = cells.borderComparisonOfTime(row, col, row, col + 1);
-      if (merge) {
+    return this.borderVRLine(viewRange, 0, 0, (ci, ri) => {
+      const merge = merges.getFirstIncludes(ri, ci);
+      const cell = cells.getMergeCellOrCell(ri, ci);
+      const nextCell = cells.getMergeCellOrCell(ri, ci + 1);
+      // 跳过合并单元格
+      if (!cell || merge) {
         return false;
       }
-      if (borderOptimization) {
-        if (borderRight && borderLeft) {
-          return borderDiff === 1 || borderDiff === 0;
+      // 边框绘制优先级比较
+      if (nextCell && borderOptimization) {
+        const display = cell.borderAttr.right.display
+          && nextCell.borderAttr.left.display;
+        const compareTime = cell.borderAttr.right
+          .compareTime(nextCell.borderAttr.left);
+        if (display) {
+          return compareTime === 1 || compareTime === 0;
         }
       }
-      return borderRight;
+      // 边框是否显示
+      return cell.borderAttr.right.display;
     });
   }
 
@@ -328,17 +357,26 @@ class BorderLineHandle {
       const brink = mergesBrink[i];
       const { top } = brink;
       if (top) {
-        result = result.concat(this.borderHTLine(top.view, top.x, top.y, (row, col) => {
-          const borderTop = cells.isDisplayTopBorder(row, col);
-          const borderBottom = cells.isDisplayBottomBorder(row - 1, col);
-          const borderDiff = cells.borderComparisonOfTime(row, col, row - 1, col);
-          if (borderOptimization) {
-            if (borderTop && borderBottom) {
-              return borderDiff === 1;
+        const item = this.borderHTLine(top.view, top.x, top.y, (ri, ci) => {
+          const cell = cells.getCell(ri, ci);
+          const nextCell = cells.getCell(ri - 1, ci);
+          if (!cell) {
+            return false;
+          }
+          // 边框绘制优先级比较
+          if (nextCell && borderOptimization) {
+            const display = cell.borderAttr.top.display
+              && nextCell.borderAttr.bottom.display;
+            const compareTime = cell.borderAttr.top
+              .compareTime(nextCell.borderAttr.bottom);
+            if (display) {
+              return compareTime === 1;
             }
           }
-          return borderTop;
-        }));
+          // 边框是否显示
+          return cell.borderAttr.top.display;
+        });
+        result = result.concat(item);
       }
     }
     return result;
@@ -352,17 +390,26 @@ class BorderLineHandle {
       const brink = mergesBrink[i];
       const { bottom } = brink;
       if (bottom) {
-        result = result.concat(this.borderHBLine(bottom.view, bottom.x, bottom.y, (row, col) => {
-          const borderBottom = cells.isDisplayBottomBorder(row, col);
-          const borderTop = cells.isDisplayTopBorder(row + 1, col);
-          const borderDiff = cells.borderComparisonOfTime(row, col, row + 1, col);
-          if (borderOptimization) {
-            if (borderBottom && borderTop) {
-              return borderDiff === 1 || borderDiff === 0;
+        const item = this.borderHBLine(bottom.view, bottom.x, bottom.y, (ri, ci) => {
+          const cell = cells.getCell(ri, ci);
+          const nextCell = cells.getCell(ri + 1, ci);
+          if (!cell) {
+            return false;
+          }
+          // 边框绘制优先级比较
+          if (nextCell && borderOptimization) {
+            const display = cell.borderAttr.bottom.display
+              && nextCell.borderAttr.top.display;
+            const compareTime = cell.borderAttr.bottom
+              .compareTime(nextCell.borderAttr.top);
+            if (display) {
+              return compareTime === 1 || compareTime === 0;
             }
           }
-          return borderBottom;
-        }));
+          // 边框是否显示
+          return cell.borderAttr.bottom.display;
+        });
+        result = result.concat(item);
       }
     }
     return result;
@@ -376,17 +423,26 @@ class BorderLineHandle {
       const brink = mergesBrink[i];
       const { left } = brink;
       if (left) {
-        result = result.concat(this.borderVLLine(left.view, left.x, left.y, (col, row) => {
-          const borderLeft = cells.isDisplayLeftBorder(row, col);
-          const borderRight = cells.isDisplayRightBorder(row, col - 1);
-          const borderDiff = cells.borderComparisonOfTime(row, col, row, col - 1);
-          if (borderOptimization) {
-            if (borderLeft && borderRight) {
-              return borderDiff === 1;
+        const item = this.borderVLLine(left.view, left.x, left.y, (ci, ri) => {
+          const cell = cells.getCell(ri, ci);
+          const nextCell = cells.getCell(ri, ci - 1);
+          if (!cell) {
+            return false;
+          }
+          // 边框绘制优先级比较
+          if (nextCell && borderOptimization) {
+            const display = cell.borderAttr.left.display
+              && nextCell.borderAttr.right.display;
+            const compareTime = cell.borderAttr.left
+              .compareTime(nextCell.borderAttr.right);
+            if (display) {
+              return compareTime === 1;
             }
           }
-          return borderLeft;
-        }));
+          // 边框是否显示
+          return cell.borderAttr.left.display;
+        });
+        result = result.concat(item);
       }
     }
     return result;
@@ -400,17 +456,26 @@ class BorderLineHandle {
       const brink = mergesBrink[i];
       const { right } = brink;
       if (right) {
-        result = result.concat(this.borderVRLine(right.view, right.x, right.y, (col, row) => {
-          const borderRight = cells.isDisplayRightBorder(row, col);
-          const borderLeft = cells.isDisplayLeftBorder(row, col + 1);
-          const borderDiff = cells.borderComparisonOfTime(row, col, row, col + 1);
-          if (borderOptimization) {
-            if (borderRight && borderLeft) {
-              return borderDiff === 1 || borderDiff === 0;
+        const item = this.borderVRLine(right.view, right.x, right.y, (ci, ri) => {
+          const cell = cells.getCell(ri, ci);
+          const nextCell = cells.getCell(ri, ci + 1);
+          if (!cell) {
+            return false;
+          }
+          // 边框绘制优先级比较
+          if (nextCell && borderOptimization) {
+            const display = cell.borderAttr.right.display
+              && nextCell.borderAttr.left.display;
+            const compareTime = cell.borderAttr.right
+              .compareTime(nextCell.borderAttr.left);
+            if (display) {
+              return compareTime === 1 || compareTime === 0;
             }
           }
-          return borderRight;
-        }));
+          // 边框是否显示
+          return cell.borderAttr.right.display;
+        });
+        result = result.concat(item);
       }
     }
     return result;

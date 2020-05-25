@@ -1,12 +1,11 @@
-import { Cells } from './core/table/Cells';
-import { Utils } from './utils/Utils';
+import { Cell } from './core/table/cells/Cell';
 
 const Data = [];
 
 for (let i = 0; i < 1000; i += 1) {
   const rows = [];
   for (let j = 0; j < 80; j += 1) {
-    const item = Utils.mergeDeep(Cells.getDefaultAttr(), {
+    const item = new Cell({
       text: `行: ${i + 1} 列:${j + 1}`,
     });
     rows.push(item);
