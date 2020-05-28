@@ -5,11 +5,8 @@ import { DrawAngle, TrigonometricFunction } from './DrawAngle';
 import { Rect } from './Rect';
 
 const PADDING = 8;
-
-const HORIZONTAL_LIEN_HEIGHT = 4;
-
 const VERTICAL_SPACING = 2;
-
+const HORIZONTAL_LIEN_HEIGHT = 4;
 const VERTICAL_LIEN_HEIGHT = 0;
 
 const ALIGN = {
@@ -17,25 +14,25 @@ const ALIGN = {
   center: 'center',
   right: 'right',
 };
-
 const VERTICAL_ALIGN = {
   top: 'top',
   center: 'middle',
   bottom: 'bottom',
 };
-
 const TEXT_WRAP = {
   OVER_FLOW: 1,
   WORD_WRAP: 2,
   TRUNCATE: 3,
 };
-
 const TEXT_DIRECTION = {
   HORIZONTAL: 'horizontal',
   VERTICAL: 'vertical',
   ANGLE: 'angle',
 };
 
+/**
+ * 水平方向字體繪製
+ */
 class HorizontalFontDraw {
   constructor({
     text, rect, dw, overflow, attr,
@@ -124,6 +121,10 @@ class HorizontalFontDraw {
     dw.line(s, e);
   }
 
+  /**
+   * 越界的文字截斷
+   * @returns {number}
+   */
   drawTextTruncate() {
     const {
       text, dw, attr, rect,
@@ -172,9 +173,21 @@ class HorizontalFontDraw {
       this.drawLine('strike', tx, ty, textWidth);
     }
     crop.close();
-    return textWidth;
+    switch (align) {
+      case ALIGN.right:
+      case ALIGN.left:
+        return PADDING + textWidth;
+      case ALIGN.center:
+      default:
+        return textWidth;
+    }
   }
 
+  /**
+   * 文字超過最大可繪製區域后自動
+   * 截斷
+   * @returns {number}
+   */
   drawTextOverFlow() {
     const {
       text, dw, attr, rect, overflow,
@@ -242,9 +255,20 @@ class HorizontalFontDraw {
         this.drawLine('strike', tx, ty, textWidth);
       }
     }
-    return textWidth;
+    switch (align) {
+      case ALIGN.right:
+      case ALIGN.left:
+        return PADDING + textWidth;
+      case ALIGN.center:
+      default:
+        return textWidth;
+    }
   }
 
+  /**
+   * 文字自動換行
+   * @returns {number}
+   */
   drawTextWarp() {
     const { text, dw, attr, rect } = this;
     const { size, underline, strikethrough, align, verticalAlign } = attr;
@@ -342,7 +366,14 @@ class HorizontalFontDraw {
       }
     }
     crop.close();
-    return maxLen;
+    switch (align) {
+      case ALIGN.right:
+      case ALIGN.left:
+        return PADDING + maxLen;
+      case ALIGN.center:
+      default:
+        return maxLen;
+    }
   }
 
   draw() {
@@ -371,6 +402,9 @@ class HorizontalFontDraw {
   }
 }
 
+/**
+ * 垂直方向字體繪製
+ */
 class VerticalFontDraw {
   constructor({
     text, rect, dw, overflow, attr,
@@ -810,6 +844,9 @@ class VerticalFontDraw {
   }
 }
 
+/**
+ * 旋轉字體繪製
+ */
 class AngleFontDraw {
   constructor({
     text, rect, dw, overflow, attr,
@@ -1541,6 +1578,9 @@ class AngleFontDraw {
   }
 }
 
+/**
+ * Base font
+ */
 class Font {
   constructor({
     text, rect, dw, overflow, attr,
@@ -1573,19 +1613,13 @@ class Font {
   draw() {
     const { attr } = this;
     switch (attr.direction) {
-      case TEXT_DIRECTION.VERTICAL: {
-        this.verticalFontDraw.draw();
-        break;
-      }
-      case TEXT_DIRECTION.HORIZONTAL: {
-        this.horizontalFontDraw.draw();
-        break;
-      }
-      case TEXT_DIRECTION.ANGLE: {
-        this.angleFontDraw.draw();
-        break;
-      }
-      default: break;
+      case TEXT_DIRECTION.VERTICAL:
+        return this.verticalFontDraw.draw();
+      case TEXT_DIRECTION.ANGLE:
+        return this.angleFontDraw.draw();
+      case TEXT_DIRECTION.HORIZONTAL:
+      default:
+        return this.horizontalFontDraw.draw();
     }
   }
 
@@ -1602,6 +1636,11 @@ class Font {
   }
 }
 
-export { VERTICAL_ALIGN, ALIGN, TEXT_WRAP, TEXT_DIRECTION };
+export {
+  VERTICAL_ALIGN,
+  ALIGN, TEXT_WRAP,
+  TEXT_DIRECTION,
+  PADDING,
+};
 
 export { Font };

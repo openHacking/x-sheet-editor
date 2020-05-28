@@ -15,9 +15,7 @@ class CellsHelper {
    * @param rows
    * @param cols
    */
-  constructor({
-    cells, merges, rows, cols,
-  }) {
+  constructor({ cells, merges, rows, cols }) {
     this.cells = cells;
     this.merges = merges;
     this.rows = rows;
@@ -173,12 +171,7 @@ class CellsHelper {
         const width = cols.getWidth(j);
         const cell = cells.getCell(i, j);
         if (cell) {
-          const rect = new Rect({
-            x,
-            y,
-            width,
-            height,
-          });
+          const rect = new Rect({ x, y, width, height });
           const { fontAttr } = cell;
           const { direction, textWrap } = fontAttr;
           if (textWrap === TEXT_WRAP.OVER_FLOW) {
@@ -206,9 +199,7 @@ class CellsHelper {
    * @param rectRange
    * @param callback
    */
-  getMergeCellByViewRange({
-    rectRange, callback,
-  }) {
+  getMergeCellByViewRange({ rectRange, callback }) {
     const { cells, merges, cols, rows } = this;
     const filter = [];
     this.getCellByViewRange({
@@ -232,12 +223,7 @@ class CellsHelper {
         y = rectRange.sri > merge.sri ? y * -1 : y;
         const width = cols.sectionSumWidth(merge.sci, merge.eci);
         const height = rows.sectionSumHeight(merge.sri, merge.eri);
-        const rect = new Rect({
-          x,
-          y,
-          width,
-          height,
-        });
+        const rect = new Rect({ x, y, width, height });
         callback(rect, cell);
       },
     });
@@ -249,9 +235,7 @@ class CellsHelper {
    * @param rectRange
    * @param callback
    */
-  getCellSkipMergeCellByViewRange({
-    rectRange, callback,
-  }) {
+  getCellSkipMergeCellByViewRange({ rectRange, callback }) {
     const { merges } = this;
     this.getCellByViewRange({
       rectRange,
@@ -287,12 +271,7 @@ class CellsHelper {
         let overFlow;
         const width = cols.getWidth(j);
         const cell = cells.getCellOrNew(i, j);
-        const rect = new Rect({
-          x,
-          y,
-          width,
-          height,
-        });
+        const rect = new Rect({ x, y, width, height });
         const { fontAttr } = cell;
         const { direction, textWrap } = fontAttr;
         if (textWrap === TEXT_WRAP.OVER_FLOW) {
@@ -320,9 +299,7 @@ class CellsHelper {
    * @param rectRange
    * @param callback
    */
-  getMergeCellOrNewCellByViewRange({
-    rectRange, callback,
-  }) {
+  getMergeCellOrNewCellByViewRange({ rectRange, callback }) {
     const { cells, merges, cols, rows } = this;
     const filter = [];
     this.getCellOrNewCellByViewRange({
@@ -346,12 +323,7 @@ class CellsHelper {
         y = rectRange.sri > merge.sri ? y * -1 : y;
         const width = cols.sectionSumWidth(merge.sci, merge.eci);
         const height = rows.sectionSumHeight(merge.sri, merge.eri);
-        const rect = new Rect({
-          x,
-          y,
-          width,
-          height,
-        });
+        const rect = new Rect({ x, y, width, height });
         callback(rect, cell);
       },
     });
