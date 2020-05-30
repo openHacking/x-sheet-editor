@@ -540,6 +540,8 @@ class Content {
       rectRange: viewRange,
       callback: (i, c, cell, rect, overflow) => {
         // 绘制文字
+        console.log('i c >>>', i, c);
+        console.log('cell>>>', cell);
         const font = new Font({
           text: Format(cell.format, cell.text),
           rect: rect.expandSize(grid.lineWidth()),

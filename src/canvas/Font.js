@@ -561,7 +561,14 @@ class VerticalFontDraw {
       }
     }
     crop.close();
-    return size;
+    switch (align) {
+      case ALIGN.left:
+      case ALIGN.right:
+        return size + PADDING;
+      case ALIGN.center:
+      default:
+        return size;
+    }
   }
 
   drawTextOverFlow() {
@@ -656,7 +663,14 @@ class VerticalFontDraw {
         }
       }
     }
-    return size;
+    switch (align) {
+      case ALIGN.left:
+      case ALIGN.right:
+        return size + PADDING;
+      case ALIGN.center:
+      default:
+        return size;
+    }
   }
 
   drawTextWarp() {
@@ -802,7 +816,14 @@ class VerticalFontDraw {
       }
     }
     crop.close();
-    return wOffset + size;
+    switch (align) {
+      case ALIGN.left:
+      case ALIGN.right:
+        return wOffset + size + PADDING;
+      case ALIGN.center:
+      default:
+        return wOffset + size;
+    }
   }
 
   draw() {
@@ -817,7 +838,8 @@ class VerticalFontDraw {
           fillStyle: attr.color,
           strokeStyle: attr.color,
         });
-        return this.drawTextTruncate();
+        this.drawTextTruncate();
+        break;
       case TEXT_WRAP.WORD_WRAP:
         dw.attr({
           textAlign: attr.align,
@@ -825,7 +847,8 @@ class VerticalFontDraw {
           fillStyle: attr.color,
           strokeStyle: attr.color,
         });
-        return this.drawTextWarp();
+        this.drawTextWarp();
+        break;
       case TEXT_WRAP.OVER_FLOW:
       default:
         dw.attr({
@@ -835,7 +858,8 @@ class VerticalFontDraw {
           fillStyle: attr.color,
           strokeStyle: attr.color,
         });
-        return this.drawTextOverFlow();
+        this.drawTextOverFlow();
+        break;
     }
   }
 
@@ -1099,6 +1123,7 @@ class AngleFontDraw {
       const totalTextHeight = textArrayLen * (size + HORIZONTAL_LIEN_HEIGHT);
       const crop = new Crop({ draw: dw, rect });
       crop.open();
+      let maxLen = 0;
       for (let i = 0; i < textArrayLen; i += 1) {
         const item = textArray[i];
         let tx = rect.x;
@@ -1137,8 +1162,19 @@ class AngleFontDraw {
         if (strikethrough) {
           this.drawLine('strike', tx, ty, item.len);
         }
+        if (item.len > maxLen) {
+          maxLen = item.len;
+        }
       }
       crop.close();
+      switch (align) {
+        case ALIGN.right:
+        case ALIGN.left:
+          return PADDING + maxLen;
+        case ALIGN.center:
+        default:
+          return maxLen;
+      }
     } else if (angle > 0) {
       const trigonometric = new TrigonometricFunction({
         angle,
@@ -1346,6 +1382,14 @@ class AngleFontDraw {
         dwAngle.revert();
       }
       crop.close();
+      switch (align) {
+        case ALIGN.right:
+        case ALIGN.left:
+          return PADDING + textHypotenuseWidth;
+        case ALIGN.center:
+        default:
+          return textHypotenuseWidth;
+      }
     } else if (angle < 0) {
       const trigonometric = new TrigonometricFunction({
         angle,
@@ -1553,7 +1597,16 @@ class AngleFontDraw {
         dwAngle.revert();
       }
       crop.close();
+      switch (align) {
+        case ALIGN.right:
+        case ALIGN.left:
+          return PADDING + textHypotenuseWidth;
+        case ALIGN.center:
+        default:
+          return textHypotenuseWidth;
+      }
     }
+    return 0;
   }
 
   draw() {
