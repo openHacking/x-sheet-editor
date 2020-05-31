@@ -909,13 +909,23 @@ class AngleFontDraw {
       text, dw, attr, rect,
     } = this;
     const {
-      underline, strikethrough, align, verticalAlign, angle, size,
+      underline, strikethrough, align, verticalAlign, size,
     } = attr;
+    let { angle } = attr;
     const { width, height } = rect;
+    if (angle > 90) {
+      angle = 90;
+    }
+    if (angle < -90) {
+      angle = -90;
+    }
+    // 计算文字斜边
+    // 的宽度
     const textWidth = this.textWidth(text) / dpr();
     const trigonometric = new TrigonometricFunction({ angle, width: textWidth, height: size });
     const trigonometricWidth = trigonometric.cosWidthAngle();
     const trigonometricHeight = trigonometric.sinWidthAngle();
+    // 计算文字的位置
     let rtx = rect.x;
     let rty = rect.y;
     switch (align) {
@@ -944,6 +954,8 @@ class AngleFontDraw {
     }
     const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
     const ty = rty + (trigonometricHeight / 2 - size / 2);
+    // 旋转剪切
+    // 绘制文字
     const dwAngle = new DrawAngle({
       dw,
       angle,
@@ -951,7 +963,22 @@ class AngleFontDraw {
         x: rtx, y: rty, width: trigonometricWidth, height: trigonometricHeight,
       }),
     });
-    const crop = new Crop({ draw: dw, rect });
+    // 角度不同, 裁剪的
+    // 大小不同
+    let crop;
+    if (angle === 0) {
+      crop = new Crop({ draw: dw, rect });
+    } else {
+      crop = new Crop({
+        draw: dw,
+        rect: new Rect({
+          x: 0,
+          y: rect.y,
+          width: trigonometricWidth + PADDING * 2,
+          height: rect.height,
+        }),
+      });
+    }
     crop.open();
     dwAngle.rotate();
     dw.fillText(text, tx, ty);
@@ -966,6 +993,8 @@ class AngleFontDraw {
     }
     dwAngle.revert();
     crop.close();
+    // 返回文本的
+    // 宽度
     switch (align) {
       case ALIGN.right:
       case ALIGN.left:
@@ -981,13 +1010,23 @@ class AngleFontDraw {
       text, dw, attr, rect, overflow,
     } = this;
     const {
-      underline, strikethrough, align, verticalAlign, angle, size,
+      underline, strikethrough, align, verticalAlign, size,
     } = attr;
+    let { angle } = attr;
     const { width, height } = rect;
+    if (angle > 90) {
+      angle = 90;
+    }
+    if (angle < -90) {
+      angle = -90;
+    }
+    // 计算文字斜边
+    // 的宽度
     const textWidth = this.textWidth(text) / dpr();
     const trigonometric = new TrigonometricFunction({ angle, width: textWidth, height: size });
     const trigonometricWidth = trigonometric.cosWidthAngle();
     const trigonometricHeight = trigonometric.sinWidthAngle();
+    // 计算文字的位置
     let rtx = rect.x;
     let rty = rect.y;
     switch (align) {
@@ -1016,7 +1055,8 @@ class AngleFontDraw {
     }
     const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
     const ty = rty + (trigonometricHeight / 2 - size / 2);
-    const crop = new Crop({ draw: dw, rect: overflow });
+    // 旋转剪切
+    // 绘制文字
     const dwAngle = new DrawAngle({
       dw,
       angle,
@@ -1024,6 +1064,23 @@ class AngleFontDraw {
         x: rtx, y: rty, width: trigonometricWidth, height: trigonometricHeight,
       }),
     });
+    // 角度不同, 裁剪的
+    // 大小不同
+    let crop;
+    if (angle === 0) {
+      crop = new Crop({ draw: dw, rect: overflow });
+    } else {
+      crop = new Crop({
+        draw: dw,
+        rect: new Rect({
+          x: 0,
+          y: rect.y,
+          width: trigonometricWidth + PADDING * 2,
+          height: rect.height,
+        }),
+      });
+    }
+    // 文本是否越界
     const isOverFlow = overflow
       && (trigonometricWidth > overflow.width || trigonometricHeight > overflow.height);
     if (isOverFlow) {
@@ -1042,13 +1099,6 @@ class AngleFontDraw {
       dwAngle.revert();
       crop.close();
     } else {
-      const dwAngle = new DrawAngle({
-        dw,
-        angle,
-        rect: new Rect({
-          x: rtx, y: rty, width: trigonometricWidth, height: trigonometricHeight,
-        }),
-      });
       dwAngle.rotate();
       dw.fillText(text, tx, ty);
       if (underline || strikethrough) {
@@ -1062,6 +1112,8 @@ class AngleFontDraw {
       }
       dwAngle.revert();
     }
+    // 返回文本的
+    // 宽度
     switch (align) {
       case ALIGN.right:
       case ALIGN.left:
@@ -1139,6 +1191,8 @@ class AngleFontDraw {
         hOffset += size + HORIZONTAL_LIEN_HEIGHT;
       }
       const totalTextHeight = textArrayLen * (size + HORIZONTAL_LIEN_HEIGHT);
+      const crop = new Crop({ draw: dw, rect });
+      crop.open();
       let maxLen = 0;
       for (let i = 0; i < textArrayLen; i += 1) {
         const item = textArray[i];
@@ -1182,6 +1236,7 @@ class AngleFontDraw {
           maxLen = item.len;
         }
       }
+      crop.close();
       switch (align) {
         case ALIGN.right:
         case ALIGN.left:
