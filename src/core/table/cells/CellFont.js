@@ -4,6 +4,7 @@ import {
   TEXT_WRAP,
   VERTICAL_ALIGN,
 } from '../../../canvas/Font';
+import { Utils } from '../../../utils/Utils';
 
 /**
  *  CellFont
@@ -25,6 +26,7 @@ class CellFont {
    * @param italic
    * @param angle
    * @param direction
+   * @param width
    */
   constructor({
     align = ALIGN.left,
@@ -39,6 +41,7 @@ class CellFont {
     italic = false,
     angle = 0,
     direction = TEXT_DIRECTION.HORIZONTAL,
+    width = Utils.Undef,
   }) {
     this.align = align;
     this.verticalAlign = verticalAlign;
@@ -52,6 +55,7 @@ class CellFont {
     this.italic = italic;
     this.direction = direction;
     this.angle = angle;
+    this.width = width;
   }
 }
 

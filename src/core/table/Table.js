@@ -249,14 +249,15 @@ class FrozenLeftTop {
       rectRange: viewRange,
       callback: (i, c, cell, rect, overflow) => {
         // 绘制文字
+        const { fontAttr } = cell;
         const font = new Font({
           text: Format(cell.format, cell.text),
           rect: rect.expandSize(grid.lineWidth()),
           dw: draw,
           overflow,
-          attr: cell.fontAttr,
+          attr: fontAttr,
         });
-        font.draw();
+        fontAttr.width = font.draw();
       },
     });
     // 绘制合并单元格文字
@@ -264,15 +265,16 @@ class FrozenLeftTop {
       rectRange: viewRange,
       callback: (rect, cell) => {
         // 绘制文字
+        const { fontAttr } = cell;
         const font = new Font({
           text: Format(cell.format, cell.text),
           rect: rect.expandSize(grid.lineWidth()),
           dw: draw,
           overflow: null,
-          attr: cell.fontAttr,
+          attr: fontAttr,
         });
         font.setTextWrap(TEXT_WRAP.WORD_WRAP);
-        font.draw();
+        fontAttr.width = font.draw();
       },
     });
     draw.offset(0, 0);
@@ -536,22 +538,19 @@ class Content {
     draw.save();
     draw.offset(offsetX, offsetY);
     // 绘制单元格文字
-    // console.log(table.cells);
     cellsHelper.getCellSkipMergeCellByViewRange({
       rectRange: viewRange,
       callback: (i, c, cell, rect, overflow) => {
-        // console.log(i, c);
-        // console.log(cell.fontAttr);
-        // console.log(cell.text);
         // 绘制文字
+        const { fontAttr } = cell;
         const font = new Font({
           text: Format(cell.format, cell.text),
           rect: rect.expandSize(grid.lineWidth()),
           dw: draw,
           overflow,
-          attr: cell.fontAttr,
+          attr: fontAttr,
         });
-        font.draw();
+        fontAttr.width = font.draw();
       },
     });
     // 绘制合并单元格文字
@@ -559,15 +558,16 @@ class Content {
       rectRange: viewRange,
       callback: (rect, cell) => {
         // 绘制文字
+        const { fontAttr } = cell;
         const font = new Font({
           text: Format(cell.format, cell.text),
           rect: rect.expandSize(grid.lineWidth()),
           dw: draw,
           overflow: null,
-          attr: cell.fontAttr,
+          attr: fontAttr,
         });
         font.setTextWrap(TEXT_WRAP.WORD_WRAP);
-        font.draw();
+        fontAttr.width = font.draw();
       },
     });
     draw.offset(0, 0);
@@ -818,14 +818,15 @@ class FixedLeft {
       rectRange: viewRange,
       callback: (i, c, cell, rect, overflow) => {
         // 绘制文字
+        const { fontAttr } = cell;
         const font = new Font({
           text: Format(cell.format, cell.text),
           rect: rect.expandSize(grid.lineWidth()),
           dw: draw,
           overflow,
-          attr: cell.fontAttr,
+          attr: fontAttr,
         });
-        font.draw();
+        fontAttr.width = font.draw();
       },
     });
     // 绘制合并单元格文字
@@ -833,15 +834,16 @@ class FixedLeft {
       rectRange: viewRange,
       callback: (rect, cell) => {
         // 绘制文字
+        const { fontAttr } = cell;
         const font = new Font({
           text: Format(cell.format, cell.text),
           rect: rect.expandSize(grid.lineWidth()),
           dw: draw,
           overflow: null,
-          attr: cell.fontAttr,
+          attr: fontAttr,
         });
         font.setTextWrap(TEXT_WRAP.WORD_WRAP);
-        font.draw();
+        fontAttr.width = font.draw();
       },
     });
     draw.offset(0, 0);
@@ -1089,14 +1091,15 @@ class FixedTop {
       rectRange: viewRange,
       callback: (i, c, cell, rect, overflow) => {
         // 绘制文字
+        const { fontAttr } = cell;
         const font = new Font({
           text: Format(cell.format, cell.text),
           rect: rect.expandSize(grid.lineWidth()),
           dw: draw,
           overflow,
-          attr: cell.fontAttr,
+          attr: fontAttr,
         });
-        font.draw();
+        fontAttr.width = font.draw();
       },
     });
     // 绘制合并单元格文字
@@ -1104,15 +1107,16 @@ class FixedTop {
       rectRange: viewRange,
       callback: (rect, cell) => {
         // 绘制文字
+        const { fontAttr } = cell;
         const font = new Font({
           text: Format(cell.format, cell.text),
           rect: rect.expandSize(grid.lineWidth()),
           dw: draw,
           overflow: null,
-          attr: cell.fontAttr,
+          attr: fontAttr,
         });
         font.setTextWrap(TEXT_WRAP.WORD_WRAP);
-        font.draw();
+        fontAttr.width = font.draw();
       },
     });
     draw.offset(0, 0);

@@ -1,8 +1,9 @@
-
 /**
  * GridLineHandle
  * @author jerry
  */
+import { ALIGN, TEXT_DIRECTION, TEXT_WRAP } from '../../../canvas/Font';
+
 class GridLineHandle {
 
   constructor(table) {
@@ -108,8 +109,7 @@ class GridLineHandle {
       }
       // 跳过绘制边框的单元格
       if (cell && nextCell) {
-        return !cell.borderAttr.bottom.display
-          || !nextCell.borderAttr.top.display;
+        return !(cell.borderAttr.bottom.display || nextCell.borderAttr.top.display);
       }
       if (cell) {
         return !cell.borderAttr.bottom.display;
@@ -134,8 +134,7 @@ class GridLineHandle {
       }
       // 跳过绘制边框的单元格
       if (cell && nextCell) {
-        return !cell.borderAttr.right.display
-          || !nextCell.borderAttr.left.display;
+        return !(cell.borderAttr.right.display || nextCell.borderAttr.left.display);
       }
       if (cell) {
         return !cell.borderAttr.right.display;
@@ -160,8 +159,7 @@ class GridLineHandle {
           const nextCell = cells.getCell(ri + 1, ci);
           // 跳过绘制边框的单元格
           if (cell && nextCell) {
-            return !cell.borderAttr.bottom.display
-              || !nextCell.borderAttr.top.display;
+            return !(cell.borderAttr.bottom.display || nextCell.borderAttr.top.display);
           }
           if (cell) {
             return !cell.borderAttr.bottom.display;
@@ -179,7 +177,7 @@ class GridLineHandle {
 
   vMergeLine(mergesBrink) {
     const { table } = this;
-    const { cells } = table;
+    const { cells, cols } = table;
     let result = [];
     for (let i = 0; i < mergesBrink.length; i += 1) {
       const brink = mergesBrink[i];
@@ -190,8 +188,7 @@ class GridLineHandle {
           const nextCell = cells.getCell(ri, ci + 1);
           // 跳过绘制边框的单元格
           if (cell && nextCell) {
-            return !cell.borderAttr.right.display
-              || !nextCell.borderAttr.left.display;
+            return !(cell.borderAttr.right.display || nextCell.borderAttr.left.display);
           }
           if (cell) {
             return !cell.borderAttr.right.display;
