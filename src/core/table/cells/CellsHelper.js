@@ -199,34 +199,37 @@ class CellsHelper {
    * @param rectRange
    * @param callback
    */
-  getMergeCellByViewRange({ rectRange, callback }) {
-    const { cells, merges, cols, rows } = this;
+  getMergeCellByViewRange({
+    rectRange, callback,
+  }) {
+    const { rows, cols, cells, merges } = this;
+    const {
+      sri, eri, sci, eci,
+    } = rectRange;
     const filter = [];
-    this.getCellByViewRange({
-      rectRange,
-      callback: (ri, ci) => {
-        const merge = merges.getFirstIncludes(ri, ci);
-        if (!merge || filter.find(item => item === merge)) {
-          return;
+    for (let i = sri; i <= eri; i += 1) {
+      for (let j = sci; j <= eci; j += 1) {
+        const merge = merges.getFirstIncludes(i, j);
+        if (merge && !filter.find(item => item === merge)) {
+          filter.push(merge);
+          const cell = cells.getCellOrNew(i, j);
+          const minSri = Math.min(rectRange.sri, merge.sri);
+          let maxSri = Math.max(rectRange.sri, merge.sri);
+          const minSci = Math.min(rectRange.sci, merge.sci);
+          let maxSci = Math.max(rectRange.sci, merge.sci);
+          maxSri -= 1;
+          maxSci -= 1;
+          let x = cols.sectionSumWidth(minSci, maxSci);
+          let y = rows.sectionSumHeight(minSri, maxSri);
+          x = rectRange.sci > merge.sci ? x * -1 : x;
+          y = rectRange.sri > merge.sri ? y * -1 : y;
+          const width = cols.sectionSumWidth(merge.sci, merge.eci);
+          const height = rows.sectionSumHeight(merge.sri, merge.eri);
+          const rect = new Rect({ x, y, width, height });
+          callback(rect, cell);
         }
-        filter.push(merge);
-        const cell = cells.getCell(merge.sri, merge.sci);
-        const minSri = Math.min(rectRange.sri, merge.sri);
-        let maxSri = Math.max(rectRange.sri, merge.sri);
-        const minSci = Math.min(rectRange.sci, merge.sci);
-        let maxSci = Math.max(rectRange.sci, merge.sci);
-        maxSri -= 1;
-        maxSci -= 1;
-        let x = cols.sectionSumWidth(minSci, maxSci);
-        let y = rows.sectionSumHeight(minSri, maxSri);
-        x = rectRange.sci > merge.sci ? x * -1 : x;
-        y = rectRange.sri > merge.sri ? y * -1 : y;
-        const width = cols.sectionSumWidth(merge.sci, merge.eci);
-        const height = rows.sectionSumHeight(merge.sri, merge.eri);
-        const rect = new Rect({ x, y, width, height });
-        callback(rect, cell);
-      },
-    });
+      }
+    }
   }
 
   /**
@@ -291,42 +294,6 @@ class CellsHelper {
       }
       y += height;
     }
-  }
-
-  /**
-   * 获取指定区域中的合并单元格
-   * 如果单元格不存在则创建新的
-   * @param rectRange
-   * @param callback
-   */
-  getMergeCellOrNewCellByViewRange({ rectRange, callback }) {
-    const { cells, merges, cols, rows } = this;
-    const filter = [];
-    this.getCellOrNewCellByViewRange({
-      rectRange,
-      callback: (ri, ci) => {
-        const merge = merges.getFirstIncludes(ri, ci);
-        if (!merge || filter.find(item => item === merge)) {
-          return;
-        }
-        filter.push(merge);
-        const cell = cells.getCell(merge.sri, merge.sci);
-        const minSri = Math.min(rectRange.sri, merge.sri);
-        let maxSri = Math.max(rectRange.sri, merge.sri);
-        const minSci = Math.min(rectRange.sci, merge.sci);
-        let maxSci = Math.max(rectRange.sci, merge.sci);
-        maxSri -= 1;
-        maxSci -= 1;
-        let x = cols.sectionSumWidth(minSci, maxSci);
-        let y = rows.sectionSumHeight(minSri, maxSri);
-        x = rectRange.sci > merge.sci ? x * -1 : x;
-        y = rectRange.sri > merge.sri ? y * -1 : y;
-        const width = cols.sectionSumWidth(merge.sci, merge.eci);
-        const height = rows.sectionSumHeight(merge.sri, merge.eri);
-        const rect = new Rect({ x, y, width, height });
-        callback(rect, cell);
-      },
-    });
   }
 }
 

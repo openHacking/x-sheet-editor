@@ -23,6 +23,7 @@ class CellFont {
    * @param size
    * @param bold
    * @param italic
+   * @param angle
    * @param direction
    */
   constructor({
@@ -36,6 +37,7 @@ class CellFont {
     size = 14,
     bold = false,
     italic = false,
+    angle = 0,
     direction = TEXT_DIRECTION.HORIZONTAL,
   }) {
     this.align = align;
@@ -49,6 +51,7 @@ class CellFont {
     this.bold = bold;
     this.italic = italic;
     this.direction = direction;
+    this.angle = angle;
   }
 }
 

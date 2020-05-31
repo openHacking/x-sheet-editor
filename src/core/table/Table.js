@@ -260,7 +260,7 @@ class FrozenLeftTop {
       },
     });
     // 绘制合并单元格文字
-    cellsHelper.getMergeCellOrNewCellByViewRange({
+    cellsHelper.getMergeCellByViewRange({
       rectRange: viewRange,
       callback: (rect, cell) => {
         // 绘制文字
@@ -536,12 +536,14 @@ class Content {
     draw.save();
     draw.offset(offsetX, offsetY);
     // 绘制单元格文字
+    // console.log(table.cells);
     cellsHelper.getCellSkipMergeCellByViewRange({
       rectRange: viewRange,
       callback: (i, c, cell, rect, overflow) => {
+        // console.log(i, c);
+        // console.log(cell.fontAttr);
+        // console.log(cell.text);
         // 绘制文字
-        console.log('i c >>>', i, c);
-        console.log('cell>>>', cell);
         const font = new Font({
           text: Format(cell.format, cell.text),
           rect: rect.expandSize(grid.lineWidth()),
@@ -553,7 +555,7 @@ class Content {
       },
     });
     // 绘制合并单元格文字
-    cellsHelper.getMergeCellOrNewCellByViewRange({
+    cellsHelper.getMergeCellByViewRange({
       rectRange: viewRange,
       callback: (rect, cell) => {
         // 绘制文字
@@ -827,7 +829,7 @@ class FixedLeft {
       },
     });
     // 绘制合并单元格文字
-    cellsHelper.getMergeCellOrNewCellByViewRange({
+    cellsHelper.getMergeCellByViewRange({
       rectRange: viewRange,
       callback: (rect, cell) => {
         // 绘制文字
@@ -1098,7 +1100,7 @@ class FixedTop {
       },
     });
     // 绘制合并单元格文字
-    cellsHelper.getMergeCellOrNewCellByViewRange({
+    cellsHelper.getMergeCellByViewRange({
       rectRange: viewRange,
       callback: (rect, cell) => {
         // 绘制文字
@@ -1986,13 +1988,6 @@ class Table extends Widget {
   setCell(ri, ci, cell) {
     const { cells, dataSnapshot } = this;
     cells.setCellOrNew(ri, ci, cell);
-    dataSnapshot.snapshot(true);
-    this.render();
-  }
-
-  copyAttrToCell(ri, ci, cell) {
-    const { cells, dataSnapshot } = this;
-    Utils.mergeDeep(cells.getCellOrNew(ri, ci), cell);
     dataSnapshot.snapshot(true);
     this.render();
   }
