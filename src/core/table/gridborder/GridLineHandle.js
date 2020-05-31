@@ -2,8 +2,6 @@
  * GridLineHandle
  * @author jerry
  */
-import { ALIGN, TEXT_DIRECTION, TEXT_WRAP } from '../../../canvas/Font';
-
 class GridLineHandle {
 
   constructor(table) {
@@ -177,7 +175,7 @@ class GridLineHandle {
 
   vMergeLine(mergesBrink) {
     const { table } = this;
-    const { cells, cols } = table;
+    const { cells } = table;
     let result = [];
     for (let i = 0; i < mergesBrink.length; i += 1) {
       const brink = mergesBrink[i];
