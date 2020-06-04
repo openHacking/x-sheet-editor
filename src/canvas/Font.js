@@ -160,6 +160,16 @@ class HorizontalFontDraw {
         break;
       default: break;
     }
+    let contentWidth;
+    switch (align) {
+      case ALIGN.right:
+      case ALIGN.left:
+        contentWidth = textWidth + PADDING * 2;
+        break;
+      case ALIGN.center:
+      default:
+        contentWidth = textWidth;
+    }
     const crop = new Crop({ draw: dw, rect });
     crop.open();
     dw.fillText(text, tx, ty);
@@ -173,14 +183,7 @@ class HorizontalFontDraw {
       this.drawLine('strike', tx, ty, textWidth);
     }
     crop.close();
-    switch (align) {
-      case ALIGN.right:
-      case ALIGN.left:
-        return textWidth + PADDING * 2;
-      case ALIGN.center:
-      default:
-        return textWidth;
-    }
+    return contentWidth;
   }
 
   /**
@@ -229,6 +232,16 @@ class HorizontalFontDraw {
         break;
       default: break;
     }
+    let contentWidth;
+    switch (align) {
+      case ALIGN.right:
+      case ALIGN.left:
+        contentWidth = textWidth + PADDING * 2;
+        break;
+      case ALIGN.center:
+      default:
+        contentWidth = textWidth;
+    }
     if (overflow && (textWidth + paddingH > overflow.width || size + paddingV > overflow.height)) {
       const crop = new Crop({ draw: dw, rect: overflow });
       crop.open();
@@ -255,14 +268,7 @@ class HorizontalFontDraw {
         this.drawLine('strike', tx, ty, textWidth);
       }
     }
-    switch (align) {
-      case ALIGN.right:
-      case ALIGN.left:
-        return textWidth + PADDING * 2;
-      case ALIGN.center:
-      default:
-        return textWidth;
-    }
+    return contentWidth;
   }
 
   /**
@@ -282,6 +288,7 @@ class HorizontalFontDraw {
     const len = text.length;
     let hOffset = 0;
     let i = 0;
+    let maxLen = 0;
     while (i < len) {
       const charWidth = this.textWidth(text.charAt(i)) / dpr();
       const textWidth = textLine.len + charWidth;
@@ -294,6 +301,9 @@ class HorizontalFontDraw {
             ty: hOffset,
           });
           i += 1;
+          if (textWidth > maxLen) {
+            maxLen = textWidth;
+          }
         } else {
           textArray.push({
             text: text.substring(textLine.start, i),
@@ -301,6 +311,9 @@ class HorizontalFontDraw {
             tx: 0,
             ty: hOffset,
           });
+          if (textLine.len > maxLen) {
+            maxLen = textLine.len;
+          }
         }
         hOffset += size + HORIZONTAL_LIEN_HEIGHT;
         textLine.len = 0;
@@ -317,6 +330,9 @@ class HorizontalFontDraw {
         tx: 0,
         ty: hOffset,
       });
+      if (textLine.len > maxLen) {
+        maxLen = textLine.len;
+      }
     }
     let bx = rect.x;
     let by = rect.y;
@@ -344,9 +360,18 @@ class HorizontalFontDraw {
         break;
       default: break;
     }
+    let contentWidth;
+    switch (align) {
+      case ALIGN.right:
+      case ALIGN.left:
+        contentWidth = maxLen + PADDING * 2;
+        break;
+      case ALIGN.center:
+      default:
+        contentWidth = maxLen;
+    }
     const crop = new Crop({ draw: dw, rect });
     crop.open();
-    let maxLen = 0;
     for (let i = 0, len = textArray.length; i < len; i += 1) {
       const item = textArray[i];
       item.tx += bx;
@@ -361,19 +386,9 @@ class HorizontalFontDraw {
       if (strikethrough) {
         this.drawLine('strike', item.tx, item.ty, item.len);
       }
-      if (item.len > maxLen) {
-        maxLen = item.len;
-      }
     }
     crop.close();
-    switch (align) {
-      case ALIGN.right:
-      case ALIGN.left:
-        return maxLen + PADDING * 2;
-      case ALIGN.center:
-      default:
-        return maxLen;
-    }
+    return contentWidth;
   }
 
   draw() {
@@ -543,6 +558,16 @@ class VerticalFontDraw {
         break;
       default: break;
     }
+    let contentWidth;
+    switch (align) {
+      case ALIGN.left:
+      case ALIGN.right:
+        contentWidth = size + PADDING * 2;
+        break;
+      case ALIGN.center:
+      default:
+        contentWidth = size;
+    }
     const crop = new Crop({ draw: dw, rect });
     crop.open();
     for (let i = 0, len = textArray.length; i < len; i += 1) {
@@ -561,14 +586,7 @@ class VerticalFontDraw {
       }
     }
     crop.close();
-    switch (align) {
-      case ALIGN.left:
-      case ALIGN.right:
-        return size + PADDING * 2;
-      case ALIGN.center:
-      default:
-        return size;
-    }
+    return contentWidth;
   }
 
   drawTextOverFlow() {
@@ -627,6 +645,16 @@ class VerticalFontDraw {
         break;
       default: break;
     }
+    let contentWidth;
+    switch (align) {
+      case ALIGN.left:
+      case ALIGN.right:
+        contentWidth = size + PADDING * 2;
+        break;
+      case ALIGN.center:
+      default:
+        contentWidth = size;
+    }
     if (overflow && (hOffset + paddingV > overflow.height || size + paddingH > overflow.width)) {
       const crop = new Crop({ draw: dw, rect: overflow });
       crop.open();
@@ -663,14 +691,7 @@ class VerticalFontDraw {
         }
       }
     }
-    switch (align) {
-      case ALIGN.left:
-      case ALIGN.right:
-        return size + PADDING * 2;
-      case ALIGN.center:
-      default:
-        return size;
-    }
+    return contentWidth;
   }
 
   drawTextWarp() {
@@ -795,6 +816,16 @@ class VerticalFontDraw {
         break;
       default: break;
     }
+    let contentWidth;
+    switch (align) {
+      case ALIGN.left:
+      case ALIGN.right:
+        contentWidth = wOffset + size + PADDING * 2;
+        break;
+      case ALIGN.center:
+      default:
+        contentWidth = wOffset + size;
+    }
     const crop = new Crop({ draw: dw, rect });
     crop.open();
     for (let i = 0, len = textArray.length; i < len; i += 1) {
@@ -816,14 +847,7 @@ class VerticalFontDraw {
       }
     }
     crop.close();
-    switch (align) {
-      case ALIGN.left:
-      case ALIGN.right:
-        return wOffset + size + PADDING * 2;
-      case ALIGN.center:
-      default:
-        return wOffset + size;
-    }
+    return contentWidth;
   }
 
   draw() {
@@ -952,6 +976,17 @@ class AngleFontDraw {
         break;
       default: break;
     }
+    // 计算内容宽度
+    let contentWidth;
+    switch (align) {
+      case ALIGN.right:
+      case ALIGN.left:
+        contentWidth = trigonometricWidth + PADDING * 2;
+        break;
+      case ALIGN.center:
+      default:
+        contentWidth = trigonometricWidth;
+    }
     const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
     const ty = rty + (trigonometricHeight / 2 - size / 2);
     // 旋转剪切
@@ -974,7 +1009,7 @@ class AngleFontDraw {
         rect: new Rect({
           x: 0,
           y: rect.y,
-          width: trigonometricWidth + PADDING * 2,
+          width: contentWidth,
           height: rect.height,
         }),
       });
@@ -993,16 +1028,7 @@ class AngleFontDraw {
     }
     dwAngle.revert();
     crop.close();
-    // 返回文本的
-    // 宽度
-    switch (align) {
-      case ALIGN.right:
-      case ALIGN.left:
-        return trigonometricWidth + PADDING * 2;
-      case ALIGN.center:
-      default:
-        return trigonometricWidth;
-    }
+    return contentWidth;
   }
 
   drawTextOverFlow() {
@@ -1053,6 +1079,17 @@ class AngleFontDraw {
         break;
       default: break;
     }
+    // 计算内容宽度
+    let contentWidth;
+    switch (align) {
+      case ALIGN.right:
+      case ALIGN.left:
+        contentWidth = trigonometricWidth + PADDING * 2;
+        break;
+      case ALIGN.center:
+      default:
+        contentWidth = trigonometricWidth;
+    }
     const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
     const ty = rty + (trigonometricHeight / 2 - size / 2);
     // 旋转剪切
@@ -1075,7 +1112,7 @@ class AngleFontDraw {
         rect: new Rect({
           x: 0,
           y: rect.y,
-          width: trigonometricWidth + PADDING * 2,
+          width: contentWidth,
           height: rect.height,
         }),
       });
@@ -1112,16 +1149,7 @@ class AngleFontDraw {
       }
       dwAngle.revert();
     }
-    // 返回文本的
-    // 宽度
-    switch (align) {
-      case ALIGN.right:
-      case ALIGN.left:
-        return trigonometricWidth + PADDING * 2;
-      case ALIGN.center:
-      default:
-        return trigonometricWidth;
-    }
+    return contentWidth;
   }
 
   drawTextWarp() {
@@ -1139,132 +1167,23 @@ class AngleFontDraw {
       angle = -90;
     }
     const { width, height } = rect;
-    if (angle === 0) {
-      const maxTextWidth = width - PADDING * 2;
-      const textArray = [];
-      const textLine = {
-        len: 0,
-        start: 0,
-      };
-      const len = text.length;
-      let i = 0;
-      while (i < len) {
-        const charWidth = this.textWidth(text.charAt(i)) / dpr();
-        const textWidth = textLine.len + charWidth;
-        if (textWidth > maxTextWidth) {
-          if (textLine.len === 0) {
-            textArray.push({
-              text: text.substring(i, i + 1),
-              len: textWidth,
-              tx: 0,
-              ty: 0,
-            });
-            i += 1;
-          } else {
-            textArray.push({
-              text: text.substring(textLine.start, i),
-              len: textLine.len,
-              tx: 0,
-              ty: 0,
-            });
-          }
-          textLine.len = 0;
-          textLine.start = i;
-        } else {
-          textLine.len = textWidth;
-          i += 1;
-        }
-      }
-      if (textLine.len > 0) {
-        textArray.push({
-          text: text.substring(textLine.start),
-          len: textLine.len,
-          tx: 0,
-          ty: 0,
-        });
-      }
-      const textArrayLen = textArray.length;
-      let hOffset = 0;
-      for (let i = 0; i < textArrayLen; i += 1) {
-        const item = textArray[i];
-        item.ty = hOffset;
-        hOffset += size + HORIZONTAL_LIEN_HEIGHT;
-      }
-      const totalTextHeight = textArrayLen * (size + HORIZONTAL_LIEN_HEIGHT);
-      const crop = new Crop({ draw: dw, rect });
-      crop.open();
-      let maxLen = 0;
-      for (let i = 0; i < textArrayLen; i += 1) {
-        const item = textArray[i];
-        let tx = rect.x;
-        let ty = rect.y;
-        switch (align) {
-          case ALIGN.left:
-            tx += PADDING;
-            break;
-          case ALIGN.center:
-            tx += width / 2 - item.len / 2;
-            break;
-          case ALIGN.right:
-            tx += width - item.len - PADDING;
-            break;
-          default: break;
-        }
-        switch (verticalAlign) {
-          case VERTICAL_ALIGN.top:
-            ty += item.ty + PADDING;
-            break;
-          case VERTICAL_ALIGN.center:
-            ty += item.ty + (height / 2 - totalTextHeight / 2);
-            break;
-          case VERTICAL_ALIGN.bottom:
-            ty += item.ty + (height - totalTextHeight - PADDING);
-            break;
-          default: break;
-        }
-        dw.fillText(item.text, tx, ty);
-        if (underline || strikethrough) {
-          dw.beginPath();
-        }
-        if (underline) {
-          this.drawLine('underline', tx, ty, item.len);
-        }
-        if (strikethrough) {
-          this.drawLine('strike', tx, ty, item.len);
-        }
-        if (item.len > maxLen) {
-          maxLen = item.len;
-        }
-      }
-      crop.close();
-      switch (align) {
-        case ALIGN.right:
-        case ALIGN.left:
-          return maxLen + PADDING * 2;
-        case ALIGN.center:
-        default:
-          return maxLen;
-      }
-    } else if (angle > 0) {
+    if (angle > 0) {
       const trigonometric = new TrigonometricFunction({
         angle,
       });
+
       // 计算斜角文本的最大绘制宽度
       // 超过绘制宽度自动换行
       trigonometric.setWidth(width);
       trigonometric.setHeight(height - PADDING * 2);
       const textHypotenuseWidth = trigonometric.sinHeightAngle();
+
       // 计算文本块之间的
       // 间隙
       trigonometric.setWidth(size + HORIZONTAL_LIEN_HEIGHT);
       trigonometric.setHeight(size + HORIZONTAL_LIEN_HEIGHT);
       const lineHeight = trigonometric.sinHeightAngle();
-      // 计算每个文本块的
-      // 宽度和高度
-      trigonometric.setWidth(textHypotenuseWidth);
-      trigonometric.setHeight(size);
-      const textWidth = trigonometric.cosWidthAngle();
-      const textHeight = trigonometric.sinWidthAngle();
+
       // 折行文本计算
       const textArray = [];
       const textLine = {
@@ -1309,6 +1228,7 @@ class AngleFontDraw {
         });
       }
       const textArrayLen = textArray.length;
+
       // 每个文本块的x坐标
       // 加上指定的间隙
       let wOffset = 0;
@@ -1317,10 +1237,20 @@ class AngleFontDraw {
         item.tx = wOffset;
         wOffset += lineHeight;
       }
+
       // 多行文本和单行文本
       // 采用不同的绘制
       // 逻辑
       if (textArrayLen > 1) {
+
+        // 计算每个文本块的
+        // 宽度和高度
+        trigonometric.setWidth(textHypotenuseWidth);
+        trigonometric.setHeight(size);
+        const textWidth = trigonometric.cosWidthAngle();
+        const textHeight = trigonometric.sinWidthAngle();
+
+        // 计算总宽度
         const totalWidth = textWidth + ((textArray.length - 1) * lineHeight);
         // console.log(totalWidth);
         let bx = rect.x;
@@ -1349,7 +1279,18 @@ class AngleFontDraw {
             break;
           default: break;
         }
+        let contentWidth;
+        switch (align) {
+          case ALIGN.right:
+          case ALIGN.left:
+            contentWidth = totalWidth + PADDING * 2;
+            break;
+          case ALIGN.center:
+          default:
+            contentWidth = totalWidth;
+        }
         for (let i = 0; i < textArray.length; i += 1) {
+
           // 计算文本的
           // 绘制位置
           // 旋转中心
@@ -1386,6 +1327,7 @@ class AngleFontDraw {
           }
           const tx = ax - item.len / 2;
           const ty = ay - size / 2;
+
           // 旋转并且
           // 绘制文本
           if (i === -1) {
@@ -1413,107 +1355,99 @@ class AngleFontDraw {
           }
           dwAngle.revert();
         }
-        // 返回文本
-        // 宽度
-        switch (align) {
-          case ALIGN.right:
-          case ALIGN.left:
-            return totalWidth + PADDING * 2;
-          case ALIGN.center:
-          default:
-            return totalWidth;
-        }
-      } else {
-        // 计算文本块的
-        // 大小
-        const textWidth = this.textWidth(text) / dpr();
-        trigonometric.setWidth(textWidth);
-        trigonometric.setHeight(size);
-        const trigonometricWidth = trigonometric.cosWidthAngle();
-        const trigonometricHeight = trigonometric.sinWidthAngle();
-        // 计算文本
-        // 绘制位置
-        // 旋转中心
-        let rtx = rect.x;
-        let rty = rect.y;
-        switch (align) {
-          case ALIGN.left:
-            rtx += PADDING;
-            break;
-          case ALIGN.center:
-            rtx += width / 2 - trigonometricWidth / 2;
-            break;
-          case ALIGN.right:
-            rtx += width - trigonometricWidth - PADDING;
-            break;
-          default: break;
-        }
-        switch (verticalAlign) {
-          case VERTICAL_ALIGN.top:
-            rty += PADDING;
-            break;
-          case VERTICAL_ALIGN.center:
-            rty += height / 2 - trigonometricHeight / 2;
-            break;
-          case VERTICAL_ALIGN.bottom:
-            rty += height - trigonometricHeight - PADDING;
-            break;
-          default: break;
-        }
-        // 旋转并且
-        // 绘制文本
-        const dwAngle = new DrawAngle({
-          dw,
-          angle,
-          rect: new Rect({
-            x: rtx, y: rty, width: trigonometricWidth, height: trigonometricHeight,
-          }),
-        });
-        dwAngle.rotate();
-        const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
-        const ty = rty + (trigonometricHeight / 2 - size / 2);
-        dw.fillText(text, tx, ty);
-        if (underline || strikethrough) {
-          dw.beginPath();
-        }
-        if (underline) {
-          this.drawLine('underline', tx, ty, textWidth);
-        }
-        if (strikethrough) {
-          this.drawLine('strike', tx, ty, textWidth);
-        }
-        dwAngle.revert();
-        // 返回文本
-        // 宽度
-        switch (align) {
-          case ALIGN.right:
-          case ALIGN.left:
-            return trigonometricWidth + PADDING * 2;
-          case ALIGN.center:
-          default:
-            return trigonometricWidth;
-        }
+        return contentWidth;
       }
-    } else if (angle < 0) {
+
+      // 计算文本块的
+      // 大小
+      const textWidth = this.textWidth(text) / dpr();
+      trigonometric.setWidth(textWidth);
+      trigonometric.setHeight(size);
+      const trigonometricWidth = trigonometric.cosWidthAngle();
+      const trigonometricHeight = trigonometric.sinWidthAngle();
+
+      // 计算文本
+      // 绘制位置
+      // 旋转中心
+      let rtx = rect.x;
+      let rty = rect.y;
+      switch (align) {
+        case ALIGN.left:
+          rtx += PADDING;
+          break;
+        case ALIGN.center:
+          rtx += width / 2 - trigonometricWidth / 2;
+          break;
+        case ALIGN.right:
+          rtx += width - trigonometricWidth - PADDING;
+          break;
+        default: break;
+      }
+      switch (verticalAlign) {
+        case VERTICAL_ALIGN.top:
+          rty += PADDING;
+          break;
+        case VERTICAL_ALIGN.center:
+          rty += height / 2 - trigonometricHeight / 2;
+          break;
+        case VERTICAL_ALIGN.bottom:
+          rty += height - trigonometricHeight - PADDING;
+          break;
+        default: break;
+      }
+      let contentWidth;
+      switch (align) {
+        case ALIGN.right:
+        case ALIGN.left:
+          contentWidth = trigonometricWidth + PADDING * 2;
+          break;
+        case ALIGN.center:
+        default:
+          contentWidth = trigonometricWidth;
+      }
+
+      // 旋转并且
+      // 绘制文本
+      const dwAngle = new DrawAngle({
+        dw,
+        angle,
+        rect: new Rect({
+          x: rtx, y: rty, width: trigonometricWidth, height: trigonometricHeight,
+        }),
+      });
+      dwAngle.rotate();
+      const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
+      const ty = rty + (trigonometricHeight / 2 - size / 2);
+      dw.fillText(text, tx, ty);
+      if (underline || strikethrough) {
+        dw.beginPath();
+      }
+      if (underline) {
+        this.drawLine('underline', tx, ty, textWidth);
+      }
+      if (strikethrough) {
+        this.drawLine('strike', tx, ty, textWidth);
+      }
+      dwAngle.revert();
+      return contentWidth;
+    }
+    if (angle < 0) {
       const trigonometric = new TrigonometricFunction({
         angle,
       });
+
       // 计算斜角文本的最大绘制宽度
       // 超过绘制宽度自动换行
       trigonometric.setWidth(width);
       trigonometric.setHeight(height - PADDING * 2);
+
       // 计算文本块之间的
       // 间隙
       const textHypotenuseWidth = trigonometric.sinHeightAngle();
       trigonometric.setWidth(size + HORIZONTAL_LIEN_HEIGHT);
       trigonometric.setHeight(size + HORIZONTAL_LIEN_HEIGHT);
       const lineHeight = trigonometric.sinHeightAngle();
-      // 计算每个文本块的
-      // 宽度和高度
-      trigonometric.setWidth(textHypotenuseWidth);
-      trigonometric.setHeight(size);
-      const textWidth = trigonometric.cosWidthAngle();
-      const textHeight = trigonometric.sinWidthAngle();
+
       // 折行文本计算
       const textArray = [];
       const textLine = {
@@ -1558,6 +1492,7 @@ class AngleFontDraw {
         });
       }
       const textArrayLen = textArray.length;
+
       // 每个文本块的x坐标
       // 加上指定的间隙
       let wOffset = 0;
@@ -1566,10 +1501,20 @@ class AngleFontDraw {
         item.tx = wOffset;
         wOffset += lineHeight;
       }
+
       // 多行文本和单行文本
       // 采用不同的绘制
       // 逻辑
       if (textArrayLen > 1) {
+
+        // 计算每个文本块的
+        // 宽度和高度
+        trigonometric.setWidth(textHypotenuseWidth);
+        trigonometric.setHeight(size);
+        const textWidth = trigonometric.cosWidthAngle();
+        const textHeight = trigonometric.sinWidthAngle();
+
+        // 文本总宽度
         const totalWidth = textWidth + ((textArray.length - 1) * lineHeight);
         let bx = rect.x;
         let by = rect.y;
@@ -1597,7 +1542,18 @@ class AngleFontDraw {
             break;
           default: break;
         }
+        let contentWidth;
+        switch (align) {
+          case ALIGN.right:
+          case ALIGN.left:
+            contentWidth = totalWidth + PADDING * 2;
+            break;
+          case ALIGN.center:
+          default:
+            contentWidth = totalWidth;
+        }
         for (let i = 0; i < textArray.length; i += 1) {
+
           // 计算文本的
           // 绘制位置
           // 旋转中心
@@ -1639,6 +1595,7 @@ class AngleFontDraw {
             dw.fillRect(rx, ry, textWidth, textHeight);
             dw.attr({ fillStyle: 'red' });
           }
+
           // 旋转并且
           // 绘制文本
           const dwAngle = new DrawAngle({
@@ -1661,87 +1618,193 @@ class AngleFontDraw {
           }
           dwAngle.revert();
         }
-        // 返回文本
-        // 宽度
-        switch (align) {
-          case ALIGN.right:
-          case ALIGN.left:
-            return totalWidth + PADDING * 2;
-          case ALIGN.center:
-          default:
-            return totalWidth;
+        return contentWidth;
+      }
+
+      // 计算文本块的
+      // 大小
+      const textWidth = this.textWidth(text) / dpr();
+      trigonometric.setWidth(textWidth);
+      trigonometric.setHeight(size);
+      const trigonometricWidth = trigonometric.cosWidthAngle();
+      const trigonometricHeight = trigonometric.sinWidthAngle();
+
+      // 计算文本
+      // 绘制位置
+      // 旋转中心
+      let rtx = rect.x;
+      let rty = rect.y;
+      switch (align) {
+        case ALIGN.left:
+          rtx += PADDING;
+          break;
+        case ALIGN.center:
+          rtx += width / 2 - trigonometricWidth / 2;
+          break;
+        case ALIGN.right:
+          rtx += width - trigonometricWidth - PADDING;
+          break;
+        default: break;
+      }
+      switch (verticalAlign) {
+        case VERTICAL_ALIGN.top:
+          rty += PADDING;
+          break;
+        case VERTICAL_ALIGN.center:
+          rty += height / 2 - trigonometricHeight / 2;
+          break;
+        case VERTICAL_ALIGN.bottom:
+          rty += height - trigonometricHeight - PADDING;
+          break;
+        default: break;
+      }
+      let contentWidth;
+      switch (align) {
+        case ALIGN.right:
+        case ALIGN.left:
+          contentWidth = trigonometricWidth + PADDING * 2;
+          break;
+        case ALIGN.center:
+        default:
+          contentWidth = trigonometricWidth;
+      }
+
+      // 旋转并且
+      // 绘制文本
+      const dwAngle = new DrawAngle({
+        dw,
+        angle,
+        rect: new Rect({
+          x: rtx, y: rty, width: trigonometricWidth, height: trigonometricHeight,
+        }),
+      });
+      dwAngle.rotate();
+      const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
+      const ty = rty + (trigonometricHeight / 2 - size / 2);
+      dw.fillText(text, tx, ty);
+      if (underline || strikethrough) {
+        dw.beginPath();
+      }
+      if (underline) {
+        this.drawLine('underline', tx, ty, textWidth);
+      }
+      if (strikethrough) {
+        this.drawLine('strike', tx, ty, textWidth);
+      }
+      dwAngle.revert();
+      return contentWidth;
+    }
+    if (angle === 0) {
+      const maxTextWidth = width - PADDING * 2;
+      const textArray = [];
+      const textLine = {
+        len: 0,
+        start: 0,
+      };
+      const len = text.length;
+      let hOffset = 0;
+      let i = 0;
+      let maxLen = 0;
+      while (i < len) {
+        const charWidth = this.textWidth(text.charAt(i)) / dpr();
+        const textWidth = textLine.len + charWidth;
+        if (textWidth > maxTextWidth) {
+          if (textLine.len === 0) {
+            textArray.push({
+              text: text.substring(i, i + 1),
+              len: textWidth,
+              tx: 0,
+              ty: hOffset,
+            });
+            i += 1;
+            if (textWidth > maxLen) {
+              maxLen = textWidth;
+            }
+          } else {
+            textArray.push({
+              text: text.substring(textLine.start, i),
+              len: textLine.len,
+              tx: 0,
+              ty: hOffset,
+            });
+            if (textLine.len > maxLen) {
+              maxLen = textLine.len;
+            }
+          }
+          hOffset += size + HORIZONTAL_LIEN_HEIGHT;
+          textLine.len = 0;
+          textLine.start = i;
+        } else {
+          textLine.len = textWidth;
+          i += 1;
         }
-      } else {
-        // 计算文本块的
-        // 大小
-        const textWidth = this.textWidth(text) / dpr();
-        trigonometric.setWidth(textWidth);
-        trigonometric.setHeight(size);
-        const trigonometricWidth = trigonometric.cosWidthAngle();
-        const trigonometricHeight = trigonometric.sinWidthAngle();
-        // 计算文本
-        // 绘制位置
-        // 旋转中心
-        let rtx = rect.x;
-        let rty = rect.y;
-        switch (align) {
-          case ALIGN.left:
-            rtx += PADDING;
-            break;
-          case ALIGN.center:
-            rtx += width / 2 - trigonometricWidth / 2;
-            break;
-          case ALIGN.right:
-            rtx += width - trigonometricWidth - PADDING;
-            break;
-          default: break;
-        }
-        switch (verticalAlign) {
-          case VERTICAL_ALIGN.top:
-            rty += PADDING;
-            break;
-          case VERTICAL_ALIGN.center:
-            rty += height / 2 - trigonometricHeight / 2;
-            break;
-          case VERTICAL_ALIGN.bottom:
-            rty += height - trigonometricHeight - PADDING;
-            break;
-          default: break;
-        }
-        // 旋转并且
-        // 绘制文本
-        const dwAngle = new DrawAngle({
-          dw,
-          angle,
-          rect: new Rect({
-            x: rtx, y: rty, width: trigonometricWidth, height: trigonometricHeight,
-          }),
+      }
+      if (textLine.len > 0) {
+        textArray.push({
+          text: text.substring(textLine.start),
+          len: textLine.len,
+          tx: 0,
+          ty: hOffset,
         });
-        dwAngle.rotate();
-        const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
-        const ty = rty + (trigonometricHeight / 2 - size / 2);
-        dw.fillText(text, tx, ty);
+        if (textLine.len > maxLen) {
+          maxLen = textLine.len;
+        }
+      }
+      let bx = rect.x;
+      let by = rect.y;
+      switch (align) {
+        case ALIGN.left:
+          bx += PADDING;
+          break;
+        case ALIGN.center:
+          bx += width / 2;
+          break;
+        case ALIGN.right:
+          bx += width - PADDING;
+          break;
+        default: break;
+      }
+      switch (verticalAlign) {
+        case VERTICAL_ALIGN.top:
+          by += PADDING;
+          break;
+        case VERTICAL_ALIGN.center:
+          by += height / 2 - hOffset / 2;
+          break;
+        case VERTICAL_ALIGN.bottom:
+          by += height - hOffset - PADDING;
+          break;
+        default: break;
+      }
+      let contentWidth;
+      switch (align) {
+        case ALIGN.right:
+        case ALIGN.left:
+          contentWidth = maxLen + PADDING * 2;
+          break;
+        case ALIGN.center:
+        default:
+          contentWidth = maxLen;
+      }
+      const crop = new Crop({ draw: dw, rect });
+      crop.open();
+      for (let i = 0, len = textArray.length; i < len; i += 1) {
+        const item = textArray[i];
+        item.tx += bx;
+        item.ty += by;
+        dw.fillText(item.text, item.tx, item.ty);
         if (underline || strikethrough) {
           dw.beginPath();
         }
         if (underline) {
-          this.drawLine('underline', tx, ty, textWidth);
+          this.drawLine('underline', item.tx, item.ty, item.len);
         }
         if (strikethrough) {
-          this.drawLine('strike', tx, ty, textWidth);
-        }
-        dwAngle.revert();
-        // 返回文本
-        // 宽度
-        switch (align) {
-          case ALIGN.right:
-          case ALIGN.left:
-            return trigonometricWidth + PADDING * 2;
-          case ALIGN.center:
-          default:
-            return trigonometricWidth;
+          this.drawLine('strike', item.tx, item.ty, item.len);
         }
       }
+      crop.close();
+      return contentWidth;
     }
     return 0;
   }
