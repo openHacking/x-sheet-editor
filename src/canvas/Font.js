@@ -1702,7 +1702,8 @@ class AngleFontDraw {
         start: 0,
       };
       const len = text.length;
-      let hOffset = 0;
+
+      // 折行
       let i = 0;
       let maxLen = 0;
       while (i < len) {
@@ -1714,7 +1715,7 @@ class AngleFontDraw {
               text: text.substring(i, i + 1),
               len: textWidth,
               tx: 0,
-              ty: hOffset,
+              ty: 0,
             });
             i += 1;
             if (textWidth > maxLen) {
@@ -1725,13 +1726,12 @@ class AngleFontDraw {
               text: text.substring(textLine.start, i),
               len: textLine.len,
               tx: 0,
-              ty: hOffset,
+              ty: 0,
             });
             if (textLine.len > maxLen) {
               maxLen = textLine.len;
             }
           }
-          hOffset += size + HORIZONTAL_LIEN_HEIGHT;
           textLine.len = 0;
           textLine.start = i;
         } else {
@@ -1744,38 +1744,23 @@ class AngleFontDraw {
           text: text.substring(textLine.start),
           len: textLine.len,
           tx: 0,
-          ty: hOffset,
+          ty: 0,
         });
         if (textLine.len > maxLen) {
           maxLen = textLine.len;
         }
       }
-      let bx = rect.x;
-      let by = rect.y;
-      switch (align) {
-        case ALIGN.left:
-          bx += PADDING;
-          break;
-        case ALIGN.center:
-          bx += width / 2;
-          break;
-        case ALIGN.right:
-          bx += width - PADDING;
-          break;
-        default: break;
+      const textArrayLen = textArray.length;
+
+      // 位置计算
+      let hOffset = 0;
+      for (let i = 0; i < textArrayLen; i += 1) {
+        const item = textArray[i];
+        item.ty = hOffset;
+        hOffset += size + HORIZONTAL_LIEN_HEIGHT;
       }
-      switch (verticalAlign) {
-        case VERTICAL_ALIGN.top:
-          by += PADDING;
-          break;
-        case VERTICAL_ALIGN.center:
-          by += height / 2 - hOffset / 2;
-          break;
-        case VERTICAL_ALIGN.bottom:
-          by += height - hOffset - PADDING;
-          break;
-        default: break;
-      }
+      const totalTextHeight = textArrayLen * (size + HORIZONTAL_LIEN_HEIGHT);
+
       let contentWidth;
       switch (align) {
         case ALIGN.right:
@@ -1786,21 +1771,46 @@ class AngleFontDraw {
         default:
           contentWidth = maxLen;
       }
+      // 裁剪 绘制
       const crop = new Crop({ draw: dw, rect });
       crop.open();
-      for (let i = 0, len = textArray.length; i < len; i += 1) {
+      for (let i = 0; i < textArrayLen; i += 1) {
         const item = textArray[i];
-        item.tx += bx;
-        item.ty += by;
-        dw.fillText(item.text, item.tx, item.ty);
+        let tx = rect.x;
+        let ty = rect.y;
+        switch (align) {
+          case ALIGN.left:
+            tx += PADDING;
+            break;
+          case ALIGN.center:
+            tx += width / 2 - item.len / 2;
+            break;
+          case ALIGN.right:
+            tx += width - item.len - PADDING;
+            break;
+          default: break;
+        }
+        switch (verticalAlign) {
+          case VERTICAL_ALIGN.top:
+            ty += item.ty + PADDING;
+            break;
+          case VERTICAL_ALIGN.center:
+            ty += item.ty + (height / 2 - totalTextHeight / 2);
+            break;
+          case VERTICAL_ALIGN.bottom:
+            ty += item.ty + (height - totalTextHeight - PADDING);
+            break;
+          default: break;
+        }
+        dw.fillText(item.text, tx, ty);
         if (underline || strikethrough) {
           dw.beginPath();
         }
         if (underline) {
-          this.drawLine('underline', item.tx, item.ty, item.len);
+          this.drawLine('underline', tx, ty, item.len);
         }
         if (strikethrough) {
-          this.drawLine('strike', item.tx, item.ty, item.len);
+          this.drawLine('strike', tx, ty, item.len);
         }
       }
       crop.close();
