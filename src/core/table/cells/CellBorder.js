@@ -1,5 +1,4 @@
 import { Border } from './Border';
-import { Utils } from '../../../utils/Utils';
 
 /**
  * CellBorder
@@ -25,6 +24,21 @@ class CellBorder {
     this.top = new Border(top);
     this.right = new Border(right);
     this.bottom = new Border(bottom);
+  }
+
+  clone() {
+    const {
+      left,
+      top,
+      right,
+      bottom,
+    } = this;
+    return new CellBorder({
+      left,
+      top,
+      right,
+      bottom,
+    });
   }
 }
 

@@ -29,6 +29,23 @@ class Cell {
     this.fontAttr = new CellFont(fontAttr);
     this.borderAttr = new CellBorder(borderAttr);
   }
+
+  clone() {
+    const {
+      background,
+      format,
+      text,
+      fontAttr,
+      borderAttr,
+    } = this;
+    return new Cell({
+      background,
+      format,
+      text,
+      fontAttr: fontAttr.clone(),
+      borderAttr: borderAttr.clone(),
+    });
+  }
 }
 
 export { Cell };

@@ -381,9 +381,9 @@ class ScreenAutoFill extends ScreenWidget {
       let tIndexCi = autoFillRect.sci;
       while (tIndexCi <= autoFillRect.eci) {
         const src = cells.getCell(sIndexRi, sIndexCi);
-        const target = cells.getCellOrNew(tIndexRi, tIndexCi);
         if (src) {
-          Utils.mergeDeep(target, src);
+          const target = src.clone();
+          cells.setCellOrNew(tIndexRi, tIndexCi, target);
           if (!Utils.isBlank(src.text)) {
             count += 1;
           }

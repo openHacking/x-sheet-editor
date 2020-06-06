@@ -57,6 +57,39 @@ class CellFont {
     this.angle = angle;
     this.width = width;
   }
+
+  clone() {
+    const {
+      align,
+      verticalAlign,
+      textWrap,
+      strikethrough,
+      underline,
+      color,
+      name,
+      size,
+      bold,
+      italic,
+      angle,
+      direction,
+      width,
+    } = this;
+    return new CellFont({
+      align,
+      verticalAlign,
+      textWrap,
+      strikethrough,
+      underline,
+      color,
+      name,
+      size,
+      bold,
+      italic,
+      angle,
+      direction,
+      width,
+    });
+  }
 }
 
 export { CellFont };
