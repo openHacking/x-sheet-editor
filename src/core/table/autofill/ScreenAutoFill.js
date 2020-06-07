@@ -82,7 +82,7 @@ class ScreenAutoFill extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const { frozenLeftTop, cols, rows } = table;
-    const viewRange = frozenLeftTop.getViewRange();
+    const viewRange = frozenLeftTop.getScrollViewRange();
     const { rect } = autoFillAttr;
     const empty = new RectRange(-1, -1, -1, -1);
     const coincideRange = rect.coincide(viewRange);
@@ -116,7 +116,7 @@ class ScreenAutoFill extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const { fixedTop, cols, rows } = table;
-    const viewRange = fixedTop.getViewRange();
+    const viewRange = fixedTop.getScrollViewRange();
     const { rect } = autoFillAttr;
     const empty = new RectRange(-1, -1, -1, -1);
     const coincideRange = rect.coincide(viewRange);
@@ -155,7 +155,7 @@ class ScreenAutoFill extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const { fixedLeft, cols, rows } = table;
-    const viewRange = fixedLeft.getViewRange();
+    const viewRange = fixedLeft.getScrollViewRange();
     const { rect } = autoFillAttr;
     const empty = new RectRange(-1, -1, -1, -1);
     const coincideRange = rect.coincide(viewRange);
@@ -196,7 +196,7 @@ class ScreenAutoFill extends ScreenWidget {
     const {
       cols, rows,
     } = table;
-    const viewRange = table.getViewRange();
+    const viewRange = table.getScrollViewRange();
     const { rect } = autoFillAttr;
     const empty = new RectRange(-1, -1, -1, -1);
     const coincideRange = rect.coincide(viewRange);

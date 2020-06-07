@@ -25,7 +25,7 @@ class ScreenCopyStyle extends ScreenWidget {
     const {
       frozenLeftTop, cols, rows, grid,
     } = table;
-    const viewRange = frozenLeftTop.getViewRange();
+    const viewRange = frozenLeftTop.getScrollViewRange();
     const { rect } = selectorAttr;
 
     const empty = new RectRange(-1, -1, -1, -1);
@@ -73,7 +73,7 @@ class ScreenCopyStyle extends ScreenWidget {
     const {
       fixedTop, cols, rows, grid,
     } = table;
-    const viewRange = fixedTop.getViewRange();
+    const viewRange = fixedTop.getScrollViewRange();
     const { rect } = selectorAttr;
 
     const empty = new RectRange(-1, -1, -1, -1);
@@ -128,7 +128,7 @@ class ScreenCopyStyle extends ScreenWidget {
     const {
       fixedLeft, cols, rows, grid,
     } = table;
-    const viewRange = fixedLeft.getViewRange();
+    const viewRange = fixedLeft.getScrollViewRange();
     const { rect } = selectorAttr;
 
     const empty = new RectRange(-1, -1, -1, -1);
@@ -183,7 +183,7 @@ class ScreenCopyStyle extends ScreenWidget {
     const {
       cols, rows, grid,
     } = table;
-    const viewRange = table.getViewRange();
+    const viewRange = table.getScrollViewRange();
     const { rect } = selectorAttr;
 
     const empty = new RectRange(-1, -1, -1, -1);

@@ -46,7 +46,7 @@ class YHeightLight extends Widget {
       case 'lt': {
         const { rect } = selectorAttr;
         const { frozenLeftTop, rows } = table;
-        const ltViewRange = frozenLeftTop.getViewRange();
+        const ltViewRange = frozenLeftTop.getScrollViewRange();
         const ltCoincideRange = this.coincide(rect, ltViewRange);
         if (!empty.equals(ltCoincideRange)) {
           const height = rows.sectionSumHeight(ltCoincideRange.sri, ltCoincideRange.eri);
@@ -65,7 +65,7 @@ class YHeightLight extends Widget {
       case 't': {
         const { rect } = selectorAttr;
         const { fixedTop, rows } = table;
-        const tViewRange = fixedTop.getViewRange();
+        const tViewRange = fixedTop.getScrollViewRange();
         const tCoincideRange = this.coincide(rect, tViewRange);
         // console.log('tCoincideRange>>>', tCoincideRange);
         if (!empty.equals(tCoincideRange)) {
@@ -86,7 +86,7 @@ class YHeightLight extends Widget {
       case 'l': {
         const { rect } = selectorAttr;
         const { fixedLeft, rows } = table;
-        const lViewRange = fixedLeft.getViewRange();
+        const lViewRange = fixedLeft.getScrollViewRange();
         const lCoincideRange = this.coincide(rect, lViewRange);
         if (!empty.equals(lCoincideRange)) {
           const height = rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
@@ -105,7 +105,7 @@ class YHeightLight extends Widget {
       case 'br': {
         const { rect } = selectorAttr;
         const { rows } = table;
-        const cViewRange = table.getViewRange();
+        const cViewRange = table.getScrollViewRange();
         const cCoincideRange = this.coincide(rect, cViewRange);
         // console.log('cCoincideRange>>>', cCoincideRange);
         if (!empty.equals(cCoincideRange)) {
@@ -127,7 +127,7 @@ class YHeightLight extends Widget {
       case 'ltt': {
         const { rect } = selectorAttr;
         const { frozenLeftTop, rows } = table;
-        const ltViewRange = frozenLeftTop.getViewRange();
+        const ltViewRange = frozenLeftTop.getScrollViewRange();
         const ltCoincideRange = this.coincide(rect, ltViewRange);
         if (!empty.equals(ltCoincideRange)) {
           // eslint-disable-next-line max-len
@@ -146,8 +146,8 @@ class YHeightLight extends Widget {
       case 'ltl': {
         const { rect } = selectorAttr;
         const { frozenLeftTop, fixedLeft, rows } = table;
-        const ltViewRange = frozenLeftTop.getViewRange();
-        const lViewRange = fixedLeft.getViewRange();
+        const ltViewRange = frozenLeftTop.getScrollViewRange();
+        const lViewRange = fixedLeft.getScrollViewRange();
         const ltCoincideRange = this.coincide(rect, ltViewRange);
         const lCoincideRange = this.coincide(rect, lViewRange);
         const top = rows.sectionSumHeight(ltViewRange.sri, ltCoincideRange.sri - 1) + index.height;
@@ -170,8 +170,8 @@ class YHeightLight extends Widget {
       case 'tbr': {
         const { rect } = selectorAttr;
         const { fixedTop, rows } = table;
-        const tViewRange = fixedTop.getViewRange();
-        const cViewRange = table.getViewRange();
+        const tViewRange = fixedTop.getScrollViewRange();
+        const cViewRange = table.getScrollViewRange();
         const tCoincideRange = this.coincide(rect, tViewRange);
         const cCoincideRange = this.coincide(rect, cViewRange);
         const top = rows.sectionSumHeight(tViewRange.sri, tCoincideRange.sri - 1) + index.height;
@@ -198,7 +198,7 @@ class YHeightLight extends Widget {
       case 'lbr': {
         const { rect } = selectorAttr;
         const { fixedLeft, rows } = table;
-        const lViewRange = fixedLeft.getViewRange();
+        const lViewRange = fixedLeft.getScrollViewRange();
         const lCoincideRange = this.coincide(rect, lViewRange);
         if (!empty.equals(lCoincideRange)) {
           const height = rows.sectionSumHeight(lCoincideRange.sri, lCoincideRange.eri);
@@ -217,8 +217,8 @@ class YHeightLight extends Widget {
       case 'lttlbr': {
         const { rect } = selectorAttr;
         const { frozenLeftTop, fixedLeft, rows } = table;
-        const ltViewRange = frozenLeftTop.getViewRange();
-        const lViewRange = fixedLeft.getViewRange();
+        const ltViewRange = frozenLeftTop.getScrollViewRange();
+        const lViewRange = fixedLeft.getScrollViewRange();
         const ltCoincideRange = this.coincide(rect, ltViewRange);
         const lCoincideRange = this.coincide(rect, lViewRange);
         let height = 0;

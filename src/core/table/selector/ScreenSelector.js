@@ -147,7 +147,7 @@ class ScreenSelector extends ScreenWidget {
     const {
       frozenLeftTop, cols, rows, grid,
     } = table;
-    const viewRange = frozenLeftTop.getViewRange();
+    const viewRange = frozenLeftTop.getScrollViewRange();
     const { rect } = selectorAttr;
 
     const empty = new RectRange(-1, -1, -1, -1);
@@ -191,7 +191,7 @@ class ScreenSelector extends ScreenWidget {
     const {
       fixedTop, cols, rows, grid,
     } = table;
-    const viewRange = fixedTop.getViewRange();
+    const viewRange = fixedTop.getScrollViewRange();
     const { rect } = selectorAttr;
 
     const empty = new RectRange(-1, -1, -1, -1);
@@ -240,7 +240,7 @@ class ScreenSelector extends ScreenWidget {
     const {
       fixedLeft, cols, rows, grid,
     } = table;
-    const viewRange = fixedLeft.getViewRange();
+    const viewRange = fixedLeft.getScrollViewRange();
     const { rect } = selectorAttr;
 
     const empty = new RectRange(-1, -1, -1, -1);
@@ -289,7 +289,7 @@ class ScreenSelector extends ScreenWidget {
     const {
       cols, rows, grid,
     } = table;
-    const viewRange = table.getViewRange();
+    const viewRange = table.getScrollViewRange();
     const { rect } = selectorAttr;
 
     const empty = new RectRange(-1, -1, -1, -1);
@@ -341,7 +341,7 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const { frozenLeftTop } = table;
-    const viewRange = frozenLeftTop.getViewRange();
+    const viewRange = frozenLeftTop.getScrollViewRange();
     const { rect, edge, edgeType } = selectorAttr;
 
     const empty = new RectRange(-1, -1, -1, -1);
@@ -389,7 +389,7 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const { fixedTop } = table;
-    const viewRange = fixedTop.getViewRange();
+    const viewRange = fixedTop.getScrollViewRange();
     const { rect, edge, edgeType } = selectorAttr;
 
     const empty = new RectRange(-1, -1, -1, -1);
@@ -441,7 +441,7 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const { fixedLeft } = table;
-    const viewRange = fixedLeft.getViewRange();
+    const viewRange = fixedLeft.getScrollViewRange();
     const { rect, edge, edgeType } = selectorAttr;
 
     const empty = new RectRange(-1, -1, -1, -1);
@@ -492,7 +492,7 @@ class ScreenSelector extends ScreenWidget {
   setBrCorner(selectorAttr, intersectsArea) {
     const { screen } = this;
     const { table } = screen;
-    const viewRange = table.getViewRange();
+    const viewRange = table.getScrollViewRange();
     const { rect, edge, edgeType } = selectorAttr;
 
     const empty = new RectRange(-1, -1, -1, -1);
@@ -600,7 +600,7 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const { cols, rows } = table;
-    const viewRange = table.getViewRange();
+    const viewRange = table.getScrollViewRange();
     let { sri, sci } = viewRange;
     const { eri, eci } = viewRange;
 

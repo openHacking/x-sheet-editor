@@ -1,6 +1,6 @@
-import { Rect } from '../../../canvas/Rect';
-import { ALIGN, TEXT_DIRECTION, TEXT_WRAP, VERTICAL_ALIGN } from '../../../canvas/Font';
-import { Utils } from '../../../utils/Utils';
+import { Rect } from '../../canvas/Rect';
+import { ALIGN, TEXT_DIRECTION, TEXT_WRAP, VERTICAL_ALIGN } from '../../canvas/Font';
+import { Utils } from '../../utils/Utils';
 
 /**
  * CellsHelper
@@ -8,13 +8,6 @@ import { Utils } from '../../../utils/Utils';
  */
 class CellsHelper {
 
-  /**
-   * CellsHelper
-   * @param cells
-   * @param merges
-   * @param rows
-   * @param cols
-   */
   constructor({ cells, merges, rows, cols }) {
     this.cells = cells;
     this.merges = merges;
@@ -22,11 +15,6 @@ class CellsHelper {
     this.cols = cols;
   }
 
-  /**
-   * 获取指定单元格中文字的最大绘制宽度
-   * @param ri
-   * @param ci
-   */
   getCellTextMaxWidth(ri, ci) {
     const { cells, cols } = this;
     const cell = cells.getCell(ri, ci);
@@ -85,11 +73,6 @@ class CellsHelper {
     return { width, offset };
   }
 
-  /**
-   * 获取指定单元格中文字的最大绘制高度
-   * @param ri
-   * @param ci
-   */
   getCellTextMaxHeight(ri, ci) {
     const { cells, rows } = this;
     const cell = cells.getCell(ri, ci);
@@ -148,13 +131,21 @@ class CellsHelper {
     return { height, offset };
   }
 
-  /**
-   * 获取指定视图区域中的单元格
-   * @param rectRange
-   * @param callback
-   * @param startX
-   * @param startY
-   */
+  getCellOverFlow(ri, ci, rect, cell) {
+    const { fontAttr } = cell;
+    const { direction, textWrap } = fontAttr;
+    const { x, y, width, height } = rect;
+    if (textWrap === TEXT_WRAP.OVER_FLOW) {
+      if (direction === TEXT_DIRECTION.VERTICAL) {
+        const max = this.getCellTextMaxHeight(ri, ci);
+        return new Rect({ x, y: y + max.offset, width, height: max.height });
+      }
+      const max = this.getCellTextMaxWidth(ri, ci);
+      return new Rect({ x: x + max.offset, y, width: max.width, height });
+    }
+    return null;
+  }
+
   getCellByViewRange({
     rectRange, callback, startX = 0, startY = 0,
   }) {
@@ -167,22 +158,11 @@ class CellsHelper {
       const height = rows.getHeight(i);
       let x = startX;
       for (let j = sci; j <= eci; j += 1) {
-        let overFlow;
         const width = cols.getWidth(j);
         const cell = cells.getCell(i, j);
         if (cell) {
           const rect = new Rect({ x, y, width, height });
-          const { fontAttr } = cell;
-          const { direction, textWrap } = fontAttr;
-          if (textWrap === TEXT_WRAP.OVER_FLOW) {
-            if (direction === TEXT_DIRECTION.VERTICAL) {
-              const max = this.getCellTextMaxHeight(i, j);
-              overFlow = new Rect({ x, y: y + max.offset, width, height: max.height });
-            } else {
-              const max = this.getCellTextMaxWidth(i, j);
-              overFlow = new Rect({ x: x + max.offset, y, width: max.width, height });
-            }
-          }
+          const overFlow = this.getCellOverFlow(i, j, rect, cell);
           const result = callback(i, j, cell, rect, overFlow);
           if (result === false) {
             return;
@@ -194,71 +174,6 @@ class CellsHelper {
     }
   }
 
-  /**
-   * 获取指定区域中的合并单元格
-   * @param rectRange
-   * @param callback
-   */
-  getMergeCellByViewRange({
-    rectRange, callback,
-  }) {
-    const { rows, cols, cells, merges } = this;
-    const {
-      sri, eri, sci, eci,
-    } = rectRange;
-    const filter = [];
-    for (let i = sri; i <= eri; i += 1) {
-      for (let j = sci; j <= eci; j += 1) {
-        const merge = merges.getFirstIncludes(i, j);
-        if (merge && !filter.find(item => item === merge)) {
-          filter.push(merge);
-          const cell = cells.getCellOrNew(i, j);
-          const minSri = Math.min(rectRange.sri, merge.sri);
-          let maxSri = Math.max(rectRange.sri, merge.sri);
-          const minSci = Math.min(rectRange.sci, merge.sci);
-          let maxSci = Math.max(rectRange.sci, merge.sci);
-          maxSri -= 1;
-          maxSci -= 1;
-          let x = cols.sectionSumWidth(minSci, maxSci);
-          let y = rows.sectionSumHeight(minSri, maxSri);
-          x = rectRange.sci > merge.sci ? x * -1 : x;
-          y = rectRange.sri > merge.sri ? y * -1 : y;
-          const width = cols.sectionSumWidth(merge.sci, merge.eci);
-          const height = rows.sectionSumHeight(merge.sri, merge.eri);
-          const rect = new Rect({ x, y, width, height });
-          callback(rect, cell);
-        }
-      }
-    }
-  }
-
-  /**
-   * 获取指定区域中的单元格
-   * 跳过合并单元格
-   * @param rectRange
-   * @param callback
-   */
-  getCellSkipMergeCellByViewRange({ rectRange, callback }) {
-    const { merges } = this;
-    this.getCellByViewRange({
-      rectRange,
-      callback: (ri, ci, cell, rect, overflow) => {
-        const merge = merges.getFirstIncludes(ri, ci);
-        if (merge === null) {
-          callback(ri, ci, cell, rect, overflow);
-        }
-      },
-    });
-  }
-
-  /**
-   * 获取指定视图区域中的单元格
-   * 如果单元格不存在则创建一个新的
-   * @param rectRange
-   * @param callback
-   * @param startX
-   * @param startY
-   */
   getCellOrNewCellByViewRange({
     rectRange, callback, startX = 0, startY = 0,
   }) {
@@ -271,21 +186,10 @@ class CellsHelper {
       const height = rows.getHeight(i);
       let x = startX;
       for (let j = sci; j <= eci; j += 1) {
-        let overFlow;
         const width = cols.getWidth(j);
         const cell = cells.getCellOrNew(i, j);
         const rect = new Rect({ x, y, width, height });
-        const { fontAttr } = cell;
-        const { direction, textWrap } = fontAttr;
-        if (textWrap === TEXT_WRAP.OVER_FLOW) {
-          if (direction === TEXT_DIRECTION.VERTICAL) {
-            const max = this.getCellTextMaxHeight(i, j);
-            overFlow = new Rect({ x, y: y + max.offset, width, height: max.height });
-          } else {
-            const max = this.getCellTextMaxWidth(i, j);
-            overFlow = new Rect({ x: x + max.offset, y, width: max.width, height });
-          }
-        }
+        const overFlow = this.getCellOverFlow(i, j, rect, cell);
         const result = callback(i, j, cell, rect, overFlow);
         if (result === false) {
           return;
@@ -294,6 +198,58 @@ class CellsHelper {
       }
       y += height;
     }
+  }
+
+  getMergeCellByViewRange({
+    rectRange, callback, startX = 0, startY = 0,
+  }) {
+    const { rows, cols, cells, merges } = this;
+    const {
+      sri, eri, sci, eci,
+    } = rectRange;
+    const filter = [];
+    for (let i = sri; i <= eri; i += 1) {
+      for (let j = sci; j <= eci; j += 1) {
+        const merge = merges.getFirstIncludes(i, j);
+        if (merge && !filter.find(item => item === merge)) {
+          filter.push(merge);
+          const cell = cells.getCellOrNew(i, j);
+          const width = cols.sectionSumWidth(merge.sci, merge.eci);
+          const height = rows.sectionSumHeight(merge.sri, merge.eri);
+          const minSri = Math.min(rectRange.sri, merge.sri);
+          const minSci = Math.min(rectRange.sci, merge.sci);
+          let maxSri = Math.max(rectRange.sri, merge.sri);
+          let maxSci = Math.max(rectRange.sci, merge.sci);
+          maxSri -= 1;
+          maxSci -= 1;
+          let x = cols.sectionSumWidth(minSci, maxSci);
+          let y = rows.sectionSumHeight(minSri, maxSri);
+          x = rectRange.sci > merge.sci ? x * -1 : x;
+          y = rectRange.sri > merge.sri ? y * -1 : y;
+          x += startX;
+          y += startY;
+          const rect = new Rect({ x, y, width, height });
+          callback(rect, cell);
+        }
+      }
+    }
+  }
+
+  getCellSkipMergeCellByViewRange({
+    rectRange, callback, startX = 0, startY = 0,
+  }) {
+    const { merges } = this;
+    this.getCellByViewRange({
+      rectRange,
+      callback: (ri, ci, cell, rect, overflow) => {
+        const merge = merges.getFirstIncludes(ri, ci);
+        if (merge === null) {
+          callback(ri, ci, cell, rect, overflow);
+        }
+      },
+      startX,
+      startY,
+    });
   }
 }
 
