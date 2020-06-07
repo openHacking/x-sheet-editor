@@ -337,7 +337,7 @@ class FixedLeft {
 
   getHeight() {
     const { table } = this;
-    const viewRange = table.geContentViewRange();
+    const viewRange = table.getContentViewRange();
     return viewRange.h;
   }
 
@@ -345,7 +345,7 @@ class FixedLeft {
     const { table } = this;
     const { fixed } = table;
     const { fxLeft } = fixed;
-    const viewRange = table.geContentViewRange();
+    const viewRange = table.getScrollViewRange();
     const width = this.getWidth();
     const height = this.getHeight();
     viewRange.sci = 0;
@@ -856,7 +856,7 @@ class Content {
     const { draw, grid, settings } = table;
     const scrollViewXOffset = table.getScrollViewXOffset();
     const scrollViewRange = this.getScrollViewRange();
-    const contentViewRange = table.geContentViewRange();
+    const contentViewRange = table.getContentViewRange();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
     const width = scrollViewRange.w;
@@ -903,7 +903,7 @@ class FixedTop {
 
   getWidth() {
     const { table } = this;
-    const viewRange = table.geContentViewRange();
+    const viewRange = table.getContentViewRange();
     return viewRange.w;
   }
 
@@ -918,7 +918,21 @@ class FixedTop {
     const { table } = this;
     const { fixed } = table;
     const { fxTop } = fixed;
-    const viewRange = table.geContentViewRange();
+    const viewRange = table.getScrollViewRange();
+    const width = this.getWidth();
+    const height = this.getHeight();
+    viewRange.sri = 0;
+    viewRange.eri = fxTop;
+    viewRange.w = width;
+    viewRange.h = height;
+    return viewRange;
+  }
+
+  getContentViewRange() {
+    const { table } = this;
+    const { fixed } = table;
+    const { fxTop } = fixed;
+    const viewRange = table.getContentViewRange();
     const width = this.getWidth();
     const height = this.getHeight();
     viewRange.sri = 0;
@@ -1095,6 +1109,8 @@ class FixedTop {
     cellsHelper.getCellSkipMergeCellByViewRange({
       rectRange: viewRange,
       callback: (i, c, cell, rect, overflow) => {
+        // console.log('rect>>>', rect);
+        // console.log('i, c', i, c);
         // 绘制文字
         const { fontAttr } = cell;
         const font = new Font({
@@ -1135,7 +1151,7 @@ class FixedTop {
     const { draw, grid, settings } = table;
     const scrollViewXOffset = table.getScrollViewXOffset();
     const scrollViewRange = this.getScrollViewRange();
-    const contentViewRange = table.geContentViewRange();
+    const contentViewRange = this.getContentViewRange();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
     const rect = new Rect({
@@ -1532,9 +1548,10 @@ class FrozenRect {
  * color: string,
  * width: number,
  * height: number},
- * fixed: {fxLeft: number,
+ * fixed: {
+ * fxLeft: number,
  * fxTop: number,
- * fxRight: number},
+ * }
  * rows: {len: number,
  * height: number},
  * cols: {len: number,
@@ -1570,7 +1587,6 @@ const defaultSettings = {
   fixed: {
     fxTop: -1,
     fxLeft: -1,
-    fxRight: -1,
   },
 };
 
@@ -1724,7 +1740,7 @@ class Table extends Widget {
 
   checkedEnableBorderDrawOptimization() {
     const { cellsHelper } = this;
-    const viewRange = this.geContentViewRange();
+    const viewRange = this.getContentViewRange();
     let enable = true;
     cellsHelper.getCellByViewRange({
       rectRange: viewRange,
@@ -1809,7 +1825,7 @@ class Table extends Widget {
     this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
   }
 
-  geContentViewRange() {
+  getContentViewRange() {
     const { contentViewRange } = this;
     if (contentViewRange !== null) {
       return contentViewRange.clone();
@@ -2064,6 +2080,7 @@ class Table extends Widget {
   }
 
   setCell(ri, ci, cell) {
+    // console.log('setCell >> ri, ci >>', ri, ci);
     const { cells, dataSnapshot } = this;
     cells.setCellOrNew(ri, ci, cell);
     dataSnapshot.snapshot(true);

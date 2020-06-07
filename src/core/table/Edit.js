@@ -87,7 +87,7 @@ class Edit extends Widget {
       const text = Utils.trim(this.text);
       if (cell.text !== text) {
         cell.text = text;
-        table.setCell(cell);
+        table.setCell(select.sri, select.sci, cell);
       }
     }
     this.hide();
