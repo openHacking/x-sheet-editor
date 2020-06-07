@@ -870,7 +870,7 @@ class Content {
     });
     const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
     crop.open();
-    this.drawBackGround(contentViewRange, scrollViewXOffset, offsetX, offsetY);
+    this.drawBackGround(scrollViewRange, scrollViewXOffset, offsetX, offsetY);
     this.drawCells(contentViewRange, scrollViewXOffset, offsetX, offsetY);
     if (settings.table.showGrid) {
       this.drawGrid(scrollViewRange, offsetX, offsetY);
@@ -1149,7 +1149,7 @@ class FixedTop {
     });
     const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
     crop.open();
-    this.drawBackGround(contentViewRange, scrollViewXOffset, offsetX, offsetY);
+    this.drawBackGround(scrollViewRange, scrollViewXOffset, offsetX, offsetY);
     this.drawCells(contentViewRange, scrollViewXOffset, offsetX, offsetY);
     if (settings.table.showGrid) {
       this.drawGrid(scrollViewRange, offsetX, offsetY);
