@@ -773,7 +773,7 @@ class Content {
     draw.restore();
   }
 
-  drawBackGround(viewRange, scrollViewXOffset, offsetX, offsetY) {
+  drawBackGround(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
       draw, grid, cellsHelper,
@@ -789,7 +789,6 @@ class Content {
         const box = new Box({ draw, rect });
         box.drawBackgroundColor(cell.background);
       },
-      startX: scrollViewXOffset,
     });
     // 绘制合并单元格背景
     cellsHelper.getMergeCellByViewRange({
@@ -800,7 +799,6 @@ class Content {
         const box = new Box({ draw, rect });
         box.drawBackgroundColor(cell.background);
       },
-      startX: scrollViewXOffset,
     });
     draw.offset(0, 0);
     draw.restore();
@@ -870,7 +868,7 @@ class Content {
     });
     const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
     crop.open();
-    this.drawBackGround(scrollViewRange, scrollViewXOffset, offsetX, offsetY);
+    this.drawBackGround(scrollViewRange, offsetX, offsetY);
     this.drawCells(contentViewRange, scrollViewXOffset, offsetX, offsetY);
     if (settings.table.showGrid) {
       this.drawGrid(scrollViewRange, offsetX, offsetY);
@@ -1054,7 +1052,7 @@ class FixedTop {
     draw.restore();
   }
 
-  drawBackGround(viewRange, scrollViewXOffset, offsetX, offsetY) {
+  drawBackGround(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
       draw, grid, cellsHelper,
@@ -1070,7 +1068,6 @@ class FixedTop {
         const box = new Box({ draw, rect });
         box.drawBackgroundColor(cell.background);
       },
-      startX: scrollViewXOffset,
     });
     // 绘制合并单元格背景
     cellsHelper.getMergeCellByViewRange({
@@ -1081,7 +1078,6 @@ class FixedTop {
         const box = new Box({ draw, rect });
         box.drawBackgroundColor(cell.background);
       },
-      startX: scrollViewXOffset,
     });
     draw.offset(0, 0);
     draw.restore();
@@ -1149,7 +1145,7 @@ class FixedTop {
     });
     const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
     crop.open();
-    this.drawBackGround(scrollViewRange, scrollViewXOffset, offsetX, offsetY);
+    this.drawBackGround(scrollViewRange, offsetX, offsetY);
     this.drawCells(contentViewRange, scrollViewXOffset, offsetX, offsetY);
     if (settings.table.showGrid) {
       this.drawGrid(scrollViewRange, offsetX, offsetY);
