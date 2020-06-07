@@ -12,6 +12,64 @@
 <link rel="shortcut icon" href="logo.ico"><link href="XSheet.css" rel="stylesheet"></head>
 <body id="dome"><script type="text/javascript" src="XSheet.js"></script></body>
 <script>
-  const xSheet = new XSheet('#dome');
+  const xSheet = new XSheet('#dome', {
+    workConfig: {
+      body: {
+        sheets: [{
+          tableConfig: {
+            table: {},
+            rows: {
+              data: [],
+            },
+            cols: {
+              data: [],
+            },
+            merges: {
+              data: [],
+            },
+            data: [
+              [{
+                text: '竖排文字',
+                format: 'default',
+                background: null,
+                fontAttr: {
+                  align: 'left',
+                  verticalAlign: 'top',
+                  textWrap: 2,
+                  strikethrough: false,
+                  underline: false,
+                  color: 'rgb(0,0,0)',
+                  name: 'Arial',
+                  size: 14,
+                  bold: false,
+                  italic: false,
+                  direction: 'vertical',
+                },
+              }],
+              [{
+                text: 'Canvas Context API Angle Font Draw Test',
+                format: 'default',
+                background: null,
+                fontAttr: {
+                  align: 'left',
+                  verticalAlign: 'bottom',
+                  textWrap: 3,
+                  strikethrough: false,
+                  underline: false,
+                  color: 'rgb(0,0,0)',
+                  name: 'Arial',
+                  size: 14,
+                  bold: false,
+                  italic: false,
+                  angle: 40,
+                  direction: 'angle',
+                },
+              }],
+            ],
+          },
+        }],
+      },
+    },
+  });
 </script>
 </html>

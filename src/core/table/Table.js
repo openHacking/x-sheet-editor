@@ -832,6 +832,7 @@ class Content {
     cellsHelper.getMergeCellByViewRange({
       rectRange: viewRange,
       callback: (rect, cell) => {
+        // console.log('rect >>>', rect);
         // 绘制文字
         const { fontAttr } = cell;
         const font = new Font({

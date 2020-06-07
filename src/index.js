@@ -8,6 +8,7 @@ import './base.less';
 import './index.less';
 
 class XSheet extends Widget {
+
   constructor(selectors, options = {
     workConfig: {
       body: {
@@ -29,6 +30,8 @@ class XSheet extends Widget {
     this.work.init();
   }
 }
+
+XSheet.version = '1.0.0-alpha';
 
 if (window) {
   window.XSheet = XSheet;

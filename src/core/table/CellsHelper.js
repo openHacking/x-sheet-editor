@@ -213,7 +213,7 @@ class CellsHelper {
         const merge = merges.getFirstIncludes(i, j);
         if (merge && !filter.find(item => item === merge)) {
           filter.push(merge);
-          const cell = cells.getCellOrNew(i, j);
+          const cell = cells.getCellOrNew(merge.sri, merge.sci);
           const width = cols.sectionSumWidth(merge.sci, merge.eci);
           const height = rows.sectionSumHeight(merge.sri, merge.eri);
           const minSri = Math.min(rectRange.sri, merge.sri);

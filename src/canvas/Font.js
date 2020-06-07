@@ -245,6 +245,7 @@ class HorizontalFontDraw {
     if (overflow && (textWidth + paddingH > overflow.width || size + paddingV > overflow.height)) {
       const crop = new Crop({ draw: dw, rect: overflow });
       crop.open();
+      // console.log('text >>>', text, tx, ty);
       dw.fillText(text, tx, ty);
       if (underline || strikethrough) {
         dw.beginPath();
@@ -276,6 +277,7 @@ class HorizontalFontDraw {
    * @returns {number}
    */
   drawTextWarp() {
+    // console.log('drawTextWarp');
     const { text, dw, attr, rect } = this;
     const { size, underline, strikethrough, align, verticalAlign } = attr;
     const { width, height } = rect;
@@ -376,6 +378,7 @@ class HorizontalFontDraw {
       const item = textArray[i];
       item.tx += bx;
       item.ty += by;
+      // console.log('text >>>', item.text, item.tx, item.ty);
       dw.fillText(item.text, item.tx, item.ty);
       if (underline || strikethrough) {
         dw.beginPath();
