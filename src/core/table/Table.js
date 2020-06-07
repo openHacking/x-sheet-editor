@@ -1812,12 +1812,6 @@ class Table extends Widget {
     this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
   }
 
-  clearViewRange() {
-    this.scrollViewRange = null;
-    this.contentViewRange = null;
-    this.scrollViewXOffset = -1;
-  }
-
   geContentViewRange() {
     const { contentViewRange } = this;
     if (contentViewRange !== null) {
@@ -1868,6 +1862,12 @@ class Table extends Widget {
     const { ci } = scroll;
     this.scrollViewXOffset = cols.sectionSumWidth(0, ci - 1);
     return -this.scrollViewXOffset;
+  }
+
+  clearViewRange() {
+    this.scrollViewRange = null;
+    this.contentViewRange = null;
+    this.scrollViewXOffset = -1;
   }
 
   render() {
