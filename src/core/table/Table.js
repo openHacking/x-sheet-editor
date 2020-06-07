@@ -1987,7 +1987,7 @@ class Table extends Widget {
       }
     } else if (x > index.width) {
       let total = fixedWidth;
-      const viewRange = this.geContentViewRange();
+      const viewRange = this.getScrollViewRange();
       for (let i = viewRange.sci; i <= viewRange.eci; i += 1) {
         const width = cols.getWidth(i);
         total += width;
@@ -2008,7 +2008,7 @@ class Table extends Widget {
       }
     } else if (y > index.height) {
       let total = fixedHeight;
-      const viewRange = this.geContentViewRange();
+      const viewRange = this.getScrollViewRange();
       for (let i = viewRange.sri; i <= viewRange.eri; i += 1) {
         const height = rows.getHeight(i);
         total += height;
