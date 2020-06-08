@@ -10,7 +10,7 @@ import { Update } from './options/Update';
 class TopOption extends Widget {
   constructor() {
     super(`${cssPrefix}-option`);
-    this.title = '工作簿';
+    this.title = ' X-Sheet 工作簿';
     this.logoEle = h('div', `${cssPrefix}-option-logo`);
     this.titleEle = h('div', `${cssPrefix}-option-title`);
     this.optionsEle = h('div', `${cssPrefix}-option-box`);
