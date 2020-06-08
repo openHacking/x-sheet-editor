@@ -2,13 +2,63 @@
  * GridLineHandle
  * @author jerry
  */
+import { ALIGN } from '../../../canvas/Font';
+
 class GridLineHandle {
 
   constructor(table) {
     this.table = table;
   }
 
-  vLineFilter(ci, ri) {
+  /**
+   * 绘制垂直网格线段时
+   * 判断网格左右的单元格中
+   * 是否存在overflow裁剪类型
+   * 的单元格, 如果有判断宽度是否
+   * 覆盖了当前线段如果覆盖了
+   * 则跳过该线段绘制
+   * @param ci
+   * @param ri
+   */
+  vLineOverFlowWidthChecked(ci, ri) {
+    const { table } = this;
+    const { cols, cells } = table;
+    // 获取table的滚动可视区域
+    const scrollViewRange = table.getScrollViewRange();
+    const { eci } = scrollViewRange;
+    // 左边的最大宽度
+    const leftMaxWidth = cols.sectionSumWidth(0, ci);
+    for (let i = 0, leftWidth = 0; i <= ci; i += 1) {
+      if (i > 0) leftWidth += cols.getWidth(i - 1);
+      const cell = cells.getCell(ri, i);
+      if (!cell) { continue; }
+      const { fontAttr, contentWidth } = cell;
+      if (fontAttr.align !== ALIGN.left) { continue; }
+      if (leftWidth + contentWidth >= leftMaxWidth) {
+        return false;
+      }
+    }
+    // 右边最大的宽度
+    for (let i = ci + 1, rightWidth = 0; i < eci; i += 1) {
+      rightWidth += cols.getWidth(i);
+      const cell = cells.getCell(ri, i);
+      if (!cell) { continue; }
+      const { fontAttr, contentWidth } = cell;
+      if (fontAttr.align !== ALIGN.right) { continue; }
+      if (contentWidth >= rightWidth) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * 检查垂直线段是否需要绘制
+   * @param ci
+   * @param ri
+   * @returns {boolean}
+   */
+  vLineBorderChecked(ci, ri) {
     const { table } = this;
     const { cells } = table;
     const cell = cells.getMergeCellOrCell(ri, ci);
@@ -26,7 +76,13 @@ class GridLineHandle {
     return true;
   }
 
-  hLineFilter(ri, ci) {
+  /**
+   * 检查水平线段是否需要绘制
+   * @param ri
+   * @param ci
+   * @returns {boolean}
+   */
+  hLineBorderChecked(ri, ci) {
     const { table } = this;
     const { cells } = table;
     const cell = cells.getMergeCellOrCell(ri, ci);
@@ -44,6 +100,14 @@ class GridLineHandle {
     return true;
   }
 
+  /**
+   * 水平线段位置计算
+   * @param viewRange
+   * @param bx
+   * @param by
+   * @param filter
+   * @returns {[]}
+   */
   gridHLine(viewRange, bx = 0, by = 0, filter = () => true) {
     const { table } = this;
     const { lineHandle, cols, rows } = table;
@@ -87,6 +151,14 @@ class GridLineHandle {
     return line;
   }
 
+  /**
+   * 垂直线段位置计算
+   * @param viewRange
+   * @param bx
+   * @param by
+   * @param filter
+   * @returns {[]}
+   */
   gridVLine(viewRange, bx = 0, by = 0, filter = () => true) {
     const { table } = this;
     const { lineHandle, cols, rows } = table;
@@ -130,6 +202,12 @@ class GridLineHandle {
     return line;
   }
 
+  /**
+   * 水平线段位置计算
+   * 检查水平线段是否需要绘制
+   * @param viewRange
+   * @returns {*[]}
+   */
   hLine(viewRange) {
     const { table } = this;
     const { merges } = table;
@@ -138,10 +216,16 @@ class GridLineHandle {
       if (merge) {
         return false;
       }
-      return this.hLineFilter(ri, ci);
+      return this.hLineBorderChecked(ri, ci);
     });
   }
 
+  /**
+   * 垂直线段位置计算
+   * 检查水平线段是否需要绘制
+   * @param viewRange
+   * @returns {*[]}
+   */
   vLine(viewRange) {
     const { table } = this;
     const { merges } = table;
@@ -150,10 +234,17 @@ class GridLineHandle {
       if (merge) {
         return false;
       }
-      return this.vLineFilter(ci, ri);
+      return this.vLineBorderChecked(ci, ri)
+        && this.vLineOverFlowWidthChecked(ci, ri);
     });
   }
 
+  /**
+   * 水平合并单元格线段位置计算
+   * 检查水平线段是否需要绘制
+   * @param mergesBrink
+   * @returns {*[]}
+   */
   hMergeLine(mergesBrink) {
     let result = [];
     for (let i = 0; i < mergesBrink.length; i += 1) {
@@ -161,13 +252,19 @@ class GridLineHandle {
       const { bottom } = brink;
       if (bottom) {
         const { view, x, y } = bottom;
-        const item = this.gridHLine(view, x, y, (ri, ci) => this.hLineFilter(ri, ci));
+        const item = this.gridHLine(view, x, y, (ri, ci) => this.hLineBorderChecked(ri, ci));
         result = result.concat(item);
       }
     }
     return result;
   }
 
+  /**
+   *  垂直合并单元格线段位置计算
+   * 检查水平线段是否需要绘制
+   * @param mergesBrink
+   * @returns {*[]}
+   */
   vMergeLine(mergesBrink) {
     let result = [];
     for (let i = 0; i < mergesBrink.length; i += 1) {
@@ -175,7 +272,8 @@ class GridLineHandle {
       const { right } = brink;
       if (right) {
         const { view, x, y } = right;
-        const item = this.gridVLine(view, x, y, (ci, ri) => this.vLineFilter(ci, ri));
+        const item = this.gridVLine(view, x, y, (ci, ri) => this.vLineBorderChecked(ci, ri)
+          && this.vLineOverFlowWidthChecked(ci, ri));
         result = result.concat(item);
       }
     }

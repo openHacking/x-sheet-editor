@@ -15,6 +15,7 @@ class Cell {
    * @param format
    * @param fontAttr
    * @param borderAttr
+   * @param contentWidth
    */
   constructor({
     text = Utils.EMPTY,
@@ -22,12 +23,18 @@ class Cell {
     format = 'default',
     fontAttr = {},
     borderAttr = {},
+    contentWidth = 0,
   }) {
     this.background = background;
     this.format = format;
     this.text = text;
     this.fontAttr = new CellFont(fontAttr);
     this.borderAttr = new CellBorder(borderAttr);
+    this.contentWidth = contentWidth;
+  }
+
+  setContentWidth(contentWidth) {
+    this.contentWidth = contentWidth;
   }
 
   clone() {

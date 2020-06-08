@@ -257,7 +257,7 @@ class FrozenLeftTop {
           overflow,
           attr: fontAttr,
         });
-        fontAttr.width = font.draw();
+        cell.setContentWidth(font.draw());
       },
     });
     // 绘制合并单元格文字
@@ -274,7 +274,7 @@ class FrozenLeftTop {
           attr: fontAttr,
         });
         font.setTextWrap(TEXT_WRAP.WORD_WRAP);
-        fontAttr.width = font.draw();
+        cell.setContentWidth(font.draw());
       },
     });
     draw.offset(0, 0);
@@ -531,7 +531,7 @@ class FixedLeft {
           overflow,
           attr: fontAttr,
         });
-        fontAttr.width = font.draw();
+        cell.setContentWidth(font.draw());
       },
     });
     // 绘制合并单元格文字
@@ -548,7 +548,7 @@ class FixedLeft {
           attr: fontAttr,
         });
         font.setTextWrap(TEXT_WRAP.WORD_WRAP);
-        fontAttr.width = font.draw();
+        cell.setContentWidth(font.draw());
       },
     });
     draw.offset(0, 0);
@@ -824,7 +824,7 @@ class Content {
           overflow,
           attr: fontAttr,
         });
-        fontAttr.width = font.draw();
+        cell.setContentWidth(font.draw());
       },
       startX: scrollViewXOffset,
     });
@@ -843,7 +843,7 @@ class Content {
           attr: fontAttr,
         });
         font.setTextWrap(TEXT_WRAP.WORD_WRAP);
-        fontAttr.width = font.draw();
+        cell.setContentWidth(font.draw());
       },
       startX: scrollViewXOffset,
     });
@@ -1120,7 +1120,7 @@ class FixedTop {
           overflow,
           attr: fontAttr,
         });
-        fontAttr.width = font.draw();
+        cell.setContentWidth(font.draw());
       },
       startX: scrollViewXOffset,
     });
@@ -1138,7 +1138,7 @@ class FixedTop {
           attr: fontAttr,
         });
         font.setTextWrap(TEXT_WRAP.WORD_WRAP);
-        fontAttr.width = font.draw();
+        cell.setContentWidth(font.draw());
       },
       startX: scrollViewXOffset,
     });
