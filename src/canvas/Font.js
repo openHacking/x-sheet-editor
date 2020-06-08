@@ -1442,6 +1442,7 @@ class AngleFontDraw {
       return contentWidth;
     }
     if (angle < 0) {
+      // 三角函数
       const trigonometric = new TrigonometricFunction({
         angle,
       });
