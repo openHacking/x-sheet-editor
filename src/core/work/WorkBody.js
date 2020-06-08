@@ -43,10 +43,10 @@ class WorkBody extends Widget {
     this.workConfig = options;
     this.sheets = this.workConfig.sheets;
     this.tabAndSheet = [];
-    // 产品标识
+    // 版本标识
     this.poweredBy = h('div', `${cssPrefix}-powered-by-tips`);
-    this.poweredBy.text('X-Sheet Powered by ©深为科技(Svell)');
-    // this.children(this.poweredBy);
+    this.poweredBy.text(' X-Sheet 1.0.0-alpha ');
+    this.children(this.poweredBy);
     // 组件
     this.sheetView = new SheetView();
     this.tabView = new TabView({
