@@ -1,4 +1,4 @@
-import { ALIGN, TEXT_WRAP } from '../../../canvas/Font';
+import { ALIGN, TEXT_DIRECTION, TEXT_WRAP } from '../../../canvas/Font';
 
 /**
  * GridLineHandle
@@ -33,8 +33,14 @@ class GridLineHandle {
       const cell = cells.getCell(ri, i);
       if (!cell) { continue; }
       const { fontAttr, contentWidth } = cell;
-      if (fontAttr.textWrap !== TEXT_WRAP.OVER_FLOW) { continue; }
-      if (fontAttr.align !== ALIGN.left) { continue; }
+      const { textWrap, align, direction } = fontAttr;
+      if (direction === TEXT_DIRECTION.ANGLE) {
+        if (textWrap === TEXT_WRAP.TRUNCATE) { continue; }
+        if (align !== ALIGN.left) { continue; }
+      } else {
+        if (textWrap !== TEXT_WRAP.OVER_FLOW) { continue; }
+        if (align !== ALIGN.left) { continue; }
+      }
       if (leftWidth + contentWidth >= leftMaxWidth) {
         return false;
       }
@@ -45,8 +51,14 @@ class GridLineHandle {
       const cell = cells.getCell(ri, i);
       if (!cell) { continue; }
       const { fontAttr, contentWidth } = cell;
-      if (fontAttr.textWrap !== TEXT_WRAP.OVER_FLOW) { continue; }
-      if (fontAttr.align !== ALIGN.right) { continue; }
+      const { textWrap, align, direction } = fontAttr;
+      if (direction === TEXT_DIRECTION.ANGLE) {
+        if (textWrap === TEXT_WRAP.TRUNCATE) { continue; }
+        if (align !== ALIGN.right) { continue; }
+      } else {
+        if (textWrap !== TEXT_WRAP.OVER_FLOW) { continue; }
+        if (align !== ALIGN.right) { continue; }
+      }
       if (contentWidth >= rightWidth) {
         return false;
       }
