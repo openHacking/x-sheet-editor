@@ -111,26 +111,20 @@ class TrigonometricFunction {
 
   // 斜边 + sin 角度
   sinWidthAngle() {
-    const { angle, width, height } = this;
-    let h = Math.abs(Math.sin(angleToRadian(angle)) * width);
-    if (h < 1) h = height;
-    return h;
+    const { angle, width } = this;
+    return Math.abs(Math.sin(angleToRadian(angle)) * width);
   }
 
   // 斜边 + cos 角度
   cosWidthAngle() {
-    const { angle, width, height } = this;
-    let w = Math.abs(Math.cos(angleToRadian(angle)) * width);
-    if (w < 1) w = height;
-    return w;
+    const { angle, width } = this;
+    return Math.abs(Math.cos(angleToRadian(angle)) * width);
   }
 
   // 对边 + sin角度
   sinHeightAngle() {
-    const { angle, height, width } = this;
-    let h = Math.abs(height / Math.sin(angleToRadian(angle)));
-    if (h < 1) h = width;
-    return h;
+    const { angle, height } = this;
+    return Math.abs(height / Math.sin(angleToRadian(angle)));
   }
 
   setWidth(width) {

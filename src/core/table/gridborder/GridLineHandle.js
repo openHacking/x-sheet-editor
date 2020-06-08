@@ -33,8 +33,9 @@ class GridLineHandle {
       const cell = cells.getCell(ri, i);
       if (!cell) { continue; }
       const { fontAttr, contentWidth } = cell;
-      const { textWrap, align, direction } = fontAttr;
+      const { textWrap, align, direction, angle } = fontAttr;
       if (direction === TEXT_DIRECTION.ANGLE) {
+        if (angle === 0) { continue; }
         if (textWrap === TEXT_WRAP.TRUNCATE) { continue; }
         if (align !== ALIGN.left) { continue; }
       } else {
@@ -51,8 +52,9 @@ class GridLineHandle {
       const cell = cells.getCell(ri, i);
       if (!cell) { continue; }
       const { fontAttr, contentWidth } = cell;
-      const { textWrap, align, direction } = fontAttr;
+      const { textWrap, align, direction, angle } = fontAttr;
       if (direction === TEXT_DIRECTION.ANGLE) {
+        if (angle === 0) { continue; }
         if (textWrap === TEXT_WRAP.TRUNCATE) { continue; }
         if (align !== ALIGN.right) { continue; }
       } else {

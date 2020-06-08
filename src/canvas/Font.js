@@ -4,8 +4,6 @@ import { Utils } from '../utils/Utils';
 import { DrawAngle, TrigonometricFunction } from './DrawAngle';
 import { Rect } from './Rect';
 
-// 填充的大小
-const PADDING = 8;
 // 垂直文本的字间距
 const VERTICAL_SPACING = 2;
 // 垂直文本的行高
@@ -14,6 +12,8 @@ const VERTICAL_LIEN_HEIGHT = 0;
 const HORIZONTAL_LIEN_HEIGHT = 4;
 // 旋转文本的行高
 const ANGLE_LINE_HEIGHT = 4;
+// 填充的大小
+const PADDING = 8;
 
 const ALIGN = {
   left: 'left',
@@ -1184,14 +1184,13 @@ class AngleFontDraw {
 
       // 计算斜角文本的最大绘制宽度
       // 超过绘制宽度自动换行
-      trigonometric.setWidth(width);
       trigonometric.setHeight(height - PADDING * 2);
       const textHypotenuseWidth = trigonometric.sinHeightAngle();
 
       // 计算文本块之间的间隙
-      trigonometric.setWidth(size + ANGLE_LINE_HEIGHT);
       trigonometric.setHeight(size + ANGLE_LINE_HEIGHT);
       const lineHeight = trigonometric.sinHeightAngle();
+      // console.log("lineHeight>>>", lineHeight);
 
       // 折行文本计算
       const textArray = [];
@@ -1254,7 +1253,6 @@ class AngleFontDraw {
         // 计算每个文本块的
         // 宽度和高度
         trigonometric.setWidth(textHypotenuseWidth);
-        trigonometric.setHeight(size);
         const textWidth = trigonometric.cosWidthAngle();
         const textHeight = trigonometric.sinWidthAngle();
 
@@ -1312,7 +1310,6 @@ class AngleFontDraw {
           switch (align) {
             case ALIGN.left: {
               trigonometric.setWidth(item.len / 2);
-              trigonometric.setHeight(size);
               const tw = trigonometric.cosWidthAngle();
               const th = trigonometric.sinWidthAngle();
               ax += rx + tw;
@@ -1326,7 +1323,6 @@ class AngleFontDraw {
             }
             case ALIGN.right: {
               trigonometric.setWidth(item.len / 2);
-              trigonometric.setHeight(size);
               const tw = trigonometric.cosWidthAngle();
               const th = trigonometric.sinWidthAngle();
               ax += rx + textWidth - tw;
@@ -1372,7 +1368,6 @@ class AngleFontDraw {
       // 大小
       const textWidth = this.textWidth(text) / dpr();
       trigonometric.setWidth(textWidth);
-      trigonometric.setHeight(size);
       const trigonometricWidth = trigonometric.cosWidthAngle();
       const trigonometricHeight = trigonometric.sinWidthAngle();
 
@@ -1449,12 +1444,10 @@ class AngleFontDraw {
 
       // 计算斜角文本的最大绘制宽度
       // 超过绘制宽度自动换行
-      trigonometric.setWidth(width);
       trigonometric.setHeight(height - PADDING * 2);
       const textHypotenuseWidth = trigonometric.sinHeightAngle();
 
       // 计算文本块之间的间隙
-      trigonometric.setWidth(size + ANGLE_LINE_HEIGHT);
       trigonometric.setHeight(size + ANGLE_LINE_HEIGHT);
       const lineHeight = trigonometric.sinHeightAngle();
 
@@ -1519,7 +1512,6 @@ class AngleFontDraw {
         // 计算每个文本块的
         // 宽度和高度
         trigonometric.setWidth(textHypotenuseWidth);
-        trigonometric.setHeight(size);
         const textWidth = trigonometric.cosWidthAngle();
         const textHeight = trigonometric.sinWidthAngle();
 
@@ -1574,7 +1566,6 @@ class AngleFontDraw {
           switch (align) {
             case ALIGN.left: {
               trigonometric.setWidth(item.len / 2);
-              trigonometric.setHeight(size);
               const tw = trigonometric.cosWidthAngle();
               const th = trigonometric.sinWidthAngle();
               ax += rx + tw;
@@ -1588,7 +1579,6 @@ class AngleFontDraw {
             }
             case ALIGN.right: {
               trigonometric.setWidth(item.len / 2);
-              trigonometric.setHeight(size);
               const tw = trigonometric.cosWidthAngle();
               const th = trigonometric.sinWidthAngle();
               ax += rx + textWidth - tw;
@@ -1634,7 +1624,6 @@ class AngleFontDraw {
       // 大小
       const textWidth = this.textWidth(text) / dpr();
       trigonometric.setWidth(textWidth);
-      trigonometric.setHeight(size);
       const trigonometricWidth = trigonometric.cosWidthAngle();
       const trigonometricHeight = trigonometric.sinWidthAngle();
 
