@@ -5,9 +5,14 @@ import { DrawAngle, TrigonometricFunction } from './DrawAngle';
 import { Rect } from './Rect';
 
 const PADDING = 8;
+// 垂直文本的字间距
 const VERTICAL_SPACING = 2;
-const HORIZONTAL_LIEN_HEIGHT = 4;
+// 垂直文本的行高
 const VERTICAL_LIEN_HEIGHT = 0;
+// 水平文本的行高
+const HORIZONTAL_LIEN_HEIGHT = 4;
+// 旋转文本的行高
+const ANGLE_LINE_HEIGHT = 14;
 
 const ALIGN = {
   left: 'left',
@@ -1171,6 +1176,7 @@ class AngleFontDraw {
     }
     const { width, height } = rect;
     if (angle > 0) {
+      // 三角函数
       const trigonometric = new TrigonometricFunction({
         angle,
       });
@@ -1181,11 +1187,8 @@ class AngleFontDraw {
       trigonometric.setHeight(height - PADDING * 2);
       const textHypotenuseWidth = trigonometric.sinHeightAngle();
 
-      // 计算文本块之间的
-      // 间隙
-      trigonometric.setWidth(size + HORIZONTAL_LIEN_HEIGHT);
-      trigonometric.setHeight(size + HORIZONTAL_LIEN_HEIGHT);
-      const lineHeight = trigonometric.sinHeightAngle();
+      // 计算文本块之间的间隙
+      const lineHeight = size + ANGLE_LINE_HEIGHT;
 
       // 折行文本计算
       const textArray = [];
@@ -1256,6 +1259,7 @@ class AngleFontDraw {
         // 计算总宽度
         const totalWidth = textWidth + ((textArray.length - 1) * lineHeight);
         // console.log(totalWidth);
+        // console.log('textWidth>>>', textWidth);
         let bx = rect.x;
         let by = rect.y;
         switch (align) {
@@ -1298,6 +1302,7 @@ class AngleFontDraw {
           // 绘制位置
           // 旋转中心
           const item = textArray[i];
+          // console.log('item.len>>>', item.len);
           const rx = item.tx + bx;
           const ry = item.ty + by;
           let ax = 0;
@@ -1443,13 +1448,10 @@ class AngleFontDraw {
       // 超过绘制宽度自动换行
       trigonometric.setWidth(width);
       trigonometric.setHeight(height - PADDING * 2);
-
-      // 计算文本块之间的
-      // 间隙
       const textHypotenuseWidth = trigonometric.sinHeightAngle();
-      trigonometric.setWidth(size + HORIZONTAL_LIEN_HEIGHT);
-      trigonometric.setHeight(size + HORIZONTAL_LIEN_HEIGHT);
-      const lineHeight = trigonometric.sinHeightAngle();
+
+      // 计算文本块之间的间隙
+      const lineHeight = size + ANGLE_LINE_HEIGHT;
 
       // 折行文本计算
       const textArray = [];
