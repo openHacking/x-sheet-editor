@@ -4,6 +4,7 @@ import { Utils } from '../utils/Utils';
 import { DrawAngle, TrigonometricFunction } from './DrawAngle';
 import { Rect } from './Rect';
 
+// 填充的大小
 const PADDING = 8;
 // 垂直文本的字间距
 const VERTICAL_SPACING = 2;
@@ -12,7 +13,7 @@ const VERTICAL_LIEN_HEIGHT = 0;
 // 水平文本的行高
 const HORIZONTAL_LIEN_HEIGHT = 4;
 // 旋转文本的行高
-const ANGLE_LINE_HEIGHT = 14;
+const ANGLE_LINE_HEIGHT = 4;
 
 const ALIGN = {
   left: 'left',
@@ -1188,7 +1189,9 @@ class AngleFontDraw {
       const textHypotenuseWidth = trigonometric.sinHeightAngle();
 
       // 计算文本块之间的间隙
-      const lineHeight = size + ANGLE_LINE_HEIGHT;
+      trigonometric.setWidth(size + ANGLE_LINE_HEIGHT);
+      trigonometric.setHeight(size + ANGLE_LINE_HEIGHT);
+      const lineHeight = trigonometric.sinHeightAngle();
 
       // 折行文本计算
       const textArray = [];
@@ -1248,7 +1251,6 @@ class AngleFontDraw {
       // 采用不同的绘制
       // 逻辑
       if (textArrayLen > 1) {
-
         // 计算每个文本块的
         // 宽度和高度
         trigonometric.setWidth(textHypotenuseWidth);
@@ -1451,7 +1453,9 @@ class AngleFontDraw {
       const textHypotenuseWidth = trigonometric.sinHeightAngle();
 
       // 计算文本块之间的间隙
-      const lineHeight = size + ANGLE_LINE_HEIGHT;
+      trigonometric.setWidth(size + ANGLE_LINE_HEIGHT);
+      trigonometric.setHeight(size + ANGLE_LINE_HEIGHT);
+      const lineHeight = trigonometric.sinHeightAngle();
 
       // 折行文本计算
       const textArray = [];
@@ -1511,7 +1515,6 @@ class AngleFontDraw {
       // 采用不同的绘制
       // 逻辑
       if (textArrayLen > 1) {
-
         // 计算每个文本块的
         // 宽度和高度
         trigonometric.setWidth(textHypotenuseWidth);
