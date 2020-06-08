@@ -1,9 +1,9 @@
+import { ALIGN, TEXT_WRAP } from '../../../canvas/Font';
+
 /**
  * GridLineHandle
  * @author jerry
  */
-import { ALIGN } from '../../../canvas/Font';
-
 class GridLineHandle {
 
   constructor(table) {
@@ -33,6 +33,7 @@ class GridLineHandle {
       const cell = cells.getCell(ri, i);
       if (!cell) { continue; }
       const { fontAttr, contentWidth } = cell;
+      if (fontAttr.textWrap !== TEXT_WRAP.OVER_FLOW) { continue; }
       if (fontAttr.align !== ALIGN.left) { continue; }
       if (leftWidth + contentWidth >= leftMaxWidth) {
         return false;
@@ -44,6 +45,7 @@ class GridLineHandle {
       const cell = cells.getCell(ri, i);
       if (!cell) { continue; }
       const { fontAttr, contentWidth } = cell;
+      if (fontAttr.textWrap !== TEXT_WRAP.OVER_FLOW) { continue; }
       if (fontAttr.align !== ALIGN.right) { continue; }
       if (contentWidth >= rightWidth) {
         return false;
