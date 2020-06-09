@@ -827,7 +827,7 @@ class Content {
         cell.setContentWidth(font.draw());
         // Test
         // draw.attr({ globalAlpha: 0.3 });
-        // draw.fillRect(rect.x,rect.y,cell.contentWidth,rect.height);
+        // draw.fillRect(rect.x, rect.y, cell.contentWidth, rect.height);
       },
       startX: scrollViewXOffset,
     });
