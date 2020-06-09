@@ -4,10 +4,15 @@ import { Utils } from '../utils/Utils';
 import { DrawAngle, TrigonometricFunction } from './DrawAngle';
 import { Rect } from './Rect';
 
+// 垂直文字间距
 const VERTICAL_SPACING = 2;
+// 垂直文本行间距
 const VERTICAL_LIEN_HEIGHT = 0;
+// 水平文本间距
 const HORIZONTAL_LIEN_HEIGHT = 4;
+// 旋转文本间距
 const ANGLE_LINE_HEIGHT = 4;
+// 内容填充
 const PADDING = 8;
 
 const ALIGN = {
@@ -69,7 +74,8 @@ class HorizontalFontDraw {
           s[0] = tx;
           e[0] = tx + textWidth;
           break;
-        default: break;
+        default:
+          break;
       }
       switch (verticalAlign) {
         case VERTICAL_ALIGN.top:
@@ -84,7 +90,8 @@ class HorizontalFontDraw {
           s[1] = ty - size / 2;
           e[1] = ty - size / 2;
           break;
-        default: break;
+        default:
+          break;
       }
     }
     if (type === 'underline') {
@@ -101,7 +108,8 @@ class HorizontalFontDraw {
           s[0] = tx;
           e[0] = tx + textWidth;
           break;
-        default: break;
+        default:
+          break;
       }
       switch (verticalAlign) {
         case VERTICAL_ALIGN.top:
@@ -116,7 +124,8 @@ class HorizontalFontDraw {
           s[1] = ty;
           e[1] = ty;
           break;
-        default: break;
+        default:
+          break;
       }
     }
     dw.line(s, e);
@@ -147,7 +156,8 @@ class HorizontalFontDraw {
       case ALIGN.right:
         tx += width - PADDING;
         break;
-      default: break;
+      default:
+        break;
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
@@ -159,7 +169,8 @@ class HorizontalFontDraw {
       case VERTICAL_ALIGN.bottom:
         ty += height - PADDING;
         break;
-      default: break;
+      default:
+        break;
     }
     let contentWidth;
     switch (align) {
@@ -171,7 +182,10 @@ class HorizontalFontDraw {
       default:
         contentWidth = textWidth;
     }
-    const crop = new Crop({ draw: dw, rect });
+    const crop = new Crop({
+      draw: dw,
+      rect,
+    });
     crop.open();
     dw.fillText(text, tx, ty);
     if (underline || strikethrough) {
@@ -217,7 +231,8 @@ class HorizontalFontDraw {
         tx += width - PADDING;
         paddingH = PADDING;
         break;
-      default: break;
+      default:
+        break;
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
@@ -231,7 +246,8 @@ class HorizontalFontDraw {
         ty += height - PADDING;
         paddingV = PADDING;
         break;
-      default: break;
+      default:
+        break;
     }
     let contentWidth;
     switch (align) {
@@ -244,7 +260,10 @@ class HorizontalFontDraw {
         contentWidth = textWidth;
     }
     if (overflow && (textWidth + paddingH > overflow.width || size + paddingV > overflow.height)) {
-      const crop = new Crop({ draw: dw, rect: overflow });
+      const crop = new Crop({
+        draw: dw,
+        rect: overflow,
+      });
       crop.open();
       // console.log('text >>>', text, tx, ty);
       dw.fillText(text, tx, ty);
@@ -349,7 +368,8 @@ class HorizontalFontDraw {
       case ALIGN.right:
         bx += width - PADDING;
         break;
-      default: break;
+      default:
+        break;
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
@@ -361,7 +381,8 @@ class HorizontalFontDraw {
       case VERTICAL_ALIGN.bottom:
         by += height - hOffset - PADDING;
         break;
-      default: break;
+      default:
+        break;
     }
     let contentWidth;
     switch (align) {
@@ -373,7 +394,10 @@ class HorizontalFontDraw {
       default:
         contentWidth = maxLen;
     }
-    const crop = new Crop({ draw: dw, rect });
+    const crop = new Crop({
+      draw: dw,
+      rect,
+    });
     crop.open();
     for (let i = 0, len = textArray.length; i < len; i += 1) {
       const item = textArray[i];
@@ -459,7 +483,8 @@ class VerticalFontDraw {
           s[0] = tx;
           e[0] = tx + textWidth;
           break;
-        default: break;
+        default:
+          break;
       }
       switch (verticalAlign) {
         case VERTICAL_ALIGN.top:
@@ -474,7 +499,8 @@ class VerticalFontDraw {
           s[1] = ty - size / 2;
           e[1] = ty - size / 2;
           break;
-        default: break;
+        default:
+          break;
       }
     }
     if (type === 'underline') {
@@ -491,7 +517,8 @@ class VerticalFontDraw {
           s[0] = tx;
           e[0] = tx + textWidth;
           break;
-        default: break;
+        default:
+          break;
       }
       switch (verticalAlign) {
         case VERTICAL_ALIGN.top:
@@ -506,7 +533,8 @@ class VerticalFontDraw {
           s[1] = ty;
           e[1] = ty;
           break;
-        default: break;
+        default:
+          break;
       }
     }
     dw.line(s, e);
@@ -548,7 +576,8 @@ class VerticalFontDraw {
       case ALIGN.right:
         bx += width - PADDING;
         break;
-      default: break;
+      default:
+        break;
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
@@ -560,7 +589,8 @@ class VerticalFontDraw {
       case VERTICAL_ALIGN.bottom:
         by += height - hOffset + PADDING;
         break;
-      default: break;
+      default:
+        break;
     }
     let contentWidth;
     switch (align) {
@@ -572,7 +602,10 @@ class VerticalFontDraw {
       default:
         contentWidth = size;
     }
-    const crop = new Crop({ draw: dw, rect });
+    const crop = new Crop({
+      draw: dw,
+      rect,
+    });
     crop.open();
     for (let i = 0, len = textArray.length; i < len; i += 1) {
       const item = textArray[i];
@@ -633,7 +666,8 @@ class VerticalFontDraw {
         bx += width - PADDING;
         paddingH = PADDING;
         break;
-      default: break;
+      default:
+        break;
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
@@ -647,7 +681,8 @@ class VerticalFontDraw {
         by += height - hOffset + PADDING;
         paddingV = PADDING;
         break;
-      default: break;
+      default:
+        break;
     }
     let contentWidth;
     switch (align) {
@@ -660,7 +695,10 @@ class VerticalFontDraw {
         contentWidth = size;
     }
     if (overflow && (hOffset + paddingV > overflow.height || size + paddingH > overflow.width)) {
-      const crop = new Crop({ draw: dw, rect: overflow });
+      const crop = new Crop({
+        draw: dw,
+        rect: overflow,
+      });
       crop.open();
       for (let i = 0, len = textArray.length; i < len; i += 1) {
         const item = textArray[i];
@@ -778,7 +816,8 @@ class VerticalFontDraw {
       case ALIGN.right:
         bx += width - wOffset - PADDING;
         break;
-      default: break;
+      default:
+        break;
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
@@ -818,7 +857,8 @@ class VerticalFontDraw {
           verticalAlignValue = VERTICAL_ALIGN.top;
         }
         break;
-      default: break;
+      default:
+        break;
     }
     let contentWidth;
     switch (align) {
@@ -830,7 +870,10 @@ class VerticalFontDraw {
       default:
         contentWidth = wOffset + size;
     }
-    const crop = new Crop({ draw: dw, rect });
+    const crop = new Crop({
+      draw: dw,
+      rect,
+    });
     crop.open();
     for (let i = 0, len = textArray.length; i < len; i += 1) {
       const textItem = textArray[i];
@@ -950,7 +993,11 @@ class AngleFontDraw {
     // 计算文字斜边
     // 的宽度
     const textWidth = this.textWidth(text) / dpr();
-    const trigonometric = new TrigonometricFunction({ angle, width: textWidth, height: size });
+    const trigonometric = new TrigonometricFunction({
+      angle,
+      width: textWidth,
+      height: size,
+    });
     const trigonometricWidth = trigonometric.cosWidthAngle();
     const trigonometricHeight = trigonometric.sinWidthAngle();
     // 计算文字的位置
@@ -966,7 +1013,8 @@ class AngleFontDraw {
       case ALIGN.right:
         rtx += width - trigonometricWidth - PADDING;
         break;
-      default: break;
+      default:
+        break;
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
@@ -978,7 +1026,8 @@ class AngleFontDraw {
       case VERTICAL_ALIGN.bottom:
         rty += height - trigonometricHeight - PADDING;
         break;
-      default: break;
+      default:
+        break;
     }
     // 计算内容宽度
     let contentWidth;
@@ -999,14 +1048,20 @@ class AngleFontDraw {
       dw,
       angle,
       rect: new Rect({
-        x: rtx, y: rty, width: trigonometricWidth, height: trigonometricHeight,
+        x: rtx,
+        y: rty,
+        width: trigonometricWidth,
+        height: trigonometricHeight,
       }),
     });
     // 角度不同, 裁剪的
     // 大小不同
     let crop;
     if (angle === 0) {
-      crop = new Crop({ draw: dw, rect });
+      crop = new Crop({
+        draw: dw,
+        rect,
+      });
     } else {
       crop = new Crop({
         draw: dw,
@@ -1053,7 +1108,11 @@ class AngleFontDraw {
     // 计算文字斜边
     // 的宽度
     const textWidth = this.textWidth(text) / dpr();
-    const trigonometric = new TrigonometricFunction({ angle, width: textWidth, height: size });
+    const trigonometric = new TrigonometricFunction({
+      angle,
+      width: textWidth,
+      height: size,
+    });
     const trigonometricWidth = trigonometric.cosWidthAngle();
     const trigonometricHeight = trigonometric.sinWidthAngle();
     // 计算文字的位置
@@ -1069,7 +1128,8 @@ class AngleFontDraw {
       case ALIGN.right:
         rtx += width - trigonometricWidth - PADDING;
         break;
-      default: break;
+      default:
+        break;
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
@@ -1081,7 +1141,8 @@ class AngleFontDraw {
       case VERTICAL_ALIGN.bottom:
         rty += height - trigonometricHeight - PADDING;
         break;
-      default: break;
+      default:
+        break;
     }
     // 计算内容宽度
     let contentWidth;
@@ -1102,14 +1163,20 @@ class AngleFontDraw {
       dw,
       angle,
       rect: new Rect({
-        x: rtx, y: rty, width: trigonometricWidth, height: trigonometricHeight,
+        x: rtx,
+        y: rty,
+        width: trigonometricWidth,
+        height: trigonometricHeight,
       }),
     });
     // 角度不同, 裁剪的
     // 大小不同
     let crop;
     if (angle === 0) {
-      crop = new Crop({ draw: dw, rect: overflow });
+      crop = new Crop({
+        draw: dw,
+        rect: overflow,
+      });
     } else {
       crop = new Crop({
         draw: dw,
@@ -1178,13 +1245,10 @@ class AngleFontDraw {
 
       // 计算斜角文本的最大绘制宽度
       // 超过绘制宽度自动换行
-      trigonometric.setWidth(width);
       trigonometric.setHeight(height - PADDING * 2);
       const textHypotenuseWidth = trigonometric.sinHeightAngle();
 
-      // 计算文本块之间的
-      // 间隙
-      trigonometric.setWidth(size + ANGLE_LINE_HEIGHT);
+      // 计算文本块之间的间隙
       trigonometric.setHeight(size + ANGLE_LINE_HEIGHT);
       const lineHeight = trigonometric.sinHeightAngle();
 
@@ -1246,12 +1310,10 @@ class AngleFontDraw {
       // 采用不同的绘制
       // 逻辑
       if (textArrayLen > 1) {
-
         // 计算每个文本块的
         // 宽度和高度
         trigonometric.setWidth(textHypotenuseWidth);
-        trigonometric.setHeight(size);
-        const textWidth = trigonometric.cosWidthAngle();
+        const textWidth = Math.max(trigonometric.cosWidthAngle(), size);
         const textHeight = trigonometric.sinWidthAngle();
 
         // 计算总宽度
@@ -1269,7 +1331,8 @@ class AngleFontDraw {
           case ALIGN.right:
             bx += width - totalWidth - PADDING;
             break;
-          default: break;
+          default:
+            break;
         }
         switch (verticalAlign) {
           case VERTICAL_ALIGN.top:
@@ -1281,7 +1344,8 @@ class AngleFontDraw {
           case VERTICAL_ALIGN.bottom:
             by += height - textHeight - PADDING;
             break;
-          default: break;
+          default:
+            break;
         }
         let contentWidth;
         switch (align) {
@@ -1293,8 +1357,9 @@ class AngleFontDraw {
           default:
             contentWidth = totalWidth;
         }
-        for (let i = 0; i < textArray.length; i += 1) {
 
+        // 渲染文本
+        for (let i = 0; i < textArray.length; i += 1) {
           // 计算文本的
           // 绘制位置
           // 旋转中心
@@ -1306,8 +1371,7 @@ class AngleFontDraw {
           switch (align) {
             case ALIGN.left: {
               trigonometric.setWidth(item.len / 2);
-              trigonometric.setHeight(size);
-              const tw = trigonometric.cosWidthAngle();
+              const tw = Math.max(trigonometric.cosWidthAngle(), size);
               const th = trigonometric.sinWidthAngle();
               ax += rx + tw;
               ay += ry + textHeight - th;
@@ -1320,14 +1384,14 @@ class AngleFontDraw {
             }
             case ALIGN.right: {
               trigonometric.setWidth(item.len / 2);
-              trigonometric.setHeight(size);
-              const tw = trigonometric.cosWidthAngle();
+              const tw = Math.max(trigonometric.cosWidthAngle(), size);
               const th = trigonometric.sinWidthAngle();
               ax += rx + textWidth - tw;
               ay += ry + th;
               break;
             }
-            default: break;
+            default:
+              break;
           }
           const tx = ax - item.len / 2;
           const ty = ay - size / 2;
@@ -1343,7 +1407,10 @@ class AngleFontDraw {
             dw,
             angle,
             rect: new Rect({
-              x: tx, y: ty, width: item.len, height: size,
+              x: tx,
+              y: ty,
+              width: item.len,
+              height: size,
             }),
           });
           dwAngle.rotate();
@@ -1366,8 +1433,7 @@ class AngleFontDraw {
       // 大小
       const textWidth = this.textWidth(text) / dpr();
       trigonometric.setWidth(textWidth);
-      trigonometric.setHeight(size);
-      const trigonometricWidth = trigonometric.cosWidthAngle();
+      const trigonometricWidth = Math.max(trigonometric.cosWidthAngle(), size);
       const trigonometricHeight = trigonometric.sinWidthAngle();
 
       // 计算文本
@@ -1385,7 +1451,8 @@ class AngleFontDraw {
         case ALIGN.right:
           rtx += width - trigonometricWidth - PADDING;
           break;
-        default: break;
+        default:
+          break;
       }
       switch (verticalAlign) {
         case VERTICAL_ALIGN.top:
@@ -1397,7 +1464,8 @@ class AngleFontDraw {
         case VERTICAL_ALIGN.bottom:
           rty += height - trigonometricHeight - PADDING;
           break;
-        default: break;
+        default:
+          break;
       }
       let contentWidth;
       switch (align) {
@@ -1416,7 +1484,10 @@ class AngleFontDraw {
         dw,
         angle,
         rect: new Rect({
-          x: rtx, y: rty, width: trigonometricWidth, height: trigonometricHeight,
+          x: rtx,
+          y: rty,
+          width: trigonometricWidth,
+          height: trigonometricHeight,
         }),
       });
       dwAngle.rotate();
@@ -1442,13 +1513,10 @@ class AngleFontDraw {
 
       // 计算斜角文本的最大绘制宽度
       // 超过绘制宽度自动换行
-      trigonometric.setWidth(width);
       trigonometric.setHeight(height - PADDING * 2);
-
-      // 计算文本块之间的
-      // 间隙
       const textHypotenuseWidth = trigonometric.sinHeightAngle();
-      trigonometric.setWidth(size + ANGLE_LINE_HEIGHT);
+
+      // 计算文本块之间的间隙
       trigonometric.setHeight(size + ANGLE_LINE_HEIGHT);
       const lineHeight = trigonometric.sinHeightAngle();
 
@@ -1514,8 +1582,7 @@ class AngleFontDraw {
         // 计算每个文本块的
         // 宽度和高度
         trigonometric.setWidth(textHypotenuseWidth);
-        trigonometric.setHeight(size);
-        const textWidth = trigonometric.cosWidthAngle();
+        const textWidth = Math.max(trigonometric.cosWidthAngle(), size);
         const textHeight = trigonometric.sinWidthAngle();
 
         // 文本总宽度
@@ -1532,7 +1599,8 @@ class AngleFontDraw {
           case ALIGN.right:
             bx += width - totalWidth - PADDING;
             break;
-          default: break;
+          default:
+            break;
         }
         switch (verticalAlign) {
           case VERTICAL_ALIGN.top:
@@ -1544,7 +1612,8 @@ class AngleFontDraw {
           case VERTICAL_ALIGN.bottom:
             by += height - textHeight - PADDING;
             break;
-          default: break;
+          default:
+            break;
         }
         let contentWidth;
         switch (align) {
@@ -1556,8 +1625,9 @@ class AngleFontDraw {
           default:
             contentWidth = totalWidth;
         }
-        for (let i = 0; i < textArray.length; i += 1) {
 
+        // 渲染文本
+        for (let i = 0; i < textArray.length; i += 1) {
           // 计算文本的
           // 绘制位置
           // 旋转中心
@@ -1569,8 +1639,7 @@ class AngleFontDraw {
           switch (align) {
             case ALIGN.left: {
               trigonometric.setWidth(item.len / 2);
-              trigonometric.setHeight(size);
-              const tw = trigonometric.cosWidthAngle();
+              const tw = Math.max(trigonometric.cosWidthAngle(), size);
               const th = trigonometric.sinWidthAngle();
               ax += rx + tw;
               ay += ry + th;
@@ -1583,14 +1652,14 @@ class AngleFontDraw {
             }
             case ALIGN.right: {
               trigonometric.setWidth(item.len / 2);
-              trigonometric.setHeight(size);
-              const tw = trigonometric.cosWidthAngle();
+              const tw = Math.max(trigonometric.cosWidthAngle(), size);
               const th = trigonometric.sinWidthAngle();
               ax += rx + textWidth - tw;
               ay += ry + textHeight - th;
               break;
             }
-            default: break;
+            default:
+              break;
           }
           const tx = ax - item.len / 2;
           const ty = ay - size / 2;
@@ -1606,7 +1675,10 @@ class AngleFontDraw {
             dw,
             angle,
             rect: new Rect({
-              x: tx, y: ty, width: item.len, height: size,
+              x: tx,
+              y: ty,
+              width: item.len,
+              height: size,
             }),
           });
           dwAngle.rotate();
@@ -1629,8 +1701,7 @@ class AngleFontDraw {
       // 大小
       const textWidth = this.textWidth(text) / dpr();
       trigonometric.setWidth(textWidth);
-      trigonometric.setHeight(size);
-      const trigonometricWidth = trigonometric.cosWidthAngle();
+      const trigonometricWidth = Math.max(trigonometric.cosWidthAngle(), size);
       const trigonometricHeight = trigonometric.sinWidthAngle();
 
       // 计算文本
@@ -1648,7 +1719,8 @@ class AngleFontDraw {
         case ALIGN.right:
           rtx += width - trigonometricWidth - PADDING;
           break;
-        default: break;
+        default:
+          break;
       }
       switch (verticalAlign) {
         case VERTICAL_ALIGN.top:
@@ -1660,7 +1732,8 @@ class AngleFontDraw {
         case VERTICAL_ALIGN.bottom:
           rty += height - trigonometricHeight - PADDING;
           break;
-        default: break;
+        default:
+          break;
       }
       let contentWidth;
       switch (align) {
@@ -1679,7 +1752,10 @@ class AngleFontDraw {
         dw,
         angle,
         rect: new Rect({
-          x: rtx, y: rty, width: trigonometricWidth, height: trigonometricHeight,
+          x: rtx,
+          y: rty,
+          width: trigonometricWidth,
+          height: trigonometricHeight,
         }),
       });
       dwAngle.rotate();
@@ -1776,7 +1852,10 @@ class AngleFontDraw {
           contentWidth = maxLen;
       }
       // 裁剪 绘制
-      const crop = new Crop({ draw: dw, rect });
+      const crop = new Crop({
+        draw: dw,
+        rect,
+      });
       crop.open();
       for (let i = 0; i < textArrayLen; i += 1) {
         const item = textArray[i];
@@ -1792,7 +1871,8 @@ class AngleFontDraw {
           case ALIGN.right:
             tx += width - item.len - PADDING;
             break;
-          default: break;
+          default:
+            break;
         }
         switch (verticalAlign) {
           case VERTICAL_ALIGN.top:
@@ -1804,7 +1884,8 @@ class AngleFontDraw {
           case VERTICAL_ALIGN.bottom:
             ty += item.ty + (height - totalTextHeight - PADDING);
             break;
-          default: break;
+          default:
+            break;
         }
         dw.fillText(item.text, tx, ty);
         if (underline || strikethrough) {
@@ -1867,13 +1948,25 @@ class Font {
       angle: 0,
     }, attr);
     this.verticalFontDraw = new VerticalFontDraw({
-      text, rect, dw, overflow, attr: this.attr,
+      text,
+      rect,
+      dw,
+      overflow,
+      attr: this.attr,
     });
     this.horizontalFontDraw = new HorizontalFontDraw({
-      text, rect, dw, overflow, attr: this.attr,
+      text,
+      rect,
+      dw,
+      overflow,
+      attr: this.attr,
     });
     this.angleFontDraw = new AngleFontDraw({
-      text, rect, dw, overflow, attr: this.attr,
+      text,
+      rect,
+      dw,
+      overflow,
+      attr: this.attr,
     });
   }
 
