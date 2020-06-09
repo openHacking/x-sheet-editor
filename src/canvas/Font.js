@@ -1315,6 +1315,7 @@ class AngleFontDraw {
         trigonometric.setWidth(textHypotenuseWidth);
         const textWidth = Math.max(trigonometric.cosWidthAngle(), size);
         const textHeight = trigonometric.sinWidthAngle();
+        // console.log('textHeight>>>', textHeight);
 
         // 计算总宽度
         const totalWidth = textWidth + ((textArray.length - 1) * lineHeight);
