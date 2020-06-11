@@ -1,4 +1,5 @@
 import { ALIGN, TEXT_DIRECTION, TEXT_WRAP } from '../../../canvas/Font';
+import { Utils } from '../../../utils/Utils';
 
 /**
  * GridLineHandle
@@ -23,6 +24,22 @@ class GridLineHandle {
   vLineOverFlowWidthChecked(ci, ri) {
     const { table } = this;
     const { cols, cells } = table;
+    const cell = cells.getCell(ri, ci);
+    if (!cell) { return true; }
+    if (cell.fontAttr.direction !== TEXT_DIRECTION.ANGLE) {
+      if (cell.fontAttr.align === ALIGN.right) {
+        const next = cells.getCell(ri, ci - 1);
+        if (next && !Utils.isBlank(next.text)) {
+          return true;
+        }
+      }
+      if (cell.fontAttr.align === ALIGN.left) {
+        const next = cells.getCell(ri, ci + 1);
+        if (next && !Utils.isBlank(next.text)) {
+          return true;
+        }
+      }
+    }
     // 获取table的滚动可视区域
     const scrollViewRange = table.getScrollViewRange();
     const { eci } = scrollViewRange;
