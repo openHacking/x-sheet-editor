@@ -25,18 +25,23 @@ class GridLineHandle {
     const { table } = this;
     const { cols, cells } = table;
     const cell = cells.getCell(ri, ci);
-    if (!cell) { return true; }
-    if (cell.fontAttr.direction !== TEXT_DIRECTION.ANGLE) {
-      if (cell.fontAttr.align === ALIGN.right) {
-        const next = cells.getCell(ri, ci - 1);
-        if (next && !Utils.isBlank(next.text)) {
-          return true;
+    if (cell) {
+      // 如果前一个单元格或者后一个单元格
+      // 中存在内容那么线段需要绘制
+      const { fontAttr } = cell;
+      const { align, direction } = fontAttr;
+      if (direction !== TEXT_DIRECTION.ANGLE) {
+        if (align === ALIGN.right) {
+          const next = cells.getCell(ri, ci - 1);
+          if (next && !Utils.isBlank(next.text)) {
+            return true;
+          }
         }
-      }
-      if (cell.fontAttr.align === ALIGN.left) {
-        const next = cells.getCell(ri, ci + 1);
-        if (next && !Utils.isBlank(next.text)) {
-          return true;
+        if (align === ALIGN.left) {
+          const next = cells.getCell(ri, ci + 1);
+          if (next && !Utils.isBlank(next.text)) {
+            return true;
+          }
         }
       }
     }
