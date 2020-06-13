@@ -1843,11 +1843,11 @@ class Table extends Widget {
     }
     const scrollViewRange = this.getScrollViewRange();
     const {
-      sri, eri, eci,
+      sri, eri,
     } = scrollViewRange;
     const { cols } = this;
-    scrollViewRange.set(sri, 0, eri, eci);
-    scrollViewRange.w = cols.sectionSumWidth(0, eci);
+    scrollViewRange.set(sri, 0, eri, cols.len);
+    scrollViewRange.w = cols.sectionSumWidth(0, scrollViewRange.eci);
     this.contentViewRange = scrollViewRange;
     return this.contentViewRange.clone();
   }

@@ -27,107 +27,65 @@ class GridLineHandle {
    */
   vLineOverFlowWidthChecked(ci, ri) {
     const { table } = this;
-    const { cols, cells } = table;
-    const cell = cells.getCell(ri, ci);
-    // 左边的下一个元素是否有值
-    const next = cells.getCell(ri, ci + 1);
-    if (cell && next) {
-      if (!Utils.isBlank(next.text) && !Utils.isBlank(cell.text)) { return true; }
-    }
-    let checkDraw = true;
-    // 检查左边是否需要绘制边框
-    const leftMaxWidth = cols.sectionSumWidth(0, ci);
-    let i = 0;
+    const { cells, cols } = table;
+    const { len } = cols;
+    const master = cells.getCell(ri, ci);
+    const maxWidth = cols.sectionSumWidth(0, ci);
+
+    console.log('master>>>', master);
+    console.log('ri, ci>>>', ri, ci);
+
+    let checkedRight = true;
+    let checkedLeft = true;
+
+    // 检查左边是否越界
     let leftWidth = 0;
-    /**
-     *  for 循环要从0列检查到当前列
-     *  每列的单元格宽度和内容会对
-     *  上一次的检查产生影响
-     */
-    for (; i <= ci; i += 1, leftWidth += cols.getWidth(i)) {
-      const cell = cells.getCell(ri, i);
-      // 跳过空单元格
-      if (Utils.isUnDef(cell)) {
-        continue;
-      }
-      const { text, fontAttr } = cell;
-      const { align, textWrap } = fontAttr;
-      // 判断文本的裁剪
-      // 类型是否为overflow的
-      // 的单元格
-      if (textWrap !== TEXT_WRAP.OVER_FLOW) continue;
-      const notBlank = !Utils.isBlank(text);
-      // 检查文本的对齐方向是不是
-      // 左对齐或者居中对其 如果不是，
-      // 检查是否有内容如果有则需要
-      // 绘制网格线段
-      if (align !== ALIGN.left && align !== ALIGN.center) {
-        if (notBlank) {
-          checkDraw = true;
-        }
-        continue;
-      }
-      // 获取单元格在不同对其方式
-      // 下的内容宽度
-      const contentWidth = this.getCellContentWidth(cell, i);
-      // 检查宽度是否越界
-      // 如果越界不需要绘制边框
-      const checked = contentWidth + leftWidth > leftMaxWidth;
-      // 单元格不为空
-      // 需要绘制网格线段
-      if (checkDraw === false && notBlank) {
-        checkDraw = true;
-      }
-      // 单元格宽度越界
-      // 需要绘制网格线段
-      if (checkDraw === true && checked) {
-        checkDraw = false;
-      }
-    }
-    // 获取table的滚动可视区域
-    const scrollViewRange = table.getScrollViewRange();
-    const { eci } = scrollViewRange;
-    // 检查右边是否需要绘制边框
-    let j = ci + 1;
-    let rightWidth = cols.getWidth(ci + 1);
-    for (; j <= eci; j += 1, rightWidth += cols.getWidth(j)) {
-      const cell = cells.getCell(ri, j);
-      // 跳过空单元格
-      if (Utils.isUnDef(cell)) {
-        continue;
-      }
+    for (let i = 0; i <= ci; i += 1, leftWidth += cols.getWidth(i)) {
+      const cell = cells.getCell(ri, ci);
+      if (cell === null) continue;
+      const { text } = cell;
+      if (Utils.isBlank(text)) continue;
       const { fontAttr } = cell;
-      const { align, textWrap } = fontAttr;
-      // 判断文本的裁剪
-      // 类型是否为overflow的
-      // 的单元格
-      if (textWrap !== TEXT_WRAP.OVER_FLOW) continue;
-      // 检查文本的对齐方向是不是
-      // 右对齐或者居中对其 如果不是，
-      // 检查是否有内容如果有则需要
-      // 绘制网格线段
-      if (align !== ALIGN.right && align !== ALIGN.center) {
-        const { text } = cell;
-        const notBlank = !Utils.isBlank(text);
-        if (notBlank) {
-          checkDraw = true;
-          break;
+      const { align } = fontAttr;
+      if (align === ALIGN.left || align === ALIGN.center) {
+        const width = this.getCellContentWidth(cell, ci);
+        if (width + leftWidth > maxWidth) {
+          debugger
+          if (master === null || Utils.isBlank(master.text)) {
+            checkedLeft = false;
+          }
         } else {
-          continue;
+          checkedLeft = true;
         }
-      }
-      // 获取单元格在不同对其方式
-      // 下的内容宽度
-      const contentWidth = this.getCellContentWidth(cell, j);
-      // 检查宽度是否越界
-      // 如果越界不需要绘制边框
-      const checked = contentWidth > rightWidth;
-      if (checkDraw === true && checked) {
-        checkDraw = false;
-        break;
+      } else {
+        checkedLeft = true;
       }
     }
-    return checkDraw;
+
+    // 检查右边是否越界
+    let rightWidth = cols.getWidth(ci + 1);
+    for (let j = ci + 1; j <= len; j += 1, rightWidth += cols.getWidth(j)) {
+      const cell = cells.getCell(ri, ci);
+      if (cell === null) continue;
+      const { text } = cell;
+      if (Utils.isBlank(text)) continue;
+      const { fontAttr } = cell;
+      const { align } = fontAttr;
+      if (align === ALIGN.right || align === ALIGN.center) {
+        const width = this.getCellContentWidth(cell, ci);
+        if (width > rightWidth) {
+          if (master === null || Utils.isBlank(master.text)) {
+            checkedRight = false;
+          }
+        }
+      }
+      break;
+    }
+
+    console.log('checkedLeft>>>', checkedLeft);
+    console.log('checkedRight>>>', checkedRight);
+
+    return checkedLeft;
   }
 
   /**
