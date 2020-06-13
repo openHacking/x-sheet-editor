@@ -7,6 +7,10 @@ import { Utils } from '../../../utils/Utils';
  */
 class GridLineHandle {
 
+  /**
+   * GridLineHandle
+   * @param table
+   */
   constructor(table) {
     this.table = table;
   }
@@ -88,10 +92,11 @@ class GridLineHandle {
       if (Utils.isUnDef(cell)) {
         continue;
       }
-      const { contentWidth, text, fontAttr } = cell;
+      const { text, fontAttr } = cell;
       const { align } = fontAttr;
+      const contentWidth = this.getCellContentWidth(cell, i);
       const notBlank = !Utils.isBlank(text);
-      if (align !== ALIGN.left) {
+      if (align !== ALIGN.left && align !== ALIGN.center) {
         if (notBlank) {
           checkDraw = true;
         }
@@ -116,9 +121,10 @@ class GridLineHandle {
       if (Utils.isUnDef(cell)) {
         continue;
       }
-      const { contentWidth, text, fontAttr } = cell;
+      const { text, fontAttr } = cell;
+      const contentWidth = this.getCellContentWidth(cell, j);
       const { align } = fontAttr;
-      if (align !== ALIGN.right) {
+      if (align !== ALIGN.right && align !== ALIGN.center) {
         const notBlank = !Utils.isBlank(text);
         if (notBlank) {
           checkDraw = true;
@@ -134,6 +140,29 @@ class GridLineHandle {
       }
     }
     return checkDraw;
+  }
+
+  /**
+   * 计算单元格内容宽度
+   * @param cell
+   * @param ci
+   * @returns {number|*}
+   */
+  getCellContentWidth(cell, ci) {
+    const { table } = this;
+    const { cols } = table;
+    const colWidth = cols.getWidth(ci);
+    const { contentWidth, fontAttr } = cell;
+    const { align } = fontAttr;
+    switch (align) {
+      case ALIGN.right:
+      case ALIGN.left:
+        return contentWidth;
+      case ALIGN.center:
+        return colWidth + (contentWidth - colWidth) / 2;
+      default:
+        return 0;
+    }
   }
 
   /**
@@ -270,8 +299,10 @@ class GridLineHandle {
       if (merge) {
         return false;
       }
-      return this.vLineBorderChecked(ci, ri)
-        && this.vLineOverFlowWidthChecked(ci, ri);
+      if (!this.vLineBorderChecked(ci, ri)) {
+        return false;
+      }
+      return this.vLineOverFlowWidthChecked(ci, ri);
     });
   }
 
@@ -308,8 +339,12 @@ class GridLineHandle {
       const { right } = brink;
       if (right) {
         const { view, x, y } = right;
-        const item = this.gridVLine(view, x, y, (ci, ri) => this.vLineBorderChecked(ci, ri)
-          && this.vLineOverFlowWidthChecked(ci, ri));
+        const item = this.gridVLine(view, x, y, (ci, ri) => {
+          if (!this.vLineBorderChecked(ci, ri)) {
+            return false;
+          }
+          return this.vLineOverFlowWidthChecked(ci, ri);
+        });
         result = result.concat(item);
       }
     }
@@ -317,4 +352,6 @@ class GridLineHandle {
   }
 }
 
-export { GridLineHandle };
+export {
+  GridLineHandle,
+};
