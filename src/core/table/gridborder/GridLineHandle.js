@@ -159,7 +159,7 @@ class GridLineHandle {
       case ALIGN.left:
         return contentWidth;
       case ALIGN.center:
-        return colWidth + (contentWidth - colWidth);
+        return colWidth + ((contentWidth - colWidth) / 2);
       default:
         return 0;
     }
