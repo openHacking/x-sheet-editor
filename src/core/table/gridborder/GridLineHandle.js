@@ -1,4 +1,4 @@
-import { ALIGN } from '../../../canvas/Font';
+import { ALIGN, TEXT_WRAP } from '../../../canvas/Font';
 import { Utils } from '../../../utils/Utils';
 
 /**
@@ -39,26 +39,48 @@ class GridLineHandle {
     const leftMaxWidth = cols.sectionSumWidth(0, ci);
     let i = 0;
     let leftWidth = 0;
+    /**
+     *  for 循环要从0列检查到当前列
+     *  每列的单元格宽度和内容会对
+     *  上一次的检查产生影响
+     */
     for (; i <= ci; i += 1, leftWidth += cols.getWidth(i)) {
       const cell = cells.getCell(ri, i);
+      // 跳过空单元格
       if (Utils.isUnDef(cell)) {
         continue;
       }
       const { text, fontAttr } = cell;
-      const { align } = fontAttr;
-      const contentWidth = this.getCellContentWidth(cell, i);
+      const { align, textWrap } = fontAttr;
+      // 判断文本的裁剪
+      // 类型是否为overflow的
+      // 的单元格
+      if (textWrap !== TEXT_WRAP.OVER_FLOW) continue;
       const notBlank = !Utils.isBlank(text);
+      // 检查文本的对齐方向是不是
+      // 左对齐或者居中对其 如果不是，
+      // 检查是否有内容如果有则需要
+      // 绘制网格线段
       if (align !== ALIGN.left && align !== ALIGN.center) {
         if (notBlank) {
           checkDraw = true;
         }
         continue;
       }
-      const overflow = contentWidth + leftWidth > leftMaxWidth;
+      // 获取单元格在不同对其方式
+      // 下的内容宽度
+      const contentWidth = this.getCellContentWidth(cell, i);
+      // 检查宽度是否越界
+      // 如果越界不需要绘制边框
+      const checked = contentWidth + leftWidth > leftMaxWidth;
+      // 单元格不为空
+      // 需要绘制网格线段
       if (checkDraw === false && notBlank) {
         checkDraw = true;
       }
-      if (checkDraw === true && overflow) {
+      // 单元格宽度越界
+      // 需要绘制网格线段
+      if (checkDraw === true && checked) {
         checkDraw = false;
       }
     }
@@ -70,13 +92,22 @@ class GridLineHandle {
     let rightWidth = cols.getWidth(ci + 1);
     for (; j <= eci; j += 1, rightWidth += cols.getWidth(j)) {
       const cell = cells.getCell(ri, j);
+      // 跳过空单元格
       if (Utils.isUnDef(cell)) {
         continue;
       }
-      const { text, fontAttr } = cell;
-      const contentWidth = this.getCellContentWidth(cell, j);
-      const { align } = fontAttr;
+      const { fontAttr } = cell;
+      const { align, textWrap } = fontAttr;
+      // 判断文本的裁剪
+      // 类型是否为overflow的
+      // 的单元格
+      if (textWrap !== TEXT_WRAP.OVER_FLOW) continue;
+      // 检查文本的对齐方向是不是
+      // 右对齐或者居中对其 如果不是，
+      // 检查是否有内容如果有则需要
+      // 绘制网格线段
       if (align !== ALIGN.right && align !== ALIGN.center) {
+        const { text } = cell;
         const notBlank = !Utils.isBlank(text);
         if (notBlank) {
           checkDraw = true;
@@ -85,8 +116,13 @@ class GridLineHandle {
           continue;
         }
       }
-      const overflow = contentWidth > rightWidth;
-      if (checkDraw === true && overflow) {
+      // 获取单元格在不同对其方式
+      // 下的内容宽度
+      const contentWidth = this.getCellContentWidth(cell, j);
+      // 检查宽度是否越界
+      // 如果越界不需要绘制边框
+      const checked = contentWidth > rightWidth;
+      if (checkDraw === true && checked) {
         checkDraw = false;
         break;
       }
