@@ -16,54 +16,6 @@ class GridLineHandle {
   }
 
   /**
-   * 检查垂直线段是否需要绘制
-   * @param ci
-   * @param ri
-   * @returns {boolean}
-   */
-  vLineBorderChecked(ci, ri) {
-    const { table } = this;
-    const { cells } = table;
-    const cell = cells.getMergeCellOrCell(ri, ci);
-    const nextCell = cells.getMergeCellOrCell(ri, ci + 1);
-    // 跳过绘制边框的单元格
-    if (cell && nextCell) {
-      return !(cell.borderAttr.right.display || nextCell.borderAttr.left.display);
-    }
-    if (cell) {
-      return !cell.borderAttr.right.display;
-    }
-    if (nextCell) {
-      return !nextCell.borderAttr.left.display;
-    }
-    return true;
-  }
-
-  /**
-   * 检查水平线段是否需要绘制
-   * @param ri
-   * @param ci
-   * @returns {boolean}
-   */
-  hLineBorderChecked(ri, ci) {
-    const { table } = this;
-    const { cells } = table;
-    const cell = cells.getMergeCellOrCell(ri, ci);
-    const nextCell = cells.getMergeCellOrCell(ri + 1, ci);
-    // 跳过绘制边框的单元格
-    if (cell && nextCell) {
-      return !(cell.borderAttr.bottom.display || nextCell.borderAttr.top.display);
-    }
-    if (cell) {
-      return !cell.borderAttr.bottom.display;
-    }
-    if (nextCell) {
-      return !nextCell.borderAttr.top.display;
-    }
-    return true;
-  }
-
-  /**
    * 绘制垂直网格线段时
    * 判断网格左右的单元格中
    * 是否存在overflow裁剪类型
@@ -140,6 +92,54 @@ class GridLineHandle {
       }
     }
     return checkDraw;
+  }
+
+  /**
+   * 检查垂直线段是否需要绘制
+   * @param ci
+   * @param ri
+   * @returns {boolean}
+   */
+  vLineBorderChecked(ci, ri) {
+    const { table } = this;
+    const { cells } = table;
+    const cell = cells.getMergeCellOrCell(ri, ci);
+    const nextCell = cells.getMergeCellOrCell(ri, ci + 1);
+    // 跳过绘制边框的单元格
+    if (cell && nextCell) {
+      return !(cell.borderAttr.right.display || nextCell.borderAttr.left.display);
+    }
+    if (cell) {
+      return !cell.borderAttr.right.display;
+    }
+    if (nextCell) {
+      return !nextCell.borderAttr.left.display;
+    }
+    return true;
+  }
+
+  /**
+   * 检查水平线段是否需要绘制
+   * @param ri
+   * @param ci
+   * @returns {boolean}
+   */
+  hLineBorderChecked(ri, ci) {
+    const { table } = this;
+    const { cells } = table;
+    const cell = cells.getMergeCellOrCell(ri, ci);
+    const nextCell = cells.getMergeCellOrCell(ri + 1, ci);
+    // 跳过绘制边框的单元格
+    if (cell && nextCell) {
+      return !(cell.borderAttr.bottom.display || nextCell.borderAttr.top.display);
+    }
+    if (cell) {
+      return !cell.borderAttr.bottom.display;
+    }
+    if (nextCell) {
+      return !nextCell.borderAttr.top.display;
+    }
+    return true;
   }
 
   /**
