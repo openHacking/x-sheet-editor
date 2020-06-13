@@ -15,64 +15,6 @@ class CellsHelper {
     this.cols = cols;
   }
 
-  getCellTextMaxWidth(ri, ci) {
-    const { cells, cols } = this;
-    const cell = cells.getCell(ri, ci);
-    const { fontAttr } = cell;
-    const { align } = fontAttr;
-    let width = 0;
-    let offset = 0;
-    if (align === ALIGN.left) {
-      for (let i = ci, { len } = cols; i <= len; i += 1) {
-        const cell = cells.getCell(ri, i);
-        if (i === ci) {
-          width += cols.getWidth(i);
-        } else if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
-          width += cols.getWidth(i);
-        } else {
-          break;
-        }
-      }
-    }
-    if (align === ALIGN.center) {
-      for (let i = ci, { len } = cols; i <= len; i += 1) {
-        const cell = cells.getCell(ri, i);
-        if (i === ci) {
-          width += cols.getWidth(i);
-        } else if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
-          width += cols.getWidth(i);
-        } else {
-          break;
-        }
-      }
-      for (let i = ci - 1; i >= 0; i -= 1) {
-        const cell = cells.getCell(ri, i);
-        if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
-          const tmp = cols.getWidth(i);
-          width += tmp;
-          offset -= tmp;
-        } else {
-          break;
-        }
-      }
-    }
-    if (align === ALIGN.right) {
-      for (let i = ci; i >= 0; i -= 1) {
-        const cell = cells.getCell(ri, i);
-        if (i === ci) {
-          width += cols.getWidth(i);
-        } else if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
-          const tmp = cols.getWidth(i);
-          width += tmp;
-          offset -= tmp;
-        } else {
-          break;
-        }
-      }
-    }
-    return { width, offset };
-  }
-
   getCellTextMaxHeight(ri, ci) {
     const { cells, rows } = this;
     const cell = cells.getCell(ri, ci);
@@ -129,6 +71,72 @@ class CellsHelper {
       }
     }
     return { height, offset };
+  }
+
+  getCellTextMaxWidth(ri, ci) {
+    const { cells, cols } = this;
+    const cell = cells.getCell(ri, ci);
+    const { fontAttr } = cell;
+    const { align } = fontAttr;
+    let width = 0;
+    let offset = 0;
+    // 左边对齐
+    if (align === ALIGN.left) {
+      // 计算当前单元格右边
+      // 空白的单元格的总宽度
+      for (let i = ci, { len } = cols; i <= len; i += 1) {
+        const cell = cells.getCell(ri, i);
+        if (i === ci) {
+          width += cols.getWidth(i);
+        } else if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+          width += cols.getWidth(i);
+        } else {
+          break;
+        }
+      }
+    }
+    // 居中对其
+    if (align === ALIGN.center) {
+      let rightWidth = 0;
+      let leftWidth = 0;
+      for (let i = ci + 1, { len } = cols; i <= len; i += 1) {
+        const cell = cells.getCell(ri, i);
+        if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+          rightWidth += cols.getWidth(i);
+        } else {
+          break;
+        }
+      }
+      for (let i = ci - 1; i >= 0; i -= 1) {
+        const cell = cells.getCell(ri, i);
+        if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+          const tmp = cols.getWidth(i);
+          leftWidth += tmp;
+          offset -= tmp;
+        } else {
+          break;
+        }
+      }
+      width = cols.getWidth(ci) + leftWidth + rightWidth;
+    }
+    // 右边对其
+    if (align === ALIGN.right) {
+      // 计算当前单元格左边
+      // 空白的单元格的总宽度
+      for (let i = ci; i >= 0; i -= 1) {
+        const cell = cells.getCell(ri, i);
+        if (i === ci) {
+          width += cols.getWidth(i);
+        } else if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+          const tmp = cols.getWidth(i);
+          width += tmp;
+          offset -= tmp;
+        } else {
+          break;
+        }
+      }
+    }
+    return { width, offset };
   }
 
   getCellOverFlow(ri, ci, rect, cell) {

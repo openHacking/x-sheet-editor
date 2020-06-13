@@ -22,7 +22,7 @@ import { XHeightLight } from './highlight/XHeightLight';
 import { YHeightLight } from './highlight/YHeightLight';
 import { Edit } from './Edit';
 import { Draw, floor, npx } from '../../canvas/Draw';
-import { Font, TEXT_WRAP } from '../../canvas/Font';
+import { ALIGN, Font, TEXT_WRAP } from '../../canvas/Font';
 import { Rect } from '../../canvas/Rect';
 import { Crop } from '../../canvas/Crop';
 import { Grid } from '../../canvas/Grid';
@@ -250,6 +250,7 @@ class FrozenLeftTop {
       callback: (i, c, cell, rect, overflow) => {
         // 绘制文字
         const { fontAttr } = cell;
+        const { align } = fontAttr;
         const font = new Font({
           text: Format(cell.format, cell.text),
           rect: rect.expandSize(grid.lineWidth()),
@@ -257,6 +258,7 @@ class FrozenLeftTop {
           overflow,
           attr: fontAttr,
         });
+        cell.setOverflowCrop(align === ALIGN.center);
         cell.setContentWidth(font.draw());
       },
     });
@@ -524,6 +526,7 @@ class FixedLeft {
       callback: (i, c, cell, rect, overflow) => {
         // 绘制文字
         const { fontAttr } = cell;
+        const { align } = fontAttr;
         const font = new Font({
           text: Format(cell.format, cell.text),
           rect: rect.expandSize(grid.lineWidth()),
@@ -531,6 +534,7 @@ class FixedLeft {
           overflow,
           attr: fontAttr,
         });
+        cell.setOverflowCrop(align === ALIGN.center);
         cell.setContentWidth(font.draw());
       },
     });
@@ -817,6 +821,7 @@ class Content {
       callback: (i, c, cell, rect, overflow) => {
         // 绘制文字
         const { fontAttr } = cell;
+        const { align } = fontAttr;
         const font = new Font({
           text: Format(cell.format, cell.text),
           rect: rect.expandSize(grid.lineWidth()),
@@ -824,6 +829,7 @@ class Content {
           overflow,
           attr: fontAttr,
         });
+        font.setOverflowCrop(align === ALIGN.center);
         cell.setContentWidth(font.draw());
         // Test
         // draw.attr({ globalAlpha: 0.3 });
@@ -1116,6 +1122,7 @@ class FixedTop {
         // console.log('i, c', i, c);
         // 绘制文字
         const { fontAttr } = cell;
+        const { align } = fontAttr;
         const font = new Font({
           text: Format(cell.format, cell.text),
           rect: rect.expandSize(grid.lineWidth()),
@@ -1123,6 +1130,7 @@ class FixedTop {
           overflow,
           attr: fontAttr,
         });
+        font.setOverflowCrop(align === ALIGN.center);
         cell.setContentWidth(font.draw());
       },
       startX: scrollViewXOffset,

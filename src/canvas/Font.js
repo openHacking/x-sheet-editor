@@ -41,12 +41,13 @@ const TEXT_DIRECTION = {
  */
 class HorizontalFontDraw {
   constructor({
-    text, rect, dw, overflow, attr,
+    text, rect, dw, overflow, overflowCrop, attr,
   }) {
     this.text = text;
     this.dw = dw;
     this.rect = rect;
     this.overflow = overflow;
+    this.overflowCrop = overflowCrop;
     this.attr = attr;
   }
 
@@ -208,7 +209,7 @@ class HorizontalFontDraw {
    */
   drawTextOverFlow() {
     const {
-      text, dw, attr, rect, overflow,
+      text, dw, attr, rect, overflow, overflowCrop,
     } = this;
     const {
       size, underline, strikethrough, align, verticalAlign,
@@ -259,7 +260,8 @@ class HorizontalFontDraw {
       default:
         contentWidth = textWidth;
     }
-    if (overflow && (textWidth + paddingH > overflow.width || size + paddingV > overflow.height)) {
+    if (overflowCrop || (overflow && (textWidth + paddingH > overflow.width
+      || size + paddingV > overflow.height))) {
       const crop = new Crop({
         draw: dw,
         rect: overflow,
@@ -443,6 +445,10 @@ class HorizontalFontDraw {
   setTextWrap(textWrap) {
     this.attr.textWrap = textWrap;
   }
+
+  setOverflowCrop(overflowCrop) {
+    this.overflowCrop = overflowCrop;
+  }
 }
 
 /**
@@ -450,12 +456,13 @@ class HorizontalFontDraw {
  */
 class VerticalFontDraw {
   constructor({
-    text, rect, dw, overflow, attr,
+    text, rect, dw, overflow, overflowCrop, attr,
   }) {
     this.text = text;
     this.dw = dw;
     this.rect = rect;
     this.overflow = overflow;
+    this.overflowCrop = overflowCrop;
     this.attr = attr;
   }
 
@@ -628,7 +635,7 @@ class VerticalFontDraw {
 
   drawTextOverFlow() {
     const {
-      text, dw, attr, rect, overflow,
+      text, dw, attr, rect, overflow, overflowCrop,
     } = this;
     const {
       underline, strikethrough, align, verticalAlign, size,
@@ -694,7 +701,8 @@ class VerticalFontDraw {
       default:
         contentWidth = size;
     }
-    if (overflow && (hOffset + paddingV > overflow.height || size + paddingH > overflow.width)) {
+    if (overflowCrop || (overflow && (hOffset + paddingV > overflow.height
+      || size + paddingH > overflow.width))) {
       const crop = new Crop({
         draw: dw,
         rect: overflow,
@@ -934,6 +942,10 @@ class VerticalFontDraw {
   setTextWrap(textWrap) {
     this.attr.textWrap = textWrap;
   }
+
+  setOverflowCrop(overflowCrop) {
+    this.overflowCrop = overflowCrop;
+  }
 }
 
 /**
@@ -941,12 +953,13 @@ class VerticalFontDraw {
  */
 class AngleFontDraw {
   constructor({
-    text, rect, dw, overflow, attr,
+    text, rect, dw, overflow, overflowCrop, attr,
   }) {
     this.text = text;
     this.dw = dw;
     this.rect = rect;
     this.overflow = overflow;
+    this.overflowCrop = overflowCrop;
     this.attr = attr;
   }
 
@@ -1095,7 +1108,7 @@ class AngleFontDraw {
       text, dw, attr, rect, overflow,
     } = this;
     const {
-      underline, strikethrough, align, verticalAlign, size,
+      underline, strikethrough, align, verticalAlign, size, overflowCrop,
     } = attr;
     let { angle } = attr;
     const { width, height } = rect;
@@ -1189,9 +1202,8 @@ class AngleFontDraw {
       });
     }
     // 文本是否越界
-    const isOverFlow = overflow
-      && (trigonometricWidth > overflow.width || trigonometricHeight > overflow.height);
-    if (isOverFlow) {
+    if (overflowCrop || (overflow && (trigonometricWidth > overflow.width
+      || trigonometricHeight > overflow.height))) {
       crop.open();
       dwAngle.rotate();
       dw.fillText(text, tx, ty);
@@ -1925,6 +1937,10 @@ class AngleFontDraw {
         return this.drawTextOverFlow();
     }
   }
+
+  setOverflowCrop(overflowCrop) {
+    this.overflowCrop = overflowCrop;
+  }
 }
 
 /**
@@ -1994,6 +2010,12 @@ class Font {
       default:
         this.horizontalFontDraw.setTextWrap(textWrap);
     }
+  }
+
+  setOverflowCrop(overflowCrop) {
+    this.verticalFontDraw.setOverflowCrop(overflowCrop);
+    this.horizontalFontDraw.setOverflowCrop(overflowCrop);
+    this.angleFontDraw.setOverflowCrop(overflowCrop);
   }
 }
 
