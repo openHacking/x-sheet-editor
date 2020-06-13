@@ -28,7 +28,7 @@ class FillColorContextMenu extends ELContextMenu {
     // 重置
     this.reset = new FillColorContextMenuItem('重置', new Icon('clear-color'));
     this.reset.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-      this.options.onUpdate('rgb(0,0,0)');
+      this.options.onUpdate(null);
       this.customizeColorArray.setActiveByColor(null);
       this.colorArray.setActiveByColor(null);
     });
