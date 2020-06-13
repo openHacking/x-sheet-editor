@@ -30,49 +30,55 @@ class GridLineHandle {
     const { cells, cols } = table;
     const { len } = cols;
     const master = cells.getCell(ri, ci);
-    const maxWidth = cols.sectionSumWidth(0, ci);
-
-    console.log('master>>>', master);
-    console.log('ri, ci>>>', ri, ci);
+    const next = cells.getCell(ri, ci + 1);
 
     let checkedRight = true;
     let checkedLeft = true;
 
+    if (master) {
+      const { fontAttr } = master;
+      const { align } = fontAttr;
+      const maxWidth = cols.getWidth(ci);
+      if (align === ALIGN.left || align === ALIGN.center) {
+        const width = this.getCellContentWidth(master, ci);
+        if (width > maxWidth) {
+          if (next === null || Utils.isBlank(next.text)) checkedLeft = false;
+        }
+      }
+    }
+
     // 检查左边是否越界
-    let leftWidth = 0;
-    for (let i = 0; i <= ci; i += 1, leftWidth += cols.getWidth(i)) {
-      const cell = cells.getCell(ri, ci);
+    let leftWidth = cols.getWidth(ci - 1) + cols.getWidth(ci);
+    for (let i = ci - 1; i >= 0; i -= 1, leftWidth += cols.getWidth(i)) {
+      const cell = cells.getCell(ri, i);
       if (cell === null) continue;
       const { text } = cell;
       if (Utils.isBlank(text)) continue;
       const { fontAttr } = cell;
       const { align } = fontAttr;
       if (align === ALIGN.left || align === ALIGN.center) {
-        const width = this.getCellContentWidth(cell, ci);
-        if (width + leftWidth > maxWidth) {
-          debugger
-          if (master === null || Utils.isBlank(master.text)) {
+        const width = this.getCellContentWidth(cell, i);
+        if (width > leftWidth) {
+          if ((master === null || Utils.isBlank(master.text))
+            && (next === null || Utils.isBlank(next.text))) {
             checkedLeft = false;
           }
-        } else {
-          checkedLeft = true;
         }
-      } else {
-        checkedLeft = true;
       }
+      break;
     }
 
     // 检查右边是否越界
     let rightWidth = cols.getWidth(ci + 1);
     for (let j = ci + 1; j <= len; j += 1, rightWidth += cols.getWidth(j)) {
-      const cell = cells.getCell(ri, ci);
+      const cell = cells.getCell(ri, j);
       if (cell === null) continue;
       const { text } = cell;
       if (Utils.isBlank(text)) continue;
       const { fontAttr } = cell;
       const { align } = fontAttr;
       if (align === ALIGN.right || align === ALIGN.center) {
-        const width = this.getCellContentWidth(cell, ci);
+        const width = this.getCellContentWidth(cell, j);
         if (width > rightWidth) {
           if (master === null || Utils.isBlank(master.text)) {
             checkedRight = false;
@@ -82,10 +88,7 @@ class GridLineHandle {
       break;
     }
 
-    console.log('checkedLeft>>>', checkedLeft);
-    console.log('checkedRight>>>', checkedRight);
-
-    return checkedLeft;
+    return checkedLeft && checkedRight;
   }
 
   /**
