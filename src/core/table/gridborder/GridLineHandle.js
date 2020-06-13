@@ -1,4 +1,4 @@
-import { ALIGN, TEXT_DIRECTION, TEXT_WRAP } from '../../../canvas/Font';
+import { ALIGN } from '../../../canvas/Font';
 import { Utils } from '../../../utils/Utils';
 
 /**
@@ -9,85 +9,6 @@ class GridLineHandle {
 
   constructor(table) {
     this.table = table;
-  }
-
-  /**
-   * 绘制垂直网格线段时
-   * 判断网格左右的单元格中
-   * 是否存在overflow裁剪类型
-   * 的单元格, 如果有判断宽度是否
-   * 覆盖了当前线段如果覆盖了
-   * 则跳过该线段绘制
-   * @param ci
-   * @param ri
-   */
-  vLineOverFlowWidthChecked(ci, ri) {
-    const { table } = this;
-    const { cols, cells } = table;
-    const cell = cells.getCell(ri, ci);
-    if (cell) {
-      // 如果前一个单元格或者后一个单元格
-      // 中存在内容那么线段需要绘制
-      const { fontAttr } = cell;
-      const { align, direction } = fontAttr;
-      if (direction !== TEXT_DIRECTION.ANGLE) {
-        if (align === ALIGN.right) {
-          const next = cells.getCell(ri, ci - 1);
-          if (next && !Utils.isBlank(next.text)) {
-            return true;
-          }
-        }
-        if (align === ALIGN.left) {
-          const next = cells.getCell(ri, ci + 1);
-          if (next && !Utils.isBlank(next.text)) {
-            return true;
-          }
-        }
-      }
-    }
-    // 获取table的滚动可视区域
-    const scrollViewRange = table.getScrollViewRange();
-    const { eci } = scrollViewRange;
-    // 左边的最大宽度
-    const leftMaxWidth = cols.sectionSumWidth(0, ci);
-    for (let i = 0, leftWidth = 0; i <= ci; i += 1) {
-      if (i > 0) leftWidth += cols.getWidth(i - 1);
-      const cell = cells.getCell(ri, i);
-      if (!cell) { continue; }
-      const { fontAttr, contentWidth } = cell;
-      const { textWrap, align, direction, angle } = fontAttr;
-      if (direction === TEXT_DIRECTION.ANGLE) {
-        if (angle === 0) { continue; }
-        if (textWrap === TEXT_WRAP.TRUNCATE) { continue; }
-        if (align !== ALIGN.left) { continue; }
-      } else {
-        if (textWrap !== TEXT_WRAP.OVER_FLOW) { continue; }
-        if (align !== ALIGN.left) { continue; }
-      }
-      if (leftWidth + contentWidth >= leftMaxWidth) {
-        return false;
-      }
-    }
-    // 右边最大的宽度
-    for (let i = ci + 1, rightWidth = 0; i < eci; i += 1) {
-      rightWidth += cols.getWidth(i);
-      const cell = cells.getCell(ri, i);
-      if (!cell) { continue; }
-      const { fontAttr, contentWidth } = cell;
-      const { textWrap, align, direction, angle } = fontAttr;
-      if (direction === TEXT_DIRECTION.ANGLE) {
-        if (angle === 0) { continue; }
-        if (textWrap === TEXT_WRAP.TRUNCATE) { continue; }
-        if (align !== ALIGN.right) { continue; }
-      } else {
-        if (textWrap !== TEXT_WRAP.OVER_FLOW) { continue; }
-        if (align !== ALIGN.right) { continue; }
-      }
-      if (contentWidth >= rightWidth) {
-        return false;
-      }
-    }
-    return true;
   }
 
   /**
@@ -136,6 +57,83 @@ class GridLineHandle {
       return !nextCell.borderAttr.top.display;
     }
     return true;
+  }
+
+  /**
+   * 绘制垂直网格线段时
+   * 判断网格左右的单元格中
+   * 是否存在overflow裁剪类型
+   * 的单元格, 如果有判断宽度是否
+   * 覆盖了当前线段如果覆盖了
+   * 则跳过该线段绘制
+   * @param ci
+   * @param ri
+   */
+  vLineOverFlowWidthChecked(ci, ri) {
+    const { table } = this;
+    const { cols, cells } = table;
+    const cell = cells.getCell(ri, ci);
+    // 左边的下一个元素是否有值
+    const next = cells.getCell(ri, ci + 1);
+    if (cell && next) {
+      if (!Utils.isBlank(next.text) && !Utils.isBlank(cell.text)) { return true; }
+    }
+    let checkDraw = true;
+    // 检查左边是否需要绘制边框
+    const leftMaxWidth = cols.sectionSumWidth(0, ci);
+    let i = 0;
+    let leftWidth = 0;
+    for (; i <= ci; i += 1, leftWidth += cols.getWidth(i)) {
+      const cell = cells.getCell(ri, i);
+      if (Utils.isUnDef(cell)) {
+        continue;
+      }
+      const { contentWidth, text, fontAttr } = cell;
+      const { align } = fontAttr;
+      const notBlank = !Utils.isBlank(text);
+      if (align !== ALIGN.left) {
+        if (notBlank) {
+          checkDraw = true;
+        }
+        continue;
+      }
+      const overflow = contentWidth + leftWidth > leftMaxWidth;
+      if (checkDraw === false && notBlank) {
+        checkDraw = true;
+      }
+      if (checkDraw === true && overflow) {
+        checkDraw = false;
+      }
+    }
+    // 获取table的滚动可视区域
+    const scrollViewRange = table.getScrollViewRange();
+    const { eci } = scrollViewRange;
+    // 检查右边是否需要绘制边框
+    let j = ci + 1;
+    let rightWidth = cols.getWidth(ci + 1);
+    for (; j <= eci; j += 1, rightWidth += cols.getWidth(j)) {
+      const cell = cells.getCell(ri, j);
+      if (Utils.isUnDef(cell)) {
+        continue;
+      }
+      const { contentWidth, text, fontAttr } = cell;
+      const { align } = fontAttr;
+      if (align !== ALIGN.right) {
+        const notBlank = !Utils.isBlank(text);
+        if (notBlank) {
+          checkDraw = true;
+          break;
+        } else {
+          continue;
+        }
+      }
+      const overflow = contentWidth > rightWidth;
+      if (checkDraw === true && overflow) {
+        checkDraw = false;
+        break;
+      }
+    }
+    return checkDraw;
   }
 
   /**
