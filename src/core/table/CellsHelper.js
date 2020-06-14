@@ -74,7 +74,7 @@ class CellsHelper {
   }
 
   getCellTextMaxWidth(ri, ci) {
-    const { cells, cols } = this;
+    const { cells, cols, merges } = this;
     const cell = cells.getCell(ri, ci);
     const { fontAttr } = cell;
     const { align } = fontAttr;
@@ -86,9 +86,10 @@ class CellsHelper {
       // 空白的单元格的总宽度
       for (let i = ci, { len } = cols; i <= len; i += 1) {
         const cell = cells.getCell(ri, i);
+        const merge = merges.getFirstIncludes(ri, i);
         if (i === ci) {
           width += cols.getWidth(i);
-        } else if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+        } else if ((Utils.isUnDef(cell) || Utils.isBlank(cell.text)) && Utils.isUnDef(merge)) {
           width += cols.getWidth(i);
         } else {
           break;
@@ -101,7 +102,8 @@ class CellsHelper {
       let leftWidth = 0;
       for (let i = ci + 1, { len } = cols; i <= len; i += 1) {
         const cell = cells.getCell(ri, i);
-        if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+        const merge = merges.getFirstIncludes(ri, i);
+        if ((Utils.isUnDef(cell) || Utils.isBlank(cell.text)) && Utils.isUnDef(merge)) {
           rightWidth += cols.getWidth(i);
         } else {
           break;
@@ -109,7 +111,8 @@ class CellsHelper {
       }
       for (let i = ci - 1; i >= 0; i -= 1) {
         const cell = cells.getCell(ri, i);
-        if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+        const merge = merges.getFirstIncludes(ri, i);
+        if ((Utils.isUnDef(cell) || Utils.isBlank(cell.text)) && Utils.isUnDef(merge)) {
           const tmp = cols.getWidth(i);
           leftWidth += tmp;
           offset -= tmp;
@@ -125,9 +128,10 @@ class CellsHelper {
       // 空白的单元格的总宽度
       for (let i = ci; i >= 0; i -= 1) {
         const cell = cells.getCell(ri, i);
+        const merge = merges.getFirstIncludes(ri, i);
         if (i === ci) {
           width += cols.getWidth(i);
-        } else if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+        } else if ((Utils.isUnDef(cell) || Utils.isBlank(cell.text)) && Utils.isUnDef(merge)) {
           const tmp = cols.getWidth(i);
           width += tmp;
           offset -= tmp;

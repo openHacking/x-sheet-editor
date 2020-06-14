@@ -27,22 +27,30 @@ class GridLineHandle {
    */
   vLineOverFlowWidthChecked(ci, ri) {
     const { table } = this;
-    const { cells, cols } = table;
+    const { cells, cols, merges } = table;
     const { len } = cols;
-    const master = cells.getCell(ri, ci);
-    const next = cells.getCell(ri, ci + 1);
+    const master = cells.getMergeCellOrCell(ri, ci);
+    const next = cells.getMergeCellOrCell(ri, ci + 1);
+    const merge = merges.getFirstIncludes(ri, ci + 1);
+
+    if (merge) {
+      return true;
+    }
 
     let checkedRight = true;
     let checkedLeft = true;
 
     if (master) {
       const { fontAttr } = master;
-      const { align } = fontAttr;
-      const maxWidth = cols.getWidth(ci);
-      if (align === ALIGN.left || align === ALIGN.center) {
-        const width = this.getCellContentWidth(master, ci);
-        if (width > maxWidth) {
-          if (next === null || Utils.isBlank(next.text)) checkedLeft = false;
+      const { textWrap } = fontAttr;
+      if (textWrap === TEXT_WRAP.OVER_FLOW) {
+        const { align } = fontAttr;
+        const maxWidth = cols.getWidth(ci);
+        if (align === ALIGN.left || align === ALIGN.center) {
+          const width = this.getCellContentWidth(master, ci);
+          if (width > maxWidth) {
+            if (next === null || Utils.isBlank(next.text)) checkedLeft = false;
+          }
         }
       }
     }
@@ -55,13 +63,17 @@ class GridLineHandle {
       const { text } = cell;
       if (Utils.isBlank(text)) continue;
       const { fontAttr } = cell;
-      const { align } = fontAttr;
-      if (align === ALIGN.left || align === ALIGN.center) {
-        const width = this.getCellContentWidth(cell, i);
-        if (width > leftWidth) {
-          if ((master === null || Utils.isBlank(master.text))
-            && (next === null || Utils.isBlank(next.text))) {
-            checkedLeft = false;
+      const { textWrap } = fontAttr;
+      if (textWrap === TEXT_WRAP.OVER_FLOW) {
+        const { align } = fontAttr;
+        if (align === ALIGN.left || align === ALIGN.center) {
+          const width = this.getCellContentWidth(cell, i);
+          if (width > leftWidth) {
+            const masterBlank = master === null || Utils.isBlank(master.text);
+            const nextBlank = next === null || Utils.isBlank(next.text);
+            if (masterBlank && nextBlank) {
+              checkedLeft = false;
+            }
           }
         }
       }
@@ -77,11 +89,14 @@ class GridLineHandle {
       if (Utils.isBlank(text)) continue;
       const { fontAttr } = cell;
       const { align } = fontAttr;
-      if (align === ALIGN.right || align === ALIGN.center) {
-        const width = this.getCellContentWidth(cell, j);
-        if (width > rightWidth) {
-          if (master === null || Utils.isBlank(master.text)) {
-            checkedRight = false;
+      const { textWrap } = fontAttr;
+      if (textWrap === TEXT_WRAP.OVER_FLOW) {
+        if (align === ALIGN.right || align === ALIGN.center) {
+          const width = this.getCellContentWidth(cell, j);
+          if (width > rightWidth) {
+            if (master === null || Utils.isBlank(master.text)) {
+              checkedRight = false;
+            }
           }
         }
       }
@@ -336,12 +351,7 @@ class GridLineHandle {
       const { right } = brink;
       if (right) {
         const { view, x, y } = right;
-        const item = this.gridVLine(view, x, y, (ci, ri) => {
-          if (!this.vLineBorderChecked(ci, ri)) {
-            return false;
-          }
-          return this.vLineOverFlowWidthChecked(ci, ri);
-        });
+        const item = this.gridVLine(view, x, y, (ci, ri) => this.vLineBorderChecked(ci, ri));
         result = result.concat(item);
       }
     }
