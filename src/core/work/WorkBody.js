@@ -45,7 +45,7 @@ class WorkBody extends Widget {
     this.tabAndSheet = [];
     // 版本标识
     this.poweredBy = h('div', `${cssPrefix}-powered-by-tips`);
-    this.poweredBy.text(' X-Sheet 1.0.0-alpha ');
+    this.poweredBy.text(' X-Sheet 1.0.0-development ');
     this.children(this.poweredBy);
     // 组件
     this.sheetView = new SheetView();
