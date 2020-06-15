@@ -295,7 +295,7 @@ class BorderLineHandle {
 
   vlLine(viewRange) {
     const { table, borderOptimization } = this;
-    const { merges, cells } = table;
+    const { merges, cells, lineHandle } = table;
     return this.borderVLLine(viewRange, 0, 0, (ci, ri) => {
       const merge = merges.getFirstIncludes(ri, ci);
       const cell = cells.getMergeCellOrCell(ri, ci);
@@ -308,18 +308,23 @@ class BorderLineHandle {
       if (nextCell && borderOptimization) {
         const display = cell.borderAttr.left.display && nextCell.borderAttr.right.display;
         const compareTime = cell.borderAttr.left.compareTime(nextCell.borderAttr.right);
-        if (display) {
-          return compareTime === 1;
+        const diff = compareTime === 1;
+        if (display && diff) {
+          return lineHandle.vLineLeftOverFlowChecked(ci, ri);
         }
+        return false;
       }
       // 边框是否显示
+      if (cell.borderAttr.left.display) {
+        return lineHandle.vLineLeftOverFlowChecked(ci, ri);
+      }
       return cell.borderAttr.left.display;
     });
   }
 
   vrLine(viewRange) {
     const { table, borderOptimization } = this;
-    const { merges, cells } = table;
+    const { merges, cells, lineHandle } = table;
     return this.borderVRLine(viewRange, 0, 0, (ci, ri) => {
       const merge = merges.getFirstIncludes(ri, ci);
       const cell = cells.getMergeCellOrCell(ri, ci);
@@ -332,11 +337,16 @@ class BorderLineHandle {
       if (nextCell && borderOptimization) {
         const display = cell.borderAttr.right.display && nextCell.borderAttr.left.display;
         const compareTime = cell.borderAttr.right.compareTime(nextCell.borderAttr.left);
-        if (display) {
-          return compareTime === 1 || compareTime === 0;
+        const diff = compareTime === 1 || compareTime === 0;
+        if (display && diff) {
+          return lineHandle.vLineRightOverFlowChecked(ci, ri);
         }
+        return false;
       }
       // 边框是否显示
+      if (cell.borderAttr.right.display) {
+        return lineHandle.vLineRightOverFlowChecked(ci, ri);
+      }
       return cell.borderAttr.right.display;
     });
   }
