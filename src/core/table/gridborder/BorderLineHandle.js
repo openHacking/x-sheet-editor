@@ -258,10 +258,8 @@ class BorderLineHandle {
       }
       // 边框绘制优先级比较
       if (nextCell && borderOptimization) {
-        const display = cell.borderAttr.top.display
-          && nextCell.borderAttr.bottom.display;
-        const compareTime = cell.borderAttr.top
-          .compareTime(nextCell.borderAttr.bottom);
+        const display = cell.borderAttr.top.display && nextCell.borderAttr.bottom.display;
+        const compareTime = cell.borderAttr.top.compareTime(nextCell.borderAttr.bottom);
         if (display) {
           return compareTime === 1;
         }
@@ -284,10 +282,8 @@ class BorderLineHandle {
       }
       // 边框绘制优先级比较
       if (nextCell && borderOptimization) {
-        const display = cell.borderAttr.bottom.display
-          && nextCell.borderAttr.top.display;
-        const compareTime = cell.borderAttr.bottom
-          .compareTime(nextCell.borderAttr.top);
+        const display = cell.borderAttr.bottom.display && nextCell.borderAttr.top.display;
+        const compareTime = cell.borderAttr.bottom.compareTime(nextCell.borderAttr.top);
         if (display) {
           return compareTime === 1 || compareTime === 0;
         }
@@ -310,10 +306,8 @@ class BorderLineHandle {
       }
       // 边框绘制优先级比较
       if (nextCell && borderOptimization) {
-        const display = cell.borderAttr.left.display
-          && nextCell.borderAttr.right.display;
-        const compareTime = cell.borderAttr.left
-          .compareTime(nextCell.borderAttr.right);
+        const display = cell.borderAttr.left.display && nextCell.borderAttr.right.display;
+        const compareTime = cell.borderAttr.left.compareTime(nextCell.borderAttr.right);
         if (display) {
           return compareTime === 1;
         }
@@ -336,10 +330,8 @@ class BorderLineHandle {
       }
       // 边框绘制优先级比较
       if (nextCell && borderOptimization) {
-        const display = cell.borderAttr.right.display
-          && nextCell.borderAttr.left.display;
-        const compareTime = cell.borderAttr.right
-          .compareTime(nextCell.borderAttr.left);
+        const display = cell.borderAttr.right.display && nextCell.borderAttr.left.display;
+        const compareTime = cell.borderAttr.right.compareTime(nextCell.borderAttr.left);
         if (display) {
           return compareTime === 1 || compareTime === 0;
         }
@@ -365,10 +357,8 @@ class BorderLineHandle {
           }
           // 边框绘制优先级比较
           if (nextCell && borderOptimization) {
-            const display = cell.borderAttr.top.display
-              && nextCell.borderAttr.bottom.display;
-            const compareTime = cell.borderAttr.top
-              .compareTime(nextCell.borderAttr.bottom);
+            const display = cell.borderAttr.top.display && nextCell.borderAttr.bottom.display;
+            const compareTime = cell.borderAttr.top.compareTime(nextCell.borderAttr.bottom);
             if (display) {
               return compareTime === 1;
             }
@@ -398,10 +388,8 @@ class BorderLineHandle {
           }
           // 边框绘制优先级比较
           if (nextCell && borderOptimization) {
-            const display = cell.borderAttr.bottom.display
-              && nextCell.borderAttr.top.display;
-            const compareTime = cell.borderAttr.bottom
-              .compareTime(nextCell.borderAttr.top);
+            const display = cell.borderAttr.bottom.display && nextCell.borderAttr.top.display;
+            const compareTime = cell.borderAttr.bottom.compareTime(nextCell.borderAttr.top);
             if (display) {
               return compareTime === 1 || compareTime === 0;
             }
@@ -431,10 +419,8 @@ class BorderLineHandle {
           }
           // 边框绘制优先级比较
           if (nextCell && borderOptimization) {
-            const display = cell.borderAttr.left.display
-              && nextCell.borderAttr.right.display;
-            const compareTime = cell.borderAttr.left
-              .compareTime(nextCell.borderAttr.right);
+            const display = cell.borderAttr.left.display && nextCell.borderAttr.right.display;
+            const compareTime = cell.borderAttr.left.compareTime(nextCell.borderAttr.right);
             if (display) {
               return compareTime === 1;
             }
@@ -464,10 +450,8 @@ class BorderLineHandle {
           }
           // 边框绘制优先级比较
           if (nextCell && borderOptimization) {
-            const display = cell.borderAttr.right.display
-              && nextCell.borderAttr.left.display;
-            const compareTime = cell.borderAttr.right
-              .compareTime(nextCell.borderAttr.left);
+            const display = cell.borderAttr.right.display && nextCell.borderAttr.left.display;
+            const compareTime = cell.borderAttr.right.compareTime(nextCell.borderAttr.left);
             if (display) {
               return compareTime === 1 || compareTime === 0;
             }
