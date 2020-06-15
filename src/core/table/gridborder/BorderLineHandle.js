@@ -307,12 +307,18 @@ class BorderLineHandle {
       // 边框绘制优先级比较
       if (nextCell && borderOptimization) {
         const display = cell.borderAttr.left.display && nextCell.borderAttr.right.display;
-        const compareTime = cell.borderAttr.left.compareTime(nextCell.borderAttr.right);
-        const diff = compareTime === 1;
-        if (display && diff) {
-          return lineHandle.vLineLeftOverFlowChecked(ci, ri);
+        // 是否左右两边线段都需要显示
+        if (display) {
+          // 检查两个边框的更新时间
+          // 由更新时间判断优先显示
+          // 那边的边框
+          const compareTime = cell.borderAttr.left.compareTime(nextCell.borderAttr.right);
+          const diff = compareTime === 1;
+          if (diff) {
+            return lineHandle.vLineLeftOverFlowChecked(ci, ri);
+          }
+          return false;
         }
-        return false;
       }
       // 边框是否显示
       if (cell.borderAttr.left.display) {
@@ -336,12 +342,18 @@ class BorderLineHandle {
       // 边框绘制优先级比较
       if (nextCell && borderOptimization) {
         const display = cell.borderAttr.right.display && nextCell.borderAttr.left.display;
-        const compareTime = cell.borderAttr.right.compareTime(nextCell.borderAttr.left);
-        const diff = compareTime === 1 || compareTime === 0;
-        if (display && diff) {
-          return lineHandle.vLineRightOverFlowChecked(ci, ri);
+        // 是否左右两边线段都需要显示
+        if (display) {
+          // 检查两个边框的更新时间
+          // 由更新时间判断优先显示
+          // 那边的边框
+          const compareTime = cell.borderAttr.right.compareTime(nextCell.borderAttr.left);
+          const diff = compareTime === 1 || compareTime === 0;
+          if (diff) {
+            return lineHandle.vLineRightOverFlowChecked(ci, ri);
+          }
+          return false;
         }
-        return false;
       }
       // 边框是否显示
       if (cell.borderAttr.right.display) {
