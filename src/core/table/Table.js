@@ -1659,7 +1659,8 @@ class Table extends Widget {
     this.line = new Line(this.draw, {
       leftShow: (ri, ci) => {
         const cell = this.cells.getMergeCellOrCell(ri, ci);
-        return cell && cell.borderAttr.left.display;
+        if (!cell || !cell.borderAttr.left.display) return false;
+        return this.lineHandle.vLineLeftOverFlowChecked(ci, ri);
       },
       topShow: (ri, ci) => {
         const cell = this.cells.getMergeCellOrCell(ri, ci);
@@ -1667,7 +1668,8 @@ class Table extends Widget {
       },
       rightShow: (ri, ci) => {
         const cell = this.cells.getMergeCellOrCell(ri, ci);
-        return cell && cell.borderAttr.right.display;
+        if (!cell || !cell.borderAttr.right.display) return false;
+        return this.lineHandle.vLineRightOverFlowChecked(ci, ri);
       },
       bottomShow: (ri, ci) => {
         const cell = this.cells.getMergeCellOrCell(ri, ci);
