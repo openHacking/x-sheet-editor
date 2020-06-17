@@ -1658,18 +1658,44 @@ class Table extends Widget {
     this.draw = new Draw(this.canvas.el);
     this.line = new Line(this.draw, {
       leftShow: (ri, ci) => {
-        const cell = this.cells.getMergeCellOrCell(ri, ci);
-        if (!cell || !cell.borderAttr.left.display) return false;
-        return this.lineHandle.vLineLeftOverFlowChecked(ci, ri);
+        // 单元格是否存在
+        const cell = this.cells.getCell(ri, ci);
+        if (cell === null) {
+          return false;
+        }
+        // 是否是合并单元格
+        const merge = this.merges.getFirstIncludes(ri, ci);
+        if (merge) {
+          const mergeCell = this.cells.getCell(merge.sri, merge.sci);
+          return mergeCell.borderAttr.left.display;
+        }
+        // 检查边框是否需要绘制
+        if (cell.borderAttr.left.display) {
+          return this.lineHandle.vLineLeftOverFlowChecked(ci, ri);
+        }
+        return false;
       },
       topShow: (ri, ci) => {
         const cell = this.cells.getMergeCellOrCell(ri, ci);
         return cell && cell.borderAttr.top.display;
       },
       rightShow: (ri, ci) => {
-        const cell = this.cells.getMergeCellOrCell(ri, ci);
-        if (!cell || !cell.borderAttr.right.display) return false;
-        return this.lineHandle.vLineRightOverFlowChecked(ci, ri);
+        // 单元格是否存在
+        const cell = this.cells.getCell(ri, ci);
+        if (cell === null) {
+          return false;
+        }
+        // 是否是合并单元格
+        const merge = this.merges.getFirstIncludes(ri, ci);
+        if (merge) {
+          const mergeCell = this.cells.getCell(merge.sri, merge.sci);
+          return mergeCell.borderAttr.right.display;
+        }
+        // 检查边框是否需要绘制
+        if (cell.borderAttr.right.display) {
+          return this.lineHandle.vLineRightOverFlowChecked(ci, ri);
+        }
+        return false;
       },
       bottomShow: (ri, ci) => {
         const cell = this.cells.getMergeCellOrCell(ri, ci);
