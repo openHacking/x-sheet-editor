@@ -68,6 +68,10 @@ class Merges {
     return false;
   }
 
+  /**
+   * 删除重合的区域
+   * @param cellRange
+   */
   deleteIntersects(cellRange) {
     for (let i = 0; i < this._.length; i += 1) {
       const it = this._[i];
@@ -104,8 +108,10 @@ class Merges {
    * @param {RectRange} cr 区域
    */
   add(cr) {
-    this.deleteWithin(cr);
-    this._.push(cr);
+    if (cr) {
+      this.deleteWithin(cr);
+      this._.push(cr);
+    }
   }
 
   /**

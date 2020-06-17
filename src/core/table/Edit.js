@@ -81,14 +81,20 @@ class Edit extends Widget {
   hideEdit() {
     const { select } = this;
     const { table } = this;
-    const { cells } = table;
+    const { cells, tableDataSnapshot } = table;
+    const { proxy } = tableDataSnapshot;
     if (select) {
-      const cell = cells.getCellOrNew(select.sri, select.sci);
+      const origin = cells.getCellOrNew(select.sri, select.sci);
+      const cell = origin.clone();
       const text = Utils.trim(this.text);
       if (cell.text !== text) {
+        tableDataSnapshot.begin();
         cell.text = text;
-        table.setCell(select.sri, select.sci, cell);
+        proxy.setCell(select.sri, select.sci, cell);
+        tableDataSnapshot.end();
+        table.render();
       }
+      this.select = null;
     }
     this.hide();
   }

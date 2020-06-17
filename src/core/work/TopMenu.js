@@ -25,7 +25,6 @@ import { EventBind } from '../../utils/EventBind';
 import { Constant } from '../../utils/Constant';
 import { ScreenCopyStyle } from '../table/copystyle/ScreenCopyStyle';
 import { ScreenSelector } from '../table/selector/ScreenSelector';
-import { Utils } from '../../utils/Utils';
 import { ElPopUp } from '../../component/elpopup/ElPopUp';
 import { LINE_TYPE } from '../../canvas/Line';
 import { Icon } from './tools/Icon';
@@ -58,19 +57,23 @@ class TopMenu extends Widget {
           const {
             screen,
             cellsHelper,
-            dataSnapshot,
+            tableDataSnapshot,
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           this.format.setTitle(title);
           if (selectorAttr) {
+            tableDataSnapshot.begin();
+            const { proxy } = tableDataSnapshot;
             cellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
-              callback: (r, c, cell) => {
+              callback: (r, c, origin) => {
+                const cell = origin.clone();
                 cell.format = format;
+                proxy.setCell(r, c, cell);
               },
             });
-            dataSnapshot.snapshot();
+            tableDataSnapshot.end();
             table.render();
           }
         },
@@ -84,19 +87,23 @@ class TopMenu extends Widget {
           const {
             screen,
             cellsHelper,
-            dataSnapshot,
+            tableDataSnapshot,
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           this.font.setTitle(type);
           if (selectorAttr) {
+            tableDataSnapshot.begin();
+            const { proxy } = tableDataSnapshot;
             cellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
-              callback: (r, c, cell) => {
+              callback: (r, c, origin) => {
+                const cell = origin.clone();
                 cell.fontAttr.name = type;
+                proxy.setCell(r, c, cell);
               },
             });
-            dataSnapshot.snapshot();
+            tableDataSnapshot.end();
             table.render();
           }
         },
@@ -110,19 +117,23 @@ class TopMenu extends Widget {
           const {
             screen,
             cellsHelper,
-            dataSnapshot,
+            tableDataSnapshot,
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           this.fontSize.setTitle(size);
           if (selectorAttr) {
+            tableDataSnapshot.begin();
+            const { proxy } = tableDataSnapshot;
             cellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
-              callback: (r, c, cell) => {
+              callback: (r, c, origin) => {
+                const cell = origin.clone();
                 cell.fontAttr.size = size;
+                proxy.setCell(r, c, cell);
               },
             });
-            dataSnapshot.snapshot();
+            tableDataSnapshot.end();
             table.render();
           }
         },
@@ -136,19 +147,23 @@ class TopMenu extends Widget {
           const {
             screen,
             cellsHelper,
-            dataSnapshot,
+            tableDataSnapshot,
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           this.fontColor.setColor(color);
           if (selectorAttr) {
+            tableDataSnapshot.begin();
+            const { proxy } = tableDataSnapshot;
             cellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
-              callback: (r, c, cell) => {
+              callback: (r, c, origin) => {
+                const cell = origin.clone();
                 cell.fontAttr.color = color;
+                proxy.setCell(r, c, cell);
               },
             });
-            dataSnapshot.snapshot();
+            tableDataSnapshot.end();
             table.render();
           }
         },
@@ -162,19 +177,23 @@ class TopMenu extends Widget {
           const {
             screen,
             cellsHelper,
-            dataSnapshot,
+            tableDataSnapshot,
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           this.fillColor.setColor(color);
           if (selectorAttr) {
+            tableDataSnapshot.begin();
+            const { proxy } = tableDataSnapshot;
             cellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
-              callback: (r, c, cell) => {
+              callback: (r, c, origin) => {
+                const cell = origin.clone();
                 cell.background = color;
+                proxy.setCell(r, c, cell);
               },
             });
-            dataSnapshot.snapshot();
+            tableDataSnapshot.end();
             table.render();
           }
         },
@@ -189,11 +208,13 @@ class TopMenu extends Widget {
             screen,
             cellsHelper,
             cells,
-            dataSnapshot,
+            tableDataSnapshot,
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           if (selectorAttr) {
+            tableDataSnapshot.begin();
+            const { proxy } = tableDataSnapshot;
             let width = 1;
             let type = LINE_TYPE.SOLID_LINE;
             // Line Type
@@ -226,45 +247,39 @@ class TopMenu extends Widget {
               case 'border1':
                 cellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                  callback: (r, c, origin) => {
+                    const cell = origin.clone();
+                    // 显示
                     cell.borderAttr.left.display = true;
                     cell.borderAttr.top.display = true;
                     cell.borderAttr.right.display = true;
                     cell.borderAttr.bottom.display = true;
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 颜色
                     cell.borderAttr.left.color = color;
                     cell.borderAttr.top.color = color;
                     cell.borderAttr.right.color = color;
                     cell.borderAttr.bottom.color = color;
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 宽度
                     cell.borderAttr.left.width = width;
                     cell.borderAttr.top.width = width;
                     cell.borderAttr.right.width = width;
                     cell.borderAttr.bottom.width = width;
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 类型
                     cell.borderAttr.left.type = type;
                     cell.borderAttr.top.type = type;
                     cell.borderAttr.right.type = type;
                     cell.borderAttr.bottom.type = type;
+                    // 修改
+                    proxy.setCell(r, c, cell);
                   },
                 });
                 break;
               case 'border2':
                 cellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                  callback: (r, c, origin) => {
+                    const cell = origin.clone();
+                    // 显示
                     if (selectorAttr.rect.sri === r) {
                       cell.borderAttr.bottom.display = true;
                     } else if (selectorAttr.rect.eri === r) {
@@ -281,11 +296,7 @@ class TopMenu extends Widget {
                       cell.borderAttr.right.display = true;
                       cell.borderAttr.left.display = true;
                     }
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 颜色
                     if (selectorAttr.rect.sri === r) {
                       cell.borderAttr.bottom.color = color;
                     } else if (selectorAttr.rect.eri === r) {
@@ -302,11 +313,7 @@ class TopMenu extends Widget {
                       cell.borderAttr.right.color = color;
                       cell.borderAttr.left.color = color;
                     }
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 宽度
                     if (selectorAttr.rect.sri === r) {
                       cell.borderAttr.bottom.width = width;
                     } else if (selectorAttr.rect.eri === r) {
@@ -323,11 +330,7 @@ class TopMenu extends Widget {
                       cell.borderAttr.right.width = width;
                       cell.borderAttr.left.width = width;
                     }
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 类型
                     if (selectorAttr.rect.sri === r) {
                       cell.borderAttr.bottom.type = type;
                     } else if (selectorAttr.rect.eri === r) {
@@ -344,13 +347,17 @@ class TopMenu extends Widget {
                       cell.borderAttr.right.type = type;
                       cell.borderAttr.left.type = type;
                     }
+                    // 修改
+                    proxy.setCell(r, c, cell);
                   },
                 });
                 break;
               case 'border3':
                 cellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                  callback: (r, c, origin) => {
+                    const cell = origin.clone();
+                    // 显示
                     if (selectorAttr.rect.sri === r) {
                       cell.borderAttr.bottom.display = true;
                     } else if (selectorAttr.rect.eri === r) {
@@ -359,11 +366,7 @@ class TopMenu extends Widget {
                       cell.borderAttr.bottom.display = true;
                       cell.borderAttr.top.display = true;
                     }
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 颜色
                     if (selectorAttr.rect.sri === r) {
                       cell.borderAttr.bottom.color = color;
                     } else if (selectorAttr.rect.eri === r) {
@@ -372,11 +375,7 @@ class TopMenu extends Widget {
                       cell.borderAttr.bottom.color = color;
                       cell.borderAttr.top.color = color;
                     }
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 宽度
                     if (selectorAttr.rect.sri === r) {
                       cell.borderAttr.bottom.width = width;
                     } else if (selectorAttr.rect.eri === r) {
@@ -385,11 +384,7 @@ class TopMenu extends Widget {
                       cell.borderAttr.bottom.width = width;
                       cell.borderAttr.top.width = width;
                     }
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 类型
                     if (selectorAttr.rect.sri === r) {
                       cell.borderAttr.bottom.type = type;
                     } else if (selectorAttr.rect.eri === r) {
@@ -398,13 +393,17 @@ class TopMenu extends Widget {
                       cell.borderAttr.bottom.type = type;
                       cell.borderAttr.top.type = type;
                     }
+                    // 修改
+                    proxy.setCell(r, c, cell);
                   },
                 });
                 break;
               case 'border4':
                 cellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                  callback: (r, c, origin) => {
+                    const cell = origin.clone();
+                    // 显示
                     if (selectorAttr.rect.sci === c) {
                       cell.borderAttr.right.display = true;
                     } else if (selectorAttr.rect.eci === c) {
@@ -413,11 +412,7 @@ class TopMenu extends Widget {
                       cell.borderAttr.right.display = true;
                       cell.borderAttr.left.display = true;
                     }
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 颜色
                     if (selectorAttr.rect.sci === c) {
                       cell.borderAttr.right.color = color;
                     } else if (selectorAttr.rect.eci === c) {
@@ -426,11 +421,7 @@ class TopMenu extends Widget {
                       cell.borderAttr.right.color = color;
                       cell.borderAttr.left.color = color;
                     }
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 宽度
                     if (selectorAttr.rect.sci === c) {
                       cell.borderAttr.right.width = width;
                     } else if (selectorAttr.rect.eci === c) {
@@ -439,11 +430,7 @@ class TopMenu extends Widget {
                       cell.borderAttr.right.width = width;
                       cell.borderAttr.left.width = width;
                     }
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 类型
                     if (selectorAttr.rect.sci === c) {
                       cell.borderAttr.right.type = type;
                     } else if (selectorAttr.rect.eci === c) {
@@ -452,13 +439,17 @@ class TopMenu extends Widget {
                       cell.borderAttr.right.type = type;
                       cell.borderAttr.left.type = type;
                     }
+                    // 修改
+                    proxy.setCell(r, c, cell);
                   },
                 });
                 break;
               case 'border5':
                 cellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                  callback: (r, c, origin) => {
+                    const cell = origin.clone();
+                    // 显示
                     if (selectorAttr.rect.sci === c) {
                       cell.borderAttr.left.display = true;
                     } else if (selectorAttr.rect.eci === c) {
@@ -469,11 +460,7 @@ class TopMenu extends Widget {
                     } else if (selectorAttr.rect.eri === r) {
                       cell.borderAttr.bottom.display = true;
                     }
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 颜色
                     if (selectorAttr.rect.sci === c) {
                       cell.borderAttr.left.color = color;
                     } else if (selectorAttr.rect.eci === c) {
@@ -484,11 +471,7 @@ class TopMenu extends Widget {
                     } else if (selectorAttr.rect.eri === r) {
                       cell.borderAttr.bottom.color = color;
                     }
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 宽度
                     if (selectorAttr.rect.sci === c) {
                       cell.borderAttr.left.width = width;
                     } else if (selectorAttr.rect.eci === c) {
@@ -499,11 +482,7 @@ class TopMenu extends Widget {
                     } else if (selectorAttr.rect.eri === r) {
                       cell.borderAttr.bottom.width = width;
                     }
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 类型
                     if (selectorAttr.rect.sci === c) {
                       cell.borderAttr.left.type = type;
                     } else if (selectorAttr.rect.eci === c) {
@@ -514,126 +493,97 @@ class TopMenu extends Widget {
                     } else if (selectorAttr.rect.eri === r) {
                       cell.borderAttr.bottom.type = type;
                     }
+                    // 修改
+                    proxy.setCell(r, c, cell);
                   },
                 });
                 break;
               case 'border6':
                 cellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                  callback: (r, c, origin) => {
+                    const cell = origin.clone();
+                    // 显示
                     if (c === selectorAttr.rect.sci) {
                       cell.borderAttr.left.display = true;
                     }
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 颜色
                     cell.borderAttr.left.color = color;
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 宽度
                     cell.borderAttr.left.width = width;
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 类型
                     cell.borderAttr.left.type = type;
+                    // 修改
+                    proxy.setCell(r, c, cell);
                   },
                 });
                 break;
               case 'border7':
                 cellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                  callback: (r, c, origin) => {
+                    const cell = origin.clone();
+                    // 显示
                     if (r === selectorAttr.rect.sri) {
                       cell.borderAttr.top.display = true;
                     }
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 颜色
                     cell.borderAttr.top.color = color;
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 宽度
                     cell.borderAttr.top.width = width;
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 类型
                     cell.borderAttr.top.type = type;
+                    // 修改
+                    proxy.setCell(r, c, cell);
                   },
                 });
                 break;
               case 'border8':
                 cellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                  callback: (r, c, origin) => {
+                    const cell = origin.clone();
+                    // 显示
                     if (c === selectorAttr.rect.eci) {
                       cell.borderAttr.right.display = true;
                     }
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 颜色
                     cell.borderAttr.right.color = color;
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 宽度
                     cell.borderAttr.right.width = width;
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 类型
                     cell.borderAttr.right.type = type;
+                    // 修改
+                    proxy.setCell(r, c, cell);
                   },
                 });
                 break;
               case 'border9':
                 cellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                  callback: (r, c, origin) => {
+                    const cell = origin.clone();
+                    // 显示
                     if (r === selectorAttr.rect.eri) {
                       cell.borderAttr.bottom.display = true;
                     }
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 颜色
                     cell.borderAttr.bottom.color = color;
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 宽度
                     cell.borderAttr.bottom.width = width;
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 类型
                     cell.borderAttr.bottom.type = type;
+                    // 修改
+                    proxy.setCell(r, c, cell);
                   },
                 });
                 break;
               case 'border10':
                 cellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c) => {
-                    const cell = cells.getCellOrNew(r, c);
+                  callback: (r, c, origin) => {
+                    const cell = origin.clone();
+                    // 显示
                     if (selectorAttr.rect.sri === r) {
                       const top = cells.getCellOrNew(r - 1, c);
                       top.borderAttr.bottom.display = false;
@@ -654,41 +604,29 @@ class TopMenu extends Widget {
                     cell.borderAttr.top.display = false;
                     cell.borderAttr.right.display = false;
                     cell.borderAttr.bottom.display = false;
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 颜色
                     cell.borderAttr.left.color = false;
                     cell.borderAttr.top.color = false;
                     cell.borderAttr.right.color = false;
                     cell.borderAttr.bottom.color = false;
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 宽度
                     cell.borderAttr.left.width = false;
                     cell.borderAttr.top.width = false;
                     cell.borderAttr.right.width = false;
                     cell.borderAttr.bottom.width = false;
-                  },
-                });
-                cellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (r, c, cell) => {
+                    // 类型
                     cell.borderAttr.left.type = false;
                     cell.borderAttr.top.type = false;
                     cell.borderAttr.right.type = false;
                     cell.borderAttr.bottom.type = false;
+                    // 修改
+                    proxy.setCell(r, c, cell);
                   },
                 });
                 break;
               default: break;
             }
-            // 快照
-            dataSnapshot.snapshot();
-            // render
+            tableDataSnapshot.end();
             table.render();
           }
         },
@@ -707,7 +645,7 @@ class TopMenu extends Widget {
           const {
             screen,
             cellsHelper,
-            dataSnapshot,
+            tableDataSnapshot,
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
@@ -724,13 +662,17 @@ class TopMenu extends Widget {
             default: break;
           }
           if (selectorAttr) {
+            tableDataSnapshot.begin();
+            const { proxy } = tableDataSnapshot;
             cellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
-              callback: (r, c, cell) => {
+              callback: (r, c, origin) => {
+                const cell = origin.clone();
                 cell.fontAttr.align = type;
+                proxy.setCell(r, c, cell);
               },
             });
-            dataSnapshot.snapshot();
+            tableDataSnapshot.end();
             table.render();
           }
         },
@@ -744,7 +686,7 @@ class TopMenu extends Widget {
           const {
             screen,
             cellsHelper,
-            dataSnapshot,
+            tableDataSnapshot,
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
@@ -761,13 +703,17 @@ class TopMenu extends Widget {
             default: break;
           }
           if (selectorAttr) {
+            tableDataSnapshot.begin();
+            const { proxy } = tableDataSnapshot;
             cellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
-              callback: (r, c, cell) => {
+              callback: (r, c, origin) => {
+                const cell = origin.clone();
                 cell.fontAttr.verticalAlign = type;
+                proxy.setCell(r, c, cell);
               },
             });
-            dataSnapshot.snapshot();
+            tableDataSnapshot.end();
             table.render();
           }
         },
@@ -781,7 +727,7 @@ class TopMenu extends Widget {
           const {
             screen,
             cellsHelper,
-            dataSnapshot,
+            tableDataSnapshot,
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
@@ -800,13 +746,17 @@ class TopMenu extends Widget {
           }
           this.textWrapping.setIcon(icon);
           if (selectorAttr) {
+            tableDataSnapshot.begin();
+            const { proxy } = tableDataSnapshot;
             cellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
-              callback: (r, c, cell) => {
+              callback: (r, c, origin) => {
+                const cell = origin.clone();
                 cell.fontAttr.textWrap = type;
+                proxy.setCell(r, c, cell);
               },
             });
-            dataSnapshot.snapshot();
+            tableDataSnapshot.end();
             table.render();
           }
         },
@@ -870,19 +820,24 @@ class TopMenu extends Widget {
     EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      const { dataSnapshot } = table;
-      if (dataSnapshot.undo.length() > 1) dataSnapshot.undo.pop();
+      const { tableDataSnapshot } = table;
+      if (tableDataSnapshot.canBack()) tableDataSnapshot.back();
     });
     EventBind.bind(this.redo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      const { dataSnapshot } = table;
-      dataSnapshot.redo.pop();
+      const { tableDataSnapshot } = table;
+      if (tableDataSnapshot.canGo()) tableDataSnapshot.go();
     });
     EventBind.bind(this.paintFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      const { screen, cells, cellsHelper, dataSnapshot } = table;
+      const {
+        screen,
+        cells,
+        cellsHelper,
+        tableDataSnapshot,
+      } = table;
       const screenCopyStyle = screen.findByClass(ScreenCopyStyle);
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
@@ -897,17 +852,20 @@ class TopMenu extends Widget {
           this.paintFormat.removeSheet(sheet);
           screenSelector.removeSelectChangeOverCb(cb);
           // 复制样式
+          tableDataSnapshot.begin();
+          const { proxy } = tableDataSnapshot;
           const { selectorAttr: newSelectorAttr } = screenSelector;
           const src = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
           cellsHelper.getCellOrNewCellByViewRange({
             rectRange: newSelectorAttr.rect,
-            callback: (r, c, cell) => {
-              const { text } = cell;
-              Utils.mergeDeep(cell, src);
+            callback: (r, c, origin) => {
+              const { text } = origin;
+              const cell = src.clone();
               cell.text = text;
+              proxy.setCell(r, c, cell);
             },
           });
-          dataSnapshot.snapshot();
+          tableDataSnapshot.end();
           table.render();
         };
         screenSelector.addSelectChangeOverCb(cb);
@@ -916,19 +874,24 @@ class TopMenu extends Widget {
     EventBind.bind(this.clearFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      const { screen, cellsHelper } = table;
+      const {
+        screen,
+        cellsHelper,
+        tableDataSnapshot,
+      } = table;
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
+        tableDataSnapshot.begin();
+        const { proxy } = tableDataSnapshot;
         cellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectorAttr.rect,
-          callback: (r, c, cell) => {
-            const { text } = cell;
-            table.setCell(r, c, new Cell({ text }));
-            Utils.mergeDeep(cell, new Cell({ text }));
-            cell.text = text;
+          callback: (r, c, origin) => {
+            const { text } = origin;
+            proxy.setCell(r, c, new Cell({ text }));
           },
         });
+        tableDataSnapshot.end();
         table.render();
       }
     });
@@ -974,76 +937,112 @@ class TopMenu extends Widget {
     EventBind.bind(this.fontBold, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      const { screen, cells, cellsHelper, dataSnapshot } = table;
+      const {
+        screen,
+        cells,
+        cellsHelper,
+        tableDataSnapshot,
+      } = table;
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
         const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
         const bold = !firstCell.fontAttr.bold;
+        tableDataSnapshot.begin();
+        const { proxy } = tableDataSnapshot;
         cellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectorAttr.rect,
-          callback: (r, c, cell) => {
+          callback: (r, c, origin) => {
+            const cell = origin.clone();
             cell.fontAttr.bold = bold;
+            proxy.setCell(r, c, cell);
           },
         });
-        dataSnapshot.snapshot();
+        tableDataSnapshot.end();
         table.render();
       }
     });
     EventBind.bind(this.fontItalic, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      const { screen, cells, cellsHelper, dataSnapshot } = table;
+      const {
+        screen,
+        cells,
+        cellsHelper,
+        tableDataSnapshot,
+      } = table;
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
         const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
         const italic = !firstCell.fontAttr.italic;
+        tableDataSnapshot.begin();
+        const { proxy } = tableDataSnapshot;
         cellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectorAttr.rect,
-          callback: (r, c, cell) => {
+          callback: (r, c, origin) => {
+            const cell = origin.clone();
             cell.fontAttr.italic = italic;
+            proxy.setCell(r, c, cell);
           },
         });
-        dataSnapshot.snapshot();
+        tableDataSnapshot.end();
         table.render();
       }
     });
     EventBind.bind(this.underLine, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      const { screen, cells, cellsHelper, dataSnapshot } = table;
+      const {
+        screen,
+        cells,
+        cellsHelper,
+        tableDataSnapshot,
+      } = table;
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
         const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
         const underline = !firstCell.fontAttr.underline;
+        tableDataSnapshot.begin();
+        const { proxy } = tableDataSnapshot;
         cellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectorAttr.rect,
-          callback: (r, c, cell) => {
+          callback: (r, c, origin) => {
+            const cell = origin.clone();
             cell.fontAttr.underline = underline;
+            proxy.setCell(r, c, cell);
           },
         });
-        dataSnapshot.snapshot();
+        tableDataSnapshot.end();
         table.render();
       }
     });
     EventBind.bind(this.fontStrike, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      const { screen, cells, cellsHelper, dataSnapshot } = table;
+      const {
+        screen,
+        cells,
+        cellsHelper,
+        tableDataSnapshot,
+      } = table;
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
         const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
         const strikethrough = !firstCell.fontAttr.strikethrough;
+        tableDataSnapshot.begin();
+        const { proxy } = tableDataSnapshot;
         cellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectorAttr.rect,
-          callback: (r, c, cell) => {
+          callback: (r, c, origin) => {
+            const cell = origin.clone();
             cell.fontAttr.strikethrough = strikethrough;
+            proxy.setCell(r, c, cell);
           },
         });
-        dataSnapshot.snapshot();
+        tableDataSnapshot.end();
         table.render();
       }
     });
@@ -1089,7 +1088,10 @@ class TopMenu extends Widget {
     EventBind.bind(this.merge, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      const { screen, dataSnapshot, merges } = table;
+      const {
+        screen,
+        merges,
+      } = table;
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
@@ -1100,7 +1102,6 @@ class TopMenu extends Widget {
         } else if (merge.multiple()) {
           merges.add(merge);
         }
-        dataSnapshot.snapshot();
         table.render();
       }
       e.stopPropagation();
@@ -1152,8 +1153,8 @@ class TopMenu extends Widget {
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
     const { table } = sheet;
-    const { dataSnapshot } = table;
-    this.undo.active(dataSnapshot.undo.length() > 1);
+    const { tableDataSnapshot } = table;
+    this.undo.active(tableDataSnapshot.canBack());
   }
 
   setRedoStatus() {
@@ -1161,8 +1162,8 @@ class TopMenu extends Widget {
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
     const { table } = sheet;
-    const { dataSnapshot } = table;
-    this.redo.active(!dataSnapshot.redo.isEmpty());
+    const { tableDataSnapshot } = table;
+    this.redo.active(tableDataSnapshot.canGo());
   }
 
   setPaintFormatStatus() {

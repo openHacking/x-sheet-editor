@@ -27,7 +27,6 @@ import { Rect } from '../../canvas/Rect';
 import { Crop } from '../../canvas/Crop';
 import { Grid } from '../../canvas/Grid';
 import { Box } from '../../canvas/Box';
-import { DataSnapshot } from './DataSnapshot';
 import { Line, LINE_TYPE } from '../../canvas/Line';
 import { LineHandle } from './gridborder/LineHandle';
 import { KeyboardManage } from './KeyboardManage';
@@ -35,6 +34,7 @@ import { Cells } from './cells/Cells';
 import { CellsHelper } from './CellsHelper';
 import { GridLineHandle } from './gridborder/GridLineHandle';
 import { BorderLineHandle } from './gridborder/BorderLineHandle';
+import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
 
 /**
  * 绘制图表左上固定的部分
@@ -1645,12 +1645,10 @@ class Table extends Widget {
     this.gridLineHandle = new GridLineHandle(this);
     this.borderLineHandle = new BorderLineHandle(this);
 
-    // 撤销/反撤销
-    this.dataSnapshot = new DataSnapshot(this);
-
+    // 数据快照
+    this.tableDataSnapshot = new TableDataSnapshot(this);
     // 鼠标指针
     this.mousePointType = new MousePointType(this);
-
     // 键盘快捷键
     this.keyboardManage = new KeyboardManage();
 
@@ -1742,7 +1740,7 @@ class Table extends Widget {
   }
 
   initScreenWidget() {
-    const { dataSnapshot } = this;
+    const { tableDataSnapshot } = this;
     // 单元格筛选组件
     const screenSelector = new ScreenSelector(this.screen);
     screenSelector.addSelectChangeCb(() => {
@@ -1754,10 +1752,11 @@ class Table extends Widget {
     this.screen.addWidget(screenSelector);
     // 自动填充组件
     const screenAutoFill = new ScreenAutoFill(this.screen, {
-      onAfterAutoFill: (count) => {
-        if (count > 0) {
-          dataSnapshot.snapshot(true);
-        }
+      onBeforeAutoFill: () => {
+        tableDataSnapshot.begin();
+      },
+      onAfterAutoFill: () => {
+        tableDataSnapshot.end();
       },
     });
     this.screen.addWidget(screenAutoFill);
@@ -2111,19 +2110,6 @@ class Table extends Widget {
     const { cols } = this;
     cols.setWidth(ci, floor(width));
     this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH);
-  }
-
-  getCell(ri, ci) {
-    const { cells } = this;
-    return Utils.mergeDeep({}, cells.getCell(ri, ci));
-  }
-
-  setCell(ri, ci, cell) {
-    // console.log('setCell >> ri, ci >>', ri, ci);
-    const { cells, dataSnapshot } = this;
-    cells.setCellOrNew(ri, ci, cell);
-    dataSnapshot.snapshot(true);
-    this.render();
   }
 
   toString() {
