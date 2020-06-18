@@ -30,7 +30,6 @@ import { LINE_TYPE } from '../../canvas/Line';
 import { Icon } from './tools/Icon';
 import { ALIGN, TEXT_WRAP, VERTICAL_ALIGN } from '../../canvas/Font';
 import { Cell } from '../table/cells/Cell';
-import { RectRange } from '../table/RectRange';
 
 class Divider extends Widget {
   constructor() {
@@ -821,7 +820,7 @@ class TopMenu extends Widget {
     EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      const { tableDataSnapshot, cells } = table;
+      const { tableDataSnapshot } = table;
       if (tableDataSnapshot.canBack()) tableDataSnapshot.back();
     });
     EventBind.bind(this.redo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
