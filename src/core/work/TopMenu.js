@@ -30,6 +30,7 @@ import { LINE_TYPE } from '../../canvas/Line';
 import { Icon } from './tools/Icon';
 import { ALIGN, TEXT_WRAP, VERTICAL_ALIGN } from '../../canvas/Font';
 import { Cell } from '../table/cells/Cell';
+import { RectRange } from '../table/RectRange';
 
 class Divider extends Widget {
   constructor() {
@@ -820,7 +821,7 @@ class TopMenu extends Widget {
     EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      const { tableDataSnapshot } = table;
+      const { tableDataSnapshot, cells } = table;
       if (tableDataSnapshot.canBack()) tableDataSnapshot.back();
     });
     EventBind.bind(this.redo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
@@ -835,7 +836,6 @@ class TopMenu extends Widget {
       const {
         screen,
         cells,
-        cellsHelper,
         tableDataSnapshot,
       } = table;
       const screenCopyStyle = screen.findByClass(ScreenCopyStyle);
@@ -851,21 +851,22 @@ class TopMenu extends Widget {
           this.paintFormat.active(false);
           this.paintFormat.removeSheet(sheet);
           screenSelector.removeSelectChangeOverCb(cb);
-          // 模板单元格
-          const src = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
-          // 复制样式
+
+          const srcRect = selectorAttr.rect;
+          const targetRect = screenSelector.selectorAttr.rect;
+
           tableDataSnapshot.begin();
           const { cellDataProxy } = tableDataSnapshot;
-          const { selectorAttr: newSelectorAttr } = screenSelector;
-          cellsHelper.getCellOrNewCellByViewRange({
-            rectRange: newSelectorAttr.rect,
-            callback: (r, c, origin) => {
-              const { text } = origin;
+          for (let i = srcRect.sri, j = targetRect.sri; i <= srcRect.eri; i += 1, j += 1) {
+            for (let k = srcRect.sci, v = targetRect.sci; k <= srcRect.eci; k += 1, v += 1) {
+              const src = cells.getCellOrNew(i, k);
+              const target = cells.getCellOrNew(j, v);
+              const { text } = target;
               const cell = src.clone();
               cell.text = text;
-              cellDataProxy.setCell(r, c, cell);
-            },
-          });
+              cellDataProxy.setCell(j, v, cell);
+            }
+          }
           tableDataSnapshot.end();
           table.render();
         };
