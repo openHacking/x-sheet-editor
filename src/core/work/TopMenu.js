@@ -851,11 +851,12 @@ class TopMenu extends Widget {
           this.paintFormat.active(false);
           this.paintFormat.removeSheet(sheet);
           screenSelector.removeSelectChangeOverCb(cb);
+          // 模板单元格
+          const src = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
           // 复制样式
           tableDataSnapshot.begin();
           const { cellDataProxy } = tableDataSnapshot;
           const { selectorAttr: newSelectorAttr } = screenSelector;
-          const src = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
           cellsHelper.getCellOrNewCellByViewRange({
             rectRange: newSelectorAttr.rect,
             callback: (r, c, origin) => {
