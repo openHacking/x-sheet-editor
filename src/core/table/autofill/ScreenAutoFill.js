@@ -403,7 +403,8 @@ class ScreenAutoFill extends ScreenWidget {
   copyMerge() {
     const { screen, screenSelector } = this;
     const { table } = screen;
-    const { merges } = table;
+    const { merges, tableDataSnapshot } = table;
+    const { mergeDataProxy } = tableDataSnapshot;
     const { autoFillAttr } = this;
     const { selectorAttr } = screenSelector;
     const { rect: autoFillRect, direction } = autoFillAttr;
@@ -424,7 +425,7 @@ class ScreenAutoFill extends ScreenWidget {
             cSize -= 1;
             const newMerge = new RectRange(tIndexRi, tIndexCi, tIndexRi + rSize, tIndexCi + cSize);
             if (!merges.intersects(newMerge)) {
-              merges.add(newMerge);
+              mergeDataProxy.addMerge(newMerge);
             }
           }
         }
