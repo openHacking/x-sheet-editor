@@ -1,22 +1,9 @@
 import { Constant } from '../../../utils/Constant';
-import { TableCellDataProxy } from './TableCellDataProxy';
-
-class MergeDataRecord {
-  constructor(merge) {
-    this.merge = merge;
-  }
-}
-
-class CellDataRecord {
-  constructor({ ri, ci, oldCell, newCell }) {
-    this.ri = ri;
-    this.ci = ci;
-    this.oldCell = oldCell;
-    this.newCell = newCell;
-  }
-}
-
-class ChartDataRecord {}
+import { TableCellDataProxy } from './proxy/TableCellDataProxy';
+import { CellDataRecord } from './record/CellDataRecord';
+import { MERGE_RECORD_TYPE, MergeDataRecord } from './record/MergeDataRecord';
+import { ChartDataRecord } from './record/ChartDataRecord';
+import { TableMergeDataProxy } from './proxy/TableMergeDataProxy';
 
 class TableDataSnapshot {
 
@@ -26,6 +13,20 @@ class TableDataSnapshot {
     this.goLayerStack = [];
     this.recordLayer = [];
     this.table = table;
+    this.mergeDataProxy = new TableMergeDataProxy(table, {
+      on: {
+        addMerge: (merge) => {
+          if (this.record === false) return;
+          const { recordLayer } = this;
+          recordLayer.push(new MergeDataRecord({ merge, recordType: MERGE_RECORD_TYPE.ADD }));
+        },
+        deleteMerge: (merge) => {
+          if (this.record === false) return;
+          const { recordLayer } = this;
+          recordLayer.push(new MergeDataRecord({ merge, recordType: MERGE_RECORD_TYPE.DELETE }));
+        },
+      },
+    });
     this.cellDataProxy = new TableCellDataProxy(table, {
       on: {
         setCell: (ri, ci, oldCell, newCell) => {
@@ -39,7 +40,7 @@ class TableDataSnapshot {
 
   back() {
     const { backLayerStack, goLayerStack, table } = this;
-    const { cells } = table;
+    const { cells, merges } = table;
     const layer = backLayerStack.pop();
     for (let i = 0, len = layer.length; i < len; i += 1) {
       const item = layer[i];
@@ -51,8 +52,16 @@ class TableDataSnapshot {
       }
       // 合并单元格元素
       if (item instanceof MergeDataRecord) {
-        // TODO...
-        // ...
+        const { merge, recordType } = item;
+        switch (recordType) {
+          case MERGE_RECORD_TYPE.ADD:
+            merges.deleteIntersects(merge);
+            break;
+          case MERGE_RECORD_TYPE.DELETE:
+            merges.add(merge);
+            break;
+          default: break;
+        }
         continue;
       }
       // 图表元素
@@ -68,7 +77,7 @@ class TableDataSnapshot {
 
   go() {
     const { backLayerStack, goLayerStack, table } = this;
-    const { cells } = table;
+    const { cells, merges } = table;
     const layer = goLayerStack.pop();
     for (let i = 0, len = layer.length; i < len; i += 1) {
       const item = layer[i];
@@ -80,8 +89,16 @@ class TableDataSnapshot {
       }
       // 合并单元格元素
       if (item instanceof MergeDataRecord) {
-        // TODO...
-        // ...
+        const { merge, recordType } = item;
+        switch (recordType) {
+          case MERGE_RECORD_TYPE.ADD:
+            merges.add(merge);
+            break;
+          case MERGE_RECORD_TYPE.DELETE:
+            merges.deleteIntersects(merge);
+            break;
+          default: break;
+        }
         continue;
       }
       // 图表元素

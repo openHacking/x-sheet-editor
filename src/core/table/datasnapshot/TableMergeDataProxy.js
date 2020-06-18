@@ -1,5 +1,0 @@
-class TableMergeDataProxy {
-
-}
-
-export { TableMergeDataProxy };

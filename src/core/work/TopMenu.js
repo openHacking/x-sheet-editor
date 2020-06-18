@@ -1091,17 +1091,21 @@ class TopMenu extends Widget {
       const {
         screen,
         merges,
+        tableDataSnapshot,
       } = table;
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
         const merge = selectorAttr.rect.clone();
         const find = merges.getFirstIncludes(merge.sri, merge.sci);
+        tableDataSnapshot.begin();
+        const { mergeDataProxy } = tableDataSnapshot;
         if (find !== null) {
-          merges.deleteIntersects(find);
+          mergeDataProxy.deleteMerge(find);
         } else if (merge.multiple()) {
-          merges.add(merge);
+          mergeDataProxy.addMerge(merge);
         }
+        tableDataSnapshot.end();
         table.render();
       }
       e.stopPropagation();
