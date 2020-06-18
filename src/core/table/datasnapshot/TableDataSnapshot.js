@@ -1,81 +1,84 @@
 import { TableDataProxy } from './TableDataProxy';
 import { Constant } from '../../../utils/Constant';
 
+class CellDataRecord {
+  constructor({ ri, ci, oldCell, newCell }) {
+    this.ri = ri;
+    this.ci = ci;
+    this.oldCell = oldCell;
+    this.newCell = newCell;
+  }
+}
+
 class TableDataSnapshot {
 
   constructor(table) {
     this.record = false;
-    this.backStack = [];
-    this.goStack = [];
-    this.currentLayer = [];
+    this.backLayerStack = [];
+    this.goLayerStack = [];
     this.recordLayer = [];
     this.table = table;
     this.proxy = new TableDataProxy(table, {
       on: {
         setCell: (ri, ci, oldCell, newCell) => {
           if (this.record === false) return;
-          this.currentLayer.push({ ri, ci, cell: newCell });
-          this.recordLayer.push({ ri, ci, cell: oldCell });
+          const { recordLayer } = this;
+          recordLayer.push(new CellDataRecord({ ri, ci, oldCell, newCell }));
         },
       },
     });
   }
 
   back() {
-    const { backStack, goStack, currentLayer, table } = this;
+    const { backLayerStack, goLayerStack, table } = this;
     const { cells } = table;
-    const layer = backStack.pop();
+    const layer = backLayerStack.pop();
     for (let i = 0, len = layer.length; i < len; i += 1) {
       const item = layer[i];
-      const { ri, ci, cell } = item;
-      cells.setCellOrNew(ri, ci, cell);
+      const { ri, ci, oldCell } = item;
+      cells.setCellOrNew(ri, ci, oldCell);
     }
-    goStack.push(currentLayer);
-    this.currentLayer = layer;
+    goLayerStack.push(layer);
     table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
     table.render();
   }
 
   go() {
-    const { backStack, goStack, currentLayer, table } = this;
+    const { backLayerStack, goLayerStack, table } = this;
     const { cells } = table;
-    const layer = goStack.pop();
-    // console.log('layer>>>', layer);
+    const layer = goLayerStack.pop();
     for (let i = 0, len = layer.length; i < len; i += 1) {
       const item = layer[i];
-      const { ri, ci, cell } = item;
-      cells.setCellOrNew(ri, ci, cell);
+      const { ri, ci, newCell } = item;
+      cells.setCellOrNew(ri, ci, newCell);
     }
-    backStack.push(currentLayer);
-    this.currentLayer = layer;
+    backLayerStack.push(layer);
     table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
     table.render();
   }
 
   end() {
-    const { table } = this;
+    const { table, recordLayer, backLayerStack } = this;
     this.record = false;
-    if (this.recordLayer.length > 0) {
-      this.backStack.push(this.recordLayer);
-      this.goStack = [];
-      table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+    if (recordLayer.length) {
+      backLayerStack.push(recordLayer);
     }
     this.recordLayer = [];
+    table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
   }
 
   begin() {
-    this.recordLayer = [];
     this.record = true;
   }
 
   canBack() {
-    const { backStack } = this;
-    return backStack.length !== 0;
+    const { backLayerStack } = this;
+    return backLayerStack.length !== 0;
   }
 
   canGo() {
-    const { goStack } = this;
-    return goStack.length !== 0;
+    const { goLayerStack } = this;
+    return goLayerStack.length !== 0;
   }
 }
 
