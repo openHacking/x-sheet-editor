@@ -82,7 +82,7 @@ class Edit extends Widget {
     const { select } = this;
     const { table } = this;
     const { cells, tableDataSnapshot } = table;
-    const { proxy } = tableDataSnapshot;
+    const { cellDataProxy } = tableDataSnapshot;
     if (select) {
       const origin = cells.getCellOrNew(select.sri, select.sci);
       const cell = origin.clone();
@@ -90,7 +90,7 @@ class Edit extends Widget {
       if (cell.text !== text) {
         tableDataSnapshot.begin();
         cell.text = text;
-        proxy.setCell(select.sri, select.sci, cell);
+        cellDataProxy.setCell(select.sri, select.sci, cell);
         tableDataSnapshot.end();
         table.render();
       }

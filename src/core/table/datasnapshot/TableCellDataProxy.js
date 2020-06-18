@@ -1,4 +1,4 @@
-class TableDataProxy {
+class TableCellDataProxy {
 
   constructor(table, option = {
     on: {
@@ -20,4 +20,4 @@ class TableDataProxy {
   }
 }
 
-export { TableDataProxy };
+export { TableCellDataProxy };

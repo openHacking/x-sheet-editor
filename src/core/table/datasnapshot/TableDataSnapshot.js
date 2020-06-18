@@ -1,5 +1,11 @@
-import { TableDataProxy } from './TableDataProxy';
 import { Constant } from '../../../utils/Constant';
+import { TableCellDataProxy } from './TableCellDataProxy';
+
+class MergeDataRecord {
+  constructor(merge) {
+    this.merge = merge;
+  }
+}
 
 class CellDataRecord {
   constructor({ ri, ci, oldCell, newCell }) {
@@ -10,6 +16,8 @@ class CellDataRecord {
   }
 }
 
+class ChartDataRecord {}
+
 class TableDataSnapshot {
 
   constructor(table) {
@@ -18,7 +26,7 @@ class TableDataSnapshot {
     this.goLayerStack = [];
     this.recordLayer = [];
     this.table = table;
-    this.proxy = new TableDataProxy(table, {
+    this.cellDataProxy = new TableCellDataProxy(table, {
       on: {
         setCell: (ri, ci, oldCell, newCell) => {
           if (this.record === false) return;
@@ -35,8 +43,23 @@ class TableDataSnapshot {
     const layer = backLayerStack.pop();
     for (let i = 0, len = layer.length; i < len; i += 1) {
       const item = layer[i];
-      const { ri, ci, oldCell } = item;
-      cells.setCellOrNew(ri, ci, oldCell);
+      // 单元格元素
+      if (item instanceof CellDataRecord) {
+        const { ri, ci, oldCell } = item;
+        cells.setCellOrNew(ri, ci, oldCell);
+        continue;
+      }
+      // 合并单元格元素
+      if (item instanceof MergeDataRecord) {
+        // TODO...
+        // ...
+        continue;
+      }
+      // 图表元素
+      if (item instanceof ChartDataRecord) {
+        // TODO...
+        // ...
+      }
     }
     goLayerStack.push(layer);
     table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
@@ -49,8 +72,23 @@ class TableDataSnapshot {
     const layer = goLayerStack.pop();
     for (let i = 0, len = layer.length; i < len; i += 1) {
       const item = layer[i];
-      const { ri, ci, newCell } = item;
-      cells.setCellOrNew(ri, ci, newCell);
+      // 单元格元素
+      if (item instanceof CellDataRecord) {
+        const { ri, ci, newCell } = item;
+        cells.setCellOrNew(ri, ci, newCell);
+        continue;
+      }
+      // 合并单元格元素
+      if (item instanceof MergeDataRecord) {
+        // TODO...
+        // ...
+        continue;
+      }
+      // 图表元素
+      if (item instanceof ChartDataRecord) {
+        // TODO...
+        // ...
+      }
     }
     backLayerStack.push(layer);
     table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
@@ -69,6 +107,7 @@ class TableDataSnapshot {
 
   begin() {
     this.record = true;
+    this.goLayerStack = [];
   }
 
   canBack() {

@@ -370,7 +370,7 @@ class ScreenAutoFill extends ScreenWidget {
     const { screen, screenSelector } = this;
     const { table } = screen;
     const { cells, tableDataSnapshot } = table;
-    const { proxy } = tableDataSnapshot;
+    const { cellDataProxy } = tableDataSnapshot;
     const { autoFillAttr } = this;
     const { selectorAttr } = screenSelector;
     const { rect: autoFillRect } = autoFillAttr;
@@ -384,7 +384,7 @@ class ScreenAutoFill extends ScreenWidget {
         const src = cells.getCell(sIndexRi, sIndexCi);
         if (src) {
           const target = src.clone();
-          proxy.setCell(tIndexRi, tIndexCi, target);
+          cellDataProxy.setCell(tIndexRi, tIndexCi, target);
           if (!Utils.isBlank(src.text)) {
             count += 1;
           }

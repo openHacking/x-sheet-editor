@@ -64,13 +64,13 @@ class TopMenu extends Widget {
           this.format.setTitle(title);
           if (selectorAttr) {
             tableDataSnapshot.begin();
-            const { proxy } = tableDataSnapshot;
+            const { cellDataProxy } = tableDataSnapshot;
             cellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
                 cell.format = format;
-                proxy.setCell(r, c, cell);
+                cellDataProxy.setCell(r, c, cell);
               },
             });
             tableDataSnapshot.end();
@@ -94,13 +94,13 @@ class TopMenu extends Widget {
           this.font.setTitle(type);
           if (selectorAttr) {
             tableDataSnapshot.begin();
-            const { proxy } = tableDataSnapshot;
+            const { cellDataProxy } = tableDataSnapshot;
             cellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
                 cell.fontAttr.name = type;
-                proxy.setCell(r, c, cell);
+                cellDataProxy.setCell(r, c, cell);
               },
             });
             tableDataSnapshot.end();
@@ -124,13 +124,13 @@ class TopMenu extends Widget {
           this.fontSize.setTitle(size);
           if (selectorAttr) {
             tableDataSnapshot.begin();
-            const { proxy } = tableDataSnapshot;
+            const { cellDataProxy } = tableDataSnapshot;
             cellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
                 cell.fontAttr.size = size;
-                proxy.setCell(r, c, cell);
+                cellDataProxy.setCell(r, c, cell);
               },
             });
             tableDataSnapshot.end();
@@ -154,13 +154,13 @@ class TopMenu extends Widget {
           this.fontColor.setColor(color);
           if (selectorAttr) {
             tableDataSnapshot.begin();
-            const { proxy } = tableDataSnapshot;
+            const { cellDataProxy } = tableDataSnapshot;
             cellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
                 cell.fontAttr.color = color;
-                proxy.setCell(r, c, cell);
+                cellDataProxy.setCell(r, c, cell);
               },
             });
             tableDataSnapshot.end();
@@ -184,13 +184,13 @@ class TopMenu extends Widget {
           this.fillColor.setColor(color);
           if (selectorAttr) {
             tableDataSnapshot.begin();
-            const { proxy } = tableDataSnapshot;
+            const { cellDataProxy } = tableDataSnapshot;
             cellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
                 cell.background = color;
-                proxy.setCell(r, c, cell);
+                cellDataProxy.setCell(r, c, cell);
               },
             });
             tableDataSnapshot.end();
@@ -214,7 +214,7 @@ class TopMenu extends Widget {
           const { selectorAttr } = screenSelector;
           if (selectorAttr) {
             tableDataSnapshot.begin();
-            const { proxy } = tableDataSnapshot;
+            const { cellDataProxy } = tableDataSnapshot;
             let width = 1;
             let type = LINE_TYPE.SOLID_LINE;
             // Line Type
@@ -270,7 +270,7 @@ class TopMenu extends Widget {
                     cell.borderAttr.right.type = type;
                     cell.borderAttr.bottom.type = type;
                     // 修改
-                    proxy.setCell(r, c, cell);
+                    cellDataProxy.setCell(r, c, cell);
                   },
                 });
                 break;
@@ -348,7 +348,7 @@ class TopMenu extends Widget {
                       cell.borderAttr.left.type = type;
                     }
                     // 修改
-                    proxy.setCell(r, c, cell);
+                    cellDataProxy.setCell(r, c, cell);
                   },
                 });
                 break;
@@ -394,7 +394,7 @@ class TopMenu extends Widget {
                       cell.borderAttr.top.type = type;
                     }
                     // 修改
-                    proxy.setCell(r, c, cell);
+                    cellDataProxy.setCell(r, c, cell);
                   },
                 });
                 break;
@@ -440,7 +440,7 @@ class TopMenu extends Widget {
                       cell.borderAttr.left.type = type;
                     }
                     // 修改
-                    proxy.setCell(r, c, cell);
+                    cellDataProxy.setCell(r, c, cell);
                   },
                 });
                 break;
@@ -494,7 +494,7 @@ class TopMenu extends Widget {
                       cell.borderAttr.bottom.type = type;
                     }
                     // 修改
-                    proxy.setCell(r, c, cell);
+                    cellDataProxy.setCell(r, c, cell);
                   },
                 });
                 break;
@@ -514,7 +514,7 @@ class TopMenu extends Widget {
                     // 类型
                     cell.borderAttr.left.type = type;
                     // 修改
-                    proxy.setCell(r, c, cell);
+                    cellDataProxy.setCell(r, c, cell);
                   },
                 });
                 break;
@@ -534,7 +534,7 @@ class TopMenu extends Widget {
                     // 类型
                     cell.borderAttr.top.type = type;
                     // 修改
-                    proxy.setCell(r, c, cell);
+                    cellDataProxy.setCell(r, c, cell);
                   },
                 });
                 break;
@@ -554,7 +554,7 @@ class TopMenu extends Widget {
                     // 类型
                     cell.borderAttr.right.type = type;
                     // 修改
-                    proxy.setCell(r, c, cell);
+                    cellDataProxy.setCell(r, c, cell);
                   },
                 });
                 break;
@@ -574,7 +574,7 @@ class TopMenu extends Widget {
                     // 类型
                     cell.borderAttr.bottom.type = type;
                     // 修改
-                    proxy.setCell(r, c, cell);
+                    cellDataProxy.setCell(r, c, cell);
                   },
                 });
                 break;
@@ -620,7 +620,7 @@ class TopMenu extends Widget {
                     cell.borderAttr.right.type = false;
                     cell.borderAttr.bottom.type = false;
                     // 修改
-                    proxy.setCell(r, c, cell);
+                    cellDataProxy.setCell(r, c, cell);
                   },
                 });
                 break;
@@ -663,13 +663,13 @@ class TopMenu extends Widget {
           }
           if (selectorAttr) {
             tableDataSnapshot.begin();
-            const { proxy } = tableDataSnapshot;
+            const { cellDataProxy } = tableDataSnapshot;
             cellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
                 cell.fontAttr.align = type;
-                proxy.setCell(r, c, cell);
+                cellDataProxy.setCell(r, c, cell);
               },
             });
             tableDataSnapshot.end();
@@ -704,13 +704,13 @@ class TopMenu extends Widget {
           }
           if (selectorAttr) {
             tableDataSnapshot.begin();
-            const { proxy } = tableDataSnapshot;
+            const { cellDataProxy } = tableDataSnapshot;
             cellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
                 cell.fontAttr.verticalAlign = type;
-                proxy.setCell(r, c, cell);
+                cellDataProxy.setCell(r, c, cell);
               },
             });
             tableDataSnapshot.end();
@@ -747,13 +747,13 @@ class TopMenu extends Widget {
           this.textWrapping.setIcon(icon);
           if (selectorAttr) {
             tableDataSnapshot.begin();
-            const { proxy } = tableDataSnapshot;
+            const { cellDataProxy } = tableDataSnapshot;
             cellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
                 cell.fontAttr.textWrap = type;
-                proxy.setCell(r, c, cell);
+                cellDataProxy.setCell(r, c, cell);
               },
             });
             tableDataSnapshot.end();
@@ -853,7 +853,7 @@ class TopMenu extends Widget {
           screenSelector.removeSelectChangeOverCb(cb);
           // 复制样式
           tableDataSnapshot.begin();
-          const { proxy } = tableDataSnapshot;
+          const { cellDataProxy } = tableDataSnapshot;
           const { selectorAttr: newSelectorAttr } = screenSelector;
           const src = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
           cellsHelper.getCellOrNewCellByViewRange({
@@ -862,7 +862,7 @@ class TopMenu extends Widget {
               const { text } = origin;
               const cell = src.clone();
               cell.text = text;
-              proxy.setCell(r, c, cell);
+              cellDataProxy.setCell(r, c, cell);
             },
           });
           tableDataSnapshot.end();
@@ -883,12 +883,12 @@ class TopMenu extends Widget {
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
         tableDataSnapshot.begin();
-        const { proxy } = tableDataSnapshot;
+        const { cellDataProxy } = tableDataSnapshot;
         cellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectorAttr.rect,
           callback: (r, c, origin) => {
             const { text } = origin;
-            proxy.setCell(r, c, new Cell({ text }));
+            cellDataProxy.setCell(r, c, new Cell({ text }));
           },
         });
         tableDataSnapshot.end();
@@ -949,13 +949,13 @@ class TopMenu extends Widget {
         const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
         const bold = !firstCell.fontAttr.bold;
         tableDataSnapshot.begin();
-        const { proxy } = tableDataSnapshot;
+        const { cellDataProxy } = tableDataSnapshot;
         cellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectorAttr.rect,
           callback: (r, c, origin) => {
             const cell = origin.clone();
             cell.fontAttr.bold = bold;
-            proxy.setCell(r, c, cell);
+            cellDataProxy.setCell(r, c, cell);
           },
         });
         tableDataSnapshot.end();
@@ -977,13 +977,13 @@ class TopMenu extends Widget {
         const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
         const italic = !firstCell.fontAttr.italic;
         tableDataSnapshot.begin();
-        const { proxy } = tableDataSnapshot;
+        const { cellDataProxy } = tableDataSnapshot;
         cellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectorAttr.rect,
           callback: (r, c, origin) => {
             const cell = origin.clone();
             cell.fontAttr.italic = italic;
-            proxy.setCell(r, c, cell);
+            cellDataProxy.setCell(r, c, cell);
           },
         });
         tableDataSnapshot.end();
@@ -1005,13 +1005,13 @@ class TopMenu extends Widget {
         const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
         const underline = !firstCell.fontAttr.underline;
         tableDataSnapshot.begin();
-        const { proxy } = tableDataSnapshot;
+        const { cellDataProxy } = tableDataSnapshot;
         cellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectorAttr.rect,
           callback: (r, c, origin) => {
             const cell = origin.clone();
             cell.fontAttr.underline = underline;
-            proxy.setCell(r, c, cell);
+            cellDataProxy.setCell(r, c, cell);
           },
         });
         tableDataSnapshot.end();
@@ -1033,13 +1033,13 @@ class TopMenu extends Widget {
         const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
         const strikethrough = !firstCell.fontAttr.strikethrough;
         tableDataSnapshot.begin();
-        const { proxy } = tableDataSnapshot;
+        const { cellDataProxy } = tableDataSnapshot;
         cellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectorAttr.rect,
           callback: (r, c, origin) => {
             const cell = origin.clone();
             cell.fontAttr.strikethrough = strikethrough;
-            proxy.setCell(r, c, cell);
+            cellDataProxy.setCell(r, c, cell);
           },
         });
         tableDataSnapshot.end();

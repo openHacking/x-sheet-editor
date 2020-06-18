@@ -1,0 +1,5 @@
+class TableMergeDataProxy {
+
+}
+
+export { TableMergeDataProxy };
