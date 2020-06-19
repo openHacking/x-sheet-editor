@@ -2,7 +2,6 @@ import { Constant } from '../../../utils/Constant';
 import { TableCellDataProxy } from './proxy/TableCellDataProxy';
 import { CellDataRecord } from './record/CellDataRecord';
 import { MERGE_RECORD_TYPE, MergeDataRecord } from './record/MergeDataRecord';
-import { ChartDataRecord } from './record/ChartDataRecord';
 import { TableMergeDataProxy } from './proxy/TableMergeDataProxy';
 
 class TableDataSnapshot {
@@ -62,12 +61,6 @@ class TableDataSnapshot {
             break;
           default: break;
         }
-        continue;
-      }
-      // 图表元素
-      if (item instanceof ChartDataRecord) {
-        // TODO...
-        // ...
       }
     }
     goLayerStack.push(layer);
@@ -99,12 +92,6 @@ class TableDataSnapshot {
             break;
           default: break;
         }
-        continue;
-      }
-      // 图表元素
-      if (item instanceof ChartDataRecord) {
-        // TODO...
-        // ...
       }
     }
     backLayerStack.push(layer);
