@@ -1,4 +1,4 @@
-import { ScreenWidget } from '../screen/ScreenWidget';
+import { ScreenWidget } from '../../screen/ScreenWidget';
 
 class ScreenClipboard extends ScreenWidget {
   constructor(screen, option) {

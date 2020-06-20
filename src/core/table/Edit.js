@@ -3,7 +3,7 @@ import { cssPrefix } from '../../config';
 import { h } from '../../lib/Element';
 import { EventBind } from '../../utils/EventBind';
 import { Constant } from '../constant/Constant';
-import { ScreenSelector } from './selector/ScreenSelector';
+import { ScreenSelector } from './screenwiget/selector/ScreenSelector';
 import { Utils } from '../../utils/Utils';
 import { RectRange } from './RectRange';
 

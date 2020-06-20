@@ -1,10 +1,10 @@
 /* global document */
 import { Selector } from './Selector';
-import { EventBind } from '../../../utils/EventBind';
-import { Constant } from '../../constant/Constant';
-import { ScreenWidget } from '../screen/ScreenWidget';
-import { RectRange } from '../RectRange';
-import { Rect } from '../../../canvas/Rect';
+import { EventBind } from '../../../../utils/EventBind';
+import { Constant } from '../../../constant/Constant';
+import { ScreenWidget } from '../../screen/ScreenWidget';
+import { RectRange } from '../../RectRange';
+import { Rect } from '../../../../canvas/Rect';
 
 const SCREEN_SELECT_EVENT = {
   DOWN_SELECT: Symbol('选择单元格时触发'),

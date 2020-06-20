@@ -1,7 +1,7 @@
-import { Widget } from '../../../lib/Widget';
-import { Utils } from '../../../utils/Utils';
-import { cssPrefix } from '../../../config';
-import { h } from '../../../lib/Element';
+import { Widget } from '../../../../lib/Widget';
+import { Utils } from '../../../../utils/Utils';
+import { cssPrefix } from '../../../../config';
+import { h } from '../../../../lib/Element';
 
 const svg = `
   <svg class="${cssPrefix}-copy-style-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">

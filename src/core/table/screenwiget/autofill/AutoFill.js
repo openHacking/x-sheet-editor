@@ -1,6 +1,6 @@
-import { cssPrefix } from '../../../config';
-import { Widget } from '../../../lib/Widget';
-import { h } from '../../../lib/Element';
+import { cssPrefix } from '../../../../config';
+import { Widget } from '../../../../lib/Widget';
+import { h } from '../../../../lib/Element';
 
 class AutoFill extends Widget {
   constructor() {

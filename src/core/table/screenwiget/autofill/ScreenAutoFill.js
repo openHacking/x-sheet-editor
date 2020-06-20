@@ -1,10 +1,10 @@
 /* global document */
-import { ScreenWidget } from '../screen/ScreenWidget';
+import { ScreenWidget } from '../../screen/ScreenWidget';
 import { AutoFill } from './AutoFill';
-import { EventBind } from '../../../utils/EventBind';
-import { Constant } from '../../constant/Constant';
-import { RectRange } from '../RectRange';
-import { Utils } from '../../../utils/Utils';
+import { EventBind } from '../../../../utils/EventBind';
+import { Constant } from '../../../constant/Constant';
+import { RectRange } from '../../RectRange';
+import { Utils } from '../../../../utils/Utils';
 
 class ScreenAutoFill extends ScreenWidget {
 
