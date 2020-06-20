@@ -4,7 +4,7 @@ class DataProxy {
     this.change = false;
   }
 
-  end() {
+  endNotice() {
     if (this.change) {
       this.change = false;
     }

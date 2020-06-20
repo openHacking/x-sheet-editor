@@ -1,6 +1,6 @@
 import { Widget } from '../../../lib/Widget';
 import { cssPrefix } from '../../../config';
-import { SCREEN_SELECT_EVENT, ScreenSelector } from '../selector/ScreenSelector';
+import { SCREEN_SELECT_EVENT } from '../selector/ScreenSelector';
 import { EventBind } from '../../../utils/EventBind';
 import { Constant } from '../../constant/Constant';
 import { RectRange } from '../RectRange';
@@ -232,8 +232,7 @@ class XHeightLight extends Widget {
 
   bind() {
     const { table } = this;
-    const { screen } = table;
-    const screenSelector = screen.findByClass(ScreenSelector);
+    const { screenSelector } = table;
     screenSelector.on(SCREEN_SELECT_EVENT.CHANGE, () => {
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {

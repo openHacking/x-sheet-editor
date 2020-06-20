@@ -1611,6 +1611,10 @@ class Table extends Widget {
   constructor(settings) {
     super(`${cssPrefix}-table`);
 
+    this.settings = Utils.mergeDeep({}, defaultSettings, settings);
+    this.canvas = h('canvas', `${cssPrefix}-table-canvas`);
+    this.screen = new Screen(this);
+
     // 滚动区域
     // 内容区域
     // 滚动区域和内容区域的偏移量
@@ -1619,8 +1623,6 @@ class Table extends Widget {
     this.scrollViewXOffset = -1;
 
     // 表格基本数据信息
-    this.canvas = h('canvas', `${cssPrefix}-table-canvas`);
-    this.settings = Utils.mergeDeep({}, defaultSettings, settings);
     this.cells = new Cells({
       table: this,
       rows: this.rows,
@@ -1725,13 +1727,34 @@ class Table extends Widget {
     this.frozenTopIndex = new FrozenTopIndex(this);
     this.frozenRect = new FrozenRect(this);
 
+    // 添加基础的screen组件
+    this.screenSelector = new ScreenSelector(this.screen);
+    this.screenAutoFill = new ScreenAutoFill(this.screen, this.screenSelector, {
+      onBeforeAutoFill: () => {
+        this.tableDataSnapshot.begin();
+      },
+      onAfterAutoFill: () => {
+        this.tableDataSnapshot.end();
+      },
+    });
+    this.copyStyle = new ScreenCopyStyle(this.screen, {});
+    this.screenSelector.on(SCREEN_SELECT_EVENT.SELECT_CHANGE, () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
+    });
+    this.screenSelector.on(SCREEN_SELECT_EVENT.DOWN_SELECT, () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN);
+    });
+    this.screen.addWidget(this.screenSelector);
+    this.screen.addWidget(this.screenAutoFill);
+    this.screen.addWidget(this.copyStyle);
+
     // table基础组件
-    this.screen = new Screen(this);
     this.xReSizer = new XReSizer(this);
     this.yReSizer = new YReSizer(this);
-    this.xHeightLight = new XHeightLight(this);
-    this.yHeightLight = new YHeightLight(this);
+    this.xHeightLight = new XHeightLight(this, this.screenSelector);
+    this.yHeightLight = new YHeightLight(this, this.screenSelector);
     this.edit = new Edit(this);
+
     this.children(this.canvas);
     this.children(this.screen);
     this.children(this.xReSizer);
@@ -1744,7 +1767,19 @@ class Table extends Widget {
     this.bind();
   }
 
-  checkedEnableBorderDrawOptimization() {
+  init() {
+    // 组件初始化
+    this.screen.init();
+    this.xReSizer.init();
+    this.yReSizer.init();
+    this.xHeightLight.init();
+    this.yHeightLight.init();
+    this.edit.init();
+    // 重置页面大小
+    this.resize();
+  }
+
+  drawOptimization() {
     const { cellsHelper } = this;
     const viewRange = this.getContentViewRange();
     let enable = true;
@@ -1777,43 +1812,6 @@ class Table extends Widget {
     } else {
       this.borderLineHandle.closeDrawOptimization();
     }
-  }
-
-  initScreenWidget() {
-    const { tableDataSnapshot } = this;
-    // 单元格筛选组件
-    const screenSelector = new ScreenSelector(this.screen);
-    screenSelector.on(SCREEN_SELECT_EVENT.SELECT_CHANGE, () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
-    });
-    screenSelector.on(SCREEN_SELECT_EVENT.DOWN_SELECT, () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN);
-    });
-    this.screen.addWidget(screenSelector);
-    // 自动填充组件
-    const screenAutoFill = new ScreenAutoFill(this.screen, {
-      onBeforeAutoFill: () => {
-        tableDataSnapshot.begin();
-      },
-      onAfterAutoFill: () => {
-        tableDataSnapshot.end();
-      },
-    });
-    this.screen.addWidget(screenAutoFill);
-    // 样式复制
-    const copyStyle = new ScreenCopyStyle(this.screen, {});
-    this.screen.addWidget(copyStyle);
-  }
-
-  init() {
-    this.initScreenWidget();
-    this.screen.init();
-    this.xReSizer.init();
-    this.yReSizer.init();
-    this.xHeightLight.init();
-    this.yHeightLight.init();
-    this.edit.init();
-    this.resize();
   }
 
   scrollX(x) {
@@ -1888,8 +1886,8 @@ class Table extends Widget {
       // eslint-disable-next-line no-console
       console.time();
     }
-    this.checkedEnableBorderDrawOptimization();
     this.clear();
+    this.drawOptimization();
     this.frozenRect.render();
     // 渲染固定冻结的内容
     if (fixed.fxLeft > -1 && fixed.fxTop > -1) {

@@ -1,7 +1,6 @@
 /* global document */
 import { ScreenWidget } from '../screen/ScreenWidget';
 import { AutoFill } from './AutoFill';
-import { ScreenSelector } from '../selector/ScreenSelector';
 import { EventBind } from '../../../utils/EventBind';
 import { Constant } from '../../constant/Constant';
 import { RectRange } from '../RectRange';
@@ -9,19 +8,19 @@ import { Utils } from '../../../utils/Utils';
 
 class ScreenAutoFill extends ScreenWidget {
 
-  constructor(screen, options = {}) {
+  constructor(screen, screenSelector, options = {}) {
     super(screen);
     this.options = Utils.mergeDeep({
       mergeForceSplit: false,
       onBeforeAutoFill: () => {},
       onAfterAutoFill: () => {},
     }, options);
+    this.screenSelector = screenSelector;
     this.lt = new AutoFill();
     this.t = new AutoFill();
     this.l = new AutoFill();
     this.br = new AutoFill();
     this.autoFillAttr = null;
-    this.screenSelector = screen.findByClass(ScreenSelector);
     this.bind();
   }
 

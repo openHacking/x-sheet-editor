@@ -22,6 +22,10 @@ class ScreenWidget {
   getBR() {
     return this.br;
   }
+
+  onAppendScreen() {
+
+  }
 }
 
 export { ScreenWidget };

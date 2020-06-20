@@ -5,15 +5,14 @@ import { EventBind } from '../../utils/EventBind';
 import { Constant } from '../constant/Constant';
 
 class Sheet extends Widget {
+
   constructor(options = {
     tableConfig: {
       data: [],
-      merges: [],
     },
   }) {
     super(`${cssPrefix}-sheet`);
     this.options = options;
-    // console.log('this.options.tableConfig >>>', this.options.tableConfig);
     this.table = new Table(this.options.tableConfig);
     this.children(this.table);
     this.bind();

@@ -1,5 +1,0 @@
-class Export {
-
-}
-
-export { Export };

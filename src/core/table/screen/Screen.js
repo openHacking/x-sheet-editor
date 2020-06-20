@@ -29,10 +29,10 @@ class Screen extends Widget {
     EventBind.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
       this.setDivideLayer();
     });
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, (e) => {
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.setDivideLayer();
     });
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, (e) => {
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
       this.setDivideLayer();
     });
   }

@@ -1,4 +1,3 @@
-import { Constant } from '../../constant/Constant';
 import { TableCellDataProxy } from './proxy/TableCellDataProxy';
 import { CellDataRecord } from './record/CellDataRecord';
 import { MERGE_RECORD_TYPE, MergeDataRecord } from './record/MergeDataRecord';
@@ -62,14 +61,13 @@ class TableDataSnapshot {
 
   back() {
     const { backLayerStack, goLayerStack, table } = this;
-    const { cells, merges, cols, rows } = table;
     const layer = backLayerStack.pop();
     for (let i = 0, len = layer.length; i < len; i += 1) {
       const item = layer[i];
       // 单元格元素
       if (item instanceof CellDataRecord) {
         const { ri, ci, oldCell } = item;
-        cells.setCellOrNew(ri, ci, oldCell);
+        this.cellDataProxy.$setCell(ri, ci, oldCell);
         continue;
       }
       // 合并单元格元素
@@ -77,10 +75,10 @@ class TableDataSnapshot {
         const { merge, recordType } = item;
         switch (recordType) {
           case MERGE_RECORD_TYPE.ADD:
-            merges.deleteIntersects(merge);
+            this.mergeDataProxy.$addMerge(merge);
             break;
           case MERGE_RECORD_TYPE.DELETE:
-            merges.add(merge);
+            this.mergeDataProxy.$deleteMerge(merge);
             break;
           default: break;
         }
@@ -94,33 +92,32 @@ class TableDataSnapshot {
       //  列宽元素
       if (item instanceof ColsDataRecord) {
         const { ci, oldWidth } = item;
-        cols.setWidth(ci, oldWidth);
+        this.colsDataProxy.$setWidth(ci, oldWidth);
         continue;
       }
       // 行高元素
       if (item instanceof RowsDataRecord) {
         const { ri, oldHeight } = item;
-        rows.setHeight(ri, oldHeight);
+        this.rowsDataProxy.$setHeight(ri, oldHeight);
       }
     }
+    goLayerStack.push(layer);
     this.mergeDataProxy.backNotice();
     this.cellDataProxy.backNotice();
     this.colsDataProxy.backNotice();
     this.rowsDataProxy.backNotice();
-    goLayerStack.push(layer);
     table.render();
   }
 
   go() {
     const { backLayerStack, goLayerStack, table } = this;
-    const { cells, merges, cols, rows } = table;
     const layer = goLayerStack.pop();
     for (let i = 0, len = layer.length; i < len; i += 1) {
       const item = layer[i];
       // 单元格元素
       if (item instanceof CellDataRecord) {
         const { ri, ci, newCell } = item;
-        cells.setCellOrNew(ri, ci, newCell);
+        this.cellDataProxy.$setCell(ri, ci, newCell);
         continue;
       }
       // 合并单元格元素
@@ -128,10 +125,10 @@ class TableDataSnapshot {
         const { merge, recordType } = item;
         switch (recordType) {
           case MERGE_RECORD_TYPE.ADD:
-            merges.add(merge);
+            this.mergeDataProxy.$addMerge(merge);
             break;
           case MERGE_RECORD_TYPE.DELETE:
-            merges.deleteIntersects(merge);
+            this.mergeDataProxy.$deleteMerge(merge);
             break;
           default: break;
         }
@@ -145,20 +142,20 @@ class TableDataSnapshot {
       //  列宽元素
       if (item instanceof ColsDataRecord) {
         const { ci, newWidth } = item;
-        cols.setWidth(ci, newWidth);
+        this.colsDataProxy.$setWidth(ci, newWidth);
         continue;
       }
       // 行高元素
       if (item instanceof RowsDataRecord) {
         const { ri, newHeight } = item;
-        rows.setHeight(ri, newHeight);
+        this.rowsDataProxy.$setHeight(ri, newHeight);
       }
     }
+    backLayerStack.push(layer);
     this.mergeDataProxy.goNotice();
     this.cellDataProxy.goNotice();
     this.colsDataProxy.goNotice();
     this.rowsDataProxy.goNotice();
-    backLayerStack.push(layer);
     table.render();
   }
 
@@ -169,10 +166,10 @@ class TableDataSnapshot {
       backLayerStack.push(recordLayer);
     }
     this.recordLayer = [];
-    this.mergeDataProxy.end();
-    this.cellDataProxy.end();
-    this.colsDataProxy.end();
-    this.rowsDataProxy.end();
+    this.mergeDataProxy.endNotice();
+    this.cellDataProxy.endNotice();
+    this.colsDataProxy.endNotice();
+    this.rowsDataProxy.endNotice();
   }
 
   begin() {

@@ -1,4 +1,4 @@
-import { DataProxy } from './DataProxy';
+import { DataProxy } from '../DataProxy';
 
 class TableMergeDataProxy extends DataProxy {
 
@@ -12,14 +12,14 @@ class TableMergeDataProxy extends DataProxy {
     this.option = option;
   }
 
-  add(merge) {
+  $addMerge(merge) {
     this.change = true;
     const { table } = this;
     const { merges } = table;
     merges.add(merge);
   }
 
-  delete(merge) {
+  $deleteMerge(merge) {
     this.change = true;
     const { table } = this;
     const { merges } = table;
@@ -31,7 +31,7 @@ class TableMergeDataProxy extends DataProxy {
     const { on } = option;
     const { deleteMerge } = on;
     deleteMerge(merge);
-    this.delete(merge);
+    this.$deleteMerge(merge);
   }
 
   addMerge(merge) {
@@ -39,7 +39,7 @@ class TableMergeDataProxy extends DataProxy {
     const { on } = option;
     const { addMerge } = on;
     addMerge(merge);
-    this.add(merge);
+    this.$addMerge(merge);
   }
 }
 

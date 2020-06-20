@@ -27,8 +27,8 @@ class Edit extends Widget {
 
   bind() {
     const { table } = this;
-    const { screen } = table;
-    const selector = screen.findByClass(ScreenSelector);
+    const { screenSelector } = table;
+    const selector = screenSelector;
     EventBind.bind(this.input, Constant.SYSTEM_EVENT_TYPE.INPUT, () => {
       const { input } = this;
       if (Utils.isBlank(this.input.text())) {

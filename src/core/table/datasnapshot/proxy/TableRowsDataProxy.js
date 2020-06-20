@@ -1,4 +1,4 @@
-import { DataProxy } from './DataProxy';
+import { DataProxy } from '../DataProxy';
 import { Constant } from '../../../constant/Constant';
 
 class TableRowsDataProxy extends DataProxy {
@@ -13,7 +13,7 @@ class TableRowsDataProxy extends DataProxy {
     this.option = option;
   }
 
-  set(ri, height) {
+  $setHeight(ri, height) {
     this.change = true;
     const { table } = this;
     const { rows } = table;
@@ -27,20 +27,22 @@ class TableRowsDataProxy extends DataProxy {
     const { rows } = table;
     const oldHeight = rows.getHeight(ri);
     setHeight(ri, oldHeight, newHeight);
-    this.set(ri, newHeight);
+    this.$setHeight(ri, newHeight);
   }
 
-  end() {
+  endNotice() {
     const { table } = this;
     if (this.change) {
+      table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
       table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT);
     }
-    super.end();
+    super.endNotice();
   }
 
   backNotice() {
     const { table } = this;
     if (this.change) {
+      table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
       table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT);
     }
     super.backNotice();
@@ -49,6 +51,7 @@ class TableRowsDataProxy extends DataProxy {
   goNotice() {
     const { table } = this;
     if (this.change) {
+      table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
       table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT);
     }
     super.goNotice();

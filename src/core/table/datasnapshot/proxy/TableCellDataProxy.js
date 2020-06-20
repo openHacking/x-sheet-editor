@@ -1,4 +1,4 @@
-import { DataProxy } from './DataProxy';
+import { DataProxy } from '../DataProxy';
 import { Constant } from '../../../constant/Constant';
 
 class TableCellDataProxy extends DataProxy {
@@ -11,7 +11,7 @@ class TableCellDataProxy extends DataProxy {
     this.option = option;
   }
 
-  set(ri, ci, newCell) {
+  $setCell(ri, ci, newCell) {
     this.change = true;
     const { table } = this;
     const { cells } = table;
@@ -25,15 +25,15 @@ class TableCellDataProxy extends DataProxy {
     const { cells } = table;
     const oldCell = cells.getCell(ri, ci);
     setCell(ri, ci, oldCell, newCell);
-    this.set(ri, ci, newCell);
+    this.$setCell(ri, ci, newCell);
   }
 
-  end() {
+  endNotice() {
     const { table } = this;
     if (this.change) {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
     }
-    super.end();
+    super.endNotice();
   }
 
   goNotice() {
@@ -53,4 +53,6 @@ class TableCellDataProxy extends DataProxy {
   }
 }
 
-export { TableCellDataProxy };
+export {
+  TableCellDataProxy,
+};
