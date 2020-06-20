@@ -1,31 +1,45 @@
-class TableMergeDataProxy {
+import { DataProxy } from './DataProxy';
+
+class TableMergeDataProxy extends DataProxy {
 
   constructor(table, option = {
     on: {
-      addMerge() {},
-      deleteMerge() {},
+      addMerge() {}, deleteMerge() {},
     },
   }) {
+    super();
     this.table = table;
     this.option = option;
   }
 
-  deleteMerge(merge) {
-    const { option, table } = this;
-    const { on } = option;
-    const { deleteMerge } = on;
+  add(merge) {
+    this.change = true;
+    const { table } = this;
     const { merges } = table;
-    deleteMerge(merge);
+    merges.add(merge);
+  }
+
+  delete(merge) {
+    this.change = true;
+    const { table } = this;
+    const { merges } = table;
     merges.deleteIntersects(merge);
   }
 
+  deleteMerge(merge) {
+    const { option } = this;
+    const { on } = option;
+    const { deleteMerge } = on;
+    deleteMerge(merge);
+    this.delete(merge);
+  }
+
   addMerge(merge) {
-    const { option, table } = this;
+    const { option } = this;
     const { on } = option;
     const { addMerge } = on;
-    const { merges } = table;
     addMerge(merge);
-    merges.add(merge);
+    this.add(merge);
   }
 }
 

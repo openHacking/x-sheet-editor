@@ -22,9 +22,9 @@ import { Fixed } from './tools/Fixed';
 import { Filter } from './tools/Filter';
 import { Functions } from './tools/Functions';
 import { EventBind } from '../../utils/EventBind';
-import { Constant } from '../../utils/Constant';
+import { Constant } from '../constant/Constant';
 import { ScreenCopyStyle } from '../table/copystyle/ScreenCopyStyle';
-import { ScreenSelector } from '../table/selector/ScreenSelector';
+import { SCREEN_SELECT_EVENT, ScreenSelector } from '../table/selector/ScreenSelector';
 import { ElPopUp } from '../../component/elpopup/ElPopUp';
 import { LINE_TYPE } from '../../canvas/Line';
 import { Icon } from './tools/Icon';
@@ -796,7 +796,7 @@ class TopMenu extends Widget {
   bind() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
-    EventBind.bind(body, Constant.WORK_BODY_TYPE.CHANGE_ACTIVE, () => {
+    EventBind.bind(body, Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE, () => {
       this.setStatus();
     });
     EventBind.bind(body, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
@@ -849,7 +849,7 @@ class TopMenu extends Widget {
           screenCopyStyle.setHide();
           this.paintFormat.active(false);
           this.paintFormat.removeSheet(sheet);
-          screenSelector.removeSelectChangeOverCb(cb);
+          screenSelector.remove(SCREEN_SELECT_EVENT.SELECT_CHANGE_OVER, cb);
 
           const srcRect = selectorAttr.rect;
           const targetRect = screenSelector.selectorAttr.rect;
@@ -869,7 +869,7 @@ class TopMenu extends Widget {
           tableDataSnapshot.end();
           table.render();
         };
-        screenSelector.addSelectChangeOverCb(cb);
+        screenSelector.on(SCREEN_SELECT_EVENT.SELECT_CHANGE_OVER, cb);
       }
     });
     EventBind.bind(this.clearFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {

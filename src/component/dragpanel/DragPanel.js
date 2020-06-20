@@ -2,7 +2,7 @@
 import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../config';
 import { EventBind } from '../../utils/EventBind';
-import { Constant } from '../../utils/Constant';
+import { Constant } from '../../core/constant/Constant';
 import { h } from '../../lib/Element';
 import { Utils } from '../../utils/Utils';
 

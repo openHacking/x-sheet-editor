@@ -3,7 +3,7 @@
 import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../config';
 import { h } from '../../lib/Element';
-import { Constant } from '../../utils/Constant';
+import { Constant } from '../../core/constant/Constant';
 import { Utils } from '../../utils/Utils';
 import { EventBind } from '../../utils/EventBind';
 

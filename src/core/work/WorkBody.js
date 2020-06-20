@@ -10,7 +10,7 @@ import { ScrollBarY } from '../../component/scrollbar/ScrollBarY';
 import { HorizontalLayerElement } from '../../lib/layer/HorizontalLayerElement';
 import { VerticalCenterElement } from '../../lib/layer/center/VerticalCenterElement';
 import { VerticalCenter } from '../../lib/layer/center/VerticalCenter';
-import { Constant } from '../../utils/Constant';
+import { Constant } from '../constant/Constant';
 import { SheetView } from './SheetView';
 import { TabView } from './TabView';
 import { Utils } from '../../utils/Utils';
@@ -54,12 +54,7 @@ class WorkBody extends Widget {
         const { sheetView } = this;
         const sheet = new Sheet();
         const sheetIndex = sheetView.add(sheet);
-        this.tabAndSheet.push({
-          tab,
-          sheet,
-          tabIndex,
-          sheetIndex,
-        });
+        this.tabAndSheet.push({ tab, sheet, tabIndex, sheetIndex });
       },
       onSwitch: (tab) => {
         this.setActiveTab(tab);
@@ -157,12 +152,7 @@ class WorkBody extends Widget {
       const tab = new Tab(name);
       const sheetIndex = sheetView.add(sheet);
       const tabIndex = tabView.add(tab);
-      this.tabAndSheet.push({
-        tab,
-        sheet,
-        tabIndex,
-        sheetIndex,
-      });
+      this.tabAndSheet.push({ tab, sheet, tabIndex, sheetIndex });
     }
     const first = this.tabAndSheet[0];
     if (first) {
@@ -190,7 +180,7 @@ class WorkBody extends Widget {
       if (item.tab === tab) {
         this.setActiveTabIndex(item.tabIndex);
         this.setActiveSheetIndex(item.sheetIndex);
-        this.trigger(Constant.WORK_BODY_TYPE.CHANGE_ACTIVE);
+        this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
       }
     });
   }

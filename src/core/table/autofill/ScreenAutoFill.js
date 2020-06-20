@@ -1,14 +1,14 @@
 /* global document */
-
 import { ScreenWidget } from '../screen/ScreenWidget';
 import { AutoFill } from './AutoFill';
 import { ScreenSelector } from '../selector/ScreenSelector';
 import { EventBind } from '../../../utils/EventBind';
-import { Constant } from '../../../utils/Constant';
+import { Constant } from '../../constant/Constant';
 import { RectRange } from '../RectRange';
 import { Utils } from '../../../utils/Utils';
 
 class ScreenAutoFill extends ScreenWidget {
+
   constructor(screen, options = {}) {
     super(screen);
     this.options = Utils.mergeDeep({
@@ -28,15 +28,16 @@ class ScreenAutoFill extends ScreenWidget {
   bind() {
     const { screen, screenSelector } = this;
     const { table } = screen;
-    const { mousePointType } = table;
+    const { mousePointer } = table;
+    const { key, type } = Constant.MOUSE_POINTER_TYPE.AUTO_FILL;
     EventBind.bind([
       screenSelector.lt.cornerEl,
       screenSelector.t.cornerEl,
       screenSelector.l.cornerEl,
       screenSelector.br.cornerEl,
-    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
-      mousePointType.on(['autoFill']);
-      mousePointType.set('crosshair', 'autoFill');
+    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      mousePointer.on(key);
+      mousePointer.set(type, key);
       EventBind.mouseMoveUp(document, (e2) => {
         const { x, y } = table.computeEventXy(e2);
         const moveAutoFill = this.getMoveAutoFillAttr(x, y);
@@ -50,10 +51,8 @@ class ScreenAutoFill extends ScreenWidget {
           this.br.hide();
         }
         this.autoFillAttr = moveAutoFill;
-        e2.stopPropagation();
-        e2.preventDefault();
       }, () => {
-        mousePointType.off();
+        mousePointer.off(key);
         this.lt.hide();
         this.t.hide();
         this.l.hide();
@@ -63,18 +62,14 @@ class ScreenAutoFill extends ScreenWidget {
           table.render();
         }
       });
-      e1.stopPropagation();
-      e1.preventDefault();
     });
     EventBind.bind([
       screenSelector.lt.cornerEl,
       screenSelector.t.cornerEl,
       screenSelector.l.cornerEl,
       screenSelector.br.cornerEl,
-    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
-      mousePointType.set('crosshair', 'autoFill');
-      e.stopPropagation();
-      e.preventDefault();
+    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
+      mousePointer.set(type, key);
     });
   }
 
@@ -105,10 +100,7 @@ class ScreenAutoFill extends ScreenWidget {
       this.lt.areaEl.cssRemoveKeys('border-bottom');
     }
     this.lt.offset({
-      width,
-      height,
-      left,
-      top,
+      width, height, left, top,
     }).show();
   }
 
@@ -144,10 +136,7 @@ class ScreenAutoFill extends ScreenWidget {
       this.t.areaEl.cssRemoveKeys('border-right');
     }
     this.t.offset({
-      width,
-      height,
-      left,
-      top,
+      width, height, left, top,
     }).show();
   }
 
@@ -183,10 +172,7 @@ class ScreenAutoFill extends ScreenWidget {
       this.l.areaEl.cssRemoveKeys('border-bottom');
     }
     this.l.offset({
-      width,
-      height,
-      left,
-      top,
+      width, height, left, top,
     }).show();
   }
 
@@ -228,11 +214,7 @@ class ScreenAutoFill extends ScreenWidget {
     } else {
       this.br.areaEl.cssRemoveKeys('border-right');
     }
-    this.br.offset({
-      width,
-      height,
-      left,
-      top,
+    this.br.offset({ width, height, left, top,
     }).show();
   }
 

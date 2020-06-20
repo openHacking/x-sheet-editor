@@ -11,7 +11,7 @@ import { HorizontalLayer } from '../../lib/layer/HorizontalLayer';
 import { VerticalLayer } from '../../lib/layer/VerticalLayer';
 import { VerticalLayerElement } from '../../lib/layer/VerticalLayerElement';
 import { EventBind } from '../../utils/EventBind';
-import { Constant } from '../../utils/Constant';
+import { Constant } from '../../core/constant/Constant';
 
 const EL_POPUP_POSITION = {
   TOP: 1,

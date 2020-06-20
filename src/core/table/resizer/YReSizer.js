@@ -4,11 +4,12 @@ import { Widget } from '../../../lib/Widget';
 import { cssPrefix } from '../../../config';
 import { h } from '../../../lib/Element';
 import { EventBind } from '../../../utils/EventBind';
-import { Constant } from '../../../utils/Constant';
+import { Constant } from '../../constant/Constant';
 import { Utils } from '../../../utils/Utils';
 import { floor } from '../../../canvas/Draw';
 
 class YReSizer extends Widget {
+
   constructor(table, options = { height: 5 }) {
     super(`${cssPrefix}-re-sizer-vertical`);
     this.table = table;
@@ -21,6 +22,7 @@ class YReSizer extends Widget {
       this.lineEl,
     ]);
     this.bind();
+    table.focus.register({ el: this });
   }
 
   getEventTop(event) {
@@ -33,11 +35,7 @@ class YReSizer extends Widget {
     const { ri, ci } = table.getRiCiByXy(x, y);
     if (ci !== -1) {
       return {
-        top: -1,
-        x,
-        y,
-        ri,
-        ci,
+        top: -1, x, y, ri, ci,
       };
     }
     let top = index.height + rows.sectionSumHeight(0, ri);
@@ -45,44 +43,43 @@ class YReSizer extends Widget {
       top -= scroll.y;
     }
     return {
-      top,
-      x,
-      y,
-      ri,
-      ci,
+      top, x, y, ri, ci,
     };
   }
 
   bind() {
     const { table } = this;
-    const { settings, rows, mousePointType } = table;
+    const { settings, rows, mousePointer, tableDataSnapshot } = table;
+    const { rowsDataProxy } = tableDataSnapshot;
     const { index } = settings;
+    const { key, type } = Constant.MOUSE_POINTER_TYPE.ROW_RESIZE;
     let moveOff = false;
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
-      mousePointType.set('row-resize', 'YReSizer');
-      e.stopPropagation();
-      e.preventDefault();
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
+      if (moveOff) return;
+      mousePointer.on(key);
+      mousePointer.set(type, key);
+    });
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
+      if (moveOff) return;
+      mousePointer.off(key);
     });
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       moveOff = true;
-      mousePointType.on(['YReSizer']);
-      mousePointType.set('row-resize', 'YReSizer');
+      mousePointer.on(key);
+      mousePointer.set(type, key);
       const { top, ri } = this.getEventTop(e);
       const min = top - rows.getHeight(ri) + rows.minHeight;
       let { y: my } = table.computeEventXy(e);
       EventBind.mouseMoveUp(document, (e) => {
         ({ y: my } = table.computeEventXy(e));
-        // console.log('my >>>', my);
         my -= this.height / 2;
         my = floor(Utils.minIf(my, min));
         this.css('top', `${my}px`);
         this.lineEl.css('width', `${table.visualWidth()}px`);
         this.lineEl.show();
-        e.stopPropagation();
-        e.preventDefault();
       }, (e) => {
         moveOff = false;
-        mousePointType.off();
+        mousePointer.off(key);
         this.lineEl.hide();
         this.css('top', `${my}px`);
         const { x } = table.computeEventXy(e);
@@ -90,10 +87,11 @@ class YReSizer extends Widget {
           this.hide();
         }
         const newTop = my - (top - rows.getHeight(ri)) + this.height;
-        table.setHeight(ri, newTop);
+        tableDataSnapshot.begin();
+        rowsDataProxy.setHeight(ri, newTop);
+        tableDataSnapshot.end();
+        table.render();
       });
-      e.stopPropagation();
-      e.preventDefault();
     });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       if (moveOff) return;
@@ -101,9 +99,6 @@ class YReSizer extends Widget {
       let { top, ri } = this.getEventTop(e);
       const min = top - rows.getHeight(ri) + rows.minHeight;
       const visualHeight = table.visualHeight();
-      // console.log('top >>>', top);
-      // console.log('visualHeight >>>', visualHeight);
-      // console.log('min >>>', min);
       if (top > visualHeight) {
         top = visualHeight;
       }

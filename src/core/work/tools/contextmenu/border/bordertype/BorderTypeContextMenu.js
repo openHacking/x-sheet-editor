@@ -17,7 +17,7 @@ import { BorderIcon10 } from '../../icon/border/BorderIcon10';
 import { BorderColor } from '../../icon/border/BorderColor';
 import { BorderType } from '../../icon/border/BorderType';
 import { EventBind } from '../../../../../../utils/EventBind';
-import { Constant } from '../../../../../../utils/Constant';
+import { Constant } from '../../../../../constant/Constant';
 import { EL_POPUP_POSITION, ElPopUp } from '../../../../../../component/elpopup/ElPopUp';
 import { BorderColorContextMenu } from '../bordercolor/BorderColorContextMenu';
 import { LineTypeContextMenu } from '../linetype/LineTypeContextMenu';

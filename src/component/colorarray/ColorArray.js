@@ -2,7 +2,7 @@ import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../config';
 import { ColorItem } from './ColorItem';
 import { Utils } from '../../utils/Utils';
-import { Constant } from '../../utils/Constant';
+import { Constant } from '../../core/constant/Constant';
 
 class ColorArray extends Widget {
   constructor(options) {

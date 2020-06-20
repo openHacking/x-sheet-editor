@@ -9,14 +9,13 @@ import { h } from '../../lib/Element';
 import { Widget } from '../../lib/Widget';
 import { RectRange } from './RectRange';
 import { Merges } from './Merges';
-import { Constant } from '../../utils/Constant';
+import { Constant } from '../constant/Constant';
 import { EventBind } from '../../utils/EventBind';
 import { Screen } from './screen/Screen';
-import { ScreenSelector } from './selector/ScreenSelector';
+import { SCREEN_SELECT_EVENT, ScreenSelector } from './selector/ScreenSelector';
 import { ScreenCopyStyle } from './copystyle/ScreenCopyStyle';
 import { XReSizer } from './resizer/XReSizer';
 import { YReSizer } from './resizer/YReSizer';
-import { MousePointType } from './MousePoint';
 import { ScreenAutoFill } from './autofill/ScreenAutoFill';
 import { XHeightLight } from './highlight/XHeightLight';
 import { YHeightLight } from './highlight/YHeightLight';
@@ -29,12 +28,14 @@ import { Grid } from '../../canvas/Grid';
 import { Box } from '../../canvas/Box';
 import { Line, LINE_TYPE } from '../../canvas/Line';
 import { LineHandle } from './gridborder/LineHandle';
-import { KeyboardManage } from './KeyboardManage';
 import { Cells } from './cells/Cells';
 import { CellsHelper } from './CellsHelper';
 import { GridLineHandle } from './gridborder/GridLineHandle';
 import { BorderLineHandle } from './gridborder/BorderLineHandle';
 import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
+import { MousePointer } from './MousePointer';
+import { Keyboard } from './Keyboard';
+import { Focus } from './Focus';
 
 /**
  * 绘制图表左上固定的部分
@@ -1645,12 +1646,16 @@ class Table extends Widget {
     this.gridLineHandle = new GridLineHandle(this);
     this.borderLineHandle = new BorderLineHandle(this);
 
+    // 焦点元素管理
+    this.focus = new Focus(this);
+    this.focus.register({ el: this, stop: false });
+
     // 数据快照
     this.tableDataSnapshot = new TableDataSnapshot(this);
     // 鼠标指针
-    this.mousePointType = new MousePointType(this);
+    this.mousePointer = new MousePointer(this);
     // 键盘快捷键
-    this.keyboardManage = new KeyboardManage();
+    this.keyboard = new Keyboard(this);
 
     // canvas 绘制资源
     this.draw = new Draw(this.canvas.el);
@@ -1739,43 +1744,6 @@ class Table extends Widget {
     this.bind();
   }
 
-  initScreenWidget() {
-    const { tableDataSnapshot } = this;
-    // 单元格筛选组件
-    const screenSelector = new ScreenSelector(this.screen);
-    screenSelector.addSelectChangeCb(() => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
-    });
-    screenSelector.addDownSelectCb(() => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN);
-    });
-    this.screen.addWidget(screenSelector);
-    // 自动填充组件
-    const screenAutoFill = new ScreenAutoFill(this.screen, {
-      onBeforeAutoFill: () => {
-        tableDataSnapshot.begin();
-      },
-      onAfterAutoFill: () => {
-        tableDataSnapshot.end();
-      },
-    });
-    this.screen.addWidget(screenAutoFill);
-    // 样式复制
-    const copyStyle = new ScreenCopyStyle(this.screen, {});
-    this.screen.addWidget(copyStyle);
-  }
-
-  init() {
-    this.initScreenWidget();
-    this.screen.init();
-    this.xReSizer.init();
-    this.yReSizer.init();
-    this.xHeightLight.init();
-    this.yHeightLight.init();
-    this.edit.init();
-    this.resize();
-  }
-
   checkedEnableBorderDrawOptimization() {
     const { cellsHelper } = this;
     const viewRange = this.getContentViewRange();
@@ -1809,6 +1777,43 @@ class Table extends Widget {
     } else {
       this.borderLineHandle.closeDrawOptimization();
     }
+  }
+
+  initScreenWidget() {
+    const { tableDataSnapshot } = this;
+    // 单元格筛选组件
+    const screenSelector = new ScreenSelector(this.screen);
+    screenSelector.on(SCREEN_SELECT_EVENT.SELECT_CHANGE, () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
+    });
+    screenSelector.on(SCREEN_SELECT_EVENT.DOWN_SELECT, () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN);
+    });
+    this.screen.addWidget(screenSelector);
+    // 自动填充组件
+    const screenAutoFill = new ScreenAutoFill(this.screen, {
+      onBeforeAutoFill: () => {
+        tableDataSnapshot.begin();
+      },
+      onAfterAutoFill: () => {
+        tableDataSnapshot.end();
+      },
+    });
+    this.screen.addWidget(screenAutoFill);
+    // 样式复制
+    const copyStyle = new ScreenCopyStyle(this.screen, {});
+    this.screen.addWidget(copyStyle);
+  }
+
+  init() {
+    this.initScreenWidget();
+    this.screen.init();
+    this.xReSizer.init();
+    this.yReSizer.init();
+    this.xHeightLight.init();
+    this.yHeightLight.init();
+    this.edit.init();
+    this.resize();
   }
 
   scrollX(x) {
@@ -1863,56 +1868,12 @@ class Table extends Widget {
     this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
   }
 
-  getContentViewRange() {
-    const { contentViewRange } = this;
-    if (contentViewRange !== null) {
-      return contentViewRange.clone();
-    }
-    const scrollViewRange = this.getScrollViewRange();
-    const {
-      sri, eri,
-    } = scrollViewRange;
-    const { cols } = this;
-    scrollViewRange.set(sri, 0, eri, cols.len);
-    scrollViewRange.w = cols.sectionSumWidth(0, scrollViewRange.eci);
-    this.contentViewRange = scrollViewRange;
-    return this.contentViewRange.clone();
+  visualHeight() {
+    return this.box().height;
   }
 
-  getScrollViewRange() {
-    const { scrollViewRange } = this;
-    if (scrollViewRange !== null) {
-      return scrollViewRange.clone();
-    }
-    const {
-      rows, cols, scroll, content,
-    } = this;
-    let [width, height] = [0, 0];
-    const { ri, ci } = scroll;
-    let [eri, eci] = [rows.len, cols.len];
-    for (let i = ri; i < rows.len; i += 1) {
-      height += rows.getHeight(i);
-      eri = i;
-      if (height > content.getHeight()) break;
-    }
-    for (let j = ci; j < cols.len; j += 1) {
-      width += cols.getWidth(j);
-      eci = j;
-      if (width > content.getWidth()) break;
-    }
-    this.scrollViewRange = new RectRange(ri, ci, eri, eci, width, height);
-    return this.scrollViewRange.clone();
-  }
-
-  getScrollViewXOffset() {
-    const { scrollViewXOffset } = this;
-    if (scrollViewXOffset !== -1) {
-      return -scrollViewXOffset;
-    }
-    const { scroll, cols } = this;
-    const { ci } = scroll;
-    this.scrollViewXOffset = cols.sectionSumWidth(0, ci - 1);
-    return -this.scrollViewXOffset;
+  visualWidth() {
+    return this.box().width;
   }
 
   clearViewRange() {
@@ -1969,23 +1930,7 @@ class Table extends Widget {
   }
 
   bind() {
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
-      const { x, y } = this.computeEventXy(e);
-      const { ri, ci } = this.getRiCiByXy(x, y);
-      if (ri === -1 && ci === -1) {
-        this.mousePointType.set('cell', 'table-cell');
-      } else if (ri === -1) {
-        this.mousePointType.set('s-resize', 'table-ci');
-      } else if (ci === -1) {
-        this.mousePointType.set('e-resize', 'table-ri');
-      } else {
-        this.mousePointType.set('cell', 'table-cell');
-      }
-    });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      this.clearViewRange();
-      this.render();
-    });
+    const { mousePointer } = this;
     EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
       this.clearViewRange();
       this.render();
@@ -1993,6 +1938,26 @@ class Table extends Widget {
     EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.clearViewRange();
       this.render();
+    });
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+      this.clearViewRange();
+      this.render();
+    });
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
+      const { x, y } = this.computeEventXy(e);
+      const { ri, ci } = this.getRiCiByXy(x, y);
+      if (ri === -1) {
+        const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_ONE_COLUMN;
+        mousePointer.set(type, key);
+        return;
+      }
+      if (ci === -1) {
+        const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_ONE_ROW;
+        mousePointer.set(type, key);
+        return;
+      }
+      const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_CELL;
+      mousePointer.set(type, key);
     });
   }
 
@@ -2003,6 +1968,58 @@ class Table extends Widget {
       fillStyle: settings.table.background,
     });
     draw.fillRect(0, 0, width, height);
+  }
+
+  getContentViewRange() {
+    const { contentViewRange } = this;
+    if (contentViewRange !== null) {
+      return contentViewRange.clone();
+    }
+    const scrollViewRange = this.getScrollViewRange();
+    const {
+      sri, eri,
+    } = scrollViewRange;
+    const { cols } = this;
+    scrollViewRange.set(sri, 0, eri, cols.len);
+    scrollViewRange.w = cols.sectionSumWidth(0, scrollViewRange.eci);
+    this.contentViewRange = scrollViewRange;
+    return this.contentViewRange.clone();
+  }
+
+  getScrollViewRange() {
+    const { scrollViewRange } = this;
+    if (scrollViewRange !== null) {
+      return scrollViewRange.clone();
+    }
+    const {
+      rows, cols, scroll, content,
+    } = this;
+    let [width, height] = [0, 0];
+    const { ri, ci } = scroll;
+    let [eri, eci] = [rows.len, cols.len];
+    for (let i = ri; i < rows.len; i += 1) {
+      height += rows.getHeight(i);
+      eri = i;
+      if (height > content.getHeight()) break;
+    }
+    for (let j = ci; j < cols.len; j += 1) {
+      width += cols.getWidth(j);
+      eci = j;
+      if (width > content.getWidth()) break;
+    }
+    this.scrollViewRange = new RectRange(ri, ci, eri, eci, width, height);
+    return this.scrollViewRange.clone();
+  }
+
+  getScrollViewXOffset() {
+    const { scrollViewXOffset } = this;
+    if (scrollViewXOffset !== -1) {
+      return -scrollViewXOffset;
+    }
+    const { scroll, cols } = this;
+    const { ci } = scroll;
+    this.scrollViewXOffset = cols.sectionSumWidth(0, ci - 1);
+    return -this.scrollViewXOffset;
   }
 
   getContentWidth() {
@@ -2080,14 +2097,6 @@ class Table extends Widget {
 
   getFixedHeight() {
     return this.fixedTop.getHeight();
-  }
-
-  visualHeight() {
-    return this.box().height;
-  }
-
-  visualWidth() {
-    return this.box().width;
   }
 
   getIndexWidth() {

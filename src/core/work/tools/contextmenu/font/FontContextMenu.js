@@ -2,7 +2,7 @@ import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextM
 import { cssPrefix } from '../../../../../config';
 import { Utils } from '../../../../../utils/Utils';
 import { FontContextMenuItem } from './FontContextMenuItem';
-import { Constant } from '../../../../../utils/Constant';
+import { Constant } from '../../../../constant/Constant';
 
 class FontContextMenu extends ELContextMenu {
   constructor(options = {}) {

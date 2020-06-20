@@ -1,8 +1,8 @@
 import { Widget } from '../../../lib/Widget';
 import { cssPrefix } from '../../../config';
-import { ScreenSelector } from '../selector/ScreenSelector';
+import { SCREEN_SELECT_EVENT, ScreenSelector } from '../selector/ScreenSelector';
 import { EventBind } from '../../../utils/EventBind';
-import { Constant } from '../../../utils/Constant';
+import { Constant } from '../../constant/Constant';
 import { RectRange } from '../RectRange';
 
 class XHeightLight extends Widget {
@@ -234,7 +234,7 @@ class XHeightLight extends Widget {
     const { table } = this;
     const { screen } = table;
     const screenSelector = screen.findByClass(ScreenSelector);
-    screenSelector.addChangeCb(() => {
+    screenSelector.on(SCREEN_SELECT_EVENT.CHANGE, () => {
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
         const intersectsArea = screenSelector.getIntersectsArea(selectorAttr);

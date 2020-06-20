@@ -2,7 +2,7 @@ import { ELContextMenu } from '../../../../../../component/elcontextmenu/ELConte
 import { Utils } from '../../../../../../utils/Utils';
 import { cssPrefix } from '../../../../../../config';
 import { LineTypeContextMenuItem } from './LineTypeContextMenuItem';
-import { Constant } from '../../../../../../utils/Constant';
+import { Constant } from '../../../../../constant/Constant';
 
 class LineTypeContextMenu extends ELContextMenu {
   constructor(options = {}) {

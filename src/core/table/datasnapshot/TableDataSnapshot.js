@@ -1,8 +1,13 @@
-import { Constant } from '../../../utils/Constant';
+import { Constant } from '../../constant/Constant';
 import { TableCellDataProxy } from './proxy/TableCellDataProxy';
 import { CellDataRecord } from './record/CellDataRecord';
 import { MERGE_RECORD_TYPE, MergeDataRecord } from './record/MergeDataRecord';
+import { ChartDataRecord } from './record/ChartDataRecord';
 import { TableMergeDataProxy } from './proxy/TableMergeDataProxy';
+import { TableColsDataProxy } from './proxy/TableColsDataProxy';
+import { ColsDataRecord } from './record/ColsDataRecord';
+import { TableRowsDataProxy } from './proxy/TableRowsDataProxy';
+import { RowsDataRecord } from './record/RowsDataRecord';
 
 class TableDataSnapshot {
 
@@ -35,11 +40,29 @@ class TableDataSnapshot {
         },
       },
     });
+    this.colsDataProxy = new TableColsDataProxy(table, {
+      on: {
+        setWidth: (ci, oldWidth, newWidth) => {
+          if (this.record === false) return;
+          const { recordLayer } = this;
+          recordLayer.push(new ColsDataRecord({ ci, oldWidth, newWidth }));
+        },
+      },
+    });
+    this.rowsDataProxy = new TableRowsDataProxy(table, {
+      on: {
+        setHeight: (ri, oldHeight, newHeight) => {
+          if (this.record === false) return;
+          const { recordLayer } = this;
+          recordLayer.push(new RowsDataRecord({ ri, oldHeight, newHeight }));
+        },
+      },
+    });
   }
 
   back() {
     const { backLayerStack, goLayerStack, table } = this;
-    const { cells, merges } = table;
+    const { cells, merges, cols, rows } = table;
     const layer = backLayerStack.pop();
     for (let i = 0, len = layer.length; i < len; i += 1) {
       const item = layer[i];
@@ -61,16 +84,36 @@ class TableDataSnapshot {
             break;
           default: break;
         }
+        continue;
+      }
+      // 图表元素
+      if (item instanceof ChartDataRecord) {
+        // TODO...
+        // ...
+      }
+      //  列宽元素
+      if (item instanceof ColsDataRecord) {
+        const { ci, oldWidth } = item;
+        cols.setWidth(ci, oldWidth);
+        continue;
+      }
+      // 行高元素
+      if (item instanceof RowsDataRecord) {
+        const { ri, oldHeight } = item;
+        rows.setHeight(ri, oldHeight);
       }
     }
+    this.mergeDataProxy.backNotice();
+    this.cellDataProxy.backNotice();
+    this.colsDataProxy.backNotice();
+    this.rowsDataProxy.backNotice();
     goLayerStack.push(layer);
-    table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
     table.render();
   }
 
   go() {
     const { backLayerStack, goLayerStack, table } = this;
-    const { cells, merges } = table;
+    const { cells, merges, cols, rows } = table;
     const layer = goLayerStack.pop();
     for (let i = 0, len = layer.length; i < len; i += 1) {
       const item = layer[i];
@@ -92,21 +135,44 @@ class TableDataSnapshot {
             break;
           default: break;
         }
+        continue;
+      }
+      // 图表元素
+      if (item instanceof ChartDataRecord) {
+        // TODO...
+        // ...
+      }
+      //  列宽元素
+      if (item instanceof ColsDataRecord) {
+        const { ci, newWidth } = item;
+        cols.setWidth(ci, newWidth);
+        continue;
+      }
+      // 行高元素
+      if (item instanceof RowsDataRecord) {
+        const { ri, newHeight } = item;
+        rows.setHeight(ri, newHeight);
       }
     }
+    this.mergeDataProxy.goNotice();
+    this.cellDataProxy.goNotice();
+    this.colsDataProxy.goNotice();
+    this.rowsDataProxy.goNotice();
     backLayerStack.push(layer);
-    table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
     table.render();
   }
 
   end() {
-    const { table, recordLayer, backLayerStack } = this;
+    const { recordLayer, backLayerStack } = this;
     this.record = false;
     if (recordLayer.length) {
       backLayerStack.push(recordLayer);
     }
     this.recordLayer = [];
-    table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+    this.mergeDataProxy.end();
+    this.cellDataProxy.end();
+    this.colsDataProxy.end();
+    this.rowsDataProxy.end();
   }
 
   begin() {

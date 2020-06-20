@@ -6,7 +6,7 @@ import { ColorItem } from '../../../../../component/colorarray/ColorItem';
 import { ELContextMenuDivider } from '../../../../../component/elcontextmenu/ELContextMenuDivider';
 import { Icon } from '../../Icon';
 import { Utils } from '../../../../../utils/Utils';
-import { Constant } from '../../../../../utils/Constant';
+import { Constant } from '../../../../constant/Constant';
 import { FillColorContextMenuItem } from './FillColorContextMenuItem';
 import { ColorPicker } from '../../../../../component/colorpicker/ColorPicker';
 

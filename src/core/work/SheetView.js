@@ -2,7 +2,7 @@ import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../config';
 import { Sheet } from './Sheet';
 import { EventBind } from '../../utils/EventBind';
-import { Constant } from '../../utils/Constant';
+import { Constant } from '../constant/Constant';
 
 class SheetView extends Widget {
   constructor() {

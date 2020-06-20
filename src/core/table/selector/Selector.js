@@ -7,9 +7,7 @@ class Selector extends Widget {
     super(`${cssPrefix}-selector`);
     this.cornerEl = h('div', `${cssPrefix}-selector-corner`);
     this.areaEl = h('div', `${cssPrefix}-selector-area`);
-    this.transfromData = h('div', `${cssPrefix}-selector-transform-data`);
     this.areaEl.children(this.cornerEl);
-    this.children(this.transfromData);
     this.children(this.areaEl);
     this.hide();
   }

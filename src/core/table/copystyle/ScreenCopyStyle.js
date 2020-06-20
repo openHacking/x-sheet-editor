@@ -4,7 +4,7 @@ import { CopyStyle } from './CopyStyle';
 import { ScreenWidget } from '../screen/ScreenWidget';
 import { RectRange } from '../RectRange';
 import { EventBind } from '../../../utils/EventBind';
-import { Constant } from '../../../utils/Constant';
+import { Constant } from '../../constant/Constant';
 import { Rect } from '../../../canvas/Rect';
 
 class ScreenCopyStyle extends ScreenWidget {
@@ -258,13 +258,11 @@ class ScreenCopyStyle extends ScreenWidget {
       if (this.selectorAttr) {
         this.setOffset(this.selectorAttr);
       }
-      e.stopPropagation();
     });
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, (e) => {
       if (this.selectorAttr) {
         this.setOffset(this.selectorAttr);
       }
-      e.stopPropagation();
     });
   }
 

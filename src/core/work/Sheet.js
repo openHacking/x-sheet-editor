@@ -2,7 +2,7 @@ import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../config';
 import { Table } from '../table/Table';
 import { EventBind } from '../../utils/EventBind';
-import { Constant } from '../../utils/Constant';
+import { Constant } from '../constant/Constant';
 
 class Sheet extends Widget {
   constructor(options = {

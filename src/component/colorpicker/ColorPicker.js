@@ -4,7 +4,7 @@ import { cssPrefix } from '../../config';
 import { Widget } from '../../lib/Widget';
 import { DragPanel } from '../dragpanel/DragPanel';
 import { EventBind } from '../../utils/EventBind';
-import { Constant } from '../../utils/Constant';
+import { Constant } from '../../core/constant/Constant';
 import { Utils } from '../../utils/Utils';
 
 class ColorPicker extends Widget {

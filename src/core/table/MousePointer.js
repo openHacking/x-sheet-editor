@@ -2,21 +2,22 @@ import cell from '../../../assets/svg/cell.png';
 import sResize from '../../../assets/svg/s-resize.png';
 import eResize from '../../../assets/svg/e-resize.png';
 
-class MousePointType {
+class MousePointer {
 
   constructor(table) {
     this.table = table;
-    this.switch = false;
-    this.ignoreNames = [];
+    this.lock = null;
   }
 
-  on(ignoredNames) {
-    this.switch = true;
-    this.ignoreNames = this.ignoreNames.concat(ignoredNames);
+  on(lock) {
+    if (this.lock !== null) return;
+    this.lock = lock;
   }
 
-  set(type, name) {
-    if (this.switch && this.ignoreNames.indexOf(name) === -1) return;
+  set(type, lock) {
+    if (this.lock) {
+      if (lock !== this.lock) return;
+    }
     const { table } = this;
     switch (type) {
       case 'cell':
@@ -34,10 +35,10 @@ class MousePointType {
     }
   }
 
-  off() {
-    this.switch = false;
-    this.ignoreNames = [];
+  off(lock) {
+    if (this.lock !== lock) return;
+    this.lock = null;
   }
 }
 
-export { MousePointType };
+export { MousePointer };

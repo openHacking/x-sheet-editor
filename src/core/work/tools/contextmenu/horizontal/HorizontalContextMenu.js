@@ -7,7 +7,7 @@ import { HorizontalIcon2 } from '../icon/horizontal/HorizontalIcon2';
 import { HorizontalIcon3 } from '../icon/horizontal/HorizontalIcon3';
 import { HorizontalContextMenuItem } from './HorizontalContextMenuItem';
 import { EventBind } from '../../../../../utils/EventBind';
-import { Constant } from '../../../../../utils/Constant';
+import { Constant } from '../../../../constant/Constant';
 import { ALIGN } from '../../../../../canvas/Font';
 
 class HorizontalContextMenu extends ELContextMenu {

@@ -3,7 +3,7 @@
 import { ScreenElement } from './ScreenElement';
 import { Widget } from '../../../lib/Widget';
 import { cssPrefix } from '../../../config';
-import { Constant } from '../../../utils/Constant';
+import { Constant } from '../../constant/Constant';
 import { EventBind } from '../../../utils/EventBind';
 
 class Screen extends Widget {
@@ -31,11 +31,9 @@ class Screen extends Widget {
     });
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, (e) => {
       this.setDivideLayer();
-      e.stopPropagation();
     });
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, (e) => {
       this.setDivideLayer();
-      e.stopPropagation();
     });
   }
 

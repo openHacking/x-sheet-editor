@@ -1,7 +1,7 @@
 /* global document */
 import { cssPrefix } from '../../config';
 import { EventBind } from '../../utils/EventBind';
-import { Constant } from '../../utils/Constant';
+import { Constant } from '../../core/constant/Constant';
 import { Widget } from '../../lib/Widget';
 import { ElPopUp } from '../elpopup/ElPopUp';
 import { Utils } from '../../utils/Utils';

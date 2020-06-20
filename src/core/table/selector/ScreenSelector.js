@@ -1,13 +1,20 @@
 /* global document */
-
 import { Selector } from './Selector';
 import { EventBind } from '../../../utils/EventBind';
-import { Constant } from '../../../utils/Constant';
+import { Constant } from '../../constant/Constant';
 import { ScreenWidget } from '../screen/ScreenWidget';
 import { RectRange } from '../RectRange';
 import { Rect } from '../../../canvas/Rect';
 
+const SCREEN_SELECT_EVENT = {
+  DOWN_SELECT: Symbol('选择单元格时触发'),
+  CHANGE: Symbol('选择区域大小发生变化时触发'),
+  SELECT_CHANGE: Symbol('选择区域发生变化时触发'),
+  SELECT_CHANGE_OVER: Symbol('选择区域结束时触发'),
+};
+
 class ScreenSelector extends ScreenWidget {
+
   constructor(screen, options = {}) {
     super(screen);
     this.options = options;
@@ -22,74 +29,16 @@ class ScreenSelector extends ScreenWidget {
     this.l = new Selector();
     this.br = new Selector();
     this.bind();
+    this.registerKeyBoardTab();
   }
 
-  bind() {
+  registerKeyBoardTab() {
     const { screen } = this;
     const { table } = screen;
-    const { mousePointType, keyboardManage, cols, rows, edit, merges } = table;
-    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      if (this.selectorAttr) {
-        this.setOffset(this.selectorAttr);
-      }
-    });
-    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
-      if (e1.button !== 0) return;
-      const { x, y } = table.computeEventXy(e1);
-      const downSelectAttr = this.getDownXYSelectorAttr(x, y);
-      // console.log('downSelectAttr >>>', downSelectAttr);
-      this.setSelectAttr(downSelectAttr);
-      this.setDownSelectAttr(downSelectAttr);
-      this.setOffset(downSelectAttr);
-      this.onDownSelectStack.forEach(cb => cb());
-      this.onChangeStack.forEach(cb => cb());
-      this.onSelectChangeStack.forEach(cb => cb());
-      const { edgeType } = downSelectAttr;
-      switch (edgeType) {
-        case 'left-top':
-          mousePointType.on(['table-cell']);
-          break;
-        case 'left':
-          mousePointType.on(['table-ri']);
-          break;
-        case 'top':
-          mousePointType.on(['table-ci']);
-          break;
-        default:
-          mousePointType.on(['table-cell']);
-          break;
-      }
-      EventBind.mouseMoveUp(document, (e2) => {
-        const { x, y } = table.computeEventXy(e2);
-        const moveSelectorAttr = this.getMoveXySelectorAttr(downSelectAttr, x, y);
-        this.setSelectAttr(moveSelectorAttr);
-        this.setOffset(moveSelectorAttr);
-        this.onChangeStack.forEach(cb => cb());
-        this.onSelectChangeStack.forEach(cb => cb());
-        e2.stopPropagation();
-        e2.preventDefault();
-      }, () => {
-        mousePointType.off();
-        this.onSelectChangeOver.forEach(cb => cb());
-      });
-    });
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, (e) => {
-      if (this.selectorAttr) {
-        this.setOffset(this.selectorAttr);
-        this.onChangeStack.forEach(cb => cb());
-      }
-      e.stopPropagation();
-    });
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, (e) => {
-      if (this.selectorAttr) {
-        this.setOffset(this.selectorAttr);
-        this.onChangeStack.forEach(cb => cb());
-      }
-      e.stopPropagation();
-    });
+    const { keyboard, cols, rows, edit, merges } = table;
     let tabId = 0;
     let tabNext = null;
-    keyboardManage.register({
+    keyboard.register({
       el: table,
       code: 9,
       callback: () => {
@@ -138,6 +87,72 @@ class ScreenSelector extends ScreenWidget {
         this.onSelectChangeStack.forEach(cb => cb());
         edit.showEdit();
       },
+    });
+  }
+
+  bind() {
+    const { screen } = this;
+    const { table } = screen;
+    const { mousePointer, focus } = table;
+    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
+      if (e1.button !== 0) return;
+      const { activate } = focus;
+      const { el } = activate;
+      if (el !== table) return;
+      const { x, y } = table.computeEventXy(e1);
+      const downSelectAttr = this.getDownXYSelectorAttr(x, y);
+      // console.log('downSelectAttr >>>', downSelectAttr);
+      this.setSelectAttr(downSelectAttr);
+      this.setDownSelectAttr(downSelectAttr);
+      this.setOffset(downSelectAttr);
+      this.onDownSelectStack.forEach(cb => cb());
+      this.onChangeStack.forEach(cb => cb());
+      this.onSelectChangeStack.forEach(cb => cb());
+      const { edgeType } = downSelectAttr;
+      let key;
+      switch (edgeType) {
+        case 'left': {
+          key = Constant.MOUSE_POINTER_TYPE.SELECT_ONE_ROW;
+          break;
+        }
+        case 'top': {
+          key = Constant.MOUSE_POINTER_TYPE.SELECT_ONE_COLUMN;
+          break;
+        }
+        default: {
+          key = Constant.MOUSE_POINTER_TYPE.SELECT_CELL;
+          break;
+        }
+      }
+      mousePointer.on(key);
+      EventBind.mouseMoveUp(document, (e2) => {
+        const { x, y } = table.computeEventXy(e2);
+        const moveSelectorAttr = this.getMoveXySelectorAttr(downSelectAttr, x, y);
+        this.setSelectAttr(moveSelectorAttr);
+        this.setOffset(moveSelectorAttr);
+        this.onChangeStack.forEach(cb => cb());
+        this.onSelectChangeStack.forEach(cb => cb());
+      }, () => {
+        mousePointer.off(key);
+        this.onSelectChangeOver.forEach(cb => cb());
+      });
+    });
+    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+      if (this.selectorAttr) {
+        this.setOffset(this.selectorAttr);
+      }
+    });
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+      if (this.selectorAttr) {
+        this.setOffset(this.selectorAttr);
+        this.onChangeStack.forEach(cb => cb());
+      }
+    });
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+      if (this.selectorAttr) {
+        this.setOffset(this.selectorAttr);
+        this.onChangeStack.forEach(cb => cb());
+      }
     });
   }
 
@@ -693,69 +708,58 @@ class ScreenSelector extends ScreenWidget {
     return rect;
   }
 
-  // ===========downSelectCb=============
-
-  addDownSelectCb(cb) {
-    this.onDownSelectStack.push(cb);
-  }
-
-  removeDownSelectCb(cb) {
-    for (let i = 0; i < this.onChangeStack.length; i += 1) {
-      const item = this.onDownSelectStack[i];
-      if (item === cb) {
-        this.onDownSelectStack.splice(i, 1);
-        return;
-      }
+  on(type, cb) {
+    let array;
+    switch (type) {
+      case SCREEN_SELECT_EVENT.CHANGE:
+        array = this.onChangeStack;
+        break;
+      case SCREEN_SELECT_EVENT.SELECT_CHANGE_OVER:
+        array = this.onSelectChangeOver;
+        break;
+      case SCREEN_SELECT_EVENT.DOWN_SELECT:
+        array = this.onDownSelectStack;
+        break;
+      case SCREEN_SELECT_EVENT.SELECT_CHANGE:
+        array = this.onSelectChangeStack;
+        break;
+      default: break;
+    }
+    if (array) {
+      array.push(cb);
     }
   }
 
-  // ===========changeCb=============
-
-  addChangeCb(cb) {
-    this.onChangeStack.push(cb);
-  }
-
-  removeChangeCb(cb) {
-    for (let i = 0; i < this.onChangeStack.length; i += 1) {
-      const item = this.onChangeStack[i];
-      if (item === cb) {
-        this.onChangeStack.splice(i, 1);
-        return;
-      }
+  remove(type, cb) {
+    let array;
+    switch (type) {
+      case SCREEN_SELECT_EVENT.CHANGE:
+        array = this.onChangeStack;
+        break;
+      case SCREEN_SELECT_EVENT.SELECT_CHANGE_OVER:
+        array = this.onSelectChangeOver;
+        break;
+      case SCREEN_SELECT_EVENT.DOWN_SELECT:
+        array = this.onDownSelectStack;
+        break;
+      case SCREEN_SELECT_EVENT.SELECT_CHANGE:
+        array = this.onSelectChangeStack;
+        break;
+      default: break;
     }
-  }
-
-  // ===========selectChangeCb=============
-
-  addSelectChangeCb(cb) {
-    this.onSelectChangeStack.push(cb);
-  }
-
-  removeSelectChangeCb(cb) {
-    for (let i = 0; i < this.onSelectChangeStack.length; i += 1) {
-      const item = this.onSelectChangeStack[i];
-      if (item === cb) {
-        this.onSelectChangeStack.splice(i, 1);
-        return;
-      }
-    }
-  }
-
-  // ===========selectChangeOverCb=============
-
-  addSelectChangeOverCb(cb) {
-    this.onSelectChangeOver.push(cb);
-  }
-
-  removeSelectChangeOverCb(cb) {
-    for (let i = 0; i < this.onSelectChangeOver.length; i += 1) {
-      const item = this.onSelectChangeOver[i];
-      if (item === cb) {
-        this.onSelectChangeOver.splice(i, 1);
-        return;
+    if (array) {
+      for (let i = 0; i < array.length; i += 1) {
+        const item = array[i];
+        if (item === cb) {
+          array.splice(i, 1);
+          return;
+        }
       }
     }
   }
 }
 
-export { ScreenSelector };
+export {
+  SCREEN_SELECT_EVENT,
+  ScreenSelector,
+};

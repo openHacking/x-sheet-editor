@@ -2,7 +2,7 @@ import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../config';
 import { h } from '../../lib/Element';
 import { EventBind } from '../../utils/EventBind';
-import { Constant } from '../../utils/Constant';
+import { Constant } from '../constant/Constant';
 import { ScreenSelector } from './selector/ScreenSelector';
 import { Utils } from '../../utils/Utils';
 import { RectRange } from './RectRange';
@@ -29,12 +29,6 @@ class Edit extends Widget {
     const { table } = this;
     const { screen } = table;
     const selector = screen.findByClass(ScreenSelector);
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      e.stopPropagation();
-    });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
-      e.stopPropagation();
-    });
     EventBind.bind(this.input, Constant.SYSTEM_EVENT_TYPE.INPUT, () => {
       const { input } = this;
       if (Utils.isBlank(this.input.text())) {
