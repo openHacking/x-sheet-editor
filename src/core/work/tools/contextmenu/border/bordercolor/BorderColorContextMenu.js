@@ -2,10 +2,10 @@ import { ELContextMenu } from '../../../../../../component/elcontextmenu/ELConte
 import { cssPrefix } from '../../../../../../config';
 import { Utils } from '../../../../../../utils/Utils';
 import { ColorPicker } from '../../../../../../component/colorpicker/ColorPicker';
-import { ColorItem } from '../../../../../../component/colorarray/ColorItem';
+import { ColorItem } from '../../../../../../component/colorpicker/colorarray/ColorItem';
 import { Icon } from '../../../Icon';
 import { Constant } from '../../../../../constant/Constant';
-import { ColorArray } from '../../../../../../component/colorarray/ColorArray';
+import { ColorArray } from '../../../../../../component/colorpicker/colorarray/ColorArray';
 import { ELContextMenuDivider } from '../../../../../../component/elcontextmenu/ELContextMenuDivider';
 import { BorderColorContextMenuItem } from './BorderColorContextMenuItem';
 import { h } from '../../../../../../lib/Element';
