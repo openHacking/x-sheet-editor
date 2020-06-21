@@ -36,10 +36,13 @@ import { MousePointer } from './MousePointer';
 import { Keyboard } from './Keyboard';
 import { Focus } from './Focus';
 
+// ========================= 冻结区域绘制 =======================
+
 /**
  * 绘制图表左上固定的部分
  */
 class FrozenLeftTop {
+
   constructor(table) {
     this.table = table;
   }
@@ -308,9 +311,213 @@ class FrozenLeftTop {
 }
 
 /**
+ * 绘制图表左边固定的索引栏
+ */
+class FrozenLeftIndex {
+
+  constructor(table) {
+    this.table = table;
+  }
+
+  getXOffset() {
+    return 0;
+  }
+
+  getYOffset() {
+    const { table } = this;
+    const { settings } = table;
+    const { index } = settings;
+    return index.height;
+  }
+
+  getWidth() {
+    const { table } = this;
+    const { settings } = table;
+    const { index } = settings;
+    return index.width;
+  }
+
+  getHeight() {
+    const { table } = this;
+    const { fixed } = table;
+    const { fxTop } = fixed;
+    return table.rows.sectionSumHeight(0, fxTop);
+  }
+
+  draw(viewRange, offsetX, offsetY, width, height) {
+    const { table } = this;
+    const {
+      draw, grid, rows, settings,
+    } = table;
+    const { sri, eri } = viewRange;
+    draw.save();
+    draw.offset(offsetX, offsetY);
+    // 绘制背景
+    draw.attr({
+      fillStyle: '#f6f7fa',
+    });
+    draw.fillRect(0, 0, width, height);
+    // 绘制文字
+    draw.attr({
+      textAlign: 'center',
+      textBaseline: 'middle',
+      font: `${npx(11)}px Arial`,
+      fillStyle: '#585757',
+    });
+    rows.eachHeight(sri, eri, (i, ch, y) => {
+      draw.fillText(i + 1, width / 2, y + (ch / 2));
+    });
+    // 绘制边框
+    let lineHeight = 0;
+    draw.attr({
+      globalAlpha: 0.3,
+      strokeStyle: settings.table.borderColor,
+    });
+    rows.eachHeight(sri, eri, (i, ch, y) => {
+      lineHeight += ch;
+      grid.horizontalLine(0, y, width, y);
+    });
+    grid.verticalLine(width, 0, width, lineHeight);
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
+  render() {
+    const { table } = this;
+    const { fixed } = table;
+    const { fxTop } = fixed;
+    const offsetX = this.getXOffset();
+    const offsetY = this.getYOffset();
+    const width = this.getWidth();
+    const height = this.getHeight();
+    const viewRange = new RectRange(0, 0, fxTop, 0, width, height);
+    this.draw(viewRange, offsetX, offsetY, width, height);
+  }
+}
+
+/**
+ * 绘制图表顶部的索引栏
+ */
+class FrozenTopIndex {
+
+  constructor(table) {
+    this.table = table;
+  }
+
+  getXOffset() {
+    const { table } = this;
+    const { settings } = table;
+    const { index } = settings;
+    return index.width;
+  }
+
+  getYOffset() {
+    return 0;
+  }
+
+  getWidth() {
+    const { table } = this;
+    const { fixed } = table;
+    const { fxLeft } = fixed;
+    return table.cols.sectionSumWidth(0, fxLeft);
+  }
+
+  getHeight() {
+    const { table } = this;
+    const { settings } = table;
+    const { index } = settings;
+    return index.height;
+  }
+
+  draw(viewRange, offsetX, offsetY, width, height) {
+    const { table } = this;
+    const {
+      draw, grid, cols, settings,
+    } = table;
+    const { sci, eci } = viewRange;
+    draw.save();
+    draw.offset(offsetX, offsetY);
+    // 绘制背景
+    draw.attr({
+      fillStyle: '#f6f7fa',
+    });
+    draw.fillRect(0, 0, width, height);
+    // 绘制文字
+    draw.attr({
+      textAlign: 'center',
+      textBaseline: 'middle',
+      font: `${npx(11)}px Arial`,
+      fillStyle: '#585757',
+    });
+    cols.eachWidth(sci, eci, (i, cw, x) => {
+      draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
+    });
+    // 绘制边框
+    let lineWidth = 0;
+    draw.attr({
+      globalAlpha: 0.3,
+      strokeStyle: settings.table.borderColor,
+    });
+    cols.eachWidth(sci, eci, (i, cw, x) => {
+      lineWidth += cw;
+      grid.verticalLine(x, 0, x, height);
+    });
+    grid.horizontalLine(0, height, lineWidth, height);
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
+  render() {
+    const { table } = this;
+    const { fixed } = table;
+    const { fxLeft } = fixed;
+    const offsetX = this.getXOffset();
+    const offsetY = this.getYOffset();
+    const width = this.getWidth();
+    const height = this.getHeight();
+    const viewRange = new RectRange(0, 0, 0, fxLeft, width, height);
+    this.draw(viewRange, offsetX, offsetY, width, height);
+  }
+}
+
+/**
+ * 绘制图片固定区域
+ */
+class FrozenRect {
+
+  constructor(table) {
+    this.table = table;
+  }
+
+  draw(offsetX, offsetY, width, height) {
+    const { table } = this;
+    const { draw } = table;
+    draw.save();
+    draw.offset(offsetX, offsetY);
+    // 绘制背景
+    draw.attr({
+      fillStyle: '#f4f5f8',
+    });
+    draw.fillRect(0, 0, width, height);
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
+  render() {
+    const { table } = this;
+    const { settings } = table;
+    const { index } = settings;
+    this.draw(0, 0, index.width, index.height);
+  }
+}
+
+// ========================= 动态区域绘制 =======================
+
+/**
  * 绘制图表左边冻结的部分
  */
 class FixedLeft {
+
   constructor(table) {
     this.table = table;
   }
@@ -342,6 +549,8 @@ class FixedLeft {
     const viewRange = table.getContentViewRange();
     return viewRange.h;
   }
+
+  clearViewRange() {}
 
   getScrollViewRange() {
     const { table } = this;
@@ -587,6 +796,7 @@ class FixedLeft {
  * 绘制图表的主体内容
  */
 class Content {
+
   constructor(table) {
     this.table = table;
   }
@@ -630,6 +840,8 @@ class Content {
     const fixedTopHeight = table.rows.sectionSumHeight(0, fxTop);
     return table.visualHeight() - (height + fixedTopHeight);
   }
+
+  clearViewRange() {}
 
   getScrollViewRange() {
     const { table } = this;
@@ -892,6 +1104,7 @@ class Content {
  * 绘制图表顶部冻结的部分
  */
 class FixedTop {
+
   constructor(table) {
     this.table = table;
   }
@@ -922,6 +1135,8 @@ class FixedTop {
     const { fxTop } = fixed;
     return table.rows.sectionSumHeight(0, fxTop);
   }
+
+  clearViewRange() {}
 
   getScrollViewRange() {
     const { table } = this;
@@ -1184,177 +1399,10 @@ class FixedTop {
 }
 
 /**
- * 绘制图表左边固定的索引栏
- */
-class FrozenLeftIndex {
-  constructor(table) {
-    this.table = table;
-  }
-
-  getXOffset() {
-    return 0;
-  }
-
-  getYOffset() {
-    const { table } = this;
-    const { settings } = table;
-    const { index } = settings;
-    return index.height;
-  }
-
-  getWidth() {
-    const { table } = this;
-    const { settings } = table;
-    const { index } = settings;
-    return index.width;
-  }
-
-  getHeight() {
-    const { table } = this;
-    const { fixed } = table;
-    const { fxTop } = fixed;
-    return table.rows.sectionSumHeight(0, fxTop);
-  }
-
-  draw(viewRange, offsetX, offsetY, width, height) {
-    const { table } = this;
-    const {
-      draw, grid, rows, settings,
-    } = table;
-    const { sri, eri } = viewRange;
-    draw.save();
-    draw.offset(offsetX, offsetY);
-    // 绘制背景
-    draw.attr({
-      fillStyle: '#f6f7fa',
-    });
-    draw.fillRect(0, 0, width, height);
-    // 绘制文字
-    draw.attr({
-      textAlign: 'center',
-      textBaseline: 'middle',
-      font: `${npx(11)}px Arial`,
-      fillStyle: '#585757',
-    });
-    rows.eachHeight(sri, eri, (i, ch, y) => {
-      draw.fillText(i + 1, width / 2, y + (ch / 2));
-    });
-    // 绘制边框
-    let lineHeight = 0;
-    draw.attr({
-      globalAlpha: 0.3,
-      strokeStyle: settings.table.borderColor,
-    });
-    rows.eachHeight(sri, eri, (i, ch, y) => {
-      lineHeight += ch;
-      grid.horizontalLine(0, y, width, y);
-    });
-    grid.verticalLine(width, 0, width, lineHeight);
-    draw.offset(0, 0);
-    draw.restore();
-  }
-
-  render() {
-    const { table } = this;
-    const { fixed } = table;
-    const { fxTop } = fixed;
-    const offsetX = this.getXOffset();
-    const offsetY = this.getYOffset();
-    const width = this.getWidth();
-    const height = this.getHeight();
-    const viewRange = new RectRange(0, 0, fxTop, 0, width, height);
-    this.draw(viewRange, offsetX, offsetY, width, height);
-  }
-}
-
-/**
- * 绘制图表顶部的索引栏
- */
-class FrozenTopIndex {
-  constructor(table) {
-    this.table = table;
-  }
-
-  getXOffset() {
-    const { table } = this;
-    const { settings } = table;
-    const { index } = settings;
-    return index.width;
-  }
-
-  getYOffset() {
-    return 0;
-  }
-
-  getWidth() {
-    const { table } = this;
-    const { fixed } = table;
-    const { fxLeft } = fixed;
-    return table.cols.sectionSumWidth(0, fxLeft);
-  }
-
-  getHeight() {
-    const { table } = this;
-    const { settings } = table;
-    const { index } = settings;
-    return index.height;
-  }
-
-  draw(viewRange, offsetX, offsetY, width, height) {
-    const { table } = this;
-    const {
-      draw, grid, cols, settings,
-    } = table;
-    const { sci, eci } = viewRange;
-    draw.save();
-    draw.offset(offsetX, offsetY);
-    // 绘制背景
-    draw.attr({
-      fillStyle: '#f6f7fa',
-    });
-    draw.fillRect(0, 0, width, height);
-    // 绘制文字
-    draw.attr({
-      textAlign: 'center',
-      textBaseline: 'middle',
-      font: `${npx(11)}px Arial`,
-      fillStyle: '#585757',
-    });
-    cols.eachWidth(sci, eci, (i, cw, x) => {
-      draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
-    });
-    // 绘制边框
-    let lineWidth = 0;
-    draw.attr({
-      globalAlpha: 0.3,
-      strokeStyle: settings.table.borderColor,
-    });
-    cols.eachWidth(sci, eci, (i, cw, x) => {
-      lineWidth += cw;
-      grid.verticalLine(x, 0, x, height);
-    });
-    grid.horizontalLine(0, height, lineWidth, height);
-    draw.offset(0, 0);
-    draw.restore();
-  }
-
-  render() {
-    const { table } = this;
-    const { fixed } = table;
-    const { fxLeft } = fixed;
-    const offsetX = this.getXOffset();
-    const offsetY = this.getYOffset();
-    const width = this.getWidth();
-    const height = this.getHeight();
-    const viewRange = new RectRange(0, 0, 0, fxLeft, width, height);
-    this.draw(viewRange, offsetX, offsetY, width, height);
-  }
-}
-
-/**
  * 绘制图表顶部固定的索引栏
  */
 class FixedTopIndex {
+
   constructor(table) {
     this.table = table;
   }
@@ -1382,6 +1430,8 @@ class FixedTopIndex {
     const { index } = settings;
     return index.height;
   }
+
+  clearViewRange() {}
 
   draw(viewRange, offsetX, offsetY, width, height) {
     const { table } = this;
@@ -1467,6 +1517,8 @@ class FixedLeftIndex {
     return table.rows.sectionSumHeight(sri, eri);
   }
 
+  clearViewRange() {}
+
   draw(viewRange, offsetX, offsetY, width, height) {
     const { table } = this;
     const {
@@ -1519,35 +1571,7 @@ class FixedLeftIndex {
   }
 }
 
-/**
- * 绘制图片固定区域
- */
-class FrozenRect {
-  constructor(table) {
-    this.table = table;
-  }
-
-  draw(offsetX, offsetY, width, height) {
-    const { table } = this;
-    const { draw } = table;
-    draw.save();
-    draw.offset(offsetX, offsetY);
-    // 绘制背景
-    draw.attr({
-      fillStyle: '#f4f5f8',
-    });
-    draw.fillRect(0, 0, width, height);
-    draw.offset(0, 0);
-    draw.restore();
-  }
-
-  render() {
-    const { table } = this;
-    const { settings } = table;
-    const { index } = settings;
-    this.draw(0, 0, index.width, index.height);
-  }
-}
+// =========================== 快捷键 ==========================
 
 /**
  * tab 快捷键
@@ -1615,6 +1639,8 @@ class KeyBoardTab {
     });
   }
 }
+
+// ======================== X-Sheet Table =======================
 
 /**
  * 默认设置
