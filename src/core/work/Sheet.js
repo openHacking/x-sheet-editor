@@ -13,7 +13,7 @@ class Sheet extends Widget {
   }) {
     super(`${cssPrefix}-sheet`);
     this.options = options;
-    this.table = new Table(this, this.options.tableConfig);
+    this.table = new Table(this.options.tableConfig);
   }
 
   bind() {
