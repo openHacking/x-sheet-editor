@@ -29,12 +29,12 @@ class Work extends Widget {
     const {
       bodyLayer, topLayer, bottomLayer,
     } = this;
-    this.body = new WorkBody(this, this.options.body);
     this.top = new WorkTop(this);
+    this.body = new WorkBody(this, this.options.body);
     this.bottom = new WorkBottom(this);
-    bodyLayer.attach(this.body);
     topLayer.attach(this.top);
     bottomLayer.attach(this.bottom);
+    bodyLayer.attach(this.body);
     this.bottom.bottomMenu.setSum(0);
     this.bottom.bottomMenu.setAvg(0);
     this.bottom.bottomMenu.setNumber(0);

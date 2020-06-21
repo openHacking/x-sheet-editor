@@ -176,8 +176,8 @@ class WorkBody extends Widget {
     sheetSwitchTabLayer.attach(this.tabView);
     scrollBarXLayer.attach(this.scrollBarX);
     this.bind();
-    this.updateScroll();
     this.createSheet();
+    this.updateScroll();
   }
 
   addTabSheet({ tab, sheet }) {
