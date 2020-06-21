@@ -1880,41 +1880,6 @@ class Table extends Widget {
     });
   }
 
-  drawOptimization() {
-    const { cellsHelper } = this;
-    const viewRange = this.getContentViewRange();
-    let enable = true;
-    cellsHelper.getCellByViewRange({
-      rectRange: viewRange,
-      callback: (r, c, cell) => {
-        const { borderAttr } = cell;
-        const { top, left, right, bottom } = borderAttr;
-        if (top.type === LINE_TYPE.DOUBLE_LINE) {
-          enable = false;
-          return enable;
-        }
-        if (left.type === LINE_TYPE.DOUBLE_LINE) {
-          enable = false;
-          return enable;
-        }
-        if (right.type === LINE_TYPE.DOUBLE_LINE) {
-          enable = false;
-          return enable;
-        }
-        if (bottom.type === LINE_TYPE.DOUBLE_LINE) {
-          enable = false;
-          return enable;
-        }
-        return true;
-      },
-    });
-    if (enable) {
-      this.borderLineHandle.openDrawOptimization();
-    } else {
-      this.borderLineHandle.closeDrawOptimization();
-    }
-  }
-
   scrollX(x) {
     const {
       cols, fixed, settings, scroll,
@@ -1995,18 +1960,58 @@ class Table extends Widget {
     const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.resize(width, height);
     this.clearViewRange();
+    this.renderFrozen();
     this.render();
   }
 
-  render() {
-    const { settings, fixed } = this;
-    if (settings.tipsRenderTime) {
-      // eslint-disable-next-line no-console
-      console.time();
+  renderOptimization() {
+    const { cellsHelper } = this;
+    const viewRange = this.getContentViewRange();
+    let enable = true;
+    cellsHelper.getCellByViewRange({
+      rectRange: viewRange,
+      callback: (r, c, cell) => {
+        const { borderAttr } = cell;
+        const { top, left, right, bottom } = borderAttr;
+        if (top.type === LINE_TYPE.DOUBLE_LINE) {
+          enable = false;
+          return enable;
+        }
+        if (left.type === LINE_TYPE.DOUBLE_LINE) {
+          enable = false;
+          return enable;
+        }
+        if (right.type === LINE_TYPE.DOUBLE_LINE) {
+          enable = false;
+          return enable;
+        }
+        if (bottom.type === LINE_TYPE.DOUBLE_LINE) {
+          enable = false;
+          return enable;
+        }
+        return true;
+      },
+    });
+    if (enable) {
+      this.borderLineHandle.openDrawOptimization();
+    } else {
+      this.borderLineHandle.closeDrawOptimization();
     }
-    this.clear();
-    this.drawOptimization();
-    this.frozenRect.render();
+  }
+
+  renderFrozen() {
+    const { fixed } = this;
+    // 冻结索引渲染
+    if (fixed.fxTop > -1) {
+      this.frozenTopIndex.render();
+    }
+    if (fixed.fxLeft > -1) {
+      this.frozenLeftIndex.render();
+    }
+  }
+
+  renderFixed() {
+    const { fixed } = this;
     // 渲染固定冻结的内容
     if (fixed.fxLeft > -1 && fixed.fxTop > -1) {
       this.frozenLeftTop.render();
@@ -2017,18 +2022,31 @@ class Table extends Widget {
     if (fixed.fxLeft > -1) {
       this.fixedLeft.render();
     }
-    // 表格内容渲染
-    this.content.render();
-    // 冻结索引渲染
-    if (fixed.fxTop > -1) {
-      this.frozenTopIndex.render();
-    }
-    if (fixed.fxLeft > -1) {
-      this.frozenLeftIndex.render();
-    }
     // 固定索引渲染
     this.fixedLeftIndex.render();
     this.fixedTopIndex.render();
+  }
+
+  renderContent() {
+    // 表格内容渲染
+    this.content.render();
+  }
+
+  renderVertex() {
+    this.frozenRect.render();
+  }
+
+  render() {
+    const { settings } = this;
+    if (settings.tipsRenderTime) {
+      // eslint-disable-next-line no-console
+      console.time();
+    }
+    this.clear();
+    this.renderOptimization();
+    this.renderFixed();
+    this.renderContent();
+    this.renderVertex();
     if (settings.tipsRenderTime) {
       // eslint-disable-next-line no-console
       console.log('渲染界面耗时:');
