@@ -1,6 +1,6 @@
 /* global window, document */
 
-import { cssPrefix } from './config';
+import { cssPrefix } from './constant/Constant';
 import { h } from './lib/Element';
 import { Work } from './core/work/Work';
 import { Widget } from './lib/Widget';
@@ -26,8 +26,7 @@ class XSheet extends Widget {
     root = h(root);
     root.children(this);
     this.work = new Work(options);
-    this.children(this.work);
-    this.work.init();
+    this.attach(this.work);
   }
 }
 

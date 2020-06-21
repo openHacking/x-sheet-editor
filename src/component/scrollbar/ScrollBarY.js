@@ -1,9 +1,8 @@
 /* global document */
-
 import { Widget } from '../../lib/Widget';
-import { cssPrefix } from '../../config';
+import { cssPrefix, Constant } from '../../constant/Constant';
 import { h } from '../../lib/Element';
-import { Constant } from '../../core/constant/Constant';
+
 import { Utils } from '../../utils/Utils';
 import { EventBind } from '../../utils/EventBind';
 
@@ -34,6 +33,9 @@ class ScrollBarY extends Widget {
     this.isHide = true;
     this.css(this.option.style);
     this.hide();
+  }
+
+  onAttach() {
     this.bind();
   }
 

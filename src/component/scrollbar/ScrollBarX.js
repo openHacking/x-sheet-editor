@@ -1,13 +1,13 @@
 /* global document */
-
 import { Widget } from '../../lib/Widget';
-import { cssPrefix } from '../../config';
+import { cssPrefix, Constant } from '../../constant/Constant';
 import { h } from '../../lib/Element';
 import { Utils } from '../../utils/Utils';
-import { Constant } from '../../core/constant/Constant';
+
 import { EventBind } from '../../utils/EventBind';
 
 class ScrollBarX extends Widget {
+
   constructor(option) {
     super(`${cssPrefix}-scroll-bar-x`);
     this.option = Utils.mergeDeep({
@@ -34,6 +34,9 @@ class ScrollBarX extends Widget {
     this.isHide = true;
     this.css(this.option.style);
     this.hide();
+  }
+
+  onAttach() {
     this.bind();
   }
 

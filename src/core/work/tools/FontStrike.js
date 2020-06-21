@@ -1,5 +1,5 @@
 import { Item } from './base/Item';
-import { cssPrefix } from '../../../config';
+import { cssPrefix } from '../../../constant/Constant';
 import { Icon } from './Icon';
 
 class FontStrike extends Item {

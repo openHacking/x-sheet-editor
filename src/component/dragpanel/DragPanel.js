@@ -1,8 +1,8 @@
 /* global document */
 import { Widget } from '../../lib/Widget';
-import { cssPrefix } from '../../config';
+import { cssPrefix, Constant } from '../../constant/Constant';
 import { EventBind } from '../../utils/EventBind';
-import { Constant } from '../../core/constant/Constant';
+
 import { h } from '../../lib/Element';
 import { Utils } from '../../utils/Utils';
 

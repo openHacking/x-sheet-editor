@@ -1,5 +1,5 @@
 import { Widget } from '../../lib/Widget';
-import { cssPrefix } from '../../config';
+import { cssPrefix } from '../../constant/Constant';
 import { h } from '../../lib/Element';
 import { File } from './options/File';
 import { ForMart } from './options/ForMart';
@@ -8,8 +8,10 @@ import { Look } from './options/Look';
 import { Update } from './options/Update';
 
 class TopOption extends Widget {
-  constructor() {
+  constructor(workTop) {
     super(`${cssPrefix}-option`);
+
+    this.workTop = workTop;
     this.title = ' X-Sheet 工作簿';
     this.logoEle = h('div', `${cssPrefix}-option-logo`);
     this.titleEle = h('div', `${cssPrefix}-option-title`);

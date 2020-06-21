@@ -1,4 +1,4 @@
-import { Constant } from '../constant/Constant';
+import { Constant } from '../../constant/Constant';
 import { EventBind } from '../../utils/EventBind';
 
 class Focus {
@@ -17,13 +17,16 @@ class Focus {
     return null;
   }
 
-  register({ el, attr = {}, stop = true }) {
+  register({ el, attr = {}, stop = true, focus = false }) {
     const find = this.findByEl(el);
     if (find) {
       Object.assign(find.attr, attr);
     } else {
       const item = { el, attr };
       this.pool.push(item);
+      if (focus) {
+        this.activate = item;
+      }
       EventBind.bind(el, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
         this.activate = item;
         if (stop) e.stopPropagation();

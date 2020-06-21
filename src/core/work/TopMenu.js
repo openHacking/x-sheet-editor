@@ -1,5 +1,5 @@
 import { Widget } from '../../lib/Widget';
-import { cssPrefix } from '../../config';
+import { cssPrefix, Constant } from '../../constant/Constant';
 import { Undo } from './tools/Undo';
 import { Redo } from './tools/Redo';
 import { PaintFormat } from './tools/PaintFormat';
@@ -22,7 +22,6 @@ import { Fixed } from './tools/Fixed';
 import { Filter } from './tools/Filter';
 import { Functions } from './tools/Functions';
 import { EventBind } from '../../utils/EventBind';
-import { Constant } from '../constant/Constant';
 import { ScreenCopyStyle } from '../table/screenwiget/copystyle/ScreenCopyStyle';
 import { SCREEN_SELECT_EVENT, ScreenSelector } from '../table/screenwiget/selector/ScreenSelector';
 import { ElPopUp } from '../../component/elpopup/ElPopUp';
@@ -41,9 +40,11 @@ class TopMenu extends Widget {
 
   constructor(workTop) {
     super(`${cssPrefix}-tools-menu`);
+
     this.workTop = workTop;
     const { body } = this.workTop.work;
     const { sheetView } = body;
+
     // tools
     this.undo = new Undo();
     this.redo = new Redo();
@@ -790,6 +791,9 @@ class TopMenu extends Widget {
     this.children(this.fixed);
     this.children(this.filter);
     this.children(this.functions);
+  }
+
+  onAttach() {
     this.bind();
   }
 

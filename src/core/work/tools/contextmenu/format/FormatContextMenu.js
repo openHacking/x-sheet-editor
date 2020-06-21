@@ -1,8 +1,8 @@
-import { cssPrefix } from '../../../../../config';
+import { cssPrefix, Constant } from '../../../../../constant/Constant';
 import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
 import { FormatContextMenuItem } from './FormatContextMenuItem';
 import { ELContextMenuDivider } from '../../../../../component/elcontextmenu/ELContextMenuDivider';
-import { Constant } from '../../../../constant/Constant';
+
 import { Utils } from '../../../../../utils/Utils';
 
 class FormatContextMenu extends ELContextMenu {

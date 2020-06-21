@@ -1,5 +1,5 @@
 import { Widget } from '../../../lib/Widget';
-import { cssPrefix } from '../../../config';
+import { cssPrefix } from '../../../constant/Constant';
 import { h } from '../../../lib/Element';
 
 class Icon extends Widget {

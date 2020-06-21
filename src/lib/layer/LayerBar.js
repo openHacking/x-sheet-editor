@@ -1,20 +1,15 @@
-import { Element } from '../Element';
-import { cssPrefix } from '../../config';
+import { cssPrefix } from '../../constant/Constant';
 import { Utils } from '../../utils/Utils';
+import { Layer } from '../Layer';
 
-class LayerBar extends Element {
-  constructor(element, options) {
-    super('div', `${cssPrefix}-layer-bar`);
+class LayerBar extends Layer {
+
+  constructor(options) {
+    super(`${cssPrefix}-layer-bar`);
     this.options = Utils.mergeDeep({
       style: {},
     }, options);
-    this.element = element;
-    this.init();
-  }
-
-  init() {
     this.css(this.options.style);
-    this.children(this.element);
   }
 }
 

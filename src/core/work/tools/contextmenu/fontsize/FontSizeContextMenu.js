@@ -1,8 +1,8 @@
 import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
 import { Utils } from '../../../../../utils/Utils';
-import { cssPrefix } from '../../../../../config';
+import { cssPrefix, Constant } from '../../../../../constant/Constant';
 import { FontSizeContextMenuItem } from './FontSizeContextMenuItem';
-import { Constant } from '../../../../constant/Constant';
+
 
 class FontSizeContextMenu extends ELContextMenu {
   constructor(options = {}) {

@@ -1,8 +1,8 @@
 import { Widget } from '../../lib/Widget';
-import { cssPrefix } from '../../config';
+import { cssPrefix, Constant } from '../../constant/Constant';
 import { Table } from '../table/Table';
 import { EventBind } from '../../utils/EventBind';
-import { Constant } from '../constant/Constant';
+
 
 class Sheet extends Widget {
 
@@ -13,13 +13,6 @@ class Sheet extends Widget {
   }) {
     super(`${cssPrefix}-sheet`);
     this.options = options;
-    this.table = new Table(this.options.tableConfig);
-    this.children(this.table);
-    this.bind();
-  }
-
-  init() {
-    this.table.init();
   }
 
   bind() {
@@ -40,6 +33,12 @@ class Sheet extends Widget {
       this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN, this);
       e.stopPropagation();
     });
+  }
+
+  onAttach() {
+    this.table = new Table(this, this.options.tableConfig);
+    this.attach(this.table);
+    this.bind();
   }
 }
 

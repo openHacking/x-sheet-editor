@@ -1,7 +1,6 @@
 /* global document window */
-
 import { Widget } from '../../lib/Widget';
-import { cssPrefix } from '../../config';
+import { cssPrefix, Constant } from '../../constant/Constant';
 import { h } from '../../lib/Element';
 import { ScrollBarX } from '../scrollbar/ScrollBarX';
 import { ScrollBarY } from '../scrollbar/ScrollBarY';
@@ -11,7 +10,6 @@ import { HorizontalLayer } from '../../lib/layer/HorizontalLayer';
 import { VerticalLayer } from '../../lib/layer/VerticalLayer';
 import { VerticalLayerElement } from '../../lib/layer/VerticalLayerElement';
 import { EventBind } from '../../utils/EventBind';
-import { Constant } from '../../core/constant/Constant';
 
 const EL_POPUP_POSITION = {
   TOP: 1,
@@ -26,35 +24,51 @@ class ElPopUp extends Widget {
 
   constructor(options) {
     super(`${cssPrefix}-el-pop-up`);
+    POOL.push(this);
     this.options = Utils.mergeDeep({
       position: EL_POPUP_POSITION.BOTTOM,
       el: null,
     }, options);
     this.off = true;
-    this.content = h('div', `${cssPrefix}-el-pop-up-content`);
+
+    this.content = new Widget(`${cssPrefix}-el-pop-up-content`);
     this.scrollBarX = new ScrollBarX();
     this.scrollBarY = new ScrollBarY();
-    const contentLayerHorizontalElement = new HorizontalLayerElement(this.content, {
+
+    // 内容
+    const contentLayer = new HorizontalLayerElement({
       style: {
         flexGrow: 1,
       },
     });
-    const scrollBarYLayerHorizontalElement = new HorizontalLayerElement(this.scrollBarY, {
+    contentLayer.children(this.content);
+
+    // Y 滚动条
+    const scrollBarYLayer = new HorizontalLayerElement({
       style: {
         overflow: 'inherit',
       },
     });
-    const horizontalLayer = new HorizontalLayer({
-      layerElements: [contentLayerHorizontalElement, scrollBarYLayerHorizontalElement],
-    });
-    const contentVerticalLayerElement = new VerticalLayerElement(horizontalLayer);
-    const scrollBarXVerticalLayerElement = new VerticalLayerElement(this.scrollBarX);
-    const verticalLayer = new VerticalLayer({
-      layerElements: [contentVerticalLayerElement, scrollBarXVerticalLayerElement],
-    });
+    scrollBarYLayer.children(this.scrollBarY);
+
+    const horizontalLayer = new HorizontalLayer();
+    horizontalLayer.children(contentLayer);
+    horizontalLayer.children(scrollBarYLayer);
+
+    // 内容 & Y 滚动条
+    const contentVerticalLayer = new VerticalLayerElement(horizontalLayer);
+    contentVerticalLayer.children(horizontalLayer);
+
+    // X 滚动条
+    const scrollBarXVerticalLayer = new VerticalLayerElement();
+    scrollBarXVerticalLayer.children(this.scrollBarX);
+
+    const verticalLayer = new VerticalLayer();
+    verticalLayer.children(contentVerticalLayer);
+    verticalLayer.children(scrollBarXVerticalLayer);
     super.children(verticalLayer);
+
     this.bind();
-    POOL.push(this);
   }
 
   bind() {

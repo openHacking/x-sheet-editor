@@ -1,10 +1,9 @@
 /* global document */
-
 import { Widget } from '../../../lib/Widget';
-import { cssPrefix } from '../../../config';
+import { cssPrefix, Constant } from '../../../constant/Constant';
 import { h } from '../../../lib/Element';
 import { EventBind } from '../../../utils/EventBind';
-import { Constant } from '../../constant/Constant';
+
 import { Utils } from '../../../utils/Utils';
 import { floor } from '../../../canvas/Draw';
 
@@ -12,6 +11,7 @@ class XReSizer extends Widget {
 
   constructor(table, options = { width: 5 }) {
     super(`${cssPrefix}-re-sizer-horizontal`);
+
     this.table = table;
     this.options = options;
     this.width = options.width;
@@ -21,8 +21,11 @@ class XReSizer extends Widget {
       this.hoverEl,
       this.lineEl,
     ]);
+  }
+
+  onAttach() {
     this.bind();
-    table.focus.register({ el: this });
+    this.table.focus.register({ el: this });
   }
 
   getEventLeft(event) {

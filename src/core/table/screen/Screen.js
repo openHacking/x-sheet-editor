@@ -1,27 +1,30 @@
 /* global window */
-
 import { ScreenElement } from './ScreenElement';
 import { Widget } from '../../../lib/Widget';
-import { cssPrefix } from '../../../config';
-import { Constant } from '../../constant/Constant';
+import { cssPrefix, Constant } from '../../../constant/Constant';
 import { EventBind } from '../../../utils/EventBind';
 
 class Screen extends Widget {
   constructor(table) {
     super(`${cssPrefix}-screen`);
+
     this.table = table;
+    this.widgets = [];
+
     this.lt = new ScreenElement(`${cssPrefix}-screen-element-lt`);
     this.t = new ScreenElement(`${cssPrefix}-screen-element-t`);
     this.l = new ScreenElement(`${cssPrefix}-screen-element-l`);
     this.br = new ScreenElement(`${cssPrefix}-screen-element-br`);
-    this.focusWidget = null;
+
     this.children(this.lt, this.t, this.l, this.br);
-    this.widgets = [];
+  }
+
+  onAttach() {
+    this.bind();
+    this.setDivideLayer();
   }
 
   init() {
-    this.setDivideLayer();
-    this.bind();
   }
 
   bind() {

@@ -3,6 +3,7 @@
 import { Utils } from '../utils/Utils';
 
 class Element {
+
   constructor(tag, className = '') {
     if (typeof tag === 'string') {
       this.el = document.createElement(tag);

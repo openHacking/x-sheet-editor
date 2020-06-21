@@ -2,20 +2,19 @@
 import { ScreenWidget } from '../../screen/ScreenWidget';
 import { AutoFill } from './AutoFill';
 import { EventBind } from '../../../../utils/EventBind';
-import { Constant } from '../../../constant/Constant';
+import { Constant } from '../../../../constant/Constant';
 import { RectRange } from '../../RectRange';
 import { Utils } from '../../../../utils/Utils';
 
 class ScreenAutoFill extends ScreenWidget {
 
-  constructor(screen, screenSelector, options = {}) {
+  constructor(screen, options = {}) {
     super(screen);
     this.options = Utils.mergeDeep({
       mergeForceSplit: false,
       onBeforeAutoFill: () => {},
       onAfterAutoFill: () => {},
     }, options);
-    this.screenSelector = screenSelector;
     this.lt = new AutoFill();
     this.t = new AutoFill();
     this.l = new AutoFill();
@@ -25,9 +24,9 @@ class ScreenAutoFill extends ScreenWidget {
   }
 
   bind() {
-    const { screen, screenSelector } = this;
+    const { screen } = this;
     const { table } = screen;
-    const { mousePointer } = table;
+    const { mousePointer, screenSelector } = table;
     const { key, type } = Constant.MOUSE_POINTER_TYPE.AUTO_FILL;
     EventBind.bind([
       screenSelector.lt.cornerEl,

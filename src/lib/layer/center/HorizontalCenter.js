@@ -1,21 +1,15 @@
-import { Element } from '../../Element';
-import { cssPrefix } from '../../../config';
+import { cssPrefix } from '../../../constant/Constant';
 import { Utils } from '../../../utils/Utils';
+import { Layer } from '../../Layer';
 
-class HorizontalCenter extends Element {
+class HorizontalCenter extends Layer {
+
   constructor(options) {
-    super('div', `${cssPrefix}-horizontal-center`);
+    super(`${cssPrefix}-horizontal-center`);
     this.options = Utils.mergeDeep({
-      centerElements: [],
       style: {},
     }, options);
-    this.init();
-  }
-
-  init() {
     this.css(this.options.style);
-    // eslint-disable-next-line no-restricted-syntax
-    for (const centerElement of this.options.centerElements) this.children(centerElement);
   }
 }
 

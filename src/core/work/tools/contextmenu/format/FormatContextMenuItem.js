@@ -1,5 +1,5 @@
 import { h } from '../../../../../lib/Element';
-import { cssPrefix } from '../../../../../config';
+import { cssPrefix } from '../../../../../constant/Constant';
 import { ELContextMenuItem } from '../../../../../component/elcontextmenu/ELContextMenuItem';
 import { Icon } from '../../Icon';
 

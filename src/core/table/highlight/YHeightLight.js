@@ -1,23 +1,23 @@
 import { Widget } from '../../../lib/Widget';
-import { cssPrefix } from '../../../config';
+import { cssPrefix, Constant } from '../../../constant/Constant';
 import { RectRange } from '../RectRange';
 import { SCREEN_SELECT_EVENT } from '../screenwiget/selector/ScreenSelector';
 import { EventBind } from '../../../utils/EventBind';
-import { Constant } from '../../constant/Constant';
 
 class YHeightLight extends Widget {
+
   constructor(table) {
     super(`${cssPrefix}-table-y-height-light`);
-    this.table = table;
-    this.hide();
-  }
 
-  init() {
-    const { table } = this;
+    this.table = table;
     const { settings } = table;
     const { index } = settings;
     this.css('width', `${index.width}px`);
+  }
+
+  onAttach() {
     this.bind();
+    this.hide();
   }
 
   disjoint(sRect, tRect) {

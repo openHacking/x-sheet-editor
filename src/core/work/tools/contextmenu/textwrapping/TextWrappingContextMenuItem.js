@@ -1,5 +1,5 @@
 import { ELContextMenuItem } from '../../../../../component/elcontextmenu/ELContextMenuItem';
-import { cssPrefix } from '../../../../../config';
+import { cssPrefix } from '../../../../../constant/Constant';
 
 class TextWrappingContextMenuItem extends ELContextMenuItem {
   constructor() {

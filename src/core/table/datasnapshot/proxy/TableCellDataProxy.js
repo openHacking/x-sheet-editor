@@ -1,5 +1,5 @@
 import { DataProxy } from '../DataProxy';
-import { Constant } from '../../../constant/Constant';
+import { Constant } from '../../../../constant/Constant';
 
 class TableCellDataProxy extends DataProxy {
 

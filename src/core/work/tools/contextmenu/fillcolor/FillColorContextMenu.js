@@ -1,12 +1,12 @@
 import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
-import { cssPrefix } from '../../../../../config';
+import { cssPrefix, Constant } from '../../../../../constant/Constant';
 import { ColorArray } from '../../../../../component/colorpicker/colorarray/ColorArray';
 import { h } from '../../../../../lib/Element';
 import { ColorItem } from '../../../../../component/colorpicker/colorarray/ColorItem';
 import { ELContextMenuDivider } from '../../../../../component/elcontextmenu/ELContextMenuDivider';
 import { Icon } from '../../Icon';
 import { Utils } from '../../../../../utils/Utils';
-import { Constant } from '../../../../constant/Constant';
+
 import { FillColorContextMenuItem } from './FillColorContextMenuItem';
 import { ColorPicker } from '../../../../../component/colorpicker/ColorPicker';
 

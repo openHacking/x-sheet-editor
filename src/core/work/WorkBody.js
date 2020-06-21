@@ -1,7 +1,6 @@
-/* global window document */
-
+/* global window */
 import { Widget } from '../../lib/Widget';
-import { cssPrefix } from '../../config';
+import { cssPrefix, Constant } from '../../constant/Constant';
 import { VerticalLayer } from '../../lib/layer/VerticalLayer';
 import { HorizontalLayer } from '../../lib/layer/HorizontalLayer';
 import { VerticalLayerElement } from '../../lib/layer/VerticalLayerElement';
@@ -10,179 +9,90 @@ import { ScrollBarY } from '../../component/scrollbar/ScrollBarY';
 import { HorizontalLayerElement } from '../../lib/layer/HorizontalLayerElement';
 import { VerticalCenterElement } from '../../lib/layer/center/VerticalCenterElement';
 import { VerticalCenter } from '../../lib/layer/center/VerticalCenter';
-import { Constant } from '../constant/Constant';
+
 import { SheetView } from './SheetView';
 import { TabView } from './TabView';
 import { Utils } from '../../utils/Utils';
-import { Sheet } from './Sheet';
-import { Tab } from './Tab';
 import { EventBind } from '../../utils/EventBind';
 import { h } from '../../lib/Element';
-
-// sheet表和垂直滚动条
-let sheetViewLayerHorizontalElement;
-let scrollBarYLayerHorizontalElement;
-let horizontalLayer1;
-
-// sheetTab选修卡和水平滚动条
-let scrollBarXLayerVerticalCenterElement;
-let scrollBarXVerticalCenter;
-let scrollBarXLayerHorizontalElement;
-let sheetSwitchTabLayerHorizontalElement;
-let horizontalLayer2;
-
-// 根布局
-let horizontalLayer1LayerVerticalElement;
-let horizontalLayer2Layer1LayerVerticalElement;
-let layerVerticalLayer;
+import { Tab } from './Tab';
+import { Sheet } from './Sheet';
 
 class WorkBody extends Widget {
+
   constructor(work, options = { sheets: [] }) {
     super(`${cssPrefix}-work-body`);
     this.work = work;
     this.workConfig = options;
     this.sheets = this.workConfig.sheets;
-    this.tabAndSheet = [];
+    this.tabSheet = [];
+
     // 版本标识
     this.poweredBy = h('div', `${cssPrefix}-powered-by-tips`);
     this.poweredBy.text(' X-Sheet 1.0.0-development ');
     this.children(this.poweredBy);
-    // 组件
-    this.sheetView = new SheetView();
-    this.tabView = new TabView({
-      onAdd: (tab, tabIndex) => {
-        const { sheetView } = this;
-        const sheet = new Sheet();
-        const sheetIndex = sheetView.add(sheet);
-        this.tabAndSheet.push({ tab, sheet, tabIndex, sheetIndex });
-      },
-      onSwitch: (tab) => {
-        this.setActiveTab(tab);
-      },
-    });
-    this.scrollBarX = new ScrollBarX({
-      scroll: (move) => {
-        const sheet = this.sheetView.getActiveSheet();
-        sheet.table.scrollX(move);
-      },
-    });
-    this.scrollBarY = new ScrollBarY({
-      scroll: (move) => {
-        const sheet = this.sheetView.getActiveSheet();
-        sheet.table.scrollY(move);
-      },
-    });
-    // sheet表和垂直滚动条
-    sheetViewLayerHorizontalElement = new HorizontalLayerElement(this.sheetView, {
-      style: {
-        flexGrow: 1,
-      },
-    });
-    scrollBarYLayerHorizontalElement = new HorizontalLayerElement(this.scrollBarY, {
-      style: {
-        overflow: 'inherit',
-      },
-    });
-    horizontalLayer1 = new HorizontalLayer({
-      layerElements: [sheetViewLayerHorizontalElement, scrollBarYLayerHorizontalElement],
-    });
-    // sheetTab选修卡和水平滚动条
-    scrollBarXLayerVerticalCenterElement = new VerticalCenterElement(this.scrollBarX);
-    scrollBarXVerticalCenter = new VerticalCenter({
-      centerElements: [scrollBarXLayerVerticalCenterElement],
-    });
-    scrollBarXLayerHorizontalElement = new HorizontalLayerElement(scrollBarXVerticalCenter, {
-      style: {
-        flexGrow: 2,
-      },
-    });
-    sheetSwitchTabLayerHorizontalElement = new HorizontalLayerElement(this.tabView, {
-      style: {
-        flexGrow: 3,
-      },
-    });
-    horizontalLayer2 = new HorizontalLayer({
-      layerElements: [sheetSwitchTabLayerHorizontalElement, scrollBarXLayerHorizontalElement],
-    });
+
+    // sheet表
+    this.sheetViewLayer = new HorizontalLayerElement({ style: { flexGrow: 1 } });
+
+    // 垂直滚动条
+    this.scrollBarYLayer = new HorizontalLayerElement({ style: { overflow: 'inherit' } });
+
+    // 水平滚动条
+    this.scrollBarXLayer = new VerticalCenterElement();
+    this.scrollBarXVerticalCenter = new VerticalCenter();
+    this.scrollBarXHorizontalLayer = new HorizontalLayerElement({ style: { flexGrow: 2 } });
+    this.scrollBarXVerticalCenter.children(this.scrollBarXLayer);
+    this.scrollBarXHorizontalLayer.children(this.scrollBarXVerticalCenter);
+
+    // 选修卡
+    this.sheetSwitchTabLayer = new HorizontalLayerElement({ style: { flexGrow: 3 } });
+
+    // 水平布局
+    this.horizontalLayer1 = new HorizontalLayer();
+    this.horizontalLayer2 = new HorizontalLayer();
+    this.horizontalLayer1.children(this.sheetViewLayer);
+    this.horizontalLayer1.children(this.scrollBarYLayer);
+    this.horizontalLayer2.children(this.sheetSwitchTabLayer);
+    this.horizontalLayer2.children(this.scrollBarXHorizontalLayer);
+
     // 根布局
-    horizontalLayer1LayerVerticalElement = new VerticalLayerElement(horizontalLayer1, {
-      style: {
-        flexGrow: 1,
-      },
-    });
-    horizontalLayer2Layer1LayerVerticalElement = new VerticalLayerElement(horizontalLayer2);
-    layerVerticalLayer = new VerticalLayer({
-      layerElements: [horizontalLayer1LayerVerticalElement,
-        horizontalLayer2Layer1LayerVerticalElement],
-    });
-    // 添加布局
-    this.children(layerVerticalLayer);
-    this.bind();
+    // eslint-disable-next-line max-len
+    this.horizontalLayer1Layer = new VerticalLayerElement({ style: { flexGrow: 1 } });
+    this.horizontalLayer2Layer = new VerticalLayerElement();
+    this.layerVerticalLayer = new VerticalLayer();
+    this.horizontalLayer1Layer.children(this.horizontalLayer1);
+    this.horizontalLayer2Layer.children(this.horizontalLayer2);
+    this.layerVerticalLayer.children(this.horizontalLayer1Layer);
+    this.layerVerticalLayer.children(this.horizontalLayer2Layer);
+    this.children(this.layerVerticalLayer);
   }
 
-  init() {
-    this.sheetView.init();
-    this.tabView.init();
-    this.scrollBarX.init();
-    this.scrollBarY.init();
-    this.initSheet();
-    this.initScroll();
-  }
-
-  initScroll() {
+  updateScroll() {
     const sheet = this.sheetView.getActiveSheet();
     if (Utils.isUnDef(sheet)) return;
+    const { scrollBarXHorizontalLayer } = this;
     const { table } = sheet;
     const { content, scroll } = table;
-    scrollBarXLayerHorizontalElement.display(content.getWidth() < content.getContentWidth());
+    scrollBarXHorizontalLayer.display(content.getWidth() < content.getContentWidth());
     this.scrollBarY.setSize(content.getHeight(), content.getContentHeight());
     this.scrollBarX.setSize(content.getWidth(), content.getContentWidth());
     this.scrollBarY.scrollMove(scroll.y);
     this.scrollBarX.scrollMove(scroll.x);
   }
 
-  initSheet() {
-    const { sheetView, tabView } = this;
+  createSheet() {
     // eslint-disable-next-line no-restricted-syntax
     for (const item of this.sheets) {
-      // console.log(item);
       // eslint-disable-next-line no-restricted-syntax
       const { name } = item;
       const sheet = new Sheet(item);
       const tab = new Tab(name);
-      const sheetIndex = sheetView.add(sheet);
-      const tabIndex = tabView.add(tab);
-      this.tabAndSheet.push({ tab, sheet, tabIndex, sheetIndex });
+      this.addTabSheet({ tab, sheet });
     }
-    const first = this.tabAndSheet[0];
-    if (first) {
-      this.setActiveTabIndex(first.tabIndex);
-      this.setActiveSheetIndex(first.sheetIndex);
+    if (this.tabSheet.length) {
+      this.setActiveIndex(0);
     }
-  }
-
-  setActiveSheetIndex(index) {
-    const { sheetView } = this;
-    sheetView.setActiveSheet(index);
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    table.resize();
-    this.initScroll();
-  }
-
-  setActiveTabIndex(index) {
-    const { tabView } = this;
-    tabView.setActiveTab(index);
-  }
-
-  setActiveTab(tab) {
-    this.tabAndSheet.forEach((item) => {
-      if (item.tab === tab) {
-        this.setActiveTabIndex(item.tabIndex);
-        this.setActiveSheetIndex(item.sheetIndex);
-        this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
-      }
-    });
   }
 
   bind() {
@@ -211,23 +121,13 @@ class WorkBody extends Widget {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       table.resize();
-      this.initScroll();
-    });
-    EventBind.bind(document, Constant.SYSTEM_EVENT_TYPE.VISIBILITY_CHANGE, () => {
-      const { sheetView } = this;
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      if (!document.hidden) {
-        table.resize();
-      }
+      this.updateScroll();
     });
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      // console.log('change height');
-      this.initScroll();
+      this.updateScroll();
     });
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
-      // console.log('change width');
-      this.initScroll();
+      this.updateScroll();
     });
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, (e) => {
       this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
@@ -240,6 +140,74 @@ class WorkBody extends Widget {
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, (e) => {
       this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN, this);
       e.stopPropagation();
+    });
+  }
+
+  onAttach() {
+    const {
+      sheetViewLayer, scrollBarYLayer, sheetSwitchTabLayer, scrollBarXLayer,
+    } = this;
+    // 组件
+    this.sheetView = new SheetView();
+    this.scrollBarY = new ScrollBarY({
+      scroll: (move) => {
+        const sheet = this.sheetView.getActiveSheet();
+        sheet.table.scrollY(move);
+      },
+    });
+    this.tabView = new TabView({
+      onAdd: () => {
+        const sheet = new Sheet();
+        const tab = new Tab();
+        this.addTabSheet({ tab, sheet });
+      },
+      onSwitch: (tab) => {
+        this.setActiveTab(tab);
+      },
+    });
+    this.scrollBarX = new ScrollBarX({
+      scroll: (move) => {
+        const sheet = this.sheetView.getActiveSheet();
+        sheet.table.scrollX(move);
+      },
+    });
+    sheetViewLayer.attach(this.sheetView);
+    scrollBarYLayer.attach(this.scrollBarY);
+    sheetSwitchTabLayer.attach(this.tabView);
+    scrollBarXLayer.attach(this.scrollBarX);
+    this.bind();
+    this.updateScroll();
+    this.createSheet();
+  }
+
+  addTabSheet({ tab, sheet }) {
+    const {
+      tabSheet, sheetView, tabView,
+    } = this;
+    sheetView.attach(sheet);
+    tabView.attach(tab);
+    tabSheet.push({
+      tab, sheet,
+    });
+  }
+
+  setActiveIndex(index) {
+    const { sheetView, tabView } = this;
+    const sheet = sheetView.setActiveSheet(index);
+    const tab = tabView.setActiveTab(index);
+    if (sheet && tab) {
+      const { table } = sheet;
+      table.resize();
+      this.updateScroll();
+      this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
+    }
+  }
+
+  setActiveTab(tab) {
+    this.tabSheet.forEach((item, index) => {
+      if (item.tab === tab) {
+        this.setActiveIndex(index);
+      }
     });
   }
 }

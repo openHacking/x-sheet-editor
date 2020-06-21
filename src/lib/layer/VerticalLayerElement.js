@@ -1,22 +1,16 @@
-import { Element } from '../Element';
-import { cssPrefix } from '../../config';
+import { cssPrefix } from '../../constant/Constant';
 import { Utils } from '../../utils/Utils';
+import { Layer } from '../Layer';
 
-class VerticalLayerElement extends Element {
-  constructor(element, options) {
-    super('div', `${cssPrefix}-vertical-layer-element`);
+class VerticalLayerElement extends Layer {
+  constructor(options) {
+    super(`${cssPrefix}-vertical-layer-element`);
     this.options = Utils.mergeDeep({
       style: {
         flexGrow: '0',
       },
     }, options);
-    this.element = element;
-    this.init();
-  }
-
-  init() {
     this.css(this.options.style);
-    this.children(this.element);
   }
 }
 

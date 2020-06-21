@@ -1,5 +1,5 @@
 import { Item } from './base/Item';
-import { cssPrefix } from '../../../config';
+import { cssPrefix } from '../../../constant/Constant';
 
 class Update extends Item {
   constructor() {

@@ -1,15 +1,14 @@
-import { cssPrefix } from '../../config';
+import { cssPrefix, Constant } from '../../constant/Constant';
 import Format from './Format';
 import { Utils } from '../../utils/Utils';
 import { Rows } from './Rows';
 import { Cols } from './Cols';
 import { Scroll } from './Scroll';
 import { Fixed } from './Fixed';
-import { h } from '../../lib/Element';
 import { Widget } from '../../lib/Widget';
 import { RectRange } from './RectRange';
 import { Merges } from './Merges';
-import { Constant } from '../constant/Constant';
+
 import { EventBind } from '../../utils/EventBind';
 import { Screen } from './screen/Screen';
 import { SCREEN_SELECT_EVENT, ScreenSelector } from './screenwiget/selector/ScreenSelector';
@@ -1608,16 +1607,16 @@ const defaultSettings = {
  */
 class Table extends Widget {
 
-  constructor(settings) {
+  constructor(sheet, settings) {
     super(`${cssPrefix}-table`);
 
-    this.settings = Utils.mergeDeep({}, defaultSettings, settings);
-    this.canvas = h('canvas', `${cssPrefix}-table-canvas`);
-    this.screen = new Screen(this);
+    this.sheet = sheet;
+    sheet.children(this);
 
-    // 滚动区域
-    // 内容区域
-    // 滚动区域和内容区域的偏移量
+    this.settings = Utils.mergeDeep({}, defaultSettings, settings);
+    this.canvas = new Widget(`${cssPrefix}-table-canvas`, 'canvas');
+
+    // 滚动区域 内容区域 滚动区域和内容区域的偏移量
     this.scrollViewRange = null;
     this.contentViewRange = null;
     this.scrollViewXOffset = -1;
@@ -1650,7 +1649,6 @@ class Table extends Widget {
 
     // 焦点元素管理
     this.focus = new Focus(this);
-    this.focus.register({ el: this, stop: false });
 
     // 数据快照
     this.tableDataSnapshot = new TableDataSnapshot(this);
@@ -1727,9 +1725,22 @@ class Table extends Widget {
     this.frozenTopIndex = new FrozenTopIndex(this);
     this.frozenRect = new FrozenRect(this);
 
-    // 添加基础的screen组件
+    // table基础组件
+    this.screen = new Screen(this);
+    this.xReSizer = new XReSizer(this);
+    this.yReSizer = new YReSizer(this);
+    this.xHeightLight = new XHeightLight(this);
+    this.yHeightLight = new YHeightLight(this);
+    this.edit = new Edit(this);
+  }
+
+  onAttach() {
+    this.focus.register({ el: this, stop: false, focus: true });
+    this.bind();
+
+    // 初始化表格基础小部件
     this.screenSelector = new ScreenSelector(this.screen);
-    this.screenAutoFill = new ScreenAutoFill(this.screen, this.screenSelector, {
+    this.screenAutoFill = new ScreenAutoFill(this.screen, {
       onBeforeAutoFill: () => {
         this.tableDataSnapshot.begin();
       },
@@ -1738,45 +1749,24 @@ class Table extends Widget {
       },
     });
     this.copyStyle = new ScreenCopyStyle(this.screen, {});
+    this.screen.addWidget(this.screenSelector);
+    this.screen.addWidget(this.screenAutoFill);
+    this.screen.addWidget(this.copyStyle);
     this.screenSelector.on(SCREEN_SELECT_EVENT.SELECT_CHANGE, () => {
       this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
     });
     this.screenSelector.on(SCREEN_SELECT_EVENT.DOWN_SELECT, () => {
       this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN);
     });
-    this.screen.addWidget(this.screenSelector);
-    this.screen.addWidget(this.screenAutoFill);
-    this.screen.addWidget(this.copyStyle);
 
-    // table基础组件
-    this.xReSizer = new XReSizer(this);
-    this.yReSizer = new YReSizer(this);
-    this.xHeightLight = new XHeightLight(this, this.screenSelector);
-    this.yHeightLight = new YHeightLight(this, this.screenSelector);
-    this.edit = new Edit(this);
-
-    this.children(this.canvas);
-    this.children(this.screen);
-    this.children(this.xReSizer);
-    this.children(this.yReSizer);
-    this.children(this.xHeightLight);
-    this.children(this.yHeightLight);
-    this.children(this.edit);
-
-    // 事件绑定
-    this.bind();
-  }
-
-  init() {
-    // 组件初始化
-    this.screen.init();
-    this.xReSizer.init();
-    this.yReSizer.init();
-    this.xHeightLight.init();
-    this.yHeightLight.init();
-    this.edit.init();
-    // 重置页面大小
-    this.resize();
+    // 添加表格中的组件
+    this.attach(this.canvas);
+    this.attach(this.screen);
+    this.attach(this.xReSizer);
+    this.attach(this.yReSizer);
+    this.attach(this.xHeightLight);
+    this.attach(this.yHeightLight);
+    this.attach(this.edit);
   }
 
   drawOptimization() {

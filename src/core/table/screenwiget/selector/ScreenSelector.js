@@ -1,7 +1,7 @@
 /* global document */
 import { Selector } from './Selector';
 import { EventBind } from '../../../../utils/EventBind';
-import { Constant } from '../../../constant/Constant';
+import { Constant } from '../../../../constant/Constant';
 import { ScreenWidget } from '../../screen/ScreenWidget';
 import { RectRange } from '../../RectRange';
 import { Rect } from '../../../../canvas/Rect';

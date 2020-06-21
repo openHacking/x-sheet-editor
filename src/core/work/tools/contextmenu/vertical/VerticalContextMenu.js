@@ -1,5 +1,5 @@
 import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
-import { cssPrefix } from '../../../../../config';
+import { cssPrefix, Constant } from '../../../../../constant/Constant';
 import { Utils } from '../../../../../utils/Utils';
 import { h } from '../../../../../lib/Element';
 import { VerticalContextMenuItem } from './VerticalContextMenuItem';
@@ -7,7 +7,7 @@ import { VerticalIcon1 } from '../icon/vertical/VerticalIcon1';
 import { VerticalIcon2 } from '../icon/vertical/VerticalIcon2';
 import { VerticalIcon3 } from '../icon/vertical/VerticalIcon3';
 import { EventBind } from '../../../../../utils/EventBind';
-import { Constant } from '../../../../constant/Constant';
+
 import { VERTICAL_ALIGN } from '../../../../../canvas/Font';
 
 class VerticalContextMenu extends ELContextMenu {

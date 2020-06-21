@@ -1,5 +1,5 @@
 import { Widget } from '../../../lib/Widget';
-import { cssPrefix } from '../../../config';
+import { cssPrefix } from '../../../constant/Constant';
 import { Utils } from '../../../utils/Utils';
 import { Icon } from '../../../core/work/tools/Icon';
 import { ColorPicker } from '../ColorPicker';

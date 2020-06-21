@@ -1,10 +1,9 @@
 /* global document */
-
 import { Widget } from '../../../lib/Widget';
-import { cssPrefix } from '../../../config';
+import { cssPrefix, Constant } from '../../../constant/Constant';
 import { h } from '../../../lib/Element';
 import { EventBind } from '../../../utils/EventBind';
-import { Constant } from '../../constant/Constant';
+
 import { Utils } from '../../../utils/Utils';
 import { floor } from '../../../canvas/Draw';
 
@@ -12,6 +11,7 @@ class YReSizer extends Widget {
 
   constructor(table, options = { height: 5 }) {
     super(`${cssPrefix}-re-sizer-vertical`);
+
     this.table = table;
     this.options = options;
     this.height = options.height;
@@ -21,8 +21,11 @@ class YReSizer extends Widget {
       this.hoverEl,
       this.lineEl,
     ]);
+  }
+
+  onAttach() {
     this.bind();
-    table.focus.register({ el: this });
+    this.table.focus.register({ el: this });
   }
 
   getEventTop(event) {

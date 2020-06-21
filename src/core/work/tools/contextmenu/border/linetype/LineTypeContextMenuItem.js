@@ -1,4 +1,4 @@
-import { cssPrefix } from '../../../../../../config';
+import { cssPrefix } from '../../../../../../constant/Constant';
 import { Icon } from '../../../Icon';
 import { h } from '../../../../../../lib/Element';
 import { ELContextMenuItem } from '../../../../../../component/elcontextmenu/ELContextMenuItem';

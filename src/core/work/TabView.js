@@ -1,10 +1,13 @@
 import { Widget } from '../../lib/Widget';
-import { cssPrefix } from '../../config';
+import { cssPrefix, Constant } from '../../constant/Constant';
 import { h } from '../../lib/Element';
 import { Utils } from '../../utils/Utils';
 import { Tab } from './Tab';
+import { EventBind } from '../../utils/EventBind';
+
 
 class TabView extends Widget {
+
   constructor(options) {
     super(`${cssPrefix}-sheet-switch-tab`);
     this.last = h('div', `${cssPrefix}-switch-tab-last-btn`);
@@ -23,9 +26,56 @@ class TabView extends Widget {
       onAdd(tab) { return tab; },
       onSwitch(tab) { return tab; },
     }, options);
-    this.number = 0;
     this.left = null;
     this.tabList = [];
+  }
+
+  onAttach() {
+    this.bind();
+  }
+
+  offsetSizeLeft() {
+    const maxWidth = this.content.offset().width;
+    const current = this.tabs.offset().width;
+    if (current > maxWidth) {
+      this.left = -(current - maxWidth);
+      this.tabs.css('marginLeft', `${this.left}px`);
+    }
+  }
+
+  bind() {
+    const { next, last, plus } = this;
+    EventBind.bind(next, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      const maxWidth = this.content.offset().width;
+      const current = this.tabs.offset().width;
+      const min = -(current - maxWidth);
+      let left = this.left || 0;
+      left -= 30;
+      if (left < min) left = min;
+      this.left = left;
+      this.tabs.css('marginLeft', `${this.left}px`);
+    });
+    EventBind.bind(last, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      let left = this.left || 0;
+      left += 30;
+      if (left > 0) left = 0;
+      this.left = left;
+      this.tabs.css('marginLeft', `${this.left}px`);
+    });
+    EventBind.bind(plus, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      this.optiions.onAdd();
+    });
+  }
+
+  attach(tab) {
+    this.tabList.push(tab);
+    this.tabs.children(tab);
+    tab.onAttach();
+    this.offsetSizeLeft();
+    EventBind.bind(tab, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      this.setActive(tab);
+      this.optiions.onSwitch(tab);
+    });
   }
 
   setActiveTab(index) {
@@ -44,54 +94,8 @@ class TabView extends Widget {
     });
   }
 
-  init() {
-    this.bind();
-  }
-
-  bind() {
-    this.plus.on('click', () => {
-      const tab = new Tab();
-      const index = this.addCurrent(tab);
-      this.optiions.onAdd(tab, index);
-    });
-    this.last.on('click', () => {
-      let left = this.left || 0;
-      left += 30;
-      if (left > 0) left = 0;
-      this.left = left;
-      this.tabs.css('marginLeft', `${this.left}px`);
-    });
-    this.next.on('click', () => {
-      const maxWidth = this.content.offset().width;
-      const current = this.tabs.offset().width;
-      const min = -(current - maxWidth);
-      let left = this.left || 0;
-      left -= 30;
-      if (left < min) left = min;
-      this.left = left;
-      this.tabs.css('marginLeft', `${this.left}px`);
-    });
-  }
-
-  add(tab) {
-    this.tabList.push(tab);
-    this.tabs.children(tab);
-    tab.on('click', () => {
-      this.setActive(tab);
-      this.optiions.onSwitch(tab);
-    });
+  getLastIndex() {
     return this.tabList.length - 1;
-  }
-
-  addCurrent(tab) {
-    const result = this.add(tab);
-    const maxWidth = this.content.offset().width;
-    const current = this.tabs.offset().width;
-    if (current > maxWidth) {
-      this.left = -(current - maxWidth);
-      this.tabs.css('marginLeft', `${this.left}px`);
-    }
-    return result;
   }
 }
 

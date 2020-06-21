@@ -1,8 +1,8 @@
 import { Widget } from '../../lib/Widget';
-import { cssPrefix } from '../../config';
+import { cssPrefix, Constant } from '../../constant/Constant';
 import { h } from '../../lib/Element';
 import { EventBind } from '../../utils/EventBind';
-import { Constant } from '../constant/Constant';
+
 import { ScreenSelector } from './screenwiget/selector/ScreenSelector';
 import { Utils } from '../../utils/Utils';
 import { RectRange } from './RectRange';
@@ -18,11 +18,11 @@ class Edit extends Widget {
     this.text = '';
     this.select = null;
     this.children(this.input);
-    this.hide();
   }
 
-  init() {
+  onAttach() {
     this.bind();
+    this.hide();
   }
 
   bind() {

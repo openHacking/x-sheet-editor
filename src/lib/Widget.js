@@ -1,9 +1,10 @@
 import { Element } from './Element';
-import { cssPrefix } from '../config';
+import { cssPrefix } from '../constant/Constant';
 
 class Widget extends Element {
-  constructor(className = '') {
-    super('div', `${cssPrefix}-widget ${className}`);
+
+  constructor(className = '', nodeType = "div") {
+    super(nodeType, `${cssPrefix}-widget ${className}`);
   }
 
   computeEventXy(event, element = this) {
@@ -29,7 +30,12 @@ class Widget extends Element {
     };
   }
 
-  init() {}
+  attach(widget) {
+    this.children(widget);
+    widget.onAttach();
+  }
+
+  onAttach() {  }
 }
 
 export { Widget };

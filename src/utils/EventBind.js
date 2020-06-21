@@ -1,4 +1,4 @@
-import { Constant } from '../core/constant/Constant';
+import { Constant } from '../constant/Constant';
 
 class EventBind {
   static bind(target, name, fn) {

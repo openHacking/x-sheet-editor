@@ -1,5 +1,4 @@
-class Constant {}
-
+const Constant = {};
 Constant.SYSTEM_EVENT_TYPE = {
   MOUSE_MOVE: 'mouseMove'.toLocaleLowerCase(),
   MOUSE_DOWN: 'mouseDown'.toLocaleLowerCase(),
@@ -18,7 +17,6 @@ Constant.SYSTEM_EVENT_TYPE = {
   INPUT: 'input'.toLocaleLowerCase(),
   VISIBILITY_CHANGE: 'visibilityChange'.toLocaleLowerCase(),
 };
-
 Constant.TABLE_EVENT_TYPE = {
   CHANGE_HEIGHT: 'tableChangeHeight'.toLocaleLowerCase(),
   CHANGE_WIDTH: 'tableChangeWidth'.toLocaleLowerCase(),
@@ -26,11 +24,9 @@ Constant.TABLE_EVENT_TYPE = {
   SELECT_CHANGE: 'tableSelectChange'.toLocaleLowerCase(),
   SELECT_DOWN: 'tableSelectDown'.toLocaleLowerCase(),
 };
-
 Constant.WORK_BODY_EVENT_TYPE = {
   CHANGE_ACTIVE: 'workBodyChangeActive'.toLocaleLowerCase(),
 };
-
 Constant.MOUSE_POINTER_TYPE = {
   SELECT_ONE_COLUMN: {
     key: Symbol('选择一列'),
@@ -58,4 +54,7 @@ Constant.MOUSE_POINTER_TYPE = {
   },
 };
 
+const cssPrefix = 'x-sheet';
+
+export { cssPrefix };
 export { Constant };

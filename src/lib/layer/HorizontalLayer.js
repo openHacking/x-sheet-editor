@@ -1,21 +1,15 @@
-import { Element } from '../Element';
-import { cssPrefix } from '../../config';
+import { cssPrefix } from '../../constant/Constant';
 import { Utils } from '../../utils/Utils';
+import { Layer } from '../Layer';
 
-class HorizontalLayer extends Element {
+class HorizontalLayer extends Layer {
+
   constructor(options) {
-    super('div', `${cssPrefix}-horizontal-layer`);
+    super(`${cssPrefix}-horizontal-layer`);
     this.options = Utils.mergeDeep({
-      layerElements: [],
       style: {},
     }, options);
-    this.init();
-  }
-
-  init() {
     this.css(this.options.style);
-    // eslint-disable-next-line no-restricted-syntax
-    for (const layerElement of this.options.layerElements) this.children(layerElement);
   }
 }
 

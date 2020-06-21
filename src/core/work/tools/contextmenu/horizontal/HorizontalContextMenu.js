@@ -1,5 +1,5 @@
 import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
-import { cssPrefix } from '../../../../../config';
+import { cssPrefix, Constant } from '../../../../../constant/Constant';
 import { Utils } from '../../../../../utils/Utils';
 import { h } from '../../../../../lib/Element';
 import { HorizontalIcon1 } from '../icon/horizontal/HorizontalIcon1';
@@ -7,7 +7,7 @@ import { HorizontalIcon2 } from '../icon/horizontal/HorizontalIcon2';
 import { HorizontalIcon3 } from '../icon/horizontal/HorizontalIcon3';
 import { HorizontalContextMenuItem } from './HorizontalContextMenuItem';
 import { EventBind } from '../../../../../utils/EventBind';
-import { Constant } from '../../../../constant/Constant';
+
 import { ALIGN } from '../../../../../canvas/Font';
 
 class HorizontalContextMenu extends ELContextMenu {

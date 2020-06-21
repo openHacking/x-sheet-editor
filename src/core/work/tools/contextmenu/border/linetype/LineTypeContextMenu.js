@@ -1,8 +1,8 @@
 import { ELContextMenu } from '../../../../../../component/elcontextmenu/ELContextMenu';
 import { Utils } from '../../../../../../utils/Utils';
-import { cssPrefix } from '../../../../../../config';
+import { cssPrefix, Constant } from '../../../../../../constant/Constant';
 import { LineTypeContextMenuItem } from './LineTypeContextMenuItem';
-import { Constant } from '../../../../../constant/Constant';
+
 
 class LineTypeContextMenu extends ELContextMenu {
   constructor(options = {}) {

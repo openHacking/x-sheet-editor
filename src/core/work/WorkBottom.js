@@ -1,13 +1,17 @@
 import { Widget } from '../../lib/Widget';
-import { cssPrefix } from '../../config';
+import { cssPrefix } from '../../constant/Constant';
 import { BottomMenu } from './BottomMenu';
 
 class WorkBottom extends Widget {
+
   constructor(work) {
     super(`${cssPrefix}-work-bottom`);
     this.work = work;
+  }
+
+  onAttach() {
     this.bottomMenu = new BottomMenu();
-    this.children(this.bottomMenu);
+    this.attach(this.bottomMenu);
   }
 }
 

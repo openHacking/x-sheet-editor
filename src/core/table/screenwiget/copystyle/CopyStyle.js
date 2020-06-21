@@ -1,6 +1,6 @@
 import { Widget } from '../../../../lib/Widget';
 import { Utils } from '../../../../utils/Utils';
-import { cssPrefix } from '../../../../config';
+import { cssPrefix } from '../../../../constant/Constant';
 import { h } from '../../../../lib/Element';
 
 const svg = `

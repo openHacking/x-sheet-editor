@@ -1,5 +1,5 @@
 import { EventBind } from '../../utils/EventBind';
-import { Constant } from '../constant/Constant';
+import { Constant } from '../../constant/Constant';
 
 /* global document */
 
