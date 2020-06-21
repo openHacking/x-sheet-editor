@@ -652,6 +652,58 @@ class Content {
     return total - fixedHeight;
   }
 
+  drawCells(viewRange, scrollViewXOffset, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, cellsHelper, grid,
+    } = table;
+    draw.save();
+    draw.offset(offsetX, offsetY);
+    // 绘制单元格文字
+    cellsHelper.getCellSkipMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (i, c, cell, rect, overflow) => {
+        // 绘制文字
+        const { fontAttr } = cell;
+        const { align } = fontAttr;
+        const font = new Font({
+          text: Format(cell.format, cell.text),
+          rect: rect.expandSize(grid.lineWidth()),
+          dw: draw,
+          overflow,
+          attr: fontAttr,
+        });
+        font.setOverflowCrop(align === ALIGN.center);
+        cell.setContentWidth(font.draw());
+        // Test
+        // draw.attr({ globalAlpha: 0.3 });
+        // draw.fillRect(rect.x, rect.y, cell.contentWidth, rect.height);
+      },
+      startX: scrollViewXOffset,
+    });
+    // 绘制合并单元格文字
+    cellsHelper.getMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (rect, cell) => {
+        // console.log('rect >>>', rect);
+        // 绘制文字
+        const { fontAttr } = cell;
+        const font = new Font({
+          text: Format(cell.format, cell.text),
+          rect: rect.expandSize(grid.lineWidth()),
+          dw: draw,
+          overflow: null,
+          attr: fontAttr,
+        });
+        font.setTextWrap(TEXT_WRAP.WORD_WRAP);
+        cell.setContentWidth(font.draw());
+      },
+      startX: scrollViewXOffset,
+    });
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
   drawGrid(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
@@ -803,58 +855,6 @@ class Content {
         const box = new Box({ draw, rect });
         box.drawBackgroundColor(cell.background);
       },
-    });
-    draw.offset(0, 0);
-    draw.restore();
-  }
-
-  drawCells(viewRange, scrollViewXOffset, offsetX, offsetY) {
-    const { table } = this;
-    const {
-      draw, cellsHelper, grid,
-    } = table;
-    draw.save();
-    draw.offset(offsetX, offsetY);
-    // 绘制单元格文字
-    cellsHelper.getCellSkipMergeCellByViewRange({
-      rectRange: viewRange,
-      callback: (i, c, cell, rect, overflow) => {
-        // 绘制文字
-        const { fontAttr } = cell;
-        const { align } = fontAttr;
-        const font = new Font({
-          text: Format(cell.format, cell.text),
-          rect: rect.expandSize(grid.lineWidth()),
-          dw: draw,
-          overflow,
-          attr: fontAttr,
-        });
-        font.setOverflowCrop(align === ALIGN.center);
-        cell.setContentWidth(font.draw());
-        // Test
-        // draw.attr({ globalAlpha: 0.3 });
-        // draw.fillRect(rect.x, rect.y, cell.contentWidth, rect.height);
-      },
-      startX: scrollViewXOffset,
-    });
-    // 绘制合并单元格文字
-    cellsHelper.getMergeCellByViewRange({
-      rectRange: viewRange,
-      callback: (rect, cell) => {
-        // console.log('rect >>>', rect);
-        // 绘制文字
-        const { fontAttr } = cell;
-        const font = new Font({
-          text: Format(cell.format, cell.text),
-          rect: rect.expandSize(grid.lineWidth()),
-          dw: draw,
-          overflow: null,
-          attr: fontAttr,
-        });
-        font.setTextWrap(TEXT_WRAP.WORD_WRAP);
-        cell.setContentWidth(font.draw());
-      },
-      startX: scrollViewXOffset,
     });
     draw.offset(0, 0);
     draw.restore();
@@ -951,6 +951,56 @@ class FixedTop {
     return viewRange;
   }
 
+  drawCells(viewRange, scrollViewXOffset, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, cellsHelper, grid,
+    } = table;
+    draw.save();
+    draw.offset(offsetX, offsetY);
+    // 绘制单元格文字
+    cellsHelper.getCellSkipMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (i, c, cell, rect, overflow) => {
+        // console.log('rect>>>', rect);
+        // console.log('i, c', i, c);
+        // 绘制文字
+        const { fontAttr } = cell;
+        const { align } = fontAttr;
+        const font = new Font({
+          text: Format(cell.format, cell.text),
+          rect: rect.expandSize(grid.lineWidth()),
+          dw: draw,
+          overflow,
+          attr: fontAttr,
+        });
+        font.setOverflowCrop(align === ALIGN.center);
+        cell.setContentWidth(font.draw());
+      },
+      startX: scrollViewXOffset,
+    });
+    // 绘制合并单元格文字
+    cellsHelper.getMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (rect, cell) => {
+        // 绘制文字
+        const { fontAttr } = cell;
+        const font = new Font({
+          text: Format(cell.format, cell.text),
+          rect: rect.expandSize(grid.lineWidth()),
+          dw: draw,
+          overflow: null,
+          attr: fontAttr,
+        });
+        font.setTextWrap(TEXT_WRAP.WORD_WRAP);
+        cell.setContentWidth(font.draw());
+      },
+      startX: scrollViewXOffset,
+    });
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
   drawGrid(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
@@ -1102,56 +1152,6 @@ class FixedTop {
         const box = new Box({ draw, rect });
         box.drawBackgroundColor(cell.background);
       },
-    });
-    draw.offset(0, 0);
-    draw.restore();
-  }
-
-  drawCells(viewRange, scrollViewXOffset, offsetX, offsetY) {
-    const { table } = this;
-    const {
-      draw, cellsHelper, grid,
-    } = table;
-    draw.save();
-    draw.offset(offsetX, offsetY);
-    // 绘制单元格文字
-    cellsHelper.getCellSkipMergeCellByViewRange({
-      rectRange: viewRange,
-      callback: (i, c, cell, rect, overflow) => {
-        // console.log('rect>>>', rect);
-        // console.log('i, c', i, c);
-        // 绘制文字
-        const { fontAttr } = cell;
-        const { align } = fontAttr;
-        const font = new Font({
-          text: Format(cell.format, cell.text),
-          rect: rect.expandSize(grid.lineWidth()),
-          dw: draw,
-          overflow,
-          attr: fontAttr,
-        });
-        font.setOverflowCrop(align === ALIGN.center);
-        cell.setContentWidth(font.draw());
-      },
-      startX: scrollViewXOffset,
-    });
-    // 绘制合并单元格文字
-    cellsHelper.getMergeCellByViewRange({
-      rectRange: viewRange,
-      callback: (rect, cell) => {
-        // 绘制文字
-        const { fontAttr } = cell;
-        const font = new Font({
-          text: Format(cell.format, cell.text),
-          rect: rect.expandSize(grid.lineWidth()),
-          dw: draw,
-          overflow: null,
-          attr: fontAttr,
-        });
-        font.setTextWrap(TEXT_WRAP.WORD_WRAP);
-        cell.setContentWidth(font.draw());
-      },
-      startX: scrollViewXOffset,
     });
     draw.offset(0, 0);
     draw.restore();
@@ -1561,6 +1561,7 @@ class KeyBoardTab {
     keyboard.register({
       el: table,
       focus: true,
+      stop: false,
       attr: {
         code: 9,
         callback: () => {
@@ -2018,6 +2019,14 @@ class Table extends Widget {
     return this.content.getContentHeight();
   }
 
+  getFixedWidth() {
+    return this.fixedLeft.getWidth();
+  }
+
+  getFixedHeight() {
+    return this.fixedTop.getHeight();
+  }
+
   getContentViewRange() {
     const { contentViewRange } = this;
     if (contentViewRange !== null) {
@@ -2139,14 +2148,6 @@ class Table extends Widget {
   getIndexHeight() {
     const { settings } = this;
     return settings.index.height;
-  }
-
-  getFixedWidth() {
-    return this.fixedLeft.getWidth();
-  }
-
-  getFixedHeight() {
-    return this.fixedTop.getHeight();
   }
 
   toString() {
