@@ -249,6 +249,10 @@ class RectRange {
     ];
   }
 
+  /**
+   * 返回边缘区域
+   * @returns {{top: RectRange, left: RectRange, bottom: RectRange, right: RectRange}}
+   */
   brink() {
     const { sri, eri, sci, eci } = this;
     const top = new RectRange(sri, sci, sri, eci);
@@ -256,24 +260,6 @@ class RectRange {
     const right = new RectRange(sri, eci, eri, eci);
     const left = new RectRange(sri, sci, eri, sci);
     return { top, right, bottom, left };
-  }
-
-  toString() {
-    const {
-      sri, sci, eri, eci,
-    } = this;
-    let ref = Utils.xy2expr(sci, sri);
-    if (this.multiple()) {
-      ref = `${ref}:${Utils.xy2expr(eci, eri)}`;
-    }
-    return ref;
-  }
-
-  clone() {
-    const {
-      sri, sci, eri, eci, w, h,
-    } = this;
-    return new RectRange(sri, sci, eri, eci, w, h);
   }
 
   /**
@@ -286,6 +272,28 @@ class RectRange {
       && this.eci === other.eci
       && this.sri === other.sri
       && this.sci === other.sci;
+  }
+
+  /**
+   * 克隆
+   * @returns {RectRange}
+   */
+  clone() {
+    const {
+      sri, sci, eri, eci, w, h,
+    } = this;
+    return new RectRange(sri, sci, eri, eci, w, h);
+  }
+
+  toString() {
+    const {
+      sri, sci, eri, eci,
+    } = this;
+    let ref = Utils.xy2expr(sci, sri);
+    if (this.multiple()) {
+      ref = `${ref}:${Utils.xy2expr(eci, eri)}`;
+    }
+    return ref;
   }
 
   /**
