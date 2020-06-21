@@ -13,11 +13,11 @@ class Sheet extends Widget {
   }) {
     super(`${cssPrefix}-sheet`);
     this.options = options;
+    this.table = new Table(this, this.options.tableConfig);
   }
 
   bind() {
     EventBind.bind(this.table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, (e) => {
-      // console.log('change width');
       this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, this);
       e.stopPropagation();
     });
@@ -36,7 +36,6 @@ class Sheet extends Widget {
   }
 
   onAttach() {
-    this.table = new Table(this, this.options.tableConfig);
     this.attach(this.table);
     this.bind();
   }

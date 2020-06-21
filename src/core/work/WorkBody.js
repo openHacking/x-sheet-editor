@@ -66,6 +66,31 @@ class WorkBody extends Widget {
     this.layerVerticalLayer.children(this.horizontalLayer1Layer);
     this.layerVerticalLayer.children(this.horizontalLayer2Layer);
     this.children(this.layerVerticalLayer);
+
+    // 组件
+    this.sheetView = new SheetView();
+    this.scrollBarY = new ScrollBarY({
+      scroll: (move) => {
+        const sheet = this.sheetView.getActiveSheet();
+        sheet.table.scrollY(move);
+      },
+    });
+    this.tabView = new TabView({
+      onAdd: () => {
+        const sheet = new Sheet();
+        const tab = new Tab();
+        this.addTabSheet({ tab, sheet });
+      },
+      onSwitch: (tab) => {
+        this.setActiveTab(tab);
+      },
+    });
+    this.scrollBarX = new ScrollBarX({
+      scroll: (move) => {
+        const sheet = this.sheetView.getActiveSheet();
+        sheet.table.scrollX(move);
+      },
+    });
   }
 
   updateScroll() {
@@ -147,30 +172,6 @@ class WorkBody extends Widget {
     const {
       sheetViewLayer, scrollBarYLayer, sheetSwitchTabLayer, scrollBarXLayer,
     } = this;
-    // 组件
-    this.sheetView = new SheetView();
-    this.scrollBarY = new ScrollBarY({
-      scroll: (move) => {
-        const sheet = this.sheetView.getActiveSheet();
-        sheet.table.scrollY(move);
-      },
-    });
-    this.tabView = new TabView({
-      onAdd: () => {
-        const sheet = new Sheet();
-        const tab = new Tab();
-        this.addTabSheet({ tab, sheet });
-      },
-      onSwitch: (tab) => {
-        this.setActiveTab(tab);
-      },
-    });
-    this.scrollBarX = new ScrollBarX({
-      scroll: (move) => {
-        const sheet = this.sheetView.getActiveSheet();
-        sheet.table.scrollX(move);
-      },
-    });
     sheetViewLayer.attach(this.sheetView);
     scrollBarYLayer.attach(this.scrollBarY);
     sheetSwitchTabLayer.attach(this.tabView);

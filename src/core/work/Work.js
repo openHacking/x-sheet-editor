@@ -23,15 +23,17 @@ class Work extends Widget {
     this.verticalLayer.children(this.bodyLayer);
     this.verticalLayer.children(this.bottomLayer);
     this.children(this.verticalLayer);
+
+    // 组件
+    this.top = new WorkTop(this);
+    this.body = new WorkBody(this, this.options.body);
+    this.bottom = new WorkBottom(this);
   }
 
   onAttach() {
     const {
       bodyLayer, topLayer, bottomLayer,
     } = this;
-    this.top = new WorkTop(this);
-    this.body = new WorkBody(this, this.options.body);
-    this.bottom = new WorkBottom(this);
     topLayer.attach(this.top);
     bottomLayer.attach(this.bottom);
     bodyLayer.attach(this.body);
