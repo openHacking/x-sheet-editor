@@ -29,65 +29,6 @@ class ScreenSelector extends ScreenWidget {
     this.l = new Selector();
     this.br = new Selector();
     this.bind();
-    this.registerKeyBoardTab();
-  }
-
-  registerKeyBoardTab() {
-    const { screen } = this;
-    const { table } = screen;
-    const { keyboard, cols, rows, edit, merges } = table;
-    let tabId = 0;
-    let tabNext = null;
-    keyboard.register({
-      el: table,
-      code: 9,
-      callback: () => {
-        edit.hideEdit();
-        const id = this.selectorAttr;
-        const rect = this.selectorAttr.rect.clone();
-        if (tabId !== id) {
-          const { sri, sci } = rect;
-          tabId = id;
-          tabNext = { sri, sci };
-        }
-        const cLen = cols.len - 1;
-        const rLen = rows.len - 1;
-        let { sri, sci } = tabNext;
-        const srcMerges = merges.getFirstIncludes(sri, sci);
-        if (srcMerges) {
-          sci = srcMerges.eci;
-        }
-        if (sci >= cLen && sri >= rLen) {
-          return;
-        }
-        if (sci >= cLen) {
-          sri += 1;
-          sci = 0;
-        } else {
-          sci += 1;
-        }
-        tabNext.sri = sri;
-        tabNext.sci = sci;
-        let eri = sri;
-        let eci = sci;
-        const targetMerges = merges.getFirstIncludes(sri, sci);
-        if (targetMerges) {
-          sri = targetMerges.sri;
-          sci = targetMerges.sci;
-          eri = targetMerges.eri;
-          eci = targetMerges.eci;
-        }
-        rect.sri = sri;
-        rect.sci = sci;
-        rect.eri = eri;
-        rect.eci = eci;
-        this.selectorAttr.rect = rect;
-        this.setOffset(this.selectorAttr);
-        this.onChangeStack.forEach(cb => cb());
-        this.onSelectChangeStack.forEach(cb => cb());
-        edit.showEdit();
-      },
-    });
   }
 
   bind() {

@@ -1550,6 +1550,72 @@ class FrozenRect {
 }
 
 /**
+ * tab 快捷键
+ */
+class KeyBoardTab {
+
+  constructor(table) {
+    const { keyboard, cols, rows, edit, merges, screenSelector } = table;
+    let tabId = 0;
+    let tabNext = null;
+    keyboard.register({
+      el: table,
+      focus: true,
+      attr: {
+        code: 9,
+        callback: () => {
+          edit.hideEdit();
+          const { selectorAttr } = screenSelector;
+          const id = selectorAttr;
+          const rect = selectorAttr.rect.clone();
+          if (tabId !== id) {
+            const { sri, sci } = rect;
+            tabId = id;
+            tabNext = { sri, sci };
+          }
+          const cLen = cols.len - 1;
+          const rLen = rows.len - 1;
+          let { sri, sci } = tabNext;
+          const srcMerges = merges.getFirstIncludes(sri, sci);
+          if (srcMerges) {
+            sci = srcMerges.eci;
+          }
+          if (sci >= cLen && sri >= rLen) {
+            return;
+          }
+          if (sci >= cLen) {
+            sri += 1;
+            sci = 0;
+          } else {
+            sci += 1;
+          }
+          tabNext.sri = sri;
+          tabNext.sci = sci;
+          let eri = sri;
+          let eci = sci;
+          const targetMerges = merges.getFirstIncludes(sri, sci);
+          if (targetMerges) {
+            sri = targetMerges.sri;
+            sci = targetMerges.sci;
+            eri = targetMerges.eri;
+            eci = targetMerges.eci;
+          }
+          rect.sri = sri;
+          rect.sci = sci;
+          rect.eri = eri;
+          rect.eci = eci;
+          screenSelector.selectorAttr.rect = rect;
+          screenSelector.setOffset(screenSelector.selectorAttr);
+          screenSelector.onChangeStack.forEach(cb => cb());
+          screenSelector.onSelectChangeStack.forEach(cb => cb());
+          edit.showEdit();
+        },
+      },
+    });
+  }
+}
+
+/**
  * 默认设置
  * @type {{tipsRenderTime: boolean,
  * data: [],
@@ -1607,20 +1673,14 @@ const defaultSettings = {
  */
 class Table extends Widget {
 
-  constructor(sheet, settings) {
+  constructor(settings) {
     super(`${cssPrefix}-table`);
-
-    this.sheet = sheet;
-    sheet.children(this);
-
     this.settings = Utils.mergeDeep({}, defaultSettings, settings);
     this.canvas = new Widget(`${cssPrefix}-table-canvas`, 'canvas');
-
     // 滚动区域 内容区域 滚动区域和内容区域的偏移量
     this.scrollViewRange = null;
     this.contentViewRange = null;
     this.scrollViewXOffset = -1;
-
     // 表格基本数据信息
     this.cells = new Cells({
       table: this,
@@ -1633,7 +1693,6 @@ class Table extends Widget {
     this.cols = new Cols(this.settings.cols);
     this.merges = new Merges(this.settings.merges);
     this.scroll = new Scroll(this);
-
     // 帮助类
     this.cellsHelper = new CellsHelper({
       cells: this.cells,
@@ -1641,22 +1700,18 @@ class Table extends Widget {
       rows: this.rows,
       cols: this.cols,
     });
-
     // 表格线段处理
     this.lineHandle = new LineHandle(this);
     this.gridLineHandle = new GridLineHandle(this);
     this.borderLineHandle = new BorderLineHandle(this);
-
     // 焦点元素管理
     this.focus = new Focus(this);
-
     // 数据快照
     this.tableDataSnapshot = new TableDataSnapshot(this);
     // 鼠标指针
     this.mousePointer = new MousePointer(this);
     // 键盘快捷键
     this.keyboard = new Keyboard(this);
-
     // canvas 绘制资源
     this.draw = new Draw(this.canvas.el);
     this.line = new Line(this.draw, {
@@ -1713,7 +1768,6 @@ class Table extends Widget {
     this.grid = new Grid(this.draw, {
       color: this.settings.table.borderColor,
     });
-
     // table表绘制的各个部分
     this.content = new Content(this);
     this.fixedLeft = new FixedLeft(this);
@@ -1724,7 +1778,6 @@ class Table extends Widget {
     this.frozenLeftIndex = new FrozenLeftIndex(this);
     this.frozenTopIndex = new FrozenTopIndex(this);
     this.frozenRect = new FrozenRect(this);
-
     // table基础组件
     this.screen = new Screen(this);
     this.xReSizer = new XReSizer(this);
@@ -1735,9 +1788,7 @@ class Table extends Widget {
   }
 
   onAttach() {
-    this.focus.register({ el: this, stop: false, focus: true });
     this.bind();
-
     // 初始化表格基础小部件
     this.screenSelector = new ScreenSelector(this.screen);
     this.screenAutoFill = new ScreenAutoFill(this.screen, {
@@ -1758,7 +1809,6 @@ class Table extends Widget {
     this.screenSelector.on(SCREEN_SELECT_EVENT.DOWN_SELECT, () => {
       this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN);
     });
-
     // 添加表格中的组件
     this.attach(this.canvas);
     this.attach(this.screen);
@@ -1767,6 +1817,40 @@ class Table extends Widget {
     this.attach(this.xHeightLight);
     this.attach(this.yHeightLight);
     this.attach(this.edit);
+    // 注册快捷键
+    this.keyBoardTab = new KeyBoardTab(this);
+  }
+
+  bind() {
+    const { mousePointer } = this;
+    EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+      this.clearViewRange();
+      this.render();
+    });
+    EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+      this.clearViewRange();
+      this.render();
+    });
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+      this.clearViewRange();
+      this.render();
+    });
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
+      const { x, y } = this.computeEventXy(e);
+      const { ri, ci } = this.getRiCiByXy(x, y);
+      if (ri === -1) {
+        const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_ONE_COLUMN;
+        mousePointer.set(type, key);
+        return;
+      }
+      if (ci === -1) {
+        const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_ONE_ROW;
+        mousePointer.set(type, key);
+        return;
+      }
+      const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_CELL;
+      mousePointer.set(type, key);
+    });
   }
 
   drawOptimization() {
@@ -1870,6 +1954,23 @@ class Table extends Widget {
     this.scrollViewXOffset = -1;
   }
 
+  clear() {
+    const { draw, settings } = this;
+    const { width, height } = draw;
+    draw.attr({
+      fillStyle: settings.table.background,
+    });
+    draw.fillRect(0, 0, width, height);
+  }
+
+  resize() {
+    const { draw } = this;
+    const [width, height] = [this.visualWidth(), this.visualHeight()];
+    draw.resize(width, height);
+    this.clearViewRange();
+    this.render();
+  }
+
   render() {
     const { settings, fixed } = this;
     if (settings.tipsRenderTime) {
@@ -1909,53 +2010,12 @@ class Table extends Widget {
     }
   }
 
-  resize() {
-    const { draw } = this;
-    const [width, height] = [this.visualWidth(), this.visualHeight()];
-    draw.resize(width, height);
-    this.clearViewRange();
-    this.render();
+  getContentWidth() {
+    return this.content.getContentWidth();
   }
 
-  bind() {
-    const { mousePointer } = this;
-    EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
-      this.clearViewRange();
-      this.render();
-    });
-    EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      this.clearViewRange();
-      this.render();
-    });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      this.clearViewRange();
-      this.render();
-    });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
-      const { x, y } = this.computeEventXy(e);
-      const { ri, ci } = this.getRiCiByXy(x, y);
-      if (ri === -1) {
-        const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_ONE_COLUMN;
-        mousePointer.set(type, key);
-        return;
-      }
-      if (ci === -1) {
-        const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_ONE_ROW;
-        mousePointer.set(type, key);
-        return;
-      }
-      const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_CELL;
-      mousePointer.set(type, key);
-    });
-  }
-
-  clear() {
-    const { draw, settings } = this;
-    const { width, height } = draw;
-    draw.attr({
-      fillStyle: settings.table.background,
-    });
-    draw.fillRect(0, 0, width, height);
+  getContentHeight() {
+    return this.content.getContentHeight();
   }
 
   getContentViewRange() {
@@ -1972,6 +2032,17 @@ class Table extends Widget {
     scrollViewRange.w = cols.sectionSumWidth(0, scrollViewRange.eci);
     this.contentViewRange = scrollViewRange;
     return this.contentViewRange.clone();
+  }
+
+  getScrollViewXOffset() {
+    const { scrollViewXOffset } = this;
+    if (scrollViewXOffset !== -1) {
+      return -scrollViewXOffset;
+    }
+    const { scroll, cols } = this;
+    const { ci } = scroll;
+    this.scrollViewXOffset = cols.sectionSumWidth(0, ci - 1);
+    return -this.scrollViewXOffset;
   }
 
   getScrollViewRange() {
@@ -1997,25 +2068,6 @@ class Table extends Widget {
     }
     this.scrollViewRange = new RectRange(ri, ci, eri, eci, width, height);
     return this.scrollViewRange.clone();
-  }
-
-  getScrollViewXOffset() {
-    const { scrollViewXOffset } = this;
-    if (scrollViewXOffset !== -1) {
-      return -scrollViewXOffset;
-    }
-    const { scroll, cols } = this;
-    const { ci } = scroll;
-    this.scrollViewXOffset = cols.sectionSumWidth(0, ci - 1);
-    return -this.scrollViewXOffset;
-  }
-
-  getContentWidth() {
-    return this.content.getContentWidth();
-  }
-
-  getContentHeight() {
-    return this.content.getContentHeight();
   }
 
   getRiCiByXy(x, y) {
@@ -2079,14 +2131,6 @@ class Table extends Widget {
     };
   }
 
-  getFixedWidth() {
-    return this.fixedLeft.getWidth();
-  }
-
-  getFixedHeight() {
-    return this.fixedTop.getHeight();
-  }
-
   getIndexWidth() {
     const { settings } = this;
     return settings.index.width;
@@ -2097,16 +2141,12 @@ class Table extends Widget {
     return settings.index.height;
   }
 
-  setHeight(ri, height) {
-    const { rows } = this;
-    rows.setHeight(ri, floor(height));
-    this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT);
+  getFixedWidth() {
+    return this.fixedLeft.getWidth();
   }
 
-  setWidth(ci, width) {
-    const { cols } = this;
-    cols.setWidth(ci, floor(width));
-    this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH);
+  getFixedHeight() {
+    return this.fixedTop.getHeight();
   }
 
   toString() {

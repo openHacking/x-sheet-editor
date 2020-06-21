@@ -10,10 +10,9 @@ class Keyboard {
     this.bind();
   }
 
-  register({ el, key, code, callback }) {
+  register({ el, attr = {}, stop = true, focus = false, }) {
     const { table } = this;
-    const { focus } = table;
-    focus.register({ el, attr: { key, code, callback } });
+    table.focus.register({ el, attr, stop, focus });
   }
 
   bind() {
