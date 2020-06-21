@@ -19,7 +19,7 @@ import { ScreenAutoFill } from './screenwiget/autofill/ScreenAutoFill';
 import { XHeightLight } from './highlight/XHeightLight';
 import { YHeightLight } from './highlight/YHeightLight';
 import { Edit } from './Edit';
-import { Draw, floor, npx } from '../../canvas/Draw';
+import { Draw, npx } from '../../canvas/Draw';
 import { ALIGN, Font, TEXT_WRAP } from '../../canvas/Font';
 import { Rect } from '../../canvas/Rect';
 import { Crop } from '../../canvas/Crop';
