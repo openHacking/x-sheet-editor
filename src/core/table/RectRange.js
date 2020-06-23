@@ -227,7 +227,7 @@ class RectRange {
         }
       }
     } else if (dec > 0) {
-      addRet(eri, other.eci + 1, eri, eci);
+      addRet(sri, other.eci + 1, eri, eci);
       if (dsr > 0) {
         addRet(sri, sci, other.sri - 1, other.eci);
       }

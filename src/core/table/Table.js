@@ -2140,16 +2140,20 @@ class Table extends Widget {
 
 
   reComputerViewRange() {
-    // 保存上一次绘制的区域
+    // 渲染区域重置
     this.drawLastScrollViewRange = this.drawScrollViewRange;
-    // 清空当前需要绘制的区域
     this.drawScrollViewRange = null;
     this.drawContentViewRange = null;
     this.drawScrollViewXOffset = null;
+    // 当前渲染区域和上一次渲染区域
+    // 多出来的部分和减少的部分
+    this.drawScrollViewRangeReduced = null;
+    this.drawScrollViewRangeAdded = null;
     // 重新计算绘制区域
     this.computerScrollViewRange();
     this.computerScrollViewXOffset();
     this.computerContentViewRange();
+    this.computedScrollViewDifference();
   }
 
   computerScrollViewRange() {
@@ -2187,10 +2191,21 @@ class Table extends Widget {
     this.drawContentViewRange = scrollViewRange;
   }
 
+  computedScrollViewDifference() {
+    if (this.drawLastScrollViewRange) {
+      // eslint-disable-next-line max-len
+      const [drawScrollViewRangeReduced] = this.drawLastScrollViewRange.difference(this.drawScrollViewRange);
+      if (drawScrollViewRangeReduced) this.drawScrollViewRangeReduced = drawScrollViewRangeReduced;
+      // eslint-disable-next-line max-len
+      const [drawScrollViewRangeAdded] = this.drawScrollViewRange.difference(this.drawLastScrollViewRange);
+      if (drawScrollViewRangeAdded) this.drawScrollViewRangeAdded = drawScrollViewRangeAdded;
+    }
+  }
+
   getLastScrollViewRange() {
-    const { drawLastScrollViewRange } = this;
-    if (drawLastScrollViewRange) {
-      return drawLastScrollViewRange.clone();
+    const { drawScrollViewDifference } = this;
+    if (drawScrollViewDifference) {
+      return drawScrollViewDifference.clone();
     }
     return null;
   }
@@ -2215,6 +2230,22 @@ class Table extends Widget {
     const { drawContentViewRange } = this;
     if (drawContentViewRange) {
       return drawContentViewRange.clone();
+    }
+    return null;
+  }
+
+  getScrollViewRangeAdded() {
+    const { drawScrollViewRangeAdded } = this;
+    if (drawScrollViewRangeAdded) {
+      return drawScrollViewRangeAdded.clone();
+    }
+    return null;
+  }
+
+  getScrollViewRangeReduced() {
+    const { drawScrollViewRangeReduced } = this;
+    if (drawScrollViewRangeReduced) {
+      return drawScrollViewRangeReduced.clone();
     }
     return null;
   }
