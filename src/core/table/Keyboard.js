@@ -10,7 +10,7 @@ class Keyboard {
     this.bind();
   }
 
-  register({ el, attr = {}, stop = true, focus = false, }) {
+  register({ el, attr = {}, stop = true, focus = false }) {
     const { table } = this;
     table.focus.register({ el, attr, stop, focus });
   }

@@ -163,6 +163,17 @@ class Draw {
     const ny = even ? npx(y + offsetY) : npx(y + offsetY) + 0.5;
     ctx.lineTo(nx, ny);
   }
+
+  drawImage(origin, sx, sy, sWidth, sHeight, x, y, width, height) {
+    const { offsetX, offsetY } = this;
+    this.ctx.drawImage(
+      origin,
+      sx + offsetX, sy + offsetY,
+      sWidth, sHeight,
+      x + offsetX, y + offsetY,
+      width, height,
+    );
+  }
 }
 
 export {

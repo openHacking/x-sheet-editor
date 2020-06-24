@@ -1,17 +1,15 @@
-import { cssPrefix, Constant } from '../../constant/Constant';
+import { Constant, cssPrefix } from '../../constant/Constant';
 import Format from './Format';
 import { Utils } from '../../utils/Utils';
 import { Rows } from './Rows';
 import { Cols } from './Cols';
-import { Scroll } from './Scroll';
+import { Scroll, SCROLL_TYPE } from './Scroll';
 import { Fixed } from './Fixed';
 import { Widget } from '../../lib/Widget';
 import { RectRange } from './RectRange';
 import { Merges } from './Merges';
-
 import { EventBind } from '../../utils/EventBind';
 import { Screen } from './screen/Screen';
-import { SCREEN_SELECT_EVENT, ScreenSelector } from './screenwiget/selector/ScreenSelector';
 import { ScreenCopyStyle } from './screenwiget/copystyle/ScreenCopyStyle';
 import { XReSizer } from './resizer/XReSizer';
 import { YReSizer } from './resizer/YReSizer';
@@ -35,6 +33,7 @@ import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
 import { MousePointer } from './MousePointer';
 import { Keyboard } from './Keyboard';
 import { Focus } from './Focus';
+import { SCREEN_SELECT_EVENT, ScreenSelector } from './screenwiget/selector/ScreenSelector';
 
 // ========================= 冻结区域绘制 =======================
 
@@ -805,337 +804,6 @@ class FixedLeft {
 }
 
 /**
- * 绘制图表的主体内容
- */
-class Content {
-
-  constructor(table) {
-    this.table = table;
-  }
-
-  getXOffset() {
-    const { table } = this;
-    const { fixed, settings } = table;
-    const { index } = settings;
-    const { fxLeft } = fixed;
-    const { width } = index;
-    const fixedLeftWidth = table.cols.sectionSumWidth(0, fxLeft);
-    return fixedLeftWidth + width;
-  }
-
-  getYOffset() {
-    const { table } = this;
-    const { fixed, settings } = table;
-    const { index } = settings;
-    const { fxTop } = fixed;
-    const { height } = index;
-    const fixedTopHeight = table.rows.sectionSumHeight(0, fxTop);
-    return height + fixedTopHeight;
-  }
-
-  getWidth() {
-    const { table } = this;
-    const { fixed, settings } = table;
-    const { index } = settings;
-    const { fxLeft } = fixed;
-    const { width } = index;
-    const fixedLeftWidth = table.cols.sectionSumWidth(0, fxLeft);
-    return table.visualWidth() - (fixedLeftWidth + width);
-  }
-
-  getHeight() {
-    const { table } = this;
-    const { fixed, settings } = table;
-    const { index } = settings;
-    const { fxTop } = fixed;
-    const { height } = index;
-    const fixedTopHeight = table.rows.sectionSumHeight(0, fxTop);
-    return table.visualHeight() - (height + fixedTopHeight);
-  }
-
-  getContentWidth() {
-    const { table } = this;
-    const { cols, fixed } = table;
-    const total = cols.totalWidth();
-    const fixedWidth = cols.sectionSumWidth(0, fixed.fxLeft);
-    return total - fixedWidth;
-  }
-
-  getContentHeight() {
-    const { table } = this;
-    const { rows, fixed } = table;
-    const total = rows.totalHeight();
-    const fixedHeight = rows.sectionSumHeight(0, fixed.fxTop);
-    return total - fixedHeight;
-  }
-
-  getScrollViewXOffset() {
-    const { table } = this;
-    return table.getScrollViewXOffset();
-  }
-
-  getScrollViewRange() {
-    const { table } = this;
-    return table.getScrollViewRange();
-  }
-
-  getContentViewRange() {
-    const { table } = this;
-    return table.getContentViewRange();
-  }
-
-  drawClear() {
-    const { table } = this;
-    const { settings, draw, fixedTop, fixedLeft } = table;
-    const topHeight = fixedTop.getHeight();
-    const leftWidth = fixedLeft.getWidth();
-    const indexHeight = table.getIndexHeight();
-    const indexWidth = table.getIndexWidth();
-    const selfWidth = this.getWidth();
-    const selfHeight = this.getHeight();
-    draw.attr({
-      fillStyle: settings.table.background,
-    });
-    draw.fillRect(indexWidth + leftWidth, indexHeight + topHeight, selfWidth, selfHeight);
-  }
-
-  drawCells(viewRange, scrollViewXOffset, offsetX, offsetY) {
-    const { table } = this;
-    const {
-      draw, cellsHelper, grid,
-    } = table;
-    draw.save();
-    draw.offset(offsetX, offsetY);
-    // 绘制单元格文字
-    cellsHelper.getCellSkipMergeCellByViewRange({
-      rectRange: viewRange,
-      callback: (i, c, cell, rect, overflow) => {
-        // 绘制文字
-        const { fontAttr } = cell;
-        const { align } = fontAttr;
-        const font = new Font({
-          text: Format(cell.format, cell.text),
-          rect: rect.expandSize(grid.lineWidth()),
-          dw: draw,
-          overflow,
-          attr: fontAttr,
-        });
-        font.setOverflowCrop(align === ALIGN.center);
-        cell.setContentWidth(font.draw());
-        // Test
-        // draw.attr({ globalAlpha: 0.3 });
-        // draw.fillRect(rect.x, rect.y, cell.contentWidth, rect.height);
-      },
-      startX: scrollViewXOffset,
-    });
-    // 绘制合并单元格文字
-    cellsHelper.getMergeCellByViewRange({
-      rectRange: viewRange,
-      callback: (rect, cell) => {
-        // console.log('rect >>>', rect);
-        // 绘制文字
-        const { fontAttr } = cell;
-        const font = new Font({
-          text: Format(cell.format, cell.text),
-          rect: rect.expandSize(grid.lineWidth()),
-          dw: draw,
-          overflow: null,
-          attr: fontAttr,
-        });
-        font.setTextWrap(TEXT_WRAP.WORD_WRAP);
-        cell.setContentWidth(font.draw());
-      },
-      startX: scrollViewXOffset,
-    });
-    draw.offset(0, 0);
-    draw.restore();
-  }
-
-  drawGrid(viewRange, offsetX, offsetY) {
-    const { table } = this;
-    const {
-      draw, grid, lineHandle, gridLineHandle,
-    } = table;
-    draw.save();
-    draw.offset(offsetX, offsetY);
-    draw.attr({
-      globalAlpha: 0.3,
-    });
-    const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
-    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
-    const hLine = gridLineHandle.hLine(viewRange);
-    const vLine = gridLineHandle.vLine(viewRange);
-    hLine.forEach((item) => {
-      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    vLine.forEach((item) => {
-      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    const hMergeLine = gridLineHandle.hMergeLine(coincideViewBrink);
-    const vMergeLine = gridLineHandle.vMergeLine(coincideViewBrink);
-    hMergeLine.forEach((item) => {
-      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    vMergeLine.forEach((item) => {
-      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    draw.offset(0, 0);
-    draw.restore();
-  }
-
-  drawBorder(viewRange, offsetX, offsetY) {
-    const { table } = this;
-    const {
-      draw, line, lineHandle, borderLineHandle,
-    } = table;
-    draw.save();
-    draw.offset(offsetX, offsetY);
-    const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
-    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
-    const htLine = borderLineHandle.htLine(viewRange);
-    const hbLine = borderLineHandle.hbLine(viewRange);
-    const vlLine = borderLineHandle.vlLine(viewRange);
-    const vrLine = borderLineHandle.vrLine(viewRange);
-    htLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { top } = borderAttr;
-      const { color, width, type } = top;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
-    });
-    hbLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { bottom } = borderAttr;
-      const { color, width, type } = bottom;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
-    });
-    vlLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { left } = borderAttr;
-      const { color, width, type } = left;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
-    });
-    vrLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { right } = borderAttr;
-      const { color, width, type } = right;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
-    });
-    const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
-    const hbMergeLine = borderLineHandle.hbMergeLine(coincideViewBrink);
-    const vlMergeLine = borderLineHandle.vlMergeLine(coincideViewBrink);
-    const vrMergeLine = borderLineHandle.vrMergeLine(coincideViewBrink);
-    htMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { top } = borderAttr;
-      const { color, width, type } = top;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
-    });
-    hbMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { bottom } = borderAttr;
-      const { color, width, type } = bottom;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
-    });
-    vlMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { left } = borderAttr;
-      const { color, width, type } = left;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
-    });
-    vrMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { right } = borderAttr;
-      const { color, width, type } = right;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
-    });
-    draw.offset(0, 0);
-    draw.restore();
-  }
-
-  drawBackGround(viewRange, offsetX, offsetY) {
-    const { table } = this;
-    const {
-      draw, grid, cellsHelper,
-    } = table;
-    draw.save();
-    draw.offset(offsetX, offsetY);
-    // 绘制单元格背景
-    cellsHelper.getCellByViewRange({
-      rectRange: viewRange,
-      callback: (i, c, cell, rect) => {
-        // 绘制背景
-        rect.expandSize(grid.lineWidth());
-        const box = new Box({ draw, rect });
-        box.drawBackgroundColor(cell.background);
-      },
-    });
-    // 绘制合并单元格背景
-    cellsHelper.getMergeCellByViewRange({
-      rectRange: viewRange,
-      callback: (rect, cell) => {
-        // 绘制背景
-        rect.expandSize(grid.lineWidth());
-        const box = new Box({ draw, rect });
-        box.drawBackgroundColor(cell.background);
-      },
-    });
-    draw.offset(0, 0);
-    draw.restore();
-  }
-
-  render() {
-    const { table } = this;
-    const { draw, grid, settings } = table;
-    const scrollViewXOffset = this.getScrollViewXOffset();
-    const scrollViewRange = this.getScrollViewRange();
-    const contentViewRange = this.getContentViewRange();
-    const offsetX = this.getXOffset();
-    const offsetY = this.getYOffset();
-    const width = scrollViewRange.w;
-    const height = scrollViewRange.h;
-    const rect = new Rect({
-      x: offsetX,
-      y: offsetY,
-      width,
-      height,
-    });
-    const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
-    crop.open();
-    this.drawBackGround(scrollViewRange, offsetX, offsetY);
-    this.drawCells(contentViewRange, scrollViewXOffset, offsetX, offsetY);
-    if (settings.table.showGrid) {
-      this.drawGrid(scrollViewRange, offsetX, offsetY);
-    }
-    this.drawBorder(scrollViewRange, offsetX, offsetY);
-    crop.close();
-  }
-}
-
-/**
  * 绘制图表顶部冻结的部分
  */
 class FixedTop {
@@ -1143,6 +811,7 @@ class FixedTop {
   constructor(table) {
     this.table = table;
   }
+
 
   getXOffset() {
     const { table } = this;
@@ -1158,6 +827,7 @@ class FixedTop {
     return height;
   }
 
+
   getWidth() {
     const { table } = this;
     const viewRange = table.getContentViewRange();
@@ -1170,6 +840,7 @@ class FixedTop {
     const { fxTop } = fixed;
     return table.rows.sectionSumHeight(0, fxTop);
   }
+
 
   getScrollViewRange() {
     const { table } = this;
@@ -1198,6 +869,7 @@ class FixedTop {
     viewRange.h = height;
     return viewRange;
   }
+
 
   drawClear() {
     const { table } = this;
@@ -1419,14 +1091,19 @@ class FixedTop {
     draw.restore();
   }
 
+
   render() {
     const { table } = this;
     const { draw, grid, settings } = table;
-    const scrollViewXOffset = table.getScrollViewXOffset();
+    const { drawScrollViewXOffset } = table;
+
+    const scrollViewXOffset = drawScrollViewXOffset;
     const scrollViewRange = this.getScrollViewRange();
     const contentViewRange = this.getContentViewRange();
+
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
+
     const rect = new Rect({
       x: offsetX,
       y: offsetY,
@@ -1434,6 +1111,7 @@ class FixedTop {
       height: scrollViewRange.h,
     });
     const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
+
     crop.open();
     this.drawBackGround(scrollViewRange, offsetX, offsetY);
     this.drawCells(contentViewRange, scrollViewXOffset, offsetX, offsetY);
@@ -1441,6 +1119,424 @@ class FixedTop {
       this.drawGrid(scrollViewRange, offsetX, offsetY);
     }
     this.drawBorder(scrollViewRange, offsetX, offsetY);
+    crop.close();
+  }
+}
+
+/**
+ * 绘制图表的主体内容
+ */
+class Content {
+
+  constructor(table) {
+    this.table = table;
+  }
+
+
+  getXOffset() {
+    const { table } = this;
+    const { fixed, settings } = table;
+    const { index } = settings;
+    const { fxLeft } = fixed;
+    const { width } = index;
+    const fixedLeftWidth = table.cols.sectionSumWidth(0, fxLeft);
+    return fixedLeftWidth + width;
+  }
+
+  getYOffset() {
+    const { table } = this;
+    const { fixed, settings } = table;
+    const { index } = settings;
+    const { fxTop } = fixed;
+    const { height } = index;
+    const fixedTopHeight = table.rows.sectionSumHeight(0, fxTop);
+    return height + fixedTopHeight;
+  }
+
+
+  getDrawXOffset() {
+    const { table } = this;
+    const reducedOrAddedRealXOffset = table.reducedOrAddedRealXOffset;
+
+    if (reducedOrAddedRealXOffset) {
+      return reducedOrAddedRealXOffset;
+    }
+
+    return this.getXOffset();
+  }
+
+  getDrawYOffset() {
+    const { table } = this;
+    const reducedOrAddedRealYOffset = table.reducedOrAddedRealYOffset;
+
+    if (reducedOrAddedRealYOffset) {
+      return reducedOrAddedRealYOffset;
+    }
+
+    return this.getYOffset();
+  }
+
+
+  getScrollViewRange() {
+    return this.table.getRealScrollViewRange();
+  }
+
+  getContentViewRange() {
+    return this.table.getRealContentViewRange();
+  }
+
+
+  getWidth() {
+    const { table } = this;
+    const { fixed, settings } = table;
+    const { index } = settings;
+    const { fxLeft } = fixed;
+    const { width } = index;
+    const fixedLeftWidth = table.cols.sectionSumWidth(0, fxLeft);
+    return table.visualWidth() - (fixedLeftWidth + width);
+  }
+
+  getHeight() {
+    const { table } = this;
+    const { fixed, settings } = table;
+    const { index } = settings;
+    const { fxTop } = fixed;
+    const { height } = index;
+    const fixedTopHeight = table.rows.sectionSumHeight(0, fxTop);
+    return table.visualHeight() - (height + fixedTopHeight);
+  }
+
+
+  getContentWidth() {
+    const { table } = this;
+    const { cols, fixed } = table;
+    const total = cols.totalWidth();
+    const fixedWidth = cols.sectionSumWidth(0, fixed.fxLeft);
+    return total - fixedWidth;
+  }
+
+  getContentHeight() {
+    const { table } = this;
+    const { rows, fixed } = table;
+    const total = rows.totalHeight();
+    const fixedHeight = rows.sectionSumHeight(0, fixed.fxTop);
+    return total - fixedHeight;
+  }
+
+
+  drawCells(viewRange, scrollViewXOffset, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, cellsHelper, grid,
+    } = table;
+    draw.save();
+    draw.offset(offsetX, offsetY);
+    // 绘制单元格文字
+    cellsHelper.getCellSkipMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (i, c, cell, rect, overflow) => {
+        // 绘制文字
+        const { fontAttr } = cell;
+        const { align } = fontAttr;
+        const font = new Font({
+          text: Format(cell.format, cell.text),
+          rect: rect.expandSize(grid.lineWidth()),
+          dw: draw,
+          overflow,
+          attr: fontAttr,
+        });
+        font.setOverflowCrop(align === ALIGN.center);
+        cell.setContentWidth(font.draw());
+        // Test
+        // draw.attr({ globalAlpha: 0.3 });
+        // draw.fillRect(rect.x, rect.y, cell.contentWidth, rect.height);
+      },
+      startX: scrollViewXOffset,
+    });
+    // 绘制合并单元格文字
+    cellsHelper.getMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (rect, cell) => {
+        // console.log('rect >>>', rect);
+        // 绘制文字
+        const { fontAttr } = cell;
+        const font = new Font({
+          text: Format(cell.format, cell.text),
+          rect: rect.expandSize(grid.lineWidth()),
+          dw: draw,
+          overflow: null,
+          attr: fontAttr,
+        });
+        font.setTextWrap(TEXT_WRAP.WORD_WRAP);
+        cell.setContentWidth(font.draw());
+      },
+      startX: scrollViewXOffset,
+    });
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
+  drawGrid(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, grid, lineHandle, gridLineHandle,
+    } = table;
+    draw.save();
+    draw.offset(offsetX, offsetY);
+    const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
+    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
+    const hLine = gridLineHandle.hLine(viewRange);
+    const vLine = gridLineHandle.vLine(viewRange);
+    hLine.forEach((item) => {
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vLine.forEach((item) => {
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    const hMergeLine = gridLineHandle.hMergeLine(coincideViewBrink);
+    const vMergeLine = gridLineHandle.vMergeLine(coincideViewBrink);
+    hMergeLine.forEach((item) => {
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vMergeLine.forEach((item) => {
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
+  drawBorder(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, line, lineHandle, borderLineHandle,
+    } = table;
+    draw.save();
+    draw.offset(offsetX, offsetY);
+    const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
+    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
+    const htLine = borderLineHandle.htLine(viewRange);
+    const hbLine = borderLineHandle.hbLine(viewRange);
+    const vlLine = borderLineHandle.vlLine(viewRange);
+    const vrLine = borderLineHandle.vrLine(viewRange);
+    htLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { top } = borderAttr;
+      const { color, width, type } = top;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+    });
+    hbLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { bottom } = borderAttr;
+      const { color, width, type } = bottom;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+    });
+    vlLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { left } = borderAttr;
+      const { color, width, type } = left;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+    });
+    vrLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { right } = borderAttr;
+      const { color, width, type } = right;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+    });
+    const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
+    const hbMergeLine = borderLineHandle.hbMergeLine(coincideViewBrink);
+    const vlMergeLine = borderLineHandle.vlMergeLine(coincideViewBrink);
+    const vrMergeLine = borderLineHandle.vrMergeLine(coincideViewBrink);
+    htMergeLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { top } = borderAttr;
+      const { color, width, type } = top;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+    });
+    hbMergeLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { bottom } = borderAttr;
+      const { color, width, type } = bottom;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+    });
+    vlMergeLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { left } = borderAttr;
+      const { color, width, type } = left;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+    });
+    vrMergeLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { right } = borderAttr;
+      const { color, width, type } = right;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+    });
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
+  drawBackGround(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, grid, cellsHelper,
+    } = table;
+    draw.save();
+    draw.offset(offsetX, offsetY);
+    // 绘制单元格背景
+    cellsHelper.getCellByViewRange({
+      rectRange: viewRange,
+      callback: (i, c, cell, rect) => {
+        // 绘制背景
+        rect.expandSize(grid.lineWidth());
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(cell.background);
+      },
+    });
+    // 绘制合并单元格背景
+    cellsHelper.getMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (rect, cell) => {
+        // 绘制背景
+        rect.expandSize(grid.lineWidth());
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(cell.background);
+      },
+    });
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
+
+  renderClear() {
+    const { table } = this;
+    const { fixedTop, fixedLeft, settings } = table;
+    const { draw, canvas, scroll } = table;
+
+    const indexHeight = table.getIndexHeight();
+    const indexWidth = table.getIndexWidth();
+
+    const topHeight = fixedTop.getHeight();
+    const leftWidth = fixedLeft.getWidth();
+
+    const selfWidth = this.getWidth();
+    const selfHeight = this.getHeight();
+
+    const offsetWidth = table.reducedOrAddedXOffset;
+    const offsetHeight = table.reducedOrAddedYOffset;
+
+    if (offsetWidth && offsetHeight) {
+
+      switch (scroll.type) {
+        case SCROLL_TYPE.H_RIGHT:
+        case SCROLL_TYPE.H_LEFT: {
+
+          const drawSX = indexWidth + leftWidth;
+          const drawSY = indexHeight + topHeight;
+
+          const drawX = indexWidth + leftWidth + offsetWidth;
+          const drawY = indexHeight + topHeight;
+
+          draw.drawImage(canvas.el, drawSX, drawSY, selfWidth,
+            selfHeight, drawX, drawY, selfWidth, selfHeight);
+
+          const clearX = indexWidth + leftWidth + selfWidth + offsetWidth;
+          const clearY = indexHeight + topHeight;
+          const clearWidth = offsetWidth;
+          const clearHeight = selfHeight;
+
+          draw.attr({ fillStyle: settings.table.background });
+          draw.fillRect(clearX, clearY, clearWidth, clearHeight);
+
+          break;
+        }
+        case SCROLL_TYPE.V_TOP:
+        case SCROLL_TYPE.V_BOTTOM: {
+
+          const drawSX = indexWidth + leftWidth;
+          const drawSY = indexHeight + topHeight;
+
+          const drawX = indexWidth + leftWidth;
+          const drawY = indexHeight + topHeight + offsetHeight;
+
+          draw.drawImage(canvas.el, drawSX, drawSY, selfWidth,
+            selfHeight, drawX, drawY, selfWidth, selfHeight);
+
+          const clearX = indexWidth + leftWidth;
+          const clearY = indexHeight + topHeight + selfHeight + offsetHeight;
+          const clearWidth = selfWidth;
+          const clearHeight = offsetHeight;
+
+          draw.attr({ fillStyle: settings.table.background });
+          draw.fillRect(clearX, clearY, clearWidth, clearHeight);
+
+          break;
+        }
+        default: break;
+      }
+
+      return;
+    }
+
+    draw.attr({ fillStyle: settings.table.background });
+    draw.fillRect(indexWidth + leftWidth, indexHeight + topHeight, selfWidth, selfHeight);
+  }
+
+  render() {
+    const { table } = this;
+    const { drawScrollViewXOffset } = table;
+    const { draw, grid, settings } = table;
+
+    const scrollViewRange = this.getScrollViewRange();
+    const contentViewRange = this.getContentViewRange();
+
+    const scrollViewXOffset = drawScrollViewXOffset;
+
+    const offsetX = this.getXOffset();
+    const offsetY = this.getYOffset();
+
+    const drawOffsetX = this.getDrawXOffset();
+    const drawOffsetY = this.getDrawYOffset();
+
+    const width = scrollViewRange.w;
+    const height = scrollViewRange.h;
+    const rect = new Rect({
+      x: offsetX,
+      y: offsetY,
+      width,
+      height,
+    });
+
+    const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
+    crop.open();
+    this.drawBackGround(scrollViewRange, drawOffsetX, drawOffsetY);
+    this.drawCells(contentViewRange, scrollViewXOffset, offsetX, offsetY);
+    if (settings.table.showGrid) {
+      this.drawGrid(scrollViewRange, drawOffsetX, drawOffsetY);
+    }
+    this.drawBorder(scrollViewRange, drawOffsetX, drawOffsetY);
     crop.close();
   }
 }
@@ -1454,6 +1550,7 @@ class FixedTopIndex {
     this.table = table;
   }
 
+
   getXOffset() {
     const { table } = this;
     const { content } = table;
@@ -1463,6 +1560,7 @@ class FixedTopIndex {
   getYOffset() {
     return 0;
   }
+
 
   getWidth() {
     const { table } = this;
@@ -1477,6 +1575,7 @@ class FixedTopIndex {
     const { index } = settings;
     return index.height;
   }
+
 
   drawClear() {
     const { table } = this;
@@ -1517,7 +1616,6 @@ class FixedTopIndex {
     // 绘制边框
     let lineWidth = 0;
     draw.attr({
-      globalAlpha: 0.3,
       strokeStyle: settings.table.borderColor,
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
@@ -1529,6 +1627,7 @@ class FixedTopIndex {
     draw.offset(0, 0);
     draw.restore();
   }
+
 
   render() {
     const { table } = this;
@@ -1552,6 +1651,7 @@ class FixedLeftIndex {
     this.table = table;
   }
 
+
   getXOffset() {
     return 0;
   }
@@ -1561,6 +1661,7 @@ class FixedLeftIndex {
     const { content } = table;
     return content.getYOffset();
   }
+
 
   getWidth() {
     const { table } = this;
@@ -1575,6 +1676,7 @@ class FixedLeftIndex {
     const { sri, eri } = viewRange;
     return table.rows.sectionSumHeight(sri, eri);
   }
+
 
   drawClear() {
     const { table } = this;
@@ -1615,7 +1717,6 @@ class FixedLeftIndex {
     // 绘制边框
     let lineHeight = 0;
     draw.attr({
-      globalAlpha: 0.3,
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
@@ -1627,6 +1728,7 @@ class FixedLeftIndex {
     draw.offset(0, 0);
     draw.restore();
   }
+
 
   render() {
     const { table } = this;
@@ -1745,7 +1847,7 @@ const defaultSettings = {
   },
   table: {
     background: '#ffffff',
-    borderColor: '#a7a7a7',
+    borderColor: '#eaeaea',
     showGrid: true,
   },
   data: [],
@@ -1772,13 +1874,26 @@ class Table extends Widget {
 
   constructor(settings) {
     super(`${cssPrefix}-table`);
+
     this.settings = Utils.mergeDeep({}, defaultSettings, settings);
     this.canvas = new Widget(`${cssPrefix}-table-canvas`, 'canvas');
+
     // 绘制区域 & 绘制区域偏移量
     this.drawLastScrollViewRange = null;
     this.drawScrollViewRange = null;
     this.drawContentViewRange = null;
     this.drawScrollViewXOffset = null;
+
+    // 滚动页面时,当前渲染区域和上一次渲染区域比较后得到的两个区域不重合的部分
+    this.drawScrollViewRangeReduced = null;
+    this.drawScrollViewRangeAdded = null;
+
+    // 两个不重合区域的大小
+    this.reducedWidth = null;
+    this.reducedHeight = null;
+    this.addedWidth = null;
+    this.addedHeight = null;
+
     // 表格基本数据信息
     this.cells = new Cells({
       table: this,
@@ -1791,6 +1906,7 @@ class Table extends Widget {
     this.cols = new Cols(this.settings.cols);
     this.merges = new Merges(this.settings.merges);
     this.scroll = new Scroll(this);
+
     // 帮助类
     this.cellsHelper = new CellsHelper({
       cells: this.cells,
@@ -1798,18 +1914,24 @@ class Table extends Widget {
       rows: this.rows,
       cols: this.cols,
     });
+
     // 表格线段处理
     this.lineHandle = new LineHandle(this);
     this.gridLineHandle = new GridLineHandle(this);
     this.borderLineHandle = new BorderLineHandle(this);
+
     // 焦点元素管理
     this.focus = new Focus(this);
+
     // 数据快照
     this.tableDataSnapshot = new TableDataSnapshot(this);
+
     // 鼠标指针
     this.mousePointer = new MousePointer(this);
+
     // 键盘快捷键
     this.keyboard = new Keyboard(this);
+
     // canvas 绘制资源
     this.draw = new Draw(this.canvas.el);
     this.line = new Line(this.draw, {
@@ -1866,6 +1988,7 @@ class Table extends Widget {
     this.grid = new Grid(this.draw, {
       color: this.settings.table.borderColor,
     });
+
     // table表绘制的各个部分
     this.content = new Content(this);
     this.fixedLeft = new FixedLeft(this);
@@ -1876,6 +1999,7 @@ class Table extends Widget {
     this.frozenLeftIndex = new FrozenLeftIndex(this);
     this.frozenTopIndex = new FrozenTopIndex(this);
     this.frozenRect = new FrozenRect(this);
+
     // table基础组件
     this.screen = new Screen(this);
     this.xReSizer = new XReSizer(this);
@@ -1967,6 +2091,13 @@ class Table extends Widget {
     ] = Utils.rangeReduceIf(fxLeft, cols.len, 0, 0, x, i => cols.getWidth(i));
     let x1 = left;
     if (x > 0) x1 += width;
+    let type;
+    if (scroll.x > x1) {
+      type = SCROLL_TYPE.H_LEFT;
+    } else if (scroll.x < x1) {
+      type = SCROLL_TYPE.H_RIGHT;
+    }
+    scroll.type = type;
     scroll.ci = ci;
     scroll.x = x1;
     if (settings.tipsScrollTime) {
@@ -1975,7 +2106,7 @@ class Table extends Widget {
       // eslint-disable-next-line no-console
       console.timeEnd();
     }
-    this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
+    this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL, { type });
   }
 
   scrollY(y) {
@@ -1993,6 +2124,13 @@ class Table extends Widget {
     ] = Utils.rangeReduceIf(fxTop, rows.len, 0, 0, y, i => rows.getHeight(i));
     let y1 = top;
     if (y > 0) y1 += height;
+    let type;
+    if (scroll.y > y1) {
+      type = SCROLL_TYPE.V_TOP;
+    } else if (scroll.y < y1) {
+      type = SCROLL_TYPE.V_BOTTOM;
+    }
+    scroll.type = type;
     scroll.ri = ri;
     scroll.y = y1;
     if (settings.tipsScrollTime) {
@@ -2001,7 +2139,7 @@ class Table extends Widget {
       // eslint-disable-next-line no-console
       console.timeEnd();
     }
-    this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
+    this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL, { type });
   }
 
 
@@ -2028,7 +2166,7 @@ class Table extends Widget {
       fixedLeft, content, fixedTop, fixedTopIndex, fixedLeftIndex,
     } = this;
     fixedLeft.drawClear();
-    content.drawClear();
+    content.renderClear();
     fixedTop.drawClear();
     fixedTopIndex.drawClear();
     fixedLeftIndex.drawClear();
@@ -2140,23 +2278,32 @@ class Table extends Widget {
 
 
   reComputerViewRange() {
-    // 渲染区域重置
     this.drawLastScrollViewRange = this.drawScrollViewRange;
     this.drawScrollViewRange = null;
     this.drawContentViewRange = null;
     this.drawScrollViewXOffset = null;
-    // 当前渲染区域和上一次渲染区域
-    // 多出来的部分和减少的部分
+    this.computerScrollRange();
+    this.computerContentRange();
+    this.computerScrollXOffset();
+
     this.drawScrollViewRangeReduced = null;
     this.drawScrollViewRangeAdded = null;
-    // 重新计算绘制区域
-    this.computerScrollViewRange();
-    this.computerScrollViewXOffset();
-    this.computerContentViewRange();
-    this.computedScrollViewDifference();
+    this.computerScrollReducedOrAddedRange();
+
+    this.reducedOrAddedXOffset = null;
+    this.reducedOrAddedYOffset = null;
+    this.computerReducedOrAddedXOffset();
+
+    this.drawScrollViewRangeRealReduced = null;
+    this.drawScrollViewRangeRealAdded = null;
+    this.computerScrollReducedOrAddedRangeReal();
+
+    this.reducedOrAddedRealXOffset = null;
+    this.reducedOrAddedRealYOffset = null;
+    this.computerReducedOrAddedRealXOffset();
   }
 
-  computerScrollViewRange() {
+  computerScrollRange() {
     const {
       rows, cols, scroll, content,
     } = this;
@@ -2176,13 +2323,7 @@ class Table extends Widget {
     this.drawScrollViewRange = new RectRange(ri, ci, eri, eci, width, height);
   }
 
-  computerScrollViewXOffset() {
-    const { scroll, cols } = this;
-    const { ci } = scroll;
-    this.drawScrollViewXOffset = -cols.sectionSumWidth(0, ci - 1);
-  }
-
-  computerContentViewRange() {
+  computerContentRange() {
     const scrollViewRange = this.getScrollViewRange();
     const { sri, eri } = scrollViewRange;
     const { cols } = this;
@@ -2191,24 +2332,114 @@ class Table extends Widget {
     this.drawContentViewRange = scrollViewRange;
   }
 
-  computedScrollViewDifference() {
+  computerScrollXOffset() {
+    const { scroll, cols } = this;
+    const { ci } = scroll;
+    this.drawScrollViewXOffset = -cols.sectionSumWidth(0, ci - 1);
+  }
+
+  computerScrollReducedOrAddedRange() {
     if (this.drawLastScrollViewRange) {
-      // eslint-disable-next-line max-len
-      const [drawScrollViewRangeReduced] = this.drawLastScrollViewRange.difference(this.drawScrollViewRange);
-      if (drawScrollViewRangeReduced) this.drawScrollViewRangeReduced = drawScrollViewRangeReduced;
-      // eslint-disable-next-line max-len
-      const [drawScrollViewRangeAdded] = this.drawScrollViewRange.difference(this.drawLastScrollViewRange);
-      if (drawScrollViewRangeAdded) this.drawScrollViewRangeAdded = drawScrollViewRangeAdded;
+      const [reduced] = this.drawLastScrollViewRange.difference(this.drawScrollViewRange);
+      if (reduced) this.drawScrollViewRangeReduced = reduced;
+      const [added] = this.drawScrollViewRange.difference(this.drawLastScrollViewRange);
+      if (added) this.drawScrollViewRangeAdded = added;
     }
   }
 
-  getLastScrollViewRange() {
-    const { drawScrollViewDifference } = this;
-    if (drawScrollViewDifference) {
-      return drawScrollViewDifference.clone();
+  computerReducedOrAddedXOffset() {
+    const reduced = this.drawScrollViewRangeReduced;
+    const added = this.drawScrollViewRangeAdded;
+    const scroll = this.scroll;
+
+    if (reduced && added) {
+      const reducedHeight = this.rows.rectRangeSumHeight(reduced);
+      const reducedWidth = this.cols.rectRangeSumWidth(reduced);
+
+      const addedWidth = this.rows.rectRangeSumHeight(added);
+      const addedHeight = this.cols.rectRangeSumWidth(added);
+
+      let offsetWidth = 0;
+      let offsetHeight = 0;
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_TOP:
+          offsetHeight = addedHeight;
+          break;
+        case SCROLL_TYPE.V_BOTTOM:
+          offsetHeight = -reducedHeight;
+          break;
+        case SCROLL_TYPE.H_LEFT:
+          offsetWidth = addedWidth;
+          break;
+        case SCROLL_TYPE.H_RIGHT:
+          offsetWidth = -reducedWidth;
+          break;
+        default: break;
+      }
+
+      this.reducedOrAddedXOffset = offsetWidth;
+      this.reducedOrAddedYOffset = offsetHeight;
     }
-    return null;
   }
+
+  computerScrollReducedOrAddedRangeReal() {
+    const reduced = this.drawScrollViewRangeReduced;
+    const added = this.drawScrollViewRangeAdded;
+    const scroll = this.scroll;
+
+    if (reduced && added) {
+      this.drawScrollViewRangeRealReduced = reduced.clone();
+      this.drawScrollViewRangeRealAdded = added.clone();
+
+      switch (scroll.type) {
+        case SCROLL_TYPE.H_RIGHT: {
+          this.drawScrollViewRangeRealAdded.sci -= 1;
+          break;
+        }
+        case SCROLL_TYPE.V_BOTTOM: {
+          this.drawScrollViewRangeRealAdded.sri -= 1;
+          break;
+        }
+        default: break;
+      }
+    }
+  }
+
+  computerReducedOrAddedRealXOffset() {
+    const reduced = this.drawScrollViewRangeRealReduced;
+    const added = this.drawScrollViewRangeRealAdded;
+    const scroll = this.scroll;
+
+    if (reduced && added) {
+      const reducedHeight = this.rows.rectRangeSumHeight(reduced);
+      const reducedWidth = this.cols.rectRangeSumWidth(reduced);
+
+      const addedWidth = this.rows.rectRangeSumHeight(added);
+      const addedHeight = this.cols.rectRangeSumWidth(added);
+
+      let offsetWidth = 0;
+      let offsetHeight = 0;
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_TOP:
+          offsetHeight = addedHeight;
+          break;
+        case SCROLL_TYPE.V_BOTTOM:
+          offsetHeight = -reducedHeight;
+          break;
+        case SCROLL_TYPE.H_LEFT:
+          offsetWidth = addedWidth;
+          break;
+        case SCROLL_TYPE.H_RIGHT:
+          offsetWidth = -reducedWidth;
+          break;
+        default: break;
+      }
+
+      this.reducedOrAddedRealXOffset = offsetWidth;
+      this.reducedOrAddedRealYOffset = offsetHeight;
+    }
+  }
+
 
   getScrollViewRange() {
     const { drawScrollViewRange } = this;
@@ -2218,34 +2449,10 @@ class Table extends Widget {
     return null;
   }
 
-  getScrollViewXOffset() {
-    const { drawScrollViewXOffset } = this;
-    if (drawScrollViewXOffset) {
-      return drawScrollViewXOffset;
-    }
-    return 0;
-  }
-
   getContentViewRange() {
     const { drawContentViewRange } = this;
     if (drawContentViewRange) {
       return drawContentViewRange.clone();
-    }
-    return null;
-  }
-
-  getScrollViewRangeAdded() {
-    const { drawScrollViewRangeAdded } = this;
-    if (drawScrollViewRangeAdded) {
-      return drawScrollViewRangeAdded.clone();
-    }
-    return null;
-  }
-
-  getScrollViewRangeReduced() {
-    const { drawScrollViewRangeReduced } = this;
-    if (drawScrollViewRangeReduced) {
-      return drawScrollViewRangeReduced.clone();
     }
     return null;
   }
