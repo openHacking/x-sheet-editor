@@ -142,7 +142,7 @@ class DynamicViewDifference {
     this.computerDwContentRange();
     this.computerCaptureXY();
     this.computerDwOffsetXY();
-    if (this.addRange || this.subtractRange) {
+    if (this.addRange && this.subtractRange) {
       this.union = true;
     }
   }
@@ -319,8 +319,11 @@ class DynamicView {
   getScrollView() {
     const { scrollRange } = this;
     const { difference } = this;
-    const { dwAddRange } = difference;
-    if (dwAddRange) return dwAddRange.clone();
+    const { union } = difference;
+    if (union) {
+      const { dwAddRange } = difference;
+      return dwAddRange.clone();
+    }
     return scrollRange.clone();
   }
 
@@ -328,12 +331,15 @@ class DynamicView {
     const { contentRange } = this;
     const { table } = this;
     const { scroll } = table;
+    const { difference } = this;
+    const { union } = difference;
     switch (scroll.type) {
       case SCROLL_TYPE.V_TOP:
       case SCROLL_TYPE.V_BOTTOM: {
-        const { difference } = this;
-        const { dwContentRange } = difference;
-        if (dwContentRange) return dwContentRange.clone();
+        if (union) {
+          const { dwContentRange } = difference;
+          return dwContentRange.clone();
+        }
         break;
       }
       default: break;
