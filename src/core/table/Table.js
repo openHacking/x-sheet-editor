@@ -51,12 +51,12 @@ class DynamicViewDifference {
     this.captureX = 0;
     this.captureY = 0;
     // 滚动区域渲染
-    this.dwSubtractRange = null;
     this.dwAddRange = null;
     this.dwContentRange = null;
     // 渲染区域坐标
     this.dwXOffset = 0;
     this.dwYOffset = 0;
+    this.union = false;
   }
 
   computerSubtractRange() {
@@ -132,24 +132,18 @@ class DynamicViewDifference {
     this.addRange = null;
     this.captureX = 0;
     this.captureY = 0;
-    this.dwSubtractRange = null;
     this.dwAddRange = null;
     this.dwContentRange = null;
     this.dwXOffset = 0;
     this.dwYOffset = 0;
     this.computerSubtractRange();
     this.computerAddRange();
-    this.computerDwSubtractRange();
     this.computerDwAddRange();
     this.computerDwContentRange();
     this.computerCaptureXY();
     this.computerDwOffsetXY();
-  }
-
-  computerDwSubtractRange() {
-    const { subtractRange } = this;
-    if (subtractRange) {
-      this.dwSubtractRange = subtractRange.clone();
+    if (this.addRange || this.subtractRange) {
+      this.union = true;
     }
   }
 
@@ -305,6 +299,7 @@ class DynamicView {
     this.computerContentRange();
     this.computerScrollXOffset();
     this.difference.computerRange();
+
   }
 
   getOriginScrollView() {
@@ -349,9 +344,6 @@ class DynamicView {
 
 // ================================= 冻结内容 =================================
 
-/**
- * 绘制图表左上固定的部分
- */
 class FrozenLeftTop {
   constructor(table) {
     this.table = table;
@@ -617,9 +609,6 @@ class FrozenLeftTop {
   }
 }
 
-/**
- * 绘制图表左边固定的索引栏
- */
 class FrozenLeftIndex {
   constructor(table) {
     this.table = table;
@@ -697,9 +686,6 @@ class FrozenLeftIndex {
   }
 }
 
-/**
- * 绘制图表顶部的索引栏
- */
 class FrozenTopIndex {
   constructor(table) {
     this.table = table;
@@ -777,9 +763,6 @@ class FrozenTopIndex {
   }
 }
 
-/**
- * 绘制图片固定区域
- */
 class FrozenRect {
   constructor(table) {
     this.table = table;
@@ -1112,9 +1095,6 @@ class FixedLeftIndexOffset {
 
 // ================================= 动态内容 =================================
 
-/**
- * 绘制图表顶部冻结的部分
- */
 class FixedTop {
 
   constructor(table) {
@@ -1423,9 +1403,6 @@ class FixedTop {
   }
 }
 
-/**
- * 绘制图表左边冻结的部分
- */
 class FixedLeft {
 
   constructor(table) {
@@ -1715,9 +1692,6 @@ class FixedLeft {
   }
 }
 
-/**
- * 绘制图表的主体内容
- */
 class Content {
 
   constructor(table) {
@@ -1994,6 +1968,7 @@ class Content {
     const { table } = this;
     const { draw, settings } = table;
     const { dynamicView } = table;
+    const { difference } = dynamicView;
     const offset = table.contentOffset;
     const width = offset.getFixedWidth();
     const height = offset.getFixedHeight();
@@ -2010,21 +1985,26 @@ class Content {
     switch (scroll.type) {
       case SCROLL_TYPE.V_BOTTOM:
       case SCROLL_TYPE.V_TOP: {
-        const [sx, ex, sy] = [x, x, y];
-        draw.drawImage(el, sx, sy, width, height, ex, cy, width, height);
-        draw.attr({ fillStyle: settings.table.background });
-        // draw.attr({ fillStyle: "#000" });
-        draw.fillRect(dx, dy, width, range.h);
-        break;
+        if (difference.union) {
+          const [sx, ex, sy] = [x, x, y];
+          draw.drawImage(el, sx, sy, width, height, ex, cy, width, height);
+          draw.attr({ fillStyle: settings.table.background });
+          draw.fillRect(dx, dy, width, range.h);
+          break;
+        }
       }
+      // eslint-disable-next-line no-fallthrough
       case SCROLL_TYPE.H_RIGHT:
       case SCROLL_TYPE.H_LEFT: {
-        const [sy, ey, sx] = [y, y, x];
-        draw.drawImage(el, sx, sy, width, height, cx, ey, width, height);
-        draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx, dy, range.w, height);
-        break;
+        if (difference.union) {
+          const [sy, ey, sx] = [y, y, x];
+          draw.drawImage(el, sx, sy, width, height, cx, ey, width, height);
+          draw.attr({ fillStyle: settings.table.background });
+          draw.fillRect(dx, dy, range.w, height);
+          break;
+        }
       }
+      // eslint-disable-next-line no-fallthrough
       default: {
         draw.attr({
           fillStyle: settings.table.background,
@@ -2067,9 +2047,6 @@ class Content {
   }
 }
 
-/**
- * 绘制图表顶部固定的索引栏
- */
 class FixedTopIndex {
 
   constructor(table) {
@@ -2175,9 +2152,6 @@ class FixedTopIndex {
   }
 }
 
-/**
- * 绘制图表左边固定的索引栏
- */
 class FixedLeftIndex {
 
   constructor(table) {
@@ -2247,6 +2221,7 @@ class FixedLeftIndex {
     const { table } = this;
     const { draw, settings } = table;
     const { dynamicView } = table;
+    const { difference } = dynamicView;
     const offset = table.fixedLeftIndexOffset;
     const width = offset.getFixedWidth();
     const height = offset.getFixedHeight();
@@ -2262,12 +2237,15 @@ class FixedLeftIndex {
     switch (scroll.type) {
       case SCROLL_TYPE.V_BOTTOM:
       case SCROLL_TYPE.V_TOP: {
-        const [sx, ex, sy] = [x, x, y];
-        draw.drawImage(el, sx, sy, width, height, ex, cy, width, height);
-        draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx, dy, width, range.h);
-        break;
+        if (difference.union) {
+          const [sx, ex, sy] = [x, x, y];
+          draw.drawImage(el, sx, sy, width, height, ex, cy, width, height);
+          draw.attr({ fillStyle: settings.table.background });
+          draw.fillRect(dx, dy, width, range.h);
+          break;
+        }
       }
+      // eslint-disable-next-line no-fallthrough
       default: {
         draw.attr({
           fillStyle: settings.table.background,
@@ -2307,9 +2285,6 @@ class FixedLeftIndex {
 
 // ================================= 快捷键 ==================================
 
-/**
- * tab 快捷键
- */
 class KeyBoardTab {
 
   constructor(table) {
@@ -2376,28 +2351,6 @@ class KeyBoardTab {
 
 // ============================== X-Sheet Table ==============================
 
-/**
- * 默认设置
- * @type {{tipsRenderTime: boolean,
- * data: [],
- * tipsScrollTime: boolean,
- * index: {
- * bgColor: string,
- * color: string,
- * width: number,
- * height: number},
- * fixed: {
- * fxLeft: number,
- * fxTop: number,
- * }
- * rows: {len: number,
- * height: number},
- * cols: {len: number,
- * width: number},
- * table: {borderColor: string,
- * background: string,
- * showGrid: boolean}, merges: []}}
- */
 const defaultSettings = {
   tipsRenderTime: false,
   tipsScrollTime: false,
@@ -2414,7 +2367,7 @@ const defaultSettings = {
   },
   data: [],
   rows: {
-    len: 10000,
+    len: 1000,
     height: 30,
   },
   cols: {
@@ -2428,10 +2381,6 @@ const defaultSettings = {
   },
 };
 
-/**
- * Table
- * @author jerry
- */
 class Table extends Widget {
 
   constructor(settings) {

@@ -10,7 +10,7 @@ function floor(n) {
 }
 
 function npx(px) {
-  return floor(px * dpr());
+  return px * dpr();
 }
 
 function angleToRadian(angle) {
@@ -181,5 +181,9 @@ class Draw {
 }
 
 export {
-  Draw, npx, dpr, floor, angleToRadian,
+  Draw,
+  npx,
+  dpr,
+  floor,
+  angleToRadian,
 };
