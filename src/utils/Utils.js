@@ -116,6 +116,14 @@ class Utils {
     return e === undefined || e === null;
   }
 
+  static isNotUnDef(e) {
+    return !this.isUnDef(e);
+  }
+
+  static isNotZero(e) {
+    return e !== 0;
+  }
+
   static isNumber(e) {
     return /^(-?\d+.\d+)$|^(-?\d+)$/.test(e);
   }

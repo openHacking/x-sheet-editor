@@ -1,9 +1,9 @@
-import { Constant, cssPrefix } from '../../constant/Constant';
+import { cssPrefix, Constant } from '../../constant/Constant';
 import Format from './Format';
 import { Utils } from '../../utils/Utils';
 import { Rows } from './Rows';
 import { Cols } from './Cols';
-import { Scroll, SCROLL_TYPE } from './Scroll';
+import { Scroll } from './Scroll';
 import { Fixed } from './Fixed';
 import { Widget } from '../../lib/Widget';
 import { RectRange } from './RectRange';
@@ -33,15 +33,17 @@ import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
 import { MousePointer } from './MousePointer';
 import { Keyboard } from './Keyboard';
 import { Focus } from './Focus';
-import { SCREEN_SELECT_EVENT, ScreenSelector } from './screenwiget/selector/ScreenSelector';
+import {
+  SCREEN_SELECT_EVENT,
+  ScreenSelector,
+} from './screenwiget/selector/ScreenSelector';
 
-// ========================= 冻结区域绘制 =======================
+// ================================= 冻结内容 =================================
 
 /**
  * 绘制图表左上固定的部分
  */
 class FrozenLeftTop {
-
   constructor(table) {
     this.table = table;
   }
@@ -90,9 +92,6 @@ class FrozenLeftTop {
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    draw.attr({
-      globalAlpha: 0.3,
-    });
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
     const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
     const hLine = gridLineHandle.hLine(viewRange);
@@ -313,7 +312,6 @@ class FrozenLeftTop {
  * 绘制图表左边固定的索引栏
  */
 class FrozenLeftIndex {
-
   constructor(table) {
     this.table = table;
   }
@@ -367,16 +365,12 @@ class FrozenLeftIndex {
       draw.fillText(i + 1, width / 2, y + (ch / 2));
     });
     // 绘制边框
-    let lineHeight = 0;
     draw.attr({
-      globalAlpha: 0.3,
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
-      lineHeight += ch;
       grid.horizontalLine(0, y, width, y);
     });
-    grid.verticalLine(width, 0, width, lineHeight);
     draw.offset(0, 0);
     draw.restore();
   }
@@ -398,7 +392,6 @@ class FrozenLeftIndex {
  * 绘制图表顶部的索引栏
  */
 class FrozenTopIndex {
-
   constructor(table) {
     this.table = table;
   }
@@ -452,16 +445,12 @@ class FrozenTopIndex {
       draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
     });
     // 绘制边框
-    let lineWidth = 0;
     draw.attr({
-      globalAlpha: 0.3,
       strokeStyle: settings.table.borderColor,
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
-      lineWidth += cw;
       grid.verticalLine(x, 0, x, height);
     });
-    grid.horizontalLine(0, height, lineWidth, height);
     draw.offset(0, 0);
     draw.restore();
   }
@@ -483,7 +472,6 @@ class FrozenTopIndex {
  * 绘制图片固定区域
  */
 class FrozenRect {
-
   constructor(table) {
     this.table = table;
   }
@@ -510,13 +498,12 @@ class FrozenRect {
   }
 }
 
-// ========================= 动态区域绘制 =======================
+// ================================= 动态内容 =================================
 
 /**
  * 绘制图表左边冻结的部分
  */
 class FixedLeft {
-
   constructor(table) {
     this.table = table;
   }
@@ -563,20 +550,6 @@ class FixedLeft {
     return viewRange;
   }
 
-  drawClear() {
-    const { table } = this;
-    const { settings, draw, fixedTop } = table;
-    const topHeight = fixedTop.getHeight();
-    const indexHeight = table.getIndexHeight();
-    const indexWidth = table.getIndexWidth();
-    const selfWidth = this.getWidth();
-    const selfHeight = this.getHeight();
-    draw.attr({
-      fillStyle: settings.table.background,
-    });
-    draw.fillRect(indexWidth, indexHeight + topHeight, selfWidth, selfHeight);
-  }
-
   drawGrid(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
@@ -584,9 +557,6 @@ class FixedLeft {
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    draw.attr({
-      globalAlpha: 0.3,
-    });
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
     const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
     const hLine = gridLineHandle.hLine(viewRange);
@@ -807,11 +777,9 @@ class FixedLeft {
  * 绘制图表顶部冻结的部分
  */
 class FixedTop {
-
   constructor(table) {
     this.table = table;
   }
-
 
   getXOffset() {
     const { table } = this;
@@ -827,7 +795,6 @@ class FixedTop {
     return height;
   }
 
-
   getWidth() {
     const { table } = this;
     const viewRange = table.getContentViewRange();
@@ -840,7 +807,6 @@ class FixedTop {
     const { fxTop } = fixed;
     return table.rows.sectionSumHeight(0, fxTop);
   }
-
 
   getScrollViewRange() {
     const { table } = this;
@@ -868,21 +834,6 @@ class FixedTop {
     viewRange.w = width;
     viewRange.h = height;
     return viewRange;
-  }
-
-
-  drawClear() {
-    const { table } = this;
-    const { settings, draw, fixedLeft } = table;
-    const leftWidth = fixedLeft.getWidth();
-    const indexHeight = table.getIndexHeight();
-    const indexWidth = table.getIndexWidth();
-    const selfWidth = this.getWidth();
-    const selfHeight = this.getHeight();
-    draw.attr({
-      fillStyle: settings.table.background,
-    });
-    draw.fillRect(indexWidth + leftWidth, indexHeight, selfWidth, selfHeight);
   }
 
   drawCells(viewRange, scrollViewXOffset, offsetX, offsetY) {
@@ -942,9 +893,6 @@ class FixedTop {
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    draw.attr({
-      globalAlpha: 0.3,
-    });
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
     const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
     const hLine = gridLineHandle.hLine(viewRange);
@@ -1091,19 +1039,14 @@ class FixedTop {
     draw.restore();
   }
 
-
   render() {
     const { table } = this;
     const { draw, grid, settings } = table;
-    const { drawScrollViewXOffset } = table;
-
-    const scrollViewXOffset = drawScrollViewXOffset;
+    const scrollViewXOffset = table.getScrollViewXOffset();
     const scrollViewRange = this.getScrollViewRange();
     const contentViewRange = this.getContentViewRange();
-
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
-
     const rect = new Rect({
       x: offsetX,
       y: offsetY,
@@ -1111,7 +1054,6 @@ class FixedTop {
       height: scrollViewRange.h,
     });
     const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
-
     crop.open();
     this.drawBackGround(scrollViewRange, offsetX, offsetY);
     this.drawCells(contentViewRange, scrollViewXOffset, offsetX, offsetY);
@@ -1127,11 +1069,9 @@ class FixedTop {
  * 绘制图表的主体内容
  */
 class Content {
-
   constructor(table) {
     this.table = table;
   }
-
 
   getXOffset() {
     const { table } = this;
@@ -1153,39 +1093,6 @@ class Content {
     return height + fixedTopHeight;
   }
 
-
-  getDrawXOffset() {
-    const { table } = this;
-    const reducedOrAddedRealXOffset = table.reducedOrAddedRealXOffset;
-
-    if (reducedOrAddedRealXOffset) {
-      return reducedOrAddedRealXOffset;
-    }
-
-    return this.getXOffset();
-  }
-
-  getDrawYOffset() {
-    const { table } = this;
-    const reducedOrAddedRealYOffset = table.reducedOrAddedRealYOffset;
-
-    if (reducedOrAddedRealYOffset) {
-      return reducedOrAddedRealYOffset;
-    }
-
-    return this.getYOffset();
-  }
-
-
-  getScrollViewRange() {
-    return this.table.getRealScrollViewRange();
-  }
-
-  getContentViewRange() {
-    return this.table.getRealContentViewRange();
-  }
-
-
   getWidth() {
     const { table } = this;
     const { fixed, settings } = table;
@@ -1206,6 +1113,10 @@ class Content {
     return table.visualHeight() - (height + fixedTopHeight);
   }
 
+  getScrollViewRange() {
+    const { table } = this;
+    return table.getScrollViewRange();
+  }
 
   getContentWidth() {
     const { table } = this;
@@ -1222,7 +1133,6 @@ class Content {
     const fixedHeight = rows.sectionSumHeight(0, fixed.fxTop);
     return total - fixedHeight;
   }
-
 
   drawCells(viewRange, scrollViewXOffset, offsetX, offsetY) {
     const { table } = this;
@@ -1429,97 +1339,14 @@ class Content {
     draw.restore();
   }
 
-
-  renderClear() {
-    const { table } = this;
-    const { fixedTop, fixedLeft, settings } = table;
-    const { draw, canvas, scroll } = table;
-
-    const indexHeight = table.getIndexHeight();
-    const indexWidth = table.getIndexWidth();
-
-    const topHeight = fixedTop.getHeight();
-    const leftWidth = fixedLeft.getWidth();
-
-    const selfWidth = this.getWidth();
-    const selfHeight = this.getHeight();
-
-    const offsetWidth = table.reducedOrAddedXOffset;
-    const offsetHeight = table.reducedOrAddedYOffset;
-
-    if (offsetWidth && offsetHeight) {
-
-      switch (scroll.type) {
-        case SCROLL_TYPE.H_RIGHT:
-        case SCROLL_TYPE.H_LEFT: {
-
-          const drawSX = indexWidth + leftWidth;
-          const drawSY = indexHeight + topHeight;
-
-          const drawX = indexWidth + leftWidth + offsetWidth;
-          const drawY = indexHeight + topHeight;
-
-          draw.drawImage(canvas.el, drawSX, drawSY, selfWidth,
-            selfHeight, drawX, drawY, selfWidth, selfHeight);
-
-          const clearX = indexWidth + leftWidth + selfWidth + offsetWidth;
-          const clearY = indexHeight + topHeight;
-          const clearWidth = offsetWidth;
-          const clearHeight = selfHeight;
-
-          draw.attr({ fillStyle: settings.table.background });
-          draw.fillRect(clearX, clearY, clearWidth, clearHeight);
-
-          break;
-        }
-        case SCROLL_TYPE.V_TOP:
-        case SCROLL_TYPE.V_BOTTOM: {
-
-          const drawSX = indexWidth + leftWidth;
-          const drawSY = indexHeight + topHeight;
-
-          const drawX = indexWidth + leftWidth;
-          const drawY = indexHeight + topHeight + offsetHeight;
-
-          draw.drawImage(canvas.el, drawSX, drawSY, selfWidth,
-            selfHeight, drawX, drawY, selfWidth, selfHeight);
-
-          const clearX = indexWidth + leftWidth;
-          const clearY = indexHeight + topHeight + selfHeight + offsetHeight;
-          const clearWidth = selfWidth;
-          const clearHeight = offsetHeight;
-
-          draw.attr({ fillStyle: settings.table.background });
-          draw.fillRect(clearX, clearY, clearWidth, clearHeight);
-
-          break;
-        }
-        default: break;
-      }
-
-      return;
-    }
-
-    draw.attr({ fillStyle: settings.table.background });
-    draw.fillRect(indexWidth + leftWidth, indexHeight + topHeight, selfWidth, selfHeight);
-  }
-
   render() {
     const { table } = this;
-    const { drawScrollViewXOffset } = table;
     const { draw, grid, settings } = table;
-
+    const scrollViewXOffset = table.getScrollViewXOffset();
     const scrollViewRange = this.getScrollViewRange();
-    const contentViewRange = this.getContentViewRange();
-
-    const scrollViewXOffset = drawScrollViewXOffset;
-
+    const contentViewRange = table.getContentViewRange();
     const offsetX = this.getXOffset();
     const offsetY = this.getYOffset();
-
-    const drawOffsetX = this.getDrawXOffset();
-    const drawOffsetY = this.getDrawYOffset();
-
     const width = scrollViewRange.w;
     const height = scrollViewRange.h;
     const rect = new Rect({
@@ -1528,15 +1355,14 @@ class Content {
       width,
       height,
     });
-
     const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
     crop.open();
-    this.drawBackGround(scrollViewRange, drawOffsetX, drawOffsetY);
+    this.drawBackGround(scrollViewRange, offsetX, offsetY);
     this.drawCells(contentViewRange, scrollViewXOffset, offsetX, offsetY);
     if (settings.table.showGrid) {
-      this.drawGrid(scrollViewRange, drawOffsetX, drawOffsetY);
+      this.drawGrid(scrollViewRange, offsetX, offsetY);
     }
-    this.drawBorder(scrollViewRange, drawOffsetX, drawOffsetY);
+    this.drawBorder(scrollViewRange, offsetX, offsetY);
     crop.close();
   }
 }
@@ -1545,11 +1371,9 @@ class Content {
  * 绘制图表顶部固定的索引栏
  */
 class FixedTopIndex {
-
   constructor(table) {
     this.table = table;
   }
-
 
   getXOffset() {
     const { table } = this;
@@ -1560,7 +1384,6 @@ class FixedTopIndex {
   getYOffset() {
     return 0;
   }
-
 
   getWidth() {
     const { table } = this;
@@ -1574,20 +1397,6 @@ class FixedTopIndex {
     const { settings } = table;
     const { index } = settings;
     return index.height;
-  }
-
-
-  drawClear() {
-    const { table } = this;
-    const { settings, draw, fixedLeft } = table;
-    const leftWidth = fixedLeft.getWidth();
-    const indexWidth = table.getIndexWidth();
-    const width = table.visualWidth();
-    const selfHeight = this.getHeight();
-    draw.attr({
-      fillStyle: settings.table.background,
-    });
-    draw.fillRect(indexWidth + leftWidth, 0, width - (indexWidth + leftWidth), selfHeight);
   }
 
   draw(viewRange, offsetX, offsetY, width, height) {
@@ -1614,20 +1423,16 @@ class FixedTopIndex {
       draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
     });
     // 绘制边框
-    let lineWidth = 0;
     draw.attr({
       strokeStyle: settings.table.borderColor,
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
-      lineWidth += cw;
       grid.verticalLine(x, 0, x, height);
       if (i === eci) grid.verticalLine(x + cw, 0, x + cw, height);
     });
-    grid.horizontalLine(0, height, lineWidth, height);
     draw.offset(0, 0);
     draw.restore();
   }
-
 
   render() {
     const { table } = this;
@@ -1646,11 +1451,9 @@ class FixedTopIndex {
  * 绘制图表左边固定的索引栏
  */
 class FixedLeftIndex {
-
   constructor(table) {
     this.table = table;
   }
-
 
   getXOffset() {
     return 0;
@@ -1661,7 +1464,6 @@ class FixedLeftIndex {
     const { content } = table;
     return content.getYOffset();
   }
-
 
   getWidth() {
     const { table } = this;
@@ -1675,20 +1477,6 @@ class FixedLeftIndex {
     const viewRange = table.getScrollViewRange();
     const { sri, eri } = viewRange;
     return table.rows.sectionSumHeight(sri, eri);
-  }
-
-
-  drawClear() {
-    const { table } = this;
-    const { settings, draw, fixedTop } = table;
-    const topHeight = fixedTop.getHeight();
-    const indexHeight = table.getIndexHeight();
-    const selfWidth = this.getWidth();
-    const height = table.visualHeight();
-    draw.attr({
-      fillStyle: settings.table.background,
-    });
-    draw.fillRect(0, indexHeight + topHeight, selfWidth, height - (indexHeight + topHeight));
   }
 
   draw(viewRange, offsetX, offsetY, width, height) {
@@ -1715,20 +1503,16 @@ class FixedLeftIndex {
       draw.fillText(i + 1, width / 2, y + (ch / 2));
     });
     // 绘制边框
-    let lineHeight = 0;
     draw.attr({
       strokeStyle: settings.table.borderColor,
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
-      lineHeight += ch;
       grid.horizontalLine(0, y, width, y);
       if (i === eri) grid.horizontalLine(0, y + ch, width, y + ch);
     });
-    grid.verticalLine(width, 0, width, lineHeight);
     draw.offset(0, 0);
     draw.restore();
   }
-
 
   render() {
     const { table } = this;
@@ -1743,7 +1527,7 @@ class FixedLeftIndex {
   }
 }
 
-// =========================== 快捷键 ==========================
+// ================================= 快捷键 ==================================
 
 /**
  * tab 快捷键
@@ -1812,7 +1596,7 @@ class KeyBoardTab {
   }
 }
 
-// ======================== X-Sheet Table =======================
+// ============================== X-Sheet Table ==============================
 
 /**
  * 默认设置
@@ -1847,12 +1631,12 @@ const defaultSettings = {
   },
   table: {
     background: '#ffffff',
-    borderColor: '#eaeaea',
+    borderColor: '#e5e5e5',
     showGrid: true,
   },
   data: [],
   rows: {
-    len: 1000,
+    len: 10000,
     height: 30,
   },
   cols: {
@@ -1874,26 +1658,12 @@ class Table extends Widget {
 
   constructor(settings) {
     super(`${cssPrefix}-table`);
-
     this.settings = Utils.mergeDeep({}, defaultSettings, settings);
     this.canvas = new Widget(`${cssPrefix}-table-canvas`, 'canvas');
-
-    // 绘制区域 & 绘制区域偏移量
-    this.drawLastScrollViewRange = null;
-    this.drawScrollViewRange = null;
-    this.drawContentViewRange = null;
-    this.drawScrollViewXOffset = null;
-
-    // 滚动页面时,当前渲染区域和上一次渲染区域比较后得到的两个区域不重合的部分
-    this.drawScrollViewRangeReduced = null;
-    this.drawScrollViewRangeAdded = null;
-
-    // 两个不重合区域的大小
-    this.reducedWidth = null;
-    this.reducedHeight = null;
-    this.addedWidth = null;
-    this.addedHeight = null;
-
+    // 滚动区域 内容区域 滚动区域和内容区域的偏移量
+    this.scrollViewRange = null;
+    this.contentViewRange = null;
+    this.scrollViewXOffset = -1;
     // 表格基本数据信息
     this.cells = new Cells({
       table: this,
@@ -1906,7 +1676,6 @@ class Table extends Widget {
     this.cols = new Cols(this.settings.cols);
     this.merges = new Merges(this.settings.merges);
     this.scroll = new Scroll(this);
-
     // 帮助类
     this.cellsHelper = new CellsHelper({
       cells: this.cells,
@@ -1914,24 +1683,18 @@ class Table extends Widget {
       rows: this.rows,
       cols: this.cols,
     });
-
     // 表格线段处理
     this.lineHandle = new LineHandle(this);
     this.gridLineHandle = new GridLineHandle(this);
     this.borderLineHandle = new BorderLineHandle(this);
-
     // 焦点元素管理
     this.focus = new Focus(this);
-
     // 数据快照
     this.tableDataSnapshot = new TableDataSnapshot(this);
-
     // 鼠标指针
     this.mousePointer = new MousePointer(this);
-
     // 键盘快捷键
     this.keyboard = new Keyboard(this);
-
     // canvas 绘制资源
     this.draw = new Draw(this.canvas.el);
     this.line = new Line(this.draw, {
@@ -1988,7 +1751,6 @@ class Table extends Widget {
     this.grid = new Grid(this.draw, {
       color: this.settings.table.borderColor,
     });
-
     // table表绘制的各个部分
     this.content = new Content(this);
     this.fixedLeft = new FixedLeft(this);
@@ -1999,7 +1761,6 @@ class Table extends Widget {
     this.frozenLeftIndex = new FrozenLeftIndex(this);
     this.frozenTopIndex = new FrozenTopIndex(this);
     this.frozenRect = new FrozenRect(this);
-
     // table基础组件
     this.screen = new Screen(this);
     this.xReSizer = new XReSizer(this);
@@ -2046,15 +1807,15 @@ class Table extends Widget {
   bind() {
     const { mousePointer } = this;
     EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
-      this.reComputerViewRange();
+      this.clearViewRange();
       this.render();
     });
     EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      this.reComputerViewRange();
+      this.clearViewRange();
       this.render();
     });
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      this.reComputerViewRange();
+      this.clearViewRange();
       this.render();
     });
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
@@ -2075,104 +1836,7 @@ class Table extends Widget {
     });
   }
 
-
-  scrollX(x) {
-    const {
-      cols, fixed, settings, scroll,
-    } = this;
-    if (settings.tipsScrollTime) {
-      // eslint-disable-next-line no-console
-      console.time();
-    }
-    let { fxLeft } = fixed;
-    fxLeft += 1;
-    const [
-      ci, left, width,
-    ] = Utils.rangeReduceIf(fxLeft, cols.len, 0, 0, x, i => cols.getWidth(i));
-    let x1 = left;
-    if (x > 0) x1 += width;
-    let type;
-    if (scroll.x > x1) {
-      type = SCROLL_TYPE.H_LEFT;
-    } else if (scroll.x < x1) {
-      type = SCROLL_TYPE.H_RIGHT;
-    }
-    scroll.type = type;
-    scroll.ci = ci;
-    scroll.x = x1;
-    if (settings.tipsScrollTime) {
-      // eslint-disable-next-line no-console
-      console.log('滚动条计算耗时:');
-      // eslint-disable-next-line no-console
-      console.timeEnd();
-    }
-    this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL, { type });
-  }
-
-  scrollY(y) {
-    const {
-      rows, fixed, settings, scroll,
-    } = this;
-    if (settings.tipsScrollTime) {
-      // eslint-disable-next-line no-console
-      console.time();
-    }
-    let { fxTop } = fixed;
-    fxTop += 1;
-    const [
-      ri, top, height,
-    ] = Utils.rangeReduceIf(fxTop, rows.len, 0, 0, y, i => rows.getHeight(i));
-    let y1 = top;
-    if (y > 0) y1 += height;
-    let type;
-    if (scroll.y > y1) {
-      type = SCROLL_TYPE.V_TOP;
-    } else if (scroll.y < y1) {
-      type = SCROLL_TYPE.V_BOTTOM;
-    }
-    scroll.type = type;
-    scroll.ri = ri;
-    scroll.y = y1;
-    if (settings.tipsScrollTime) {
-      // eslint-disable-next-line no-console
-      console.log('滚动条计算耗时:');
-      // eslint-disable-next-line no-console
-      console.timeEnd();
-    }
-    this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL, { type });
-  }
-
-
-  visualHeight() {
-    return this.box().height;
-  }
-
-  visualWidth() {
-    return this.box().width;
-  }
-
-
-  resize() {
-    const { draw } = this;
-    const [width, height] = [this.visualWidth(), this.visualHeight()];
-    draw.resize(width, height);
-    this.reComputerViewRange();
-    this.renderFrozen();
-    this.render();
-  }
-
-  renderClear() {
-    const {
-      fixedLeft, content, fixedTop, fixedTopIndex, fixedLeftIndex,
-    } = this;
-    fixedLeft.drawClear();
-    content.renderClear();
-    fixedTop.drawClear();
-    fixedTopIndex.drawClear();
-    fixedLeftIndex.drawClear();
-  }
-
-  renderOptimization() {
+  drawOptimization() {
     const { cellsHelper } = this;
     const viewRange = this.getContentViewRange();
     let enable = true;
@@ -2207,20 +1871,98 @@ class Table extends Widget {
     }
   }
 
-  renderFrozen() {
-    const { fixed } = this;
-    // 冻结索引渲染
-    this.frozenRect.render();
-    if (fixed.fxTop > -1) {
-      this.frozenTopIndex.render();
+  scrollX(x) {
+    const {
+      cols, fixed, settings, scroll,
+    } = this;
+    if (settings.tipsScrollTime) {
+      // eslint-disable-next-line no-console
+      console.time();
     }
-    if (fixed.fxLeft > -1) {
-      this.frozenLeftIndex.render();
+    let { fxLeft } = fixed;
+    fxLeft += 1;
+    const [
+      ci, left, width,
+    ] = Utils.rangeReduceIf(fxLeft, cols.len, 0, 0, x, i => cols.getWidth(i));
+    let x1 = left;
+    if (x > 0) x1 += width;
+    scroll.ci = ci;
+    scroll.x = x1;
+    if (settings.tipsScrollTime) {
+      // eslint-disable-next-line no-console
+      console.log('滚动条计算耗时:');
+      // eslint-disable-next-line no-console
+      console.timeEnd();
     }
+    this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
   }
 
-  renderFixed() {
-    const { fixed } = this;
+  scrollY(y) {
+    const {
+      rows, fixed, settings, scroll,
+    } = this;
+    if (settings.tipsScrollTime) {
+      // eslint-disable-next-line no-console
+      console.time();
+    }
+    let { fxTop } = fixed;
+    fxTop += 1;
+    const [
+      ri, top, height,
+    ] = Utils.rangeReduceIf(fxTop, rows.len, 0, 0, y, i => rows.getHeight(i));
+    let y1 = top;
+    if (y > 0) y1 += height;
+    scroll.ri = ri;
+    scroll.y = y1;
+    if (settings.tipsScrollTime) {
+      // eslint-disable-next-line no-console
+      console.log('滚动条计算耗时:');
+      // eslint-disable-next-line no-console
+      console.timeEnd();
+    }
+    this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
+  }
+
+  visualHeight() {
+    return this.box().height;
+  }
+
+  visualWidth() {
+    return this.box().width;
+  }
+
+  clearViewRange() {
+    this.scrollViewRange = null;
+    this.contentViewRange = null;
+    this.scrollViewXOffset = -1;
+  }
+
+  clear() {
+    const { draw, settings } = this;
+    const { width, height } = draw;
+    draw.attr({
+      fillStyle: settings.table.background,
+    });
+    draw.fillRect(0, 0, width, height);
+  }
+
+  resize() {
+    const { draw } = this;
+    const [width, height] = [this.visualWidth(), this.visualHeight()];
+    draw.resize(width, height);
+    this.clearViewRange();
+    this.render();
+  }
+
+  render() {
+    const { settings, fixed } = this;
+    if (settings.tipsRenderTime) {
+      // eslint-disable-next-line no-console
+      console.time();
+    }
+    this.clear();
+    this.drawOptimization();
+    this.frozenRect.render();
     // 渲染固定冻结的内容
     if (fixed.fxLeft > -1 && fixed.fxTop > -1) {
       this.frozenLeftTop.render();
@@ -2231,26 +1973,18 @@ class Table extends Widget {
     if (fixed.fxLeft > -1) {
       this.fixedLeft.render();
     }
+    // 表格内容渲染
+    this.content.render();
+    // 冻结索引渲染
+    if (fixed.fxTop > -1) {
+      this.frozenTopIndex.render();
+    }
+    if (fixed.fxLeft > -1) {
+      this.frozenLeftIndex.render();
+    }
     // 固定索引渲染
     this.fixedLeftIndex.render();
     this.fixedTopIndex.render();
-  }
-
-  renderContent() {
-    // 表格内容渲染
-    this.content.render();
-  }
-
-  render() {
-    const { settings } = this;
-    if (settings.tipsRenderTime) {
-      // eslint-disable-next-line no-console
-      console.time();
-    }
-    this.renderClear();
-    this.renderOptimization();
-    this.renderFixed();
-    this.renderContent();
     if (settings.tipsRenderTime) {
       // eslint-disable-next-line no-console
       console.log('渲染界面耗时:');
@@ -2258,7 +1992,6 @@ class Table extends Widget {
       console.timeEnd();
     }
   }
-
 
   getContentWidth() {
     return this.content.getContentWidth();
@@ -2276,34 +2009,38 @@ class Table extends Widget {
     return this.fixedTop.getHeight();
   }
 
-
-  reComputerViewRange() {
-    this.drawLastScrollViewRange = this.drawScrollViewRange;
-    this.drawScrollViewRange = null;
-    this.drawContentViewRange = null;
-    this.drawScrollViewXOffset = null;
-    this.computerScrollRange();
-    this.computerContentRange();
-    this.computerScrollXOffset();
-
-    this.drawScrollViewRangeReduced = null;
-    this.drawScrollViewRangeAdded = null;
-    this.computerScrollReducedOrAddedRange();
-
-    this.reducedOrAddedXOffset = null;
-    this.reducedOrAddedYOffset = null;
-    this.computerReducedOrAddedXOffset();
-
-    this.drawScrollViewRangeRealReduced = null;
-    this.drawScrollViewRangeRealAdded = null;
-    this.computerScrollReducedOrAddedRangeReal();
-
-    this.reducedOrAddedRealXOffset = null;
-    this.reducedOrAddedRealYOffset = null;
-    this.computerReducedOrAddedRealXOffset();
+  getContentViewRange() {
+    const { contentViewRange } = this;
+    if (contentViewRange !== null) {
+      return contentViewRange.clone();
+    }
+    const scrollViewRange = this.getScrollViewRange();
+    const {
+      sri, eri,
+    } = scrollViewRange;
+    const { cols } = this;
+    scrollViewRange.set(sri, 0, eri, cols.len);
+    scrollViewRange.w = cols.sectionSumWidth(0, scrollViewRange.eci);
+    this.contentViewRange = scrollViewRange;
+    return this.contentViewRange.clone();
   }
 
-  computerScrollRange() {
+  getScrollViewXOffset() {
+    const { scrollViewXOffset } = this;
+    if (scrollViewXOffset !== -1) {
+      return -scrollViewXOffset;
+    }
+    const { scroll, cols } = this;
+    const { ci } = scroll;
+    this.scrollViewXOffset = cols.sectionSumWidth(0, ci - 1);
+    return -this.scrollViewXOffset;
+  }
+
+  getScrollViewRange() {
+    const { scrollViewRange } = this;
+    if (scrollViewRange !== null) {
+      return scrollViewRange.clone();
+    }
     const {
       rows, cols, scroll, content,
     } = this;
@@ -2320,143 +2057,9 @@ class Table extends Widget {
       eci = j;
       if (width > content.getWidth()) break;
     }
-    this.drawScrollViewRange = new RectRange(ri, ci, eri, eci, width, height);
+    this.scrollViewRange = new RectRange(ri, ci, eri, eci, width, height);
+    return this.scrollViewRange.clone();
   }
-
-  computerContentRange() {
-    const scrollViewRange = this.getScrollViewRange();
-    const { sri, eri } = scrollViewRange;
-    const { cols } = this;
-    scrollViewRange.set(sri, 0, eri, cols.len);
-    scrollViewRange.w = cols.sectionSumWidth(0, scrollViewRange.eci);
-    this.drawContentViewRange = scrollViewRange;
-  }
-
-  computerScrollXOffset() {
-    const { scroll, cols } = this;
-    const { ci } = scroll;
-    this.drawScrollViewXOffset = -cols.sectionSumWidth(0, ci - 1);
-  }
-
-  computerScrollReducedOrAddedRange() {
-    if (this.drawLastScrollViewRange) {
-      const [reduced] = this.drawLastScrollViewRange.difference(this.drawScrollViewRange);
-      if (reduced) this.drawScrollViewRangeReduced = reduced;
-      const [added] = this.drawScrollViewRange.difference(this.drawLastScrollViewRange);
-      if (added) this.drawScrollViewRangeAdded = added;
-    }
-  }
-
-  computerReducedOrAddedXOffset() {
-    const reduced = this.drawScrollViewRangeReduced;
-    const added = this.drawScrollViewRangeAdded;
-    const scroll = this.scroll;
-
-    if (reduced && added) {
-      const reducedHeight = this.rows.rectRangeSumHeight(reduced);
-      const reducedWidth = this.cols.rectRangeSumWidth(reduced);
-
-      const addedWidth = this.rows.rectRangeSumHeight(added);
-      const addedHeight = this.cols.rectRangeSumWidth(added);
-
-      let offsetWidth = 0;
-      let offsetHeight = 0;
-      switch (scroll.type) {
-        case SCROLL_TYPE.V_TOP:
-          offsetHeight = addedHeight;
-          break;
-        case SCROLL_TYPE.V_BOTTOM:
-          offsetHeight = -reducedHeight;
-          break;
-        case SCROLL_TYPE.H_LEFT:
-          offsetWidth = addedWidth;
-          break;
-        case SCROLL_TYPE.H_RIGHT:
-          offsetWidth = -reducedWidth;
-          break;
-        default: break;
-      }
-
-      this.reducedOrAddedXOffset = offsetWidth;
-      this.reducedOrAddedYOffset = offsetHeight;
-    }
-  }
-
-  computerScrollReducedOrAddedRangeReal() {
-    const reduced = this.drawScrollViewRangeReduced;
-    const added = this.drawScrollViewRangeAdded;
-    const scroll = this.scroll;
-
-    if (reduced && added) {
-      this.drawScrollViewRangeRealReduced = reduced.clone();
-      this.drawScrollViewRangeRealAdded = added.clone();
-
-      switch (scroll.type) {
-        case SCROLL_TYPE.H_RIGHT: {
-          this.drawScrollViewRangeRealAdded.sci -= 1;
-          break;
-        }
-        case SCROLL_TYPE.V_BOTTOM: {
-          this.drawScrollViewRangeRealAdded.sri -= 1;
-          break;
-        }
-        default: break;
-      }
-    }
-  }
-
-  computerReducedOrAddedRealXOffset() {
-    const reduced = this.drawScrollViewRangeRealReduced;
-    const added = this.drawScrollViewRangeRealAdded;
-    const scroll = this.scroll;
-
-    if (reduced && added) {
-      const reducedHeight = this.rows.rectRangeSumHeight(reduced);
-      const reducedWidth = this.cols.rectRangeSumWidth(reduced);
-
-      const addedWidth = this.rows.rectRangeSumHeight(added);
-      const addedHeight = this.cols.rectRangeSumWidth(added);
-
-      let offsetWidth = 0;
-      let offsetHeight = 0;
-      switch (scroll.type) {
-        case SCROLL_TYPE.V_TOP:
-          offsetHeight = addedHeight;
-          break;
-        case SCROLL_TYPE.V_BOTTOM:
-          offsetHeight = -reducedHeight;
-          break;
-        case SCROLL_TYPE.H_LEFT:
-          offsetWidth = addedWidth;
-          break;
-        case SCROLL_TYPE.H_RIGHT:
-          offsetWidth = -reducedWidth;
-          break;
-        default: break;
-      }
-
-      this.reducedOrAddedRealXOffset = offsetWidth;
-      this.reducedOrAddedRealYOffset = offsetHeight;
-    }
-  }
-
-
-  getScrollViewRange() {
-    const { drawScrollViewRange } = this;
-    if (drawScrollViewRange) {
-      return drawScrollViewRange.clone();
-    }
-    return null;
-  }
-
-  getContentViewRange() {
-    const { drawContentViewRange } = this;
-    if (drawContentViewRange) {
-      return drawContentViewRange.clone();
-    }
-    return null;
-  }
-
 
   getRiCiByXy(x, y) {
     const {
@@ -2519,7 +2122,6 @@ class Table extends Widget {
     };
   }
 
-
   getIndexWidth() {
     const { settings } = this;
     return settings.index.width;
@@ -2529,7 +2131,6 @@ class Table extends Widget {
     const { settings } = this;
     return settings.index.height;
   }
-
 
   toString() {
     const data = {
@@ -2546,6 +2147,7 @@ class Table extends Widget {
     return JSON.stringify(data);
   }
 }
+
 
 export {
   Table,

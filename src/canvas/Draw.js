@@ -168,10 +168,14 @@ class Draw {
     const { offsetX, offsetY } = this;
     this.ctx.drawImage(
       origin,
-      sx + offsetX, sy + offsetY,
-      sWidth, sHeight,
-      x + offsetX, y + offsetY,
-      width, height,
+      npx(sx + offsetX),
+      npx(sy + offsetY),
+      npx(sWidth),
+      npx(sHeight),
+      npx(x + offsetX),
+      npx(y + offsetY),
+      npx(width),
+      npx(height),
     );
   }
 }

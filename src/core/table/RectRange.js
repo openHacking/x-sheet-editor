@@ -312,4 +312,13 @@ class RectRange {
   }
 }
 
+const EMPTY = new RectRange(-1, -1, 0, 0, 0, 0);
+
+RectRange.getEmpty = () => EMPTY.clone();
+
+RectRange.isEmpty = r => EMPTY.equals(r);
+
+RectRange.notEmpty = r => !RectRange.isEmpty(r);
+
+
 export { RectRange };
