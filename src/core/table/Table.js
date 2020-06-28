@@ -2202,8 +2202,8 @@ class Content {
       clearCrop.close();
       // 裁剪内容
       const drawRect = new Rect({
-        x: dx,
-        y: dy,
+        x: dx + grid.lineWidth(),
+        y: dy + grid.lineWidth(),
         width: scrollView.w,
         height: scrollView.h,
       });
