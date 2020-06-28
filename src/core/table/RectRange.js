@@ -154,7 +154,7 @@ class RectRange {
       sri, sci, eri, eci,
     } = this;
     if (this.disjoint(other)) {
-      return new RectRange(-1, -1, -1, -1);
+      return RectRange.EMPTY;
     }
     return new RectRange(
       other.sri > sri ? other.sri : sri,
@@ -171,8 +171,7 @@ class RectRange {
    * @returns {Array}
    */
   coincideDifference(other) {
-    const empty = new RectRange(-1, -1, -1, -1);
-    if (this.coincide(other).equals(empty)) {
+    if (this.coincide(other).equals(RectRange.EMPTY)) {
       return [];
     }
     return this.difference(other);
@@ -325,5 +324,7 @@ class RectRange {
     return new RectRange(sri, sci, eri, eci);
   }
 }
+
+RectRange.EMPTY = new RectRange(-1, -1, -1, -1);
 
 export { RectRange };
