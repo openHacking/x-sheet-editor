@@ -165,6 +165,20 @@ class RectRange {
   }
 
   /**
+   * 当前区域和指定区域重合
+   * 返回当前区域和指定区域不重合的部分
+   * @param {RectRange} other 区域
+   * @returns {Array}
+   */
+  coincideDifference(other) {
+    const empty = new RectRange(-1, -1, -1, -1);
+    if (this.coincide(other).equals(empty)) {
+      return [];
+    }
+    return this.difference(other);
+  }
+
+  /**
    * 返回当前区域和指定区域不重合的部分
    * @param {RectRange} other 区域
    * @returns {Array}
