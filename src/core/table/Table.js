@@ -38,6 +38,8 @@ import {
   ScreenSelector,
 } from './screenwiget/selector/ScreenSelector';
 
+const CLEAR_LINE_WIDTH = 5;
+
 const TABLE_RENDER_MODE = {
   SCROLL: 1,
   RENDER: 2,
@@ -1963,10 +1965,14 @@ class Content {
   drawGrid(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, grid, lineHandle, gridLineHandle,
+      draw, grid, lineHandle, gridLineHandle, settings,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
+    draw.attr({
+      fillStyle: settings.table.gridColor,
+      globalAlpha: 1,
+    });
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
     const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
     const hLine = gridLineHandle.hLine(viewRange);
@@ -2116,7 +2122,7 @@ class Content {
   renderClear() {
     const { table } = this;
     const { draw, settings } = table;
-    const { dynamicView, grid } = table;
+    const { dynamicView } = table;
     const offset = table.contentOffset;
     const width = offset.getFixedWidth();
     const height = offset.getFixedHeight();
@@ -2135,28 +2141,28 @@ class Content {
         const [sx, ex, sy] = [x, x, y];
         draw.drawImage(el, sx, sy, width, height, ex, cy, width, height);
         draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx, dy + grid.lineWidth(), width, range.h);
+        draw.fillRect(dx, dy + CLEAR_LINE_WIDTH, width, range.h);
         break;
       }
       case SCROLL_TYPE.V_TOP: {
         const [sx, ex, sy] = [x, x, y];
         draw.drawImage(el, sx, sy, width, height, ex, cy, width, height);
         draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx, dy, width, range.h);
+        draw.fillRect(dx, dy, width, range.h - CLEAR_LINE_WIDTH);
         break;
       }
       case SCROLL_TYPE.H_RIGHT: {
         const [sx, sy, ey] = [x, y, y];
         draw.drawImage(el, sx, sy, width, height, cx, ey, width, height);
         draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx + grid.lineWidth(), dy, range.w, height);
+        draw.fillRect(dx + CLEAR_LINE_WIDTH, dy, range.w, height);
         break;
       }
       case SCROLL_TYPE.H_LEFT: {
         const [sx, sy, ey] = [x, y, y];
         draw.drawImage(el, sx, sy, width, height, cx, ey, width, height);
         draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx, dy, range.w, height);
+        draw.fillRect(dx, dy, range.w - CLEAR_LINE_WIDTH, height);
         break;
       }
       default: {
@@ -2204,7 +2210,7 @@ class Content {
       const drawCrop = new Crop({ draw, rect: drawRect, offset: grid.lineWidth() });
       drawCrop.open();
       this.drawBackGround(scrollView, dx, dy);
-      this.drawCells(contentView, scrollXOffset, offsetX, offsetY);
+      this.drawCells(contentView, scrollXOffset, offsetX, dy);
       if (settings.table.showGrid) {
         this.drawGrid(scrollView, dx, dy);
       }
@@ -2505,6 +2511,7 @@ const defaultSettings = {
   table: {
     background: '#ffffff',
     borderColor: '#e5e5e5',
+    gridColor: '#000000',
     showGrid: true,
   },
   data: [],
@@ -2755,7 +2762,6 @@ class Table extends Widget {
     if (enable) {
       this.borderLineHandle.openDrawOptimization();
     } else {
-      this.mode = TABLE_RENDER_MODE.RENDER;
       this.borderLineHandle.closeDrawOptimization();
     }
   }
