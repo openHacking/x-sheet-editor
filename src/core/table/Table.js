@@ -809,8 +809,8 @@ class FixedTopOffset {
     const { fixed, settings } = table;
     const { index } = settings;
     const { fxLeft } = fixed;
-    const fixedTopWidth = table.cols.sectionSumWidth(0, fxLeft);
-    return index.width + fixedTopWidth;
+    const fixedLeftWidth = table.cols.sectionSumWidth(0, fxLeft);
+    return index.width + fixedLeftWidth;
   }
 
   getFixedYOffset() {
