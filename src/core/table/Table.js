@@ -168,10 +168,14 @@ class DynamicViewDifference {
           break;
         }
         case SCROLL_TYPE.H_LEFT: {
-          
+          this.dwAddRange.eci += 1;
+          this.dwAddRange.w = cols.rectRangeSumWidth(this.dwAddRange);
+          break;
         }
         case SCROLL_TYPE.V_TOP: {
-
+          this.dwAddRange.eri += 1;
+          this.dwAddRange.h = rows.rectRangeSumHeight(this.dwAddRange);
+          break;
         }
         default: break;
       }
@@ -1102,73 +1106,10 @@ class FixedTopIndexOffset {
     return index.height;
   }
 
-  getCaptureX() {
-    const { table } = this;
-    const { dynamicView } = table;
-    const { difference } = dynamicView;
-    const captureX = difference.getCaptureX();
-    const xOffset = this.getFixedXOffset();
-    return xOffset + captureX;
-  }
-
-  getCaptureY() {
-    const { table } = this;
-    const { dynamicView } = table;
-    const { difference } = dynamicView;
-    const captureY = difference.getCaptureY();
-    const yOffset = this.getFixedYOffset();
-    return yOffset + captureY;
-  }
-
-  getDwXOffset() {
-    const { table } = this;
-    const { dynamicView } = table;
-    const { difference } = dynamicView;
-    const dwXOffset = difference.getDwXOffset();
-    const xOffset = this.getFixedXOffset();
-    return xOffset + dwXOffset;
-  }
-
-  getDwYOffset() {
-    const { table } = this;
-    const { dynamicView } = table;
-    const { difference } = dynamicView;
-    const dwYOffset = difference.getDwYOffset();
-    const yOffset = this.getFixedYOffset();
-    return yOffset + dwYOffset;
-  }
-
-  getScrollViewChange() {
-    const { table } = this;
-    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
-      const { dynamicView } = table;
-      const last = dynamicView.getOriginLastScrollView();
-      const next = dynamicView.getOriginScrollView();
-      if (last === null) {
-        return true;
-      }
-      last.sri = 0;
-      last.eri = 0;
-      next.sri = 0;
-      next.eri = 0;
-      return next.equals(last) === false;
-    }
-    return true;
-  }
-
-  getContentView() {
-    const { table } = this;
-    const { dynamicView } = table;
-    const contentView = dynamicView.getContentView();
-    contentView.sri = 0;
-    contentView.eri = 0;
-    return contentView;
-  }
-
   getScrollView() {
     const { table } = this;
     const { dynamicView } = table;
-    const scrollView = dynamicView.getScrollView();
+    const scrollView = dynamicView.getOriginScrollView();
     scrollView.sri = 0;
     scrollView.eri = 0;
     return scrollView;
@@ -1210,73 +1151,10 @@ class FixedLeftIndexOffset {
     return table.visualHeight() - (index.height + fixedTopHeight);
   }
 
-  getCaptureX() {
-    const { table } = this;
-    const { dynamicView } = table;
-    const { difference } = dynamicView;
-    const captureX = difference.getCaptureX();
-    const xOffset = this.getFixedXOffset();
-    return xOffset + captureX;
-  }
-
-  getCaptureY() {
-    const { table } = this;
-    const { dynamicView } = table;
-    const { difference } = dynamicView;
-    const captureY = difference.getCaptureY();
-    const yOffset = this.getFixedYOffset();
-    return yOffset + captureY;
-  }
-
-  getDwXOffset() {
-    const { table } = this;
-    const { dynamicView } = table;
-    const { difference } = dynamicView;
-    const dwXOffset = difference.getDwXOffset();
-    const xOffset = this.getFixedXOffset();
-    return xOffset + dwXOffset;
-  }
-
-  getDwYOffset() {
-    const { table } = this;
-    const { dynamicView } = table;
-    const { difference } = dynamicView;
-    const dwYOffset = difference.getDwYOffset();
-    const yOffset = this.getFixedYOffset();
-    return yOffset + dwYOffset;
-  }
-
-  getScrollViewChange() {
-    const { table } = this;
-    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
-      const { dynamicView } = table;
-      const last = dynamicView.getOriginLastScrollView();
-      const next = dynamicView.getOriginScrollView();
-      if (last === null) {
-        return true;
-      }
-      last.sci = 0;
-      last.eci = 0;
-      next.sci = 0;
-      next.eci = 0;
-      return next.equals(last) === false;
-    }
-    return true;
-  }
-
-  getContentView() {
-    const { table } = this;
-    const { dynamicView } = table;
-    const contentView = dynamicView.getContentView();
-    contentView.sci = 0;
-    contentView.eci = 0;
-    return contentView;
-  }
-
   getScrollView() {
     const { table } = this;
     const { dynamicView } = table;
-    const scrollView = dynamicView.getScrollView();
+    const scrollView = dynamicView.getOriginScrollView();
     scrollView.sci = 0;
     scrollView.eci = 0;
     return scrollView;
@@ -2112,7 +1990,7 @@ class Content {
   renderClear() {
     const { table } = this;
     const { draw, settings } = table;
-    const { dynamicView } = table;
+    const { dynamicView, grid } = table;
     const offset = table.contentOffset;
     const width = offset.getFixedWidth();
     const height = offset.getFixedHeight();
@@ -2127,7 +2005,13 @@ class Content {
     const { el } = canvas;
     const range = dynamicView.getScrollView();
     switch (scroll.type) {
-      case SCROLL_TYPE.V_BOTTOM:
+      case SCROLL_TYPE.V_BOTTOM: {
+        const [sx, ex, sy] = [x, x, y];
+        draw.drawImage(el, sx, sy, width, height, ex, cy, width, height);
+        draw.attr({ fillStyle: settings.table.background });
+        draw.fillRect(dx, dy + grid.lineWidth(), width, range.h);
+        break;
+      }
       case SCROLL_TYPE.V_TOP: {
         const [sx, ex, sy] = [x, x, y];
         draw.drawImage(el, sx, sy, width, height, ex, cy, width, height);
@@ -2135,7 +2019,13 @@ class Content {
         draw.fillRect(dx, dy, width, range.h);
         break;
       }
-      case SCROLL_TYPE.H_RIGHT:
+      case SCROLL_TYPE.H_RIGHT: {
+        const [sx, sy, ey] = [x, y, y];
+        draw.drawImage(el, sx, sy, width, height, cx, ey, width, height);
+        draw.attr({ fillStyle: settings.table.background });
+        draw.fillRect(dx + grid.lineWidth(), dy, range.w, height);
+        break;
+      }
       case SCROLL_TYPE.H_LEFT: {
         const [sx, sy, ey] = [x, y, y];
         draw.drawImage(el, sx, sy, width, height, cx, ey, width, height);
@@ -2248,60 +2138,26 @@ class FixedTopIndex {
   renderClear() {
     const { table } = this;
     const { draw, settings } = table;
-    const offset = table.fixedTopIndexOffset;
-    const width = offset.getFixedWidth();
-    const height = offset.getFixedHeight();
-    const x = offset.getFixedXOffset();
-    const y = offset.getFixedYOffset();
-    const dx = offset.getDwXOffset();
-    const dy = offset.getDwYOffset();
-    const cx = offset.getCaptureX();
-    const { scroll } = table;
-    const { canvas } = table;
-    const { el } = canvas;
-    const range = offset.getScrollView();
-    switch (scroll.type) {
-      case SCROLL_TYPE.H_RIGHT:
-      case SCROLL_TYPE.H_LEFT: {
-        const [sx, sy, ey] = [x, y, y];
-        draw.drawImage(el, sx, sy, width, height, cx, ey, width, height);
-        draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx, dy, range.w, height);
-        break;
-      }
-      default: {
-        draw.attr({
-          fillStyle: settings.table.background,
-        });
-        draw.fillRect(x, y, width, height);
-      }
-    }
+    const { fixedTopIndexOffset } = table;
+    const height = fixedTopIndexOffset.getFixedHeight();
+    const width = fixedTopIndexOffset.getFixedWidth();
+    const x = fixedTopIndexOffset.getFixedXOffset();
+    const y = fixedTopIndexOffset.getFixedYOffset();
+    draw.attr({
+      fillStyle: settings.table.background,
+    });
+    draw.fillRect(x, y, width, height);
   }
 
   render() {
     const { table } = this;
-    const { fixedTopIndexOffset, grid, draw } = table;
-    const change = fixedTopIndexOffset.getScrollViewChange();
-    if (change) {
-      const scrollView = fixedTopIndexOffset.getScrollView();
-      const dx = fixedTopIndexOffset.getDwXOffset();
-      const dy = fixedTopIndexOffset.getDwYOffset();
-      const fixedOffsetX = fixedTopIndexOffset.getFixedXOffset();
-      const fixedOffsetY = fixedTopIndexOffset.getFixedYOffset();
-      const fixedWidth = fixedTopIndexOffset.getFixedWidth();
-      const fixedHeight = fixedTopIndexOffset.getFixedHeight();
-      const rect = new Rect({
-        x: fixedOffsetX,
-        y: fixedOffsetY,
-        width: fixedWidth,
-        height: fixedHeight,
-      });
-      const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
-      crop.open();
-      this.renderClear();
-      this.draw(scrollView, dx, dy, scrollView.w, fixedHeight);
-      crop.close();
-    }
+    const { fixedTopIndexOffset } = table;
+    const scrollView = fixedTopIndexOffset.getScrollView();
+    const fixedOffsetX = fixedTopIndexOffset.getFixedXOffset();
+    const fixedOffsetY = fixedTopIndexOffset.getFixedYOffset();
+    const fixedHeight = fixedTopIndexOffset.getFixedHeight();
+    this.renderClear();
+    this.draw(scrollView, fixedOffsetX, fixedOffsetY, scrollView.w, fixedHeight);
   }
 }
 
@@ -2352,60 +2208,26 @@ class FixedLeftIndex {
   renderClear() {
     const { table } = this;
     const { draw, settings } = table;
-    const offset = table.fixedLeftIndexOffset;
-    const width = offset.getFixedWidth();
-    const height = offset.getFixedHeight();
-    const x = offset.getFixedXOffset();
-    const y = offset.getFixedYOffset();
-    const dx = offset.getDwXOffset();
-    const dy = offset.getDwYOffset();
-    const cy = offset.getCaptureY();
-    const { scroll } = table;
-    const { canvas } = table;
-    const { el } = canvas;
-    const range = offset.getScrollView();
-    switch (scroll.type) {
-      case SCROLL_TYPE.V_BOTTOM:
-      case SCROLL_TYPE.V_TOP: {
-        const [sx, ex, sy] = [x, x, y];
-        draw.drawImage(el, sx, sy, width, height, ex, cy, width, height);
-        draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx, dy, width, range.h);
-        break;
-      }
-      default: {
-        draw.attr({
-          fillStyle: settings.table.background,
-        });
-        draw.fillRect(x, y, width, height);
-      }
-    }
+    const { fixedLeftIndexOffset } = table;
+    const width = fixedLeftIndexOffset.getFixedWidth();
+    const height = fixedLeftIndexOffset.getFixedHeight();
+    const x = fixedLeftIndexOffset.getFixedXOffset();
+    const y = fixedLeftIndexOffset.getFixedYOffset();
+    draw.attr({
+      fillStyle: settings.table.background,
+    });
+    draw.fillRect(x, y, width, height);
   }
 
   render() {
     const { table } = this;
-    const { fixedLeftIndexOffset, grid, draw } = table;
-    const change = fixedLeftIndexOffset.getScrollViewChange();
-    if (change) {
-      const scrollView = fixedLeftIndexOffset.getScrollView();
-      const dx = fixedLeftIndexOffset.getDwXOffset();
-      const dy = fixedLeftIndexOffset.getDwYOffset();
-      const fixedOffsetX = fixedLeftIndexOffset.getFixedXOffset();
-      const fixedOffsetY = fixedLeftIndexOffset.getFixedYOffset();
-      const fixedWidth = fixedLeftIndexOffset.getFixedWidth();
-      const fixedHeight = fixedLeftIndexOffset.getFixedHeight();
-      const rect = new Rect({
-        x: fixedOffsetX,
-        y: fixedOffsetY,
-        width: fixedWidth,
-        height: fixedHeight,
-      });
-      const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
-      crop.open();
-      this.renderClear();
-      this.draw(scrollView, dx, dy, fixedWidth, scrollView.h);
-      crop.close();
-    }
+    const { fixedLeftIndexOffset } = table;
+    const scrollView = fixedLeftIndexOffset.getScrollView();
+    const fixedOffsetX = fixedLeftIndexOffset.getFixedXOffset();
+    const fixedOffsetY = fixedLeftIndexOffset.getFixedYOffset();
+    const fixedWidth = fixedLeftIndexOffset.getFixedWidth();
+    this.renderClear();
+    this.draw(scrollView, fixedOffsetX, fixedOffsetY, fixedWidth, scrollView.h);
   }
 }
 

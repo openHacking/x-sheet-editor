@@ -1,15 +1,9 @@
 import { dpr } from './Draw';
 import { Utils } from '../utils/Utils';
 
-const GRID_MODE = {
-  INNER: 1,
-  OUTER: 2,
-};
-
 class Grid {
 
   constructor(draw, attr = {}) {
-    this.mode = GRID_MODE.INNER;
     this.draw = draw;
     this.color = '#000000';
     Utils.mergeDeep(this, attr);
@@ -30,11 +24,7 @@ class Grid {
       fillStyle: color,
     });
     const diff = ey - sy;
-    if (this.mode === GRID_MODE.INNER) {
-      draw.fillRect(sx - width, sy, width, diff);
-    } else {
-      draw.fillRect(sx, sy, width, diff);
-    }
+    draw.fillRect(sx, sy, width, diff);
   }
 
   horizontalLine(sx, sy, ex, ey) {
@@ -47,11 +37,7 @@ class Grid {
       fillStyle: color,
     });
     const diff = ex - sx;
-    if (this.mode === GRID_MODE.INNER) {
-      draw.fillRect(sx, sy - width, diff, width);
-    } else {
-      draw.fillRect(sx, sy, diff, width);
-    }
+    draw.fillRect(sx, sy, diff, width);
   }
 }
 
