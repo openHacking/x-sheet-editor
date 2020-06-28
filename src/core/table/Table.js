@@ -43,354 +43,7 @@ const TABLE_RENDER_MODE = {
   RENDER: 2,
 };
 
-// ================================= 动态视图 =================================
-
-class DynamicViewDifference {
-
-  constructor(dynamicView) {
-    this.dynamicView = dynamicView;
-    // 滚动时的新区域
-    this.subtractRange = null;
-    this.addRange = null;
-    // 渲染截图的坐标
-    this.captureX = 0;
-    this.captureY = 0;
-    // 滚动区域渲染
-    this.dwAddRange = null;
-    this.dwContentRange = null;
-    // 渲染区域坐标
-    this.dwXOffset = 0;
-    this.dwYOffset = 0;
-  }
-
-  computerSubtractRange() {
-    const { dynamicView } = this;
-    const { table } = dynamicView;
-    const { lastScrollRange } = dynamicView;
-    const { scrollRange } = dynamicView;
-    const { cols, rows } = table;
-    if (lastScrollRange) {
-      const [subtractRange] = lastScrollRange.difference(scrollRange);
-      if (subtractRange) {
-        subtractRange.w = cols.rectRangeSumWidth(subtractRange);
-        subtractRange.h = rows.rectRangeSumHeight(subtractRange);
-        this.subtractRange = subtractRange;
-      }
-    }
-  }
-
-  computerAddRange() {
-    const { dynamicView } = this;
-    const { table } = dynamicView;
-    const { lastScrollRange } = dynamicView;
-    const { scrollRange } = dynamicView;
-    const { cols, rows } = table;
-    if (lastScrollRange) {
-      const [addRange] = scrollRange.difference(lastScrollRange);
-      if (addRange) {
-        addRange.w = cols.rectRangeSumWidth(addRange);
-        addRange.h = rows.rectRangeSumHeight(addRange);
-        this.addRange = addRange;
-      }
-    }
-  }
-
-  computerCaptureXY() {
-    const { dynamicView } = this;
-    const { addRange, subtractRange } = this;
-    const { table } = dynamicView;
-    const { scroll } = table;
-    if (addRange && subtractRange) {
-      const subtractWidth = subtractRange.w;
-      const subtractHeight = subtractRange.h;
-      const addedWidth = addRange.w;
-      const addedHeight = addRange.h;
-      let captureX = 0;
-      let captureY = 0;
-      switch (scroll.type) {
-        case SCROLL_TYPE.V_TOP: {
-          captureY = addedHeight;
-          break;
-        }
-        case SCROLL_TYPE.V_BOTTOM: {
-          captureY = -subtractHeight;
-          break;
-        }
-        case SCROLL_TYPE.H_LEFT: {
-          captureX = addedWidth;
-          break;
-        }
-        case SCROLL_TYPE.H_RIGHT: {
-          captureX = -subtractWidth;
-          break;
-        }
-        default: break;
-      }
-      this.captureX = captureX;
-      this.captureY = captureY;
-    }
-  }
-
-  computerRange() {
-    this.subtractRange = null;
-    this.addRange = null;
-    this.captureX = 0;
-    this.captureY = 0;
-    this.dwAddRange = null;
-    this.dwContentRange = null;
-    this.dwXOffset = 0;
-    this.dwYOffset = 0;
-    this.computerSubtractRange();
-    this.computerAddRange();
-    this.computerDwAddRange();
-    this.computerDwContentRange();
-    this.computerCaptureXY();
-    this.computerDwOffsetXY();
-  }
-
-  computerDwAddRange() {
-    const { dynamicView } = this;
-    const { addRange } = this;
-    const { table } = dynamicView;
-    const { scroll } = table;
-    if (addRange) {
-      this.dwAddRange = addRange.clone();
-      const { rows, cols } = table;
-      switch (scroll.type) {
-        case SCROLL_TYPE.H_RIGHT: {
-          this.dwAddRange.sci -= 1;
-          this.dwAddRange.w = cols.rectRangeSumWidth(this.dwAddRange);
-          break;
-        }
-        case SCROLL_TYPE.V_BOTTOM: {
-          this.dwAddRange.sri -= 1;
-          this.dwAddRange.h = rows.rectRangeSumHeight(this.dwAddRange);
-          break;
-        }
-        case SCROLL_TYPE.H_LEFT: {
-          this.dwAddRange.eci += 1;
-          this.dwAddRange.w = cols.rectRangeSumWidth(this.dwAddRange);
-          break;
-        }
-        case SCROLL_TYPE.V_TOP: {
-          this.dwAddRange.eri += 1;
-          this.dwAddRange.h = rows.rectRangeSumHeight(this.dwAddRange);
-          break;
-        }
-        default: break;
-      }
-    }
-  }
-
-  computerDwContentRange() {
-    const { dynamicView } = this;
-    const { table } = dynamicView;
-    const { dwAddRange } = this;
-    if (dwAddRange) {
-      const { sri, eri } = dwAddRange;
-      const { cols } = table;
-      this.dwContentRange = dwAddRange.clone();
-      this.dwContentRange.set(sri, 0, eri, cols.len);
-      this.dwContentRange.w = cols.rectRangeSumWidth(this.dwContentRange);
-    }
-  }
-
-  computerDwOffsetXY() {
-    const { dynamicView } = this;
-    const { dwAddRange } = this;
-    const { table } = dynamicView;
-    if (dwAddRange) {
-      const width = dwAddRange.w;
-      const height = dwAddRange.h;
-      let dwXOffset = 0;
-      let dwYOffset = 0;
-      const { scroll } = table;
-      switch (scroll.type) {
-        case SCROLL_TYPE.V_TOP: {
-          dwYOffset = 0;
-          break;
-        }
-        case SCROLL_TYPE.V_BOTTOM: {
-          const { rows } = table;
-          const { scrollRange } = dynamicView;
-          const h = rows.rectRangeSumHeight(scrollRange);
-          dwYOffset = h - height;
-          break;
-        }
-        case SCROLL_TYPE.H_LEFT: {
-          dwXOffset = 0;
-          break;
-        }
-        case SCROLL_TYPE.H_RIGHT: {
-          const { cols } = table;
-          const { scrollRange } = dynamicView;
-          const w = cols.rectRangeSumWidth(scrollRange);
-          dwXOffset = w - width;
-          break;
-        }
-        default: break;
-      }
-      this.dwXOffset = dwXOffset;
-      this.dwYOffset = dwYOffset;
-    }
-  }
-
-  getCaptureX() {
-    const { dynamicView } = this;
-    const { table } = dynamicView;
-    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
-      return this.captureX;
-    }
-    return 0;
-  }
-
-  getCaptureY() {
-    const { dynamicView } = this;
-    const { table } = dynamicView;
-    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
-      return this.captureY;
-    }
-    return 0;
-  }
-
-  getDwXOffset() {
-    const { dynamicView } = this;
-    const { table } = dynamicView;
-    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
-      return this.dwXOffset;
-    }
-    return 0;
-  }
-
-  getDwYOffset() {
-    const { dynamicView } = this;
-    const { table } = dynamicView;
-    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
-      return this.dwYOffset;
-    }
-    return 0;
-  }
-}
-
-class DynamicView {
-
-  constructor(table) {
-    this.difference = new DynamicViewDifference(this);
-    this.table = table;
-    this.lastScrollRange = null;
-    this.scrollRange = null;
-    this.contentRange = null;
-    this.scrollXOffset = 0;
-  }
-
-  computerScrollRange() {
-    const { table } = this;
-    const {
-      rows, cols, scroll, contentOffset,
-    } = table;
-    let [width, height] = [0, 0];
-    const { ri, ci } = scroll;
-    let [eri, eci] = [rows.len, cols.len];
-    for (let i = ri; i < rows.len; i += 1) {
-      height += rows.getHeight(i);
-      eri = i;
-      if (height > contentOffset.getFixedHeight()) break;
-    }
-    for (let j = ci; j < cols.len; j += 1) {
-      width += cols.getWidth(j);
-      eci = j;
-      if (width > contentOffset.getFixedWidth()) break;
-    }
-    this.scrollRange = new RectRange(ri, ci, eri, eci, width, height);
-  }
-
-  computerContentRange() {
-    const { table } = this;
-    const { scrollRange } = this;
-    const { sri, eri } = scrollRange;
-    const { cols } = table;
-    this.contentRange = scrollRange.clone();
-    this.contentRange.set(sri, 0, eri, cols.len);
-    this.contentRange.w = cols.rectRangeSumWidth(scrollRange);
-  }
-
-  computerScrollXOffset() {
-    const { table } = this;
-    const { scroll, cols } = table;
-    const { ci } = scroll;
-    this.scrollXOffset = -cols.sectionSumWidth(0, ci - 1);
-  }
-
-  computerRange() {
-    this.lastScrollRange = this.scrollRange;
-    this.scrollRange = null;
-    this.contentRange = null;
-    this.scrollXOffset = 0;
-    this.computerScrollRange();
-    this.computerContentRange();
-    this.computerScrollXOffset();
-    this.difference.computerRange();
-
-  }
-
-  getOriginScrollView() {
-    const { scrollRange } = this;
-    return scrollRange.clone();
-  }
-
-  getOriginContentView() {
-    const { contentRange } = this;
-    return contentRange.clone();
-  }
-
-  getOriginLastScrollView() {
-    const { lastScrollRange } = this;
-    if (lastScrollRange) {
-      return lastScrollRange.clone();
-    }
-    return null;
-  }
-
-  getScrollXOffset() {
-    return this.scrollXOffset;
-  }
-
-  getScrollView() {
-    const { table } = this;
-    const { scrollRange } = this;
-    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
-      const { difference } = this;
-      const { dwAddRange } = difference;
-      if (dwAddRange) {
-        return dwAddRange.clone();
-      }
-    }
-    return scrollRange.clone();
-  }
-
-  getContentView() {
-    const { contentRange } = this;
-    const { table } = this;
-    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
-      const { scroll } = table;
-      const { difference } = this;
-      switch (scroll.type) {
-        case SCROLL_TYPE.V_TOP:
-        case SCROLL_TYPE.V_BOTTOM: {
-          const { dwContentRange } = difference;
-          if (dwContentRange) {
-            return dwContentRange.clone();
-          }
-          break;
-        }
-        default: break;
-      }
-    }
-    return contentRange.clone();
-  }
-}
-
-// ================================= 冻结内容 =================================
+// ================================= 冻结内容 ==================================
 
 class FrozenLeftTop {
   constructor(table) {
@@ -844,7 +497,354 @@ class FrozenRect {
   }
 }
 
-// ================================= 内容坐标 =================================
+// ================================ 动态视图计算 ================================
+
+class DynamicViewDifference {
+
+  constructor(dynamicView) {
+    this.dynamicView = dynamicView;
+    // 滚动时的新区域
+    this.subtractRange = null;
+    this.addRange = null;
+    // 渲染截图的坐标
+    this.captureX = 0;
+    this.captureY = 0;
+    // 滚动区域渲染
+    this.dwAddRange = null;
+    this.dwContentRange = null;
+    // 渲染区域坐标
+    this.dwXOffset = 0;
+    this.dwYOffset = 0;
+  }
+
+  cpSubtractRange() {
+    const { dynamicView } = this;
+    const { table } = dynamicView;
+    const { lastScrollRange } = dynamicView;
+    const { scrollRange } = dynamicView;
+    const { cols, rows } = table;
+    if (lastScrollRange) {
+      const [subtractRange] = lastScrollRange.difference(scrollRange);
+      if (subtractRange) {
+        subtractRange.w = cols.rectRangeSumWidth(subtractRange);
+        subtractRange.h = rows.rectRangeSumHeight(subtractRange);
+        this.subtractRange = subtractRange;
+      }
+    }
+  }
+
+  cpAddRange() {
+    const { dynamicView } = this;
+    const { table } = dynamicView;
+    const { lastScrollRange } = dynamicView;
+    const { scrollRange } = dynamicView;
+    const { cols, rows } = table;
+    if (lastScrollRange) {
+      const [addRange] = scrollRange.difference(lastScrollRange);
+      if (addRange) {
+        addRange.w = cols.rectRangeSumWidth(addRange);
+        addRange.h = rows.rectRangeSumHeight(addRange);
+        this.addRange = addRange;
+      }
+    }
+  }
+
+  cpCaptureXY() {
+    const { dynamicView } = this;
+    const { addRange, subtractRange } = this;
+    const { table } = dynamicView;
+    const { scroll } = table;
+    if (addRange && subtractRange) {
+      const subtractWidth = subtractRange.w;
+      const subtractHeight = subtractRange.h;
+      const addedWidth = addRange.w;
+      const addedHeight = addRange.h;
+      let captureX = 0;
+      let captureY = 0;
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_TOP: {
+          captureY = addedHeight;
+          break;
+        }
+        case SCROLL_TYPE.V_BOTTOM: {
+          captureY = -subtractHeight;
+          break;
+        }
+        case SCROLL_TYPE.H_LEFT: {
+          captureX = addedWidth;
+          break;
+        }
+        case SCROLL_TYPE.H_RIGHT: {
+          captureX = -subtractWidth;
+          break;
+        }
+        default: break;
+      }
+      this.captureX = captureX;
+      this.captureY = captureY;
+    }
+  }
+
+  cpRange() {
+    this.subtractRange = null;
+    this.addRange = null;
+    this.captureX = 0;
+    this.captureY = 0;
+    this.dwAddRange = null;
+    this.dwContentRange = null;
+    this.dwXOffset = 0;
+    this.dwYOffset = 0;
+    this.cpSubtractRange();
+    this.cpAddRange();
+    this.cpDwAddRange();
+    this.cpDwContentRange();
+    this.cpCaptureXY();
+    this.cpDwOffsetXY();
+  }
+
+  cpDwAddRange() {
+    const { dynamicView } = this;
+    const { addRange } = this;
+    const { table } = dynamicView;
+    const { scroll } = table;
+    if (addRange) {
+      this.dwAddRange = addRange.clone();
+      const { rows, cols } = table;
+      switch (scroll.type) {
+        case SCROLL_TYPE.H_RIGHT: {
+          this.dwAddRange.sci -= 1;
+          this.dwAddRange.w = cols.rectRangeSumWidth(this.dwAddRange);
+          break;
+        }
+        case SCROLL_TYPE.V_BOTTOM: {
+          this.dwAddRange.sri -= 1;
+          this.dwAddRange.h = rows.rectRangeSumHeight(this.dwAddRange);
+          break;
+        }
+        case SCROLL_TYPE.H_LEFT: {
+          this.dwAddRange.eci += 1;
+          this.dwAddRange.w = cols.rectRangeSumWidth(this.dwAddRange);
+          break;
+        }
+        case SCROLL_TYPE.V_TOP: {
+          this.dwAddRange.eri += 1;
+          this.dwAddRange.h = rows.rectRangeSumHeight(this.dwAddRange);
+          break;
+        }
+        default: break;
+      }
+    }
+  }
+
+  cpDwContentRange() {
+    const { dynamicView } = this;
+    const { table } = dynamicView;
+    const { dwAddRange } = this;
+    if (dwAddRange) {
+      const { sri, eri } = dwAddRange;
+      const { cols } = table;
+      this.dwContentRange = dwAddRange.clone();
+      this.dwContentRange.set(sri, 0, eri, cols.len);
+      this.dwContentRange.w = cols.rectRangeSumWidth(this.dwContentRange);
+    }
+  }
+
+  cpDwOffsetXY() {
+    const { dynamicView } = this;
+    const { dwAddRange } = this;
+    const { table } = dynamicView;
+    if (dwAddRange) {
+      const width = dwAddRange.w;
+      const height = dwAddRange.h;
+      let dwXOffset = 0;
+      let dwYOffset = 0;
+      const { scroll } = table;
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_TOP: {
+          dwYOffset = 0;
+          break;
+        }
+        case SCROLL_TYPE.V_BOTTOM: {
+          const { rows } = table;
+          const { scrollRange } = dynamicView;
+          const h = rows.rectRangeSumHeight(scrollRange);
+          dwYOffset = h - height;
+          break;
+        }
+        case SCROLL_TYPE.H_LEFT: {
+          dwXOffset = 0;
+          break;
+        }
+        case SCROLL_TYPE.H_RIGHT: {
+          const { cols } = table;
+          const { scrollRange } = dynamicView;
+          const w = cols.rectRangeSumWidth(scrollRange);
+          dwXOffset = w - width;
+          break;
+        }
+        default: break;
+      }
+      this.dwXOffset = dwXOffset;
+      this.dwYOffset = dwYOffset;
+    }
+  }
+
+  getCaptureX() {
+    const { dynamicView } = this;
+    const { table } = dynamicView;
+    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
+      return this.captureX;
+    }
+    return 0;
+  }
+
+  getCaptureY() {
+    const { dynamicView } = this;
+    const { table } = dynamicView;
+    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
+      return this.captureY;
+    }
+    return 0;
+  }
+
+  getDwXOffset() {
+    const { dynamicView } = this;
+    const { table } = dynamicView;
+    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
+      return this.dwXOffset;
+    }
+    return 0;
+  }
+
+  getDwYOffset() {
+    const { dynamicView } = this;
+    const { table } = dynamicView;
+    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
+      return this.dwYOffset;
+    }
+    return 0;
+  }
+}
+
+class DynamicView {
+
+  constructor(table) {
+    this.difference = new DynamicViewDifference(this);
+    this.table = table;
+    this.lastScrollRange = null;
+    this.scrollRange = null;
+    this.contentRange = null;
+    this.scrollXOffset = 0;
+  }
+
+  cpScrollRange() {
+    const { table } = this;
+    const {
+      rows, cols, scroll, contentOffset,
+    } = table;
+    let [width, height] = [0, 0];
+    const { ri, ci } = scroll;
+    let [eri, eci] = [rows.len, cols.len];
+    for (let i = ri; i < rows.len; i += 1) {
+      height += rows.getHeight(i);
+      eri = i;
+      if (height > contentOffset.getFixedHeight()) break;
+    }
+    for (let j = ci; j < cols.len; j += 1) {
+      width += cols.getWidth(j);
+      eci = j;
+      if (width > contentOffset.getFixedWidth()) break;
+    }
+    this.scrollRange = new RectRange(ri, ci, eri, eci, width, height);
+  }
+
+  cpContentRange() {
+    const { table } = this;
+    const { scrollRange } = this;
+    const { sri, eri } = scrollRange;
+    const { cols } = table;
+    this.contentRange = scrollRange.clone();
+    this.contentRange.set(sri, 0, eri, cols.len);
+    this.contentRange.w = cols.rectRangeSumWidth(scrollRange);
+  }
+
+  cpScrollXOffset() {
+    const { table } = this;
+    const { scroll, cols } = table;
+    const { ci } = scroll;
+    this.scrollXOffset = -cols.sectionSumWidth(0, ci - 1);
+  }
+
+  cpRange() {
+    this.lastScrollRange = this.scrollRange;
+    this.scrollRange = null;
+    this.contentRange = null;
+    this.scrollXOffset = 0;
+    this.cpScrollRange();
+    this.cpContentRange();
+    this.cpScrollXOffset();
+    this.difference.cpRange();
+
+  }
+
+  getOriginScrollView() {
+    const { scrollRange } = this;
+    return scrollRange.clone();
+  }
+
+  getOriginContentView() {
+    const { contentRange } = this;
+    return contentRange.clone();
+  }
+
+  getOriginLastScrollView() {
+    const { lastScrollRange } = this;
+    if (lastScrollRange) {
+      return lastScrollRange.clone();
+    }
+    return null;
+  }
+
+  getScrollXOffset() {
+    return this.scrollXOffset;
+  }
+
+  getScrollView() {
+    const { table } = this;
+    const { scrollRange } = this;
+    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
+      const { difference } = this;
+      const { dwAddRange } = difference;
+      if (dwAddRange) {
+        return dwAddRange.clone();
+      }
+    }
+    return scrollRange.clone();
+  }
+
+  getContentView() {
+    const { contentRange } = this;
+    const { table } = this;
+    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
+      const { scroll } = table;
+      const { difference } = this;
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_TOP:
+        case SCROLL_TYPE.V_BOTTOM: {
+          const { dwContentRange } = difference;
+          if (dwContentRange) {
+            return dwContentRange.clone();
+          }
+          break;
+        }
+        default: break;
+      }
+    }
+    return contentRange.clone();
+  }
+}
+
+// ================================ 动态内容坐标 ================================
 
 class FixedTopOffset {
 
@@ -1161,7 +1161,7 @@ class FixedLeftIndexOffset {
   }
 }
 
-// ================================= 动态内容 =================================
+// ================================ 动态内容渲染 ================================
 
 class FixedTop {
 
@@ -2500,15 +2500,15 @@ class Table extends Widget {
   bind() {
     const { mousePointer, dynamicView } = this;
     EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
-      dynamicView.computerRange();
+      dynamicView.cpRange();
       this.render();
     });
     EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      dynamicView.computerRange();
+      dynamicView.cpRange();
       this.render();
     });
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      dynamicView.computerRange();
+      dynamicView.cpRange();
       this.render();
     });
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
@@ -2531,10 +2531,11 @@ class Table extends Widget {
 
   drawOptimization() {
     const { cellsHelper } = this;
-    const viewRange = this.getContentViewRange();
+    const { dynamicView } = this;
+    const scrollView = dynamicView.getOriginScrollView();
     let enable = true;
     cellsHelper.getCellByViewRange({
-      rectRange: viewRange,
+      rectRange: scrollView,
       callback: (r, c, cell) => {
         const { borderAttr } = cell;
         const { top, left, right, bottom } = borderAttr;
@@ -2560,6 +2561,7 @@ class Table extends Widget {
     if (enable) {
       this.borderLineHandle.openDrawOptimization();
     } else {
+      this.mode = TABLE_RENDER_MODE.RENDER;
       this.borderLineHandle.closeDrawOptimization();
     }
   }
@@ -2648,7 +2650,7 @@ class Table extends Widget {
     const { draw, dynamicView } = this;
     const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.resize(width, height);
-    dynamicView.computerRange();
+    dynamicView.cpRange();
     this.render();
   }
 
