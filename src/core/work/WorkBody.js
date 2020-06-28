@@ -98,10 +98,11 @@ class WorkBody extends Widget {
     if (Utils.isUnDef(sheet)) return;
     const { scrollBarXHorizontalLayer } = this;
     const { table } = sheet;
-    const { content, scroll } = table;
-    scrollBarXHorizontalLayer.display(content.getWidth() < content.getContentWidth());
-    this.scrollBarY.setSize(content.getHeight(), content.getContentHeight());
-    this.scrollBarX.setSize(content.getWidth(), content.getContentWidth());
+    const { content } = table;
+    const { contentOffset, scroll } = table;
+    scrollBarXHorizontalLayer.display(contentOffset.getFixedWidth() < content.getContentWidth());
+    this.scrollBarY.setSize(contentOffset.getFixedHeight(), content.getContentHeight());
+    this.scrollBarX.setSize(contentOffset.getFixedWidth(), content.getContentWidth());
     this.scrollBarY.scrollMove(scroll.y);
     this.scrollBarX.scrollMove(scroll.x);
   }
@@ -198,8 +199,8 @@ class WorkBody extends Widget {
     const tab = tabView.setActiveTab(index);
     if (sheet && tab) {
       const { table } = sheet;
-      table.resize();
       this.updateScroll();
+      table.resize();
       this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
     }
   }

@@ -2,8 +2,6 @@
  * GridLineHandle
  * @author jerry
  */
-import { RectRange } from '../RectRange';
-
 class GridLineHandle {
 
   /**
@@ -80,36 +78,6 @@ class GridLineHandle {
     let ey;
     let breakpoint;
     lineHandle.hEach({
-      viewRange: new RectRange(viewRange.sri, viewRange.sci, viewRange.sri, viewRange.eci),
-      newRow: (row, y) => {
-        sx = bx;
-        sy = by + y;
-        ex = sx;
-        ey = sy;
-        breakpoint = false;
-      },
-      filter: () => true,
-      jump: (row, col) => {
-        if (breakpoint) {
-          breakpoint = false;
-          line.push({ sx, sy, ex, ey });
-        }
-        const width = cols.getWidth(col);
-        sx = ex + width;
-        ex = sx;
-      },
-      handle: (row, col) => {
-        breakpoint = true;
-        const width = cols.getWidth(col);
-        ex += width;
-      },
-      endRow: () => {
-        if (breakpoint) {
-          line.push({ sx, sy, ex, ey });
-        }
-      },
-    });
-    lineHandle.hEach({
       viewRange,
       newRow: (row, y) => {
         const height = rows.getHeight(row);
@@ -160,36 +128,6 @@ class GridLineHandle {
     let ex;
     let ey;
     let breakpoint;
-    lineHandle.vEach({
-      viewRange: new RectRange(viewRange.sri, viewRange.sci, viewRange.eri, viewRange.sci),
-      newCol: (col, x) => {
-        sx = bx + x;
-        sy = by;
-        ex = sx;
-        ey = sy;
-        breakpoint = false;
-      },
-      filter: () => true,
-      jump: (col, row) => {
-        if (breakpoint) {
-          breakpoint = false;
-          line.push({ sx, sy, ex, ey });
-        }
-        const height = rows.getHeight(row);
-        sy = ey + height;
-        ey = sy;
-      },
-      handle: (col, row) => {
-        breakpoint = true;
-        const height = rows.getHeight(row);
-        ey += height;
-      },
-      endCol: () => {
-        if (breakpoint) {
-          line.push({ sx, sy, ex, ey });
-        }
-      },
-    });
     lineHandle.vEach({
       viewRange,
       newCol: (col, x) => {
@@ -256,7 +194,7 @@ class GridLineHandle {
       if (merge) {
         return false;
       }
-      if (!this.vLineBorderChecked(ci, ri)) {
+      if (this.vLineBorderChecked(ci, ri) === false) {
         return false;
       }
       return lineHandle.vLineRightOverFlowChecked(ci, ri);
