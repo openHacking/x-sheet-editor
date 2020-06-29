@@ -1775,6 +1775,8 @@ class FixedTop {
   renderClear() {
     const { table } = this;
     const { draw, settings } = table;
+    const { cols } = table;
+    const { dynamicView } = table;
     const offset = table.fixedTopOffset;
     const width = offset.getFixedWidth();
     const height = offset.getFixedHeight();
@@ -1792,7 +1794,12 @@ class FixedTop {
         const [sx, sy, ey] = [x, y, y];
         draw.drawImage(el, sx, sy, width, height, cx, ey, width, height);
         draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx + CLEAR_LINE_WIDTH, dy, range.w, height);
+        if (cols.len - 1 === range.eci) {
+          const origin = dynamicView.getOriginScrollView();
+          draw.fillRect(dx + CLEAR_LINE_WIDTH, dy, range.w + (width - origin.w), height);
+        } else {
+          draw.fillRect(dx + CLEAR_LINE_WIDTH, dy, range.w, height);
+        }
         break;
       }
       case SCROLL_TYPE.H_LEFT: {
@@ -2081,6 +2088,8 @@ class FixedLeft {
   renderClear() {
     const { table } = this;
     const { draw, settings } = table;
+    const { dynamicView } = table;
+    const { rows } = table;
     const offset = table.fixedLeftOffset;
     const width = offset.getFixedWidth();
     const height = offset.getFixedHeight();
@@ -2098,7 +2107,12 @@ class FixedLeft {
         const [sx, ex, sy] = [x, x, y];
         draw.drawImage(el, sx, sy, width, height, ex, cy, width, height);
         draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx, dy + CLEAR_LINE_WIDTH, width, range.h);
+        if (rows.len - 1 === range.eri) {
+          const origin = dynamicView.getOriginScrollView();
+          draw.fillRect(dx, dy + CLEAR_LINE_WIDTH, width, range.h + (height - origin.h));
+        } else {
+          draw.fillRect(dx, dy + CLEAR_LINE_WIDTH, width, range.h);
+        }
         break;
       }
       case SCROLL_TYPE.V_TOP: {
@@ -2394,6 +2408,7 @@ class Content {
     const { table } = this;
     const { draw, settings } = table;
     const { dynamicView } = table;
+    const { rows, cols } = table;
     const offset = table.contentOffset;
     const width = offset.getFixedWidth();
     const height = offset.getFixedHeight();
@@ -2412,7 +2427,12 @@ class Content {
         const [sx, ex, sy] = [x, x, y];
         draw.drawImage(el, sx, sy, width, height, ex, cy, width, height);
         draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx, dy + CLEAR_LINE_WIDTH, width, range.h);
+        if (rows.len - 1 === range.eri) {
+          const origin = dynamicView.getOriginScrollView();
+          draw.fillRect(dx, dy + CLEAR_LINE_WIDTH, width, range.h + (height - origin.h));
+        } else {
+          draw.fillRect(dx, dy + CLEAR_LINE_WIDTH, width, range.h);
+        }
         break;
       }
       case SCROLL_TYPE.V_TOP: {
@@ -2426,7 +2446,12 @@ class Content {
         const [sx, sy, ey] = [x, y, y];
         draw.drawImage(el, sx, sy, width, height, cx, ey, width, height);
         draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx + CLEAR_LINE_WIDTH, dy, range.w, height);
+        if (cols.len - 1 === range.eci) {
+          const origin = dynamicView.getOriginScrollView();
+          draw.fillRect(dx + CLEAR_LINE_WIDTH, dy, range.w + (width - origin.w), height);
+        } else {
+          draw.fillRect(dx + CLEAR_LINE_WIDTH, dy, range.w, height);
+        }
         break;
       }
       case SCROLL_TYPE.H_LEFT: {
@@ -2510,7 +2535,7 @@ class FixedTopIndex {
     draw.attr({
       fillStyle: '#f6f7fa',
     });
-    draw.fillRect(0, 0, width, height);
+    // draw.fillRect(0, 0, width, height);
     // 绘制文字
     draw.attr({
       textAlign: 'center',
@@ -2542,6 +2567,8 @@ class FixedTopIndex {
   renderClear() {
     const { table } = this;
     const { draw, settings } = table;
+    const { cols, grid } = table;
+    const { dynamicView } = table;
     const offset = table.fixedTopIndexOffset;
     const width = offset.getFixedWidth();
     const height = offset.getFixedHeight();
@@ -2560,7 +2587,12 @@ class FixedTopIndex {
         const [sx, sy, ey] = [x, y, y];
         draw.drawImage(el, sx, sy, width, height, cx, ey, width, height);
         draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx, dy, range.w, height);
+        if (cols.len - 1 === range.eci) {
+          const origin = dynamicView.getOriginScrollView();
+          draw.fillRect(dx, dy, range.w + (width - origin.w), height + grid.lineWidth());
+        } else {
+          draw.fillRect(dx, dy, range.w, height + grid.lineWidth());
+        }
         break;
       }
       default: {
@@ -2647,6 +2679,8 @@ class FixedLeftIndex {
   renderClear() {
     const { table } = this;
     const { draw, settings } = table;
+    const { rows, grid } = table;
+    const { dynamicView } = table;
     const offset = table.fixedLeftIndexOffset;
     const width = offset.getFixedWidth();
     const height = offset.getFixedHeight();
@@ -2665,7 +2699,12 @@ class FixedLeftIndex {
         const [sx, ex, sy] = [x, x, y];
         draw.drawImage(el, sx, sy, width, height, ex, cy, width, height);
         draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx, dy, width, range.h);
+        if (rows.len - 1 === range.eri) {
+          const origin = dynamicView.getOriginScrollView();
+          draw.fillRect(dx, dy, width + grid.lineWidth(), range.h + (height - origin.h));
+        } else {
+          draw.fillRect(dx, dy, width + grid.lineWidth(), range.h);
+        }
         break;
       }
       default: {
@@ -2791,7 +2830,7 @@ const defaultSettings = {
   },
   data: [],
   rows: {
-    len: 1000,
+    len: 10000,
     height: 30,
   },
   cols: {

@@ -30,7 +30,7 @@ class XSheet extends Widget {
   }
 }
 
-XSheet.version = '1.0.0-alpha';
+XSheet.version = '1.0.1-alpha';
 
 if (window) {
   window.XSheet = XSheet;
