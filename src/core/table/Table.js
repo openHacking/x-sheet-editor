@@ -38,7 +38,7 @@ import {
   ScreenSelector,
 } from './screenwiget/selector/ScreenSelector';
 
-const CLEAR_LINE_WIDTH = 5;
+const CLEAR_LINE_WIDTH = 4;
 
 const TABLE_RENDER_MODE = {
   SCROLL: 1,
