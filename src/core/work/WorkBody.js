@@ -29,7 +29,7 @@ class WorkBody extends Widget {
 
     // 版本标识
     this.poweredBy = h('div', `${cssPrefix}-powered-by-tips`);
-    this.poweredBy.text(' X-Sheet 1.0.0-development ');
+    this.poweredBy.text(' X-Sheet 1.0.1-development ');
     this.children(this.poweredBy);
 
     // sheet表

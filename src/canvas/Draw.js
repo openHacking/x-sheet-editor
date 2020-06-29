@@ -13,6 +13,7 @@ function angleToRadian(angle) {
 }
 
 class Draw {
+
   constructor(el) {
     this.el = el;
     this.ctx = el.getContext('2d');

@@ -37,6 +37,7 @@ import {
   SCREEN_SELECT_EVENT,
   ScreenSelector,
 } from './screenwiget/selector/ScreenSelector';
+import { OFFDraw } from '../../canvas/OFFDraw';
 
 const CLEAR_LINE_WIDTH = 4;
 
@@ -76,6 +77,11 @@ class FrozenLeftIndexOffset {
     const { fixed } = table;
     const { fxTop } = fixed;
     return table.rows.sectionSumHeight(0, fxTop);
+  }
+
+  getScrollViewChange() {
+    const { table } = this;
+    return table.mode !== TABLE_RENDER_MODE.SCROLL;
   }
 
   getScrollView() {
@@ -118,6 +124,11 @@ class FrozenTopIndexOffset {
     const { settings } = table;
     const { index } = settings;
     return index.height;
+  }
+
+  getScrollViewChange() {
+    const { table } = this;
+    return table.mode !== TABLE_RENDER_MODE.SCROLL;
   }
 
   getScrollView() {
@@ -177,784 +188,6 @@ class FrozenLeftTopOffset {
     const width = this.getFixedWidth();
     const height = this.getFixedHeight();
     return new RectRange(0, 0, fxTop, fxLeft, width, height);
-  }
-
-}
-
-// =============================== 冻结内容渲染 =================================
-
-class FrozenLeftTop {
-
-  constructor(table) {
-    this.table = table;
-  }
-
-  getScrollViewRange() {
-    const { table } = this;
-    const { dynamicView } = table;
-    const { fixed } = table;
-    const { fxLeft, fxTop } = fixed;
-    const scrollView = dynamicView.getOriginScrollView();
-    scrollView.sci = 0;
-    scrollView.eci = fxLeft;
-    scrollView.sri = 0;
-    scrollView.eri = fxTop;
-    return scrollView;
-  }
-
-  drawGrid(viewRange, offsetX, offsetY) {
-    const { table } = this;
-    const {
-      draw, grid, lineHandle, gridLineHandle,
-    } = table;
-    draw.save();
-    draw.offset(offsetX, offsetY);
-    const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
-    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
-    const hLine = gridLineHandle.hLine(viewRange);
-    const vLine = gridLineHandle.vLine(viewRange);
-    hLine.forEach((item) => {
-      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    vLine.forEach((item) => {
-      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    const hMergeLine = gridLineHandle.hMergeLine(coincideViewBrink);
-    const vMergeLine = gridLineHandle.vMergeLine(coincideViewBrink);
-    hMergeLine.forEach((item) => {
-      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    vMergeLine.forEach((item) => {
-      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    draw.offset(0, 0);
-    draw.restore();
-  }
-
-  drawBorder(viewRange, offsetX, offsetY) {
-    const { table } = this;
-    const {
-      draw, line, lineHandle, borderLineHandle,
-    } = table;
-    draw.save();
-    draw.offset(offsetX, offsetY);
-    const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
-    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
-    const htLine = borderLineHandle.htLine(viewRange);
-    const hbLine = borderLineHandle.hbLine(viewRange);
-    const vlLine = borderLineHandle.vlLine(viewRange);
-    const vrLine = borderLineHandle.vrLine(viewRange);
-    htLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { top } = borderAttr;
-      const { color, width, type } = top;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
-    });
-    hbLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { bottom } = borderAttr;
-      const { color, width, type } = bottom;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
-    });
-    vlLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { left } = borderAttr;
-      const { color, width, type } = left;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
-    });
-    vrLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { right } = borderAttr;
-      const { color, width, type } = right;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
-    });
-    const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
-    const hbMergeLine = borderLineHandle.hbMergeLine(coincideViewBrink);
-    const vlMergeLine = borderLineHandle.vlMergeLine(coincideViewBrink);
-    const vrMergeLine = borderLineHandle.vrMergeLine(coincideViewBrink);
-    htMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { top } = borderAttr;
-      const { color, width, type } = top;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
-    });
-    hbMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { bottom } = borderAttr;
-      const { color, width, type } = bottom;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
-    });
-    vlMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { left } = borderAttr;
-      const { color, width, type } = left;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
-    });
-    vrMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { right } = borderAttr;
-      const { color, width, type } = right;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
-    });
-    draw.offset(0, 0);
-    draw.restore();
-  }
-
-  drawBackGround(viewRange, offsetX, offsetY) {
-    const { table } = this;
-    const {
-      draw, grid, cellsHelper,
-    } = table;
-    draw.save();
-    draw.offset(offsetX, offsetY);
-    // 绘制单元格背景
-    cellsHelper.getCellByViewRange({
-      rectRange: viewRange,
-      callback: (i, c, cell, rect) => {
-        // 绘制背景
-        rect.expandSize(grid.lineWidth());
-        const box = new Box({ draw, rect });
-        box.drawBackgroundColor(cell.background);
-      },
-    });
-    // 绘制合并单元格背景
-    cellsHelper.getMergeCellByViewRange({
-      rectRange: viewRange,
-      callback: (rect, cell) => {
-        // 绘制背景
-        rect.expandSize(grid.lineWidth());
-        const box = new Box({ draw, rect });
-        box.drawBackgroundColor(cell.background);
-      },
-    });
-    draw.offset(0, 0);
-    draw.restore();
-  }
-
-  drawCells(viewRange, offsetX, offsetY) {
-    const { table } = this;
-    const {
-      draw, cellsHelper, grid,
-    } = table;
-    draw.save();
-    draw.offset(offsetX, offsetY);
-    // 绘制单元格文字
-    cellsHelper.getCellSkipMergeCellByViewRange({
-      rectRange: viewRange,
-      callback: (i, c, cell, rect, overflow) => {
-        // 绘制文字
-        const { fontAttr } = cell;
-        const { align } = fontAttr;
-        const font = new Font({
-          text: Format(cell.format, cell.text),
-          rect: rect.expandSize(grid.lineWidth()),
-          dw: draw,
-          overflow,
-          attr: fontAttr,
-        });
-        font.setOverflowCrop(align === ALIGN.center);
-        cell.setContentWidth(font.draw());
-        // Test
-        // draw.attr({ globalAlpha: 0.3 });
-        // draw.fillRect(rect.x, rect.y, cell.contentWidth, rect.height);
-      },
-    });
-    // 绘制合并单元格文字
-    cellsHelper.getMergeCellByViewRange({
-      rectRange: viewRange,
-      callback: (rect, cell) => {
-        // console.log('rect >>>', rect);
-        // 绘制文字
-        const { fontAttr } = cell;
-        const font = new Font({
-          text: Format(cell.format, cell.text),
-          rect: rect.expandSize(grid.lineWidth()),
-          dw: draw,
-          overflow: null,
-          attr: fontAttr,
-        });
-        font.setTextWrap(TEXT_WRAP.WORD_WRAP);
-        cell.setContentWidth(font.draw());
-      },
-    });
-    draw.offset(0, 0);
-    draw.restore();
-  }
-
-  renderClear() {
-    const { table } = this;
-    const { draw, settings } = table;
-    const offset = table.frozenLeftTopOffset;
-    const width = offset.getFixedWidth();
-    const height = offset.getFixedHeight();
-    const x = offset.getFixedXOffset();
-    const y = offset.getFixedYOffset();
-    draw.attr({
-      fillStyle: settings.table.background,
-    });
-    draw.fillRect(x, y, width, height);
-  }
-
-  render() {
-    const { table } = this;
-    const { draw, grid, settings } = table;
-    const { frozenLeftTopOffset } = table;
-    const change = frozenLeftTopOffset.getScrollViewChange();
-    if (change) {
-      const scrollView = frozenLeftTopOffset.getScrollView();
-      const offsetX = frozenLeftTopOffset.getFixedXOffset();
-      const offsetY = frozenLeftTopOffset.getFixedYOffset();
-      const fixedWidth = frozenLeftTopOffset.getFixedWidth();
-      const fixedHeight = frozenLeftTopOffset.getFixedHeight();
-      // 裁剪背景
-      const clearRect = new Rect({
-        x: offsetX + grid.lineWidth(),
-        y: offsetY + grid.lineWidth(),
-        width: fixedWidth,
-        height: fixedHeight,
-      });
-      const clearCrop = new Crop({ draw, rect: clearRect, offset: grid.lineWidth() });
-      clearCrop.open();
-      this.renderClear();
-      clearCrop.close();
-      // 裁剪内容
-      const drawRect = new Rect({
-        x: offsetX + grid.lineWidth(),
-        y: offsetY + grid.lineWidth(),
-        width: fixedWidth,
-        height: fixedHeight,
-      });
-      const drawCrop = new Crop({ draw, rect: drawRect, offset: grid.lineWidth() });
-      drawCrop.open();
-      this.drawBackGround(scrollView, offsetX, offsetY);
-      this.drawCells(scrollView, offsetX, offsetY);
-      if (settings.table.showGrid) {
-        this.drawGrid(scrollView, offsetX, offsetY);
-      }
-      this.drawBorder(scrollView, offsetX, offsetY);
-      drawCrop.close();
-    }
-  }
-
-}
-
-class FrozenLeftIndex {
-
-  constructor(table) {
-    this.table = table;
-  }
-
-  draw(viewRange, offsetX, offsetY, width, height) {
-    const { table } = this;
-    const {
-      draw, grid, rows, settings,
-    } = table;
-    const { sri, eri } = viewRange;
-    draw.save();
-    draw.offset(offsetX, offsetY);
-    // 绘制背景
-    draw.attr({
-      fillStyle: '#f6f7fa',
-    });
-    draw.fillRect(0, 0, width, height);
-    // 绘制文字
-    draw.attr({
-      textAlign: 'center',
-      textBaseline: 'middle',
-      font: `${npx(11)}px Arial`,
-      fillStyle: '#585757',
-    });
-    rows.eachHeight(sri, eri, (i, ch, y) => {
-      draw.fillText(i + 1, width / 2, y + (ch / 2));
-    });
-    // 绘制边框
-    let lineHeight = 0;
-    draw.attr({
-      strokeStyle: settings.table.borderColor,
-    });
-    rows.eachHeight(sri, eri, (i, ch, y) => {
-      lineHeight += ch;
-      grid.horizontalLine(0, y, width, y);
-      if (i === eri) grid.horizontalLine(0, y + ch, width, y + ch);
-    });
-    grid.verticalLine(width, 0, width, lineHeight);
-    draw.offset(0, 0);
-    draw.restore();
-  }
-
-  render() {
-    const { table } = this;
-    const { frozenLeftIndexOffset } = table;
-    const offsetX = frozenLeftIndexOffset.getFixedXOffset();
-    const offsetY = frozenLeftIndexOffset.getFixedYOffset();
-    const width = frozenLeftIndexOffset.getFixedWidth();
-    const height = frozenLeftIndexOffset.getFixedHeight();
-    const scrollView = frozenLeftIndexOffset.getScrollView();
-    this.draw(scrollView, offsetX, offsetY, width, height);
-  }
-
-}
-
-class FrozenTopIndex {
-
-  constructor(table) {
-    this.table = table;
-  }
-
-  draw(viewRange, offsetX, offsetY, width, height) {
-    const { table } = this;
-    const {
-      draw, grid, cols, settings,
-    } = table;
-    const { sci, eci } = viewRange;
-    draw.save();
-    draw.offset(offsetX, offsetY);
-    // 绘制背景
-    draw.attr({
-      fillStyle: '#f6f7fa',
-    });
-    draw.fillRect(0, 0, width, height);
-    // 绘制文字
-    draw.attr({
-      textAlign: 'center',
-      textBaseline: 'middle',
-      font: `${npx(11)}px Arial`,
-      fillStyle: '#585757',
-    });
-    cols.eachWidth(sci, eci, (i, cw, x) => {
-      draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
-    });
-    // 绘制边框
-    draw.attr({
-      strokeStyle: settings.table.borderColor,
-    });
-    let lineWidth = 0;
-    draw.attr({
-      strokeStyle: settings.table.borderColor,
-    });
-    cols.eachWidth(sci, eci, (i, cw, x) => {
-      lineWidth += cw;
-      grid.verticalLine(x, 0, x, height);
-      if (i === eci) grid.verticalLine(x + cw, 0, x + cw, height);
-    });
-    grid.horizontalLine(0, height, lineWidth, height);
-    draw.offset(0, 0);
-    draw.restore();
-  }
-
-  render() {
-    const { table } = this;
-    const { frozenTopIndexOffset } = table;
-    const offsetX = frozenTopIndexOffset.getFixedXOffset();
-    const offsetY = frozenTopIndexOffset.getFixedYOffset();
-    const width = frozenTopIndexOffset.getFixedWidth();
-    const height = frozenTopIndexOffset.getFixedHeight();
-    const scrollView = frozenTopIndexOffset.getScrollView();
-    this.draw(scrollView, offsetX, offsetY, width, height);
-  }
-
-}
-
-class FrozenRect {
-
-  constructor(table) {
-    this.table = table;
-  }
-
-  draw(offsetX, offsetY, width, height) {
-    const { table } = this;
-    const { draw, grid, settings } = table;
-    draw.save();
-    draw.offset(offsetX, offsetY);
-    // 绘制背景
-    draw.attr({
-      fillStyle: '#f4f5f8',
-    });
-    draw.fillRect(0, 0, width, height);
-    draw.offset(0, 0);
-    draw.restore();
-    // 绘制边框
-    draw.attr({
-      strokeStyle: settings.table.borderColor,
-    });
-    grid.verticalLine(width, offsetY, width, height);
-    grid.horizontalLine(0, height, width, height);
-  }
-
-  render() {
-    const { table } = this;
-    const { settings } = table;
-    const { index } = settings;
-    this.draw(0, 0, index.width, index.height);
-  }
-
-}
-
-// ================================ 动态视图计算 ================================
-
-class DynamicViewDifference {
-
-  constructor(dynamicView) {
-    this.dynamicView = dynamicView;
-    // 滚动时的新区域
-    this.subtractRange = null;
-    this.addRange = null;
-    // 渲染截图的坐标
-    this.captureX = 0;
-    this.captureY = 0;
-    // 滚动区域渲染
-    this.dwAddRange = null;
-    this.dwContentRange = null;
-    // 渲染区域坐标
-    this.dwXOffset = 0;
-    this.dwYOffset = 0;
-  }
-
-  cpSubtractRange() {
-    const { dynamicView } = this;
-    const { table } = dynamicView;
-    const { lastScrollRange } = dynamicView;
-    const { scrollRange } = dynamicView;
-    const { cols, rows } = table;
-    if (lastScrollRange) {
-      const [subtractRange] = lastScrollRange.coincideDifference(scrollRange);
-      if (subtractRange) {
-        subtractRange.w = cols.rectRangeSumWidth(subtractRange);
-        subtractRange.h = rows.rectRangeSumHeight(subtractRange);
-        this.subtractRange = subtractRange;
-      }
-    }
-  }
-
-  cpAddRange() {
-    const { dynamicView } = this;
-    const { table } = dynamicView;
-    const { lastScrollRange } = dynamicView;
-    const { scrollRange } = dynamicView;
-    const { cols, rows } = table;
-    if (lastScrollRange) {
-      const [addRange] = scrollRange.coincideDifference(lastScrollRange);
-      if (addRange) {
-        addRange.w = cols.rectRangeSumWidth(addRange);
-        addRange.h = rows.rectRangeSumHeight(addRange);
-        this.addRange = addRange;
-      }
-    }
-  }
-
-  cpCaptureXY() {
-    const { dynamicView } = this;
-    const { addRange, subtractRange } = this;
-    const { table } = dynamicView;
-    const { scroll } = table;
-    if (addRange || subtractRange) {
-      let captureX = 0;
-      let captureY = 0;
-      switch (scroll.type) {
-        case SCROLL_TYPE.V_TOP: {
-          captureY = addRange.h;
-          break;
-        }
-        case SCROLL_TYPE.V_BOTTOM: {
-          captureY = -subtractRange.h;
-          break;
-        }
-        case SCROLL_TYPE.H_LEFT: {
-          captureX = addRange.w;
-          break;
-        }
-        case SCROLL_TYPE.H_RIGHT: {
-          captureX = -subtractRange.w;
-          break;
-        }
-        default: break;
-      }
-      this.captureX = captureX;
-      this.captureY = captureY;
-    }
-  }
-
-  cpRange() {
-    this.subtractRange = null;
-    this.addRange = null;
-    this.captureX = 0;
-    this.captureY = 0;
-    this.dwAddRange = null;
-    this.dwContentRange = null;
-    this.dwXOffset = 0;
-    this.dwYOffset = 0;
-    this.cpSubtractRange();
-    this.cpAddRange();
-    this.cpDwAddRange();
-    this.cpDwContentRange();
-    this.cpCaptureXY();
-    this.cpDwOffsetXY();
-  }
-
-  cpDwAddRange() {
-    const { dynamicView } = this;
-    const { addRange } = this;
-    const { table } = dynamicView;
-    const { scroll } = table;
-    if (addRange) {
-      this.dwAddRange = addRange.clone();
-      const { rows, cols } = table;
-      switch (scroll.type) {
-        case SCROLL_TYPE.H_RIGHT: {
-          this.dwAddRange.sci -= 1;
-          this.dwAddRange.w = cols.rectRangeSumWidth(this.dwAddRange);
-          break;
-        }
-        case SCROLL_TYPE.V_BOTTOM: {
-          this.dwAddRange.sri -= 1;
-          this.dwAddRange.h = rows.rectRangeSumHeight(this.dwAddRange);
-          break;
-        }
-        case SCROLL_TYPE.H_LEFT: {
-          this.dwAddRange.eci += 1;
-          this.dwAddRange.w = cols.rectRangeSumWidth(this.dwAddRange);
-          break;
-        }
-        case SCROLL_TYPE.V_TOP: {
-          this.dwAddRange.eri += 1;
-          this.dwAddRange.h = rows.rectRangeSumHeight(this.dwAddRange);
-          break;
-        }
-        default: break;
-      }
-    }
-  }
-
-  cpDwContentRange() {
-    const { dynamicView } = this;
-    const { table } = dynamicView;
-    const { dwAddRange } = this;
-    if (dwAddRange) {
-      const { sri, eri } = dwAddRange;
-      const { cols } = table;
-      this.dwContentRange = dwAddRange.clone();
-      this.dwContentRange.set(sri, 0, eri, cols.len);
-      this.dwContentRange.w = cols.rectRangeSumWidth(this.dwContentRange);
-    }
-  }
-
-  cpDwOffsetXY() {
-    const { dynamicView } = this;
-    const { dwAddRange } = this;
-    const { table } = dynamicView;
-    if (dwAddRange) {
-      const width = dwAddRange.w;
-      const height = dwAddRange.h;
-      let dwXOffset = 0;
-      let dwYOffset = 0;
-      const { scroll } = table;
-      switch (scroll.type) {
-        case SCROLL_TYPE.V_TOP: {
-          dwYOffset = 0;
-          break;
-        }
-        case SCROLL_TYPE.V_BOTTOM: {
-          const { rows } = table;
-          const { scrollRange } = dynamicView;
-          const h = rows.rectRangeSumHeight(scrollRange);
-          dwYOffset = h - height;
-          break;
-        }
-        case SCROLL_TYPE.H_LEFT: {
-          dwXOffset = 0;
-          break;
-        }
-        case SCROLL_TYPE.H_RIGHT: {
-          const { cols } = table;
-          const { scrollRange } = dynamicView;
-          const w = cols.rectRangeSumWidth(scrollRange);
-          dwXOffset = w - width;
-          break;
-        }
-        default: break;
-      }
-      this.dwXOffset = dwXOffset;
-      this.dwYOffset = dwYOffset;
-    }
-  }
-
-  getCaptureX() {
-    const { dynamicView } = this;
-    const { table } = dynamicView;
-    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
-      return this.captureX;
-    }
-    return 0;
-  }
-
-  getCaptureY() {
-    const { dynamicView } = this;
-    const { table } = dynamicView;
-    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
-      return this.captureY;
-    }
-    return 0;
-  }
-
-  getDwXOffset() {
-    const { dynamicView } = this;
-    const { table } = dynamicView;
-    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
-      return this.dwXOffset;
-    }
-    return 0;
-  }
-
-  getDwYOffset() {
-    const { dynamicView } = this;
-    const { table } = dynamicView;
-    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
-      return this.dwYOffset;
-    }
-    return 0;
-  }
-
-}
-
-class DynamicView {
-
-  constructor(table) {
-    this.difference = new DynamicViewDifference(this);
-    this.table = table;
-    this.lastScrollRange = null;
-    this.scrollRange = null;
-    this.contentRange = null;
-    this.scrollXOffset = 0;
-  }
-
-  cpScrollRange() {
-    const { table } = this;
-    const {
-      rows, cols, scroll, contentOffset,
-    } = table;
-    let [width, height] = [0, 0];
-    const { ri, ci } = scroll;
-    let [eri, eci] = [rows.len, cols.len];
-    for (let i = ri; i < rows.len; i += 1) {
-      height += rows.getHeight(i);
-      eri = i;
-      if (height > contentOffset.getFixedHeight()) break;
-    }
-    for (let j = ci; j < cols.len; j += 1) {
-      width += cols.getWidth(j);
-      eci = j;
-      if (width > contentOffset.getFixedWidth()) break;
-    }
-    this.scrollRange = new RectRange(ri, ci, eri, eci, width, height);
-  }
-
-  cpContentRange() {
-    const { table } = this;
-    const { scrollRange } = this;
-    const { sri, eri } = scrollRange;
-    const { cols } = table;
-    this.contentRange = scrollRange.clone();
-    this.contentRange.set(sri, 0, eri, cols.len);
-    this.contentRange.w = cols.rectRangeSumWidth(scrollRange);
-  }
-
-  cpScrollXOffset() {
-    const { table } = this;
-    const { scroll, cols } = table;
-    const { ci } = scroll;
-    this.scrollXOffset = -cols.sectionSumWidth(0, ci - 1);
-  }
-
-  cpRange() {
-    this.lastScrollRange = this.scrollRange;
-    this.scrollRange = null;
-    this.contentRange = null;
-    this.scrollXOffset = 0;
-    this.cpScrollRange();
-    this.cpContentRange();
-    this.cpScrollXOffset();
-    this.difference.cpRange();
-
-  }
-
-  getOriginScrollView() {
-    const { scrollRange } = this;
-    return scrollRange.clone();
-  }
-
-  getOriginContentView() {
-    const { contentRange } = this;
-    return contentRange.clone();
-  }
-
-  getOriginLastScrollView() {
-    const { lastScrollRange } = this;
-    if (lastScrollRange) {
-      return lastScrollRange.clone();
-    }
-    return null;
-  }
-
-  getScrollXOffset() {
-    return this.scrollXOffset;
-  }
-
-  getScrollView() {
-    const { table } = this;
-    const { scrollRange } = this;
-    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
-      const { difference } = this;
-      const { dwAddRange } = difference;
-      if (dwAddRange) {
-        return dwAddRange.clone();
-      }
-    }
-    return scrollRange.clone();
-  }
-
-  getContentView() {
-    const { contentRange } = this;
-    const { table } = this;
-    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
-      const { scroll } = table;
-      const { difference } = this;
-      switch (scroll.type) {
-        case SCROLL_TYPE.V_TOP:
-        case SCROLL_TYPE.V_BOTTOM: {
-          const { dwContentRange } = difference;
-          if (dwContentRange) {
-            return dwContentRange.clone();
-          }
-          break;
-        }
-        default: break;
-      }
-    }
-    return contentRange.clone();
   }
 
 }
@@ -1533,6 +766,810 @@ class FixedLeftIndexOffset {
 
 }
 
+// =============================== 动态视图计算 ================================
+
+class DynamicViewDifference {
+
+  constructor(dynamicView) {
+    this.dynamicView = dynamicView;
+    // 滚动时的新区域
+    this.subtractRange = null;
+    this.addRange = null;
+    // 渲染截图的坐标
+    this.captureX = 0;
+    this.captureY = 0;
+    // 滚动区域渲染
+    this.dwAddRange = null;
+    this.dwContentRange = null;
+    // 渲染区域坐标
+    this.dwXOffset = 0;
+    this.dwYOffset = 0;
+  }
+
+  cpSubtractRange() {
+    const { dynamicView } = this;
+    const { table } = dynamicView;
+    const { lastScrollRange } = dynamicView;
+    const { scrollRange } = dynamicView;
+    const { cols, rows } = table;
+    if (lastScrollRange) {
+      const [subtractRange] = lastScrollRange.coincideDifference(scrollRange);
+      if (subtractRange) {
+        subtractRange.w = cols.rectRangeSumWidth(subtractRange);
+        subtractRange.h = rows.rectRangeSumHeight(subtractRange);
+        this.subtractRange = subtractRange;
+      }
+    }
+  }
+
+  cpAddRange() {
+    const { dynamicView } = this;
+    const { table } = dynamicView;
+    const { lastScrollRange } = dynamicView;
+    const { scrollRange } = dynamicView;
+    const { cols, rows } = table;
+    if (lastScrollRange) {
+      const [addRange] = scrollRange.coincideDifference(lastScrollRange);
+      if (addRange) {
+        addRange.w = cols.rectRangeSumWidth(addRange);
+        addRange.h = rows.rectRangeSumHeight(addRange);
+        this.addRange = addRange;
+      }
+    }
+  }
+
+  cpCaptureXY() {
+    const { dynamicView } = this;
+    const { addRange, subtractRange } = this;
+    const { table } = dynamicView;
+    const { scroll } = table;
+    if (addRange || subtractRange) {
+      let captureX = 0;
+      let captureY = 0;
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_TOP: {
+          captureY = addRange.h;
+          break;
+        }
+        case SCROLL_TYPE.V_BOTTOM: {
+          captureY = -subtractRange.h;
+          break;
+        }
+        case SCROLL_TYPE.H_LEFT: {
+          captureX = addRange.w;
+          break;
+        }
+        case SCROLL_TYPE.H_RIGHT: {
+          captureX = -subtractRange.w;
+          break;
+        }
+        default: break;
+      }
+      this.captureX = captureX;
+      this.captureY = captureY;
+    }
+  }
+
+  cpRange() {
+    this.subtractRange = null;
+    this.addRange = null;
+    this.captureX = 0;
+    this.captureY = 0;
+    this.dwAddRange = null;
+    this.dwContentRange = null;
+    this.dwXOffset = 0;
+    this.dwYOffset = 0;
+    this.cpSubtractRange();
+    this.cpAddRange();
+    this.cpDwAddRange();
+    this.cpDwContentRange();
+    this.cpCaptureXY();
+    this.cpDwOffsetXY();
+  }
+
+  cpDwAddRange() {
+    const { dynamicView } = this;
+    const { addRange } = this;
+    const { table } = dynamicView;
+    const { scroll } = table;
+    if (addRange) {
+      this.dwAddRange = addRange.clone();
+      const { rows, cols } = table;
+      switch (scroll.type) {
+        case SCROLL_TYPE.H_RIGHT: {
+          this.dwAddRange.sci -= 1;
+          this.dwAddRange.w = cols.rectRangeSumWidth(this.dwAddRange);
+          break;
+        }
+        case SCROLL_TYPE.V_BOTTOM: {
+          this.dwAddRange.sri -= 1;
+          this.dwAddRange.h = rows.rectRangeSumHeight(this.dwAddRange);
+          break;
+        }
+        case SCROLL_TYPE.H_LEFT: {
+          this.dwAddRange.eci += 1;
+          this.dwAddRange.w = cols.rectRangeSumWidth(this.dwAddRange);
+          break;
+        }
+        case SCROLL_TYPE.V_TOP: {
+          this.dwAddRange.eri += 1;
+          this.dwAddRange.h = rows.rectRangeSumHeight(this.dwAddRange);
+          break;
+        }
+        default: break;
+      }
+    }
+  }
+
+  cpDwContentRange() {
+    const { dynamicView } = this;
+    const { table } = dynamicView;
+    const { dwAddRange } = this;
+    if (dwAddRange) {
+      const { sri, eri } = dwAddRange;
+      const { cols } = table;
+      this.dwContentRange = dwAddRange.clone();
+      this.dwContentRange.set(sri, 0, eri, cols.len);
+      this.dwContentRange.w = cols.rectRangeSumWidth(this.dwContentRange);
+    }
+  }
+
+  cpDwOffsetXY() {
+    const { dynamicView } = this;
+    const { dwAddRange } = this;
+    const { table } = dynamicView;
+    if (dwAddRange) {
+      const width = dwAddRange.w;
+      const height = dwAddRange.h;
+      let dwXOffset = 0;
+      let dwYOffset = 0;
+      const { scroll } = table;
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_TOP: {
+          dwYOffset = 0;
+          break;
+        }
+        case SCROLL_TYPE.V_BOTTOM: {
+          const { rows } = table;
+          const { scrollRange } = dynamicView;
+          const h = rows.rectRangeSumHeight(scrollRange);
+          dwYOffset = h - height;
+          break;
+        }
+        case SCROLL_TYPE.H_LEFT: {
+          dwXOffset = 0;
+          break;
+        }
+        case SCROLL_TYPE.H_RIGHT: {
+          const { cols } = table;
+          const { scrollRange } = dynamicView;
+          const w = cols.rectRangeSumWidth(scrollRange);
+          dwXOffset = w - width;
+          break;
+        }
+        default: break;
+      }
+      this.dwXOffset = dwXOffset;
+      this.dwYOffset = dwYOffset;
+    }
+  }
+
+  getCaptureX() {
+    const { dynamicView } = this;
+    const { table } = dynamicView;
+    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
+      return this.captureX;
+    }
+    return 0;
+  }
+
+  getCaptureY() {
+    const { dynamicView } = this;
+    const { table } = dynamicView;
+    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
+      return this.captureY;
+    }
+    return 0;
+  }
+
+  getDwXOffset() {
+    const { dynamicView } = this;
+    const { table } = dynamicView;
+    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
+      return this.dwXOffset;
+    }
+    return 0;
+  }
+
+  getDwYOffset() {
+    const { dynamicView } = this;
+    const { table } = dynamicView;
+    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
+      return this.dwYOffset;
+    }
+    return 0;
+  }
+
+}
+
+class DynamicView {
+
+  constructor(table) {
+    this.difference = new DynamicViewDifference(this);
+    this.table = table;
+    this.lastScrollRange = null;
+    this.scrollRange = null;
+    this.contentRange = null;
+    this.scrollXOffset = 0;
+  }
+
+  cpScrollRange() {
+    const { table } = this;
+    const {
+      rows, cols, scroll, contentOffset,
+    } = table;
+    let [width, height] = [0, 0];
+    const { ri, ci } = scroll;
+    let [eri, eci] = [rows.len, cols.len];
+    for (let i = ri; i < rows.len; i += 1) {
+      height += rows.getHeight(i);
+      eri = i;
+      if (height > contentOffset.getFixedHeight()) break;
+    }
+    for (let j = ci; j < cols.len; j += 1) {
+      width += cols.getWidth(j);
+      eci = j;
+      if (width > contentOffset.getFixedWidth()) break;
+    }
+    this.scrollRange = new RectRange(ri, ci, eri, eci, width, height);
+  }
+
+  cpContentRange() {
+    const { table } = this;
+    const { scrollRange } = this;
+    const { sri, eri } = scrollRange;
+    const { cols } = table;
+    this.contentRange = scrollRange.clone();
+    this.contentRange.set(sri, 0, eri, cols.len);
+    this.contentRange.w = cols.rectRangeSumWidth(scrollRange);
+  }
+
+  cpScrollXOffset() {
+    const { table } = this;
+    const { scroll, cols } = table;
+    const { ci } = scroll;
+    this.scrollXOffset = -cols.sectionSumWidth(0, ci - 1);
+  }
+
+  cpRange() {
+    this.lastScrollRange = this.scrollRange;
+    this.scrollRange = null;
+    this.contentRange = null;
+    this.scrollXOffset = 0;
+    this.cpScrollRange();
+    this.cpContentRange();
+    this.cpScrollXOffset();
+    this.difference.cpRange();
+
+  }
+
+  getOriginScrollView() {
+    const { scrollRange } = this;
+    return scrollRange.clone();
+  }
+
+  getOriginContentView() {
+    const { contentRange } = this;
+    return contentRange.clone();
+  }
+
+  getOriginLastScrollView() {
+    const { lastScrollRange } = this;
+    if (lastScrollRange) {
+      return lastScrollRange.clone();
+    }
+    return null;
+  }
+
+  getScrollXOffset() {
+    return this.scrollXOffset;
+  }
+
+  getScrollView() {
+    const { table } = this;
+    const { scrollRange } = this;
+    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
+      const { difference } = this;
+      const { dwAddRange } = difference;
+      if (dwAddRange) {
+        return dwAddRange.clone();
+      }
+    }
+    return scrollRange.clone();
+  }
+
+  getContentView() {
+    const { contentRange } = this;
+    const { table } = this;
+    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
+      const { scroll } = table;
+      const { difference } = this;
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_TOP:
+        case SCROLL_TYPE.V_BOTTOM: {
+          const { dwContentRange } = difference;
+          if (dwContentRange) {
+            return dwContentRange.clone();
+          }
+          break;
+        }
+        default: break;
+      }
+    }
+    return contentRange.clone();
+  }
+
+}
+
+// ============================== 冻结内容渲染 =================================
+
+class FrozenLeftTop {
+
+  constructor(table) {
+    this.table = table;
+  }
+
+  getScrollViewRange() {
+    const { table } = this;
+    const { dynamicView } = table;
+    const { fixed } = table;
+    const { fxLeft, fxTop } = fixed;
+    const scrollView = dynamicView.getOriginScrollView();
+    scrollView.sci = 0;
+    scrollView.eci = fxLeft;
+    scrollView.sri = 0;
+    scrollView.eri = fxTop;
+    return scrollView;
+  }
+
+  drawGrid(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, grid, lineHandle, gridLineHandle,
+    } = table;
+    draw.save();
+    draw.offset(offsetX, offsetY);
+    const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
+    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
+    const hLine = gridLineHandle.hLine(viewRange);
+    const vLine = gridLineHandle.vLine(viewRange);
+    hLine.forEach((item) => {
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vLine.forEach((item) => {
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    const hMergeLine = gridLineHandle.hMergeLine(coincideViewBrink);
+    const vMergeLine = gridLineHandle.vMergeLine(coincideViewBrink);
+    hMergeLine.forEach((item) => {
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vMergeLine.forEach((item) => {
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
+  drawBorder(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, line, lineHandle, borderLineHandle,
+    } = table;
+    draw.save();
+    draw.offset(offsetX, offsetY);
+    const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
+    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
+    const htLine = borderLineHandle.htLine(viewRange);
+    const hbLine = borderLineHandle.hbLine(viewRange);
+    const vlLine = borderLineHandle.vlLine(viewRange);
+    const vrLine = borderLineHandle.vrLine(viewRange);
+    htLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { top } = borderAttr;
+      const { color, width, type } = top;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+    });
+    hbLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { bottom } = borderAttr;
+      const { color, width, type } = bottom;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+    });
+    vlLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { left } = borderAttr;
+      const { color, width, type } = left;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+    });
+    vrLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { right } = borderAttr;
+      const { color, width, type } = right;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+    });
+    const htMergeLine = borderLineHandle.htMergeLine(coincideViewBrink);
+    const hbMergeLine = borderLineHandle.hbMergeLine(coincideViewBrink);
+    const vlMergeLine = borderLineHandle.vlMergeLine(coincideViewBrink);
+    const vrMergeLine = borderLineHandle.vrMergeLine(coincideViewBrink);
+    htMergeLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { top } = borderAttr;
+      const { color, width, type } = top;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+    });
+    hbMergeLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { bottom } = borderAttr;
+      const { color, width, type } = bottom;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+    });
+    vlMergeLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { left } = borderAttr;
+      const { color, width, type } = left;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+    });
+    vrMergeLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { right } = borderAttr;
+      const { color, width, type } = right;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+    });
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
+  drawBackGround(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, grid, cellsHelper,
+    } = table;
+    draw.save();
+    draw.offset(offsetX, offsetY);
+    // 绘制单元格背景
+    cellsHelper.getCellByViewRange({
+      rectRange: viewRange,
+      callback: (i, c, cell, rect) => {
+        // 绘制背景
+        rect.expandSize(grid.lineWidth());
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(cell.background);
+      },
+    });
+    // 绘制合并单元格背景
+    cellsHelper.getMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (rect, cell) => {
+        // 绘制背景
+        rect.expandSize(grid.lineWidth());
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(cell.background);
+      },
+    });
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
+  drawCells(viewRange, offsetX, offsetY) {
+    const { table } = this;
+    const {
+      draw, cellsHelper, grid,
+    } = table;
+    draw.save();
+    draw.offset(offsetX, offsetY);
+    // 绘制单元格文字
+    cellsHelper.getCellSkipMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (i, c, cell, rect, overflow) => {
+        // 绘制文字
+        const { fontAttr } = cell;
+        const { align } = fontAttr;
+        const font = new Font({
+          text: Format(cell.format, cell.text),
+          rect: rect.expandSize(grid.lineWidth()),
+          dw: draw,
+          overflow,
+          attr: fontAttr,
+        });
+        font.setOverflowCrop(align === ALIGN.center);
+        cell.setContentWidth(font.draw());
+        // Test
+        // draw.attr({ globalAlpha: 0.3 });
+        // draw.fillRect(rect.x, rect.y, cell.contentWidth, rect.height);
+      },
+    });
+    // 绘制合并单元格文字
+    cellsHelper.getMergeCellByViewRange({
+      rectRange: viewRange,
+      callback: (rect, cell) => {
+        // console.log('rect >>>', rect);
+        // 绘制文字
+        const { fontAttr } = cell;
+        const font = new Font({
+          text: Format(cell.format, cell.text),
+          rect: rect.expandSize(grid.lineWidth()),
+          dw: draw,
+          overflow: null,
+          attr: fontAttr,
+        });
+        font.setTextWrap(TEXT_WRAP.WORD_WRAP);
+        cell.setContentWidth(font.draw());
+      },
+    });
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
+  renderClear() {
+    const { table } = this;
+    const { draw, settings } = table;
+    const offset = table.frozenLeftTopOffset;
+    const width = offset.getFixedWidth();
+    const height = offset.getFixedHeight();
+    const x = offset.getFixedXOffset();
+    const y = offset.getFixedYOffset();
+    draw.attr({
+      fillStyle: settings.table.background,
+    });
+    draw.fillRect(x, y, width, height);
+  }
+
+  render() {
+    const { table } = this;
+    const { draw, grid, settings } = table;
+    const { frozenLeftTopOffset } = table;
+    const change = frozenLeftTopOffset.getScrollViewChange();
+    if (change) {
+      const scrollView = frozenLeftTopOffset.getScrollView();
+      const offsetX = frozenLeftTopOffset.getFixedXOffset();
+      const offsetY = frozenLeftTopOffset.getFixedYOffset();
+      const fixedWidth = frozenLeftTopOffset.getFixedWidth();
+      const fixedHeight = frozenLeftTopOffset.getFixedHeight();
+      this.renderClear();
+      // 裁剪内容
+      const drawRect = new Rect({
+        x: offsetX + grid.lineWidth(),
+        y: offsetY + grid.lineWidth(),
+        width: fixedWidth,
+        height: fixedHeight,
+      });
+      const drawCrop = new Crop({ draw, rect: drawRect, offset: grid.lineWidth() });
+      drawCrop.open();
+      this.drawBackGround(scrollView, offsetX, offsetY);
+      this.drawCells(scrollView, offsetX, offsetY);
+      if (settings.table.showGrid) {
+        this.drawGrid(scrollView, offsetX, offsetY);
+      }
+      this.drawBorder(scrollView, offsetX, offsetY);
+      drawCrop.close();
+    }
+  }
+
+}
+
+class FrozenLeftIndex {
+
+  constructor(table) {
+    this.table = table;
+  }
+
+  draw(viewRange, offsetX, offsetY, width, height) {
+    const { table } = this;
+    const {
+      draw, grid, rows, settings,
+    } = table;
+    const { sri, eri } = viewRange;
+    draw.save();
+    draw.offset(offsetX, offsetY);
+    // 绘制背景
+    draw.attr({
+      fillStyle: '#f6f7fa',
+    });
+    draw.fillRect(0, 0, width, height);
+    // 绘制文字
+    draw.attr({
+      textAlign: 'center',
+      textBaseline: 'middle',
+      font: `${npx(11)}px Arial`,
+      fillStyle: '#585757',
+    });
+    rows.eachHeight(sri, eri, (i, ch, y) => {
+      draw.fillText(i + 1, width / 2, y + (ch / 2));
+    });
+    // 绘制边框
+    let lineHeight = 0;
+    draw.attr({
+      strokeStyle: settings.table.borderColor,
+    });
+    rows.eachHeight(sri, eri, (i, ch, y) => {
+      lineHeight += ch;
+      grid.horizontalLine(0, y, width, y);
+      if (i === eri) grid.horizontalLine(0, y + ch, width, y + ch);
+    });
+    grid.verticalLine(width, 0, width, lineHeight);
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
+  renderClear() {
+    const { table } = this;
+    const { draw, settings } = table;
+    const offset = table.frozenLeftIndexOffset;
+    const width = offset.getFixedWidth();
+    const height = offset.getFixedHeight();
+    const x = offset.getFixedXOffset();
+    const y = offset.getFixedYOffset();
+    draw.attr({
+      fillStyle: settings.table.background,
+    });
+    draw.fillRect(x, y, width, height);
+  }
+
+  render() {
+    const { table } = this;
+    const { frozenLeftIndexOffset } = table;
+    const change = frozenLeftIndexOffset.getScrollViewChange();
+    if (change) {
+      const offsetX = frozenLeftIndexOffset.getFixedXOffset();
+      const offsetY = frozenLeftIndexOffset.getFixedYOffset();
+      const width = frozenLeftIndexOffset.getFixedWidth();
+      const height = frozenLeftIndexOffset.getFixedHeight();
+      const scrollView = frozenLeftIndexOffset.getScrollView();
+      this.renderClear();
+      this.draw(scrollView, offsetX, offsetY, width, height);
+    }
+  }
+
+}
+
+class FrozenTopIndex {
+
+  constructor(table) {
+    this.table = table;
+  }
+
+  draw(viewRange, offsetX, offsetY, width, height) {
+    const { table } = this;
+    const {
+      draw, grid, cols, settings,
+    } = table;
+    const { sci, eci } = viewRange;
+    draw.save();
+    draw.offset(offsetX, offsetY);
+    // 绘制背景
+    draw.attr({
+      fillStyle: '#f6f7fa',
+    });
+    draw.fillRect(0, 0, width, height);
+    // 绘制文字
+    draw.attr({
+      textAlign: 'center',
+      textBaseline: 'middle',
+      font: `${npx(11)}px Arial`,
+      fillStyle: '#585757',
+    });
+    cols.eachWidth(sci, eci, (i, cw, x) => {
+      draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
+    });
+    // 绘制边框
+    draw.attr({
+      strokeStyle: settings.table.borderColor,
+    });
+    let lineWidth = 0;
+    draw.attr({
+      strokeStyle: settings.table.borderColor,
+    });
+    cols.eachWidth(sci, eci, (i, cw, x) => {
+      lineWidth += cw;
+      grid.verticalLine(x, 0, x, height);
+      if (i === eci) grid.verticalLine(x + cw, 0, x + cw, height);
+    });
+    grid.horizontalLine(0, height, lineWidth, height);
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
+  renderClear() {
+    const { table } = this;
+    const { draw, settings } = table;
+    const offset = table.frozenTopIndexOffset;
+    const width = offset.getFixedWidth();
+    const height = offset.getFixedHeight();
+    const x = offset.getFixedXOffset();
+    const y = offset.getFixedYOffset();
+    draw.attr({
+      fillStyle: settings.table.background,
+    });
+    draw.fillRect(x, y, width, height);
+  }
+
+  render() {
+    const { table } = this;
+    const { frozenTopIndexOffset } = table;
+    const change = frozenTopIndexOffset.getScrollViewChange();
+    if (change) {
+      const offsetX = frozenTopIndexOffset.getFixedXOffset();
+      const offsetY = frozenTopIndexOffset.getFixedYOffset();
+      const width = frozenTopIndexOffset.getFixedWidth();
+      const height = frozenTopIndexOffset.getFixedHeight();
+      const scrollView = frozenTopIndexOffset.getScrollView();
+      this.renderClear();
+      this.draw(scrollView, offsetX, offsetY, width, height);
+    }
+  }
+
+}
+
+class FrozenRect {
+
+  constructor(table) {
+    this.table = table;
+  }
+
+  draw(offsetX, offsetY, width, height) {
+    const { table } = this;
+    const { draw, grid, settings } = table;
+    draw.save();
+    draw.offset(offsetX, offsetY);
+    // 绘制背景
+    draw.attr({
+      fillStyle: '#f4f5f8',
+    });
+    draw.fillRect(0, 0, width, height);
+    draw.offset(0, 0);
+    draw.restore();
+    // 绘制边框
+    draw.attr({
+      strokeStyle: settings.table.borderColor,
+    });
+    grid.verticalLine(width, offsetY, width, height);
+    grid.horizontalLine(0, height, width, height);
+  }
+
+  render() {
+    const { table } = this;
+    const { settings } = table;
+    const { index } = settings;
+    this.draw(0, 0, index.width, index.height);
+  }
+
+}
+
 // ================================ 动态内容渲染 ================================
 
 class FixedTop {
@@ -1550,17 +1587,6 @@ class FixedTop {
     scrollView.sri = 0;
     scrollView.eri = fxTop;
     return scrollView;
-  }
-
-  getContentViewRange() {
-    const { table } = this;
-    const { dynamicView } = table;
-    const { fixed } = table;
-    const { fxTop } = fixed;
-    const contentView = dynamicView.getOriginContentView();
-    contentView.sri = 0;
-    contentView.eri = fxTop;
-    return contentView;
   }
 
   drawCells(viewRange, scrollViewXOffset, offsetX, offsetY) {
@@ -1770,7 +1796,7 @@ class FixedTop {
 
   renderClear() {
     const { table } = this;
-    const { draw, settings } = table;
+    const { draw, settings, offDraw, grid } = table;
     const { cols } = table;
     const { dynamicView } = table;
     const offset = table.fixedTopOffset;
@@ -1782,14 +1808,24 @@ class FixedTop {
     const dy = offset.getDwYOffset();
     const cx = offset.getCaptureX();
     const { scroll } = table;
-    const { canvas } = table;
-    const { el } = canvas;
     const range = offset.getScrollView();
+    // 贴图
+    switch (scroll.type) {
+      case SCROLL_TYPE.H_RIGHT:
+      case SCROLL_TYPE.H_LEFT: {
+        const [sx, sy, ey] = [x, y, y];
+        offDraw.mapping(sx + grid.lineWidth(), sy, width, height);
+        draw.attr({ fillStyle: settings.table.background });
+        draw.fillRect(sx, sy, width, height);
+        offDraw.reflection(cx + grid.lineWidth(), ey, width, height);
+        break;
+      }
+      default:
+        break;
+    }
+    // 清除
     switch (scroll.type) {
       case SCROLL_TYPE.H_RIGHT: {
-        const [sx, sy, ey] = [x, y, y];
-        draw.drawImage(el, sx, sy, width, height, cx, ey, width, height);
-        draw.attr({ fillStyle: settings.table.background });
         if (cols.len - 1 === range.eci) {
           const origin = dynamicView.getOriginScrollView();
           draw.fillRect(dx + CLEAR_LINE_WIDTH, dy, range.w + (width - origin.w), height);
@@ -1799,9 +1835,6 @@ class FixedTop {
         break;
       }
       case SCROLL_TYPE.H_LEFT: {
-        const [sx, sy, ey] = [x, y, y];
-        draw.drawImage(el, sx, sy, width, height, cx, ey, width, height);
-        draw.attr({ fillStyle: settings.table.background });
         draw.fillRect(dx, dy, range.w - CLEAR_LINE_WIDTH, height);
         break;
       }
@@ -1845,7 +1878,7 @@ class FixedTop {
         x: dx + grid.lineWidth(),
         y: dy + grid.lineWidth(),
         width: scrollView.w,
-        height: fixedHeight - grid.lineWidth(),
+        height: fixedHeight,
       });
       const drawCrop = new Crop({ draw, rect: drawRect, offset: grid.lineWidth() });
       drawCrop.open();
@@ -2083,7 +2116,7 @@ class FixedLeft {
 
   renderClear() {
     const { table } = this;
-    const { draw, settings } = table;
+    const { draw, settings, offDraw, grid } = table;
     const { dynamicView } = table;
     const { rows } = table;
     const offset = table.fixedLeftOffset;
@@ -2095,14 +2128,24 @@ class FixedLeft {
     const dy = offset.getDwYOffset();
     const cy = offset.getCaptureY();
     const { scroll } = table;
-    const { canvas } = table;
-    const { el } = canvas;
     const range = offset.getScrollView();
+    // 贴图
+    switch (scroll.type) {
+      case SCROLL_TYPE.V_BOTTOM:
+      case SCROLL_TYPE.V_TOP: {
+        const [sx, ex, sy] = [x, x, y];
+        offDraw.mapping(sx, sy + grid.lineWidth(), width, height);
+        draw.attr({ fillStyle: settings.table.background });
+        draw.fillRect(sx, sy, width, height);
+        offDraw.reflection(ex, cy + grid.lineWidth(), width, height);
+        break;
+      }
+      default:
+        break;
+    }
+    // 清除
     switch (scroll.type) {
       case SCROLL_TYPE.V_BOTTOM: {
-        const [sx, ex, sy] = [x, x, y];
-        draw.drawImage(el, sx, sy, width, height, ex, cy, width, height);
-        draw.attr({ fillStyle: settings.table.background });
         if (rows.len - 1 === range.eri) {
           const origin = dynamicView.getOriginScrollView();
           draw.fillRect(dx, dy + CLEAR_LINE_WIDTH, width, range.h + (height - origin.h));
@@ -2112,9 +2155,6 @@ class FixedLeft {
         break;
       }
       case SCROLL_TYPE.V_TOP: {
-        const [sx, ex, sy] = [x, x, y];
-        draw.drawImage(el, sx, sy, width, height, ex, cy, width, height);
-        draw.attr({ fillStyle: settings.table.background });
         draw.fillRect(dx, dy, width, range.h - CLEAR_LINE_WIDTH);
         break;
       }
@@ -2148,7 +2188,7 @@ class FixedLeft {
         width: fixedWidth,
         height: fixedHeight,
       });
-      const clearCrop = new Crop({ draw, rect: clearRect, offset: grid.lineWidth() });
+      const clearCrop = new Crop({ draw, rect: clearRect });
       clearCrop.open();
       this.renderClear();
       clearCrop.close();
@@ -2156,10 +2196,10 @@ class FixedLeft {
       const drawRect = new Rect({
         x: dx + grid.lineWidth(),
         y: dy + grid.lineWidth(),
-        width: fixedWidth - grid.lineWidth(),
+        width: fixedWidth,
         height: scrollView.h,
       });
-      const drawCrop = new Crop({ draw, rect: drawRect, offset: grid.lineWidth() });
+      const drawCrop = new Crop({ draw, rect: drawRect });
       drawCrop.open();
       this.drawBackGround(scrollView, dx, dy);
       this.drawCells(contentView, offsetX, dy);
@@ -2402,27 +2442,44 @@ class Content {
 
   renderClear() {
     const { table } = this;
-    const { draw, settings } = table;
-    const { dynamicView } = table;
-    const { rows, cols } = table;
+    const { draw, settings, offDraw, grid, rows, dynamicView, cols } = table;
     const offset = table.contentOffset;
     const width = offset.getFixedWidth();
     const height = offset.getFixedHeight();
     const x = offset.getFixedXOffset();
     const y = offset.getFixedYOffset();
-    const dx = offset.getDwXOffset();
-    const dy = offset.getDwYOffset();
     const cx = offset.getCaptureX();
     const cy = offset.getCaptureY();
+    const dx = offset.getDwXOffset();
+    const dy = offset.getDwYOffset();
     const { scroll } = table;
-    const { canvas } = table;
-    const { el } = canvas;
     const range = dynamicView.getScrollView();
+    // 贴图
+    switch (scroll.type) {
+      case SCROLL_TYPE.V_BOTTOM:
+      case SCROLL_TYPE.V_TOP: {
+        const [sx, ex, sy] = [x, x, y];
+        offDraw.mapping(sx, sy + grid.lineWidth(), width, height);
+        draw.attr({ fillStyle: settings.table.background });
+        draw.fillRect(sx, sy, width, height);
+        offDraw.reflection(ex, cy + grid.lineWidth(), width, height);
+        break;
+      }
+      case SCROLL_TYPE.H_RIGHT:
+      case SCROLL_TYPE.H_LEFT: {
+        const [sx, sy, ey] = [x, y, y];
+        offDraw.mapping(sx + grid.lineWidth(), sy, width, height);
+        draw.attr({ fillStyle: settings.table.background });
+        draw.fillRect(sx, sy, width, height);
+        offDraw.reflection(cx + grid.lineWidth(), ey, width, height);
+        break;
+      }
+      default:
+        break;
+    }
+    // 清除
     switch (scroll.type) {
       case SCROLL_TYPE.V_BOTTOM: {
-        const [sx, ex, sy] = [x, x, y];
-        draw.drawImage(el, sx, sy, width, height, ex, cy, width, height);
-        draw.attr({ fillStyle: settings.table.background });
         if (rows.len - 1 === range.eri) {
           const origin = dynamicView.getOriginScrollView();
           draw.fillRect(dx, dy + CLEAR_LINE_WIDTH, width, range.h + (height - origin.h));
@@ -2432,16 +2489,10 @@ class Content {
         break;
       }
       case SCROLL_TYPE.V_TOP: {
-        const [sx, ex, sy] = [x, x, y];
-        draw.drawImage(el, sx, sy, width, height, ex, cy, width, height);
-        draw.attr({ fillStyle: settings.table.background });
         draw.fillRect(dx, dy, width, range.h - CLEAR_LINE_WIDTH);
         break;
       }
       case SCROLL_TYPE.H_RIGHT: {
-        const [sx, sy, ey] = [x, y, y];
-        draw.drawImage(el, sx, sy, width, height, cx, ey, width, height);
-        draw.attr({ fillStyle: settings.table.background });
         if (cols.len - 1 === range.eci) {
           const origin = dynamicView.getOriginScrollView();
           draw.fillRect(dx + CLEAR_LINE_WIDTH, dy, range.w + (width - origin.w), height);
@@ -2451,9 +2502,6 @@ class Content {
         break;
       }
       case SCROLL_TYPE.H_LEFT: {
-        const [sx, sy, ey] = [x, y, y];
-        draw.drawImage(el, sx, sy, width, height, cx, ey, width, height);
-        draw.attr({ fillStyle: settings.table.background });
         draw.fillRect(dx, dy, range.w - CLEAR_LINE_WIDTH, height);
         break;
       }
@@ -2488,7 +2536,7 @@ class Content {
         width: fixedWidth,
         height: fixedHeight,
       });
-      const clearCrop = new Crop({ draw, rect: clearRect, offset: grid.lineWidth() });
+      const clearCrop = new Crop({ draw, rect: clearRect });
       clearCrop.open();
       this.renderClear();
       clearCrop.close();
@@ -2499,7 +2547,7 @@ class Content {
         width: scrollView.w,
         height: scrollView.h,
       });
-      const drawCrop = new Crop({ draw, rect: drawRect, offset: grid.lineWidth() });
+      const drawCrop = new Crop({ draw, rect: drawRect });
       drawCrop.open();
       this.drawBackGround(scrollView, dx, dy);
       this.drawCells(contentView, scrollXOffset, offsetX, dy);
@@ -2619,7 +2667,7 @@ class FixedTopIndex {
         width: fixedWidth,
         height: fixedHeight + grid.lineWidth(),
       });
-      const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
+      const crop = new Crop({ draw, rect });
       crop.open();
       this.renderClear();
       this.draw(scrollView, dx, dy, scrollView.w, fixedHeight);
@@ -2729,7 +2777,7 @@ class FixedLeftIndex {
       const rect = new Rect({
         x: fixedOffsetX,
         y: fixedOffsetY,
-        width: fixedWidth,
+        width: fixedWidth + grid.lineWidth(),
         height: fixedHeight,
       });
       const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
@@ -2890,6 +2938,7 @@ class Table extends Widget {
 
     // canvas 绘制资源
     this.draw = new Draw(this.canvas.el);
+    this.offDraw = new OFFDraw(this.draw);
     this.line = new Line(this.draw, {
       leftShow: (ri, ci) => {
         // 单元格是否存在
@@ -3167,9 +3216,10 @@ class Table extends Widget {
   }
 
   resize() {
-    const { draw, dynamicView } = this;
+    const { offDraw, draw, dynamicView } = this;
     const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.resize(width, height);
+    offDraw.resize(width, height);
     dynamicView.cpRange();
     this.render();
   }
