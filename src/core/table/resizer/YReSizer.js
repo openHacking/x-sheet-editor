@@ -91,7 +91,7 @@ class YReSizer extends Widget {
         tableDataSnapshot.begin();
         rowsDataProxy.setHeight(ri, newTop);
         tableDataSnapshot.end();
-        table.render();
+        table.resize();
       });
     });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
