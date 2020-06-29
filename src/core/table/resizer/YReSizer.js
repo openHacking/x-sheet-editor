@@ -3,9 +3,7 @@ import { Widget } from '../../../lib/Widget';
 import { cssPrefix, Constant } from '../../../constant/Constant';
 import { h } from '../../../lib/Element';
 import { EventBind } from '../../../utils/EventBind';
-
 import { Utils } from '../../../utils/Utils';
-import { floor } from '../../../canvas/Draw';
 
 class YReSizer extends Widget {
 
@@ -76,7 +74,7 @@ class YReSizer extends Widget {
       EventBind.mouseMoveUp(document, (e) => {
         ({ y: my } = table.computeEventXy(e));
         my -= this.height / 2;
-        my = floor(Utils.minIf(my, min));
+        my = Math.ceil(Utils.minIf(my, min));
         this.css('top', `${my}px`);
         this.lineEl.css('width', `${table.visualWidth()}px`);
         this.lineEl.show();

@@ -3,9 +3,7 @@ import { Widget } from '../../../lib/Widget';
 import { cssPrefix, Constant } from '../../../constant/Constant';
 import { h } from '../../../lib/Element';
 import { EventBind } from '../../../utils/EventBind';
-
 import { Utils } from '../../../utils/Utils';
-import { floor } from '../../../canvas/Draw';
 
 class XReSizer extends Widget {
 
@@ -76,7 +74,7 @@ class XReSizer extends Widget {
       EventBind.mouseMoveUp(document, (e) => {
         ({ x: mx } = table.computeEventXy(e));
         mx -= this.width / 2;
-        mx = floor(Utils.minIf(mx, min));
+        mx = Math.ceil(Utils.minIf(mx, min));
         this.css('left', `${mx}px`);
         this.lineEl.css('height', `${table.visualHeight()}px`);
         this.lineEl.show();

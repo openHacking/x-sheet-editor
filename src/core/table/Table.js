@@ -45,7 +45,7 @@ const TABLE_RENDER_MODE = {
   RENDER: 2,
 };
 
-// ================================= 冻结内容 =================================
+// ================================= 冻结内容 ==================================
 
 class FrozenLeftTop {
   constructor(table) {
@@ -1965,14 +1965,10 @@ class Content {
   drawGrid(viewRange, offsetX, offsetY) {
     const { table } = this;
     const {
-      draw, grid, lineHandle, gridLineHandle, settings,
+      draw, grid, lineHandle, gridLineHandle,
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
-    draw.attr({
-      fillStyle: settings.table.gridColor,
-      globalAlpha: 1,
-    });
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
     const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
     const hLine = gridLineHandle.hLine(viewRange);
@@ -2431,7 +2427,7 @@ class FixedLeftIndex {
   }
 }
 
-// ================================= 快捷键 ==================================
+// ================================= 快捷键 ===================================
 
 class KeyBoardTab {
 

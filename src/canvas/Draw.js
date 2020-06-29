@@ -4,13 +4,8 @@ function dpr() {
   return window.devicePixelRatio || 1;
 }
 
-function floor(n) {
-  // eslint-disable-next-line no-bitwise
-  return (0.5 + n) << 0;
-}
-
 function npx(px) {
-  return px * dpr();
+  return Math.ceil(px * dpr());
 }
 
 function angleToRadian(angle) {
@@ -184,6 +179,5 @@ export {
   Draw,
   npx,
   dpr,
-  floor,
   angleToRadian,
 };
