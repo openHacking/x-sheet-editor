@@ -2,7 +2,6 @@ import { Widget } from '../../lib/Widget';
 import { cssPrefix, Constant } from '../../constant/Constant';
 import { h } from '../../lib/Element';
 import { Utils } from '../../utils/Utils';
-import { Tab } from './Tab';
 import { EventBind } from '../../utils/EventBind';
 
 
@@ -64,6 +63,7 @@ class TabView extends Widget {
     });
     EventBind.bind(plus, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
       this.optiions.onAdd();
+      this.offsetSizeLeft();
     });
   }
 
@@ -71,7 +71,6 @@ class TabView extends Widget {
     this.tabList.push(tab);
     this.tabs.children(tab);
     tab.onAttach();
-    this.offsetSizeLeft();
     EventBind.bind(tab, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
       this.setActive(tab);
       this.optiions.onSwitch(tab);
