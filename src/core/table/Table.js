@@ -671,28 +671,24 @@ class DynamicViewDifference {
     const { addRange, subtractRange } = this;
     const { table } = dynamicView;
     const { scroll } = table;
-    if (addRange && subtractRange) {
-      const subtractWidth = subtractRange.w;
-      const subtractHeight = subtractRange.h;
-      const addedWidth = addRange.w;
-      const addedHeight = addRange.h;
+    if (addRange || subtractRange) {
       let captureX = 0;
       let captureY = 0;
       switch (scroll.type) {
         case SCROLL_TYPE.V_TOP: {
-          captureY = addedHeight;
+          captureY = addRange.h;
           break;
         }
         case SCROLL_TYPE.V_BOTTOM: {
-          captureY = -subtractHeight;
+          captureY = -subtractRange.h;
           break;
         }
         case SCROLL_TYPE.H_LEFT: {
-          captureX = addedWidth;
+          captureX = addRange.w;
           break;
         }
         case SCROLL_TYPE.H_RIGHT: {
-          captureX = -subtractWidth;
+          captureX = -subtractRange.w;
           break;
         }
         default: break;
@@ -2535,7 +2531,7 @@ class FixedTopIndex {
     draw.attr({
       fillStyle: '#f6f7fa',
     });
-    // draw.fillRect(0, 0, width, height);
+    draw.fillRect(0, 0, width, height);
     // 绘制文字
     draw.attr({
       textAlign: 'center',
@@ -2585,7 +2581,8 @@ class FixedTopIndex {
       case SCROLL_TYPE.H_RIGHT:
       case SCROLL_TYPE.H_LEFT: {
         const [sx, sy, ey] = [x, y, y];
-        draw.drawImage(el, sx, sy, width, height, cx, ey, width, height);
+        draw.drawImage(el, sx, sy, width, height + grid.lineWidth(),
+          cx, ey, width, height + grid.lineWidth());
         draw.attr({ fillStyle: settings.table.background });
         if (cols.len - 1 === range.eci) {
           const origin = dynamicView.getOriginScrollView();
@@ -2620,7 +2617,7 @@ class FixedTopIndex {
         x: fixedOffsetX,
         y: fixedOffsetY,
         width: fixedWidth,
-        height: fixedHeight,
+        height: fixedHeight + grid.lineWidth(),
       });
       const crop = new Crop({ draw, rect, offset: grid.lineWidth() });
       crop.open();
@@ -2697,7 +2694,8 @@ class FixedLeftIndex {
       case SCROLL_TYPE.V_BOTTOM:
       case SCROLL_TYPE.V_TOP: {
         const [sx, ex, sy] = [x, x, y];
-        draw.drawImage(el, sx, sy, width, height, ex, cy, width, height);
+        draw.drawImage(el, sx, sy, width + grid.lineWidth(), height,
+          ex, cy, width + grid.lineWidth(), height);
         draw.attr({ fillStyle: settings.table.background });
         if (rows.len - 1 === range.eri) {
           const origin = dynamicView.getOriginScrollView();
