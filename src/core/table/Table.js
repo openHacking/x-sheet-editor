@@ -37,9 +37,6 @@ import {
   SCREEN_SELECT_EVENT,
   ScreenSelector,
 } from './screenwiget/selector/ScreenSelector';
-import { OFFDraw } from '../../canvas/OFFDraw';
-
-const CLEAR_LINE_WIDTH = 4;
 
 const TABLE_RENDER_MODE = {
   SCROLL: 1,
@@ -310,6 +307,17 @@ class FixedTopOffset {
     return scrollView;
   }
 
+  getBorderView() {
+    const { table } = this;
+    const { dynamicView } = table;
+    const { fixed } = table;
+    const { fxTop } = fixed;
+    const borderView = dynamicView.getBorderView();
+    borderView.sri = 0;
+    borderView.eri = fxTop;
+    return borderView;
+  }
+
   getScrollXOffset() {
     const { table } = this;
     const { dynamicView } = table;
@@ -434,6 +442,17 @@ class FixedLeftOffset {
     return scrollView;
   }
 
+  getBorderView() {
+    const { table } = this;
+    const { dynamicView } = table;
+    const { fixed } = table;
+    const { fxLeft } = fixed;
+    const borderView = dynamicView.getBorderView();
+    borderView.sci = 0;
+    borderView.eci = fxLeft;
+    return borderView;
+  }
+
 }
 
 class ContentOffset {
@@ -514,6 +533,24 @@ class ContentOffset {
     return yOffset + dwYOffset;
   }
 
+  getBdXOffset() {
+    const { table } = this;
+    const { dynamicView } = table;
+    const { difference } = dynamicView;
+    const bdXOffset = difference.getBdXOffset();
+    const xOffset = this.getFixedXOffset();
+    return xOffset + bdXOffset;
+  }
+
+  getBdYOffset() {
+    const { table } = this;
+    const { dynamicView } = table;
+    const { difference } = dynamicView;
+    const bdYOffset = difference.getBdYOffset();
+    const yOffset = this.getFixedYOffset();
+    return yOffset + bdYOffset;
+  }
+
   getScrollViewChange() {
     const { table } = this;
     if (table.mode === TABLE_RENDER_MODE.SCROLL) {
@@ -538,6 +575,12 @@ class ContentOffset {
     const { table } = this;
     const { dynamicView } = table;
     return dynamicView.getScrollView();
+  }
+
+  getBorderView() {
+    const { table } = this;
+    const { dynamicView } = table;
+    return dynamicView.getBorderView();
   }
 
   getScrollXOffset() {
@@ -766,7 +809,7 @@ class FixedLeftIndexOffset {
 
 }
 
-// =============================== 动态视图计算 ================================
+// ================================ 动态视图计算 ================================
 
 class DynamicViewDifference {
 
@@ -784,6 +827,10 @@ class DynamicViewDifference {
     // 渲染区域坐标
     this.dwXOffset = 0;
     this.dwYOffset = 0;
+    // 边框绘制区域
+    this.borderRange = null;
+    this.bdXOffset = 0;
+    this.bdYOffset = 0;
   }
 
   cpSubtractRange() {
@@ -859,12 +906,17 @@ class DynamicViewDifference {
     this.dwContentRange = null;
     this.dwXOffset = 0;
     this.dwYOffset = 0;
+    this.borderRange = null;
+    this.bdXOffset = 0;
+    this.bdYOffset = 0;
     this.cpSubtractRange();
     this.cpAddRange();
     this.cpDwAddRange();
     this.cpDwContentRange();
     this.cpCaptureXY();
     this.cpDwOffsetXY();
+    this.cpBorderRange();
+    this.cpBdOffsetXY();
   }
 
   cpDwAddRange() {
@@ -954,6 +1006,75 @@ class DynamicViewDifference {
     }
   }
 
+  cpBorderRange() {
+    const { dwContentRange } = this;
+    const { dynamicView } = this;
+    const { table } = dynamicView;
+    const { scroll } = table;
+    const { cols, rows } = table;
+    if (dwContentRange) {
+      const borderRange = dwContentRange.clone();
+      switch (scroll.type) {
+        case SCROLL_TYPE.H_LEFT:
+          borderRange.sci += 1;
+          break;
+        case SCROLL_TYPE.H_RIGHT:
+          borderRange.eci -= 1;
+          break;
+        case SCROLL_TYPE.V_TOP:
+          borderRange.eri += 1;
+          break;
+        case SCROLL_TYPE.V_BOTTOM:
+          borderRange.sri -= 1;
+          break;
+        default: break;
+      }
+      borderRange.w = cols.rectRangeSumWidth(borderRange);
+      borderRange.h = rows.rectRangeSumHeight(borderRange);
+      this.borderRange = borderRange;
+    }
+  }
+
+  cpBdOffsetXY() {
+    const { dynamicView } = this;
+    const { borderRange } = this;
+    const { table } = dynamicView;
+    if (borderRange) {
+      const width = borderRange.w;
+      const height = borderRange.h;
+      let bdXOffset = 0;
+      let bdYOffset = 0;
+      const { scroll } = table;
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_TOP: {
+          bdYOffset = 0;
+          break;
+        }
+        case SCROLL_TYPE.V_BOTTOM: {
+          const { rows } = table;
+          const { scrollRange } = dynamicView;
+          const h = rows.rectRangeSumHeight(scrollRange);
+          bdYOffset = h - height;
+          break;
+        }
+        case SCROLL_TYPE.H_LEFT: {
+          bdXOffset = 0;
+          break;
+        }
+        case SCROLL_TYPE.H_RIGHT: {
+          const { cols } = table;
+          const { scrollRange } = dynamicView;
+          const w = cols.rectRangeSumWidth(scrollRange);
+          bdXOffset = w - width;
+          break;
+        }
+        default: break;
+      }
+      this.bdXOffset = bdXOffset;
+      this.bdYOffset = bdYOffset;
+    }
+  }
+
   getCaptureX() {
     const { dynamicView } = this;
     const { table } = dynamicView;
@@ -986,6 +1107,24 @@ class DynamicViewDifference {
     const { table } = dynamicView;
     if (table.mode === TABLE_RENDER_MODE.SCROLL) {
       return this.dwYOffset;
+    }
+    return 0;
+  }
+
+  getBdXOffset() {
+    const { dynamicView } = this;
+    const { table } = dynamicView;
+    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
+      return this.bdXOffset;
+    }
+    return 0;
+  }
+
+  getBdYOffset() {
+    const { dynamicView } = this;
+    const { table } = dynamicView;
+    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
+      return this.bdYOffset;
     }
     return 0;
   }
@@ -1109,9 +1248,22 @@ class DynamicView {
     return contentRange.clone();
   }
 
+  getBorderView() {
+    const { table } = this;
+    const { scrollRange } = this;
+    if (table.mode === TABLE_RENDER_MODE.SCROLL) {
+      const { difference } = this;
+      const { borderRange } = difference;
+      if (borderRange) {
+        return borderRange.clone();
+      }
+    }
+    return scrollRange.clone();
+  }
+
 }
 
-// ============================== 冻结内容渲染 =================================
+// =============================== 冻结内容渲染 =================================
 
 class FrozenLeftTop {
 
@@ -1796,46 +1948,49 @@ class FixedTop {
 
   renderClear() {
     const { table } = this;
-    const { draw, settings, offDraw, grid } = table;
-    const { cols } = table;
-    const { dynamicView } = table;
+    const { draw, settings, grid, dynamicView, cols } = table;
+    const { scroll } = table;
+    const { canvas } = table;
     const offset = table.fixedTopOffset;
     const width = offset.getFixedWidth();
     const height = offset.getFixedHeight();
     const x = offset.getFixedXOffset();
     const y = offset.getFixedYOffset();
-    const dx = offset.getDwXOffset();
-    const dy = offset.getDwYOffset();
-    const cx = offset.getCaptureX();
-    const { scroll } = table;
-    const range = offset.getScrollView();
     // 贴图
+    let cx = offset.getCaptureX();
     switch (scroll.type) {
       case SCROLL_TYPE.H_RIGHT:
       case SCROLL_TYPE.H_LEFT: {
-        const [sx, sy, ey] = [x, y, y];
-        offDraw.mapping(sx + grid.lineWidth(), sy, width, height);
-        draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(sx, sy, width, height);
-        offDraw.reflection(cx + grid.lineWidth(), ey, width, height);
+        let sx = x;
+        // 防止贴图网格
+        sx += grid.lineWidth();
+        cx += grid.lineWidth();
+        draw.drawImage(canvas.el, sx, y, width, height, cx, y, width, height);
         break;
       }
       default:
         break;
     }
-    // 清除
+    // 擦除
+    const range = dynamicView.getScrollView();
+    let dx = offset.getDwXOffset();
+    const dy = offset.getDwYOffset();
     switch (scroll.type) {
       case SCROLL_TYPE.H_RIGHT: {
+        // 防止擦除网格
+        dx += grid.lineWidth();
+        draw.attr({ fillStyle: settings.table.background });
         if (cols.len - 1 === range.eci) {
           const origin = dynamicView.getOriginScrollView();
-          draw.fillRect(dx + CLEAR_LINE_WIDTH, dy, range.w + (width - origin.w), height);
+          draw.fillRect(dx, dy, range.w + (width - origin.w), height);
         } else {
-          draw.fillRect(dx + CLEAR_LINE_WIDTH, dy, range.w, height);
+          draw.fillRect(dx, dy, range.w, height);
         }
         break;
       }
       case SCROLL_TYPE.H_LEFT: {
-        draw.fillRect(dx, dy, range.w - CLEAR_LINE_WIDTH, height);
+        draw.attr({ fillStyle: settings.table.background });
+        draw.fillRect(dx, dy, range.w, height);
         break;
       }
       default: {
@@ -1856,39 +2011,52 @@ class FixedTop {
       const scrollXOffset = fixedTopOffset.getScrollXOffset();
       const scrollView = fixedTopOffset.getScrollView();
       const contentView = fixedTopOffset.getContentView();
-      const dx = fixedTopOffset.getDwXOffset();
-      const dy = fixedTopOffset.getDwYOffset();
-      const offsetX = fixedTopOffset.getFixedXOffset();
-      const offsetY = fixedTopOffset.getFixedYOffset();
+      const borderView = fixedTopOffset.getBorderView();
       const fixedWidth = fixedTopOffset.getFixedWidth();
       const fixedHeight = fixedTopOffset.getFixedHeight();
       // 裁剪背景
+      const offsetX = fixedTopOffset.getFixedXOffset();
+      const offsetY = fixedTopOffset.getFixedYOffset();
       const clearRect = new Rect({
         x: offsetX + grid.lineWidth(),
         y: offsetY + grid.lineWidth(),
         width: fixedWidth,
         height: fixedHeight,
       });
-      const clearCrop = new Crop({ draw, rect: clearRect, offset: grid.lineWidth() });
+      const clearCrop = new Crop({ draw, rect: clearRect });
       clearCrop.open();
       this.renderClear();
       clearCrop.close();
       // 裁剪内容
+      const dx = fixedTopOffset.getDwXOffset();
+      const dy = fixedTopOffset.getDwYOffset();
       const drawRect = new Rect({
         x: dx + grid.lineWidth(),
         y: dy + grid.lineWidth(),
         width: scrollView.w,
-        height: fixedHeight,
+        height: scrollView.h,
       });
-      const drawCrop = new Crop({ draw, rect: drawRect, offset: grid.lineWidth() });
+      const drawCrop = new Crop({ draw, rect: drawRect });
       drawCrop.open();
       this.drawBackGround(scrollView, dx, dy);
       this.drawCells(contentView, scrollXOffset, offsetX, dy);
       if (settings.table.showGrid) {
         this.drawGrid(scrollView, dx, dy);
       }
-      this.drawBorder(scrollView, dx, dy);
       drawCrop.close();
+      // 裁剪边框
+      const bdY = fixedTopOffset.getBdYOffset();
+      const bdX = fixedTopOffset.getBdXOffset();
+      const borderRect = new Rect({
+        x: offsetX + grid.lineWidth(),
+        y: offsetY + grid.lineWidth(),
+        width: fixedWidth,
+        height: fixedHeight,
+      });
+      const borderCrop = new Crop({ draw, rect: borderRect });
+      borderCrop.open();
+      this.drawBorder(borderView, bdX, bdY);
+      borderCrop.close();
     }
   }
 
@@ -2116,46 +2284,49 @@ class FixedLeft {
 
   renderClear() {
     const { table } = this;
-    const { draw, settings, offDraw, grid } = table;
-    const { dynamicView } = table;
-    const { rows } = table;
+    const { draw, settings, grid, rows, dynamicView } = table;
+    const { scroll } = table;
+    const { canvas } = table;
     const offset = table.fixedLeftOffset;
     const width = offset.getFixedWidth();
     const height = offset.getFixedHeight();
     const x = offset.getFixedXOffset();
     const y = offset.getFixedYOffset();
-    const dx = offset.getDwXOffset();
-    const dy = offset.getDwYOffset();
-    const cy = offset.getCaptureY();
-    const { scroll } = table;
-    const range = offset.getScrollView();
     // 贴图
+    let cy = offset.getCaptureY();
     switch (scroll.type) {
       case SCROLL_TYPE.V_BOTTOM:
       case SCROLL_TYPE.V_TOP: {
-        const [sx, ex, sy] = [x, x, y];
-        offDraw.mapping(sx, sy + grid.lineWidth(), width, height);
-        draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(sx, sy, width, height);
-        offDraw.reflection(ex, cy + grid.lineWidth(), width, height);
+        let sy = y;
+        // 防止贴图网格
+        sy += grid.lineWidth();
+        cy += grid.lineWidth();
+        draw.drawImage(canvas.el, x, sy, width, height, x, cy, width, height);
         break;
       }
       default:
         break;
     }
-    // 清除
+    // 擦除
+    const range = dynamicView.getScrollView();
+    const dx = offset.getDwXOffset();
+    let dy = offset.getDwYOffset();
     switch (scroll.type) {
       case SCROLL_TYPE.V_BOTTOM: {
+        draw.attr({ fillStyle: settings.table.background });
+        // 防止擦除网格
+        dy += grid.lineWidth();
         if (rows.len - 1 === range.eri) {
           const origin = dynamicView.getOriginScrollView();
-          draw.fillRect(dx, dy + CLEAR_LINE_WIDTH, width, range.h + (height - origin.h));
+          draw.fillRect(dx, dy, width, range.h + (height - origin.h));
         } else {
-          draw.fillRect(dx, dy + CLEAR_LINE_WIDTH, width, range.h);
+          draw.fillRect(dx, dy, width, range.h);
         }
         break;
       }
       case SCROLL_TYPE.V_TOP: {
-        draw.fillRect(dx, dy, width, range.h - CLEAR_LINE_WIDTH);
+        draw.attr({ fillStyle: settings.table.background });
+        draw.fillRect(dx, dy, width, range.h);
         break;
       }
       default: {
@@ -2175,13 +2346,12 @@ class FixedLeft {
     if (change) {
       const scrollView = fixedLeftOffset.getScrollView();
       const contentView = fixedLeftOffset.getContentView();
-      const dx = fixedLeftOffset.getDwXOffset();
-      const dy = fixedLeftOffset.getDwYOffset();
-      const offsetX = fixedLeftOffset.getFixedXOffset();
-      const offsetY = fixedLeftOffset.getFixedYOffset();
+      const borderView = fixedLeftOffset.getBorderView();
       const fixedWidth = fixedLeftOffset.getFixedWidth();
       const fixedHeight = fixedLeftOffset.getFixedHeight();
       // 裁剪背景
+      const offsetX = fixedLeftOffset.getFixedXOffset();
+      const offsetY = fixedLeftOffset.getFixedYOffset();
       const clearRect = new Rect({
         x: offsetX + grid.lineWidth(),
         y: offsetY + grid.lineWidth(),
@@ -2193,10 +2363,12 @@ class FixedLeft {
       this.renderClear();
       clearCrop.close();
       // 裁剪内容
+      const dx = fixedLeftOffset.getDwXOffset();
+      const dy = fixedLeftOffset.getDwYOffset();
       const drawRect = new Rect({
         x: dx + grid.lineWidth(),
         y: dy + grid.lineWidth(),
-        width: fixedWidth,
+        width: scrollView.w,
         height: scrollView.h,
       });
       const drawCrop = new Crop({ draw, rect: drawRect });
@@ -2206,8 +2378,20 @@ class FixedLeft {
       if (settings.table.showGrid) {
         this.drawGrid(scrollView, dx, dy);
       }
-      this.drawBorder(scrollView, dx, dy);
       drawCrop.close();
+      // 裁剪边框
+      const bdY = fixedLeftOffset.getBdYOffset();
+      const bdX = fixedLeftOffset.getBdXOffset();
+      const borderRect = new Rect({
+        x: offsetX + grid.lineWidth(),
+        y: offsetY + grid.lineWidth(),
+        width: fixedWidth,
+        height: fixedHeight,
+      });
+      const borderCrop = new Crop({ draw, rect: borderRect });
+      borderCrop.open();
+      this.drawBorder(borderView, bdX, bdY);
+      borderCrop.close();
     }
   }
 
@@ -2442,67 +2626,76 @@ class Content {
 
   renderClear() {
     const { table } = this;
-    const { draw, settings, offDraw, grid, rows, dynamicView, cols } = table;
+    const { draw, settings, grid, rows, dynamicView, cols } = table;
+    const { scroll } = table;
+    const { canvas } = table;
     const offset = table.contentOffset;
     const width = offset.getFixedWidth();
     const height = offset.getFixedHeight();
     const x = offset.getFixedXOffset();
     const y = offset.getFixedYOffset();
-    const cx = offset.getCaptureX();
-    const cy = offset.getCaptureY();
-    const dx = offset.getDwXOffset();
-    const dy = offset.getDwYOffset();
-    const { scroll } = table;
-    const range = dynamicView.getScrollView();
     // 贴图
+    let cx = offset.getCaptureX();
+    let cy = offset.getCaptureY();
     switch (scroll.type) {
       case SCROLL_TYPE.V_BOTTOM:
       case SCROLL_TYPE.V_TOP: {
-        const [sx, ex, sy] = [x, x, y];
-        offDraw.mapping(sx, sy + grid.lineWidth(), width, height);
-        draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(sx, sy, width, height);
-        offDraw.reflection(ex, cy + grid.lineWidth(), width, height);
+        let sy = y;
+        // 防止贴图网格
+        sy += grid.lineWidth();
+        cy += grid.lineWidth();
+        draw.drawImage(canvas.el, x, sy, width, height, x, cy, width, height);
         break;
       }
       case SCROLL_TYPE.H_RIGHT:
       case SCROLL_TYPE.H_LEFT: {
-        const [sx, sy, ey] = [x, y, y];
-        offDraw.mapping(sx + grid.lineWidth(), sy, width, height);
-        draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(sx, sy, width, height);
-        offDraw.reflection(cx + grid.lineWidth(), ey, width, height);
+        let sx = x;
+        // 防止贴图网格
+        sx += grid.lineWidth();
+        cx += grid.lineWidth();
+        draw.drawImage(canvas.el, sx, y, width, height, cx, y, width, height);
         break;
       }
       default:
         break;
     }
-    // 清除
+    // 擦除
+    const range = dynamicView.getScrollView();
+    let dx = offset.getDwXOffset();
+    let dy = offset.getDwYOffset();
     switch (scroll.type) {
       case SCROLL_TYPE.V_BOTTOM: {
+        draw.attr({ fillStyle: settings.table.background });
+        // 防止擦除网格
+        dy += grid.lineWidth();
         if (rows.len - 1 === range.eri) {
           const origin = dynamicView.getOriginScrollView();
-          draw.fillRect(dx, dy + CLEAR_LINE_WIDTH, width, range.h + (height - origin.h));
+          draw.fillRect(dx, dy, width, range.h + (height - origin.h));
         } else {
-          draw.fillRect(dx, dy + CLEAR_LINE_WIDTH, width, range.h);
+          draw.fillRect(dx, dy, width, range.h);
         }
         break;
       }
       case SCROLL_TYPE.V_TOP: {
-        draw.fillRect(dx, dy, width, range.h - CLEAR_LINE_WIDTH);
+        draw.attr({ fillStyle: settings.table.background });
+        draw.fillRect(dx, dy, width, range.h);
         break;
       }
       case SCROLL_TYPE.H_RIGHT: {
+        // 防止擦除网格
+        dx += grid.lineWidth();
+        draw.attr({ fillStyle: settings.table.background });
         if (cols.len - 1 === range.eci) {
           const origin = dynamicView.getOriginScrollView();
-          draw.fillRect(dx + CLEAR_LINE_WIDTH, dy, range.w + (width - origin.w), height);
+          draw.fillRect(dx, dy, range.w + (width - origin.w), height);
         } else {
-          draw.fillRect(dx + CLEAR_LINE_WIDTH, dy, range.w, height);
+          draw.fillRect(dx, dy, range.w, height);
         }
         break;
       }
       case SCROLL_TYPE.H_LEFT: {
-        draw.fillRect(dx, dy, range.w - CLEAR_LINE_WIDTH, height);
+        draw.attr({ fillStyle: settings.table.background });
+        draw.fillRect(dx, dy, range.w, height);
         break;
       }
       default: {
@@ -2523,13 +2716,12 @@ class Content {
       const scrollXOffset = contentOffset.getScrollXOffset();
       const scrollView = contentOffset.getScrollView();
       const contentView = contentOffset.getContentView();
-      const dx = contentOffset.getDwXOffset();
-      const dy = contentOffset.getDwYOffset();
-      const offsetX = contentOffset.getFixedXOffset();
-      const offsetY = contentOffset.getFixedYOffset();
+      const borderView = contentOffset.getBorderView();
       const fixedWidth = contentOffset.getFixedWidth();
       const fixedHeight = contentOffset.getFixedHeight();
       // 裁剪背景
+      const offsetX = contentOffset.getFixedXOffset();
+      const offsetY = contentOffset.getFixedYOffset();
       const clearRect = new Rect({
         x: offsetX + grid.lineWidth(),
         y: offsetY + grid.lineWidth(),
@@ -2541,6 +2733,8 @@ class Content {
       this.renderClear();
       clearCrop.close();
       // 裁剪内容
+      const dx = contentOffset.getDwXOffset();
+      const dy = contentOffset.getDwYOffset();
       const drawRect = new Rect({
         x: dx + grid.lineWidth(),
         y: dy + grid.lineWidth(),
@@ -2554,8 +2748,20 @@ class Content {
       if (settings.table.showGrid) {
         this.drawGrid(scrollView, dx, dy);
       }
-      this.drawBorder(scrollView, dx, dy);
       drawCrop.close();
+      // 裁剪边框
+      const bdY = contentOffset.getBdYOffset();
+      const bdX = contentOffset.getBdXOffset();
+      const borderRect = new Rect({
+        x: offsetX + grid.lineWidth(),
+        y: offsetY + grid.lineWidth(),
+        width: fixedWidth,
+        height: fixedHeight,
+      });
+      const borderCrop = new Crop({ draw, rect: borderRect });
+      borderCrop.open();
+      this.drawBorder(borderView, bdX, bdY);
+      borderCrop.close();
     }
   }
 
@@ -2938,7 +3144,6 @@ class Table extends Widget {
 
     // canvas 绘制资源
     this.draw = new Draw(this.canvas.el);
-    this.offDraw = new OFFDraw(this.draw);
     this.line = new Line(this.draw, {
       leftShow: (ri, ci) => {
         // 单元格是否存在
@@ -3216,10 +3421,9 @@ class Table extends Widget {
   }
 
   resize() {
-    const { offDraw, draw, dynamicView } = this;
+    const { draw, dynamicView } = this;
     const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.resize(width, height);
-    offDraw.resize(width, height);
     dynamicView.cpRange();
     this.render();
   }
