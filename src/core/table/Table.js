@@ -2018,12 +2018,27 @@ class FixedTop {
       const borderView = fixedTopOffset.getBorderView();
       const fixedWidth = fixedTopOffset.getFixedWidth();
       const fixedHeight = fixedTopOffset.getFixedHeight();
+      let offsetX = fixedTopOffset.getFixedXOffset();
+      let offsetY = fixedTopOffset.getFixedYOffset();
+      let dx = fixedTopOffset.getDwXOffset();
+      let dy = fixedTopOffset.getDwYOffset();
+      let bdX = fixedTopOffset.getBdXOffset();
+      let bdY = fixedTopOffset.getBdYOffset();
+      // 避开索引栏的下边框
+      offsetX += grid.lineWidth();
+      offsetY += grid.lineWidth();
+      bdX += grid.lineWidth();
+      bdY += grid.lineWidth();
+      if (scrollView.sri === 0) {
+        dy += grid.lineWidth();
+      }
+      if (scrollView.sci === 0) {
+        dx += grid.lineWidth();
+      }
       // 裁剪背景
-      const offsetX = fixedTopOffset.getFixedXOffset();
-      const offsetY = fixedTopOffset.getFixedYOffset();
       const clearRect = new Rect({
-        x: offsetX + grid.lineWidth(),
-        y: offsetY + grid.lineWidth(),
+        x: offsetX,
+        y: offsetY,
         width: fixedWidth,
         height: fixedHeight,
       });
@@ -2032,11 +2047,9 @@ class FixedTop {
       this.renderClear();
       clearCrop.close();
       // 裁剪内容
-      const dx = fixedTopOffset.getDwXOffset();
-      const dy = fixedTopOffset.getDwYOffset();
       const drawRect = new Rect({
-        x: dx + grid.lineWidth(),
-        y: dy + grid.lineWidth(),
+        x: dx,
+        y: dy,
         width: scrollView.w,
         height: scrollView.h,
       });
@@ -2049,11 +2062,9 @@ class FixedTop {
       }
       drawCrop.close();
       // 裁剪边框
-      const bdY = fixedTopOffset.getBdYOffset();
-      const bdX = fixedTopOffset.getBdXOffset();
       const borderRect = new Rect({
-        x: offsetX + grid.lineWidth(),
-        y: offsetY + grid.lineWidth(),
+        x: offsetX,
+        y: offsetY,
         width: fixedWidth,
         height: fixedHeight,
       });
@@ -2357,12 +2368,27 @@ class FixedLeft {
       const borderView = fixedLeftOffset.getBorderView();
       const fixedWidth = fixedLeftOffset.getFixedWidth();
       const fixedHeight = fixedLeftOffset.getFixedHeight();
+      let offsetX = fixedLeftOffset.getFixedXOffset();
+      let offsetY = fixedLeftOffset.getFixedYOffset();
+      let dx = fixedLeftOffset.getDwXOffset();
+      let dy = fixedLeftOffset.getDwYOffset();
+      let bdX = fixedLeftOffset.getBdXOffset();
+      let bdY = fixedLeftOffset.getBdYOffset();
+      // 避开索引栏的下边框
+      offsetX += grid.lineWidth();
+      offsetY += grid.lineWidth();
+      bdX += grid.lineWidth();
+      bdY += grid.lineWidth();
+      if (scrollView.sri === 0) {
+        dy += grid.lineWidth();
+      }
+      if (scrollView.sci === 0) {
+        dx += grid.lineWidth();
+      }
       // 裁剪背景
-      const offsetX = fixedLeftOffset.getFixedXOffset();
-      const offsetY = fixedLeftOffset.getFixedYOffset();
       const clearRect = new Rect({
-        x: offsetX + grid.lineWidth(),
-        y: offsetY + grid.lineWidth(),
+        x: offsetX,
+        y: offsetY,
         width: fixedWidth,
         height: fixedHeight,
       });
@@ -2371,11 +2397,9 @@ class FixedLeft {
       this.renderClear();
       clearCrop.close();
       // 裁剪内容
-      const dx = fixedLeftOffset.getDwXOffset();
-      const dy = fixedLeftOffset.getDwYOffset();
       const drawRect = new Rect({
-        x: dx + grid.lineWidth(),
-        y: dy + grid.lineWidth(),
+        x: dx,
+        y: dy,
         width: scrollView.w,
         height: scrollView.h,
       });
@@ -2388,11 +2412,9 @@ class FixedLeft {
       }
       drawCrop.close();
       // 裁剪边框
-      const bdY = fixedLeftOffset.getBdYOffset();
-      const bdX = fixedLeftOffset.getBdXOffset();
       const borderRect = new Rect({
-        x: offsetX + grid.lineWidth(),
-        y: offsetY + grid.lineWidth(),
+        x: offsetX,
+        y: offsetY,
         width: fixedWidth,
         height: fixedHeight,
       });
@@ -2735,12 +2757,27 @@ class Content {
       const borderView = contentOffset.getBorderView();
       const fixedWidth = contentOffset.getFixedWidth();
       const fixedHeight = contentOffset.getFixedHeight();
+      let offsetX = contentOffset.getFixedXOffset();
+      let offsetY = contentOffset.getFixedYOffset();
+      let dx = contentOffset.getDwXOffset();
+      let dy = contentOffset.getDwYOffset();
+      let bdX = contentOffset.getBdXOffset();
+      let bdY = contentOffset.getBdYOffset();
+      // 避开索引栏的下边框
+      offsetX += grid.lineWidth();
+      offsetY += grid.lineWidth();
+      bdX += grid.lineWidth();
+      bdY += grid.lineWidth();
+      if (scrollView.sri === 0) {
+        dy += grid.lineWidth();
+      }
+      if (scrollView.sci === 0) {
+        dx += grid.lineWidth();
+      }
       // 裁剪背景
-      const offsetX = contentOffset.getFixedXOffset();
-      const offsetY = contentOffset.getFixedYOffset();
       const clearRect = new Rect({
-        x: offsetX + grid.lineWidth(),
-        y: offsetY + grid.lineWidth(),
+        x: offsetX,
+        y: offsetY,
         width: fixedWidth,
         height: fixedHeight,
       });
@@ -2749,11 +2786,9 @@ class Content {
       this.renderClear();
       clearCrop.close();
       // 裁剪内容
-      const dx = contentOffset.getDwXOffset();
-      const dy = contentOffset.getDwYOffset();
       const drawRect = new Rect({
-        x: dx + grid.lineWidth(),
-        y: dy + grid.lineWidth(),
+        x: dx,
+        y: dy,
         width: scrollView.w,
         height: scrollView.h,
       });
@@ -2766,11 +2801,9 @@ class Content {
       }
       drawCrop.close();
       // 裁剪边框
-      const bdY = contentOffset.getBdYOffset();
-      const bdX = contentOffset.getBdXOffset();
       const borderRect = new Rect({
-        x: offsetX + grid.lineWidth(),
-        y: offsetY + grid.lineWidth(),
+        x: offsetX,
+        y: offsetY,
         width: fixedWidth,
         height: fixedHeight,
       });
