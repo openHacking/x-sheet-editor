@@ -1,6 +1,6 @@
 {
   "name": "x-sheet",
-  "version": "1.0.27",
+  "version": "1.0.1-development",
   "description": "a javascript web sheet",
   "main": "src/index.js",
   "files": [
