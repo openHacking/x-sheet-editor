@@ -1963,8 +1963,10 @@ class FixedTop {
       case SCROLL_TYPE.H_LEFT: {
         let sx = x;
         // 防止贴图网格
-        sx += grid.lineWidth();
-        cx += grid.lineWidth();
+        if (settings.table.showGrid) {
+          sx += grid.lineWidth();
+          cx += grid.lineWidth();
+        }
         draw.drawImage(canvas.el, sx, y, width, height, cx, y, width, height);
         break;
       }
@@ -1978,7 +1980,9 @@ class FixedTop {
     switch (scroll.type) {
       case SCROLL_TYPE.H_RIGHT: {
         // 防止擦除网格
-        dx += grid.lineWidth();
+        if (settings.table.showGrid) {
+          dx += grid.lineWidth();
+        }
         draw.attr({ fillStyle: settings.table.background });
         if (cols.len - 1 === range.eci) {
           const origin = dynamicView.getOriginScrollView();
@@ -2299,8 +2303,10 @@ class FixedLeft {
       case SCROLL_TYPE.V_TOP: {
         let sy = y;
         // 防止贴图网格
-        sy += grid.lineWidth();
-        cy += grid.lineWidth();
+        if (settings.table.showGrid) {
+          sy += grid.lineWidth();
+          cy += grid.lineWidth();
+        }
         draw.drawImage(canvas.el, x, sy, width, height, x, cy, width, height);
         break;
       }
@@ -2315,7 +2321,9 @@ class FixedLeft {
       case SCROLL_TYPE.V_BOTTOM: {
         draw.attr({ fillStyle: settings.table.background });
         // 防止擦除网格
-        dy += grid.lineWidth();
+        if (settings.table.showGrid) {
+          dy += grid.lineWidth();
+        }
         if (rows.len - 1 === range.eri) {
           const origin = dynamicView.getOriginScrollView();
           draw.fillRect(dx, dy, width, range.h + (height - origin.h));
@@ -2642,8 +2650,10 @@ class Content {
       case SCROLL_TYPE.V_TOP: {
         let sy = y;
         // 防止贴图网格
-        sy += grid.lineWidth();
-        cy += grid.lineWidth();
+        if (settings.table.showGrid) {
+          sy += grid.lineWidth();
+          cy += grid.lineWidth();
+        }
         draw.drawImage(canvas.el, x, sy, width, height, x, cy, width, height);
         break;
       }
@@ -2651,8 +2661,10 @@ class Content {
       case SCROLL_TYPE.H_LEFT: {
         let sx = x;
         // 防止贴图网格
-        sx += grid.lineWidth();
-        cx += grid.lineWidth();
+        if (settings.table.showGrid) {
+          sx += grid.lineWidth();
+          cx += grid.lineWidth();
+        }
         draw.drawImage(canvas.el, sx, y, width, height, cx, y, width, height);
         break;
       }
@@ -2667,7 +2679,9 @@ class Content {
       case SCROLL_TYPE.V_BOTTOM: {
         draw.attr({ fillStyle: settings.table.background });
         // 防止擦除网格
-        dy += grid.lineWidth();
+        if (settings.table.showGrid) {
+          dy += grid.lineWidth();
+        }
         if (rows.len - 1 === range.eri) {
           const origin = dynamicView.getOriginScrollView();
           draw.fillRect(dx, dy, width, range.h + (height - origin.h));
@@ -2683,7 +2697,9 @@ class Content {
       }
       case SCROLL_TYPE.H_RIGHT: {
         // 防止擦除网格
-        dx += grid.lineWidth();
+        if (settings.table.showGrid) {
+          dx += grid.lineWidth();
+        }
         draw.attr({ fillStyle: settings.table.background });
         if (cols.len - 1 === range.eci) {
           const origin = dynamicView.getOriginScrollView();
