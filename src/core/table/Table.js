@@ -1007,19 +1007,19 @@ class DynamicViewDifference {
   }
 
   cpBorderRange() {
-    const { dwContentRange } = this;
+    const { dwAddRange } = this;
     const { dynamicView } = this;
     const { table } = dynamicView;
     const { scroll } = table;
     const { cols, rows } = table;
-    if (dwContentRange) {
-      const borderRange = dwContentRange.clone();
+    if (dwAddRange) {
+      const borderRange = dwAddRange.clone();
       switch (scroll.type) {
         case SCROLL_TYPE.H_LEFT:
-          borderRange.sci += 1;
+          borderRange.eci += 1;
           break;
         case SCROLL_TYPE.H_RIGHT:
-          borderRange.eci -= 1;
+          borderRange.sci -= 1;
           break;
         case SCROLL_TYPE.V_TOP:
           borderRange.eri += 1;
@@ -2008,35 +2008,38 @@ class FixedTop {
     const { table } = this;
     const { draw, grid, settings } = table;
     const { fixedTopOffset } = table;
-    const change = fixedTopOffset.getScrollViewChange();
+    const offset = fixedTopOffset;
+    const change = offset.getScrollViewChange();
     if (change) {
-      const scrollXOffset = fixedTopOffset.getScrollXOffset();
-      const scrollView = fixedTopOffset.getScrollView();
-      const contentView = fixedTopOffset.getContentView();
-      const borderView = fixedTopOffset.getBorderView();
-      const fixedWidth = fixedTopOffset.getFixedWidth();
-      const fixedHeight = fixedTopOffset.getFixedHeight();
-      let offsetX = fixedTopOffset.getFixedXOffset();
-      let offsetY = fixedTopOffset.getFixedYOffset();
-      let dx = fixedTopOffset.getDwXOffset();
-      let dy = fixedTopOffset.getDwYOffset();
-      let bdX = fixedTopOffset.getBdXOffset();
-      let bdY = fixedTopOffset.getBdYOffset();
+      const scrollXOffset = offset.getScrollXOffset();
+      const scrollView = offset.getScrollView();
+      const contentView = offset.getContentView();
+      const borderView = offset.getBorderView();
+      const fixedWidth = offset.getFixedWidth();
+      const fixedHeight = offset.getFixedHeight();
+      const offsetX = offset.getFixedXOffset();
+      const offsetY = offset.getFixedYOffset();
+      const drawX = offset.getDwXOffset();
+      const drawY = offset.getDwYOffset();
+      const borderX = offset.getBdXOffset();
+      const borderY = offset.getBdYOffset();
       // 避开索引栏的左, 下边框
-      offsetX += grid.lineWidth();
-      offsetY += grid.lineWidth();
-      bdX += grid.lineWidth();
-      bdY += grid.lineWidth();
+      let clearOffsetX = offsetX;
+      let clearOffsetY = offsetY;
+      let clearDrawX = drawX;
+      let clearDrawY = drawY;
+      clearOffsetX += grid.lineWidth();
+      clearOffsetY += grid.lineWidth();
       if (scrollView.sri === 0) {
-        dy += grid.lineWidth();
+        clearDrawY += grid.lineWidth();
       }
       if (scrollView.sci === 0) {
-        dx += grid.lineWidth();
+        clearDrawX += grid.lineWidth();
       }
       // 裁剪背景
       const clearRect = new Rect({
-        x: offsetX,
-        y: offsetY,
+        x: clearOffsetX,
+        y: clearOffsetY,
         width: fixedWidth,
         height: fixedHeight,
       });
@@ -2046,29 +2049,29 @@ class FixedTop {
       clearCrop.close();
       // 裁剪内容
       const drawRect = new Rect({
-        x: dx,
-        y: dy,
+        x: clearDrawX,
+        y: clearDrawY,
         width: scrollView.w,
         height: scrollView.h,
       });
       const drawCrop = new Crop({ draw, rect: drawRect });
       drawCrop.open();
-      this.drawBackGround(scrollView, dx, dy);
-      this.drawCells(contentView, scrollXOffset, offsetX, dy);
+      this.drawBackGround(scrollView, drawX, drawY);
+      this.drawCells(contentView, scrollXOffset, offsetX, drawY);
       if (settings.table.showGrid) {
-        this.drawGrid(scrollView, dx, dy);
+        this.drawGrid(scrollView, drawX, drawY);
       }
       drawCrop.close();
       // 裁剪边框
       const borderRect = new Rect({
-        x: offsetX,
-        y: offsetY,
+        x: clearOffsetX,
+        y: clearOffsetY,
         width: fixedWidth,
         height: fixedHeight,
       });
       const borderCrop = new Crop({ draw, rect: borderRect });
       borderCrop.open();
-      this.drawBorder(borderView, bdX, bdY);
+      this.drawBorder(borderView, borderX, borderY);
       borderCrop.close();
     }
   }
@@ -2357,34 +2360,37 @@ class FixedLeft {
     const { table } = this;
     const { draw, grid, settings } = table;
     const { fixedLeftOffset } = table;
-    const change = fixedLeftOffset.getScrollViewChange();
+    const offset = fixedLeftOffset;
+    const change = offset.getScrollViewChange();
     if (change) {
-      const scrollView = fixedLeftOffset.getScrollView();
-      const contentView = fixedLeftOffset.getContentView();
-      const borderView = fixedLeftOffset.getBorderView();
-      const fixedWidth = fixedLeftOffset.getFixedWidth();
-      const fixedHeight = fixedLeftOffset.getFixedHeight();
-      let offsetX = fixedLeftOffset.getFixedXOffset();
-      let offsetY = fixedLeftOffset.getFixedYOffset();
-      let dx = fixedLeftOffset.getDwXOffset();
-      let dy = fixedLeftOffset.getDwYOffset();
-      let bdX = fixedLeftOffset.getBdXOffset();
-      let bdY = fixedLeftOffset.getBdYOffset();
+      const scrollView = offset.getScrollView();
+      const contentView = offset.getContentView();
+      const borderView = offset.getBorderView();
+      const fixedWidth = offset.getFixedWidth();
+      const fixedHeight = offset.getFixedHeight();
+      const offsetX = offset.getFixedXOffset();
+      const offsetY = offset.getFixedYOffset();
+      const drawX = offset.getDwXOffset();
+      const drawY = offset.getDwYOffset();
+      const borderX = offset.getBdXOffset();
+      const borderY = offset.getBdYOffset();
       // 避开索引栏的左, 下边框
-      offsetX += grid.lineWidth();
-      offsetY += grid.lineWidth();
-      bdX += grid.lineWidth();
-      bdY += grid.lineWidth();
+      let clearOffsetX = offsetX;
+      let clearOffsetY = offsetY;
+      let clearDrawX = drawX;
+      let clearDrawY = drawY;
+      clearOffsetX += grid.lineWidth();
+      clearOffsetY += grid.lineWidth();
       if (scrollView.sri === 0) {
-        dy += grid.lineWidth();
+        clearDrawY += grid.lineWidth();
       }
       if (scrollView.sci === 0) {
-        dx += grid.lineWidth();
+        clearDrawX += grid.lineWidth();
       }
       // 裁剪背景
       const clearRect = new Rect({
-        x: offsetX,
-        y: offsetY,
+        x: clearOffsetX,
+        y: clearOffsetY,
         width: fixedWidth,
         height: fixedHeight,
       });
@@ -2394,29 +2400,29 @@ class FixedLeft {
       clearCrop.close();
       // 裁剪内容
       const drawRect = new Rect({
-        x: dx,
-        y: dy,
+        x: clearDrawX,
+        y: clearDrawY,
         width: scrollView.w,
         height: scrollView.h,
       });
       const drawCrop = new Crop({ draw, rect: drawRect });
       drawCrop.open();
-      this.drawBackGround(scrollView, dx, dy);
-      this.drawCells(contentView, offsetX, dy);
+      this.drawBackGround(scrollView, drawX, drawY);
+      this.drawCells(contentView, offsetX, drawY);
       if (settings.table.showGrid) {
-        this.drawGrid(scrollView, dx, dy);
+        this.drawGrid(scrollView, drawX, drawY);
       }
       drawCrop.close();
       // 裁剪边框
       const borderRect = new Rect({
-        x: offsetX,
-        y: offsetY,
+        x: clearOffsetX,
+        y: clearOffsetY,
         width: fixedWidth,
         height: fixedHeight,
       });
       const borderCrop = new Crop({ draw, rect: borderRect });
       borderCrop.open();
-      this.drawBorder(borderView, bdX, bdY);
+      this.drawBorder(borderView, borderX, borderY);
       borderCrop.close();
     }
   }
@@ -2741,35 +2747,38 @@ class Content {
     const { table } = this;
     const { draw, grid, settings } = table;
     const { contentOffset } = table;
-    const change = contentOffset.getScrollViewChange();
+    const offset = contentOffset;
+    const change = offset.getScrollViewChange();
     if (change) {
-      const scrollXOffset = contentOffset.getScrollXOffset();
-      const scrollView = contentOffset.getScrollView();
-      const contentView = contentOffset.getContentView();
-      const borderView = contentOffset.getBorderView();
-      const fixedWidth = contentOffset.getFixedWidth();
-      const fixedHeight = contentOffset.getFixedHeight();
-      let offsetX = contentOffset.getFixedXOffset();
-      let offsetY = contentOffset.getFixedYOffset();
-      let dx = contentOffset.getDwXOffset();
-      let dy = contentOffset.getDwYOffset();
-      let bdX = contentOffset.getBdXOffset();
-      let bdY = contentOffset.getBdYOffset();
+      const scrollXOffset = offset.getScrollXOffset();
+      const scrollView = offset.getScrollView();
+      const contentView = offset.getContentView();
+      const borderView = offset.getBorderView();
+      const fixedWidth = offset.getFixedWidth();
+      const fixedHeight = offset.getFixedHeight();
+      const offsetX = offset.getFixedXOffset();
+      const offsetY = offset.getFixedYOffset();
+      const drawX = offset.getDwXOffset();
+      const drawY = offset.getDwYOffset();
+      const borderX = offset.getBdXOffset();
+      const borderY = offset.getBdYOffset();
       // 避开索引栏的左, 下边框
-      offsetX += grid.lineWidth();
-      offsetY += grid.lineWidth();
-      bdX += grid.lineWidth();
-      bdY += grid.lineWidth();
+      let clearOffsetX = offsetX;
+      let clearOffsetY = offsetY;
+      let clearDrawX = drawX;
+      let clearDrawY = drawY;
+      clearOffsetX += grid.lineWidth();
+      clearOffsetY += grid.lineWidth();
       if (scrollView.sri === 0) {
-        dy += grid.lineWidth();
+        clearDrawY += grid.lineWidth();
       }
       if (scrollView.sci === 0) {
-        dx += grid.lineWidth();
+        clearDrawX += grid.lineWidth();
       }
       // 裁剪背景
       const clearRect = new Rect({
-        x: offsetX,
-        y: offsetY,
+        x: clearOffsetX,
+        y: clearOffsetY,
         width: fixedWidth,
         height: fixedHeight,
       });
@@ -2779,29 +2788,29 @@ class Content {
       clearCrop.close();
       // 裁剪内容
       const drawRect = new Rect({
-        x: dx,
-        y: dy,
+        x: clearDrawX,
+        y: clearDrawY,
         width: scrollView.w,
         height: scrollView.h,
       });
       const drawCrop = new Crop({ draw, rect: drawRect });
       drawCrop.open();
-      this.drawBackGround(scrollView, dx, dy);
-      this.drawCells(contentView, scrollXOffset, offsetX, dy);
+      this.drawBackGround(scrollView, drawX, drawY);
+      this.drawCells(contentView, scrollXOffset, offsetX, drawY);
       if (settings.table.showGrid) {
-        this.drawGrid(scrollView, dx, dy);
+        this.drawGrid(scrollView, drawX, drawY);
       }
       drawCrop.close();
       // 裁剪边框
       const borderRect = new Rect({
-        x: offsetX,
-        y: offsetY,
+        x: clearOffsetX,
+        y: clearOffsetY,
         width: fixedWidth,
         height: fixedHeight,
       });
       const borderCrop = new Crop({ draw, rect: borderRect });
       borderCrop.open();
-      this.drawBorder(borderView, bdX, bdY);
+      this.drawBorder(borderView, borderX, borderY);
       borderCrop.close();
     }
   }
