@@ -1543,8 +1543,11 @@ class FrozenLeftIndex {
   draw(viewRange, offsetX, offsetY, width, height) {
     const { table } = this;
     const {
-      draw, grid, rows, settings,
+      draw, rows, settings,
     } = table;
+    const grid = new Grid(draw, {
+      color: settings.table.indexBorderColor,
+    });
     const { sri, eri } = viewRange;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -1565,9 +1568,6 @@ class FrozenLeftIndex {
     });
     // 绘制边框
     let lineHeight = 0;
-    draw.attr({
-      strokeStyle: settings.table.borderColor,
-    });
     rows.eachHeight(sri, eri, (i, ch, y) => {
       lineHeight += ch;
       grid.horizontalLine(0, y, width, y);
@@ -1618,8 +1618,11 @@ class FrozenTopIndex {
   draw(viewRange, offsetX, offsetY, width, height) {
     const { table } = this;
     const {
-      draw, grid, cols, settings,
+      draw, cols, settings,
     } = table;
+    const grid = new Grid(draw, {
+      color: settings.table.indexBorderColor,
+    });
     const { sci, eci } = viewRange;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -1639,13 +1642,7 @@ class FrozenTopIndex {
       draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
     });
     // 绘制边框
-    draw.attr({
-      strokeStyle: settings.table.borderColor,
-    });
     let lineWidth = 0;
-    draw.attr({
-      strokeStyle: settings.table.borderColor,
-    });
     cols.eachWidth(sci, eci, (i, cw, x) => {
       lineWidth += cw;
       grid.verticalLine(x, 0, x, height);
@@ -1695,7 +1692,10 @@ class FrozenRect {
 
   draw(offsetX, offsetY, width, height) {
     const { table } = this;
-    const { draw, grid, settings } = table;
+    const { draw, settings } = table;
+    const grid = new Grid(draw, {
+      color: settings.table.indexBorderColor,
+    });
     draw.save();
     draw.offset(offsetX, offsetY);
     // 绘制背景
@@ -1706,9 +1706,6 @@ class FrozenRect {
     draw.offset(0, 0);
     draw.restore();
     // 绘制边框
-    draw.attr({
-      strokeStyle: settings.table.borderColor,
-    });
     grid.verticalLine(width, offsetY, width, height);
     grid.horizontalLine(0, height, width, height);
   }
@@ -2510,6 +2507,9 @@ class Content {
     } = table;
     draw.save();
     draw.offset(offsetX, offsetY);
+    draw.attr({
+      globalAlpha: 0.3,
+    });
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({ viewRange });
     const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
     const hLine = gridLineHandle.hLine(viewRange);
@@ -2769,12 +2769,8 @@ class Content {
       let clearDrawY = drawY;
       clearOffsetX += grid.lineWidth();
       clearOffsetY += grid.lineWidth();
-      if (scrollView.sri === 0) {
-        clearDrawY += grid.lineWidth();
-      }
-      if (scrollView.sci === 0) {
-        clearDrawX += grid.lineWidth();
-      }
+      clearDrawY += grid.lineWidth();
+      clearDrawX += grid.lineWidth();
       // 裁剪背景
       const clearRect = new Rect({
         x: clearOffsetX,
@@ -2826,8 +2822,11 @@ class FixedTopIndex {
   draw(viewRange, offsetX, offsetY, width, height) {
     const { table } = this;
     const {
-      draw, grid, cols, settings,
+      draw, cols, settings,
     } = table;
+    const grid = new Grid(draw, {
+      color: settings.table.indexBorderColor,
+    });
     const { sci, eci } = viewRange;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -2847,13 +2846,7 @@ class FixedTopIndex {
       draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
     });
     // 绘制边框
-    draw.attr({
-      strokeStyle: settings.table.borderColor,
-    });
     let lineWidth = 0;
-    draw.attr({
-      strokeStyle: settings.table.borderColor,
-    });
     cols.eachWidth(sci, eci, (i, cw, x) => {
       lineWidth += cw;
       grid.verticalLine(x, 0, x, height);
@@ -2942,8 +2935,11 @@ class FixedLeftIndex {
   draw(viewRange, offsetX, offsetY, width, height) {
     const { table } = this;
     const {
-      draw, grid, rows, settings,
+      draw, rows, settings,
     } = table;
+    const grid = new Grid(draw, {
+      color: settings.table.indexBorderColor,
+    });
     const { sri, eri } = viewRange;
     draw.save();
     draw.offset(offsetX, offsetY);
@@ -3125,10 +3121,11 @@ const defaultSettings = {
     color: '#000000',
   },
   table: {
+    showGrid: true,
     background: '#ffffff',
     borderColor: '#e5e5e5',
-    gridColor: '#000000',
-    showGrid: true,
+    gridColor: '#b7b7b7',
+    indexBorderColor: '#d8d8d8',
   },
   data: [],
   rows: {
@@ -3246,7 +3243,7 @@ class Table extends Widget {
       iFMergeLastCol: (row, col) => this.merges.getFirstIncludes(row, col).eci === col,
     });
     this.grid = new Grid(this.draw, {
-      color: this.settings.table.borderColor,
+      color: this.settings.table.gridColor,
     });
 
     // 表格线段处理
