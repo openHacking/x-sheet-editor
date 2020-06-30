@@ -1962,11 +1962,9 @@ class FixedTop {
       case SCROLL_TYPE.H_RIGHT:
       case SCROLL_TYPE.H_LEFT: {
         let sx = x;
-        // 防止贴图网格
-        if (settings.table.showGrid) {
-          sx += grid.lineWidth();
-          cx += grid.lineWidth();
-        }
+        // 避开索引栏的左, 下边框
+        sx += grid.lineWidth();
+        cx += grid.lineWidth();
         draw.drawImage(canvas.el, sx, y, width, height, cx, y, width, height);
         break;
       }
@@ -2024,7 +2022,7 @@ class FixedTop {
       let dy = fixedTopOffset.getDwYOffset();
       let bdX = fixedTopOffset.getBdXOffset();
       let bdY = fixedTopOffset.getBdYOffset();
-      // 避开索引栏的下边框
+      // 避开索引栏的左, 下边框
       offsetX += grid.lineWidth();
       offsetY += grid.lineWidth();
       bdX += grid.lineWidth();
@@ -2313,11 +2311,9 @@ class FixedLeft {
       case SCROLL_TYPE.V_BOTTOM:
       case SCROLL_TYPE.V_TOP: {
         let sy = y;
-        // 防止贴图网格
-        if (settings.table.showGrid) {
-          sy += grid.lineWidth();
-          cy += grid.lineWidth();
-        }
+        // 避开索引栏的左, 下边框
+        sy += grid.lineWidth();
+        cy += grid.lineWidth();
         draw.drawImage(canvas.el, x, sy, width, height, x, cy, width, height);
         break;
       }
@@ -2374,7 +2370,7 @@ class FixedLeft {
       let dy = fixedLeftOffset.getDwYOffset();
       let bdX = fixedLeftOffset.getBdXOffset();
       let bdY = fixedLeftOffset.getBdYOffset();
-      // 避开索引栏的下边框
+      // 避开索引栏的左, 下边框
       offsetX += grid.lineWidth();
       offsetY += grid.lineWidth();
       bdX += grid.lineWidth();
@@ -2671,22 +2667,18 @@ class Content {
       case SCROLL_TYPE.V_BOTTOM:
       case SCROLL_TYPE.V_TOP: {
         let sy = y;
-        // 防止贴图网格
-        if (settings.table.showGrid) {
-          sy += grid.lineWidth();
-          cy += grid.lineWidth();
-        }
+        // 避开索引栏的左, 下边框
+        sy += grid.lineWidth();
+        cy += grid.lineWidth();
         draw.drawImage(canvas.el, x, sy, width, height, x, cy, width, height);
         break;
       }
       case SCROLL_TYPE.H_RIGHT:
       case SCROLL_TYPE.H_LEFT: {
         let sx = x;
-        // 防止贴图网格
-        if (settings.table.showGrid) {
-          sx += grid.lineWidth();
-          cx += grid.lineWidth();
-        }
+        // 避开索引栏的左, 下边框
+        sx += grid.lineWidth();
+        cx += grid.lineWidth();
         draw.drawImage(canvas.el, sx, y, width, height, cx, y, width, height);
         break;
       }
@@ -2763,7 +2755,7 @@ class Content {
       let dy = contentOffset.getDwYOffset();
       let bdX = contentOffset.getBdXOffset();
       let bdY = contentOffset.getBdYOffset();
-      // 避开索引栏的下边框
+      // 避开索引栏的左, 下边框
       offsetX += grid.lineWidth();
       offsetY += grid.lineWidth();
       bdX += grid.lineWidth();
