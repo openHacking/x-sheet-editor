@@ -2023,7 +2023,7 @@ class FixedTop {
   render() {
     const { table } = this;
     const { draw, grid, settings } = table;
-    const { fixedTopOffset } = table;
+    const { fixedTopOffset, scroll } = table;
     const offset = fixedTopOffset;
     const change = offset.getScrollViewChange();
     if (change) {
@@ -2039,15 +2039,35 @@ class FixedTop {
       const drawY = offset.getDwYOffset();
       const borderX = offset.getBdXOffset();
       const borderY = offset.getBdYOffset();
-      // 避开索引栏的左, 下边框
+      // 裁剪区域计算
       let clearOffsetX = offsetX;
       let clearOffsetY = offsetY;
       let clearDrawX = drawX;
       let clearDrawY = drawY;
+      // 避开索引栏的左, 下边框
       clearOffsetX += grid.lineWidth();
       clearOffsetY += grid.lineWidth();
-      clearDrawY += grid.lineWidth();
-      clearDrawX += grid.lineWidth();
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_TOP: {
+          clearDrawY += grid.lineWidth();
+          clearDrawX += grid.lineWidth();
+          break;
+        }
+        case SCROLL_TYPE.V_BOTTOM: {
+          clearDrawX += grid.lineWidth();
+          break;
+        }
+        case SCROLL_TYPE.H_LEFT: {
+          clearDrawY += grid.lineWidth();
+          clearDrawX += grid.lineWidth();
+          break;
+        }
+        case SCROLL_TYPE.H_RIGHT: {
+          clearDrawY += grid.lineWidth();
+          break;
+        }
+        default: break;
+      }
       // 裁剪背景
       const clearRect = new Rect({
         x: clearOffsetX,
@@ -2384,7 +2404,7 @@ class FixedLeft {
   render() {
     const { table } = this;
     const { draw, grid, settings } = table;
-    const { fixedLeftOffset } = table;
+    const { fixedLeftOffset, scroll } = table;
     const offset = fixedLeftOffset;
     const change = offset.getScrollViewChange();
     if (change) {
@@ -2399,15 +2419,35 @@ class FixedLeft {
       const drawY = offset.getDwYOffset();
       const borderX = offset.getBdXOffset();
       const borderY = offset.getBdYOffset();
-      // 避开索引栏的左, 下边框
+      // 裁剪区域计算
       let clearOffsetX = offsetX;
       let clearOffsetY = offsetY;
       let clearDrawX = drawX;
       let clearDrawY = drawY;
+      // 避开索引栏的左, 下边框
       clearOffsetX += grid.lineWidth();
       clearOffsetY += grid.lineWidth();
-      clearDrawY += grid.lineWidth();
-      clearDrawX += grid.lineWidth();
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_TOP: {
+          clearDrawY += grid.lineWidth();
+          clearDrawX += grid.lineWidth();
+          break;
+        }
+        case SCROLL_TYPE.V_BOTTOM: {
+          clearDrawX += grid.lineWidth();
+          break;
+        }
+        case SCROLL_TYPE.H_LEFT: {
+          clearDrawY += grid.lineWidth();
+          clearDrawX += grid.lineWidth();
+          break;
+        }
+        case SCROLL_TYPE.H_RIGHT: {
+          clearDrawY += grid.lineWidth();
+          break;
+        }
+        default: break;
+      }
       // 裁剪背景
       const clearRect = new Rect({
         x: clearOffsetX,
@@ -2786,7 +2826,7 @@ class Content {
 
   render() {
     const { table } = this;
-    const { draw, grid, settings } = table;
+    const { draw, grid, settings, scroll } = table;
     const { contentOffset } = table;
     const offset = contentOffset;
     const change = offset.getScrollViewChange();
@@ -2803,15 +2843,35 @@ class Content {
       const drawY = offset.getDwYOffset();
       const borderX = offset.getBdXOffset();
       const borderY = offset.getBdYOffset();
-      // 避开索引栏的左, 下边框
+      // 裁剪区域计算
       let clearOffsetX = offsetX;
       let clearOffsetY = offsetY;
       let clearDrawX = drawX;
       let clearDrawY = drawY;
+      // 避开索引栏的左, 下边框
       clearOffsetX += grid.lineWidth();
       clearOffsetY += grid.lineWidth();
-      clearDrawY += grid.lineWidth();
-      clearDrawX += grid.lineWidth();
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_TOP: {
+          clearDrawY += grid.lineWidth();
+          clearDrawX += grid.lineWidth();
+          break;
+        }
+        case SCROLL_TYPE.V_BOTTOM: {
+          clearDrawX += grid.lineWidth();
+          break;
+        }
+        case SCROLL_TYPE.H_LEFT: {
+          clearDrawY += grid.lineWidth();
+          clearDrawX += grid.lineWidth();
+          break;
+        }
+        case SCROLL_TYPE.H_RIGHT: {
+          clearDrawY += grid.lineWidth();
+          break;
+        }
+        default: break;
+      }
       // 裁剪背景
       const clearRect = new Rect({
         x: clearOffsetX,
