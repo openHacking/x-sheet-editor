@@ -33,7 +33,7 @@ class ScreenAutoFill extends ScreenWidget {
       screenSelector.t.cornerEl,
       screenSelector.l.cornerEl,
       screenSelector.br.cornerEl,
-    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       mousePointer.on(key);
       mousePointer.set(type, key);
       EventBind.mouseMoveUp(document, (e2) => {
@@ -60,6 +60,7 @@ class ScreenAutoFill extends ScreenWidget {
           table.render();
         }
       });
+      e.stopPropagation();
     });
     EventBind.bind([
       screenSelector.lt.cornerEl,
@@ -67,7 +68,16 @@ class ScreenAutoFill extends ScreenWidget {
       screenSelector.l.cornerEl,
       screenSelector.br.cornerEl,
     ], Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
+      mousePointer.on(key);
       mousePointer.set(type, key);
+    });
+    EventBind.bind([
+      screenSelector.lt.cornerEl,
+      screenSelector.t.cornerEl,
+      screenSelector.l.cornerEl,
+      screenSelector.br.cornerEl,
+    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
+      mousePointer.off(key);
     });
   }
 
@@ -224,8 +234,9 @@ class ScreenAutoFill extends ScreenWidget {
   }
 
   getMoveAutoFillAttr(x, y) {
-    const { screen, screenSelector } = this;
+    const { screen } = this;
     const { table } = screen;
+    const { screenSelector } = table;
     const { selectorAttr } = screenSelector;
     const { cols, rows, merges } = table;
     const { rect: selectorRect, edge, edgeType } = selectorAttr;
@@ -317,8 +328,9 @@ class ScreenAutoFill extends ScreenWidget {
   }
 
   mergeCellForceSplit() {
-    const { screen, screenSelector } = this;
+    const { screen } = this;
     const { table } = screen;
+    const { screenSelector } = table;
     const { merges } = table;
     const { autoFillAttr } = this;
     const { selectorAttr } = screenSelector;
@@ -347,8 +359,9 @@ class ScreenAutoFill extends ScreenWidget {
 
   copyContent() {
     let count = 0;
-    const { screen, screenSelector } = this;
+    const { screen } = this;
     const { table } = screen;
+    const { screenSelector } = table;
     const { cells, tableDataSnapshot } = table;
     const { cellDataProxy } = tableDataSnapshot;
     const { autoFillAttr } = this;
@@ -381,8 +394,9 @@ class ScreenAutoFill extends ScreenWidget {
   }
 
   copyMerge() {
-    const { screen, screenSelector } = this;
+    const { screen } = this;
     const { table } = screen;
+    const { screenSelector } = table;
     const { merges, tableDataSnapshot } = table;
     const { mergeDataProxy } = tableDataSnapshot;
     const { autoFillAttr } = this;
