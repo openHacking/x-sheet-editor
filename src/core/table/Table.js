@@ -2023,9 +2023,10 @@ class FixedTop {
   render() {
     const { table } = this;
     const { draw, grid, settings } = table;
-    const { fixedTopOffset, scroll } = table;
+    const { fixedTopOffset, scroll, dynamicView } = table;
     const offset = fixedTopOffset;
     const change = offset.getScrollViewChange();
+    const out = dynamicView.getScrollViewOut();
     if (change) {
       const scrollXOffset = offset.getScrollXOffset();
       const scrollView = offset.getScrollView();
@@ -2047,26 +2048,27 @@ class FixedTop {
       // 避开索引栏的左, 下边框
       clearOffsetX += grid.lineWidth();
       clearOffsetY += grid.lineWidth();
-      switch (scroll.type) {
-        case SCROLL_TYPE.V_TOP: {
-          clearDrawY += grid.lineWidth();
-          clearDrawX += grid.lineWidth();
-          break;
+      if (out) {
+        clearDrawX += grid.lineWidth();
+        clearDrawY += grid.lineWidth();
+      } else {
+        switch (scroll.type) {
+          case SCROLL_TYPE.H_LEFT:
+          case SCROLL_TYPE.V_TOP: {
+            clearDrawY += grid.lineWidth();
+            clearDrawX += grid.lineWidth();
+            break;
+          }
+          case SCROLL_TYPE.V_BOTTOM: {
+            clearDrawX += grid.lineWidth();
+            break;
+          }
+          case SCROLL_TYPE.H_RIGHT: {
+            clearDrawY += grid.lineWidth();
+            break;
+          }
+          default: break;
         }
-        case SCROLL_TYPE.V_BOTTOM: {
-          clearDrawX += grid.lineWidth();
-          break;
-        }
-        case SCROLL_TYPE.H_LEFT: {
-          clearDrawY += grid.lineWidth();
-          clearDrawX += grid.lineWidth();
-          break;
-        }
-        case SCROLL_TYPE.H_RIGHT: {
-          clearDrawY += grid.lineWidth();
-          break;
-        }
-        default: break;
       }
       // 裁剪背景
       const clearRect = new Rect({
@@ -2404,9 +2406,10 @@ class FixedLeft {
   render() {
     const { table } = this;
     const { draw, grid, settings } = table;
-    const { fixedLeftOffset, scroll } = table;
+    const { fixedLeftOffset, scroll, dynamicView } = table;
     const offset = fixedLeftOffset;
     const change = offset.getScrollViewChange();
+    const out = dynamicView.getScrollViewOut();
     if (change) {
       const scrollView = offset.getScrollView();
       const contentView = offset.getContentView();
@@ -2427,26 +2430,27 @@ class FixedLeft {
       // 避开索引栏的左, 下边框
       clearOffsetX += grid.lineWidth();
       clearOffsetY += grid.lineWidth();
-      switch (scroll.type) {
-        case SCROLL_TYPE.V_TOP: {
-          clearDrawY += grid.lineWidth();
-          clearDrawX += grid.lineWidth();
-          break;
+      if (out) {
+        clearDrawX += grid.lineWidth();
+        clearDrawY += grid.lineWidth();
+      } else {
+        switch (scroll.type) {
+          case SCROLL_TYPE.H_LEFT:
+          case SCROLL_TYPE.V_TOP: {
+            clearDrawY += grid.lineWidth();
+            clearDrawX += grid.lineWidth();
+            break;
+          }
+          case SCROLL_TYPE.V_BOTTOM: {
+            clearDrawX += grid.lineWidth();
+            break;
+          }
+          case SCROLL_TYPE.H_RIGHT: {
+            clearDrawY += grid.lineWidth();
+            break;
+          }
+          default: break;
         }
-        case SCROLL_TYPE.V_BOTTOM: {
-          clearDrawX += grid.lineWidth();
-          break;
-        }
-        case SCROLL_TYPE.H_LEFT: {
-          clearDrawY += grid.lineWidth();
-          clearDrawX += grid.lineWidth();
-          break;
-        }
-        case SCROLL_TYPE.H_RIGHT: {
-          clearDrawY += grid.lineWidth();
-          break;
-        }
-        default: break;
       }
       // 裁剪背景
       const clearRect = new Rect({
@@ -2827,9 +2831,10 @@ class Content {
   render() {
     const { table } = this;
     const { draw, grid, settings, scroll } = table;
-    const { contentOffset } = table;
+    const { contentOffset, dynamicView } = table;
     const offset = contentOffset;
     const change = offset.getScrollViewChange();
+    const out = dynamicView.getScrollViewOut();
     if (change) {
       const scrollXOffset = offset.getScrollXOffset();
       const scrollView = offset.getScrollView();
@@ -2851,26 +2856,27 @@ class Content {
       // 避开索引栏的左, 下边框
       clearOffsetX += grid.lineWidth();
       clearOffsetY += grid.lineWidth();
-      switch (scroll.type) {
-        case SCROLL_TYPE.V_TOP: {
-          clearDrawY += grid.lineWidth();
-          clearDrawX += grid.lineWidth();
-          break;
+      if (out) {
+        clearDrawX += grid.lineWidth();
+        clearDrawY += grid.lineWidth();
+      } else {
+        switch (scroll.type) {
+          case SCROLL_TYPE.H_LEFT:
+          case SCROLL_TYPE.V_TOP: {
+            clearDrawY += grid.lineWidth();
+            clearDrawX += grid.lineWidth();
+            break;
+          }
+          case SCROLL_TYPE.V_BOTTOM: {
+            clearDrawX += grid.lineWidth();
+            break;
+          }
+          case SCROLL_TYPE.H_RIGHT: {
+            clearDrawY += grid.lineWidth();
+            break;
+          }
+          default: break;
         }
-        case SCROLL_TYPE.V_BOTTOM: {
-          clearDrawX += grid.lineWidth();
-          break;
-        }
-        case SCROLL_TYPE.H_LEFT: {
-          clearDrawY += grid.lineWidth();
-          clearDrawX += grid.lineWidth();
-          break;
-        }
-        case SCROLL_TYPE.H_RIGHT: {
-          clearDrawY += grid.lineWidth();
-          break;
-        }
-        default: break;
       }
       // 裁剪背景
       const clearRect = new Rect({
