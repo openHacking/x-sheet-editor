@@ -2027,12 +2027,8 @@ class FixedTop {
       let clearDrawY = drawY;
       clearOffsetX += grid.lineWidth();
       clearOffsetY += grid.lineWidth();
-      if (scrollView.sri === 0) {
-        clearDrawY += grid.lineWidth();
-      }
-      if (scrollView.sci === 0) {
-        clearDrawX += grid.lineWidth();
-      }
+      clearDrawY += grid.lineWidth();
+      clearDrawX += grid.lineWidth();
       // 裁剪背景
       const clearRect = new Rect({
         x: clearOffsetX,
@@ -2378,12 +2374,8 @@ class FixedLeft {
       let clearDrawY = drawY;
       clearOffsetX += grid.lineWidth();
       clearOffsetY += grid.lineWidth();
-      if (scrollView.sri === 0) {
-        clearDrawY += grid.lineWidth();
-      }
-      if (scrollView.sci === 0) {
-        clearDrawX += grid.lineWidth();
-      }
+      clearDrawY += grid.lineWidth();
+      clearDrawX += grid.lineWidth();
       // 裁剪背景
       const clearRect = new Rect({
         x: clearOffsetX,
