@@ -1261,6 +1261,12 @@ class DynamicView {
     return scrollRange.clone();
   }
 
+  getScrollViewOut() {
+    const origin = this.getOriginScrollView();
+    const next = this.getScrollView();
+    return origin.equals(next);
+  }
+
 }
 
 // =============================== 冻结内容渲染 =================================
@@ -1953,50 +1959,59 @@ class FixedTop {
     const height = offset.getFixedHeight();
     const x = offset.getFixedXOffset();
     const y = offset.getFixedYOffset();
-    // 贴图
-    let cx = offset.getCaptureX();
-    switch (scroll.type) {
-      case SCROLL_TYPE.H_RIGHT:
-      case SCROLL_TYPE.H_LEFT: {
-        let sx = x;
-        // 避开索引栏的左, 下边框
-        sx += grid.lineWidth();
-        cx += grid.lineWidth();
-        draw.drawImage(canvas.el, sx, y, width, height, cx, y, width, height);
-        break;
-      }
-      default:
-        break;
-    }
-    // 擦除
-    const range = dynamicView.getScrollView();
-    let dx = offset.getDwXOffset();
-    const dy = offset.getDwYOffset();
-    switch (scroll.type) {
-      case SCROLL_TYPE.H_RIGHT: {
-        // 防止擦除网格
-        if (settings.table.showGrid) {
-          dx += grid.lineWidth();
+    const scrollOut = dynamicView.getScrollViewOut();
+    // 滚动区域是否越界
+    if (scrollOut) {
+      draw.attr({
+        fillStyle: settings.table.background,
+      });
+      draw.fillRect(x, y, width, height);
+    } else {
+      // 贴图
+      let cx = offset.getCaptureX();
+      switch (scroll.type) {
+        case SCROLL_TYPE.H_RIGHT:
+        case SCROLL_TYPE.H_LEFT: {
+          let sx = x;
+          // 避开索引栏的左, 下边框
+          sx += grid.lineWidth();
+          cx += grid.lineWidth();
+          draw.drawImage(canvas.el, sx, y, width, height, cx, y, width, height);
+          break;
         }
-        draw.attr({ fillStyle: settings.table.background });
-        if (cols.len - 1 === range.eci) {
-          const origin = dynamicView.getOriginScrollView();
-          draw.fillRect(dx, dy, range.w + (width - origin.w), height);
-        } else {
+        default:
+          break;
+      }
+      // 擦除
+      const range = dynamicView.getScrollView();
+      let dx = offset.getDwXOffset();
+      const dy = offset.getDwYOffset();
+      switch (scroll.type) {
+        case SCROLL_TYPE.H_RIGHT: {
+          // 防止擦除网格
+          if (settings.table.showGrid) {
+            dx += grid.lineWidth();
+          }
+          draw.attr({ fillStyle: settings.table.background });
+          if (cols.len - 1 === range.eci) {
+            const origin = dynamicView.getOriginScrollView();
+            draw.fillRect(dx, dy, range.w + (width - origin.w), height);
+          } else {
+            draw.fillRect(dx, dy, range.w, height);
+          }
+          break;
+        }
+        case SCROLL_TYPE.H_LEFT: {
+          draw.attr({ fillStyle: settings.table.background });
           draw.fillRect(dx, dy, range.w, height);
+          break;
         }
-        break;
-      }
-      case SCROLL_TYPE.H_LEFT: {
-        draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx, dy, range.w, height);
-        break;
-      }
-      default: {
-        draw.attr({
-          fillStyle: settings.table.background,
-        });
-        draw.fillRect(x, y, width, height);
+        default: {
+          draw.attr({
+            fillStyle: settings.table.background,
+          });
+          draw.fillRect(x, y, width, height);
+        }
       }
     }
   }
@@ -2301,50 +2316,59 @@ class FixedLeft {
     const height = offset.getFixedHeight();
     const x = offset.getFixedXOffset();
     const y = offset.getFixedYOffset();
-    // 贴图
-    let cy = offset.getCaptureY();
-    switch (scroll.type) {
-      case SCROLL_TYPE.V_BOTTOM:
-      case SCROLL_TYPE.V_TOP: {
-        let sy = y;
-        // 避开索引栏的左, 下边框
-        sy += grid.lineWidth();
-        cy += grid.lineWidth();
-        draw.drawImage(canvas.el, x, sy, width, height, x, cy, width, height);
-        break;
-      }
-      default:
-        break;
-    }
-    // 擦除
-    const range = dynamicView.getScrollView();
-    const dx = offset.getDwXOffset();
-    let dy = offset.getDwYOffset();
-    switch (scroll.type) {
-      case SCROLL_TYPE.V_BOTTOM: {
-        draw.attr({ fillStyle: settings.table.background });
-        // 防止擦除网格
-        if (settings.table.showGrid) {
-          dy += grid.lineWidth();
+    const scrollOut = dynamicView.getScrollViewOut();
+    // 滚动区域是否越界
+    if (scrollOut) {
+      draw.attr({
+        fillStyle: settings.table.background,
+      });
+      draw.fillRect(x, y, width, height);
+    } else {
+      // 贴图
+      let cy = offset.getCaptureY();
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_BOTTOM:
+        case SCROLL_TYPE.V_TOP: {
+          let sy = y;
+          // 避开索引栏的左, 下边框
+          sy += grid.lineWidth();
+          cy += grid.lineWidth();
+          draw.drawImage(canvas.el, x, sy, width, height, x, cy, width, height);
+          break;
         }
-        if (rows.len - 1 === range.eri) {
-          const origin = dynamicView.getOriginScrollView();
-          draw.fillRect(dx, dy, width, range.h + (height - origin.h));
-        } else {
+        default:
+          break;
+      }
+      // 擦除
+      const range = dynamicView.getScrollView();
+      const dx = offset.getDwXOffset();
+      let dy = offset.getDwYOffset();
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_BOTTOM: {
+          draw.attr({ fillStyle: settings.table.background });
+          // 防止擦除网格
+          if (settings.table.showGrid) {
+            dy += grid.lineWidth();
+          }
+          if (rows.len - 1 === range.eri) {
+            const origin = dynamicView.getOriginScrollView();
+            draw.fillRect(dx, dy, width, range.h + (height - origin.h));
+          } else {
+            draw.fillRect(dx, dy, width, range.h);
+          }
+          break;
+        }
+        case SCROLL_TYPE.V_TOP: {
+          draw.attr({ fillStyle: settings.table.background });
           draw.fillRect(dx, dy, width, range.h);
+          break;
         }
-        break;
-      }
-      case SCROLL_TYPE.V_TOP: {
-        draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx, dy, width, range.h);
-        break;
-      }
-      default: {
-        draw.attr({
-          fillStyle: settings.table.background,
-        });
-        draw.fillRect(x, y, width, height);
+        default: {
+          draw.attr({
+            fillStyle: settings.table.background,
+          });
+          draw.fillRect(x, y, width, height);
+        }
       }
     }
   }
@@ -2658,79 +2682,88 @@ class Content {
     const height = offset.getFixedHeight();
     const x = offset.getFixedXOffset();
     const y = offset.getFixedYOffset();
-    // 贴图
-    let cx = offset.getCaptureX();
-    let cy = offset.getCaptureY();
-    switch (scroll.type) {
-      case SCROLL_TYPE.V_BOTTOM:
-      case SCROLL_TYPE.V_TOP: {
-        let sy = y;
-        // 避开索引栏的左, 下边框
-        sy += grid.lineWidth();
-        cy += grid.lineWidth();
-        draw.drawImage(canvas.el, x, sy, width, height, x, cy, width, height);
-        break;
-      }
-      case SCROLL_TYPE.H_RIGHT:
-      case SCROLL_TYPE.H_LEFT: {
-        let sx = x;
-        // 避开索引栏的左, 下边框
-        sx += grid.lineWidth();
-        cx += grid.lineWidth();
-        draw.drawImage(canvas.el, sx, y, width, height, cx, y, width, height);
-        break;
-      }
-      default:
-        break;
-    }
-    // 擦除
-    const range = dynamicView.getScrollView();
-    let dx = offset.getDwXOffset();
-    let dy = offset.getDwYOffset();
-    switch (scroll.type) {
-      case SCROLL_TYPE.V_BOTTOM: {
-        draw.attr({ fillStyle: settings.table.background });
-        // 防止擦除网格
-        if (settings.table.showGrid) {
-          dy += grid.lineWidth();
+    const scrollOut = dynamicView.getScrollViewOut();
+    // 滚动区域是否越界
+    if (scrollOut) {
+      draw.attr({
+        fillStyle: settings.table.background,
+      });
+      draw.fillRect(x, y, width, height);
+    } else {
+      // 贴图
+      let cx = offset.getCaptureX();
+      let cy = offset.getCaptureY();
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_BOTTOM:
+        case SCROLL_TYPE.V_TOP: {
+          let sy = y;
+          // 避开索引栏的左, 下边框
+          sy += grid.lineWidth();
+          cy += grid.lineWidth();
+          draw.drawImage(canvas.el, x, sy, width, height, x, cy, width, height);
+          break;
         }
-        if (rows.len - 1 === range.eri) {
-          const origin = dynamicView.getOriginScrollView();
-          draw.fillRect(dx, dy, width, range.h + (height - origin.h));
-        } else {
+        case SCROLL_TYPE.H_RIGHT:
+        case SCROLL_TYPE.H_LEFT: {
+          let sx = x;
+          // 避开索引栏的左, 下边框
+          sx += grid.lineWidth();
+          cx += grid.lineWidth();
+          draw.drawImage(canvas.el, sx, y, width, height, cx, y, width, height);
+          break;
+        }
+        default:
+          break;
+      }
+      // 擦除
+      const range = dynamicView.getScrollView();
+      let dx = offset.getDwXOffset();
+      let dy = offset.getDwYOffset();
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_BOTTOM: {
+          draw.attr({ fillStyle: settings.table.background });
+          // 防止擦除网格
+          if (settings.table.showGrid) {
+            dy += grid.lineWidth();
+          }
+          if (rows.len - 1 === range.eri) {
+            const origin = dynamicView.getOriginScrollView();
+            draw.fillRect(dx, dy, width, range.h + (height - origin.h));
+          } else {
+            draw.fillRect(dx, dy, width, range.h);
+          }
+          break;
+        }
+        case SCROLL_TYPE.V_TOP: {
+          draw.attr({ fillStyle: settings.table.background });
           draw.fillRect(dx, dy, width, range.h);
+          break;
         }
-        break;
-      }
-      case SCROLL_TYPE.V_TOP: {
-        draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx, dy, width, range.h);
-        break;
-      }
-      case SCROLL_TYPE.H_RIGHT: {
-        // 防止擦除网格
-        if (settings.table.showGrid) {
-          dx += grid.lineWidth();
+        case SCROLL_TYPE.H_RIGHT: {
+          // 防止擦除网格
+          if (settings.table.showGrid) {
+            dx += grid.lineWidth();
+          }
+          draw.attr({ fillStyle: settings.table.background });
+          if (cols.len - 1 === range.eci) {
+            const origin = dynamicView.getOriginScrollView();
+            draw.fillRect(dx, dy, range.w + (width - origin.w), height);
+          } else {
+            draw.fillRect(dx, dy, range.w, height);
+          }
+          break;
         }
-        draw.attr({ fillStyle: settings.table.background });
-        if (cols.len - 1 === range.eci) {
-          const origin = dynamicView.getOriginScrollView();
-          draw.fillRect(dx, dy, range.w + (width - origin.w), height);
-        } else {
+        case SCROLL_TYPE.H_LEFT: {
+          draw.attr({ fillStyle: settings.table.background });
           draw.fillRect(dx, dy, range.w, height);
+          break;
         }
-        break;
-      }
-      case SCROLL_TYPE.H_LEFT: {
-        draw.attr({ fillStyle: settings.table.background });
-        draw.fillRect(dx, dy, range.w, height);
-        break;
-      }
-      default: {
-        draw.attr({
-          fillStyle: settings.table.background,
-        });
-        draw.fillRect(x, y, width, height);
+        default: {
+          draw.attr({
+            fillStyle: settings.table.background,
+          });
+          draw.fillRect(x, y, width, height);
+        }
       }
     }
   }
@@ -2865,27 +2898,36 @@ class FixedTopIndex {
     const { scroll } = table;
     const { canvas } = table;
     const { el } = canvas;
-    const range = offset.getScrollView();
-    switch (scroll.type) {
-      case SCROLL_TYPE.H_RIGHT:
-      case SCROLL_TYPE.H_LEFT: {
-        const [sx, sy, ey] = [x, y, y];
-        draw.drawImage(el, sx, sy, width, height + grid.lineWidth(),
-          cx, ey, width, height + grid.lineWidth());
-        draw.attr({ fillStyle: settings.table.background });
-        if (cols.len - 1 === range.eci) {
-          const origin = dynamicView.getOriginScrollView();
-          draw.fillRect(dx, dy, range.w + (width - origin.w), height + grid.lineWidth());
-        } else {
-          draw.fillRect(dx, dy, range.w, height + grid.lineWidth());
+    const scrollOut = dynamicView.getScrollViewOut();
+    // 滚动区域是否越界
+    if (scrollOut) {
+      draw.attr({
+        fillStyle: settings.table.background,
+      });
+      draw.fillRect(x, y, width, height + grid.lineWidth());
+    } else {
+      const range = offset.getScrollView();
+      switch (scroll.type) {
+        case SCROLL_TYPE.H_RIGHT:
+        case SCROLL_TYPE.H_LEFT: {
+          const [sx, sy, ey] = [x, y, y];
+          draw.drawImage(el, sx, sy, width, height + grid.lineWidth(),
+            cx, ey, width, height + grid.lineWidth());
+          draw.attr({ fillStyle: settings.table.background });
+          if (cols.len - 1 === range.eci) {
+            const origin = dynamicView.getOriginScrollView();
+            draw.fillRect(dx, dy, range.w + (width - origin.w), height + grid.lineWidth());
+          } else {
+            draw.fillRect(dx, dy, range.w, height + grid.lineWidth());
+          }
+          break;
         }
-        break;
-      }
-      default: {
-        draw.attr({
-          fillStyle: settings.table.background,
-        });
-        draw.fillRect(x, y, width, height);
+        default: {
+          draw.attr({
+            fillStyle: settings.table.background,
+          });
+          draw.fillRect(x, y, width, height + grid.lineWidth());
+        }
       }
     }
   }
@@ -2981,27 +3023,36 @@ class FixedLeftIndex {
     const { scroll } = table;
     const { canvas } = table;
     const { el } = canvas;
-    const range = offset.getScrollView();
-    switch (scroll.type) {
-      case SCROLL_TYPE.V_BOTTOM:
-      case SCROLL_TYPE.V_TOP: {
-        const [sx, ex, sy] = [x, x, y];
-        draw.drawImage(el, sx, sy, width + grid.lineWidth(), height,
-          ex, cy, width + grid.lineWidth(), height);
-        draw.attr({ fillStyle: settings.table.background });
-        if (rows.len - 1 === range.eri) {
-          const origin = dynamicView.getOriginScrollView();
-          draw.fillRect(dx, dy, width + grid.lineWidth(), range.h + (height - origin.h));
-        } else {
-          draw.fillRect(dx, dy, width + grid.lineWidth(), range.h);
+    const scrollOut = dynamicView.getScrollViewOut();
+    // 滚动区域是否越界
+    if (scrollOut) {
+      draw.attr({
+        fillStyle: settings.table.background,
+      });
+      draw.fillRect(x, y, width + grid.lineWidth(), height);
+    } else {
+      const range = offset.getScrollView();
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_BOTTOM:
+        case SCROLL_TYPE.V_TOP: {
+          const [sx, ex, sy] = [x, x, y];
+          draw.drawImage(el, sx, sy, width + grid.lineWidth(), height,
+            ex, cy, width + grid.lineWidth(), height);
+          draw.attr({ fillStyle: settings.table.background });
+          if (rows.len - 1 === range.eri) {
+            const origin = dynamicView.getOriginScrollView();
+            draw.fillRect(dx, dy, width + grid.lineWidth(), range.h + (height - origin.h));
+          } else {
+            draw.fillRect(dx, dy, width + grid.lineWidth(), range.h);
+          }
+          break;
         }
-        break;
-      }
-      default: {
-        draw.attr({
-          fillStyle: settings.table.background,
-        });
-        draw.fillRect(x, y, width, height);
+        default: {
+          draw.attr({
+            fillStyle: settings.table.background,
+          });
+          draw.fillRect(x, y, width + grid.lineWidth(), height);
+        }
       }
     }
   }
@@ -3103,38 +3154,6 @@ class KeyBoardTab {
 
 // ============================== X-Sheet Table ==============================
 
-const defaultSettings = {
-  tipsRenderTime: false,
-  tipsScrollTime: false,
-  index: {
-    height: 30,
-    width: 50,
-    bgColor: '#f4f5f8',
-    color: '#000000',
-  },
-  table: {
-    showGrid: true,
-    background: '#ffffff',
-    borderColor: '#e5e5e5',
-    gridColor: '#b7b7b7',
-    indexBorderColor: '#d8d8d8',
-  },
-  data: [],
-  rows: {
-    len: 10000,
-    height: 30,
-  },
-  cols: {
-    len: 26,
-    width: 137,
-  },
-  merges: [],
-  fixed: {
-    fxTop: -1,
-    fxLeft: -1,
-  },
-};
-
 class Table extends Widget {
 
   constructor(settings) {
@@ -3142,7 +3161,37 @@ class Table extends Widget {
     super(`${cssPrefix}-table`);
 
     this.mode = TABLE_RENDER_MODE.RENDER;
-    this.settings = Utils.mergeDeep({}, defaultSettings, settings);
+    this.settings = Utils.mergeDeep({
+      tipsRenderTime: false,
+      tipsScrollTime: false,
+      index: {
+        height: 30,
+        width: 50,
+        bgColor: '#f4f5f8',
+        color: '#000000',
+      },
+      table: {
+        showGrid: true,
+        background: '#ffffff',
+        borderColor: '#e5e5e5',
+        gridColor: '#b7b7b7',
+        indexBorderColor: '#d8d8d8',
+      },
+      data: [],
+      rows: {
+        len: 10000,
+        height: 30,
+      },
+      cols: {
+        len: 26,
+        width: 137,
+      },
+      merges: [],
+      fixed: {
+        fxTop: -1,
+        fxLeft: -1,
+      },
+    }, settings);
     this.canvas = new Widget(`${cssPrefix}-table-canvas`, 'canvas');
 
     // 动态区域计算
