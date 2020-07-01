@@ -1988,11 +1988,11 @@ class FixedTop {
       const dy = offset.getDwYOffset();
       switch (scroll.type) {
         case SCROLL_TYPE.H_RIGHT: {
+          draw.attr({ fillStyle: settings.table.background });
           // 防止擦除网格
           if (settings.table.showGrid) {
             dx += grid.lineWidth();
           }
-          draw.attr({ fillStyle: settings.table.background });
           if (cols.len - 1 === range.eci) {
             const origin = dynamicView.getOriginScrollView();
             draw.fillRect(dx, dy, range.w + (width - origin.w), height);
@@ -2003,6 +2003,10 @@ class FixedTop {
         }
         case SCROLL_TYPE.H_LEFT: {
           draw.attr({ fillStyle: settings.table.background });
+          // 防止透明网格重绘叠加
+          if (settings.table.showGrid) {
+            dx += grid.lineWidth();
+          }
           draw.fillRect(dx, dy, range.w, height);
           break;
         }
@@ -2360,6 +2364,10 @@ class FixedLeft {
         }
         case SCROLL_TYPE.V_TOP: {
           draw.attr({ fillStyle: settings.table.background });
+          // 防止透明网格重绘叠加
+          if (settings.table.showGrid) {
+            dy += grid.lineWidth();
+          }
           draw.fillRect(dx, dy, width, range.h);
           break;
         }
@@ -2736,15 +2744,19 @@ class Content {
         }
         case SCROLL_TYPE.V_TOP: {
           draw.attr({ fillStyle: settings.table.background });
+          // 防止透明网格重绘叠加
+          if (settings.table.showGrid) {
+            dy += grid.lineWidth();
+          }
           draw.fillRect(dx, dy, width, range.h);
           break;
         }
         case SCROLL_TYPE.H_RIGHT: {
+          draw.attr({ fillStyle: settings.table.background });
           // 防止擦除网格
           if (settings.table.showGrid) {
             dx += grid.lineWidth();
           }
-          draw.attr({ fillStyle: settings.table.background });
           if (cols.len - 1 === range.eci) {
             const origin = dynamicView.getOriginScrollView();
             draw.fillRect(dx, dy, range.w + (width - origin.w), height);
@@ -2755,6 +2767,10 @@ class Content {
         }
         case SCROLL_TYPE.H_LEFT: {
           draw.attr({ fillStyle: settings.table.background });
+          // 防止透明网格重绘叠加
+          if (settings.table.showGrid) {
+            dx += grid.lineWidth();
+          }
           draw.fillRect(dx, dy, range.w, height);
           break;
         }

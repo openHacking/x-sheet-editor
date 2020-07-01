@@ -1,3 +1,4 @@
+
 /**
  * GridLineHandle
  * @author jerry
@@ -10,6 +11,19 @@ class GridLineHandle {
    */
   constructor(table) {
     this.table = table;
+  }
+
+  /**
+   * 是否有背景
+   * @param ri
+   * @param ci
+   * @returns {boolean}
+   */
+  lineBackgroundChecked(ri, ci) {
+    const { table } = this;
+    const { cells } = table;
+    const cell = cells.getCell(ri, ci);
+    return !(cell && cell.background !== null);
   }
 
   /**
