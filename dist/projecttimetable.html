@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>x-sheet 采购订货单模板</title>
+    <title>项目时间表</title>
     <style>
         html, body {
             width: 100%;
@@ -12,16 +12,16 @@
     <link rel="shortcut icon" href="logo.ico">
     <link href="XSheet.css" rel="stylesheet">
     <script type="text/javascript" src="XSheet.js"></script>
-    <script src="../template/purchaseorder.js"></script>
+    <script src="../template/projecttimetable.js"></script>
 </head>
+<body>
 <body id="dome"></body>
+</body>
 <script>
   const xSheet = new XSheet('#dome', {
     workConfig: {
       body: {
-        sheets: [
-          purchaseOrder,
-        ],
+        sheets: [projectTimeTable],
       },
     },
   });

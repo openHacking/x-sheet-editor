@@ -2022,8 +2022,8 @@ class FixedTop {
 
   render() {
     const { table } = this;
-    const { draw, grid, settings } = table;
-    const { fixedTopOffset, scroll, dynamicView } = table;
+    const { draw, grid, settings, scroll } = table;
+    const { fixedTopOffset, dynamicView } = table;
     const offset = fixedTopOffset;
     const change = offset.getScrollViewChange();
     const out = dynamicView.getScrollViewOut();
@@ -2040,23 +2040,29 @@ class FixedTop {
       const drawY = offset.getDwYOffset();
       const borderX = offset.getBdXOffset();
       const borderY = offset.getBdYOffset();
-      // 裁剪区域计算
+
+      // 裁剪背景坐标
       let clearOffsetX = offsetX;
       let clearOffsetY = offsetY;
-      let clearDrawX = drawX;
-      let clearDrawY = drawY;
-      // 避开索引栏的左, 下边框
+      // 裁剪区域时避开 索引栏的左下边框 防止将其覆盖
       clearOffsetX += grid.lineWidth();
       clearOffsetY += grid.lineWidth();
-      if (out) {
+
+      // 裁剪内容坐标
+      let clearDrawX = drawX;
+      let clearDrawY = drawY;
+      // 裁剪区域时避开网格线段，防止背景颜色覆盖网格线段
+      // 同时避开 索引栏的左下边框 防止将其覆盖
+      if (settings.table.showGrid) {
         clearDrawX += grid.lineWidth();
         clearDrawY += grid.lineWidth();
+      } else if (out) {
+        clearDrawY += grid.lineWidth();
+        clearDrawX += grid.lineWidth();
       } else {
         switch (scroll.type) {
           case SCROLL_TYPE.H_LEFT:
           case SCROLL_TYPE.V_TOP: {
-            clearDrawY += grid.lineWidth();
-            clearDrawX += grid.lineWidth();
             break;
           }
           case SCROLL_TYPE.V_BOTTOM: {
@@ -2070,6 +2076,7 @@ class FixedTop {
           default: break;
         }
       }
+
       // 裁剪背景
       const clearRect = new Rect({
         x: clearOffsetX,
@@ -2081,6 +2088,7 @@ class FixedTop {
       clearCrop.open();
       this.renderClear();
       clearCrop.close();
+
       // 裁剪内容
       const drawRect = new Rect({
         x: clearDrawX,
@@ -2095,18 +2103,8 @@ class FixedTop {
       if (settings.table.showGrid) {
         this.drawGrid(scrollView, drawX, drawY);
       }
-      drawCrop.close();
-      // 裁剪边框
-      const borderRect = new Rect({
-        x: clearOffsetX,
-        y: clearOffsetY,
-        width: fixedWidth,
-        height: fixedHeight,
-      });
-      const borderCrop = new Crop({ draw, rect: borderRect });
-      borderCrop.open();
       this.drawBorder(borderView, borderX, borderY);
-      borderCrop.close();
+      drawCrop.close();
     }
   }
 
@@ -2405,8 +2403,8 @@ class FixedLeft {
 
   render() {
     const { table } = this;
-    const { draw, grid, settings } = table;
-    const { fixedLeftOffset, scroll, dynamicView } = table;
+    const { draw, grid, settings, scroll } = table;
+    const { fixedLeftOffset, dynamicView } = table;
     const offset = fixedLeftOffset;
     const change = offset.getScrollViewChange();
     const out = dynamicView.getScrollViewOut();
@@ -2422,23 +2420,29 @@ class FixedLeft {
       const drawY = offset.getDwYOffset();
       const borderX = offset.getBdXOffset();
       const borderY = offset.getBdYOffset();
-      // 裁剪区域计算
+
+      // 裁剪背景坐标
       let clearOffsetX = offsetX;
       let clearOffsetY = offsetY;
-      let clearDrawX = drawX;
-      let clearDrawY = drawY;
-      // 避开索引栏的左, 下边框
+      // 裁剪区域时避开 索引栏的左下边框 防止将其覆盖
       clearOffsetX += grid.lineWidth();
       clearOffsetY += grid.lineWidth();
-      if (out) {
+
+      // 裁剪内容坐标
+      let clearDrawX = drawX;
+      let clearDrawY = drawY;
+      // 裁剪区域时避开网格线段，防止背景颜色覆盖网格线段
+      // 同时避开 索引栏的左下边框 防止将其覆盖
+      if (settings.table.showGrid) {
         clearDrawX += grid.lineWidth();
         clearDrawY += grid.lineWidth();
+      } else if (out) {
+        clearDrawY += grid.lineWidth();
+        clearDrawX += grid.lineWidth();
       } else {
         switch (scroll.type) {
           case SCROLL_TYPE.H_LEFT:
           case SCROLL_TYPE.V_TOP: {
-            clearDrawY += grid.lineWidth();
-            clearDrawX += grid.lineWidth();
             break;
           }
           case SCROLL_TYPE.V_BOTTOM: {
@@ -2452,6 +2456,7 @@ class FixedLeft {
           default: break;
         }
       }
+
       // 裁剪背景
       const clearRect = new Rect({
         x: clearOffsetX,
@@ -2463,6 +2468,7 @@ class FixedLeft {
       clearCrop.open();
       this.renderClear();
       clearCrop.close();
+
       // 裁剪内容
       const drawRect = new Rect({
         x: clearDrawX,
@@ -2477,18 +2483,8 @@ class FixedLeft {
       if (settings.table.showGrid) {
         this.drawGrid(scrollView, drawX, drawY);
       }
-      drawCrop.close();
-      // 裁剪边框
-      const borderRect = new Rect({
-        x: clearOffsetX,
-        y: clearOffsetY,
-        width: fixedWidth,
-        height: fixedHeight,
-      });
-      const borderCrop = new Crop({ draw, rect: borderRect });
-      borderCrop.open();
       this.drawBorder(borderView, borderX, borderY);
-      borderCrop.close();
+      drawCrop.close();
     }
   }
 
@@ -2848,23 +2844,29 @@ class Content {
       const drawY = offset.getDwYOffset();
       const borderX = offset.getBdXOffset();
       const borderY = offset.getBdYOffset();
-      // 裁剪区域计算
+
+      // 裁剪背景坐标
       let clearOffsetX = offsetX;
       let clearOffsetY = offsetY;
-      let clearDrawX = drawX;
-      let clearDrawY = drawY;
-      // 避开索引栏的左, 下边框
+      // 裁剪区域时避开 索引栏的左下边框 防止将其覆盖
       clearOffsetX += grid.lineWidth();
       clearOffsetY += grid.lineWidth();
-      if (out) {
+
+      // 裁剪内容坐标
+      let clearDrawX = drawX;
+      let clearDrawY = drawY;
+      // 裁剪区域时避开网格线段，防止背景颜色覆盖网格线段
+      // 同时避开 索引栏的左下边框 防止将其覆盖
+      if (settings.table.showGrid) {
         clearDrawX += grid.lineWidth();
         clearDrawY += grid.lineWidth();
+      } else if (out) {
+        clearDrawY += grid.lineWidth();
+        clearDrawX += grid.lineWidth();
       } else {
         switch (scroll.type) {
           case SCROLL_TYPE.H_LEFT:
           case SCROLL_TYPE.V_TOP: {
-            clearDrawY += grid.lineWidth();
-            clearDrawX += grid.lineWidth();
             break;
           }
           case SCROLL_TYPE.V_BOTTOM: {
@@ -2878,6 +2880,7 @@ class Content {
           default: break;
         }
       }
+
       // 裁剪背景
       const clearRect = new Rect({
         x: clearOffsetX,
@@ -2889,6 +2892,7 @@ class Content {
       clearCrop.open();
       this.renderClear();
       clearCrop.close();
+
       // 裁剪内容
       const drawRect = new Rect({
         x: clearDrawX,
@@ -2903,18 +2907,8 @@ class Content {
       if (settings.table.showGrid) {
         this.drawGrid(scrollView, drawX, drawY);
       }
-      drawCrop.close();
-      // 裁剪边框
-      const borderRect = new Rect({
-        x: clearOffsetX,
-        y: clearOffsetY,
-        width: fixedWidth,
-        height: fixedHeight,
-      });
-      const borderCrop = new Crop({ draw, rect: borderRect });
-      borderCrop.open();
       this.drawBorder(borderView, borderX, borderY);
-      borderCrop.close();
+      drawCrop.close();
     }
   }
 

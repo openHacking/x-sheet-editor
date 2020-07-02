@@ -1,4 +1,4 @@
 build
 dist
-src/template
+src/template/**
 src/lib
