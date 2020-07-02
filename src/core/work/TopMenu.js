@@ -503,11 +503,12 @@ class TopMenu extends Widget {
                 cellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
                   callback: (r, c, origin) => {
+                    if (c !== selectorAttr.rect.sci) {
+                      return;
+                    }
                     const cell = origin.clone();
                     // 显示
-                    if (c === selectorAttr.rect.sci) {
-                      cell.borderAttr.left.display = true;
-                    }
+                    cell.borderAttr.left.display = true;
                     // 颜色
                     cell.borderAttr.left.color = color;
                     // 宽度
@@ -523,11 +524,12 @@ class TopMenu extends Widget {
                 cellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
                   callback: (r, c, origin) => {
+                    if (r !== selectorAttr.rect.sri) {
+                      return;
+                    }
                     const cell = origin.clone();
                     // 显示
-                    if (r === selectorAttr.rect.sri) {
-                      cell.borderAttr.top.display = true;
-                    }
+                    cell.borderAttr.top.display = true;
                     // 颜色
                     cell.borderAttr.top.color = color;
                     // 宽度
@@ -543,11 +545,12 @@ class TopMenu extends Widget {
                 cellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
                   callback: (r, c, origin) => {
+                    if (c !== selectorAttr.rect.eci) {
+                      return;
+                    }
                     const cell = origin.clone();
                     // 显示
-                    if (c === selectorAttr.rect.eci) {
-                      cell.borderAttr.right.display = true;
-                    }
+                    cell.borderAttr.right.display = true;
                     // 颜色
                     cell.borderAttr.right.color = color;
                     // 宽度
@@ -563,11 +566,12 @@ class TopMenu extends Widget {
                 cellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
                   callback: (r, c, origin) => {
+                    if (r !== selectorAttr.rect.eri) {
+                      return;
+                    }
                     const cell = origin.clone();
                     // 显示
-                    if (r === selectorAttr.rect.eri) {
-                      cell.borderAttr.bottom.display = true;
-                    }
+                    cell.borderAttr.bottom.display = true;
                     // 颜色
                     cell.borderAttr.bottom.color = color;
                     // 宽度
