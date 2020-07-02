@@ -138,6 +138,15 @@ class Border {
     }
     return 0;
   }
+
+  toJSON() {
+    const time = this.$time;
+    const display = this.$display;
+    const width = this.$width;
+    const color = this.$color;
+    const type = this.$type;
+    return { time, display, width, color, type };
+  }
 }
 
 export { Border };
