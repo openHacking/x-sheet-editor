@@ -2113,8 +2113,8 @@ class FixedTop {
       }
 
       // 裁剪边框的坐标
-      const clearBorderX = drawX;
-      const clearBorderY = drawY;
+      const clearBorderX = clearDrawX;
+      const clearBorderY = clearDrawY;
       let clearBorderWidth = scrollView.w;
       let clearBorderHeight = scrollView.h;
       if (settings.table.showGrid || out) {
@@ -2570,8 +2570,8 @@ class FixedLeft {
       }
 
       // 裁剪边框的坐标
-      const clearBorderX = drawX;
-      const clearBorderY = drawY;
+      const clearBorderX = clearDrawX;
+      const clearBorderY = clearDrawY;
       let clearBorderWidth = scrollView.w;
       let clearBorderHeight = scrollView.h;
       if (settings.table.showGrid || out) {
@@ -3038,8 +3038,8 @@ class Content {
       }
 
       // 裁剪边框的坐标
-      const clearBorderX = drawX;
-      const clearBorderY = drawY;
+      const clearBorderX = clearDrawX;
+      const clearBorderY = clearDrawY;
       let clearBorderWidth = scrollView.w;
       let clearBorderHeight = scrollView.h;
       if (settings.table.showGrid || out) {
