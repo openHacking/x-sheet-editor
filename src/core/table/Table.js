@@ -2113,30 +2113,8 @@ class FixedTop {
       // 裁剪边框的坐标
       const clearBorderX = clearDrawX;
       const clearBorderY = clearDrawY;
-      let clearBorderWidth = scrollView.w;
-      let clearBorderHeight = scrollView.h;
-      if (settings.table.showGrid || out) {
-        clearBorderWidth += grid.lineWidth();
-        clearBorderHeight += grid.lineWidth();
-      } else {
-        switch (scroll.type) {
-          case SCROLL_TYPE.H_LEFT:
-          case SCROLL_TYPE.V_TOP: {
-            clearBorderWidth += grid.lineWidth();
-            clearBorderHeight += grid.lineWidth();
-            break;
-          }
-          case SCROLL_TYPE.V_BOTTOM: {
-            clearBorderWidth += grid.lineWidth();
-            break;
-          }
-          case SCROLL_TYPE.H_RIGHT: {
-            clearBorderHeight += grid.lineWidth();
-            break;
-          }
-          default: break;
-        }
-      }
+      const clearBorderWidth = scrollView.w + grid.lineWidth();
+      const clearBorderHeight = scrollView.h + grid.lineWidth();
 
       // 裁剪背景
       const clearRect = new Rect({
@@ -2568,30 +2546,8 @@ class FixedLeft {
       // 裁剪边框的坐标
       const clearBorderX = clearDrawX;
       const clearBorderY = clearDrawY;
-      let clearBorderWidth = scrollView.w;
-      let clearBorderHeight = scrollView.h;
-      if (settings.table.showGrid || out) {
-        clearBorderWidth += grid.lineWidth();
-        clearBorderHeight += grid.lineWidth();
-      } else {
-        switch (scroll.type) {
-          case SCROLL_TYPE.H_LEFT:
-          case SCROLL_TYPE.V_TOP: {
-            clearBorderWidth += grid.lineWidth();
-            clearBorderHeight += grid.lineWidth();
-            break;
-          }
-          case SCROLL_TYPE.V_BOTTOM: {
-            clearBorderWidth += grid.lineWidth();
-            break;
-          }
-          case SCROLL_TYPE.H_RIGHT: {
-            clearBorderHeight += grid.lineWidth();
-            break;
-          }
-          default: break;
-        }
-      }
+      const clearBorderWidth = scrollView.w + grid.lineWidth();
+      const clearBorderHeight = scrollView.h + grid.lineWidth();
 
       // 裁剪背景
       const clearRect = new Rect({
