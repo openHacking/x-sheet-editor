@@ -1961,14 +1961,13 @@ class FixedTop {
     const y = offset.getFixedYOffset();
     const scrollOut = dynamicView.getScrollViewOut();
     if (scrollOut === false) {
-      let cx = offset.getCaptureX();
-      let cy = offset.getCaptureY();
+      const cx = offset.getCaptureX();
+      const cy = offset.getCaptureY();
       switch (scroll.type) {
         case SCROLL_TYPE.V_BOTTOM:
         case SCROLL_TYPE.V_TOP: {
           let sy = y;
           sy += grid.lineWidth();
-          cy += grid.lineWidth();
           draw.drawImage(canvas.el, x, sy, width, height, x, cy, width, height);
           break;
         }
@@ -1976,7 +1975,6 @@ class FixedTop {
         case SCROLL_TYPE.H_LEFT: {
           let sx = x;
           sx += grid.lineWidth();
-          cx += grid.lineWidth();
           draw.drawImage(canvas.el, sx, y, width, height, cx, y, width, height);
           break;
         }
@@ -2419,14 +2417,13 @@ class FixedLeft {
     const y = offset.getFixedYOffset();
     const scrollOut = dynamicView.getScrollViewOut();
     if (scrollOut === false) {
-      let cx = offset.getCaptureX();
-      let cy = offset.getCaptureY();
+      const cx = offset.getCaptureX();
+      const cy = offset.getCaptureY();
       switch (scroll.type) {
         case SCROLL_TYPE.V_BOTTOM:
         case SCROLL_TYPE.V_TOP: {
           let sy = y;
           sy += grid.lineWidth();
-          cy += grid.lineWidth();
           draw.drawImage(canvas.el, x, sy, width, height, x, cy, width, height);
           break;
         }
@@ -2434,7 +2431,6 @@ class FixedLeft {
         case SCROLL_TYPE.H_LEFT: {
           let sx = x;
           sx += grid.lineWidth();
-          cx += grid.lineWidth();
           draw.drawImage(canvas.el, sx, y, width, height, cx, y, width, height);
           break;
         }
@@ -3040,30 +3036,8 @@ class Content {
       // 裁剪边框的坐标
       const clearBorderX = clearDrawX;
       const clearBorderY = clearDrawY;
-      let clearBorderWidth = scrollView.w;
-      let clearBorderHeight = scrollView.h;
-      if (settings.table.showGrid || out) {
-        clearBorderWidth += grid.lineWidth();
-        clearBorderHeight += grid.lineWidth();
-      } else {
-        switch (scroll.type) {
-          case SCROLL_TYPE.H_LEFT:
-          case SCROLL_TYPE.V_TOP: {
-            clearBorderWidth += grid.lineWidth();
-            clearBorderHeight += grid.lineWidth();
-            break;
-          }
-          case SCROLL_TYPE.V_BOTTOM: {
-            clearBorderWidth += grid.lineWidth();
-            break;
-          }
-          case SCROLL_TYPE.H_RIGHT: {
-            clearBorderHeight += grid.lineWidth();
-            break;
-          }
-          default: break;
-        }
-      }
+      const clearBorderWidth = scrollView.w + grid.lineWidth();
+      const clearBorderHeight = scrollView.h + grid.lineWidth();
 
       // 裁剪背景
       const clearRect = new Rect({
