@@ -1949,7 +1949,7 @@ class FixedTop {
     draw.restore();
   }
 
-  renderMappingImage() {
+  renderImage() {
     const { table } = this;
     const { draw, grid, dynamicView } = table;
     const { scroll } = table;
@@ -1967,7 +1967,6 @@ class FixedTop {
         case SCROLL_TYPE.V_BOTTOM:
         case SCROLL_TYPE.V_TOP: {
           let sy = y;
-          // 避开索引栏的左, 下边框
           sy += grid.lineWidth();
           cy += grid.lineWidth();
           draw.drawImage(canvas.el, x, sy, width, height, x, cy, width, height);
@@ -1976,7 +1975,6 @@ class FixedTop {
         case SCROLL_TYPE.H_RIGHT:
         case SCROLL_TYPE.H_LEFT: {
           let sx = x;
-          // 避开索引栏的左, 下边框
           sx += grid.lineWidth();
           cx += grid.lineWidth();
           draw.drawImage(canvas.el, sx, y, width, height, cx, y, width, height);
@@ -1988,7 +1986,7 @@ class FixedTop {
     }
   }
 
-  renderClearMapping() {
+  renderClear() {
     const { table } = this;
     const { draw, settings, grid, dynamicView, cols, rows } = table;
     const { scroll } = table;
@@ -2014,8 +2012,8 @@ class FixedTop {
         case SCROLL_TYPE.V_BOTTOM: {
           if (settings.table.showGrid) {
             dy += grid.lineWidth();
-            dx += grid.lineWidth();
           }
+          dx += grid.lineWidth();
           if (rows.len - 1 === range.eri) {
             const origin = dynamicView.getOriginScrollView();
             draw.fillRect(dx, dy, width, range.h + (height - origin.h));
@@ -2025,18 +2023,16 @@ class FixedTop {
           break;
         }
         case SCROLL_TYPE.V_TOP: {
-          if (settings.table.showGrid) {
-            dy += grid.lineWidth();
-            dx += grid.lineWidth();
-          }
+          dy += grid.lineWidth();
+          dx += grid.lineWidth();
           draw.fillRect(dx, dy, width, range.h);
           break;
         }
         case SCROLL_TYPE.H_RIGHT: {
           if (settings.table.showGrid) {
-            dy += grid.lineWidth();
             dx += grid.lineWidth();
           }
+          dy += grid.lineWidth();
           if (cols.len - 1 === range.eci) {
             const origin = dynamicView.getOriginScrollView();
             draw.fillRect(dx, dy, range.w + (width - origin.w), height);
@@ -2046,10 +2042,8 @@ class FixedTop {
           break;
         }
         case SCROLL_TYPE.H_LEFT: {
-          if (settings.table.showGrid) {
-            dy += grid.lineWidth();
-            dx += grid.lineWidth();
-          }
+          dy += grid.lineWidth();
+          dx += grid.lineWidth();
           draw.fillRect(dx, dy, range.w, height);
           break;
         }
@@ -2095,16 +2089,15 @@ class FixedTop {
       let clearDrawY = drawY;
       const clearDrawWidth = scrollView.w;
       const clearDrawHeight = scrollView.h;
-      if (settings.table.showGrid) {
+      if (settings.table.showGrid || out) {
         clearDrawX += grid.lineWidth();
         clearDrawY += grid.lineWidth();
-      } else if (out) {
-        clearDrawY += grid.lineWidth();
-        clearDrawX += grid.lineWidth();
       } else {
         switch (scroll.type) {
           case SCROLL_TYPE.H_LEFT:
           case SCROLL_TYPE.V_TOP: {
+            clearDrawX += grid.lineWidth();
+            clearDrawY += grid.lineWidth();
             break;
           }
           case SCROLL_TYPE.V_BOTTOM: {
@@ -2124,9 +2117,27 @@ class FixedTop {
       const clearBorderY = drawY;
       let clearBorderWidth = scrollView.w;
       let clearBorderHeight = scrollView.h;
-      if (settings.table.showGrid) {
+      if (settings.table.showGrid || out) {
         clearBorderWidth += grid.lineWidth();
         clearBorderHeight += grid.lineWidth();
+      } else {
+        switch (scroll.type) {
+          case SCROLL_TYPE.H_LEFT:
+          case SCROLL_TYPE.V_TOP: {
+            clearBorderWidth += grid.lineWidth();
+            clearBorderHeight += grid.lineWidth();
+            break;
+          }
+          case SCROLL_TYPE.V_BOTTOM: {
+            clearBorderWidth += grid.lineWidth();
+            break;
+          }
+          case SCROLL_TYPE.H_RIGHT: {
+            clearBorderHeight += grid.lineWidth();
+            break;
+          }
+          default: break;
+        }
       }
 
       // 裁剪背景
@@ -2138,11 +2149,11 @@ class FixedTop {
       });
       const clearCrop = new Crop({ draw, rect: clearRect });
       clearCrop.open();
-      this.renderMappingImage();
+      this.renderImage();
       clearCrop.close();
 
       // 清空内容
-      this.renderClearMapping();
+      this.renderClear();
 
       // 裁剪内容
       const drawRect = new Rect({
@@ -2396,7 +2407,7 @@ class FixedLeft {
     draw.restore();
   }
 
-  renderMappingImage() {
+  renderImage() {
     const { table } = this;
     const { draw, grid, dynamicView } = table;
     const { scroll } = table;
@@ -2414,7 +2425,6 @@ class FixedLeft {
         case SCROLL_TYPE.V_BOTTOM:
         case SCROLL_TYPE.V_TOP: {
           let sy = y;
-          // 避开索引栏的左, 下边框
           sy += grid.lineWidth();
           cy += grid.lineWidth();
           draw.drawImage(canvas.el, x, sy, width, height, x, cy, width, height);
@@ -2423,7 +2433,6 @@ class FixedLeft {
         case SCROLL_TYPE.H_RIGHT:
         case SCROLL_TYPE.H_LEFT: {
           let sx = x;
-          // 避开索引栏的左, 下边框
           sx += grid.lineWidth();
           cx += grid.lineWidth();
           draw.drawImage(canvas.el, sx, y, width, height, cx, y, width, height);
@@ -2435,7 +2444,7 @@ class FixedLeft {
     }
   }
 
-  renderClearMapping() {
+  renderClear() {
     const { table } = this;
     const { draw, settings, grid, dynamicView, cols, rows } = table;
     const { scroll } = table;
@@ -2461,8 +2470,8 @@ class FixedLeft {
         case SCROLL_TYPE.V_BOTTOM: {
           if (settings.table.showGrid) {
             dy += grid.lineWidth();
-            dx += grid.lineWidth();
           }
+          dx += grid.lineWidth();
           if (rows.len - 1 === range.eri) {
             const origin = dynamicView.getOriginScrollView();
             draw.fillRect(dx, dy, width, range.h + (height - origin.h));
@@ -2472,18 +2481,16 @@ class FixedLeft {
           break;
         }
         case SCROLL_TYPE.V_TOP: {
-          if (settings.table.showGrid) {
-            dy += grid.lineWidth();
-            dx += grid.lineWidth();
-          }
+          dy += grid.lineWidth();
+          dx += grid.lineWidth();
           draw.fillRect(dx, dy, width, range.h);
           break;
         }
         case SCROLL_TYPE.H_RIGHT: {
           if (settings.table.showGrid) {
-            dy += grid.lineWidth();
             dx += grid.lineWidth();
           }
+          dy += grid.lineWidth();
           if (cols.len - 1 === range.eci) {
             const origin = dynamicView.getOriginScrollView();
             draw.fillRect(dx, dy, range.w + (width - origin.w), height);
@@ -2493,10 +2500,8 @@ class FixedLeft {
           break;
         }
         case SCROLL_TYPE.H_LEFT: {
-          if (settings.table.showGrid) {
-            dy += grid.lineWidth();
-            dx += grid.lineWidth();
-          }
+          dy += grid.lineWidth();
+          dx += grid.lineWidth();
           draw.fillRect(dx, dy, range.w, height);
           break;
         }
@@ -2541,16 +2546,15 @@ class FixedLeft {
       let clearDrawY = drawY;
       const clearDrawWidth = scrollView.w;
       const clearDrawHeight = scrollView.h;
-      if (settings.table.showGrid) {
+      if (settings.table.showGrid || out) {
         clearDrawX += grid.lineWidth();
         clearDrawY += grid.lineWidth();
-      } else if (out) {
-        clearDrawY += grid.lineWidth();
-        clearDrawX += grid.lineWidth();
       } else {
         switch (scroll.type) {
           case SCROLL_TYPE.H_LEFT:
           case SCROLL_TYPE.V_TOP: {
+            clearDrawX += grid.lineWidth();
+            clearDrawY += grid.lineWidth();
             break;
           }
           case SCROLL_TYPE.V_BOTTOM: {
@@ -2570,9 +2574,27 @@ class FixedLeft {
       const clearBorderY = drawY;
       let clearBorderWidth = scrollView.w;
       let clearBorderHeight = scrollView.h;
-      if (settings.table.showGrid) {
+      if (settings.table.showGrid || out) {
         clearBorderWidth += grid.lineWidth();
         clearBorderHeight += grid.lineWidth();
+      } else {
+        switch (scroll.type) {
+          case SCROLL_TYPE.H_LEFT:
+          case SCROLL_TYPE.V_TOP: {
+            clearBorderWidth += grid.lineWidth();
+            clearBorderHeight += grid.lineWidth();
+            break;
+          }
+          case SCROLL_TYPE.V_BOTTOM: {
+            clearBorderWidth += grid.lineWidth();
+            break;
+          }
+          case SCROLL_TYPE.H_RIGHT: {
+            clearBorderHeight += grid.lineWidth();
+            break;
+          }
+          default: break;
+        }
       }
 
       // 裁剪背景
@@ -2584,11 +2606,11 @@ class FixedLeft {
       });
       const clearCrop = new Crop({ draw, rect: clearRect });
       clearCrop.open();
-      this.renderMappingImage();
+      this.renderImage();
       clearCrop.close();
 
       // 清空内容
-      this.renderClearMapping();
+      this.renderClear();
 
       // 裁剪内容
       const drawRect = new Rect({
@@ -2852,7 +2874,7 @@ class Content {
     draw.restore();
   }
 
-  renderMappingImage() {
+  renderImage() {
     const { table } = this;
     const { draw, grid, dynamicView } = table;
     const { scroll } = table;
@@ -2870,7 +2892,6 @@ class Content {
         case SCROLL_TYPE.V_BOTTOM:
         case SCROLL_TYPE.V_TOP: {
           let sy = y;
-          // 避开索引栏的左, 下边框
           sy += grid.lineWidth();
           cy += grid.lineWidth();
           draw.drawImage(canvas.el, x, sy, width, height, x, cy, width, height);
@@ -2879,7 +2900,6 @@ class Content {
         case SCROLL_TYPE.H_RIGHT:
         case SCROLL_TYPE.H_LEFT: {
           let sx = x;
-          // 避开索引栏的左, 下边框
           sx += grid.lineWidth();
           cx += grid.lineWidth();
           draw.drawImage(canvas.el, sx, y, width, height, cx, y, width, height);
@@ -2891,7 +2911,7 @@ class Content {
     }
   }
 
-  renderClearMapping() {
+  renderClear() {
     const { table } = this;
     const { draw, settings, grid, dynamicView, cols, rows } = table;
     const { scroll } = table;
@@ -2917,8 +2937,8 @@ class Content {
         case SCROLL_TYPE.V_BOTTOM: {
           if (settings.table.showGrid) {
             dy += grid.lineWidth();
-            dx += grid.lineWidth();
           }
+          dx += grid.lineWidth();
           if (rows.len - 1 === range.eri) {
             const origin = dynamicView.getOriginScrollView();
             draw.fillRect(dx, dy, width, range.h + (height - origin.h));
@@ -2928,18 +2948,16 @@ class Content {
           break;
         }
         case SCROLL_TYPE.V_TOP: {
-          if (settings.table.showGrid) {
-            dy += grid.lineWidth();
-            dx += grid.lineWidth();
-          }
+          dy += grid.lineWidth();
+          dx += grid.lineWidth();
           draw.fillRect(dx, dy, width, range.h);
           break;
         }
         case SCROLL_TYPE.H_RIGHT: {
           if (settings.table.showGrid) {
-            dy += grid.lineWidth();
             dx += grid.lineWidth();
           }
+          dy += grid.lineWidth();
           if (cols.len - 1 === range.eci) {
             const origin = dynamicView.getOriginScrollView();
             draw.fillRect(dx, dy, range.w + (width - origin.w), height);
@@ -2949,10 +2967,8 @@ class Content {
           break;
         }
         case SCROLL_TYPE.H_LEFT: {
-          if (settings.table.showGrid) {
-            dy += grid.lineWidth();
-            dx += grid.lineWidth();
-          }
+          dy += grid.lineWidth();
+          dx += grid.lineWidth();
           draw.fillRect(dx, dy, range.w, height);
           break;
         }
@@ -2998,16 +3014,15 @@ class Content {
       let clearDrawY = drawY;
       const clearDrawWidth = scrollView.w;
       const clearDrawHeight = scrollView.h;
-      if (settings.table.showGrid) {
+      if (settings.table.showGrid || out) {
         clearDrawX += grid.lineWidth();
         clearDrawY += grid.lineWidth();
-      } else if (out) {
-        clearDrawY += grid.lineWidth();
-        clearDrawX += grid.lineWidth();
       } else {
         switch (scroll.type) {
           case SCROLL_TYPE.H_LEFT:
           case SCROLL_TYPE.V_TOP: {
+            clearDrawX += grid.lineWidth();
+            clearDrawY += grid.lineWidth();
             break;
           }
           case SCROLL_TYPE.V_BOTTOM: {
@@ -3027,9 +3042,27 @@ class Content {
       const clearBorderY = drawY;
       let clearBorderWidth = scrollView.w;
       let clearBorderHeight = scrollView.h;
-      if (settings.table.showGrid) {
+      if (settings.table.showGrid || out) {
         clearBorderWidth += grid.lineWidth();
         clearBorderHeight += grid.lineWidth();
+      } else {
+        switch (scroll.type) {
+          case SCROLL_TYPE.H_LEFT:
+          case SCROLL_TYPE.V_TOP: {
+            clearBorderWidth += grid.lineWidth();
+            clearBorderHeight += grid.lineWidth();
+            break;
+          }
+          case SCROLL_TYPE.V_BOTTOM: {
+            clearBorderWidth += grid.lineWidth();
+            break;
+          }
+          case SCROLL_TYPE.H_RIGHT: {
+            clearBorderHeight += grid.lineWidth();
+            break;
+          }
+          default: break;
+        }
       }
 
       // 裁剪背景
@@ -3041,11 +3074,11 @@ class Content {
       });
       const clearCrop = new Crop({ draw, rect: clearRect });
       clearCrop.open();
-      this.renderMappingImage();
+      this.renderImage();
       clearCrop.close();
 
       // 清空内容
-      this.renderClearMapping();
+      this.renderClear();
 
       // 裁剪内容
       const drawRect = new Rect({

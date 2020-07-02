@@ -2,7 +2,7 @@ const projectTimeTable = {
   name: '项目时间表',
   tableConfig: {
     table: {
-      showGrid: true,
+      showGrid: false,
     },
     rows: {
       len: 36,
