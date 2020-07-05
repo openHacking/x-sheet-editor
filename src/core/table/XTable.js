@@ -36,24 +36,184 @@ const VIEW_MODE = {
   STATIC: Symbol('static'),
 };
 
+// ================== 表格滚动视图 ==================
+
+class XTableScrollView {
+
+  constructor(table) {
+    this.table = table;
+    // 上一次滚动的视图
+    this.lastScrollView = null;
+    // 滚动视图和内容视图
+    this.scrollEnterView = null;
+    this.scrollView = null;
+    // 滚动进入的视图和离开的视图
+    this.enterView = null;
+    this.leaveView = null;
+  }
+
+  reset() {
+    this.lastScrollView = this.scrollView;
+    this.scrollEnterView = null;
+    this.scrollView = null;
+    this.enterView = null;
+    this.leaveView = null;
+  }
+
+  getLastScrollView() {
+    if (Utils.isNotUnDef(this.lastScrollView)) {
+      return this.lastScrollView.clone();
+    }
+    return null;
+  }
+
+  getScrollView() {
+    if (Utils.isNotUnDef(this.scrollView)) {
+      return this.scrollView.clone();
+    }
+    const { table } = this;
+    const {
+      rows, cols, scroll, xContent,
+    } = table;
+    let [width, height] = [0, 0];
+    const { ri, ci } = scroll;
+    let [eri, eci] = [rows.len, cols.len];
+    for (let i = ri; i < rows.len; i += 1) {
+      height += rows.getHeight(i);
+      eri = i;
+      if (height > xContent.getHeight()) break;
+    }
+    for (let j = ci; j < cols.len; j += 1) {
+      width += cols.getWidth(j);
+      eci = j;
+      if (width > xContent.getWidth()) break;
+    }
+    const scrollView = new RectRange(ri, ci, eri, eci, width, height);
+    this.scrollView = scrollView;
+    return scrollView.clone();
+  }
+
+  getLeaveView() {
+    if (Utils.isNotUnDef(this.leaveView)) {
+      return this.leaveView.clone();
+    }
+    const { lastScrollView } = this;
+    const { scrollView } = this;
+    const { table } = this;
+    const { cols, rows } = table;
+    if (lastScrollView) {
+      const [leaveView] = lastScrollView.coincideDifference(scrollView);
+      if (leaveView) {
+        leaveView.w = cols.rectRangeSumWidth(leaveView);
+        leaveView.h = rows.rectRangeSumHeight(leaveView);
+        this.leaveView = leaveView;
+        return leaveView.clone();
+      }
+    }
+    return null;
+  }
+
+  getEnterView() {
+    if (Utils.isNotUnDef(this.enterView)) {
+      return this.enterView.clone();
+    }
+    const { lastScrollView } = this;
+    const { scrollView } = this;
+    const { table } = this;
+    const { cols, rows } = table;
+    if (lastScrollView) {
+      const [enterView] = scrollView.coincideDifference(lastScrollView);
+      if (enterView) {
+        enterView.w = cols.rectRangeSumWidth(enterView);
+        enterView.h = rows.rectRangeSumHeight(enterView);
+        this.enterView = enterView;
+        return enterView.clone();
+      }
+    }
+    return null;
+  }
+
+  getScrollEnterVIew() {
+    if (Utils.isNotUnDef(this.scrollEnterView)) {
+      return this.scrollEnterView.clone();
+    }
+    const { table } = this;
+    const { cols, rows, scroll } = table;
+    const enterView = this.getEnterView();
+    if (enterView) {
+      switch (scroll.type) {
+        case SCROLL_TYPE.H_RIGHT: {
+          enterView.sci -= 1;
+          break;
+        }
+        case SCROLL_TYPE.V_BOTTOM: {
+          enterView.sri -= 1;
+          break;
+        }
+        case SCROLL_TYPE.H_LEFT: {
+          enterView.eci += 1;
+          break;
+        }
+        case SCROLL_TYPE.V_TOP: {
+          enterView.eri += 1;
+          break;
+        }
+      }
+      enterView.w = cols.rectRangeSumWidth(enterView);
+      enterView.h = rows.rectRangeSumHeight(enterView);
+      this.scrollEnterView = enterView;
+      return enterView.clone();
+    }
+    return null;
+  }
+
+  /**
+   * 视图类型
+   * @param lastView
+   * @param view
+   * @return {symbol}
+   */
+  static viewMode(lastView, view) {
+    if (Utils.isUnDef(lastView)) {
+      return VIEW_MODE.STATIC;
+    }
+    if (view.equals(lastView)) {
+      return VIEW_MODE.STATIC;
+    }
+    if (view.coincide(lastView).equals(RectRange.EMPTY)) {
+      return VIEW_MODE.OUT;
+    }
+    return VIEW_MODE.CHANGE;
+  }
+
+}
+
+// ================= 表格绘制抽象类 =================
+
 class XTableDraw {
 
   constructor(table) {
     this.table = table;
+
     this.width = null;
     this.height = null;
+
     this.x = null;
     this.y = null;
+
     this.drawX = null;
     this.drawY = null;
+
     this.mapOriginX = null;
     this.mapOriginY = null;
     this.mapTargetX = null;
     this.mapTargetY = null;
     this.mapWidth = null;
     this.mapHeight = null;
+
     this.fullScrollView = null;
     this.scrollVIew = null;
+
     this.viewMode = null;
   }
 
@@ -63,18 +223,23 @@ class XTableDraw {
   reset() {
     this.width = null;
     this.height = null;
+
     this.x = null;
     this.y = null;
+
     this.drawX = null;
     this.drawY = null;
+
     this.mapOriginX = null;
     this.mapOriginY = null;
     this.mapTargetX = null;
     this.mapTargetY = null;
     this.mapWidth = null;
     this.mapHeight = null;
+
     this.fullScrollView = null;
     this.scrollVIew = null;
+
     this.viewMode = null;
   }
 
@@ -384,16 +549,20 @@ class XTableDraw {
     const viewMode = this.getViewMode();
     if (viewMode === VIEW_MODE.CHANGE && renderMode === RENDER_MODE.SCROLL) {
       const {
-        draw, canvas,
+        draw, canvas, grid,
       } = table;
       const { el } = canvas;
-      const width = this.getMapWidth();
-      const height = this.getMapHeight();
-      const ox = this.getMapOriginX();
-      const oy = this.getMapOriginY();
-      const tx = this.getMapTargetX();
-      const ty = this.getMapTargetY();
-      draw.drawImage(el, ox, oy, width, height, tx, ty, width, height);
+      const mapWidth = this.getMapWidth();
+      const mapHeight = this.getMapHeight();
+      let ox = this.getMapOriginX();
+      let oy = this.getMapOriginY();
+      let tx = this.getMapTargetX();
+      let ty = this.getMapTargetY();
+      if (ox === 0) ox += grid.lineWidth();
+      if (oy === 0) oy += grid.lineWidth();
+      if (tx === 0) tx += grid.lineWidth();
+      if (ty === 0) ty += grid.lineWidth();
+      draw.drawImage(el, ox, oy, mapWidth, mapHeight, tx, ty, mapWidth, mapHeight);
     }
   }
 
@@ -404,14 +573,14 @@ class XTableDraw {
     const dx = this.getDrawX();
     const dy = this.getDrawY();
     const { table } = this;
-    const { draw } = table;
+    const { draw, grid } = table;
     const { scroll } = table;
     const viewMode = this.getViewMode();
     switch (viewMode) {
       case VIEW_MODE.STATIC:
       case VIEW_MODE.OUT: {
-        const height = this.getHeight();
-        const width = this.getWidth();
+        const height = this.getHeight() + grid.lineWidth();
+        const width = this.getWidth() + grid.lineWidth();
         draw.fillRect(dx, dy, width, height);
         break;
       }
@@ -421,20 +590,20 @@ class XTableDraw {
             const fullScrollView = this.getFullScrollView();
             const scrollView = this.getScrollView();
             const height = table.box().height - (fullScrollView.h - scrollView.h);
-            const width = this.getWidth();
+            const width = this.getWidth() + grid.lineWidth();
             draw.fillRect(dx, dy, width, height);
             break;
           }
           case SCROLL_TYPE.V_TOP: {
             const scrollView = this.getScrollView();
             const height = scrollView.h;
-            const width = this.getWidth();
+            const width = this.getWidth() + grid.lineWidth();
             draw.fillRect(dx, dy, width, height);
             break;
           }
           case SCROLL_TYPE.H_LEFT: {
             const scrollView = this.getScrollView();
-            const height = this.getHeight();
+            const height = this.getHeight() + grid.lineWidth();
             const width = scrollView.w;
             draw.fillRect(dx, dy, width, height);
             break;
@@ -442,7 +611,7 @@ class XTableDraw {
           case SCROLL_TYPE.H_RIGHT: {
             const fullScrollView = this.getFullScrollView();
             const scrollView = this.getScrollView();
-            const height = this.getHeight();
+            const height = this.getHeight() + grid.lineWidth();
             const width = table.box().width - (fullScrollView.w - scrollView.w);
             draw.fillRect(dx, dy, width, height);
             break;
@@ -453,16 +622,36 @@ class XTableDraw {
     }
   }
 
+  /**
+   * 渲染界面
+   */
+  render() {
+    const { table } = this;
+    const { draw, grid } = table;
+    const x = this.getX() + grid.lineWidth();
+    const y = this.getY() + grid.lineWidth();
+    const width = this.getWidth();
+    const height = this.getHeight();
+    const crop = new Crop({
+      rect: new Rect({ x, y, width, height }),
+      draw,
+    });
+    crop.open();
+    this.drawMap();
+    this.drawClear();
+    crop.close();
+  }
+
 }
 
 class XTableContentDraw extends XTableDraw {
 
   constructor(table) {
     super(table);
+
     this.borderX = null;
     this.borderY = null;
-    this.scrollX = null;
-    this.contentView = null;
+
     this.borderView = null;
   }
 
@@ -479,110 +668,10 @@ class XTableContentDraw extends XTableDraw {
   }
 
   /**
-   * 绘制边框的X坐标
-   */
-  getBorderX() {
-    if (Utils.isNumber(this.borderX)) {
-      return this.borderX;
-    }
-    const { table } = this;
-    const x = this.getX();
-    if (table.getRenderMode() === RENDER_MODE.RENDER) {
-      this.borderX = x;
-      return x;
-    }
-    if (this.getViewMode() === VIEW_MODE.OUT) {
-      this.borderX = x;
-      return x;
-    }
-    const { scroll } = table;
-    let borderX = 0;
-    switch (scroll.type) {
-      case SCROLL_TYPE.H_RIGHT: {
-        const borderView = this.getBorderView();
-        const fullScrollView = this.getFullScrollView();
-        borderX = fullScrollView.w - borderView.w;
-        break;
-      }
-      case SCROLL_TYPE.H_LEFT: {
-        borderX = 0;
-        break;
-      }
-    }
-    borderX = x + borderX;
-    this.borderX = borderX;
-    return borderX;
-  }
-
-  /**
-   * 绘制边框的Y坐标
-   */
-  getBorderY() {
-    if (Utils.isNumber(this.borderY)) {
-      return this.borderY;
-    }
-    const { table } = this;
-    const y = this.getY();
-    if (table.getRenderMode() === RENDER_MODE.RENDER) {
-      this.borderY = y;
-      return y;
-    }
-    if (this.getViewMode() === VIEW_MODE.OUT) {
-      this.borderY = y;
-      return y;
-    }
-    const { scroll } = table;
-    let borderY = 0;
-    switch (scroll.type) {
-      case SCROLL_TYPE.V_BOTTOM: {
-        const borderView = this.getBorderView();
-        const fullScrollView = this.getFullScrollView();
-        borderY = fullScrollView.h - borderView.h;
-        break;
-      }
-      case SCROLL_TYPE.V_TOP: {
-        borderY = 0;
-        break;
-      }
-    }
-    borderY = y + borderY;
-    this.borderY = borderY;
-    return borderY;
-  }
-
-  /**
-   * 滚动条左边的偏移量
-   * @returns {number}
-   */
-  getScrollX() {
-    const { table } = this;
-    const { scroll } = table;
-    return -scroll.x;
-  }
-
-  /**
-   * 文字的绘制区域
+   * 边框&网格绘制区域
    * @returns {RectRange}
    */
-  getContentView() {
-    if (Utils.isNotUnDef(this.contentView)) {
-      return this.contentView.clone();
-    }
-    const { table } = this;
-    const { cols } = table;
-    const scrollView = this.getScrollView();
-    scrollView.sci = 0;
-    scrollView.eci = cols.len;
-    scrollView.w = cols.sectionSumWidth(scrollView.sci, scrollView.eci);
-    this.contentView = scrollView;
-    return scrollView.clone();
-  }
-
-  /**
-   * 边框绘制区域
-   * @returns {RectRange}
-   */
-  getBorderView() {
+  getLineView() {
     if (Utils.isNotUnDef(this.borderView)) {
       return this.borderView.clone();
     }
@@ -625,15 +714,87 @@ class XTableContentDraw extends XTableDraw {
   }
 
   /**
+   * 绘制边框&网格的X坐标
+   */
+  getLineX() {
+    if (Utils.isNumber(this.borderX)) {
+      return this.borderX;
+    }
+    const { table } = this;
+    const x = this.getX();
+    if (table.getRenderMode() === RENDER_MODE.RENDER) {
+      this.borderX = x;
+      return x;
+    }
+    if (this.getViewMode() === VIEW_MODE.OUT) {
+      this.borderX = x;
+      return x;
+    }
+    const { scroll } = table;
+    let borderX = 0;
+    switch (scroll.type) {
+      case SCROLL_TYPE.H_RIGHT: {
+        const borderView = this.getLineView();
+        const fullScrollView = this.getFullScrollView();
+        borderX = fullScrollView.w - borderView.w;
+        break;
+      }
+      case SCROLL_TYPE.H_LEFT: {
+        borderX = 0;
+        break;
+      }
+    }
+    borderX = x + borderX;
+    this.borderX = borderX;
+    return borderX;
+  }
+
+  /**
+   * 绘制边框&网格的Y坐标
+   */
+  getLineY() {
+    if (Utils.isNumber(this.borderY)) {
+      return this.borderY;
+    }
+    const { table } = this;
+    const y = this.getY();
+    if (table.getRenderMode() === RENDER_MODE.RENDER) {
+      this.borderY = y;
+      return y;
+    }
+    if (this.getViewMode() === VIEW_MODE.OUT) {
+      this.borderY = y;
+      return y;
+    }
+    const { scroll } = table;
+    let borderY = 0;
+    switch (scroll.type) {
+      case SCROLL_TYPE.V_BOTTOM: {
+        const borderView = this.getLineView();
+        const fullScrollView = this.getFullScrollView();
+        borderY = fullScrollView.h - borderView.h;
+        break;
+      }
+      case SCROLL_TYPE.V_TOP: {
+        borderY = 0;
+        break;
+      }
+    }
+    borderY = y + borderY;
+    this.borderY = borderY;
+    return borderY;
+  }
+
+  /**
    * 绘制边框
    */
   drawBorder() {
     const scrollView = this.getScrollView();
-    const borderView = this.getBorderView();
+    const borderView = this.getLineView();
     const drawX = this.getDrawX();
     const drawY = this.getDrawY();
-    const borderX = this.getBorderX();
-    const borderY = this.getBorderY();
+    const borderX = this.getLineX();
+    const borderY = this.getLineY();
     const { table } = this;
     const width = scrollView.w;
     const height = scrollView.h;
@@ -735,6 +896,55 @@ class XTableContentDraw extends XTableDraw {
   }
 
   /**
+   * 绘制网格
+   */
+  drawGrid() {
+    const scrollView = this.getScrollView();
+    const borderView = this.getLineView();
+    const drawX = this.getDrawX();
+    const drawY = this.getDrawY();
+    const borderX = this.getLineX();
+    const borderY = this.getLineY();
+    const { table } = this;
+    const width = scrollView.w;
+    const height = scrollView.h;
+    const {
+      draw, lineHandle, gridHandle, grid,
+    } = table;
+    const crop = new Crop({
+      rect: new Rect({ x: drawX, y: drawY, width, height }),
+      draw,
+    });
+    crop.open();
+    draw.offset(borderX, borderY);
+    draw.attr({
+      globalAlpha: 0.3,
+    });
+    const coincideView = lineHandle.viewRangeAndMergeCoincideView({
+      viewRange: borderView,
+    });
+    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
+    const hLine = gridHandle.hLine(borderView);
+    const vLine = gridHandle.vLine(borderView);
+    hLine.forEach((item) => {
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vLine.forEach((item) => {
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    const hMergeLine = gridHandle.hMergeLine(coincideViewBrink);
+    const vMergeLine = gridHandle.vMergeLine(coincideViewBrink);
+    hMergeLine.forEach((item) => {
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vMergeLine.forEach((item) => {
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    draw.offset(0, 0);
+    crop.close();
+  }
+
+  /**
    * 绘制背景颜色
    */
   drawColor() {
@@ -770,52 +980,6 @@ class XTableContentDraw extends XTableDraw {
         const box = new Box({ draw, rect });
         box.drawBackgroundColor(background);
       },
-    });
-    draw.offset(0, 0);
-    crop.close();
-  }
-
-  /**
-   * 绘制网格
-   */
-  drawGrid() {
-    const scrollView = this.getScrollView();
-    const x = this.getDrawX();
-    const y = this.getDrawY();
-    const { table } = this;
-    const width = scrollView.w;
-    const height = scrollView.h;
-    const {
-      draw, lineHandle, gridHandle, grid,
-    } = table;
-    const crop = new Crop({
-      rect: new Rect({ x, y, width, height }),
-      draw,
-    });
-    crop.open();
-    draw.offset(x, y);
-    draw.attr({
-      globalAlpha: 0.3,
-    });
-    const coincideView = lineHandle.viewRangeAndMergeCoincideView({
-      viewRange: scrollView,
-    });
-    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
-    const hLine = gridHandle.hLine(scrollView);
-    const vLine = gridHandle.vLine(scrollView);
-    hLine.forEach((item) => {
-      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    vLine.forEach((item) => {
-      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    const hMergeLine = gridHandle.hMergeLine(coincideViewBrink);
-    const vMergeLine = gridHandle.vMergeLine(coincideViewBrink);
-    hMergeLine.forEach((item) => {
-      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    vMergeLine.forEach((item) => {
-      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
     crop.close();
@@ -892,8 +1056,7 @@ class XTableContentDraw extends XTableDraw {
     if (viewMode === VIEW_MODE.STATIC && renderMode === RENDER_MODE.SCROLL) {
       return;
     }
-    this.drawMap();
-    this.drawClear();
+    super.render();
     this.drawColor();
     this.drawFont();
     if (this.table.settings.table.showGrid) {
@@ -916,8 +1079,7 @@ class XTableIndexDraw extends XTableDraw {
     if (viewMode === VIEW_MODE.STATIC && renderMode === RENDER_MODE.SCROLL) {
       return;
     }
-    this.drawMap();
-    this.drawClear();
+    super.render();
     this.draw();
   }
 
@@ -1011,9 +1173,6 @@ class XTableLeftIndexDraw extends XTableIndexDraw {
     });
     // 绘制边框
     let lineHeight = 0;
-    draw.attr({
-      strokeStyle: settings.table.borderColor,
-    });
     rows.eachHeight(sri, eri, (i, ch, y) => {
       lineHeight += ch;
       grid.horizontalLine(0, y, width, y);
@@ -1026,161 +1185,7 @@ class XTableLeftIndexDraw extends XTableIndexDraw {
 
 }
 
-// ====================表格滚动视图===================
-
-class XTableScrollView {
-
-  constructor(table) {
-    this.table = table;
-    // 上一次滚动的视图
-    this.lastScrollView = null;
-    // 滚动视图和内容视图
-    this.scrollEnterView = null;
-    this.scrollView = null;
-    // 滚动进入的视图和离开的视图
-    this.enterView = null;
-    this.leaveView = null;
-  }
-
-  reset() {
-    this.lastScrollView = this.scrollView;
-    this.scrollEnterView = null;
-    this.scrollView = null;
-    this.enterView = null;
-    this.leaveView = null;
-  }
-
-  getLastScrollView() {
-    if (Utils.isNotUnDef(this.lastScrollView)) {
-      return this.lastScrollView.clone();
-    }
-    return null;
-  }
-
-  getScrollView() {
-    if (Utils.isNotUnDef(this.scrollView)) {
-      return this.scrollView.clone();
-    }
-    const { table } = this;
-    const {
-      rows, cols, scroll, xContent,
-    } = table;
-    let [width, height] = [0, 0];
-    const { ri, ci } = scroll;
-    let [eri, eci] = [rows.len, cols.len];
-    for (let i = ri; i < rows.len; i += 1) {
-      height += rows.getHeight(i);
-      eri = i;
-      if (height > xContent.getHeight()) break;
-    }
-    for (let j = ci; j < cols.len; j += 1) {
-      width += cols.getWidth(j);
-      eci = j;
-      if (width > xContent.getWidth()) break;
-    }
-    const scrollView = new RectRange(ri, ci, eri, eci, width, height);
-    this.scrollView = scrollView;
-    return scrollView.clone();
-  }
-
-  getLeaveView() {
-    if (Utils.isNotUnDef(this.leaveView)) {
-      return this.leaveView.clone();
-    }
-    const { lastScrollView } = this;
-    const { scrollView } = this;
-    const { table } = this;
-    const { cols, rows } = table;
-    if (lastScrollView) {
-      const [leaveView] = lastScrollView.coincideDifference(scrollView);
-      if (leaveView) {
-        leaveView.w = cols.rectRangeSumWidth(leaveView);
-        leaveView.h = rows.rectRangeSumHeight(leaveView);
-        this.leaveView = leaveView;
-        return leaveView.clone();
-      }
-    }
-    return null;
-  }
-
-  getEnterView() {
-    if (Utils.isNotUnDef(this.enterView)) {
-      return this.enterView.clone();
-    }
-    const { lastScrollView } = this;
-    const { scrollView } = this;
-    const { table } = this;
-    const { cols, rows } = table;
-    if (lastScrollView) {
-      const [enterView] = scrollView.coincideDifference(lastScrollView);
-      if (enterView) {
-        enterView.w = cols.rectRangeSumWidth(enterView);
-        enterView.h = rows.rectRangeSumHeight(enterView);
-        this.enterView = enterView;
-        return enterView.clone();
-      }
-    }
-    return null;
-  }
-
-  getScrollEnterVIew() {
-    if (Utils.isNotUnDef(this.scrollEnterView)) {
-      return this.scrollEnterView.clone();
-    }
-    const { table } = this;
-    const { cols, rows, scroll } = table;
-    const enterView = this.getEnterView();
-    if (enterView) {
-      if (enterView) {
-        switch (scroll.type) {
-          case SCROLL_TYPE.H_RIGHT: {
-            enterView.sci -= 1;
-            break;
-          }
-          case SCROLL_TYPE.V_BOTTOM: {
-            enterView.sri -= 1;
-            break;
-          }
-          case SCROLL_TYPE.H_LEFT: {
-            enterView.eci += 1;
-            break;
-          }
-          case SCROLL_TYPE.V_TOP: {
-            enterView.eri += 1;
-            break;
-          }
-        }
-        enterView.w = cols.rectRangeSumWidth(enterView);
-        enterView.h = rows.rectRangeSumHeight(enterView);
-        this.scrollEnterView = enterView;
-        return enterView.clone();
-      }
-    }
-    return null;
-  }
-
-  /**
-   * 视图类型
-   * @param lastView
-   * @param view
-   * @return {symbol}
-   */
-  static viewMode(lastView, view) {
-    if (Utils.isUnDef(lastView)) {
-      return VIEW_MODE.STATIC;
-    }
-    if (view.equals(lastView)) {
-      return VIEW_MODE.STATIC;
-    }
-    if (view.coincide(lastView).equals(RectRange.EMPTY)) {
-      return VIEW_MODE.OUT;
-    }
-    return VIEW_MODE.CHANGE;
-  }
-
-}
-
-// =======================动态内容===================
+// ================ 表格动态内容绘制 ================
 
 class XTableLeftIndex extends XTableLeftIndexDraw {
 
@@ -1589,6 +1594,7 @@ class XTableContent extends XTableContentDraw {
       view = enterView;
     } else {
       view = scrollView;
+      debugger
     }
     this.scrollVIew = view;
     return view.clone();
@@ -1737,7 +1743,7 @@ class XTableTop extends XTableContentDraw {
 
 }
 
-// =======================冻结内容===================
+// ================ 表格冻结内容绘制 ================
 
 class XTableFrozenLeftIndex extends XTableLeftIndexDraw {
 
@@ -2061,7 +2067,7 @@ class XTable extends Widget {
       },
       data: [],
       rows: {
-        len: 1000,
+        len: 10000,
         height: 30,
       },
       cols: {
