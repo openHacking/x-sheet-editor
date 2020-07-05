@@ -7,7 +7,7 @@ class Rows {
     this.minHeight = 5;
     this.height = Utils.minIf(height, this.minHeight);
     this.len = len;
-    this.cacheTotalHeight = -1;
+    this.cacheTotalHeight = null;
     this.setData(data);
   }
 
@@ -31,7 +31,7 @@ class Rows {
   setHeight(ri, height) {
     const row = this.getOrNew(ri);
     row.height = Utils.minIf(height, this.minHeight);
-    this.cacheTotalHeight = -1;
+    this.cacheTotalHeight = null;
   }
 
   eachHeight(ri, ei, cb, sy = 0) {
@@ -52,9 +52,10 @@ class Rows {
   }
 
   totalHeight() {
-    if (this.cacheTotalHeight === -1) {
-      this.cacheTotalHeight = Utils.rangeSum(0, this.len, i => this.getHeight(i));
+    if (Utils.isNumber(this.cacheTotalHeight)) {
+      return this.cacheTotalHeight;
     }
+    this.cacheTotalHeight = Utils.rangeSum(0, this.len, i => this.getHeight(i));
     return this.cacheTotalHeight;
   }
 

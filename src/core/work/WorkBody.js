@@ -98,11 +98,12 @@ class WorkBody extends Widget {
     if (Utils.isUnDef(sheet)) return;
     const { scrollBarXHorizontalLayer } = this;
     const { table } = sheet;
-    const { content } = table;
-    const { contentOffset, scroll } = table;
-    scrollBarXHorizontalLayer.display(contentOffset.getFixedWidth() < content.getContentWidth());
-    this.scrollBarY.setSize(contentOffset.getFixedHeight(), content.getContentHeight());
-    this.scrollBarX.setSize(contentOffset.getFixedWidth(), content.getContentWidth());
+    const { xContent, scroll } = table;
+    const totalHeight = table.getScrollTotalHeight();
+    const totalWidth = table.getScrollTotalWidth();
+    scrollBarXHorizontalLayer.display(totalWidth > xContent.getWidth());
+    this.scrollBarY.setSize(xContent.getHeight(), totalHeight);
+    this.scrollBarX.setSize(xContent.getWidth(), totalWidth);
     this.scrollBarY.scrollMove(scroll.y);
     this.scrollBarX.scrollMove(scroll.x);
   }

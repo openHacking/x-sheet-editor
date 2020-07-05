@@ -10,5 +10,6 @@ module.exports = {
     'object-curly-newline': 0,
     'padded-blocks': 0,
     'prefer-destructuring': 0,
+    'default-case': 0,
   }
 };

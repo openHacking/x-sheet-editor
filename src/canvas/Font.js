@@ -36,6 +36,12 @@ const TEXT_DIRECTION = {
   ANGLE: 'angle',
 };
 
+class DrawFont {
+  static isBlank(text) {
+    return text === null || text === undefined || text.toString().trim() === '';
+  }
+}
+
 /**
  * 水平方向字体绘制
  */
@@ -422,6 +428,10 @@ class HorizontalFontDraw {
   }
 
   draw() {
+    const { text } = this;
+    if (DrawFont.isBlank(text)) {
+      return 0;
+    }
     const { dw, attr } = this;
     const { textWrap } = attr;
     dw.attr({
@@ -906,6 +916,10 @@ class VerticalFontDraw {
   }
 
   draw() {
+    const { text } = this;
+    if (DrawFont.isBlank(text)) {
+      return 0;
+    }
     const { dw, attr } = this;
     const { textWrap } = attr;
     switch (textWrap) {
@@ -1918,6 +1932,10 @@ class AngleFontDraw {
   }
 
   draw() {
+    const { text } = this;
+    if (DrawFont.isBlank(text)) {
+      return 0;
+    }
     const { dw, attr } = this;
     const { textWrap } = attr;
     dw.attr({
@@ -1946,10 +1964,11 @@ class AngleFontDraw {
 /**
  * Base font
  */
-class Font {
+class Font extends DrawFont {
   constructor({
     text, rect, dw, overflow, attr,
   }) {
+    super();
     this.attr = Utils.mergeDeep({}, {
       name: 'Arial',
       size: npx(13),

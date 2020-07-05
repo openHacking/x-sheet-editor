@@ -8,11 +8,13 @@ class Box {
   drawBackgroundColor(color) {
     if (color) {
       this.backgroundColor = color;
-      const { draw, rect } = this;
-      draw.attr({
-        fillStyle: color,
-      });
-      draw.fillRect(rect.x, rect.y, rect.width, rect.height);
+      if (color) {
+        const { draw, rect } = this;
+        draw.attr({
+          fillStyle: color,
+        });
+        draw.fillRect(rect.x, rect.y, rect.width, rect.height);
+      }
     }
   }
 }

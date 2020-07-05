@@ -6,6 +6,7 @@ import { Work } from './core/work/Work';
 import { Widget } from './lib/Widget';
 import './less/base.less';
 import './less/index.less';
+import '../template/projecttimetable'
 
 class XSheet extends Widget {
 

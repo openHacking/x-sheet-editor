@@ -16,7 +16,7 @@ class Draw {
 
   constructor(el) {
     this.el = el;
-    this.ctx = el.getContext('2d');
+    this.ctx = el.getContext('2d', { alpha: false });
     this.width = el.width;
     this.height = el.height;
     this.offsetX = 0;
