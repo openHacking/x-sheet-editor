@@ -5,7 +5,7 @@ function dpr() {
 }
 
 function npx(px) {
-  return Math.ceil(px * dpr());
+  return Math.floor(px * dpr());
 }
 
 function angleToRadian(angle) {
@@ -146,8 +146,8 @@ class Draw {
     const { ctx } = this;
     const { offsetX, offsetY } = this;
     const even = ctx.lineWidth % 2 === 0;
-    const nx = even ? npx(x + offsetX) : npx(x + offsetX) + 0.5;
-    const ny = even ? npx(y + offsetY) : npx(y + offsetY) + 0.5;
+    const nx = even ? npx(x + offsetX) : npx(x + offsetX) - 0.5;
+    const ny = even ? npx(y + offsetY) : npx(y + offsetY) - 0.5;
     ctx.moveTo(nx, ny);
   }
 
@@ -155,8 +155,8 @@ class Draw {
     const { ctx } = this;
     const { offsetX, offsetY } = this;
     const even = ctx.lineWidth % 2 === 0;
-    const nx = even ? npx(x + offsetX) : npx(x + offsetX) + 0.5;
-    const ny = even ? npx(y + offsetY) : npx(y + offsetY) + 0.5;
+    const nx = even ? npx(x + offsetX) : npx(x + offsetX) - 0.5;
+    const ny = even ? npx(y + offsetY) : npx(y + offsetY) - 0.5;
     ctx.lineTo(nx, ny);
   }
 

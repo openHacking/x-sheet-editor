@@ -24,7 +24,7 @@ class Grid {
       fillStyle: color,
     });
     const diff = ey - sy;
-    draw.fillRect(sx, sy, width, diff);
+    draw.fillRect(sx - width, sy, width, diff);
   }
 
   horizontalLine(sx, sy, ex, ey) {
@@ -37,7 +37,7 @@ class Grid {
       fillStyle: color,
     });
     const diff = ex - sx;
-    draw.fillRect(sx, sy, diff, width);
+    draw.fillRect(sx, sy - width, diff, width);
   }
 }
 

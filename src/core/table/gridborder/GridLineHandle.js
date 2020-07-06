@@ -1,16 +1,18 @@
-
 /**
  * GridLineHandle
  * @author jerry
  */
+import { Utils } from '../../../utils/Utils';
+
 class GridLineHandle {
 
-  /**
-   * GridLineHandle
-   * @param table
-   */
-  constructor(table) {
+  constructor(table, options) {
     this.table = table;
+    const { cols, rows } = table;
+    this.options = Utils.mergeDeep({
+      getWidth: col => cols.getWidth(col),
+      getHeight: row => rows.getHeight(row),
+    }, options);
   }
 
   /**
@@ -83,8 +85,8 @@ class GridLineHandle {
    * @returns {[]}
    */
   gridHLine(viewRange, bx = 0, by = 0, filter = () => true) {
-    const { table } = this;
-    const { lineHandle, cols, rows } = table;
+    const { table, options } = this;
+    const { lineHandle } = table;
     const line = [];
     let sx;
     let sy;
@@ -94,7 +96,7 @@ class GridLineHandle {
     lineHandle.hEach({
       viewRange,
       newRow: (row, y) => {
-        const height = rows.getHeight(row);
+        const height = options.getHeight(row);
         sx = bx;
         sy = by + y + height;
         ex = sx;
@@ -107,13 +109,13 @@ class GridLineHandle {
           breakpoint = false;
           line.push({ sx, sy, ex, ey });
         }
-        const width = cols.getWidth(col);
+        const width = options.getWidth(col);
         sx = ex + width;
         ex = sx;
       },
       handle: (row, col) => {
         breakpoint = true;
-        const width = cols.getWidth(col);
+        const width = options.getWidth(col);
         ex += width;
       },
       endRow: () => {
@@ -134,8 +136,8 @@ class GridLineHandle {
    * @returns {[]}
    */
   gridVLine(viewRange, bx = 0, by = 0, filter = () => true) {
-    const { table } = this;
-    const { lineHandle, cols, rows } = table;
+    const { table, options } = this;
+    const { lineHandle } = table;
     const line = [];
     let sx;
     let sy;
@@ -145,7 +147,7 @@ class GridLineHandle {
     lineHandle.vEach({
       viewRange,
       newCol: (col, x) => {
-        const width = cols.getWidth(col);
+        const width = options.getWidth(col);
         sx = bx + x + width;
         sy = by;
         ex = sx;
@@ -158,13 +160,13 @@ class GridLineHandle {
           breakpoint = false;
           line.push({ sx, sy, ex, ey });
         }
-        const height = rows.getHeight(row);
+        const height = options.getHeight(row);
         sy = ey + height;
         ey = sy;
       },
       handle: (col, row) => {
         breakpoint = true;
-        const height = rows.getHeight(row);
+        const height = options.getHeight(row);
         ey += height;
       },
       endCol: () => {

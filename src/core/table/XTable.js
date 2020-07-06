@@ -23,7 +23,17 @@ import { CellsHelper } from './CellsHelper';
 import { Cells } from './cells/Cells';
 import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
 import { Screen } from './screen/Screen';
-import { ScreenSelector } from './screenwiget/selector/ScreenSelector';
+import { SCREEN_SELECT_EVENT, ScreenSelector } from './screenwiget/selector/ScreenSelector';
+import { XReSizer } from './resizer/XReSizer';
+import { YReSizer } from './resizer/YReSizer';
+import { XHeightLight } from './highlight/XHeightLight';
+import { YHeightLight } from './highlight/YHeightLight';
+import { Edit } from './Edit';
+import { ScreenAutoFill } from './screenwiget/autofill/ScreenAutoFill';
+import { ScreenCopyStyle } from './screenwiget/copystyle/ScreenCopyStyle';
+import { MousePointer } from './MousePointer';
+import { Keyboard } from './Keyboard';
+import { Focus } from './Focus';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -31,10 +41,10 @@ const RENDER_MODE = {
 };
 
 const VIEW_MODE = {
-  CHANGE_ADD: Symbol('change'),
+  CHANGE_ADD: Symbol('change_add'),
   CHANGE_NOT: Symbol('change_not'),
-  OUT: Symbol('out'),
   STATIC: Symbol('static'),
+  BOUND_OUT: Symbol('bound_out'),
 };
 
 // ================== 表格滚动视图 ==================
@@ -184,12 +194,10 @@ class XTableScrollView {
     }
     // 视图不相交
     if (view.coincide(lastView).equals(RectRange.EMPTY)) {
-      return VIEW_MODE.OUT;
+      return VIEW_MODE.BOUND_OUT;
     }
     // 无新增加的视图区域
-    const lastBrink = lastView.brink();
-    const brink = view.brink();
-    if (lastBrink.right.equals(brink.right) || lastBrink.bottom.equals(brink.bottom)) {
+    if (view.within(lastView)) {
       return VIEW_MODE.CHANGE_NOT;
     }
     // 有新增的视图区域
@@ -223,6 +231,10 @@ class XTableDraw {
 
     this.fullScrollView = null;
     this.scrollVIew = null;
+    this.borderView = null;
+
+    this.borderX = null;
+    this.borderY = null;
 
     this.viewMode = null;
   }
@@ -249,6 +261,10 @@ class XTableDraw {
 
     this.fullScrollView = null;
     this.scrollVIew = null;
+    this.borderView = null;
+
+    this.borderX = null;
+    this.borderY = null;
 
     this.viewMode = null;
   }
@@ -298,7 +314,7 @@ class XTableDraw {
       this.drawX = x;
       return x;
     }
-    if (this.getViewMode() === VIEW_MODE.OUT) {
+    if (this.getViewMode() === VIEW_MODE.BOUND_OUT) {
       this.drawX = x;
       return x;
     }
@@ -338,7 +354,7 @@ class XTableDraw {
       this.drawY = y;
       return y;
     }
-    if (this.getViewMode() === VIEW_MODE.OUT) {
+    if (this.getViewMode() === VIEW_MODE.BOUND_OUT) {
       this.drawY = y;
       return y;
     }
@@ -363,6 +379,86 @@ class XTableDraw {
     drawY = y + drawY;
     this.drawY = drawY;
     return drawY;
+  }
+
+  /**
+   * 绘制边框&网格的X坐标
+   */
+  getLineX() {
+    if (Utils.isNumber(this.borderX)) {
+      return this.borderX;
+    }
+    const { table } = this;
+    const x = this.getX();
+    if (table.getRenderMode() === RENDER_MODE.RENDER) {
+      this.borderX = x;
+      return x;
+    }
+    if (this.getViewMode() === VIEW_MODE.BOUND_OUT) {
+      this.borderX = x;
+      return x;
+    }
+    if (this.getViewMode() === VIEW_MODE.CHANGE_NOT) {
+      this.borderX = x;
+      return x;
+    }
+    const { scroll } = table;
+    let borderX = 0;
+    switch (scroll.type) {
+      case SCROLL_TYPE.H_RIGHT: {
+        const borderView = this.getLineView();
+        const fullScrollView = this.getFullScrollView();
+        borderX = fullScrollView.w - borderView.w;
+        break;
+      }
+      case SCROLL_TYPE.H_LEFT: {
+        borderX = 0;
+        break;
+      }
+    }
+    borderX = x + borderX;
+    this.borderX = borderX;
+    return borderX;
+  }
+
+  /**
+   * 绘制边框&网格的Y坐标
+   */
+  getLineY() {
+    if (Utils.isNumber(this.borderY)) {
+      return this.borderY;
+    }
+    const { table } = this;
+    const y = this.getY();
+    if (table.getRenderMode() === RENDER_MODE.RENDER) {
+      this.borderY = y;
+      return y;
+    }
+    if (this.getViewMode() === VIEW_MODE.BOUND_OUT) {
+      this.borderY = y;
+      return y;
+    }
+    if (this.getViewMode() === VIEW_MODE.CHANGE_NOT) {
+      this.borderY = y;
+      return y;
+    }
+    const { scroll } = table;
+    let borderY = 0;
+    switch (scroll.type) {
+      case SCROLL_TYPE.V_BOTTOM: {
+        const borderView = this.getLineView();
+        const fullScrollView = this.getFullScrollView();
+        borderY = fullScrollView.h - borderView.h;
+        break;
+      }
+      case SCROLL_TYPE.V_TOP: {
+        borderY = 0;
+        break;
+      }
+    }
+    borderY = y + borderY;
+    this.borderY = borderY;
+    return borderY;
   }
 
   /**
@@ -551,142 +647,6 @@ class XTableDraw {
   }
 
   /**
-   * 视图模式
-   * @return {symbol}
-   */
-  getViewMode() {
-    throw new TypeError('getViewMode child impl');
-  }
-
-  /**
-   * 绘制贴图
-   */
-  drawMap() {
-    const { table } = this;
-    const renderMode = table.getRenderMode();
-    const viewMode = this.getViewMode();
-    if (viewMode === VIEW_MODE.CHANGE_ADD && renderMode === RENDER_MODE.SCROLL) {
-      const {
-        draw, canvas, grid,
-      } = table;
-      const { el } = canvas;
-      const mapWidth = this.getMapWidth();
-      const mapHeight = this.getMapHeight();
-      let ox = this.getMapOriginX();
-      let oy = this.getMapOriginY();
-      let tx = this.getMapTargetX();
-      let ty = this.getMapTargetY();
-      if (ox === 0) ox += grid.lineWidth();
-      if (oy === 0) oy += grid.lineWidth();
-      if (tx === 0) tx += grid.lineWidth();
-      if (ty === 0) ty += grid.lineWidth();
-      draw.drawImage(el, ox, oy, mapWidth, mapHeight, tx, ty, mapWidth, mapHeight);
-    }
-  }
-
-  /**
-   * 清空重新绘制区域
-   */
-  drawClear() {
-    const dx = this.getDrawX();
-    const dy = this.getDrawY();
-    const { table } = this;
-    const { draw, grid } = table;
-    const { scroll } = table;
-    const viewMode = this.getViewMode();
-    switch (viewMode) {
-      case VIEW_MODE.CHANGE_NOT:
-      case VIEW_MODE.STATIC:
-      case VIEW_MODE.OUT: {
-        const height = this.getHeight() + grid.lineWidth();
-        const width = this.getWidth() + grid.lineWidth();
-        draw.fillRect(dx, dy, width, height);
-        break;
-      }
-      case VIEW_MODE.CHANGE_ADD: {
-        switch (scroll.type) {
-          case SCROLL_TYPE.V_BOTTOM: {
-            const fullScrollView = this.getFullScrollView();
-            const scrollView = this.getScrollView();
-            const height = table.box().height - (fullScrollView.h - scrollView.h);
-            const width = this.getWidth() + grid.lineWidth();
-            draw.fillRect(dx, dy, width, height);
-            break;
-          }
-          case SCROLL_TYPE.V_TOP: {
-            const scrollView = this.getScrollView();
-            const height = scrollView.h;
-            const width = this.getWidth() + grid.lineWidth();
-            draw.fillRect(dx, dy, width, height);
-            break;
-          }
-          case SCROLL_TYPE.H_LEFT: {
-            const scrollView = this.getScrollView();
-            const height = this.getHeight() + grid.lineWidth();
-            const width = scrollView.w;
-            draw.fillRect(dx, dy, width, height);
-            break;
-          }
-          case SCROLL_TYPE.H_RIGHT: {
-            const fullScrollView = this.getFullScrollView();
-            const scrollView = this.getScrollView();
-            const height = this.getHeight() + grid.lineWidth();
-            const width = table.box().width - (fullScrollView.w - scrollView.w);
-            draw.fillRect(dx, dy, width, height);
-            break;
-          }
-        }
-        break;
-      }
-    }
-  }
-
-  /**
-   * 渲染界面
-   */
-  render() {
-    const { table } = this;
-    const { draw, grid } = table;
-    const x = this.getX() + grid.lineWidth();
-    const y = this.getY() + grid.lineWidth();
-    const width = this.getWidth();
-    const height = this.getHeight();
-    const crop = new Crop({
-      rect: new Rect({ x, y, width, height }),
-      draw,
-    });
-    crop.open();
-    this.drawMap();
-    this.drawClear();
-    crop.close();
-  }
-
-}
-
-class XTableContentDraw extends XTableDraw {
-
-  constructor(table) {
-    super(table);
-
-    this.borderX = null;
-    this.borderY = null;
-
-    this.borderView = null;
-  }
-
-  /**
-   * 重置变量区
-   */
-  reset() {
-    super.reset();
-    this.borderX = null;
-    this.borderY = null;
-    this.scrollX = null;
-    this.contentView = null;
-    this.borderView = null;
-  }
-
-  /**
    * 边框&网格绘制区域
    * @returns {RectRange}
    */
@@ -729,83 +689,144 @@ class XTableContentDraw extends XTableDraw {
   }
 
   /**
-   * 绘制边框&网格的X坐标
+   * 视图模式
+   * @return {symbol}
    */
-  getLineX() {
-    if (Utils.isNumber(this.borderX)) {
-      return this.borderX;
-    }
-    const { table } = this;
-    const x = this.getX();
-    if (table.getRenderMode() === RENDER_MODE.RENDER) {
-      this.borderX = x;
-      return x;
-    }
-    if (this.getViewMode() === VIEW_MODE.OUT) {
-      this.borderX = x;
-      return x;
-    }
-    if (this.getViewMode() === VIEW_MODE.CHANGE_NOT) {
-      this.borderX = x;
-      return x;
-    }
-    const { scroll } = table;
-    let borderX = 0;
-    switch (scroll.type) {
-      case SCROLL_TYPE.H_RIGHT: {
-        const borderView = this.getLineView();
-        const fullScrollView = this.getFullScrollView();
-        borderX = fullScrollView.w - borderView.w;
-        break;
-      }
-      case SCROLL_TYPE.H_LEFT: {
-        borderX = 0;
-        break;
-      }
-    }
-    borderX = x + borderX;
-    this.borderX = borderX;
-    return borderX;
+  getViewMode() {
+    throw new TypeError('getViewMode child impl');
   }
 
   /**
-   * 绘制边框&网格的Y坐标
+   * 绘制贴图
    */
-  getLineY() {
-    if (Utils.isNumber(this.borderY)) {
-      return this.borderY;
-    }
+  drawMap() {
     const { table } = this;
-    const y = this.getY();
-    if (table.getRenderMode() === RENDER_MODE.RENDER) {
-      this.borderY = y;
-      return y;
+    const renderMode = table.getRenderMode();
+    const viewMode = this.getViewMode();
+    if (viewMode === VIEW_MODE.CHANGE_ADD && renderMode === RENDER_MODE.SCROLL) {
+      const {
+        draw, canvas,
+      } = table;
+      const { el } = canvas;
+      const mapWidth = this.getMapWidth();
+      const mapHeight = this.getMapHeight();
+      const ox = this.getMapOriginX();
+      const oy = this.getMapOriginY();
+      const tx = this.getMapTargetX();
+      const ty = this.getMapTargetY();
+      draw.drawImage(el, ox, oy, mapWidth, mapHeight, tx, ty, mapWidth, mapHeight);
     }
-    if (this.getViewMode() === VIEW_MODE.OUT) {
-      this.borderY = y;
-      return y;
-    }
-    if (this.getViewMode() === VIEW_MODE.CHANGE_NOT) {
-      this.borderY = y;
-      return y;
-    }
-    const { scroll } = table;
-    let borderY = 0;
-    switch (scroll.type) {
-      case SCROLL_TYPE.V_BOTTOM: {
-        const borderView = this.getLineView();
-        const fullScrollView = this.getFullScrollView();
-        borderY = fullScrollView.h - borderView.h;
+  }
+
+  /**
+   * 清空重新绘制区域
+   */
+  drawClear() {
+    const { table } = this;
+    const {
+      scroll, draw,
+    } = table;
+    const viewMode = this.getViewMode();
+    const dx = this.getDrawX();
+    const dy = this.getDrawY();
+    switch (viewMode) {
+      case VIEW_MODE.CHANGE_NOT:
+      case VIEW_MODE.STATIC:
+      case VIEW_MODE.BOUND_OUT: {
+        const height = this.getHeight();
+        const width = this.getWidth();
+        draw.fillRect(dx, dy, width, height);
         break;
       }
-      case SCROLL_TYPE.V_TOP: {
-        borderY = 0;
+      case VIEW_MODE.CHANGE_ADD: {
+        switch (scroll.type) {
+          case SCROLL_TYPE.V_BOTTOM: {
+            const fullScrollView = this.getFullScrollView();
+            const scrollView = this.getScrollView();
+            const height = table.box().height - (fullScrollView.h - scrollView.h);
+            const width = this.getWidth();
+            draw.fillRect(dx, dy, width, height);
+            break;
+          }
+          case SCROLL_TYPE.V_TOP: {
+            const scrollView = this.getScrollView();
+            const height = scrollView.h;
+            const width = this.getWidth();
+            draw.fillRect(dx, dy, width, height);
+            break;
+          }
+          case SCROLL_TYPE.H_LEFT: {
+            const scrollView = this.getScrollView();
+            const height = this.getHeight();
+            const width = scrollView.w;
+            draw.fillRect(dx, dy, width, height);
+            break;
+          }
+          case SCROLL_TYPE.H_RIGHT: {
+            const fullScrollView = this.getFullScrollView();
+            const scrollView = this.getScrollView();
+            const height = this.getHeight();
+            const width = table.box().width - (fullScrollView.w - scrollView.w);
+            draw.fillRect(dx, dy, width, height);
+            break;
+          }
+        }
         break;
       }
     }
-    borderY = y + borderY;
-    this.borderY = borderY;
-    return borderY;
+  }
+
+}
+
+class XTableContentDraw extends XTableDraw {
+
+  /**
+   * 绘制网格
+   */
+  drawGrid() {
+    const scrollView = this.getScrollView();
+    const borderView = this.getLineView();
+    const drawX = this.getDrawX();
+    const drawY = this.getDrawY();
+    const borderX = this.getLineX();
+    const borderY = this.getLineY();
+    const { table } = this;
+    const width = scrollView.w;
+    const height = scrollView.h;
+    const {
+      draw, lineHandle, gridHandle, grid,
+    } = table;
+    const crop = new Crop({
+      rect: new Rect({ x: drawX, y: drawY, width, height }),
+      draw,
+    });
+    crop.open();
+    draw.offset(borderX, borderY);
+    draw.attr({
+      globalAlpha: 0.3,
+    });
+    const coincideView = lineHandle.viewRangeAndMergeCoincideView({
+      viewRange: borderView,
+    });
+    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
+    const hLine = gridHandle.hLine(borderView);
+    const vLine = gridHandle.vLine(borderView);
+    hLine.forEach((item) => {
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vLine.forEach((item) => {
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    const hMergeLine = gridHandle.hMergeLine(coincideViewBrink);
+    const vMergeLine = gridHandle.vMergeLine(coincideViewBrink);
+    hMergeLine.forEach((item) => {
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vMergeLine.forEach((item) => {
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    draw.offset(0, 0);
+    crop.close();
   }
 
   /**
@@ -919,55 +940,6 @@ class XTableContentDraw extends XTableDraw {
   }
 
   /**
-   * 绘制网格
-   */
-  drawGrid() {
-    const scrollView = this.getScrollView();
-    const borderView = this.getLineView();
-    const drawX = this.getDrawX();
-    const drawY = this.getDrawY();
-    const borderX = this.getLineX();
-    const borderY = this.getLineY();
-    const { table } = this;
-    const width = scrollView.w;
-    const height = scrollView.h;
-    const {
-      draw, lineHandle, gridHandle, grid,
-    } = table;
-    const crop = new Crop({
-      rect: new Rect({ x: drawX, y: drawY, width, height }),
-      draw,
-    });
-    crop.open();
-    draw.offset(borderX, borderY);
-    draw.attr({
-      globalAlpha: 0.3,
-    });
-    const coincideView = lineHandle.viewRangeAndMergeCoincideView({
-      viewRange: borderView,
-    });
-    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
-    const hLine = gridHandle.hLine(borderView);
-    const vLine = gridHandle.vLine(borderView);
-    hLine.forEach((item) => {
-      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    vLine.forEach((item) => {
-      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    const hMergeLine = gridHandle.hMergeLine(coincideViewBrink);
-    const vMergeLine = gridHandle.vMergeLine(coincideViewBrink);
-    hMergeLine.forEach((item) => {
-      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    vMergeLine.forEach((item) => {
-      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    draw.offset(0, 0);
-    crop.close();
-  }
-
-  /**
    * 绘制背景颜色
    */
   drawColor() {
@@ -978,7 +950,7 @@ class XTableContentDraw extends XTableDraw {
     const width = scrollView.w;
     const height = scrollView.h;
     const {
-      draw, cellsHelper, grid,
+      draw, cellsHelper,
     } = table;
     const crop = new Crop({
       rect: new Rect({ x, y, width, height }),
@@ -990,7 +962,6 @@ class XTableContentDraw extends XTableDraw {
       rectRange: scrollView,
       callback: (rect, cell) => {
         const { background } = cell;
-        rect.expandSize(grid.lineWidth());
         const box = new Box({ draw, rect });
         box.drawBackgroundColor(background);
       },
@@ -999,7 +970,6 @@ class XTableContentDraw extends XTableDraw {
       rectRange: scrollView,
       callback: (i, c, cell, rect) => {
         const { background } = cell;
-        rect.expandSize(grid.lineWidth());
         const box = new Box({ draw, rect });
         box.drawBackgroundColor(background);
       },
@@ -1020,7 +990,7 @@ class XTableContentDraw extends XTableDraw {
     const width = scrollView.w;
     const height = scrollView.h;
     const {
-      draw, cellsHelper, grid,
+      draw, cellsHelper,
     } = table;
     const crop = new Crop({
       rect: new Rect({ x: drawX, y: drawY, width, height }),
@@ -1039,7 +1009,7 @@ class XTableContentDraw extends XTableDraw {
         } = fontAttr;
         const font = new Font({
           text: Format(format, text),
-          rect: rect.expandSize(grid.lineWidth()),
+          rect,
           dw: draw,
           overflow,
           attr: fontAttr,
@@ -1056,7 +1026,7 @@ class XTableContentDraw extends XTableDraw {
         } = cell;
         const font = new Font({
           text: Format(format, text),
-          rect: rect.expandSize(grid.lineWidth()),
+          rect,
           dw: draw,
           overflow: null,
           attr: fontAttr,
@@ -1079,7 +1049,8 @@ class XTableContentDraw extends XTableDraw {
     if (viewMode === VIEW_MODE.STATIC && renderMode === RENDER_MODE.SCROLL) {
       return;
     }
-    super.render();
+    this.drawMap();
+    this.drawClear();
     this.drawColor();
     this.drawFont();
     if (this.table.settings.table.showGrid) {
@@ -1093,6 +1064,27 @@ class XTableContentDraw extends XTableDraw {
 class XTableIndexDraw extends XTableDraw {
 
   /**
+   * 绘制文字
+   */
+  drawFont() {
+    throw new TypeError('drawFont child impl');
+  }
+
+  /**
+   * 绘制背景颜色
+   */
+  drawColor() {
+    throw new TypeError('drawColor child impl');
+  }
+
+  /**
+   * 绘制网格
+   */
+  drawGrid() {
+    throw new TypeError('drawGrid child impl');
+  }
+
+  /**
    * 渲染界面
    */
   render() {
@@ -1102,8 +1094,11 @@ class XTableIndexDraw extends XTableDraw {
     if (viewMode === VIEW_MODE.STATIC && renderMode === RENDER_MODE.SCROLL) {
       return;
     }
-    super.render();
-    this.draw();
+    this.drawMap();
+    this.drawClear();
+    this.drawColor();
+    this.drawGrid();
+    this.drawFont();
   }
 
 }
@@ -1111,30 +1106,20 @@ class XTableIndexDraw extends XTableDraw {
 class XTableTopIndexDraw extends XTableIndexDraw {
 
   /**
-   *  绘制边框文字背景
+   *  绘制文字
    */
-  draw() {
+  drawFont() {
     const dx = this.getDrawX();
     const dy = this.getDrawY();
     const scrollView = this.getScrollView();
     const height = this.getHeight();
-    const width = scrollView.w;
     const { table } = this;
     const {
-      draw, cols, settings,
+      draw, cols,
     } = table;
-    const grid = new Grid(draw, {
-      color: settings.table.indexBorderColor,
-    });
     const { sci, eci } = scrollView;
     draw.save();
     draw.offset(dx, dy);
-    // 绘制背景
-    draw.attr({
-      fillStyle: '#f6f7fa',
-    });
-    draw.fillRect(0, 0, width, height);
-    // 绘制文字
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
@@ -1144,14 +1129,66 @@ class XTableTopIndexDraw extends XTableIndexDraw {
     cols.eachWidth(sci, eci, (i, cw, x) => {
       draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
     });
-    // 绘制边框
-    let lineWidth = 0;
-    cols.eachWidth(sci, eci, (i, cw, x) => {
-      lineWidth += cw;
-      grid.verticalLine(x, 0, x, height);
-      if (i === eci) grid.verticalLine(x + cw, 0, x + cw, height);
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
+  /**
+   * 绘制网格
+   */
+  drawGrid() {
+    const scrollView = this.getScrollView();
+    const borderView = this.getLineView();
+    const drawX = this.getDrawX();
+    const drawY = this.getDrawY();
+    const borderX = this.getLineX();
+    const borderY = this.getLineY();
+    const { table } = this;
+    const width = scrollView.w;
+    const height = scrollView.h;
+    const {
+      draw, topIdxGridHandle, grid,
+    } = table;
+    const crop = new Crop({
+      rect: new Rect({ x: drawX, y: drawY, width, height }),
+      draw,
     });
-    grid.horizontalLine(0, height, lineWidth, height);
+    crop.open();
+    draw.offset(borderX, borderY);
+    draw.attr({
+      globalAlpha: 0.3,
+    });
+    const hLine = topIdxGridHandle.hLine(borderView);
+    const vLine = topIdxGridHandle.vLine(borderView);
+    hLine.forEach((item) => {
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vLine.forEach((item) => {
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    draw.offset(0, 0);
+    crop.close();
+  }
+
+  /**
+   * 绘制背景
+   */
+  drawColor() {
+    const { table } = this;
+    const {
+      draw,
+    } = table;
+    const scrollView = this.getScrollView();
+    const dx = this.getDrawX();
+    const dy = this.getDrawY();
+    const height = this.getHeight();
+    const width = scrollView.w;
+    draw.save();
+    draw.offset(dx, dy);
+    draw.attr({
+      fillStyle: '#f6f7fa',
+    });
+    draw.fillRect(0, 0, width, height);
     draw.offset(0, 0);
     draw.restore();
   }
@@ -1161,30 +1198,20 @@ class XTableTopIndexDraw extends XTableIndexDraw {
 class XTableLeftIndexDraw extends XTableIndexDraw {
 
   /**
-   *  绘制边框文字背景
+   *  绘制文字
    */
-  draw() {
+  drawFont() {
     const dx = this.getDrawX();
     const dy = this.getDrawY();
     const scrollView = this.getScrollView();
-    const height = scrollView.h;
     const width = this.getWidth();
     const { table } = this;
     const {
-      draw, rows, settings,
+      draw, rows,
     } = table;
-    const grid = new Grid(draw, {
-      color: settings.table.indexBorderColor,
-    });
     const { sri, eri } = scrollView;
     draw.save();
     draw.offset(dx, dy);
-    // 绘制背景
-    draw.attr({
-      fillStyle: '#f6f7fa',
-    });
-    draw.fillRect(0, 0, width, height);
-    // 绘制文字
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
@@ -1194,14 +1221,67 @@ class XTableLeftIndexDraw extends XTableIndexDraw {
     rows.eachHeight(sri, eri, (i, ch, y) => {
       draw.fillText(i + 1, width / 2, y + (ch / 2));
     });
-    // 绘制边框
-    let lineHeight = 0;
-    rows.eachHeight(sri, eri, (i, ch, y) => {
-      lineHeight += ch;
-      grid.horizontalLine(0, y, width, y);
-      if (i === eri) grid.horizontalLine(0, y + ch, width, y + ch);
+    draw.offset(0, 0);
+    draw.restore();
+  }
+
+  /**
+   * 绘制网格
+   */
+  drawGrid() {
+    const scrollView = this.getScrollView();
+    const borderView = this.getLineView();
+    const drawX = this.getDrawX();
+    const drawY = this.getDrawY();
+    const borderX = this.getLineX();
+    const borderY = this.getLineY();
+    const { table } = this;
+    const width = scrollView.w;
+    const height = scrollView.h;
+    const {
+      draw, leftIdxGridHandle, grid,
+    } = table;
+    const crop = new Crop({
+      rect: new Rect({ x: drawX, y: drawY, width, height }),
+      draw,
     });
-    grid.verticalLine(width, 0, width, lineHeight);
+    crop.open();
+    draw.offset(borderX, borderY);
+    draw.attr({
+      globalAlpha: 0.3,
+    });
+    const hLine = leftIdxGridHandle.hLine(borderView);
+    const vLine = leftIdxGridHandle.vLine(borderView);
+    hLine.forEach((item) => {
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vLine.forEach((item) => {
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    draw.offset(0, 0);
+    crop.close();
+  }
+
+  /**
+   * 绘制背景
+   */
+  drawColor() {
+    const dx = this.getDrawX();
+    const dy = this.getDrawY();
+    const scrollView = this.getScrollView();
+    const height = scrollView.h;
+    const width = this.getWidth();
+    const { table } = this;
+    const {
+      draw,
+    } = table;
+    draw.save();
+    draw.offset(dx, dy);
+    // 绘制背景
+    draw.attr({
+      fillStyle: '#f6f7fa',
+    });
+    draw.fillRect(0, 0, width, height);
     draw.offset(0, 0);
     draw.restore();
   }
@@ -2075,7 +2155,7 @@ class XTable extends Widget {
     // 表格设置
     this.settings = Utils.mergeDeep({
       index: {
-        height: 30,
+        height: 33,
         width: 50,
         bgColor: '#f4f5f8',
         color: '#000000',
@@ -2090,7 +2170,7 @@ class XTable extends Widget {
       data: [],
       rows: {
         len: 10000,
-        height: 30,
+        height: 33,
       },
       cols: {
         len: 26,
@@ -2178,6 +2258,12 @@ class XTable extends Widget {
       color: this.settings.table.gridColor,
     });
     // 线段处理
+    this.topIdxGridHandle = new GridLineHandle(this, {
+      getHeight: () => this.settings.index.height,
+    });
+    this.leftIdxGridHandle = new GridLineHandle(this, {
+      getWidth: () => this.settings.index.width,
+    });
     this.lineHandle = new LineHandle(this);
     this.borderHandle = new BorderLineHandle(this);
     this.gridHandle = new GridLineHandle(this);
@@ -2199,18 +2285,6 @@ class XTable extends Widget {
       rows: this.rows,
       cols: this.cols,
     });
-    // 数据快照
-    this.tableDataSnapshot = new TableDataSnapshot(this);
-    // 表格屏幕管理
-    this.screen = new Screen(this);
-  }
-
-  onAttach() {
-    this.bind();
-    this.screenSelector = new ScreenSelector(this.screen);
-    this.screen.addWidget(this.screenSelector);
-    this.attach(this.canvas);
-    this.attach(this.screen);
   }
 
   /**
@@ -2427,24 +2501,6 @@ class XTable extends Widget {
   }
 
   /**
-   * 固定区域宽度
-   * @returns {number}
-   */
-  getFixedWidth() {
-    const { xLeft } = this;
-    return xLeft.getWidth();
-  }
-
-  /**
-   * 固定区域高度
-   * @returns {number}
-   */
-  getFixedHeight() {
-    const { xTop } = this;
-    return xTop.getHeight();
-  }
-
-  /**
    * 渲染模式
    */
   getRenderMode() {
@@ -2520,8 +2576,210 @@ class XTable extends Widget {
   }
 }
 
+// ====================== 快捷键 =====================
+
+class KeyBoardTab {
+
+  constructor(table) {
+    const { keyboard, cols, rows, edit, merges, screenSelector } = table;
+    let tabId = 0;
+    let tabNext = null;
+    keyboard.register({
+      el: table,
+      focus: true,
+      stop: false,
+      attr: {
+        code: 9,
+        callback: () => {
+          edit.hideEdit();
+          const { selectorAttr } = screenSelector;
+          const id = selectorAttr;
+          const rect = selectorAttr.rect.clone();
+          if (tabId !== id) {
+            const { sri, sci } = rect;
+            tabId = id;
+            tabNext = { sri, sci };
+          }
+          const cLen = cols.len - 1;
+          const rLen = rows.len - 1;
+          let { sri, sci } = tabNext;
+          const srcMerges = merges.getFirstIncludes(sri, sci);
+          if (srcMerges) {
+            sci = srcMerges.eci;
+          }
+          if (sci >= cLen && sri >= rLen) {
+            return;
+          }
+          if (sci >= cLen) {
+            sri += 1;
+            sci = 0;
+          } else {
+            sci += 1;
+          }
+          tabNext.sri = sri;
+          tabNext.sci = sci;
+          let eri = sri;
+          let eci = sci;
+          const targetMerges = merges.getFirstIncludes(sri, sci);
+          if (targetMerges) {
+            sri = targetMerges.sri;
+            sci = targetMerges.sci;
+            eri = targetMerges.eri;
+            eci = targetMerges.eci;
+          }
+          rect.sri = sri;
+          rect.sci = sci;
+          rect.eri = eri;
+          rect.eci = eci;
+          screenSelector.selectorAttr.rect = rect;
+          screenSelector.setOffset(screenSelector.selectorAttr);
+          screenSelector.onChangeStack.forEach(cb => cb());
+          screenSelector.onSelectChangeStack.forEach(cb => cb());
+          edit.showEdit();
+        },
+      },
+    });
+  }
+
+}
+
+// ====================== Table =====================
+
+class Table extends XTable {
+
+  constructor(settings) {
+    super(settings);
+    // 焦点元素管理
+    this.focus = new Focus(this);
+    // 数据快照
+    this.tableDataSnapshot = new TableDataSnapshot(this);
+    // 鼠标指针
+    this.mousePointer = new MousePointer(this);
+    // 键盘快捷键
+    this.keyboard = new Keyboard(this);
+    // table基础组件
+    this.screen = new Screen(this);
+    this.xReSizer = new XReSizer(this);
+    this.yReSizer = new YReSizer(this);
+    this.xHeightLight = new XHeightLight(this);
+    this.yHeightLight = new YHeightLight(this);
+    this.edit = new Edit(this);
+  }
+
+  onAttach() {
+    this.bind();
+    // 初始化表格基础小部件
+    this.screenSelector = new ScreenSelector(this.screen);
+    this.screenAutoFill = new ScreenAutoFill(this.screen, {
+      onBeforeAutoFill: () => {
+        this.tableDataSnapshot.begin();
+      },
+      onAfterAutoFill: () => {
+        this.tableDataSnapshot.end();
+      },
+    });
+    this.copyStyle = new ScreenCopyStyle(this.screen, {});
+    this.screen.addWidget(this.screenSelector);
+    this.screen.addWidget(this.screenAutoFill);
+    this.screen.addWidget(this.copyStyle);
+    this.screenSelector.on(SCREEN_SELECT_EVENT.SELECT_CHANGE, () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
+    });
+    this.screenSelector.on(SCREEN_SELECT_EVENT.DOWN_SELECT, () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN);
+    });
+    // 添加表格中的组件
+    this.attach(this.canvas);
+    this.attach(this.screen);
+    this.attach(this.xReSizer);
+    this.attach(this.yReSizer);
+    this.attach(this.xHeightLight);
+    this.attach(this.yHeightLight);
+    this.attach(this.edit);
+    // 注册快捷键
+    this.keyBoardTab = new KeyBoardTab(this);
+  }
+
+  bind() {
+    super.bind();
+    const { mousePointer } = this;
+    EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+      this.reset();
+      this.render();
+    });
+    EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+      this.reset();
+      this.render();
+    });
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
+      const { x, y } = this.computeEventXy(e);
+      const { ri, ci } = this.getRiCiByXy(x, y);
+      if (ri === -1) {
+        const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_ONE_COLUMN;
+        mousePointer.set(type, key);
+        return;
+      }
+      if (ci === -1) {
+        const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_ONE_ROW;
+        mousePointer.set(type, key);
+        return;
+      }
+      const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_CELL;
+      mousePointer.set(type, key);
+    });
+  }
+
+  getScrollViewRange() {
+    const { xTableScrollView } = this;
+    return xTableScrollView.getScrollView();
+  }
+
+  visualHeight() {
+    return this.box().height;
+  }
+
+  visualWidth() {
+    return this.box().width;
+  }
+
+  getFixedWidth() {
+    const { xLeft } = this;
+    return xLeft.getWidth();
+  }
+
+  getFixedHeight() {
+    const { xTop } = this;
+    return xTop.getHeight();
+  }
+
+  getIndexWidth() {
+    const { settings } = this;
+    return settings.index.width;
+  }
+
+  getIndexHeight() {
+    const { settings } = this;
+    return settings.index.height;
+  }
+
+  toString() {
+    const data = {
+      rows: {
+        data: this.rows.getData(),
+      },
+      cols: {
+        data: this.cols.getData(),
+      },
+      merges: {
+        data: this.merges.getData(),
+      },
+    };
+    return JSON.stringify(data);
+  }
+}
+
 export {
-  XTable,
+  Table as XTable,
   RENDER_MODE,
   VIEW_MODE,
 };
