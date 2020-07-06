@@ -31,7 +31,8 @@ const RENDER_MODE = {
 };
 
 const VIEW_MODE = {
-  CHANGE: Symbol('change'),
+  CHANGE_ADD: Symbol('change'),
+  CHANGE_NOT: Symbol('change_not'),
   OUT: Symbol('out'),
   STATIC: Symbol('static'),
 };
@@ -174,16 +175,25 @@ class XTableScrollView {
    * @return {symbol}
    */
   static viewMode(lastView, view) {
+    // 视图无变化
     if (Utils.isUnDef(lastView)) {
       return VIEW_MODE.STATIC;
     }
     if (view.equals(lastView)) {
       return VIEW_MODE.STATIC;
     }
+    // 视图不相交
     if (view.coincide(lastView).equals(RectRange.EMPTY)) {
       return VIEW_MODE.OUT;
     }
-    return VIEW_MODE.CHANGE;
+    // 无新增加的视图区域
+    const lastBrink = lastView.brink();
+    const brink = view.brink();
+    if (lastBrink.right.equals(brink.right) || lastBrink.bottom.equals(brink.bottom)) {
+      return VIEW_MODE.CHANGE_NOT;
+    }
+    // 有新增的视图区域
+    return VIEW_MODE.CHANGE_ADD;
   }
 
 }
@@ -292,6 +302,10 @@ class XTableDraw {
       this.drawX = x;
       return x;
     }
+    if (this.getViewMode() === VIEW_MODE.CHANGE_NOT) {
+      this.drawX = x;
+      return x;
+    }
     const { scroll } = table;
     const scrollView = this.getScrollView();
     const fullScrollView = this.getFullScrollView();
@@ -325,6 +339,10 @@ class XTableDraw {
       return y;
     }
     if (this.getViewMode() === VIEW_MODE.OUT) {
+      this.drawY = y;
+      return y;
+    }
+    if (this.getViewMode() === VIEW_MODE.CHANGE_NOT) {
       this.drawY = y;
       return y;
     }
@@ -547,7 +565,7 @@ class XTableDraw {
     const { table } = this;
     const renderMode = table.getRenderMode();
     const viewMode = this.getViewMode();
-    if (viewMode === VIEW_MODE.CHANGE && renderMode === RENDER_MODE.SCROLL) {
+    if (viewMode === VIEW_MODE.CHANGE_ADD && renderMode === RENDER_MODE.SCROLL) {
       const {
         draw, canvas, grid,
       } = table;
@@ -577,6 +595,7 @@ class XTableDraw {
     const { scroll } = table;
     const viewMode = this.getViewMode();
     switch (viewMode) {
+      case VIEW_MODE.CHANGE_NOT:
       case VIEW_MODE.STATIC:
       case VIEW_MODE.OUT: {
         const height = this.getHeight() + grid.lineWidth();
@@ -584,7 +603,7 @@ class XTableDraw {
         draw.fillRect(dx, dy, width, height);
         break;
       }
-      case VIEW_MODE.CHANGE: {
+      case VIEW_MODE.CHANGE_ADD: {
         switch (scroll.type) {
           case SCROLL_TYPE.V_BOTTOM: {
             const fullScrollView = this.getFullScrollView();
@@ -677,44 +696,36 @@ class XTableContentDraw extends XTableDraw {
     }
     const { table } = this;
     const { cols, rows } = table;
+    const renderMode = table.getRenderMode();
     const viewMode = this.getViewMode();
     const scrollView = this.getScrollView();
-    let view;
-    if (viewMode === VIEW_MODE.CHANGE) {
-      const fullScrollView = this.getFullScrollView();
-      const renderMode = table.getRenderMode();
-      if (renderMode === RENDER_MODE.SCROLL && !scrollView.equals(fullScrollView)) {
-        const { scroll } = table;
-        switch (scroll.type) {
-          case SCROLL_TYPE.V_TOP: {
-            scrollView.eri += 1;
-            scrollView.h = rows.rectRangeSumHeight(scrollView);
-            break;
-          }
-          case SCROLL_TYPE.V_BOTTOM: {
-            scrollView.sri -= 1;
-            scrollView.h = rows.rectRangeSumHeight(scrollView);
-            break;
-          }
-          case SCROLL_TYPE.H_RIGHT: {
-            scrollView.sci -= 1;
-            scrollView.w = cols.rectRangeSumWidth(scrollView);
-            break;
-          }
-          case SCROLL_TYPE.H_LEFT: {
-            scrollView.eci += 1;
-            scrollView.w = cols.rectRangeSumWidth(scrollView);
-            break;
-          }
+    if (viewMode === VIEW_MODE.CHANGE_ADD && renderMode === RENDER_MODE.SCROLL) {
+      const { scroll } = table;
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_TOP: {
+          scrollView.eri += 1;
+          scrollView.h = rows.rectRangeSumHeight(scrollView);
+          break;
         }
-        view = scrollView;
-        this.borderView = view;
-        return view.clone();
+        case SCROLL_TYPE.V_BOTTOM: {
+          scrollView.sri -= 1;
+          scrollView.h = rows.rectRangeSumHeight(scrollView);
+          break;
+        }
+        case SCROLL_TYPE.H_RIGHT: {
+          scrollView.sci -= 1;
+          scrollView.w = cols.rectRangeSumWidth(scrollView);
+          break;
+        }
+        case SCROLL_TYPE.H_LEFT: {
+          scrollView.eci += 1;
+          scrollView.w = cols.rectRangeSumWidth(scrollView);
+          break;
+        }
       }
     }
-    view = scrollView;
-    this.borderView = view;
-    return view.clone();
+    this.borderView = scrollView;
+    return scrollView.clone();
   }
 
   /**
@@ -731,6 +742,10 @@ class XTableContentDraw extends XTableDraw {
       return x;
     }
     if (this.getViewMode() === VIEW_MODE.OUT) {
+      this.borderX = x;
+      return x;
+    }
+    if (this.getViewMode() === VIEW_MODE.CHANGE_NOT) {
       this.borderX = x;
       return x;
     }
@@ -767,6 +782,10 @@ class XTableContentDraw extends XTableDraw {
       return y;
     }
     if (this.getViewMode() === VIEW_MODE.OUT) {
+      this.borderY = y;
+      return y;
+    }
+    if (this.getViewMode() === VIEW_MODE.CHANGE_NOT) {
       this.borderY = y;
       return y;
     }
