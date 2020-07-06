@@ -104,8 +104,8 @@ class Edit extends Widget {
     const intersectsArea = selector.getIntersectsArea(selectorAttr);
     switch (intersectsArea) {
       case 'lt': {
-        const { frozenLeftTop } = table;
-        const viewRange = frozenLeftTop.getScrollViewRange();
+        const { xTableFrozenContent } = table;
+        const viewRange = xTableFrozenContent.getScrollView();
         const coincideRange = rect.coincide(viewRange);
         const empty = new RectRange(-1, -1, -1, -1);
         if (empty.equals(coincideRange)) {
@@ -127,8 +127,8 @@ class Edit extends Widget {
         break;
       }
       case 't': {
-        const { fixedTop } = table;
-        const viewRange = fixedTop.getScrollViewRange();
+        const { xTop } = table;
+        const viewRange = xTop.getScrollView();
         const coincideRange = rect.coincide(viewRange);
         const empty = new RectRange(-1, -1, -1, -1);
         if (empty.equals(coincideRange)) {
@@ -150,7 +150,7 @@ class Edit extends Widget {
         break;
       }
       case 'br': {
-        const viewRange = table.getScrollViewRange();
+        const viewRange = table.getScrollView();
         const coincideRange = rect.coincide(viewRange);
         const empty = new RectRange(-1, -1, -1, -1);
         if (empty.equals(coincideRange)) {
@@ -172,8 +172,8 @@ class Edit extends Widget {
         break;
       }
       case 'l': {
-        const { fixedLeft } = table;
-        const viewRange = fixedLeft.getScrollViewRange();
+        const { xLeft } = table;
+        const viewRange = xLeft.getScrollView();
         const coincideRange = rect.coincide(viewRange);
         const empty = new RectRange(-1, -1, -1, -1);
         if (empty.equals(coincideRange)) {
@@ -195,10 +195,10 @@ class Edit extends Widget {
         break;
       }
       case 'ltt': {
-        const { frozenLeftTop, fixedTop } = table;
-        const ltViewRange = frozenLeftTop.getScrollViewRange();
+        const { xTableFrozenContent, xTop } = table;
+        const ltViewRange = xTableFrozenContent.getScrollView();
         const ltCoincideRange = rect.coincide(ltViewRange);
-        const tViewRange = fixedTop.getScrollViewRange();
+        const tViewRange = xTop.getScrollView();
         const tCoincideRange = rect.coincide(tViewRange);
         const empty = new RectRange(-1, -1, -1, -1);
         if (empty.equals(tCoincideRange) && empty.equals(ltCoincideRange)) {
@@ -219,10 +219,10 @@ class Edit extends Widget {
         break;
       }
       case 'ltl': {
-        const { frozenLeftTop, fixedLeft } = table;
-        const ltViewRange = frozenLeftTop.getScrollViewRange();
+        const { xTableFrozenContent, xLeft } = table;
+        const ltViewRange = xTableFrozenContent.getScrollView();
         const ltCoincideRange = rect.coincide(ltViewRange);
-        const lViewRange = fixedLeft.getScrollViewRange();
+        const lViewRange = xLeft.getScrollView();
         const lCoincideRange = rect.coincide(lViewRange);
         const empty = new RectRange(-1, -1, -1, -1);
         if (empty.equals(ltCoincideRange) && empty.equals(lCoincideRange)) {
@@ -245,10 +245,10 @@ class Edit extends Widget {
         break;
       }
       case 'tbr': {
-        const { fixedTop } = table;
-        const cViewRange = table.getScrollViewRange();
+        const { xTop } = table;
+        const cViewRange = table.getScrollView();
         const cCoincideRange = rect.coincide(cViewRange);
-        const tViewRange = fixedTop.getScrollViewRange();
+        const tViewRange = xTop.getScrollView();
         const tCoincideRange = rect.coincide(tViewRange);
         const empty = new RectRange(-1, -1, -1, -1);
         if (empty.equals(cCoincideRange) && empty.equals(tCoincideRange)) {
@@ -269,10 +269,10 @@ class Edit extends Widget {
         break;
       }
       case 'lbr': {
-        const { fixedLeft } = table;
-        const cViewRange = table.getScrollViewRange();
+        const { xLeft } = table;
+        const cViewRange = table.getScrollView();
         const cCoincideRange = rect.coincide(cViewRange);
-        const lViewRange = fixedLeft.getScrollViewRange();
+        const lViewRange = xLeft.getScrollView();
         const lCoincideRange = rect.coincide(lViewRange);
         const empty = new RectRange(-1, -1, -1, -1);
         if (empty.equals(cCoincideRange) && empty.equals(lCoincideRange)) {
@@ -293,14 +293,14 @@ class Edit extends Widget {
         break;
       }
       case 'lttlbr': {
-        const { frozenLeftTop } = table;
-        const ltViewRange = frozenLeftTop.getScrollViewRange();
+        const { xTableFrozenContent } = table;
+        const ltViewRange = xTableFrozenContent.getScrollView();
         const ltCoincideRange = rect.coincide(ltViewRange);
-        const { fixedTop } = table;
-        const tViewRange = fixedTop.getScrollViewRange();
+        const { xTop } = table;
+        const tViewRange = xTop.getScrollView();
         const tCoincideRange = rect.coincide(tViewRange);
-        const { fixedLeft } = table;
-        const lViewRange = fixedLeft.getScrollViewRange();
+        const { xLeft } = table;
+        const lViewRange = xLeft.getScrollView();
         const lCoincideRange = rect.coincide(lViewRange);
         const empty = new RectRange(-1, -1, -1, -1);
         if (empty.equals(ltCoincideRange)

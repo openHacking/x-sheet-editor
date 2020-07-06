@@ -727,11 +727,14 @@ class XTableDraw {
   drawClear() {
     const { table } = this;
     const {
-      scroll, draw,
+      scroll, draw, settings,
     } = table;
     const viewMode = this.getViewMode();
     const dx = this.getDrawX();
     const dy = this.getDrawY();
+    draw.attr({
+      fillStyle: settings.table.background,
+    });
     switch (viewMode) {
       case VIEW_MODE.CHANGE_NOT:
       case VIEW_MODE.STATIC:
@@ -988,7 +991,6 @@ class XTableContentDraw extends XTableDraw {
     const scrollView = this.getScrollView();
     const drawX = this.getDrawX();
     const drawY = this.getDrawY();
-    const x = this.getX();
     const { table } = this;
     const width = scrollView.w;
     const height = scrollView.h;
@@ -999,8 +1001,19 @@ class XTableContentDraw extends XTableDraw {
       rect: new Rect({ x: drawX, y: drawY, width, height }),
       draw,
     });
+    // if (table.getRenderMode() === RENDER_MODE.SCROLL) {
+    //   console.log(scrollView);
+    //   console.log(this.getViewMode());
+    //   const x = table.xTableScrollView
+    //   console.log(x.lastScrollView);
+    //   console.log(x.scrollView);
+    //   draw.attr({
+    //     fillStyle: '#000000',
+    //   });
+    //   draw.fillRect(drawX, drawY, width, height);
+    // }
     crop.open();
-    draw.offset(x, drawY);
+    draw.offset(drawX, drawY);
     cellsHelper.getCellSkipMergeCellByViewRange({
       rectRange: scrollView,
       callback: (row, col, cell, rect, overflow) => {
@@ -1121,7 +1134,6 @@ class XTableTopIndexDraw extends XTableIndexDraw {
       draw, cols,
     } = table;
     const { sci, eci } = scrollView;
-    draw.save();
     draw.offset(dx, dy);
     draw.attr({
       textAlign: 'center',
@@ -1133,34 +1145,20 @@ class XTableTopIndexDraw extends XTableIndexDraw {
       draw.fillText(Utils.stringAt(i), x + (cw / 2), height / 2);
     });
     draw.offset(0, 0);
-    draw.restore();
   }
 
   /**
    * 绘制网格
    */
   drawGrid() {
-    const scrollView = this.getScrollView();
     const borderView = this.getLineView();
-    const drawX = this.getDrawX();
-    const drawY = this.getDrawY();
     const borderX = this.getLineX();
     const borderY = this.getLineY();
     const { table } = this;
-    const width = scrollView.w;
-    const height = scrollView.h;
     const {
       draw, topIdxGridHandle, grid,
     } = table;
-    const crop = new Crop({
-      rect: new Rect({ x: drawX, y: drawY, width, height }),
-      draw,
-    });
-    crop.open();
     draw.offset(borderX, borderY);
-    draw.attr({
-      globalAlpha: 0.3,
-    });
     const hLine = topIdxGridHandle.hLine(borderView);
     const vLine = topIdxGridHandle.vLine(borderView);
     hLine.forEach((item) => {
@@ -1170,7 +1168,6 @@ class XTableTopIndexDraw extends XTableIndexDraw {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
-    crop.close();
   }
 
   /**
@@ -1186,14 +1183,12 @@ class XTableTopIndexDraw extends XTableIndexDraw {
     const dy = this.getDrawY();
     const height = this.getHeight();
     const width = scrollView.w;
-    draw.save();
     draw.offset(dx, dy);
     draw.attr({
       fillStyle: '#f6f7fa',
     });
     draw.fillRect(0, 0, width, height);
     draw.offset(0, 0);
-    draw.restore();
   }
 
 }
@@ -1213,7 +1208,6 @@ class XTableLeftIndexDraw extends XTableIndexDraw {
       draw, rows,
     } = table;
     const { sri, eri } = scrollView;
-    draw.save();
     draw.offset(dx, dy);
     draw.attr({
       textAlign: 'center',
@@ -1225,34 +1219,20 @@ class XTableLeftIndexDraw extends XTableIndexDraw {
       draw.fillText(i + 1, width / 2, y + (ch / 2));
     });
     draw.offset(0, 0);
-    draw.restore();
   }
 
   /**
    * 绘制网格
    */
   drawGrid() {
-    const scrollView = this.getScrollView();
     const borderView = this.getLineView();
-    const drawX = this.getDrawX();
-    const drawY = this.getDrawY();
     const borderX = this.getLineX();
     const borderY = this.getLineY();
     const { table } = this;
-    const width = scrollView.w;
-    const height = scrollView.h;
     const {
       draw, leftIdxGridHandle, grid,
     } = table;
-    const crop = new Crop({
-      rect: new Rect({ x: drawX, y: drawY, width, height }),
-      draw,
-    });
-    crop.open();
     draw.offset(borderX, borderY);
-    draw.attr({
-      globalAlpha: 0.3,
-    });
     const hLine = leftIdxGridHandle.hLine(borderView);
     const vLine = leftIdxGridHandle.vLine(borderView);
     hLine.forEach((item) => {
@@ -1262,7 +1242,6 @@ class XTableLeftIndexDraw extends XTableIndexDraw {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
-    crop.close();
   }
 
   /**
@@ -1278,15 +1257,12 @@ class XTableLeftIndexDraw extends XTableIndexDraw {
     const {
       draw,
     } = table;
-    draw.save();
     draw.offset(dx, dy);
-    // 绘制背景
     draw.attr({
       fillStyle: '#f6f7fa',
     });
     draw.fillRect(0, 0, width, height);
     draw.offset(0, 0);
-    draw.restore();
   }
 
 }
@@ -2119,12 +2095,10 @@ class XTableFrozenFullRect {
     const dy = 0;
     const { table } = this;
     const { draw, settings } = table;
+    const { grid } = table;
     const { index } = settings;
     const indexHeight = index.height;
     const indexWidth = index.width;
-    const grid = new Grid(draw, {
-      color: settings.table.indexBorderColor,
-    });
     draw.save();
     draw.offset(dx, dy);
     // 绘制背景
@@ -2133,10 +2107,10 @@ class XTableFrozenFullRect {
     });
     draw.fillRect(0, 0, index.width, indexHeight);
     draw.offset(0, 0);
-    draw.restore();
     // 绘制边框
     grid.horizontalLine(0, indexHeight, indexWidth, indexHeight);
     grid.verticalLine(indexWidth, dy, indexWidth, indexHeight);
+    draw.restore();
   }
 
   render() {
@@ -2168,7 +2142,6 @@ class XTable extends Widget {
         background: '#ffffff',
         borderColor: '#e5e5e5',
         gridColor: '#b7b7b7',
-        indexBorderColor: '#d8d8d8',
       },
       data: [],
       rows: {
@@ -2204,6 +2177,9 @@ class XTable extends Widget {
     this.viewMode = null;
     // canvas 画布
     this.canvas = new Widget(`${cssPrefix}-table-canvas`, 'canvas');
+    this.canvas.attr({
+      'moz-opaque': '',
+    });
     // 绘制资源
     this.draw = new Draw(this.canvas.el);
     this.line = new Line(this.draw, {
@@ -2263,9 +2239,11 @@ class XTable extends Widget {
     // 线段处理
     this.topIdxGridHandle = new GridLineHandle(this, {
       getHeight: () => this.settings.index.height,
+      checked: false,
     });
     this.leftIdxGridHandle = new GridLineHandle(this, {
       getWidth: () => this.settings.index.width,
+      checked: false,
     });
     this.lineHandle = new LineHandle(this);
     this.borderHandle = new BorderLineHandle(this);
@@ -2442,7 +2420,7 @@ class XTable extends Widget {
    * 渲染界面
    */
   render() {
-    const { fixed, draw, settings } = this;
+    const { fixed } = this;
     const { xTableFrozenFullRect } = this;
     const { xLeftFrozenIndex } = this;
     const { xTopFrozenIndex } = this;
@@ -2454,9 +2432,6 @@ class XTable extends Widget {
     const { xContent } = this;
     this.drawBorderOptimize();
     xTableFrozenFullRect.render();
-    draw.attr({
-      fillStyle: settings.table.background,
-    });
     if (fixed.fxLeft > -1 && fixed.fxTop > -1) {
       xTableFrozenContent.render();
     }
@@ -2511,73 +2486,6 @@ class XTable extends Widget {
   getRenderMode() {
     const { renderMode } = this;
     return renderMode;
-  }
-
-  /**
-   * 返回指定坐标的单元格行列
-   * @param x
-   * @param y
-   * @returns {{ci: number, ri: number}}
-   */
-  getRiCiByXy(x, y) {
-    const {
-      settings, fixed, rows, cols,
-    } = this;
-    const { index } = settings;
-    const fixedHeight = this.getFixedHeight();
-    const fixedWidth = this.getFixedWidth();
-
-    let [left, top] = [x, y];
-    let [ci, ri] = [-1, -1];
-
-    left -= index.width;
-    top -= index.height;
-
-    // left
-    if (left <= fixedWidth && x > index.width) {
-      let total = 0;
-      for (let i = 0; i <= fixed.fxLeft; i += 1) {
-        const width = cols.getWidth(i);
-        total += width;
-        ci = i;
-        if (total > left) break;
-      }
-    } else if (x > index.width) {
-      let total = fixedWidth;
-      const viewRange = this.getScrollViewRange();
-      for (let i = viewRange.sci; i <= viewRange.eci; i += 1) {
-        const width = cols.getWidth(i);
-        total += width;
-        ci = i;
-        if (total > left) break;
-      }
-      // console.log('ci >>', ci);
-    }
-
-    // top
-    if (top < fixedHeight && y > index.height) {
-      let total = 0;
-      for (let i = 0; i <= fixed.fxTop; i += 1) {
-        const height = rows.getHeight(i);
-        total += height;
-        ri = i;
-        if (total > top) break;
-      }
-    } else if (y > index.height) {
-      let total = fixedHeight;
-      const viewRange = this.getScrollViewRange();
-      for (let i = viewRange.sri; i <= viewRange.eri; i += 1) {
-        const height = rows.getHeight(i);
-        total += height;
-        ri = i;
-        if (total > top) break;
-      }
-      // console.log('ri >>', ri);
-    }
-
-    return {
-      ri, ci,
-    };
   }
 }
 
@@ -2760,6 +2668,72 @@ class Table extends XTable {
   getIndexHeight() {
     const { settings } = this;
     return settings.index.height;
+  }
+
+  getScrollView() {
+    const { xTableScrollView } = this;
+    return xTableScrollView.getScrollView();
+  }
+
+  getRiCiByXy(x, y) {
+    const {
+      settings, fixed, rows, cols,
+    } = this;
+    const { index } = settings;
+    const fixedHeight = this.getFixedHeight();
+    const fixedWidth = this.getFixedWidth();
+
+    let [left, top] = [x, y];
+    let [ci, ri] = [-1, -1];
+
+    left -= index.width;
+    top -= index.height;
+
+    // left
+    if (left <= fixedWidth && x > index.width) {
+      let total = 0;
+      for (let i = 0; i <= fixed.fxLeft; i += 1) {
+        const width = cols.getWidth(i);
+        total += width;
+        ci = i;
+        if (total > left) break;
+      }
+    } else if (x > index.width) {
+      let total = fixedWidth;
+      const viewRange = this.getScrollView();
+      for (let i = viewRange.sci; i <= viewRange.eci; i += 1) {
+        const width = cols.getWidth(i);
+        total += width;
+        ci = i;
+        if (total > left) break;
+      }
+      // console.log('ci >>', ci);
+    }
+
+    // top
+    if (top < fixedHeight && y > index.height) {
+      let total = 0;
+      for (let i = 0; i <= fixed.fxTop; i += 1) {
+        const height = rows.getHeight(i);
+        total += height;
+        ri = i;
+        if (total > top) break;
+      }
+    } else if (y > index.height) {
+      let total = fixedHeight;
+      const viewRange = this.getScrollView();
+      for (let i = viewRange.sri; i <= viewRange.eri; i += 1) {
+        const height = rows.getHeight(i);
+        total += height;
+        ri = i;
+        if (total > top) break;
+      }
+      // console.log('ri >>', ri);
+    }
+
+    return {
+      ri, ci,
+    };
   }
 
   toString() {

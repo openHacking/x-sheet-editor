@@ -11,6 +11,7 @@ class GridLineHandle {
     this.options = Object.assign({
       getWidth: col => cols.getWidth(col),
       getHeight: row => rows.getHeight(row),
+      checked: true,
     }, options);
   }
 
@@ -173,13 +174,16 @@ class GridLineHandle {
   hLine(viewRange) {
     const { table } = this;
     const { merges } = table;
-    return this.gridHLine(viewRange, 0, 0, (ri, ci) => {
-      const merge = merges.getFirstIncludes(ri, ci);
-      if (merge) {
-        return false;
-      }
-      return this.hLineBorderChecked(ri, ci);
-    });
+    if (this.options.checked) {
+      return this.gridHLine(viewRange, 0, 0, (ri, ci) => {
+        const merge = merges.getFirstIncludes(ri, ci);
+        if (merge) {
+          return false;
+        }
+        return this.hLineBorderChecked(ri, ci);
+      });
+    }
+    return this.gridHLine(viewRange, 0, 0);
   }
 
   /**
@@ -191,16 +195,19 @@ class GridLineHandle {
   vLine(viewRange) {
     const { table } = this;
     const { merges, lineHandle } = table;
-    return this.gridVLine(viewRange, 0, 0, (ci, ri) => {
-      const merge = merges.getFirstIncludes(ri, ci);
-      if (merge) {
-        return false;
-      }
-      if (this.vLineBorderChecked(ci, ri) === false) {
-        return false;
-      }
-      return lineHandle.vLineRightOverFlowChecked(ci, ri);
-    });
+    if (this.options.checked) {
+      return this.gridVLine(viewRange, 0, 0, (ci, ri) => {
+        const merge = merges.getFirstIncludes(ri, ci);
+        if (merge) {
+          return false;
+        }
+        if (this.vLineBorderChecked(ci, ri) === false) {
+          return false;
+        }
+        return lineHandle.vLineRightOverFlowChecked(ci, ri);
+      });
+    }
+    return this.gridVLine(viewRange, 0, 0);
   }
 
   /**
@@ -211,13 +218,25 @@ class GridLineHandle {
    */
   hMergeLine(mergesBrink) {
     let result = [];
-    for (let i = 0; i < mergesBrink.length; i += 1) {
-      const brink = mergesBrink[i];
-      const { bottom } = brink;
-      if (bottom) {
-        const { view, x, y } = bottom;
-        const item = this.gridHLine(view, x, y, (ri, ci) => this.hLineBorderChecked(ri, ci));
-        result = result.concat(item);
+    if (this.options.checked) {
+      for (let i = 0; i < mergesBrink.length; i += 1) {
+        const brink = mergesBrink[i];
+        const { bottom } = brink;
+        if (bottom) {
+          const { view, x, y } = bottom;
+          const item = this.gridHLine(view, x, y, (ri, ci) => this.hLineBorderChecked(ri, ci));
+          result = result.concat(item);
+        }
+      }
+    } else {
+      for (let i = 0; i < mergesBrink.length; i += 1) {
+        const brink = mergesBrink[i];
+        const { bottom } = brink;
+        if (bottom) {
+          const { view, x, y } = bottom;
+          const item = this.gridHLine(view, x, y);
+          result = result.concat(item);
+        }
       }
     }
     return result;
@@ -231,13 +250,25 @@ class GridLineHandle {
    */
   vMergeLine(mergesBrink) {
     let result = [];
-    for (let i = 0; i < mergesBrink.length; i += 1) {
-      const brink = mergesBrink[i];
-      const { right } = brink;
-      if (right) {
-        const { view, x, y } = right;
-        const item = this.gridVLine(view, x, y, (ci, ri) => this.vLineBorderChecked(ci, ri));
-        result = result.concat(item);
+    if (this.options.checked) {
+      for (let i = 0; i < mergesBrink.length; i += 1) {
+        const brink = mergesBrink[i];
+        const { right } = brink;
+        if (right) {
+          const { view, x, y } = right;
+          const item = this.gridVLine(view, x, y, (ci, ri) => this.vLineBorderChecked(ci, ri));
+          result = result.concat(item);
+        }
+      }
+    } else {
+      for (let i = 0; i < mergesBrink.length; i += 1) {
+        const brink = mergesBrink[i];
+        const { right } = brink;
+        if (right) {
+          const { view, x, y } = right;
+          const item = this.gridVLine(view, x, y);
+          result = result.concat(item);
+        }
       }
     }
     return result;

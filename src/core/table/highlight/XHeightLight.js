@@ -46,8 +46,8 @@ class XHeightLight extends Widget {
     switch (intersectsArea) {
       case 'lt': {
         const { rect } = selectorAttr;
-        const { frozenLeftTop, cols } = table;
-        const ltViewRange = frozenLeftTop.getScrollViewRange();
+        const { xTableFrozenContent, cols } = table;
+        const ltViewRange = xTableFrozenContent.getScrollView();
         const ltCoincideRange = this.coincide(rect, ltViewRange);
         if (!empty.equals(ltCoincideRange)) {
           const width = cols.sectionSumWidth(ltCoincideRange.sci, ltCoincideRange.eci);
@@ -64,8 +64,8 @@ class XHeightLight extends Widget {
       }
       case 't': {
         const { rect } = selectorAttr;
-        const { fixedTop, cols } = table;
-        const tViewRange = fixedTop.getScrollViewRange();
+        const { xTop, cols } = table;
+        const tViewRange = xTop.getScrollView();
         const tCoincideRange = this.coincide(rect, tViewRange);
         if (!empty.equals(tCoincideRange)) {
           const width = cols.sectionSumWidth(tCoincideRange.sci, tCoincideRange.eci);
@@ -84,7 +84,7 @@ class XHeightLight extends Widget {
       case 'br': {
         const { rect } = selectorAttr;
         const { cols } = table;
-        const cViewRange = table.getScrollViewRange();
+        const cViewRange = table.getScrollView();
         const cCoincideRange = this.coincide(rect, cViewRange);
         if (!empty.equals(cCoincideRange)) {
           const width = cols.sectionSumWidth(cCoincideRange.sci, cCoincideRange.eci);
@@ -102,8 +102,8 @@ class XHeightLight extends Widget {
       }
       case 'l': {
         const { rect } = selectorAttr;
-        const { fixedLeft, cols } = table;
-        const lViewRange = fixedLeft.getScrollViewRange();
+        const { xLeft, cols } = table;
+        const lViewRange = xLeft.getScrollView();
         const lCoincideRange = this.coincide(rect, lViewRange);
         if (!empty.equals(lCoincideRange)) {
           const width = cols.sectionSumWidth(lCoincideRange.sci, lCoincideRange.eci);
@@ -120,9 +120,9 @@ class XHeightLight extends Widget {
       }
       case 'ltt': {
         const { rect } = selectorAttr;
-        const { frozenLeftTop, fixedTop, cols } = table;
-        const ltViewRange = frozenLeftTop.getScrollViewRange();
-        const tViewRange = fixedTop.getScrollViewRange();
+        const { xTableFrozenContent, xTop, cols } = table;
+        const ltViewRange = xTableFrozenContent.getScrollView();
+        const tViewRange = xTop.getScrollView();
         const ltCoincideRange = this.coincide(rect, ltViewRange);
         const tCoincideRange = this.coincide(rect, tViewRange);
         let width = 0;
@@ -144,8 +144,8 @@ class XHeightLight extends Widget {
       }
       case 'ltl': {
         const { rect } = selectorAttr;
-        const { frozenLeftTop, cols } = table;
-        const ltViewRange = frozenLeftTop.getScrollViewRange();
+        const { xTableFrozenContent, cols } = table;
+        const ltViewRange = xTableFrozenContent.getScrollView();
         const ltCoincideRange = this.coincide(rect, ltViewRange);
         if (!empty.equals(ltCoincideRange)) {
           const width = cols.sectionSumWidth(ltCoincideRange.sci, ltCoincideRange.eci);
@@ -162,8 +162,8 @@ class XHeightLight extends Widget {
       }
       case 'tbr': {
         const { rect } = selectorAttr;
-        const { fixedTop, cols } = table;
-        const tViewRange = fixedTop.getScrollViewRange();
+        const { xTop, cols } = table;
+        const tViewRange = xTop.getScrollView();
         const tCoincideRange = this.coincide(rect, tViewRange);
         if (!empty.equals(tCoincideRange)) {
           const width = cols.sectionSumWidth(tCoincideRange.sci, tCoincideRange.eci);
@@ -181,9 +181,9 @@ class XHeightLight extends Widget {
       }
       case 'lbr': {
         const { rect } = selectorAttr;
-        const { fixedLeft, cols } = table;
-        const lViewRange = fixedLeft.getScrollViewRange();
-        const cViewRange = table.getScrollViewRange();
+        const { xLeft, cols } = table;
+        const lViewRange = xLeft.getScrollView();
+        const cViewRange = table.getScrollView();
         const lCoincideRange = this.coincide(rect, lViewRange);
         const cCoincideRange = this.coincide(rect, cViewRange);
         let width = 0;
@@ -205,9 +205,9 @@ class XHeightLight extends Widget {
       }
       case 'lttlbr': {
         const { rect } = selectorAttr;
-        const { frozenLeftTop, fixedTop, cols } = table;
-        const ltViewRange = frozenLeftTop.getScrollViewRange();
-        const tViewRange = fixedTop.getScrollViewRange();
+        const { xTableFrozenContent, xTop, cols } = table;
+        const ltViewRange = xTableFrozenContent.getScrollView();
+        const tViewRange = xTop.getScrollView();
         const ltCoincideRange = this.coincide(rect, ltViewRange);
         const tCoincideRange = this.coincide(rect, tViewRange);
         let width = 0;

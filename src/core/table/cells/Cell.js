@@ -16,6 +16,7 @@ class Cell {
    * @param fontAttr
    * @param borderAttr
    * @param contentWidth
+   * @param merge
    */
   constructor({
     text = Utils.EMPTY,
@@ -24,6 +25,7 @@ class Cell {
     fontAttr = {},
     borderAttr = {},
     contentWidth = 0,
+    merge = -1,
   }) {
     this.background = background;
     this.format = format;
@@ -31,6 +33,7 @@ class Cell {
     this.fontAttr = new CellFont(fontAttr);
     this.borderAttr = new CellBorder(borderAttr);
     this.contentWidth = contentWidth;
+    this.merge = merge;
   }
 
   setContentWidth(contentWidth) {
