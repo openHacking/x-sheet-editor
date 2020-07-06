@@ -677,38 +677,42 @@ class XTableContentDraw extends XTableDraw {
     }
     const { table } = this;
     const { cols, rows } = table;
-    const renderMode = table.getRenderMode();
     const viewMode = this.getViewMode();
     const scrollView = this.getScrollView();
     let view;
-    if (viewMode === VIEW_MODE.CHANGE && renderMode === RENDER_MODE.SCROLL) {
-      const { scroll } = table;
-      switch (scroll.type) {
-        case SCROLL_TYPE.V_TOP: {
-          scrollView.eri += 1;
-          scrollView.h = rows.rectRangeSumHeight(scrollView);
-          break;
+    if (viewMode === VIEW_MODE.CHANGE) {
+      const fullScrollView = this.getFullScrollView();
+      const renderMode = table.getRenderMode();
+      if (renderMode === RENDER_MODE.SCROLL && !scrollView.equals(fullScrollView)) {
+        const { scroll } = table;
+        switch (scroll.type) {
+          case SCROLL_TYPE.V_TOP: {
+            scrollView.eri += 1;
+            scrollView.h = rows.rectRangeSumHeight(scrollView);
+            break;
+          }
+          case SCROLL_TYPE.V_BOTTOM: {
+            scrollView.sri -= 1;
+            scrollView.h = rows.rectRangeSumHeight(scrollView);
+            break;
+          }
+          case SCROLL_TYPE.H_RIGHT: {
+            scrollView.sci -= 1;
+            scrollView.w = cols.rectRangeSumWidth(scrollView);
+            break;
+          }
+          case SCROLL_TYPE.H_LEFT: {
+            scrollView.eci += 1;
+            scrollView.w = cols.rectRangeSumWidth(scrollView);
+            break;
+          }
         }
-        case SCROLL_TYPE.V_BOTTOM: {
-          scrollView.sri -= 1;
-          scrollView.h = rows.rectRangeSumHeight(scrollView);
-          break;
-        }
-        case SCROLL_TYPE.H_RIGHT: {
-          scrollView.sci -= 1;
-          scrollView.w = cols.rectRangeSumWidth(scrollView);
-          break;
-        }
-        case SCROLL_TYPE.H_LEFT: {
-          scrollView.eci += 1;
-          scrollView.w = cols.rectRangeSumWidth(scrollView);
-          break;
-        }
+        view = scrollView;
+        this.borderView = view;
+        return view.clone();
       }
-      view = scrollView;
-    } else {
-      view = scrollView;
     }
+    view = scrollView;
     this.borderView = view;
     return view.clone();
   }
@@ -1594,7 +1598,6 @@ class XTableContent extends XTableContentDraw {
       view = enterView;
     } else {
       view = scrollView;
-      debugger
     }
     this.scrollVIew = view;
     return view.clone();
