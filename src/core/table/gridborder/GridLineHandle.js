@@ -2,30 +2,16 @@
  * GridLineHandle
  * @author jerry
  */
-import { Utils } from '../../../utils/Utils';
 
 class GridLineHandle {
 
   constructor(table, options) {
     this.table = table;
     const { cols, rows } = table;
-    this.options = Utils.mergeDeep({
+    this.options = Object.assign({
       getWidth: col => cols.getWidth(col),
       getHeight: row => rows.getHeight(row),
     }, options);
-  }
-
-  /**
-   * 是否有背景
-   * @param ri
-   * @param ci
-   * @returns {boolean}
-   */
-  lineBackgroundChecked(ri, ci) {
-    const { table } = this;
-    const { cells } = table;
-    const cell = cells.getCell(ri, ci);
-    return !(cell && cell.background !== null);
   }
 
   /**

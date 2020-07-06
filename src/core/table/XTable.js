@@ -63,8 +63,11 @@ class XTableScrollView {
     this.leaveView = null;
   }
 
-  reset() {
+  record() {
     this.lastScrollView = this.scrollView;
+  }
+
+  reset() {
     this.scrollEnterView = null;
     this.scrollView = null;
     this.enterView = null;
@@ -1344,7 +1347,7 @@ class XTableLeftIndex extends XTableLeftIndexDraw {
       return this.scrollVIew.clone();
     }
     const { table } = this;
-    const { cols } = table;
+    const { settings } = table;
     const { xTableScrollView } = table;
     const renderMode = table.getRenderMode();
     const scrollView = xTableScrollView.getScrollView();
@@ -1357,7 +1360,7 @@ class XTableLeftIndex extends XTableLeftIndexDraw {
     }
     view.sci = 0;
     view.eci = 0;
-    view.w = cols.sectionSumWidth(view.sci, view.eci);
+    view.w = settings.index.width;
     this.scrollVIew = view;
     return view.clone();
   }
@@ -1367,12 +1370,12 @@ class XTableLeftIndex extends XTableLeftIndexDraw {
       return this.fullScrollView.clone();
     }
     const { table } = this;
-    const { cols } = table;
+    const { settings } = table;
     const { xTableScrollView } = table;
     const scrollView = xTableScrollView.getScrollView();
     scrollView.sci = 0;
     scrollView.eci = 0;
-    scrollView.w = cols.sectionSumWidth(scrollView.sci, scrollView.eci);
+    scrollView.w = settings.index.width;
     this.fullScrollView = scrollView;
     return scrollView.clone();
   }
@@ -1455,7 +1458,7 @@ class XTableTopIndex extends XTableTopIndexDraw {
       return this.scrollVIew.clone();
     }
     const { table } = this;
-    const { rows } = table;
+    const { settings } = table;
     const { xTableScrollView } = table;
     const renderMode = table.getRenderMode();
     const scrollView = xTableScrollView.getScrollView();
@@ -1468,7 +1471,7 @@ class XTableTopIndex extends XTableTopIndexDraw {
     }
     view.sri = 0;
     view.eri = 0;
-    view.h = rows.sectionSumHeight(view.sri, view.eri);
+    view.h = settings.index.height;
     this.scrollVIew = view;
     return view.clone();
   }
@@ -1478,12 +1481,12 @@ class XTableTopIndex extends XTableTopIndexDraw {
       return this.fullScrollView.clone();
     }
     const { table } = this;
-    const { rows } = table;
+    const { settings } = table;
     const { xTableScrollView } = table;
     const scrollView = xTableScrollView.getScrollView();
     scrollView.sri = 0;
     scrollView.eri = 0;
-    scrollView.h = rows.sectionSumHeight(scrollView.sri, scrollView.eri);
+    scrollView.h = settings.index.height;
     this.fullScrollView = scrollView;
     return scrollView.clone();
   }
@@ -2355,9 +2358,11 @@ class XTable extends Widget {
    * 绑定事件处理
    */
   bind() {
+    const { xTableScrollView } = this;
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       this.reset();
       this.render();
+      xTableScrollView.record();
       this.reset();
     });
   }
@@ -2727,11 +2732,6 @@ class Table extends XTable {
       const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_CELL;
       mousePointer.set(type, key);
     });
-  }
-
-  getScrollViewRange() {
-    const { xTableScrollView } = this;
-    return xTableScrollView.getScrollView();
   }
 
   visualHeight() {
