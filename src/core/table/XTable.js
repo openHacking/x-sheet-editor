@@ -2291,7 +2291,6 @@ class XTable extends Widget {
    * 重置变量区
    */
   reset() {
-    this.viewMode = null;
     const { xTableScrollView } = this;
     const { xLeftFrozenIndex } = this;
     const { xTopFrozenIndex } = this;
@@ -2359,6 +2358,7 @@ class XTable extends Widget {
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       this.reset();
       this.render();
+      this.reset();
     });
   }
 
