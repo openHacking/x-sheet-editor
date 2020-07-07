@@ -1,6 +1,6 @@
 /* global window */
 import { Widget } from '../../lib/Widget';
-import { cssPrefix, Constant } from '../../constant/Constant';
+import { cssPrefix, Constant, XSheetVersion } from '../../constant/Constant';
 import { VerticalLayer } from '../../lib/layer/VerticalLayer';
 import { HorizontalLayer } from '../../lib/layer/HorizontalLayer';
 import { VerticalLayerElement } from '../../lib/layer/VerticalLayerElement';
@@ -18,6 +18,8 @@ import { h } from '../../lib/Element';
 import { Tab } from './Tab';
 import { Sheet } from './Sheet';
 
+import download from '../../lib/donwload/download';
+
 class WorkBody extends Widget {
 
   constructor(work, options = { sheets: [] }) {
@@ -30,7 +32,7 @@ class WorkBody extends Widget {
 
     // 版本标识
     this.poweredBy = h('div', `${cssPrefix}-powered-by-tips`);
-    this.poweredBy.text(' X-Sheet 1.0.1-development ');
+    this.poweredBy.text(XSheetVersion);
     this.children(this.poweredBy);
 
     // sheet表
@@ -221,27 +223,32 @@ class WorkBody extends Widget {
     const sheet = sheetView.sheetList[activeIndex];
     const tab = tabView.tabList[activeIndex];
     if (sheet && tab) {
+      const { table } = sheet;
       const {
         rows, cols, merges, cells,
-      } = this;
-      return {
+      } = table;
+      const data = {
         name: tab.name,
         tableConfig: {
           rows: {
             len: rows.len,
             height: rows.height,
-            data: JSON.stringify(rows.getData()),
+            data: rows.getData(),
           },
           cols: {
             len: cols.len,
             width: cols.width,
-            data: JSON.stringify(cols.getData()),
+            data: cols.getData(),
           },
-          data: JSON.stringify(cells.getData()),
+          merge: {
+            merges: merges.getData().map(merge => merge.toString()),
+          },
+          data: cells.getData(),
         },
       };
+      const text = `window['${tab.name}'] = ${JSON.stringify(data)}`;
+      download(text, `${tab.name}.js`, 'application/x-javascript');
     }
-    return null;
   }
 }
 

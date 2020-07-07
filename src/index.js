@@ -1,13 +1,11 @@
 /* global window, document */
 
-import { cssPrefix } from './constant/Constant';
+import { cssPrefix, XSheetVersion } from './constant/Constant';
 import { h } from './lib/Element';
 import { Work } from './core/work/Work';
 import { Widget } from './lib/Widget';
 import './less/base.less';
 import './less/index.less';
-import '../template/purchaseorder';
-import '../template/projecttimetable';
 
 class XSheet extends Widget {
 
@@ -32,7 +30,7 @@ class XSheet extends Widget {
   }
 }
 
-XSheet.version = '1.0.1-alpha';
+XSheet.version = XSheetVersion;
 
 if (window) {
   window.XSheet = XSheet;

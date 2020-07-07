@@ -15,7 +15,9 @@
   const xSheet = new XSheet('#dome', {
     workConfig: {
       body: {
-        sheets: [purchaseOrder],
+        sheets: [{
+          tableConfig: {}
+        }],
       },
     },
   });
