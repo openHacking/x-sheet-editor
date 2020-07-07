@@ -47,6 +47,8 @@ class Cell {
       text,
       fontAttr,
       borderAttr,
+      contentWidth,
+      merge,
     } = this;
     return new Cell({
       background,
@@ -54,6 +56,8 @@ class Cell {
       text,
       fontAttr: fontAttr.clone(),
       borderAttr: borderAttr.clone(),
+      contentWidth,
+      merge,
     });
   }
 }
