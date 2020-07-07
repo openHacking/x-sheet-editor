@@ -225,11 +225,14 @@ class WorkBody extends Widget {
     if (sheet && tab) {
       const { table } = sheet;
       const {
-        rows, cols, merges, cells,
+        rows, cols, merges, cells, settings,
       } = table;
       const data = {
         name: tab.name,
         tableConfig: {
+          table: {
+            showGrid: settings.showGrid,
+          },
           rows: {
             len: rows.len,
             height: rows.height,
