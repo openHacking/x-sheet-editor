@@ -749,7 +749,7 @@ class XTableDraw {
           case SCROLL_TYPE.V_BOTTOM: {
             const fullScrollView = this.getFullScrollView();
             const scrollView = this.getScrollView();
-            const height = table.box().height - (fullScrollView.h - scrollView.h);
+            const height = table.visualHeight() - (fullScrollView.h - scrollView.h);
             const width = this.getWidth();
             draw.fillRect(dx, dy, width, height);
             break;
@@ -772,7 +772,7 @@ class XTableDraw {
             const fullScrollView = this.getFullScrollView();
             const scrollView = this.getScrollView();
             const height = this.getHeight();
-            const width = table.box().width - (fullScrollView.w - scrollView.w);
+            const width = table.visualWidth() - (fullScrollView.w - scrollView.w);
             draw.fillRect(dx, dy, width, height);
             break;
           }
@@ -785,6 +785,37 @@ class XTableDraw {
 }
 
 class XTableContentDraw extends XTableDraw {
+
+  constructor(table) {
+    super(table);
+    this.contentView = null;
+  }
+
+  /**
+   * 重置变量区
+   */
+  reset() {
+    super.reset();
+    this.contentView = null;
+  }
+
+  /**
+   * 文本内容区域
+   * @return {RectRange|*}
+   */
+  getContentView() {
+    if (Utils.isNotUnDef(this.contentView)) {
+      return this.contentView.clone();
+    }
+    const scrollView = this.getScrollView();
+    const { table } = this;
+    const { cols } = table;
+    scrollView.sri = 0;
+    scrollView.eri = cols.len;
+    scrollView.w = cols.rectRangeSumWidth(scrollView);
+    this.contentView = scrollView;
+    return scrollView;
+  }
 
   /**
    * 绘制网格
@@ -1001,17 +1032,6 @@ class XTableContentDraw extends XTableDraw {
       rect: new Rect({ x: drawX, y: drawY, width, height }),
       draw,
     });
-    // if (table.getRenderMode() === RENDER_MODE.SCROLL) {
-    //   console.log(scrollView);
-    //   console.log(this.getViewMode());
-    //   const x = table.xTableScrollView
-    //   console.log(x.lastScrollView);
-    //   console.log(x.scrollView);
-    //   draw.attr({
-    //     fillStyle: '#000000',
-    //   });
-    //   draw.fillRect(drawX, drawY, width, height);
-    // }
     crop.open();
     draw.offset(drawX, drawY);
     cellsHelper.getCellSkipMergeCellByViewRange({
@@ -1279,7 +1299,7 @@ class XTableLeftIndex extends XTableLeftIndexDraw {
     const { xTop } = table;
     const { settings } = table;
     const { index } = settings;
-    const height = table.box().height - (index.height + xTop.getHeight());
+    const height = table.visualHeight() - (index.height + xTop.getHeight());
     this.height = height;
     return height;
   }
@@ -1390,7 +1410,7 @@ class XTableTopIndex extends XTableTopIndexDraw {
     const { xLeft } = table;
     const { settings } = table;
     const { index } = settings;
-    const width = table.box().width - (index.width + xLeft.getWidth());
+    const width = table.visualWidth() - (index.width + xLeft.getWidth());
     this.width = width;
     return width;
   }
@@ -1513,7 +1533,7 @@ class XTableLeft extends XTableContentDraw {
     const { xTop } = table;
     const { settings } = table;
     const { index } = settings;
-    const height = table.box().height - (index.height + xTop.getHeight());
+    const height = table.visualHeight() - (index.height + xTop.getHeight());
     this.height = height;
     return height;
   }
@@ -1618,7 +1638,7 @@ class XTableContent extends XTableContentDraw {
     const { settings } = table;
     const { index } = settings;
     const { xLeft } = table;
-    const width = table.box().width - (index.width + xLeft.getWidth());
+    const width = table.visualWidth() - (index.width + xLeft.getWidth());
     this.width = width;
     return width;
   }
@@ -1631,7 +1651,7 @@ class XTableContent extends XTableContentDraw {
     const { xTop } = table;
     const { settings } = table;
     const { index } = settings;
-    const height = table.box().height - (index.height + xTop.getHeight());
+    const height = table.visualHeight() - (index.height + xTop.getHeight());
     this.height = height;
     return height;
   }
@@ -1717,7 +1737,7 @@ class XTableTop extends XTableContentDraw {
     const { xLeft } = table;
     const { settings } = table;
     const { index } = settings;
-    const width = table.box().width - (index.width + xLeft.getWidth());
+    const width = table.visualWidth() - (index.width + xLeft.getWidth());
     this.width = width;
     return width;
   }
@@ -2159,6 +2179,8 @@ class XTable extends Widget {
         fxLeft: -1,
       },
     }, settings);
+    this.width = null;
+    this.height = null;
     // 表格数据配置
     this.merges = new Merge(this, this.settings.merge);
     this.rows = new Rows(this, this.settings.rows);
@@ -2351,6 +2373,32 @@ class XTable extends Widget {
   }
 
   /**
+   * 可视区域高度
+   * @return {*}
+   */
+  visualHeight() {
+    if (Utils.isNotUnDef(this.height)) {
+      return this.height;
+    }
+    const height = this.box().height;
+    this.height = height;
+    return height;
+  }
+
+  /**
+   * 可视区域宽度
+   * @return {*}
+   */
+  visualWidth() {
+    if (Utils.isNotUnDef(this.width)) {
+      return this.width;
+    }
+    const width = this.box().width;
+    this.width = width;
+    return width;
+  }
+
+  /**
    * 水平滚动
    * @param x
    */
@@ -2415,7 +2463,9 @@ class XTable extends Widget {
    */
   resize() {
     const { draw } = this;
-    const [width, height] = [this.box().width, this.box().height];
+    this.width = null;
+    this.height = null;
+    const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.resize(width, height);
     this.reset();
     this.render();
@@ -2645,14 +2695,6 @@ class Table extends XTable {
       const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_CELL;
       mousePointer.set(type, key);
     });
-  }
-
-  visualHeight() {
-    return this.box().height;
-  }
-
-  visualWidth() {
-    return this.box().width;
   }
 
   getFixedWidth() {
