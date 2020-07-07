@@ -1,6 +1,6 @@
 import { Widget } from '../../../lib/Widget';
 import { cssPrefix, Constant } from '../../../constant/Constant';
-import { RectRange } from '../RectRange';
+import { RectRange } from '../base/RectRange';
 import { SCREEN_SELECT_EVENT } from '../screenwiget/selector/ScreenSelector';
 import { EventBind } from '../../../utils/EventBind';
 

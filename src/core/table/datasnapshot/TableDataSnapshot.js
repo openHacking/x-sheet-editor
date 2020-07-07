@@ -72,14 +72,18 @@ class TableDataSnapshot {
       }
       // 合并单元格元素
       if (item instanceof MergeDataRecord) {
-        const { merge, recordType, index } = item;
+        const { recordType } = item;
         switch (recordType) {
-          case MERGE_RECORD_TYPE.ADD:
-            this.mergeDataProxy.$addMerge(merge);
+          case MERGE_RECORD_TYPE.ADD: {
+            const { index } = item;
+            item.merge = this.mergeDataProxy.$deleteMerge(index);
             break;
-          case MERGE_RECORD_TYPE.DELETE:
-            this.mergeDataProxy.$deleteMerge(index);
+          }
+          case MERGE_RECORD_TYPE.DELETE: {
+            const { merge } = item;
+            item.index = this.mergeDataProxy.$addMerge(merge);
             break;
+          }
           default: break;
         }
         continue;
@@ -122,14 +126,18 @@ class TableDataSnapshot {
       }
       // 合并单元格元素
       if (item instanceof MergeDataRecord) {
-        const { merge, recordType, index } = item;
+        const { recordType } = item;
         switch (recordType) {
-          case MERGE_RECORD_TYPE.ADD:
-            this.mergeDataProxy.$addMerge(merge);
+          case MERGE_RECORD_TYPE.ADD: {
+            const { merge } = item;
+            item.index = this.mergeDataProxy.$addMerge(merge);
             break;
-          case MERGE_RECORD_TYPE.DELETE:
-            this.mergeDataProxy.$deleteMerge(index);
+          }
+          case MERGE_RECORD_TYPE.DELETE: {
+            const { index } = item;
+            item.merge = this.mergeDataProxy.$deleteMerge(index);
             break;
+          }
           default: break;
         }
         continue;

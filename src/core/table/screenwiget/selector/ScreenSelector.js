@@ -3,7 +3,7 @@ import { Selector } from './Selector';
 import { EventBind } from '../../../../utils/EventBind';
 import { Constant } from '../../../../constant/Constant';
 import { ScreenWidget } from '../../screen/ScreenWidget';
-import { RectRange } from '../../RectRange';
+import { RectRange } from '../../base/RectRange';
 import { Rect } from '../../../../canvas/Rect';
 
 const SCREEN_SELECT_EVENT = {

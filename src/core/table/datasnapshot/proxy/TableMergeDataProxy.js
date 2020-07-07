@@ -1,4 +1,5 @@
 import { DataProxy } from '../DataProxy';
+import { Constant } from '../../../../constant/Constant';
 
 class TableMergeDataProxy extends DataProxy {
 
@@ -16,14 +17,14 @@ class TableMergeDataProxy extends DataProxy {
     this.change = true;
     const { table } = this;
     const { merges } = table;
-    merges.add(merge);
+    return merges.add(merge);
   }
 
   $deleteMerge(index) {
     this.change = true;
     const { table } = this;
     const { merges } = table;
-    merges.delete(index);
+    return merges.delete(index);
   }
 
   deleteMerge(index) {
@@ -40,6 +41,30 @@ class TableMergeDataProxy extends DataProxy {
     const { addMerge } = on;
     const index = this.$addMerge(merge);
     addMerge(index);
+  }
+
+  endNotice() {
+    const { table } = this;
+    if (this.change) {
+      table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+    }
+    super.endNotice();
+  }
+
+  goNotice() {
+    const { table } = this;
+    if (this.change) {
+      table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+    }
+    super.goNotice();
+  }
+
+  backNotice() {
+    const { table } = this;
+    if (this.change) {
+      table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+    }
+    super.backNotice();
   }
 }
 

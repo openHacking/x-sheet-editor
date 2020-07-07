@@ -26,6 +26,7 @@ class WorkBody extends Widget {
     this.workConfig = options;
     this.sheets = this.workConfig.sheets;
     this.tabSheet = [];
+    this.activeIndex = -1;
 
     // 版本标识
     this.poweredBy = h('div', `${cssPrefix}-powered-by-tips`);
@@ -203,6 +204,7 @@ class WorkBody extends Widget {
       this.updateScroll();
       table.resize();
       this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
+      this.activeIndex = index;
     }
   }
 
@@ -212,6 +214,34 @@ class WorkBody extends Widget {
         this.setActiveIndex(index);
       }
     });
+  }
+
+  toTemplate() {
+    const { activeIndex, sheetView, tabView } = this;
+    const sheet = sheetView.sheetList[activeIndex];
+    const tab = tabView.tabList[activeIndex];
+    if (sheet && tab) {
+      const {
+        rows, cols, merges, cells,
+      } = this;
+      return {
+        name: tab.name,
+        tableConfig: {
+          rows: {
+            len: rows.len,
+            height: rows.height,
+            data: JSON.stringify(rows.getData()),
+          },
+          cols: {
+            len: cols.len,
+            width: cols.width,
+            data: JSON.stringify(cols.getData()),
+          },
+          data: JSON.stringify(cells.getData()),
+        },
+      };
+    }
+    return null;
   }
 }
 

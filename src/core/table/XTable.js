@@ -1,7 +1,7 @@
 import { Utils } from '../../utils/Utils';
-import { Rows } from './Rows';
-import { Cols } from './Cols';
-import { Scroll, SCROLL_TYPE } from './Scroll';
+import { Rows } from './base/Rows';
+import { Cols } from './base/Cols';
+import { Scroll, SCROLL_TYPE } from './base/Scroll';
 import { Widget } from '../../lib/Widget';
 import { Constant, cssPrefix } from '../../constant/Constant';
 import { Draw, npx } from '../../canvas/Draw';
@@ -10,15 +10,15 @@ import { Grid } from '../../canvas/Grid';
 import { LineHandle } from './gridborder/LineHandle';
 import { BorderLineHandle } from './gridborder/BorderLineHandle';
 import { GridLineHandle } from './gridborder/GridLineHandle';
-import { Fixed } from './Fixed';
+import { Fixed } from './base/Fixed';
 import { Crop } from '../../canvas/Crop';
 import { Rect } from '../../canvas/Rect';
 import { ALIGN, Font, TEXT_WRAP } from '../../canvas/Font';
 import Format from './Format';
 import { Box } from '../../canvas/Box';
-import { RectRange } from './RectRange';
+import { RectRange } from './base/RectRange';
 import { EventBind } from '../../utils/EventBind';
-import { CellsHelper } from './CellsHelper';
+import { CellsHelper } from './cells/CellsHelper';
 import { Cells } from './cells/Cells';
 import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
 import { Screen } from './screen/Screen';
@@ -33,7 +33,7 @@ import { ScreenCopyStyle } from './screenwiget/copystyle/ScreenCopyStyle';
 import { MousePointer } from './MousePointer';
 import { Keyboard } from './Keyboard';
 import { Focus } from './Focus';
-import { Merge } from './Merge';
+import { Merge } from './base/Merge';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -2739,21 +2739,6 @@ class Table extends XTable {
     return {
       ri, ci,
     };
-  }
-
-  toString() {
-    const data = {
-      rows: {
-        data: this.rows.getData(),
-      },
-      cols: {
-        data: this.cols.getData(),
-      },
-      merges: {
-        data: this.merges.getData(),
-      },
-    };
-    return JSON.stringify(data);
   }
 }
 

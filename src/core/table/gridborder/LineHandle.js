@@ -1,4 +1,4 @@
-import { RectRange } from '../RectRange';
+import { RectRange } from '../base/RectRange';
 import { Rect } from '../../../canvas/Rect';
 import { Utils } from '../../../utils/Utils';
 import { ALIGN, TEXT_DIRECTION, TEXT_WRAP } from '../../../canvas/Font';

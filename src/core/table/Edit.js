@@ -5,7 +5,7 @@ import { EventBind } from '../../utils/EventBind';
 
 import { ScreenSelector } from './screenwiget/selector/ScreenSelector';
 import { Utils } from '../../utils/Utils';
-import { RectRange } from './RectRange';
+import { RectRange } from './base/RectRange';
 
 class Edit extends Widget {
 

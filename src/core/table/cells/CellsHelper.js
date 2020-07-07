@@ -1,6 +1,6 @@
-import { Rect } from '../../canvas/Rect';
-import { ALIGN, TEXT_DIRECTION, TEXT_WRAP, VERTICAL_ALIGN } from '../../canvas/Font';
-import { Utils } from '../../utils/Utils';
+import { Rect } from '../../../canvas/Rect';
+import { ALIGN, TEXT_DIRECTION, TEXT_WRAP, VERTICAL_ALIGN } from '../../../canvas/Font';
+import { Utils } from '../../../utils/Utils';
 
 /**
  * CellsHelper

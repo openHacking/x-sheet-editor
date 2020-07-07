@@ -1,4 +1,4 @@
-import { Utils } from '../../utils/Utils';
+import { Utils } from '../../../utils/Utils';
 import { RectRange } from './RectRange';
 
 class Merge {
@@ -59,7 +59,7 @@ class Merge {
     const filter = [];
     for (let i = 0; i < this._.length; i += 1) {
       const item = this._[i];
-      if (item === null || filter.find(e => e === item)) {
+      if (Utils.isUnDef(item) || filter.find(e => e === item)) {
         continue;
       }
       if (item.intersects(cr)) {
