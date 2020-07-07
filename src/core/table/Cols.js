@@ -2,7 +2,8 @@ import { Utils } from '../../utils/Utils';
 
 class Cols {
 
-  constructor({ data = [], len = 10, width }) {
+  constructor(table, { data = [], len = 10, width }) {
+    this.table = table;
     this._ = [];
     this.minWidth = 5;
     this.width = Utils.minIf(width, this.minWidth);

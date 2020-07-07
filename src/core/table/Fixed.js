@@ -1,8 +1,9 @@
 class Fixed {
 
-  constructor(fixed = { fxTop: -1, fxLeft: -1 }) {
-    this.fxTop = fixed.fxTop;
-    this.fxLeft = fixed.fxLeft;
+  constructor(table, { fxTop = -1, fxLeft = -1 }) {
+    this.table = table;
+    this.fxTop = fxTop;
+    this.fxLeft = fxLeft;
   }
 }
 

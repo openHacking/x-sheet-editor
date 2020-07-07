@@ -24,8 +24,8 @@ class TableCellDataProxy extends DataProxy {
     const { setCell } = on;
     const { cells } = table;
     const oldCell = cells.getCell(ri, ci);
-    setCell(ri, ci, oldCell, newCell);
     this.$setCell(ri, ci, newCell);
+    setCell(ri, ci, oldCell, newCell);
   }
 
   endNotice() {

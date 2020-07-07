@@ -24,8 +24,8 @@ class TableColsDataProxy extends DataProxy {
     const { setWidth } = on;
     const { cols } = table;
     const oldWidth = cols.getWidth(ci);
-    setWidth(ci, oldWidth, newWidth);
     this.$setWidth(ci, newWidth);
+    setWidth(ci, oldWidth, newWidth);
   }
 
   endNotice() {

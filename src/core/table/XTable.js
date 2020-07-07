@@ -1,7 +1,6 @@
 import { Utils } from '../../utils/Utils';
 import { Rows } from './Rows';
 import { Cols } from './Cols';
-import { Merges } from './Merges';
 import { Scroll, SCROLL_TYPE } from './Scroll';
 import { Widget } from '../../lib/Widget';
 import { Constant, cssPrefix } from '../../constant/Constant';
@@ -34,6 +33,7 @@ import { ScreenCopyStyle } from './screenwiget/copystyle/ScreenCopyStyle';
 import { MousePointer } from './MousePointer';
 import { Keyboard } from './Keyboard';
 import { Focus } from './Focus';
+import { Merge } from './Merge';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -2152,23 +2152,22 @@ class XTable extends Widget {
         len: 26,
         width: 137,
       },
-      merges: [],
+      merge: [],
       fixed: {
         fxTop: -1,
         fxLeft: -1,
       },
     }, settings);
     // 表格数据配置
-    this.merges = new Merges(this.settings.merges);
-    this.rows = new Rows(this.settings.rows);
-    this.cols = new Cols(this.settings.cols);
-    this.cells = new Cells({
-      table: this,
+    this.merges = new Merge(this, this.settings.merge);
+    this.rows = new Rows(this, this.settings.rows);
+    this.cols = new Cols(this, this.settings.cols);
+    this.fixed = new Fixed(this, this.settings.fixed);
+    this.cells = new Cells(this, {
       rows: this.rows,
       cols: this.cols,
       data: this.settings.data,
     });
-    this.fixed = new Fixed(this.settings.fixed);
     this.scroll = new Scroll(this);
     // 表格视图计算
     this.xTableScrollView = new XTableScrollView(this);
@@ -2259,13 +2258,15 @@ class XTable extends Widget {
     this.xLeft = new XTableLeft(this);
     this.xTop = new XTableTop(this);
     this.xContent = new XTableContent(this);
-    //  单元格辅助类
+    // 单元格辅助类
     this.cellsHelper = new CellsHelper({
       cells: this.cells,
       merges: this.merges,
       rows: this.rows,
       cols: this.cols,
     });
+    // 同步合并单元格
+    this.merges.sync();
   }
 
   /**

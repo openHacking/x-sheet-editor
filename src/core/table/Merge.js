@@ -1,7 +1,89 @@
+import { Utils } from '../../utils/Utils';
+import { RectRange } from './RectRange';
+
 class Merge {
 
-  constructor(table) {
+  constructor(table, { merges = [] }) {
     this.table = table;
+    this._ = [];
+    this._ = merges.map(merge => RectRange.valueOf(merge)).concat(this._);
+  }
+
+  getFirstIncludes(ri, ci) {
+    const { table } = this;
+    const { cells } = table;
+    const cell = cells.getCell(ri, ci);
+    if (Utils.isUnDef(cell)) {
+      return null;
+    }
+    const { merge } = cell;
+    if (merge === -1) {
+      return null;
+    }
+    return this._[merge];
+  }
+
+  add(rectRange) {
+    const { table } = this;
+    const { cells } = table;
+    this._.push(rectRange);
+    const len = this._.length - 1;
+    rectRange.each((ri, ci) => {
+      const cell = cells.getCellOrNew(ri, ci);
+      if (cell.merge !== -1) {
+        this.delete(cell.merge);
+      }
+      cell.merge = len;
+    });
+    return len;
+  }
+
+  delete(mergeIdx) {
+    const { table } = this;
+    const { cells } = table;
+    const rectRange = this._[mergeIdx];
+    rectRange.each((ri, ci) => {
+      const cell = cells.getCell(ri, ci);
+      cell.merge = -1;
+    });
+    this._.splice(mergeIdx, 1);
+    return rectRange;
+  }
+
+  union(cellRange) {
+    let cr = cellRange;
+    const filter = [];
+    for (let i = 0; i < this._.length; i += 1) {
+      const item = this._[i];
+      if (filter.find(e => e === item)) {
+        continue;
+      }
+      if (item.intersects(cr)) {
+        filter.push(item);
+        cr = item.union(cr);
+        i = -1;
+      }
+    }
+    return cr;
+  }
+
+  sync() {
+    const { table } = this;
+    const { cells } = table;
+    this._.forEach((rectRange, len) => {
+      rectRange.each((ri, ci) => {
+        const cell = cells.getCellOrNew(ri, ci);
+        cell.merge = len;
+      });
+    });
+  }
+
+  getData() {
+    return this._;
+  }
+
+  setData(data) {
+    this._ = data;
   }
 
 }

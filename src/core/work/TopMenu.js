@@ -1100,6 +1100,7 @@ class TopMenu extends Widget {
       const {
         screen,
         merges,
+        cells,
         tableDataSnapshot,
       } = table;
       const screenSelector = screen.findByClass(ScreenSelector);
@@ -1110,7 +1111,8 @@ class TopMenu extends Widget {
         tableDataSnapshot.begin();
         const { mergeDataProxy } = tableDataSnapshot;
         if (find !== null) {
-          mergeDataProxy.deleteMerge(find);
+          const cell = cells.getCell(find.sri, find.sci);
+          mergeDataProxy.deleteMerge(find, cell.merge);
         } else if (merge.multiple()) {
           mergeDataProxy.addMerge(merge);
         }

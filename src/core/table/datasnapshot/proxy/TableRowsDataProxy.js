@@ -26,8 +26,8 @@ class TableRowsDataProxy extends DataProxy {
     const { setHeight } = on;
     const { rows } = table;
     const oldHeight = rows.getHeight(ri);
-    setHeight(ri, oldHeight, newHeight);
     this.$setHeight(ri, newHeight);
+    setHeight(ri, oldHeight, newHeight);
   }
 
   endNotice() {

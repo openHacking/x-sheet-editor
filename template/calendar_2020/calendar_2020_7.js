@@ -14,8 +14,8 @@ const calendar_2020_7 = {
       len: 10,
       data: [{ width: 64 }, null, null, null, null, null, null, null, { width: 56 }, { width: 280 }],
     },
-    merges: {
-      data: ['B1:H1', 'J1:J20', 'B16:H16'],
+    merge: {
+      merges: ['B1:H1', 'J1:J20', 'B16:H16'],
     },
     data: [[{
       ID: '1585441913869',

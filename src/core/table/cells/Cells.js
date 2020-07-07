@@ -14,8 +14,8 @@ class Cells {
    * @param rows
    * @param data
    */
-  constructor({
-    table, cols, rows, data = [],
+  constructor(table, {
+    cols, rows, data = [],
   }) {
     this.table = table;
     this.cols = cols;

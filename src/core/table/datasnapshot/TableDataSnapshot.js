@@ -18,10 +18,10 @@ class TableDataSnapshot {
     this.table = table;
     this.mergeDataProxy = new TableMergeDataProxy(table, {
       on: {
-        addMerge: (merge) => {
+        addMerge: (index) => {
           if (this.record === false) return;
           const { recordLayer } = this;
-          recordLayer.push(new MergeDataRecord({ merge, recordType: MERGE_RECORD_TYPE.ADD }));
+          recordLayer.push(new MergeDataRecord({ index, recordType: MERGE_RECORD_TYPE.ADD }));
         },
         deleteMerge: (merge) => {
           if (this.record === false) return;
@@ -72,13 +72,13 @@ class TableDataSnapshot {
       }
       // 合并单元格元素
       if (item instanceof MergeDataRecord) {
-        const { merge, recordType } = item;
+        const { merge, recordType, index } = item;
         switch (recordType) {
           case MERGE_RECORD_TYPE.ADD:
             this.mergeDataProxy.$addMerge(merge);
             break;
           case MERGE_RECORD_TYPE.DELETE:
-            this.mergeDataProxy.$deleteMerge(merge);
+            this.mergeDataProxy.$deleteMerge(index);
             break;
           default: break;
         }
@@ -122,13 +122,13 @@ class TableDataSnapshot {
       }
       // 合并单元格元素
       if (item instanceof MergeDataRecord) {
-        const { merge, recordType } = item;
+        const { merge, recordType, index } = item;
         switch (recordType) {
           case MERGE_RECORD_TYPE.ADD:
             this.mergeDataProxy.$addMerge(merge);
             break;
           case MERGE_RECORD_TYPE.DELETE:
-            this.mergeDataProxy.$deleteMerge(merge);
+            this.mergeDataProxy.$deleteMerge(index);
             break;
           default: break;
         }

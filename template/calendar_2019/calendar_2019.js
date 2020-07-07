@@ -45,8 +45,8 @@ const calendar_2019 = {
         { width: 43 },
         { width: 42 }],
     },
-    merges: {
-      data: ['B1:Y1', 'B5:H5', 'J5:P5', 'R5:X5', 'B14:H14', 'J14:P14', 'R14:X14'],
+    merge: {
+      merges: ['B1:Y1', 'B5:H5', 'J5:P5', 'R5:X5', 'B14:H14', 'J14:P14', 'R14:X14'],
     },
     data: [[{
       ID: '1584254541157',
