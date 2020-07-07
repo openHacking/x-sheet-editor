@@ -190,7 +190,7 @@ class XTableScrollView {
   static viewMode(lastView, view) {
     // 视图无变化
     if (Utils.isUnDef(lastView)) {
-      return VIEW_MODE.STATIC;
+      return VIEW_MODE.CHANGE_NOT;
     }
     if (view.equals(lastView)) {
       return VIEW_MODE.STATIC;
