@@ -1156,16 +1156,16 @@ class XTableTopIndexDraw extends XTableIndexDraw {
     const borderY = this.getLineY();
     const { table } = this;
     const {
-      draw, topIdxGridHandle, grid,
+      draw, topIdxGridHandle, indexGrid,
     } = table;
     draw.offset(borderX, borderY);
     const hLine = topIdxGridHandle.hLine(borderView);
     const vLine = topIdxGridHandle.vLine(borderView);
     hLine.forEach((item) => {
-      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+      indexGrid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     vLine.forEach((item) => {
-      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+      indexGrid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
   }
@@ -1230,16 +1230,16 @@ class XTableLeftIndexDraw extends XTableIndexDraw {
     const borderY = this.getLineY();
     const { table } = this;
     const {
-      draw, leftIdxGridHandle, grid,
+      draw, leftIdxGridHandle, indexGrid,
     } = table;
     draw.offset(borderX, borderY);
     const hLine = leftIdxGridHandle.hLine(borderView);
     const vLine = leftIdxGridHandle.vLine(borderView);
     hLine.forEach((item) => {
-      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+      indexGrid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
     vLine.forEach((item) => {
-      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+      indexGrid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
   }
@@ -2095,7 +2095,7 @@ class XTableFrozenFullRect {
     const dy = 0;
     const { table } = this;
     const { draw, settings } = table;
-    const { grid } = table;
+    const { indexGrid } = table;
     const { index } = settings;
     const indexHeight = index.height;
     const indexWidth = index.width;
@@ -2108,8 +2108,8 @@ class XTableFrozenFullRect {
     draw.fillRect(0, 0, index.width, indexHeight);
     draw.offset(0, 0);
     // 绘制边框
-    grid.horizontalLine(0, indexHeight, indexWidth, indexHeight);
-    grid.verticalLine(indexWidth, dy, indexWidth, indexHeight);
+    indexGrid.horizontalLine(0, indexHeight, indexWidth, indexHeight);
+    indexGrid.verticalLine(indexWidth, dy, indexWidth, indexHeight);
     draw.restore();
   }
 
@@ -2141,6 +2141,7 @@ class XTable extends Widget {
         showGrid: true,
         background: '#ffffff',
         borderColor: '#e5e5e5',
+        indexGridColor: '#e8e8e8',
         gridColor: '#b7b7b7',
       },
       data: [],
@@ -2181,6 +2182,12 @@ class XTable extends Widget {
     });
     // 绘制资源
     this.draw = new Draw(this.canvas.el);
+    this.indexGrid = new Grid(this.draw, {
+      color: this.settings.table.indexGridColor,
+    });
+    this.grid = new Grid(this.draw, {
+      color: this.settings.table.gridColor,
+    });
     this.line = new Line(this.draw, {
       leftShow: (ri, ci) => {
         // 单元格是否存在
@@ -2231,9 +2238,6 @@ class XTable extends Widget {
       iFMergeLastRow: (row, col) => this.merges.getFirstIncludes(row, col).eri === row,
       iFMergeFirstCol: (row, col) => this.merges.getFirstIncludes(row, col).sci === col,
       iFMergeLastCol: (row, col) => this.merges.getFirstIncludes(row, col).eci === col,
-    });
-    this.grid = new Grid(this.draw, {
-      color: this.settings.table.gridColor,
     });
     // 线段处理
     this.topIdxGridHandle = new GridLineHandle(this, {
