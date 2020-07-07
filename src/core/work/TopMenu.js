@@ -29,6 +29,7 @@ import { LINE_TYPE } from '../../canvas/Line';
 import { Icon } from './tools/Icon';
 import { ALIGN, TEXT_WRAP, VERTICAL_ALIGN } from '../../canvas/Font';
 import { Cell } from '../table/cells/Cell';
+import { Utils } from '../../utils/Utils';
 
 class Divider extends Widget {
   constructor() {
@@ -1110,10 +1111,10 @@ class TopMenu extends Widget {
         const find = merges.getFirstIncludes(merge.sri, merge.sci);
         tableDataSnapshot.begin();
         const { mergeDataProxy } = tableDataSnapshot;
-        if (find !== null) {
+        if (Utils.isNotUnDef(find)) {
           const cell = cells.getCell(find.sri, find.sci);
-          mergeDataProxy.deleteMerge(find, cell.merge);
-        } else if (merge.multiple()) {
+          mergeDataProxy.deleteMerge(cell.merge);
+        } else {
           mergeDataProxy.addMerge(merge);
         }
         tableDataSnapshot.end();

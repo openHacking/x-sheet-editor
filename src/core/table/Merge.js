@@ -42,11 +42,15 @@ class Merge {
     const { table } = this;
     const { cells } = table;
     const rectRange = this._[mergeIdx];
-    rectRange.each((ri, ci) => {
-      const cell = cells.getCell(ri, ci);
-      cell.merge = -1;
-    });
-    this._.splice(mergeIdx, 1);
+    if (rectRange) {
+      rectRange.each((ri, ci) => {
+        const cell = cells.getCell(ri, ci);
+        if (cell) {
+          cell.merge = -1;
+        }
+      });
+      this._[mergeIdx] = null;
+    }
     return rectRange;
   }
 
@@ -55,7 +59,7 @@ class Merge {
     const filter = [];
     for (let i = 0; i < this._.length; i += 1) {
       const item = this._[i];
-      if (filter.find(e => e === item)) {
+      if (item === null || filter.find(e => e === item)) {
         continue;
       }
       if (item.intersects(cr)) {
@@ -70,12 +74,15 @@ class Merge {
   sync() {
     const { table } = this;
     const { cells } = table;
-    this._.forEach((rectRange, len) => {
-      rectRange.each((ri, ci) => {
-        const cell = cells.getCellOrNew(ri, ci);
-        cell.merge = len;
-      });
-    });
+    for (let i = 0; i < this._.length; i += 1) {
+      const rectRange = this._[i];
+      if (rectRange) {
+        rectRange.each((ri, ci) => {
+          const cell = cells.getCellOrNew(ri, ci);
+          cell.merge = i;
+        });
+      }
+    }
   }
 
   getData() {
