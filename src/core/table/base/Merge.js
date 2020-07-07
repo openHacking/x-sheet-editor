@@ -49,7 +49,8 @@ class Merge {
           cell.merge = -1;
         }
       });
-      this._[mergeIdx] = null;
+      this._.splice(mergeIdx, 1);
+      this.sync(mergeIdx);
     }
     return rectRange;
   }
@@ -71,10 +72,10 @@ class Merge {
     return cr;
   }
 
-  sync() {
+  sync(scan = 0) {
     const { table } = this;
     const { cells } = table;
-    for (let i = 0; i < this._.length; i += 1) {
+    for (let i = scan; i < this._.length; i += 1) {
       const rectRange = this._[i];
       if (rectRange) {
         rectRange.each((ri, ci) => {

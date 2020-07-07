@@ -60,6 +60,18 @@ class Cell {
       merge,
     });
   }
+
+  toJSON() {
+    const {
+      background,
+      format,
+      text,
+      fontAttr,
+      borderAttr,
+      contentWidth,
+    } = this;
+    return { background, format, text, fontAttr, borderAttr, contentWidth };
+  }
 }
 
 export { Cell };
