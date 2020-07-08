@@ -808,42 +808,47 @@ class XTableContentDraw extends XTableDraw {
       const scrollView = this.getScrollView();
       const { table } = this;
       const {
-        draw, cols, cellsHelper, cells, scroll,
+        draw, cols, cellsHelper, cells,
       } = table;
       const x = this.getX();
       const y = this.getY();
       draw.offset(x, y);
-      // 检查左边区域
-      const leftView = scrollView.clone();
-      leftView.sci = 0;
-      leftView.eci = scrollView.sci - 1;
-      if (leftView.eci !== -1) {
-        const leftMax = scroll.x;
-        const offsetX = scroll.x;
+      const lView = scrollView.clone();
+      lView.eci = lView.sci - 1;
+      lView.sci = 0;
+      const lx = this.getDrawX() - cols.getWidth(scrollView.sci);
+      const ly = this.getDrawY();
+      const rView = scrollView.clone();
+      rView.sci = rView.eci + 1;
+      rView.eci = cols.len - 1;
+      const rx = this.getDrawX() + scrollView.w;
+      const ry = this.getDrawY();
+      if (lView.eci !== -1) {
+        let max;
+        let curr;
         cellsHelper.getCellSkipMergeCellByViewRange({
-          rectRange: leftView,
-          callback: (row, col, cell, rect, overflow) => {
-            const boundWidth = cells.getCellBoundOutSize(row, col);
-            const left = rect.x + scroll.x;
-            const {
-              text, fontAttr,
-            } = cell;
-            const {
-              align, textWrap,
-            } = fontAttr;
-            // 剔除不符合条件的文本
-            if (align === ALIGN.right
-              || textWrap !== TEXT_WRAP.OVER_FLOW
-              || Utils.isBlank(text)) {
+          startX: lx,
+          startY: ly,
+          reverseCols: true,
+          callback: (ri, ci, cell, rect, overflow) => {
+            if (ri !== curr) {
+              max = 0;
+              curr = ri;
+            }
+            max += rect.width;
+            const { text, fontAttr } = cell;
+            const { align, textWrap } = fontAttr;
+            if (Utils.isBlank(text)
+              || align === ALIGN.right
+              || textWrap !== TEXT_WRAP.OVER_FLOW) {
               return;
             }
-            // 绘制没有宽度或者宽度
-            // 越界的文字
-            if (boundWidth === 0
-              || left + boundWidth > leftMax) {
+            const size = cells.getCellBoundOutSize(ri, ci);
+            if (size === 0 || size > max) {
               const {
-                format, text,
+                format, text, fontAttr,
               } = cell;
+              const { align } = fontAttr;
               const font = new Font({
                 text: Format(format, text),
                 rect,
@@ -855,47 +860,33 @@ class XTableContentDraw extends XTableDraw {
               cell.setContentWidth(font.draw());
             }
           },
-          startX: -offsetX,
         });
       }
-      // 检查右边区域
-      const rightView = scrollView.clone();
-      rightView.sci = scrollView.eci + 1;
-      rightView.eci = cols.len - 1;
-      if (rightView.sci !== cols.len) {
-        const drawX = this.getDrawX();
-        const offsetX = drawX + scrollView.w;
-        let current = -1;
-        let rightMax = 0;
+      if (rView.sci !== cols.len) {
+        let max;
+        let curr;
         cellsHelper.getCellSkipMergeCellByViewRange({
-          rectRange: rightView,
-          callback: (row, col, cell, rect, overflow) => {
-            // 换行后重置宽度
-            if (row !== current) {
-              current = row;
-              rightMax = 0;
+          startX: rx,
+          startY: ry,
+          callback: (ri, ci, cell, rect, overflow) => {
+            if (ri !== curr) {
+              max = 0;
+              curr = ri;
             }
-            rightMax += cols.getWidth(col);
-            const boundWidth = cells.getCellBoundOutSize(row, col);
-            const {
-              text, fontAttr,
-            } = cell;
-            const {
-              align, textWrap,
-            } = fontAttr;
-            // 剔除不符合条件的文本
-            if (align === ALIGN.left
-              || textWrap !== TEXT_WRAP.OVER_FLOW
-              || Utils.isBlank(text)) {
+            max += rect.width;
+            const { text, fontAttr } = cell;
+            const { align, textWrap } = fontAttr;
+            if (Utils.isBlank(text)
+              || align === ALIGN.left
+              || textWrap !== TEXT_WRAP.OVER_FLOW) {
               return;
             }
-            // 绘制没有宽度或者宽度
-            // 越界的文字
-            if (boundWidth === 0
-              || boundWidth > rightMax) {
+            const size = cells.getCellBoundOutSize(ri, ci);
+            if (size === 0 || size > max) {
               const {
-                format, text,
+                format, text, fontAttr,
               } = cell;
+              const { align } = fontAttr;
               const font = new Font({
                 text: Format(format, text),
                 rect,
@@ -907,7 +898,6 @@ class XTableContentDraw extends XTableDraw {
               cell.setContentWidth(font.draw());
             }
           },
-          startX: offsetX,
         });
       }
       draw.offset(0, 0);
