@@ -2243,7 +2243,7 @@ class XTable extends Widget {
       },
       cols: {
         len: 26,
-        width: 137,
+        width: 50,
       },
       merge: [],
       fixed: {
