@@ -816,24 +816,20 @@ class XTableContentDraw extends XTableDraw {
       const lView = scrollView.clone();
       lView.eci = lView.sci - 1;
       lView.sci = 0;
-      const lx = this.getDrawX() - cols.getWidth(scrollView.sci);
-      const ly = this.getDrawY();
-      const rView = scrollView.clone();
-      rView.sci = rView.eci + 1;
-      rView.eci = cols.len - 1;
-      const rx = this.getDrawX() + scrollView.w;
-      const ry = this.getDrawY();
       if (lView.eci !== -1) {
+        const lx = this.getDrawX() - cols.getWidth(scrollView.sci);
+        const ly = this.getDrawY();
         let max;
         let curr;
         cellsHelper.getCellSkipMergeCellByViewRange({
+          rectRange: lView,
           startX: lx,
           startY: ly,
           reverseCols: true,
-          callback: (ri, ci, cell, rect, overflow) => {
-            if (ri !== curr) {
+          callback: (row, col, cell, rect, overflow) => {
+            if (row !== curr) {
               max = 0;
-              curr = ri;
+              curr = row;
             }
             max += rect.width;
             const { text, fontAttr } = cell;
@@ -843,7 +839,7 @@ class XTableContentDraw extends XTableDraw {
               || textWrap !== TEXT_WRAP.OVER_FLOW) {
               return;
             }
-            const size = cells.getCellBoundOutSize(ri, ci);
+            const size = cells.getCellBoundOutSize(row, col);
             if (size === 0 || size > max) {
               const {
                 format, text, fontAttr,
@@ -862,16 +858,22 @@ class XTableContentDraw extends XTableDraw {
           },
         });
       }
+      const rView = scrollView.clone();
+      rView.sci = rView.eci + 1;
+      rView.eci = cols.len - 1;
       if (rView.sci !== cols.len) {
+        const rx = this.getDrawX() + scrollView.w;
+        const ry = this.getDrawY();
         let max;
         let curr;
         cellsHelper.getCellSkipMergeCellByViewRange({
+          rectRange: rView,
           startX: rx,
           startY: ry,
-          callback: (ri, ci, cell, rect, overflow) => {
-            if (ri !== curr) {
+          callback: (row, col, cell, rect, overflow) => {
+            if (row !== curr) {
               max = 0;
-              curr = ri;
+              curr = row;
             }
             max += rect.width;
             const { text, fontAttr } = cell;
@@ -881,7 +883,7 @@ class XTableContentDraw extends XTableDraw {
               || textWrap !== TEXT_WRAP.OVER_FLOW) {
               return;
             }
-            const size = cells.getCellBoundOutSize(ri, ci);
+            const size = cells.getCellBoundOutSize(row, col);
             if (size === 0 || size > max) {
               const {
                 format, text, fontAttr,
