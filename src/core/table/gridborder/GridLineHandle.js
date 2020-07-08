@@ -204,7 +204,7 @@ class GridLineHandle {
         if (this.vLineBorderChecked(ci, ri) === false) {
           return false;
         }
-        return lineHandle.vLineRightOverFlowChecked(ci, ri);
+        return lineHandle.vLineRightBoundOut(ci, ri);
       });
     }
     return this.gridVLine(viewRange, 0, 0);

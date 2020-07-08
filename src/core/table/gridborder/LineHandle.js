@@ -19,7 +19,7 @@ class LineHandle {
    * @param ci
    * @param ri
    */
-  vLineRightOverFlowChecked(ci, ri) {
+  vLineRightBoundOut(ci, ri) {
     const { table } = this;
     const { cells, cols, merges } = table;
     const { len } = cols;
@@ -70,7 +70,7 @@ class LineHandle {
       if (checked) {
         // 检查当前单元格的内容
         // 宽度是否越界
-        const width = this.getCellContentWidth(master, ci);
+        const width = cells.getCellBoundOutSize(ri, ci);
         if (width > maxWidth) {
           // 只有next单元格是空时
           // 才允许不绘制边框
@@ -107,7 +107,7 @@ class LineHandle {
       }
       // 检查当前单元格的内容
       // 宽度是否越界
-      const width = this.getCellContentWidth(cell, i);
+      const width = cells.getCellBoundOutSize(ri, i);
       if (width > leftWidth) {
         // 只有master单元格和
         // next单元格都是空时
@@ -149,7 +149,7 @@ class LineHandle {
       }
       // 检查当前单元格的内容
       // 宽度是否越界
-      const width = this.getCellContentWidth(cell, j);
+      const width = cells.getCellBoundOutSize(ri, j);
       if (width > rightWidth) {
         // 只有master单元格为
         // 空时才允许不绘制边框
@@ -173,7 +173,7 @@ class LineHandle {
    * @param ci
    * @param ri
    */
-  vLineLeftOverFlowChecked(ci, ri) {
+  vLineLeftBoundOut(ci, ri) {
     const { table } = this;
     const { cells, cols, merges } = table;
     const { len } = cols;
@@ -224,7 +224,7 @@ class LineHandle {
       if (checked) {
         // 检查当前单元格的内容
         // 宽度是否越界
-        const width = this.getCellContentWidth(master, ci);
+        const width = cells.getCellBoundOutSize(ri, ci);
         if (width > maxWidth) {
           // 只有next单元格是空时
           // 才允许不绘制边框
@@ -261,7 +261,7 @@ class LineHandle {
       }
       // 检查当前单元格的内容
       // 宽度是否越界
-      const width = this.getCellContentWidth(cell, i);
+      const width = cells.getCellBoundOutSize(ri, i);
       if (width > leftWidth) {
         // 只有master单元格为
         // 空时才允许不绘制边框
@@ -300,7 +300,7 @@ class LineHandle {
       }
       // 检查当前单元格的内容
       // 宽度是否越界
-      const width = this.getCellContentWidth(cell, j);
+      const width = cells.getCellBoundOutSize(ri, j);
       if (width > rightWidth) {
         // 只有master单元格和
         // last单元格都是空时
@@ -315,29 +315,6 @@ class LineHandle {
     }
 
     return checkedLeft && checkedRight;
-  }
-
-  /**
-   * 计算单元格内容宽度
-   * @param cell
-   * @param ci
-   * @returns {number|*}
-   */
-  getCellContentWidth(cell, ci) {
-    const { table } = this;
-    const { cols } = table;
-    const colWidth = cols.getWidth(ci);
-    const { contentWidth, fontAttr } = cell;
-    const { align } = fontAttr;
-    switch (align) {
-      case ALIGN.right:
-      case ALIGN.left:
-        return contentWidth;
-      case ALIGN.center:
-        return colWidth + ((contentWidth - colWidth) / 2);
-      default:
-        return 0;
-    }
   }
 
   hEach({

@@ -1,5 +1,6 @@
 import { Cell } from './Cell';
 import { Utils } from '../../../utils/Utils';
+import { ALIGN } from '../../../canvas/Font';
 
 /**
  * Cells
@@ -21,6 +22,33 @@ class Cells {
     this.cols = cols;
     this.rows = rows;
     this.data = data;
+  }
+
+  /**
+   * 获取单元格内容的越界宽度
+   * @param ri
+   * @param ci
+   * @returns {number}
+   */
+  getCellBoundOutSize(ri, ci) {
+    const { table } = this;
+    const { cols } = table;
+    const cell = this.getCell(ri, ci);
+    if (cell) {
+      const colWidth = cols.getWidth(ci);
+      const { contentWidth, fontAttr } = cell;
+      const { align } = fontAttr;
+      switch (align) {
+        case ALIGN.right:
+        case ALIGN.left:
+          return contentWidth;
+        case ALIGN.center:
+          return colWidth + ((contentWidth - colWidth) / 2);
+        default:
+          return 0;
+      }
+    }
+    return 0;
   }
 
   /**

@@ -800,44 +800,181 @@ class XTableContentDraw extends XTableDraw {
   }
 
   /**
-   * 文本内容区域
-   * @return {RectRange|*}
+   * 绘制越界文本
    */
-  getContentView() {
-    if (Utils.isNotUnDef(this.contentView)) {
-      return this.contentView.clone();
+  drawBoundOutFont() {
+    const viewMode = this.getViewMode();
+    if (viewMode === VIEW_MODE.CHANGE_ADD) {
+      const scrollView = this.getScrollView();
+      const { table } = this;
+      const {
+        draw, cols, cellsHelper, cells, scroll,
+      } = table;
+      const x = this.getX();
+      const y = this.getY();
+      draw.offset(x, y);
+      // 检查左边区域
+      const leftView = scrollView.clone();
+      leftView.sci = 0;
+      leftView.eci = scrollView.sci - 1;
+      if (leftView.eci !== -1) {
+        const leftMax = scroll.x;
+        const offsetX = scroll.x;
+        cellsHelper.getCellSkipMergeCellByViewRange({
+          rectRange: leftView,
+          callback: (row, col, cell, rect, overflow) => {
+            const boundWidth = cells.getCellBoundOutSize(row, col);
+            const left = rect.x + scroll.x;
+            const {
+              text, fontAttr,
+            } = cell;
+            const {
+              align, textWrap,
+            } = fontAttr;
+            // 剔除不符合条件的文本
+            if (align === ALIGN.right
+              || textWrap !== TEXT_WRAP.OVER_FLOW
+              || Utils.isBlank(text)) {
+              return;
+            }
+            // 绘制没有宽度或者宽度
+            // 越界的文字
+            if (boundWidth === 0
+              || left + boundWidth > leftMax) {
+              const {
+                format, text,
+              } = cell;
+              const font = new Font({
+                text: Format(format, text),
+                rect,
+                dw: draw,
+                overflow,
+                attr: fontAttr,
+              });
+              font.setOverflowCrop(align === ALIGN.center);
+              cell.setContentWidth(font.draw());
+            }
+          },
+          startX: -offsetX,
+        });
+      }
+      // 检查右边区域
+      const rightView = scrollView.clone();
+      rightView.sci = scrollView.eci + 1;
+      rightView.eci = cols.len - 1;
+      if (rightView.sci !== cols.len) {
+        const drawX = this.getDrawX();
+        const offsetX = drawX + scrollView.w;
+        let current = -1;
+        let rightMax = 0;
+        cellsHelper.getCellSkipMergeCellByViewRange({
+          rectRange: rightView,
+          callback: (row, col, cell, rect, overflow) => {
+            // 换行后重置宽度
+            if (row !== current) {
+              current = row;
+              rightMax = 0;
+            }
+            rightMax += cols.getWidth(col);
+            const boundWidth = cells.getCellBoundOutSize(row, col);
+            const {
+              text, fontAttr,
+            } = cell;
+            const {
+              align, textWrap,
+            } = fontAttr;
+            // 剔除不符合条件的文本
+            if (align === ALIGN.left
+              || textWrap !== TEXT_WRAP.OVER_FLOW
+              || Utils.isBlank(text)) {
+              return;
+            }
+            // 绘制没有宽度或者宽度
+            // 越界的文字
+            if (boundWidth === 0
+              || boundWidth > rightMax) {
+              const {
+                format, text,
+              } = cell;
+              const font = new Font({
+                text: Format(format, text),
+                rect,
+                dw: draw,
+                overflow,
+                attr: fontAttr,
+              });
+              font.setOverflowCrop(align === ALIGN.center);
+              cell.setContentWidth(font.draw());
+            }
+          },
+          startX: offsetX,
+        });
+      }
+      draw.offset(0, 0);
     }
+  }
+
+  /**
+   * 绘制单元格文字
+   */
+  drawFont() {
     const scrollView = this.getScrollView();
+    const drawX = this.getDrawX();
+    const drawY = this.getDrawY();
     const { table } = this;
-    const { cols } = table;
-    scrollView.sri = 0;
-    scrollView.eri = cols.len;
-    scrollView.w = cols.rectRangeSumWidth(scrollView);
-    this.contentView = scrollView;
-    return scrollView;
+    const {
+      draw, cellsHelper,
+    } = table;
+    draw.offset(drawX, drawY);
+    cellsHelper.getCellSkipMergeCellByViewRange({
+      rectRange: scrollView,
+      callback: (row, col, cell, rect, overflow) => {
+        const {
+          format, text, fontAttr,
+        } = cell;
+        const { align } = fontAttr;
+        const font = new Font({
+          text: Format(format, text),
+          rect,
+          dw: draw,
+          overflow,
+          attr: fontAttr,
+        });
+        font.setOverflowCrop(align === ALIGN.center);
+        cell.setContentWidth(font.draw());
+      },
+    });
+    cellsHelper.getMergeCellByViewRange({
+      rectRange: scrollView,
+      callback: (rect, cell) => {
+        const {
+          format, text, fontAttr,
+        } = cell;
+        const font = new Font({
+          text: Format(format, text),
+          rect,
+          dw: draw,
+          overflow: null,
+          attr: fontAttr,
+        });
+        font.setTextWrap(TEXT_WRAP.WORD_WRAP);
+        cell.setContentWidth(font.draw());
+      },
+    });
+    draw.offset(0, 0);
   }
 
   /**
    * 绘制网格
    */
   drawGrid() {
-    const scrollView = this.getScrollView();
     const borderView = this.getLineView();
-    const drawX = this.getDrawX();
-    const drawY = this.getDrawY();
     const borderX = this.getLineX();
     const borderY = this.getLineY();
     const { table } = this;
-    const width = scrollView.w;
-    const height = scrollView.h;
     const {
       draw, lineHandle, gridHandle, grid,
     } = table;
-    const crop = new Crop({
-      rect: new Rect({ x: drawX, y: drawY, width, height }),
-      draw,
-    });
-    crop.open();
     draw.offset(borderX, borderY);
     draw.attr({
       globalAlpha: 0.3,
@@ -863,30 +1000,19 @@ class XTableContentDraw extends XTableDraw {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
-    crop.close();
   }
 
   /**
    * 绘制边框
    */
   drawBorder() {
-    const scrollView = this.getScrollView();
     const borderView = this.getLineView();
-    const drawX = this.getDrawX();
-    const drawY = this.getDrawY();
     const borderX = this.getLineX();
     const borderY = this.getLineY();
     const { table } = this;
-    const width = scrollView.w;
-    const height = scrollView.h;
     const {
       draw, lineHandle, borderHandle, line,
     } = table;
-    const crop = new Crop({
-      rect: new Rect({ x: drawX, y: drawY, width, height }),
-      draw,
-    });
-    crop.open();
     draw.offset(borderX, borderY);
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({
       viewRange: borderView,
@@ -973,7 +1099,6 @@ class XTableContentDraw extends XTableDraw {
       line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
     });
     draw.offset(0, 0);
-    crop.close();
   }
 
   /**
@@ -981,20 +1106,13 @@ class XTableContentDraw extends XTableDraw {
    */
   drawColor() {
     const scrollView = this.getScrollView();
-    const x = this.getDrawX();
-    const y = this.getDrawY();
     const { table } = this;
-    const width = scrollView.w;
-    const height = scrollView.h;
+    const drawX = this.getDrawX();
+    const drawY = this.getDrawY();
     const {
       draw, cellsHelper,
     } = table;
-    const crop = new Crop({
-      rect: new Rect({ x, y, width, height }),
-      draw,
-    });
-    crop.open();
-    draw.offset(x, y);
+    draw.offset(drawX, drawY);
     cellsHelper.getMergeCellByViewRange({
       rectRange: scrollView,
       callback: (rect, cell) => {
@@ -1012,67 +1130,6 @@ class XTableContentDraw extends XTableDraw {
       },
     });
     draw.offset(0, 0);
-    crop.close();
-  }
-
-  /**
-   * 绘制单元格文字
-   */
-  drawFont() {
-    const scrollView = this.getScrollView();
-    const drawX = this.getDrawX();
-    const drawY = this.getDrawY();
-    const { table } = this;
-    const width = scrollView.w;
-    const height = scrollView.h;
-    const {
-      draw, cellsHelper,
-    } = table;
-    const crop = new Crop({
-      rect: new Rect({ x: drawX, y: drawY, width, height }),
-      draw,
-    });
-    crop.open();
-    draw.offset(drawX, drawY);
-    cellsHelper.getCellSkipMergeCellByViewRange({
-      rectRange: scrollView,
-      callback: (row, col, cell, rect, overflow) => {
-        const {
-          format, text, fontAttr,
-        } = cell;
-        const {
-          align,
-        } = fontAttr;
-        const font = new Font({
-          text: Format(format, text),
-          rect,
-          dw: draw,
-          overflow,
-          attr: fontAttr,
-        });
-        font.setOverflowCrop(align === ALIGN.center);
-        cell.setContentWidth(font.draw());
-      },
-    });
-    cellsHelper.getMergeCellByViewRange({
-      rectRange: scrollView,
-      callback: (rect, cell) => {
-        const {
-          format, text, fontAttr,
-        } = cell;
-        const font = new Font({
-          text: Format(format, text),
-          rect,
-          dw: draw,
-          overflow: null,
-          attr: fontAttr,
-        });
-        font.setTextWrap(TEXT_WRAP.WORD_WRAP);
-        cell.setContentWidth(font.draw());
-      },
-    });
-    draw.offset(0, 0);
-    crop.close();
   }
 
   /**
@@ -1087,12 +1144,27 @@ class XTableContentDraw extends XTableDraw {
     }
     this.drawMap();
     this.drawClear();
+    // 裁剪边界
+    const scrollView = this.getScrollView();
+    const x = this.getDrawX();
+    const y = this.getDrawY();
+    const width = scrollView.w;
+    const height = scrollView.h;
+    const { draw } = table;
+    const crop = new Crop({
+      rect: new Rect({ x, y, width, height }),
+      draw,
+    });
+    crop.open();
+    // 绘制内容
     this.drawColor();
     this.drawFont();
+    this.drawBoundOutFont();
     if (this.table.settings.table.showGrid) {
       this.drawGrid();
     }
     this.drawBorder();
+    crop.close();
   }
 
 }
@@ -2225,7 +2297,7 @@ class XTable extends Widget {
         }
         // 检查边框是否需要绘制
         if (cell.borderAttr.left.display) {
-          return this.lineHandle.vLineLeftOverFlowChecked(ci, ri);
+          return this.lineHandle.vLineLeftBoundOut(ci, ri);
         }
         return false;
       },
@@ -2247,7 +2319,7 @@ class XTable extends Widget {
         }
         // 检查边框是否需要绘制
         if (cell.borderAttr.right.display) {
-          return this.lineHandle.vLineRightOverFlowChecked(ci, ri);
+          return this.lineHandle.vLineRightBoundOut(ci, ri);
         }
         return false;
       },

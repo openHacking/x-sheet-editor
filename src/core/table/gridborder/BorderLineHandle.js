@@ -315,14 +315,14 @@ class BorderLineHandle {
           const compareTime = cell.borderAttr.left.compareTime(nextCell.borderAttr.right);
           const diff = compareTime === 1;
           if (diff) {
-            return lineHandle.vLineLeftOverFlowChecked(ci, ri);
+            return lineHandle.vLineLeftBoundOut(ci, ri);
           }
           return false;
         }
       }
       // 边框是否显示
       if (cell.borderAttr.left.display) {
-        return lineHandle.vLineLeftOverFlowChecked(ci, ri);
+        return lineHandle.vLineLeftBoundOut(ci, ri);
       }
       return cell.borderAttr.left.display;
     });
@@ -350,14 +350,14 @@ class BorderLineHandle {
           const compareTime = cell.borderAttr.right.compareTime(nextCell.borderAttr.left);
           const diff = compareTime === 1 || compareTime === 0;
           if (diff) {
-            return lineHandle.vLineRightOverFlowChecked(ci, ri);
+            return lineHandle.vLineRightBoundOut(ci, ri);
           }
           return false;
         }
       }
       // 边框是否显示
       if (cell.borderAttr.right.display) {
-        return lineHandle.vLineRightOverFlowChecked(ci, ri);
+        return lineHandle.vLineRightBoundOut(ci, ri);
       }
       return cell.borderAttr.right.display;
     });

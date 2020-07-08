@@ -145,7 +145,7 @@ class Utils {
     if (Utils.isUnDef(s)) {
       return true;
     }
-    return s.toString() === '';
+    return s.toString().trim() === '';
   }
 
   static isPlainObject(obj) {
