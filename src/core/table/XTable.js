@@ -812,7 +812,7 @@ class XTableContentDraw extends XTableDraw {
     const lView = scrollView.clone();
     lView.sci = 0;
     lView.eci = scrollView.sci - 1;
-    if (lView.eci !== -1) {
+    if (lView.eci > -1) {
       const lx = this.getDrawX() - cols.getWidth(lView.eci);
       const ly = this.getDrawY();
       let max;
@@ -858,7 +858,7 @@ class XTableContentDraw extends XTableDraw {
     const rView = scrollView.clone();
     rView.sci = scrollView.eci + 1;
     rView.eci = cols.len - 1;
-    if (rView.sci !== cols.len) {
+    if (rView.sci < cols.len) {
       const rx = this.getDrawX() + scrollView.w;
       const ry = this.getDrawY();
       let max;
