@@ -238,19 +238,40 @@ class ScreenAutoFill extends ScreenWidget {
     const { table } = screen;
     const { screenSelector } = table;
     const { selectorAttr } = screenSelector;
-    const { cols, rows, merges } = table;
-    const { rect: selectorRect, edge, edgeType } = selectorAttr;
-    const autoFillSelectorRect = edge || merges.intersects(selectorRect);
+    const {
+      cols, rows, merges,
+    } = table;
+    const {
+      rect: selectorRect, edge, edgeType,
+    } = selectorAttr;
+    const autoFillSelectorRect = edge
+      || merges.getFirstIncludes(selectorRect.sri, selectorRect.sci) != null;
     const [rSize, cSize] = selectorRect.size();
     let { ri, ci } = table.getRiCiByXy(x, y);
-    if (ri < 0) ri = 0; else if (ri > rows.len) ri = rows.len - 1;
-    if (ci < 0) ci = 0; else if (ci > cols.len) ci = cols.len - 1;
-    const { sri: selectorSri, sci: selectorSci } = selectorRect;
-    let { eri: selectorEri, eci: selectorEci } = selectorRect;
-    if (edgeType === 'left') selectorEci = cols.len - 1;
-    if (edgeType === 'top') selectorEri = rows.len - 1;
-    let rect = null;
-    let direction = 'un';
+    if (ri < 0) {
+      ri = 0;
+    } else if (ri > rows.len) {
+      ri = rows.len - 1;
+    }
+    if (ci < 0) {
+      ci = 0;
+    } else if (ci > cols.len) {
+      ci = cols.len - 1;
+    }
+    const {
+      sri: selectorSri, sci: selectorSci,
+    } = selectorRect;
+    let {
+      eri: selectorEri, eci: selectorEci,
+    } = selectorRect;
+    if (edgeType === 'left') {
+      selectorEci = cols.len - 1;
+    }
+    if (edgeType === 'top') {
+      selectorEri = rows.len - 1;
+    }
+    let direction;
+    let rect;
     if (ri < selectorSri || ri > selectorEri) {
       if (ri < selectorSri) {
         direction = 'top';
@@ -314,7 +335,7 @@ class ScreenAutoFill extends ScreenWidget {
         }
       }
     }
-    if (rect !== null) {
+    if (rect) {
       const width = cols.sectionSumWidth(rect.sci, rect.eci);
       const height = rows.sectionSumHeight(rect.sri, rect.eri);
       rect.w = width;
@@ -326,42 +347,13 @@ class ScreenAutoFill extends ScreenWidget {
     return null;
   }
 
-  mergeCellForceSplit() {
-    const { screen } = this;
-    const { table } = screen;
-    const { screenSelector } = table;
-    const { merges } = table;
-    const { autoFillAttr } = this;
-    const { selectorAttr } = screenSelector;
-    const { rect: autoFillRect } = autoFillAttr;
-    const { rect: selectorRect } = selectorAttr;
-    let sIndexRi = selectorRect.sri;
-    let tIndexRi = autoFillRect.sri;
-    while (tIndexRi <= autoFillRect.eri) {
-      let sIndexCi = selectorRect.sci;
-      let tIndexCi = autoFillRect.sci;
-      while (tIndexCi <= autoFillRect.eci) {
-        const rect = new RectRange(tIndexRi, tIndexCi, tIndexRi, tIndexCi);
-        const mergeRect = merges.getFirstIncludes(tIndexRi, tIndexCi);
-        if (!mergeRect || !selectorRect.intersects(mergeRect)) {
-          merges.deleteIntersects(rect);
-        }
-        sIndexCi += 1;
-        tIndexCi += 1;
-        if (sIndexCi > selectorRect.eci) sIndexCi = selectorRect.sci;
-      }
-      sIndexRi += 1;
-      tIndexRi += 1;
-      if (sIndexRi > selectorRect.eri) sIndexRi = selectorRect.sri;
-    }
-  }
-
   copyContent() {
-    let count = 0;
     const { screen } = this;
     const { table } = screen;
     const { screenSelector } = table;
-    const { cells, tableDataSnapshot } = table;
+    const {
+      cells, tableDataSnapshot,
+    } = table;
     const { cellDataProxy } = tableDataSnapshot;
     const { autoFillAttr } = this;
     const { selectorAttr } = screenSelector;
@@ -379,34 +371,62 @@ class ScreenAutoFill extends ScreenWidget {
             ignoreMerge: true,
           });
           cellDataProxy.setCell(tIndexRi, tIndexCi, target);
-          if (!Utils.isBlank(src.text)) {
-            count += 1;
-          }
         }
         sIndexCi += 1;
         tIndexCi += 1;
-        if (sIndexCi > selectorRect.eci) sIndexCi = selectorRect.sci;
+        if (sIndexCi > selectorRect.eci) {
+          sIndexCi = selectorRect.sci;
+        }
       }
       sIndexRi += 1;
       tIndexRi += 1;
-      if (sIndexRi > selectorRect.eri) sIndexRi = selectorRect.sri;
+      if (sIndexRi > selectorRect.eri) {
+        sIndexRi = selectorRect.sri;
+      }
     }
-    return count;
+  }
+
+  splitMerge() {
+    const { screen } = this;
+    const { table } = screen;
+    const {
+      merges, cells, tableDataSnapshot,
+    } = table;
+    const { mergeDataProxy } = tableDataSnapshot;
+    const { autoFillAttr } = this;
+    const { rect } = autoFillAttr;
+    rect.each((ri, ci) => {
+      const merge = merges.getFirstIncludes(ri, ci);
+      if (merge) {
+        const cell = cells.getCell(ri, ci);
+        if (cell && cell.merge !== -1) {
+          mergeDataProxy.deleteMerge(cell.merge);
+        }
+      }
+    });
   }
 
   copyMerge() {
     const { screen } = this;
     const { table } = screen;
     const { screenSelector } = table;
-    const { merges, tableDataSnapshot } = table;
+    const {
+      merges, tableDataSnapshot,
+    } = table;
     const { mergeDataProxy } = tableDataSnapshot;
     const { autoFillAttr } = this;
     const { selectorAttr } = screenSelector;
-    const { rect: autoFillRect, direction } = autoFillAttr;
-    const { rect: selectorRect, edge } = selectorAttr;
+    const {
+      rect: autoFillRect, direction,
+    } = autoFillAttr;
+    const {
+      rect: selectorRect, edge,
+    } = selectorAttr;
     let sIndexRi = selectorRect.sri;
     let tIndexRi = autoFillRect.sri;
-    if (edge && (direction === 'top' || direction === 'left')) return;
+    if (edge && (direction === 'top' || direction === 'left')) {
+      return;
+    }
     while (tIndexRi <= autoFillRect.eri) {
       let sIndexCi = selectorRect.sci;
       let tIndexCi = autoFillRect.sci;
@@ -419,47 +439,29 @@ class ScreenAutoFill extends ScreenWidget {
             rSize -= 1;
             cSize -= 1;
             const newMerge = new RectRange(tIndexRi, tIndexCi, tIndexRi + rSize, tIndexCi + cSize);
-            if (!merges.intersects(newMerge)) {
-              mergeDataProxy.addMerge(newMerge);
-            }
+            mergeDataProxy.addMerge(newMerge);
           }
         }
         sIndexCi += 1;
         tIndexCi += 1;
-        if (sIndexCi > selectorRect.eci) sIndexCi = selectorRect.sci;
+        if (sIndexCi > selectorRect.eci) {
+          sIndexCi = selectorRect.sci;
+        }
       }
       sIndexRi += 1;
       tIndexRi += 1;
-      if (sIndexRi > selectorRect.eri) sIndexRi = selectorRect.sri;
+      if (sIndexRi > selectorRect.eri) {
+        sIndexRi = selectorRect.sri;
+      }
     }
   }
 
   autoFillTo() {
-    const { screen, options } = this;
-    const { mergeForceSplit } = options;
-    const { table } = screen;
-    const { merges } = table;
-    const { autoFillAttr } = this;
-    const { rect: autoFillRect } = autoFillAttr;
-    const mergeRect = merges.getFirstIncludes(autoFillRect.sri, autoFillRect.sci);
-    if (mergeRect && mergeRect.equals(autoFillRect)) {
-      this.options.onBeforeAutoFill();
-      this.mergeCellForceSplit();
-      this.copyContent();
-      this.copyMerge();
-      this.options.onAfterAutoFill();
-    } else {
-      if (merges.intersects(autoFillRect) && mergeForceSplit === false) {
-        // eslint-disable-next-line no-undef,no-alert
-        alert('此操作要求合并单元格都具有相同大小');
-        return;
-      }
-      this.options.onBeforeAutoFill();
-      this.mergeCellForceSplit();
-      this.copyContent();
-      this.copyMerge();
-      this.options.onAfterAutoFill();
-    }
+    this.options.onBeforeAutoFill();
+    this.splitMerge();
+    this.copyContent();
+    this.copyMerge();
+    this.options.onAfterAutoFill();
   }
 }
 

@@ -63,7 +63,6 @@ class TableDataSnapshot {
     const { backLayerStack, goLayerStack, table } = this;
     const layer = backLayerStack.pop();
     for (let i = 0, len = layer.length; i < len; i += 1) {
-      debugger;
       const item = layer[i];
       // 单元格元素
       if (item instanceof CellDataRecord) {
@@ -118,7 +117,6 @@ class TableDataSnapshot {
     const { backLayerStack, goLayerStack, table } = this;
     const layer = goLayerStack.pop();
     for (let i = 0, len = layer.length; i < len; i += 1) {
-      debugger;
       const item = layer[i];
       // 单元格元素
       if (item instanceof CellDataRecord) {

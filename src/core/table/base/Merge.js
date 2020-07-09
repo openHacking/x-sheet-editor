@@ -9,29 +9,6 @@ class Merge {
     this._ = merges.map(merge => RectRange.valueOf(merge)).concat(this._);
   }
 
-  // ==============性能杀手下一个版本删除==================
-
-  intersects(cellRange) {
-    for (let i = 0; i < this._.length; i += 1) {
-      const it = this._[i];
-      if (it && it.intersects(cellRange)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  deleteIntersects(cellRange) {
-    for (let i = 0; i < this._.length; i += 1) {
-      const it = this._[i];
-      if (it.intersects(cellRange)) {
-        this._.splice(i, 1);
-      }
-    }
-  }
-
-  // ================================
-
   getFirstIncludes(ri, ci) {
     const { table } = this;
     const { cells } = table;
@@ -78,12 +55,28 @@ class Merge {
     return rectRange;
   }
 
+  sync(scan = 0) {
+    const { table } = this;
+    const { cells } = table;
+    for (let i = scan; i < this._.length; i += 1) {
+      const rectRange = this._[i];
+      if (rectRange) {
+        rectRange.each((ri, ci) => {
+          const cell = cells.getCell(ri, ci);
+          if (cell) {
+            cell.merge = i;
+          }
+        });
+      }
+    }
+  }
+
   union(cellRange) {
     let cr = cellRange;
     const filter = [];
     for (let i = 0; i < this._.length; i += 1) {
       const item = this._[i];
-      if (Utils.isUnDef(item) || filter.find(e => e === item)) {
+      if (filter.find(e => e === item)) {
         continue;
       }
       if (item.intersects(cr)) {
@@ -93,20 +86,6 @@ class Merge {
       }
     }
     return cr;
-  }
-
-  sync(scan = 0) {
-    const { table } = this;
-    const { cells } = table;
-    for (let i = scan; i < this._.length; i += 1) {
-      const rectRange = this._[i];
-      if (rectRange) {
-        rectRange.each((ri, ci) => {
-          const cell = cells.getCellOrNew(ri, ci);
-          cell.merge = i;
-        });
-      }
-    }
   }
 
   getData() {
