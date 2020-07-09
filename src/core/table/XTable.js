@@ -221,6 +221,10 @@ class XTableScrollView {
 
 class XTableDraw {
 
+  /**
+   * XTableDraw
+   * @param table
+   */
   constructor(table) {
     this.table = table;
 
@@ -801,6 +805,10 @@ class XTableDraw {
 
 class XTableContentDraw extends XTableDraw {
 
+  /**
+   * XTableContentDraw
+   * @param table
+   */
   constructor(table) {
     super(table);
     this.contentView = null;
@@ -1016,6 +1024,9 @@ class XTableContentDraw extends XTableDraw {
       draw, lineHandle, borderHandle, line,
     } = table;
     draw.offset(borderX, borderY);
+    draw.attr({
+      globalAlpha: 1,
+    });
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({
       viewRange: borderView,
     });
