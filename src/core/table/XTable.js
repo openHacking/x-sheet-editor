@@ -730,55 +730,62 @@ class XTableDraw {
       scroll, draw, settings,
     } = table;
     const viewMode = this.getViewMode();
+    const renderMode = table.getRenderMode();
     const dx = this.getDrawX();
     const dy = this.getDrawY();
     draw.attr({
       fillStyle: settings.table.background,
     });
-    switch (viewMode) {
-      case VIEW_MODE.CHANGE_NOT:
-      case VIEW_MODE.STATIC:
-      case VIEW_MODE.BOUND_OUT: {
-        const height = this.getHeight();
-        const width = this.getWidth();
-        draw.fillRect(dx, dy, width, height);
-        break;
-      }
-      case VIEW_MODE.CHANGE_ADD: {
-        switch (scroll.type) {
-          case SCROLL_TYPE.V_BOTTOM: {
-            const fullScrollView = this.getFullScrollView();
-            const scrollView = this.getScrollView();
-            const height = table.visualHeight() - (fullScrollView.h - scrollView.h);
-            const width = this.getWidth();
-            draw.fillRect(dx, dy, width, height);
-            break;
-          }
-          case SCROLL_TYPE.V_TOP: {
-            const scrollView = this.getScrollView();
-            const height = scrollView.h;
-            const width = this.getWidth();
-            draw.fillRect(dx, dy, width, height);
-            break;
-          }
-          case SCROLL_TYPE.H_LEFT: {
-            const scrollView = this.getScrollView();
-            const height = this.getHeight();
-            const width = scrollView.w;
-            draw.fillRect(dx, dy, width, height);
-            break;
-          }
-          case SCROLL_TYPE.H_RIGHT: {
-            const fullScrollView = this.getFullScrollView();
-            const scrollView = this.getScrollView();
-            const height = this.getHeight();
-            const width = table.visualWidth() - (fullScrollView.w - scrollView.w);
-            draw.fillRect(dx, dy, width, height);
-            break;
-          }
+    if (renderMode === RENDER_MODE.SCROLL) {
+      switch (viewMode) {
+        case VIEW_MODE.CHANGE_NOT:
+        case VIEW_MODE.STATIC:
+        case VIEW_MODE.BOUND_OUT: {
+          const height = this.getHeight();
+          const width = this.getWidth();
+          draw.fillRect(dx, dy, width, height);
+          break;
         }
-        break;
+        case VIEW_MODE.CHANGE_ADD: {
+          switch (scroll.type) {
+            case SCROLL_TYPE.V_BOTTOM: {
+              const fullScrollView = this.getFullScrollView();
+              const scrollView = this.getScrollView();
+              const height = table.visualHeight() - (fullScrollView.h - scrollView.h);
+              const width = this.getWidth();
+              draw.fillRect(dx, dy, width, height);
+              break;
+            }
+            case SCROLL_TYPE.V_TOP: {
+              const scrollView = this.getScrollView();
+              const height = scrollView.h;
+              const width = this.getWidth();
+              draw.fillRect(dx, dy, width, height);
+              break;
+            }
+            case SCROLL_TYPE.H_LEFT: {
+              const scrollView = this.getScrollView();
+              const height = this.getHeight();
+              const width = scrollView.w;
+              draw.fillRect(dx, dy, width, height);
+              break;
+            }
+            case SCROLL_TYPE.H_RIGHT: {
+              const fullScrollView = this.getFullScrollView();
+              const scrollView = this.getScrollView();
+              const height = this.getHeight();
+              const width = table.visualWidth() - (fullScrollView.w - scrollView.w);
+              draw.fillRect(dx, dy, width, height);
+              break;
+            }
+          }
+          break;
+        }
       }
+    } else {
+      const height = this.getHeight();
+      const width = this.getWidth();
+      draw.fillRect(dx, dy, width, height);
     }
   }
 

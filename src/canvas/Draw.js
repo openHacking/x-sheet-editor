@@ -174,6 +174,13 @@ class Draw {
       npx(height),
     );
   }
+
+  fullColor(width, height, color = '#ffffff') {
+    this.attr({
+      fillStyle: color,
+    });
+    this.fillRect(0, 0, width, height);
+  }
 }
 
 export {

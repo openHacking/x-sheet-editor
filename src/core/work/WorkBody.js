@@ -147,11 +147,13 @@ class WorkBody extends Widget {
       }
     });
     EventBind.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
-      const { sheetView } = this;
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      table.resize();
-      this.updateScroll();
+      Utils.throttle(() => {
+        const { sheetView } = this;
+        const sheet = sheetView.getActiveSheet();
+        const { table } = sheet;
+        table.resize();
+        this.updateScroll();
+      });
     });
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.updateScroll();
