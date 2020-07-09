@@ -18,15 +18,15 @@ class TableDataSnapshot {
     this.table = table;
     this.mergeDataProxy = new TableMergeDataProxy(table, {
       on: {
-        addMerge: (index) => {
-          if (this.record === false) return;
-          const { recordLayer } = this;
-          recordLayer.push(new MergeDataRecord({ index, recordType: MERGE_RECORD_TYPE.ADD }));
-        },
         deleteMerge: (merge) => {
           if (this.record === false) return;
           const { recordLayer } = this;
           recordLayer.push(new MergeDataRecord({ merge, recordType: MERGE_RECORD_TYPE.DELETE }));
+        },
+        addMerge: (index) => {
+          if (this.record === false) return;
+          const { recordLayer } = this;
+          recordLayer.push(new MergeDataRecord({ index, recordType: MERGE_RECORD_TYPE.ADD }));
         },
       },
     });
@@ -62,7 +62,7 @@ class TableDataSnapshot {
   back() {
     const { backLayerStack, goLayerStack, table } = this;
     const layer = backLayerStack.pop();
-    for (let i = 0, len = layer.length; i < len; i += 1) {
+    for (let i = layer.length - 1; i >= 0; i -= 1) {
       const item = layer[i];
       // 单元格元素
       if (item instanceof CellDataRecord) {
@@ -74,14 +74,17 @@ class TableDataSnapshot {
       if (item instanceof MergeDataRecord) {
         const { recordType } = item;
         switch (recordType) {
-          case MERGE_RECORD_TYPE.ADD: {
-            const { index } = item;
-            item.merge = this.mergeDataProxy.$deleteMerge(index);
-            break;
-          }
           case MERGE_RECORD_TYPE.DELETE: {
             const { merge } = item;
             item.index = this.mergeDataProxy.$addMerge(merge);
+            break;
+          }
+          case MERGE_RECORD_TYPE.ADD: {
+            const { index } = item;
+            const merge = this.mergeDataProxy.$deleteMerge(index);
+            if (merge) {
+              item.merge = merge;
+            }
             break;
           }
           default: break;
@@ -128,14 +131,17 @@ class TableDataSnapshot {
       if (item instanceof MergeDataRecord) {
         const { recordType } = item;
         switch (recordType) {
+          case MERGE_RECORD_TYPE.DELETE: {
+            const { index } = item;
+            const merge = this.mergeDataProxy.$deleteMerge(index);
+            if (merge) {
+              item.merge = merge;
+            }
+            break;
+          }
           case MERGE_RECORD_TYPE.ADD: {
             const { merge } = item;
             item.index = this.mergeDataProxy.$addMerge(merge);
-            break;
-          }
-          case MERGE_RECORD_TYPE.DELETE: {
-            const { index } = item;
-            item.merge = this.mergeDataProxy.$deleteMerge(index);
             break;
           }
           default: break;
