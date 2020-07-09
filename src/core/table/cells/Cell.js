@@ -40,7 +40,9 @@ class Cell {
     this.contentWidth = contentWidth;
   }
 
-  clone() {
+  clone({
+    ignoreMerge = false,
+  } = {}) {
     const {
       background,
       format,
@@ -50,15 +52,18 @@ class Cell {
       contentWidth,
       merge,
     } = this;
-    return new Cell({
+    const options = {
       background,
       format,
       text,
-      fontAttr: fontAttr.clone(),
-      borderAttr: borderAttr.clone(),
+      fontAttr,
+      borderAttr,
       contentWidth,
-      merge,
-    });
+    };
+    if (ignoreMerge === false) {
+      options.merge = merge;
+    }
+    return new Cell(options);
   }
 
   toJSON() {

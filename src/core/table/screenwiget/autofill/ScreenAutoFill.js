@@ -243,7 +243,6 @@ class ScreenAutoFill extends ScreenWidget {
     const autoFillSelectorRect = edge || merges.intersects(selectorRect);
     const [rSize, cSize] = selectorRect.size();
     let { ri, ci } = table.getRiCiByXy(x, y);
-    // console.log('autoFillSelectorRect >>>', autoFillSelectorRect);
     if (ri < 0) ri = 0; else if (ri > rows.len) ri = rows.len - 1;
     if (ci < 0) ci = 0; else if (ci > cols.len) ci = cols.len - 1;
     const { sri: selectorSri, sci: selectorSci } = selectorRect;
@@ -376,7 +375,9 @@ class ScreenAutoFill extends ScreenWidget {
       while (tIndexCi <= autoFillRect.eci) {
         const src = cells.getCell(sIndexRi, sIndexCi);
         if (src) {
-          const target = src.clone();
+          const target = src.clone({
+            ignoreMerge: true,
+          });
           cellDataProxy.setCell(tIndexRi, tIndexCi, target);
           if (!Utils.isBlank(src.text)) {
             count += 1;
@@ -444,9 +445,9 @@ class ScreenAutoFill extends ScreenWidget {
     if (mergeRect && mergeRect.equals(autoFillRect)) {
       this.options.onBeforeAutoFill();
       this.mergeCellForceSplit();
-      const count = this.copyContent();
+      this.copyContent();
       this.copyMerge();
-      this.options.onAfterAutoFill(count);
+      this.options.onAfterAutoFill();
     } else {
       if (merges.intersects(autoFillRect) && mergeForceSplit === false) {
         // eslint-disable-next-line no-undef,no-alert
@@ -455,9 +456,9 @@ class ScreenAutoFill extends ScreenWidget {
       }
       this.options.onBeforeAutoFill();
       this.mergeCellForceSplit();
-      const count = this.copyContent();
+      this.copyContent();
       this.copyMerge();
-      this.options.onAfterAutoFill(count);
+      this.options.onAfterAutoFill();
     }
   }
 }

@@ -9,6 +9,29 @@ class Merge {
     this._ = merges.map(merge => RectRange.valueOf(merge)).concat(this._);
   }
 
+  // ==============性能杀手下一个版本删除==================
+
+  intersects(cellRange) {
+    for (let i = 0; i < this._.length; i += 1) {
+      const it = this._[i];
+      if (it && it.intersects(cellRange)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  deleteIntersects(cellRange) {
+    for (let i = 0; i < this._.length; i += 1) {
+      const it = this._[i];
+      if (it.intersects(cellRange)) {
+        this._.splice(i, 1);
+      }
+    }
+  }
+
+  // ================================
+
   getFirstIncludes(ri, ci) {
     const { table } = this;
     const { cells } = table;
@@ -26,8 +49,7 @@ class Merge {
   add(rectRange) {
     const { table } = this;
     const { cells } = table;
-    this._.push(rectRange);
-    const len = this._.length - 1;
+    const len = this._.length;
     rectRange.each((ri, ci) => {
       const cell = cells.getCellOrNew(ri, ci);
       if (cell.merge !== -1) {
@@ -35,6 +57,7 @@ class Merge {
       }
       cell.merge = len;
     });
+    this._.push(rectRange);
     return len;
   }
 
