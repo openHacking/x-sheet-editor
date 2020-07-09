@@ -76,7 +76,6 @@ class XTableScrollView {
   }
 
   reset() {
-    this.lastScrollView = null;
     this.scrollEnterView = null;
     this.scrollView = null;
     this.enterView = null;
@@ -2541,9 +2540,12 @@ class XTable extends Widget {
    * 重置界面大小
    */
   resize() {
-    const { draw } = this;
+    const {
+      draw, xTableScrollView,
+    } = this;
     this.width = null;
     this.height = null;
+    xTableScrollView.lastScrollView = null;
     const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.resize(width, height);
     this.reset();
