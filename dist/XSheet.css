@@ -650,11 +650,26 @@
   height: 30px;
   background: #e3e3e3;
 }
+.x-sheet-bottom-grid {
+  height: 25px;
+  width: 25px;
+  background-image: url(2b3c1967644be90b5a87f6c482c76dc6.svg);
+  background-size: 60%;
+  background-position: center;
+  background-repeat: no-repeat;
+  float: right;
+  margin: 2.5px 10px 2.5px 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.x-sheet-bottom-grid:hover {
+  background-color: #d9d9d9;
+}
 .x-sheet-bottom-sum {
   height: 100%;
   float: left;
   line-height: 30px;
-  margin-left: 20px;
+  margin-left: 10px;
   margin-right: 8px;
   font-size: 13px;
   font-weight: bold;
@@ -684,7 +699,7 @@
   display: inline-block;
 }
 .x-sheet-icon-img {
-  background-image: url(29d7adfe78c9cd85e6a59410cbb2d3a5.svg);
+  background-image: url(941d0c7eecd3fa6b295e94b16baefe51.svg);
   width: 18px;
   height: 18px;
 }

@@ -10,7 +10,7 @@ class WorkBottom extends Widget {
   }
 
   onAttach() {
-    this.bottomMenu = new BottomMenu();
+    this.bottomMenu = new BottomMenu(this);
     this.attach(this.bottomMenu);
   }
 }

@@ -233,7 +233,8 @@ class WorkBody extends Widget {
         name: tab.name,
         tableConfig: {
           table: {
-            showGrid: settings.showGrid,
+            showGrid: settings.table.showGrid,
+            background: settings.table.background,
           },
           rows: {
             len: rows.len,
