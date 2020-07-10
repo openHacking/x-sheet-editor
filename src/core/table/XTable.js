@@ -1009,6 +1009,9 @@ class XTableContentDraw extends XTableDraw {
     vMergeLine.forEach((item) => {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
+    draw.attr({
+      globalAlpha: 1,
+    });
     draw.offset(0, 0);
   }
 
