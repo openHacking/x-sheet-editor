@@ -1174,9 +1174,6 @@ class XTableContentUI extends XTableUI {
       draw, lineHandle, gridHandle, grid,
     } = table;
     draw.offset(borderX, borderY);
-    draw.attr({
-      globalAlpha: 0.3,
-    });
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({
       viewRange: borderView,
     });
@@ -1197,9 +1194,6 @@ class XTableContentUI extends XTableUI {
     vMergeLine.forEach((item) => {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
-    draw.attr({
-      globalAlpha: 1,
-    });
     draw.offset(0, 0);
   }
 
@@ -1215,9 +1209,6 @@ class XTableContentUI extends XTableUI {
       draw, lineHandle, borderHandle, line,
     } = table;
     draw.offset(borderX, borderY);
-    draw.attr({
-      globalAlpha: 1,
-    });
     const coincideView = lineHandle.viewRangeAndMergeCoincideView({
       viewRange: borderView,
     });
