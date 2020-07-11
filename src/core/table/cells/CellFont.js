@@ -40,7 +40,7 @@ class CellFont {
     italic = false,
     angle = 0,
     direction = TEXT_DIRECTION.HORIZONTAL,
-    padding = 8,
+    padding = 5,
   }) {
     this.align = align;
     this.verticalAlign = verticalAlign;
