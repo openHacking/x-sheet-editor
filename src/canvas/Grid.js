@@ -10,7 +10,7 @@ class Grid {
   }
 
   lineWidth() {
-    const width = Math.floor(dpr());
+    const width = Math.ceil(dpr());
     return width > 2 ? width : 1;
   }
 

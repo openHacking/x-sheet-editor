@@ -2218,8 +2218,7 @@ class XTable extends Widget {
         showGrid: true,
         background: '#ffffff',
         borderColor: '#e5e5e5',
-        indexGridColor: '#e8e8e8',
-        gridColor: '#b7b7b7',
+        gridColor: '#e8e8e8',
       },
       data: [],
       rows: {
@@ -2264,7 +2263,7 @@ class XTable extends Widget {
     // 绘制资源
     this.draw = new Draw(this.canvas.el);
     this.indexGrid = new Grid(this.draw, {
-      color: this.settings.table.indexGridColor,
+      color: this.index.getGridColor(),
     });
     this.grid = new Grid(this.draw, {
       color: this.settings.table.gridColor,

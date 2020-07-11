@@ -6,6 +6,7 @@ class FixedIndex {
     background = '#f6f7fa',
     color = '#585757',
     size = 11,
+    gridColor = '#e8e8e8',
   }) {
     this.table = table;
     this.height = height;
@@ -13,6 +14,12 @@ class FixedIndex {
     this.background = background;
     this.color = color;
     this.size = size;
+    this.gridColor = gridColor;
+  }
+
+  getGridColor() {
+    const { gridColor } = this;
+    return gridColor;
   }
 
   getBackground() {

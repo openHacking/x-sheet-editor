@@ -5,7 +5,7 @@ function dpr() {
 }
 
 function npx(px) {
-  return Math.floor(px * dpr());
+  return Math.ceil(px * dpr());
 }
 
 function angleToRadian(angle) {

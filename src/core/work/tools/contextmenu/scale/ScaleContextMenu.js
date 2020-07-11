@@ -12,8 +12,10 @@ class ScaleContextMenu extends ELContextMenu {
     this.items = [
       new ScaleContextMenuItem(200),
       new ScaleContextMenuItem(150),
+      new ScaleContextMenuItem(125),
       new ScaleContextMenuItem(100),
-      new ScaleContextMenuItem(70),
+      new ScaleContextMenuItem(90),
+      new ScaleContextMenuItem(75),
       new ScaleContextMenuItem(50),
     ];
     this.items.forEach((item) => {
