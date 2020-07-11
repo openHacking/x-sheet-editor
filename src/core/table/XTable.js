@@ -8,7 +8,7 @@ import { Widget } from '../../lib/Widget';
 import {
   Constant, cssPrefix,
 } from '../../constant/Constant';
-import { Draw, npx } from '../../canvas/Draw';
+import { Draw, opx } from '../../canvas/Draw';
 import { Line, LINE_TYPE } from '../../canvas/Line';
 import { Grid } from '../../canvas/Grid';
 import { LineHandle } from './gridborder/LineHandle';
@@ -884,7 +884,7 @@ class XTableTopIndexUI extends XTableIndexUI {
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
-      font: `${npx(index.getSize())}px Arial`,
+      font: `${opx(index.getSize())}px Arial`,
       fillStyle: index.getColor(),
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
@@ -958,7 +958,7 @@ class XTableLeftIndexUI extends XTableIndexUI {
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
-      font: `${npx(index.getSize())}px Arial`,
+      font: `${opx(index.getSize())}px Arial`,
       fillStyle: index.getColor(),
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {

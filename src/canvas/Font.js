@@ -1,5 +1,5 @@
 import { Crop } from './Crop';
-import { npx } from './Draw';
+import { opx } from './Draw';
 import { Utils } from '../utils/Utils';
 import { DrawAngle, TrigonometricFunction } from './DrawAngle';
 import { Rect } from './Rect';
@@ -432,7 +432,7 @@ class HorizontalFontDraw {
     dw.attr({
       textAlign: attr.align,
       textBaseline: attr.verticalAlign,
-      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${npx(attr.size)}px ${attr.name}`,
+      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${opx(attr.size)}px ${attr.name}`,
       fillStyle: attr.color,
       strokeStyle: attr.color,
     });
@@ -925,7 +925,7 @@ class VerticalFontDraw {
         dw.attr({
           textAlign: attr.align,
           textBaseline: attr.verticalAlign,
-          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${npx(attr.size)}px ${attr.name}`,
+          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${opx(attr.size)}px ${attr.name}`,
           fillStyle: attr.color,
           strokeStyle: attr.color,
         });
@@ -933,7 +933,7 @@ class VerticalFontDraw {
       case TEXT_WRAP.WORD_WRAP:
         dw.attr({
           textAlign: attr.align,
-          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${npx(attr.size)}px ${attr.name}`,
+          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${opx(attr.size)}px ${attr.name}`,
           fillStyle: attr.color,
           strokeStyle: attr.color,
         });
@@ -943,7 +943,7 @@ class VerticalFontDraw {
         dw.attr({
           textAlign: attr.align,
           textBaseline: attr.verticalAlign,
-          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${npx(attr.size)}px ${attr.name}`,
+          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${opx(attr.size)}px ${attr.name}`,
           fillStyle: attr.color,
           strokeStyle: attr.color,
         });
@@ -1950,7 +1950,7 @@ class AngleFontDraw {
     dw.attr({
       textAlign: ALIGN.left,
       textBaseline: VERTICAL_ALIGN.top,
-      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${npx(attr.size)}px ${attr.name}`,
+      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${opx(attr.size)}px ${attr.name}`,
       fillStyle: attr.color,
       strokeStyle: attr.color,
     });
@@ -1980,7 +1980,7 @@ class Font extends DrawFont {
     super();
     this.attr = Utils.mergeDeep({}, {
       name: 'Arial',
-      size: npx(13),
+      size: opx(14),
       color: '#000000',
       bold: false,
       italic: false,

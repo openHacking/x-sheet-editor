@@ -4,8 +4,12 @@ function dpr() {
   return window.devicePixelRatio || 1;
 }
 
+function opx(px) {
+  return px * dpr();
+}
+
 function npx(px) {
-  return Math.ceil(px * dpr());
+  return Math.ceil(opx(px));
 }
 
 function angleToRadian(angle) {
@@ -189,6 +193,7 @@ class Draw {
 export {
   Draw,
   npx,
+  opx,
   dpr,
   angleToRadian,
 };
