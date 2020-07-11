@@ -1,7 +1,5 @@
 /* global window */
 
-import { h } from '../lib/Element';
-
 function dpr() {
   return window.devicePixelRatio || 1;
 }
@@ -102,8 +100,8 @@ class Draw {
     this.ctx.setLineDash(dash);
   }
 
-  measureText(text) {
-    return this.ctx.measureText(text);
+  measureWidth(text) {
+    return this.ctx.measureText(text).width / dpr();
   }
 
   line(...xys) {

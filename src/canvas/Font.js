@@ -1,5 +1,5 @@
 import { Crop } from './Crop';
-import { dpr, npx } from './Draw';
+import { npx } from './Draw';
 import { Utils } from '../utils/Utils';
 import { DrawAngle, TrigonometricFunction } from './DrawAngle';
 import { Rect } from './Rect';
@@ -12,8 +12,6 @@ const VERTICAL_LIEN_HEIGHT = 0;
 const HORIZONTAL_LIEN_HEIGHT = 4;
 // 旋转文本间距
 const ANGLE_LINE_HEIGHT = 4;
-// 内容填充
-const PADDING = 8;
 
 const ALIGN = {
   left: 'left',
@@ -55,11 +53,6 @@ class HorizontalFontDraw {
     this.overflow = overflow;
     this.overflowCrop = overflowCrop;
     this.attr = attr;
-  }
-
-  textWidth(text) {
-    const { dw } = this;
-    return dw.measureText(text).width;
   }
 
   drawLine(type, tx, ty, textWidth) {
@@ -147,34 +140,34 @@ class HorizontalFontDraw {
       text, dw, attr, rect,
     } = this;
     const {
-      underline, strikethrough, align, verticalAlign,
+      underline, strikethrough, align, verticalAlign, padding,
     } = attr;
     const { width, height } = rect;
-    const textWidth = this.textWidth(text) / dpr();
+    const textWidth = dw.measureWidth(text);
     let tx = rect.x;
     let ty = rect.y;
     switch (align) {
       case ALIGN.left:
-        tx += PADDING;
+        tx += padding;
         break;
       case ALIGN.center:
         tx += width / 2;
         break;
       case ALIGN.right:
-        tx += width - PADDING;
+        tx += width - padding;
         break;
       default:
         break;
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
-        ty += PADDING;
+        ty += padding;
         break;
       case VERTICAL_ALIGN.center:
         ty += height / 2;
         break;
       case VERTICAL_ALIGN.bottom:
-        ty += height - PADDING;
+        ty += height - padding;
         break;
       default:
         break;
@@ -183,7 +176,7 @@ class HorizontalFontDraw {
     switch (align) {
       case ALIGN.right:
       case ALIGN.left:
-        contentWidth = textWidth + PADDING * 2;
+        contentWidth = textWidth + padding * 2;
         break;
       case ALIGN.center:
       default:
@@ -218,40 +211,40 @@ class HorizontalFontDraw {
       text, dw, attr, rect, overflow, overflowCrop,
     } = this;
     const {
-      size, underline, strikethrough, align, verticalAlign,
+      size, underline, strikethrough, align, verticalAlign, padding,
     } = attr;
     const { width, height } = rect;
-    const textWidth = this.textWidth(text) / dpr();
+    const textWidth = dw.measureWidth(text);
     let tx = rect.x;
     let ty = rect.y;
     let paddingH = 0;
     let paddingV = 0;
     switch (align) {
       case ALIGN.left:
-        tx += PADDING;
-        paddingH = PADDING;
+        tx += padding;
+        paddingH = padding;
         break;
       case ALIGN.center:
         tx += width / 2;
         break;
       case ALIGN.right:
-        tx += width - PADDING;
-        paddingH = PADDING;
+        tx += width - padding;
+        paddingH = padding;
         break;
       default:
         break;
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
-        ty += PADDING;
-        paddingV = PADDING;
+        ty += padding;
+        paddingV = padding;
         break;
       case VERTICAL_ALIGN.center:
         ty += height / 2;
         break;
       case VERTICAL_ALIGN.bottom:
-        ty += height - PADDING;
-        paddingV = PADDING;
+        ty += height - padding;
+        paddingV = padding;
         break;
       default:
         break;
@@ -260,7 +253,7 @@ class HorizontalFontDraw {
     switch (align) {
       case ALIGN.right:
       case ALIGN.left:
-        contentWidth = textWidth + PADDING * 2;
+        contentWidth = textWidth + padding * 2;
         break;
       case ALIGN.center:
       default:
@@ -307,9 +300,11 @@ class HorizontalFontDraw {
   drawTextWarp() {
     // console.log('drawTextWarp');
     const { text, dw, attr, rect } = this;
-    const { size, underline, strikethrough, align, verticalAlign } = attr;
+    const {
+      size, underline, strikethrough, align, verticalAlign, padding,
+    } = attr;
     const { width, height } = rect;
-    const maxTextWidth = width - PADDING * 2;
+    const maxTextWidth = width - padding * 2;
     const textArray = [];
     const textLine = {
       len: 0,
@@ -320,7 +315,7 @@ class HorizontalFontDraw {
     let i = 0;
     let maxLen = 0;
     while (i < len) {
-      const charWidth = this.textWidth(text.charAt(i)) / dpr();
+      const charWidth = dw.measureWidth(text.charAt(i));
       const textWidth = textLine.len + charWidth;
       if (textWidth > maxTextWidth) {
         if (textLine.len === 0) {
@@ -368,26 +363,26 @@ class HorizontalFontDraw {
     let by = rect.y;
     switch (align) {
       case ALIGN.left:
-        bx += PADDING;
+        bx += padding;
         break;
       case ALIGN.center:
         bx += width / 2;
         break;
       case ALIGN.right:
-        bx += width - PADDING;
+        bx += width - padding;
         break;
       default:
         break;
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
-        by += PADDING;
+        by += padding;
         break;
       case VERTICAL_ALIGN.center:
         by += height / 2 - hOffset / 2;
         break;
       case VERTICAL_ALIGN.bottom:
-        by += height - hOffset - PADDING;
+        by += height - hOffset - padding;
         break;
       default:
         break;
@@ -396,7 +391,7 @@ class HorizontalFontDraw {
     switch (align) {
       case ALIGN.right:
       case ALIGN.left:
-        contentWidth = maxLen + PADDING * 2;
+        contentWidth = maxLen + padding * 2;
         break;
       case ALIGN.center:
       default:
@@ -463,6 +458,10 @@ class HorizontalFontDraw {
   setTextWrap(textWrap) {
     this.attr.textWrap = textWrap;
   }
+
+  setPadding(padding) {
+    this.attr.padding = padding;
+  }
 }
 
 /**
@@ -478,11 +477,6 @@ class VerticalFontDraw {
     this.overflow = overflow;
     this.overflowCrop = overflowCrop;
     this.attr = attr;
-  }
-
-  textWidth(text) {
-    const { dw } = this;
-    return dw.measureText(text).width;
   }
 
   drawLine(type, tx, ty, textWidth, align, verticalAlign) {
@@ -566,7 +560,7 @@ class VerticalFontDraw {
       text, dw, attr, rect,
     } = this;
     const {
-      underline, strikethrough, align, verticalAlign, size,
+      underline, strikethrough, align, verticalAlign, size, padding,
     } = attr;
     const { width, height } = rect;
     const textArray = [];
@@ -574,7 +568,7 @@ class VerticalFontDraw {
     for (let i = 0; i < text.length; i += 1) {
       const char = text.charAt(i);
       textArray.push({
-        len: this.textWidth(char) / dpr(),
+        len: dw.measureWidth(char),
         text: char,
         tx: 0,
         ty: hOffset,
@@ -589,26 +583,26 @@ class VerticalFontDraw {
     let by = rect.y;
     switch (align) {
       case ALIGN.left:
-        bx += PADDING;
+        bx += padding;
         break;
       case ALIGN.center:
         bx += width / 2;
         break;
       case ALIGN.right:
-        bx += width - PADDING;
+        bx += width - padding;
         break;
       default:
         break;
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
-        by += PADDING;
+        by += padding;
         break;
       case VERTICAL_ALIGN.center:
-        by += height / 2 - hOffset / 2 + PADDING;
+        by += height / 2 - hOffset / 2 + padding;
         break;
       case VERTICAL_ALIGN.bottom:
-        by += height - hOffset + PADDING;
+        by += height - hOffset + padding;
         break;
       default:
         break;
@@ -617,7 +611,7 @@ class VerticalFontDraw {
     switch (align) {
       case ALIGN.left:
       case ALIGN.right:
-        contentWidth = size + PADDING * 2;
+        contentWidth = size + padding * 2;
         break;
       case ALIGN.center:
       default:
@@ -652,7 +646,7 @@ class VerticalFontDraw {
       text, dw, attr, rect, overflow, overflowCrop,
     } = this;
     const {
-      underline, strikethrough, align, verticalAlign, size,
+      underline, strikethrough, align, verticalAlign, size, padding,
     } = attr;
     const { width, height } = rect;
     const textArray = [];
@@ -660,7 +654,7 @@ class VerticalFontDraw {
     for (let i = 0; i < text.length; i += 1) {
       const char = text.charAt(i);
       textArray.push({
-        len: this.textWidth(char) / dpr(),
+        len: dw.measureWidth(char),
         text: char,
         tx: 0,
         ty: hOffset,
@@ -677,30 +671,30 @@ class VerticalFontDraw {
     let paddingV = 0;
     switch (align) {
       case ALIGN.left:
-        bx += PADDING;
-        paddingH = PADDING;
+        bx += padding;
+        paddingH = padding;
         break;
       case ALIGN.center:
         bx += width / 2;
         break;
       case ALIGN.right:
-        bx += width - PADDING;
-        paddingH = PADDING;
+        bx += width - padding;
+        paddingH = padding;
         break;
       default:
         break;
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
-        by += PADDING;
-        paddingV = PADDING;
+        by += padding;
+        paddingV = padding;
         break;
       case VERTICAL_ALIGN.center:
-        by += height / 2 - hOffset / 2 + PADDING;
+        by += height / 2 - hOffset / 2 + padding;
         break;
       case VERTICAL_ALIGN.bottom:
-        by += height - hOffset + PADDING;
-        paddingV = PADDING;
+        by += height - hOffset + padding;
+        paddingV = padding;
         break;
       default:
         break;
@@ -709,7 +703,7 @@ class VerticalFontDraw {
     switch (align) {
       case ALIGN.left:
       case ALIGN.right:
-        contentWidth = size + PADDING * 2;
+        contentWidth = size + padding * 2;
         break;
       case ALIGN.center:
       default:
@@ -763,12 +757,12 @@ class VerticalFontDraw {
       text, dw, attr, rect,
     } = this;
     const {
-      underline, strikethrough, align, verticalAlign, size,
+      underline, strikethrough, align, verticalAlign, size, padding,
     } = attr;
     const { width, height } = rect;
     const textArray = [];
     const len = text.length;
-    const boxHeight = height - PADDING * 2;
+    const boxHeight = height - padding * 2;
     let textItem = [];
     let textLen = 0;
     let hOffset = 0;
@@ -779,7 +773,7 @@ class VerticalFontDraw {
       const last = i === len - 1;
       const first = i === 0;
       const char = text.charAt(i);
-      const charWidth = this.textWidth(char) / dpr();
+      const charWidth = dw.measureWidth(char);
       let textHeight;
       if (last) {
         textHeight = textLen + size;
@@ -830,13 +824,13 @@ class VerticalFontDraw {
     let verticalAlignValue = verticalAlign;
     switch (align) {
       case ALIGN.left:
-        bx += PADDING;
+        bx += padding;
         break;
       case ALIGN.center:
         bx += width / 2 - wOffset / 2;
         break;
       case ALIGN.right:
-        bx += width - wOffset - PADDING;
+        bx += width - wOffset - padding;
         break;
       default:
         break;
@@ -846,7 +840,7 @@ class VerticalFontDraw {
         dw.attr({
           textBaseline: attr.verticalAlign,
         });
-        by += PADDING;
+        by += padding;
         verticalAlignValue = VERTICAL_ALIGN.top;
         break;
       case VERTICAL_ALIGN.center:
@@ -854,13 +848,13 @@ class VerticalFontDraw {
           dw.attr({
             textBaseline: attr.verticalAlign,
           });
-          by += height / 2 - hOffset / 2 + PADDING;
+          by += height / 2 - hOffset / 2 + padding;
           verticalAlignValue = VERTICAL_ALIGN.center;
         } else {
           dw.attr({
             textBaseline: VERTICAL_ALIGN.top,
           });
-          by += PADDING;
+          by += padding;
           verticalAlignValue = VERTICAL_ALIGN.top;
         }
         break;
@@ -869,13 +863,13 @@ class VerticalFontDraw {
           dw.attr({
             textBaseline: VERTICAL_ALIGN.bottom,
           });
-          by += height - hOffset + PADDING;
+          by += height - hOffset + padding;
           verticalAlignValue = VERTICAL_ALIGN.bottom;
         } else {
           dw.attr({
             textBaseline: VERTICAL_ALIGN.top,
           });
-          by += PADDING;
+          by += padding;
           verticalAlignValue = VERTICAL_ALIGN.top;
         }
         break;
@@ -886,7 +880,7 @@ class VerticalFontDraw {
     switch (align) {
       case ALIGN.left:
       case ALIGN.right:
-        contentWidth = wOffset + size + PADDING * 2;
+        contentWidth = wOffset + size + padding * 2;
         break;
       case ALIGN.center:
       default:
@@ -968,6 +962,10 @@ class VerticalFontDraw {
   setTextWrap(textWrap) {
     this.attr.textWrap = textWrap;
   }
+
+  setPadding(padding) {
+    this.attr.padding = padding;
+  }
 }
 
 /**
@@ -983,11 +981,6 @@ class AngleFontDraw {
     this.overflow = overflow;
     this.overflowCrop = overflowCrop;
     this.attr = attr;
-  }
-
-  textWidth(text) {
-    const { dw } = this;
-    return dw.measureText(text).width;
   }
 
   drawLine(type, tx, ty, textWidth) {
@@ -1015,7 +1008,7 @@ class AngleFontDraw {
       text, dw, attr, rect,
     } = this;
     const {
-      underline, strikethrough, align, verticalAlign, size,
+      underline, strikethrough, align, verticalAlign, size, padding,
     } = attr;
     let { angle } = attr;
     const { width, height } = rect;
@@ -1027,7 +1020,7 @@ class AngleFontDraw {
     }
     // 计算文字斜边
     // 的宽度
-    const textWidth = this.textWidth(text) / dpr();
+    const textWidth = dw.measureWidth(text);
     const trigonometric = new TrigonometricFunction({
       angle,
       width: textWidth,
@@ -1040,26 +1033,26 @@ class AngleFontDraw {
     let rty = rect.y;
     switch (align) {
       case ALIGN.left:
-        rtx += PADDING;
+        rtx += padding;
         break;
       case ALIGN.center:
         rtx += width / 2 - trigonometricWidth / 2;
         break;
       case ALIGN.right:
-        rtx += width - trigonometricWidth - PADDING;
+        rtx += width - trigonometricWidth - padding;
         break;
       default:
         break;
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
-        rty += PADDING;
+        rty += padding;
         break;
       case VERTICAL_ALIGN.center:
         rty += height / 2 - trigonometricHeight / 2;
         break;
       case VERTICAL_ALIGN.bottom:
-        rty += height - trigonometricHeight - PADDING;
+        rty += height - trigonometricHeight - padding;
         break;
       default:
         break;
@@ -1069,7 +1062,7 @@ class AngleFontDraw {
     switch (align) {
       case ALIGN.right:
       case ALIGN.left:
-        contentWidth = trigonometricWidth + PADDING * 2;
+        contentWidth = trigonometricWidth + padding * 2;
         break;
       case ALIGN.center:
       default:
@@ -1130,7 +1123,7 @@ class AngleFontDraw {
       text, dw, attr, rect, overflow,
     } = this;
     const {
-      underline, strikethrough, align, verticalAlign, size, overflowCrop,
+      underline, strikethrough, align, verticalAlign, size, overflowCrop, padding,
     } = attr;
     let { angle } = attr;
     const { width, height } = rect;
@@ -1142,7 +1135,7 @@ class AngleFontDraw {
     }
     // 计算文字斜边
     // 的宽度
-    const textWidth = this.textWidth(text) / dpr();
+    const textWidth = dw.measureWidth(text);
     const trigonometric = new TrigonometricFunction({
       angle,
       width: textWidth,
@@ -1155,26 +1148,26 @@ class AngleFontDraw {
     let rty = rect.y;
     switch (align) {
       case ALIGN.left:
-        rtx += PADDING;
+        rtx += padding;
         break;
       case ALIGN.center:
         rtx += width / 2 - trigonometricWidth / 2;
         break;
       case ALIGN.right:
-        rtx += width - trigonometricWidth - PADDING;
+        rtx += width - trigonometricWidth - padding;
         break;
       default:
         break;
     }
     switch (verticalAlign) {
       case VERTICAL_ALIGN.top:
-        rty += PADDING;
+        rty += padding;
         break;
       case VERTICAL_ALIGN.center:
         rty += height / 2 - trigonometricHeight / 2;
         break;
       case VERTICAL_ALIGN.bottom:
-        rty += height - trigonometricHeight - PADDING;
+        rty += height - trigonometricHeight - padding;
         break;
       default:
         break;
@@ -1184,7 +1177,7 @@ class AngleFontDraw {
     switch (align) {
       case ALIGN.right:
       case ALIGN.left:
-        contentWidth = trigonometricWidth + PADDING * 2;
+        contentWidth = trigonometricWidth + padding * 2;
         break;
       case ALIGN.center:
       default:
@@ -1262,7 +1255,7 @@ class AngleFontDraw {
       text, dw, attr, rect,
     } = this;
     const {
-      underline, strikethrough, align, verticalAlign, size,
+      underline, strikethrough, align, verticalAlign, size, padding,
     } = attr;
     let { angle } = attr;
     if (angle > 90) {
@@ -1279,7 +1272,7 @@ class AngleFontDraw {
 
       // 计算斜角文本的最大绘制宽度
       // 超过绘制宽度自动换行
-      trigonometric.setHeight(height - PADDING * 2);
+      trigonometric.setHeight(height - padding * 2);
       const textHypotenuseWidth = trigonometric.sinHeightAngle();
 
       // 计算文本块之间的间隙
@@ -1295,7 +1288,7 @@ class AngleFontDraw {
       const len = text.length;
       let i = 0;
       while (i < len) {
-        const charWidth = this.textWidth(text.charAt(i)) / dpr();
+        const charWidth = dw.measureWidth(text.charAt(i));
         const textWidth = textLine.len + charWidth;
         if (textWidth > textHypotenuseWidth) {
           if (textLine.len === 0) {
@@ -1358,26 +1351,26 @@ class AngleFontDraw {
         let by = rect.y;
         switch (align) {
           case ALIGN.left:
-            bx += PADDING;
+            bx += padding;
             break;
           case ALIGN.center:
             bx += width / 2 - totalWidth / 2;
             break;
           case ALIGN.right:
-            bx += width - totalWidth - PADDING;
+            bx += width - totalWidth - padding;
             break;
           default:
             break;
         }
         switch (verticalAlign) {
           case VERTICAL_ALIGN.top:
-            by += PADDING;
+            by += padding;
             break;
           case VERTICAL_ALIGN.center:
             by += height / 2 - textHeight / 2;
             break;
           case VERTICAL_ALIGN.bottom:
-            by += height - textHeight - PADDING;
+            by += height - textHeight - padding;
             break;
           default:
             break;
@@ -1386,7 +1379,7 @@ class AngleFontDraw {
         switch (align) {
           case ALIGN.right:
           case ALIGN.left:
-            contentWidth = totalWidth + PADDING * 2;
+            contentWidth = totalWidth + padding * 2;
             break;
           case ALIGN.center:
           default:
@@ -1466,7 +1459,7 @@ class AngleFontDraw {
 
       // 计算文本块的
       // 大小
-      const textWidth = this.textWidth(text) / dpr();
+      const textWidth = dw.measureWidth(text);
       trigonometric.setWidth(textWidth);
       const trigonometricWidth = Math.max(trigonometric.cosWidthAngle(), size);
       const trigonometricHeight = trigonometric.sinWidthAngle();
@@ -1478,26 +1471,26 @@ class AngleFontDraw {
       let rty = rect.y;
       switch (align) {
         case ALIGN.left:
-          rtx += PADDING;
+          rtx += padding;
           break;
         case ALIGN.center:
           rtx += width / 2 - trigonometricWidth / 2;
           break;
         case ALIGN.right:
-          rtx += width - trigonometricWidth - PADDING;
+          rtx += width - trigonometricWidth - padding;
           break;
         default:
           break;
       }
       switch (verticalAlign) {
         case VERTICAL_ALIGN.top:
-          rty += PADDING;
+          rty += padding;
           break;
         case VERTICAL_ALIGN.center:
           rty += height / 2 - trigonometricHeight / 2;
           break;
         case VERTICAL_ALIGN.bottom:
-          rty += height - trigonometricHeight - PADDING;
+          rty += height - trigonometricHeight - padding;
           break;
         default:
           break;
@@ -1506,7 +1499,7 @@ class AngleFontDraw {
       switch (align) {
         case ALIGN.right:
         case ALIGN.left:
-          contentWidth = trigonometricWidth + PADDING * 2;
+          contentWidth = trigonometricWidth + padding * 2;
           break;
         case ALIGN.center:
         default:
@@ -1548,7 +1541,7 @@ class AngleFontDraw {
 
       // 计算斜角文本的最大绘制宽度
       // 超过绘制宽度自动换行
-      trigonometric.setHeight(height - PADDING * 2);
+      trigonometric.setHeight(height - padding * 2);
       const textHypotenuseWidth = trigonometric.sinHeightAngle();
 
       // 计算文本块之间的间隙
@@ -1564,7 +1557,7 @@ class AngleFontDraw {
       const len = text.length;
       let i = 0;
       while (i < len) {
-        const charWidth = this.textWidth(text.charAt(i)) / dpr();
+        const charWidth = dw.measureWidth(text.charAt(i));
         const textWidth = textLine.len + charWidth;
         if (textWidth > textHypotenuseWidth) {
           if (textLine.len === 0) {
@@ -1626,26 +1619,26 @@ class AngleFontDraw {
         let by = rect.y;
         switch (align) {
           case ALIGN.left:
-            bx += PADDING;
+            bx += padding;
             break;
           case ALIGN.center:
             bx += width / 2 - totalWidth / 2;
             break;
           case ALIGN.right:
-            bx += width - totalWidth - PADDING;
+            bx += width - totalWidth - padding;
             break;
           default:
             break;
         }
         switch (verticalAlign) {
           case VERTICAL_ALIGN.top:
-            by += PADDING;
+            by += padding;
             break;
           case VERTICAL_ALIGN.center:
             by += height / 2 - textHeight / 2;
             break;
           case VERTICAL_ALIGN.bottom:
-            by += height - textHeight - PADDING;
+            by += height - textHeight - padding;
             break;
           default:
             break;
@@ -1654,7 +1647,7 @@ class AngleFontDraw {
         switch (align) {
           case ALIGN.right:
           case ALIGN.left:
-            contentWidth = totalWidth + PADDING * 2;
+            contentWidth = totalWidth + padding * 2;
             break;
           case ALIGN.center:
           default:
@@ -1734,7 +1727,7 @@ class AngleFontDraw {
 
       // 计算文本块的
       // 大小
-      const textWidth = this.textWidth(text) / dpr();
+      const textWidth = dw.measureWidth(text);
       trigonometric.setWidth(textWidth);
       const trigonometricWidth = Math.max(trigonometric.cosWidthAngle(), size);
       const trigonometricHeight = trigonometric.sinWidthAngle();
@@ -1746,26 +1739,26 @@ class AngleFontDraw {
       let rty = rect.y;
       switch (align) {
         case ALIGN.left:
-          rtx += PADDING;
+          rtx += padding;
           break;
         case ALIGN.center:
           rtx += width / 2 - trigonometricWidth / 2;
           break;
         case ALIGN.right:
-          rtx += width - trigonometricWidth - PADDING;
+          rtx += width - trigonometricWidth - padding;
           break;
         default:
           break;
       }
       switch (verticalAlign) {
         case VERTICAL_ALIGN.top:
-          rty += PADDING;
+          rty += padding;
           break;
         case VERTICAL_ALIGN.center:
           rty += height / 2 - trigonometricHeight / 2;
           break;
         case VERTICAL_ALIGN.bottom:
-          rty += height - trigonometricHeight - PADDING;
+          rty += height - trigonometricHeight - padding;
           break;
         default:
           break;
@@ -1774,7 +1767,7 @@ class AngleFontDraw {
       switch (align) {
         case ALIGN.right:
         case ALIGN.left:
-          contentWidth = trigonometricWidth + PADDING * 2;
+          contentWidth = trigonometricWidth + padding * 2;
           break;
         case ALIGN.center:
         default:
@@ -1810,7 +1803,7 @@ class AngleFontDraw {
       return contentWidth;
     }
     if (angle === 0) {
-      const maxTextWidth = width - PADDING * 2;
+      const maxTextWidth = width - padding * 2;
       const textArray = [];
       const textLine = {
         len: 0,
@@ -1822,7 +1815,7 @@ class AngleFontDraw {
       let i = 0;
       let maxLen = 0;
       while (i < len) {
-        const charWidth = this.textWidth(text.charAt(i)) / dpr();
+        const charWidth = dw.measureWidth(text.charAt(i));
         const textWidth = textLine.len + charWidth;
         if (textWidth > maxTextWidth) {
           if (textLine.len === 0) {
@@ -1880,7 +1873,7 @@ class AngleFontDraw {
       switch (align) {
         case ALIGN.right:
         case ALIGN.left:
-          contentWidth = maxLen + PADDING * 2;
+          contentWidth = maxLen + padding * 2;
           break;
         case ALIGN.center:
         default:
@@ -1898,26 +1891,26 @@ class AngleFontDraw {
         let ty = rect.y;
         switch (align) {
           case ALIGN.left:
-            tx += PADDING;
+            tx += padding;
             break;
           case ALIGN.center:
             tx += width / 2 - item.len / 2;
             break;
           case ALIGN.right:
-            tx += width - item.len - PADDING;
+            tx += width - item.len - padding;
             break;
           default:
             break;
         }
         switch (verticalAlign) {
           case VERTICAL_ALIGN.top:
-            ty += item.ty + PADDING;
+            ty += item.ty + padding;
             break;
           case VERTICAL_ALIGN.center:
             ty += item.ty + (height / 2 - totalTextHeight / 2);
             break;
           case VERTICAL_ALIGN.bottom:
-            ty += item.ty + (height - totalTextHeight - PADDING);
+            ty += item.ty + (height - totalTextHeight - padding);
             break;
           default:
             break;
@@ -1971,6 +1964,10 @@ class AngleFontDraw {
         return this.drawTextOverFlow();
     }
   }
+
+  setPadding(padding) {
+    this.attr.padding = padding;
+  }
 }
 
 /**
@@ -1994,6 +1991,7 @@ class Font extends DrawFont {
       verticalAlign: VERTICAL_ALIGN.center,
       direction: TEXT_DIRECTION.HORIZONTAL,
       angle: 0,
+      padding: 8,
     }, attr);
     this.verticalFontDraw = new VerticalFontDraw({
       text,
@@ -2047,13 +2045,18 @@ class Font extends DrawFont {
     this.verticalFontDraw.setTextWrap(textWrap);
     this.horizontalFontDraw.setTextWrap(textWrap);
   }
+
+  setPadding(padding) {
+    this.verticalFontDraw.setPadding(padding);
+    this.horizontalFontDraw.setPadding(padding);
+    this.angleFontDraw.setPadding(padding);
+  }
 }
 
 export {
   VERTICAL_ALIGN,
   ALIGN, TEXT_WRAP,
   TEXT_DIRECTION,
-  PADDING,
 };
 
 export { Font };

@@ -6,11 +6,11 @@ class Scale {
   }
 
   to(origin) {
-    return Math.ceil(this.value * origin);
+    return this.value * origin;
   }
 
   back(origin) {
-    return Math.ceil(origin / this.value);
+    return origin / this.value;
   }
 
   setValue(value) {

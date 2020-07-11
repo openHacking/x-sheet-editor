@@ -38,6 +38,7 @@ class FontBuilder {
       attr,
       overflow,
     });
+    font.setPadding(scale.to(attr.padding));
     font.setSize(scale.to(attr.size));
     return font;
   }

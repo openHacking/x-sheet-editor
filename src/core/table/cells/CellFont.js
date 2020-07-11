@@ -25,6 +25,7 @@ class CellFont {
    * @param italic
    * @param angle
    * @param direction
+   * @param padding
    */
   constructor({
     align = ALIGN.left,
@@ -39,6 +40,7 @@ class CellFont {
     italic = false,
     angle = 0,
     direction = TEXT_DIRECTION.HORIZONTAL,
+    padding = 8,
   }) {
     this.align = align;
     this.verticalAlign = verticalAlign;
@@ -52,6 +54,7 @@ class CellFont {
     this.italic = italic;
     this.direction = direction;
     this.angle = angle;
+    this.padding = padding;
   }
 
   clone() {
@@ -68,6 +71,7 @@ class CellFont {
       italic,
       angle,
       direction,
+      padding,
     } = this;
     return new CellFont({
       align,
@@ -82,6 +86,7 @@ class CellFont {
       italic,
       angle,
       direction,
+      padding,
     });
   }
 }
