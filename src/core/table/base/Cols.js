@@ -8,7 +8,7 @@ class Cols {
     this.minWidth = 5;
     this.width = Utils.minIf(width, this.minWidth);
     this.len = len;
-    this.cacheTotalWidth = -1;
+    this.cacheTotalWidth = null;
     this.setData(data);
   }
 
@@ -22,17 +22,21 @@ class Cols {
   }
 
   getWidth(i) {
+    const { table } = this;
+    const { scale } = table;
     const col = this._[i];
     if (col && col.width) {
-      return col.width;
+      return scale.to(col.width);
     }
-    return this.width;
+    return scale.to(this.width);
   }
 
   setWidth(i, width) {
     const col = this.getOrNew(i);
-    col.width = Utils.minIf(width, this.minWidth);
-    this.cacheTotalWidth = -1;
+    const { table } = this;
+    const { scale } = table;
+    col.width = scale.back(Utils.minIf(width, this.minWidth));
+    this.cacheTotalWidth = null;
   }
 
   eachWidth(ci, ei, cb, sx = 0) {
@@ -53,7 +57,7 @@ class Cols {
   }
 
   totalWidth() {
-    if (this.cacheTotalWidth === -1) {
+    if (Utils.isNumber(this.cacheTotalWidth)) {
       this.cacheTotalWidth = Utils.rangeSum(0, this.len, i => this.getWidth(i));
     }
     return this.cacheTotalWidth;

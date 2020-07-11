@@ -5,10 +5,12 @@ import { FontSizeContextMenuItem } from './FontSizeContextMenuItem';
 
 
 class FontSizeContextMenu extends ELContextMenu {
+
   constructor(options = {}) {
     super(`${cssPrefix}-font-size-context-menu`, Utils.mergeDeep({
       onUpdate: () => {},
     }, options));
+
     this.items = [
       new FontSizeContextMenuItem(6),
       new FontSizeContextMenuItem(7),
@@ -36,6 +38,7 @@ class FontSizeContextMenu extends ELContextMenu {
     options.onUpdate(size);
     this.close();
   }
+
 }
 
 export { FontSizeContextMenu };

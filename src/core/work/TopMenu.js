@@ -30,6 +30,7 @@ import { Icon } from './tools/Icon';
 import { ALIGN, TEXT_WRAP, VERTICAL_ALIGN } from '../../canvas/Font';
 import { Cell } from '../table/cells/Cell';
 import { Utils } from '../../utils/Utils';
+import { Scale } from './tools/Scale';
 
 class Divider extends Widget {
   constructor() {
@@ -49,6 +50,15 @@ class TopMenu extends Widget {
     // tools
     this.undo = new Undo();
     this.redo = new Redo();
+    this.scale = new Scale({
+      contextMenu: {
+        onUpdate: (value) => {
+          this.scale.setTitle(`${value}%`);
+          const { body } = this.workTop.work;
+          body.setScale(value / 100);
+        },
+      },
+    });
     this.paintFormat = new PaintFormat();
     this.clearFormat = new ClearFormat();
     this.format = new Format({
@@ -773,9 +783,10 @@ class TopMenu extends Widget {
     this.functions = new Functions();
     this.children(this.undo);
     this.children(this.redo);
+    this.children(new Divider());
+    this.children(this.scale);
     this.children(this.paintFormat);
     this.children(this.clearFormat);
-    this.children(new Divider());
     this.children(this.format);
     this.children(new Divider());
     this.children(this.font);
@@ -837,6 +848,19 @@ class TopMenu extends Widget {
       const { table } = sheet;
       const { tableDataSnapshot } = table;
       if (tableDataSnapshot.canGo()) tableDataSnapshot.go();
+    });
+    EventBind.bind(this.scale, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const { scale } = this;
+      const { scaleContextMenu } = scale;
+      const { elPopUp } = scaleContextMenu;
+      ElPopUp.closeAll([elPopUp]);
+      if (scaleContextMenu.isOpen()) {
+        scaleContextMenu.open();
+      } else {
+        scaleContextMenu.close();
+      }
+      e.stopPropagation();
+      e.preventDefault();
     });
     EventBind.bind(this.paintFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
@@ -1187,6 +1211,16 @@ class TopMenu extends Widget {
     this.redo.active(tableDataSnapshot.canGo());
   }
 
+  setScaleStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { scale } = table;
+    const value = scale.to(100);
+    this.scale.setTitle(`${value}%`);
+  }
+
   setPaintFormatStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
@@ -1478,6 +1512,7 @@ class TopMenu extends Widget {
   setStatus() {
     this.setUndoStatus();
     this.setRedoStatus();
+    this.setScaleStatus();
     this.setPaintFormatStatus();
     this.setFormatStatus();
     this.setFontStatus();

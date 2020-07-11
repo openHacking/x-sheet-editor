@@ -50,29 +50,29 @@ class Screen extends Widget {
 
   setDivideLayer() {
     const { table } = this;
-    const { settings, grid } = table;
-    const { index } = settings;
+    const { grid } = table;
+    const { index } = table;
     const fixedWidth = table.getFixedWidth();
     const fixedHeight = table.getFixedHeight();
-    const brLeft = index.width + fixedWidth;
-    const brTop = index.height + fixedHeight;
+    const brLeft = index.getWidth() + fixedWidth;
+    const brTop = index.getHeight() + fixedHeight;
     this.br.offset({ left: brLeft, top: brTop });
     if (fixedWidth > 0 && fixedHeight > 0) {
       this.lt.offset({
-        left: index.width, top: index.height, width: fixedWidth, height: fixedHeight,
+        left: index.getWidth(), top: index.getHeight(), width: fixedWidth, height: fixedHeight,
       }).show();
       this.lt.css('border-width', `${grid.lineWidth()}px`);
     } else {
       this.lt.hide();
     }
     if (fixedWidth > 0) {
-      this.l.offset({ left: index.width, top: brTop, width: fixedWidth }).show();
+      this.l.offset({ left: index.getWidth(), top: brTop, width: fixedWidth }).show();
       this.l.css('border-width', `${grid.lineWidth()}px`);
     } else {
       this.l.hide();
     }
     if (fixedHeight > 0) {
-      this.t.offset({ left: brLeft, top: index.height, height: fixedHeight }).show();
+      this.t.offset({ left: brLeft, top: index.getHeight(), height: fixedHeight }).show();
       this.t.css('border-width', `${grid.lineWidth()}px`);
     } else {
       this.t.hide();

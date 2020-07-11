@@ -3,6 +3,7 @@ import { cssPrefix } from '../../../../../constant/Constant';
 import { h } from '../../../../../lib/Element';
 
 class FontSizeContextMenuItem extends ELContextMenuItem {
+
   constructor(size) {
     super(`${cssPrefix}-font-size-context-menu-item`);
     this.size = size;
@@ -11,6 +12,7 @@ class FontSizeContextMenuItem extends ELContextMenuItem {
     this.titleElement.css('text-align', 'center');
     this.children(this.titleElement);
   }
+
 }
 
 export { FontSizeContextMenuItem };

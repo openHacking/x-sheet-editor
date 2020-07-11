@@ -57,7 +57,6 @@ class ScreenCopyStyle extends ScreenWidget {
     const size = new Rect({
       x: left, y: top, width, height,
     });
-    size.expandSize(grid.lineWidth());
     this.lt.offset({
       width: size.width,
       height: size.height,
@@ -112,7 +111,6 @@ class ScreenCopyStyle extends ScreenWidget {
     const size = new Rect({
       x: left, y: top, width, height,
     });
-    size.expandSize(grid.lineWidth());
     this.t.offset({
       width: size.width,
       height: size.height,
@@ -167,7 +165,6 @@ class ScreenCopyStyle extends ScreenWidget {
     const size = new Rect({
       x: left, y: top, width, height,
     });
-    size.expandSize(grid.lineWidth());
     this.l.offset({
       width: size.width,
       height: size.height,
@@ -229,7 +226,6 @@ class ScreenCopyStyle extends ScreenWidget {
     const size = new Rect({
       x: left, y: top, width, height,
     });
-    size.expandSize(grid.lineWidth());
     this.br.offset({
       width: size.width,
       height: size.height,

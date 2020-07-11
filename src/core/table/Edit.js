@@ -29,6 +29,9 @@ class Edit extends Widget {
     const { table } = this;
     const { screenSelector } = table;
     const selector = screenSelector;
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      e.stopPropagation();
+    });
     EventBind.bind(this.input, Constant.SYSTEM_EVENT_TYPE.INPUT, () => {
       const { input } = this;
       if (Utils.isBlank(this.input.text())) {

@@ -9,16 +9,19 @@ class XHeightLight extends Widget {
 
   constructor(table) {
     super(`${cssPrefix}-table-x-height-light`);
-
     this.table = table;
-    const { settings } = table;
-    const { index } = settings;
-    this.css('height', `${index.height}px`);
+    this.setSize();
   }
 
   onAttach() {
     this.bind();
     this.hide();
+  }
+
+  setSize() {
+    const { table } = this;
+    const { index } = table;
+    this.css('height', `${index.getHeight()}px`);
   }
 
   disjoint(sRect, tRect) {
@@ -39,8 +42,7 @@ class XHeightLight extends Widget {
 
   offsetHeightLight(selectorAttr, intersectsArea) {
     const { table } = this;
-    const { settings } = table;
-    const { index } = settings;
+    const { index } = table;
     const empty = new RectRange(0, -1, 0, -1);
     this.hide();
     switch (intersectsArea) {
@@ -51,7 +53,8 @@ class XHeightLight extends Widget {
         const ltCoincideRange = this.coincide(rect, ltViewRange);
         if (!empty.equals(ltCoincideRange)) {
           const width = cols.sectionSumWidth(ltCoincideRange.sci, ltCoincideRange.eci);
-          const left = cols.sectionSumWidth(ltViewRange.sci, ltCoincideRange.sci - 1) + index.width;
+          const left = cols.sectionSumWidth(ltViewRange.sci, ltCoincideRange.sci - 1)
+            + index.getWidth();
           if (`${width}px` !== this.css('width')) {
             this.css('width', `${width}px`);
           }
@@ -70,7 +73,7 @@ class XHeightLight extends Widget {
         if (!empty.equals(tCoincideRange)) {
           const width = cols.sectionSumWidth(tCoincideRange.sci, tCoincideRange.eci);
           const left = cols.sectionSumWidth(tViewRange.sci, tCoincideRange.sci - 1)
-            + table.getFixedWidth() + index.width;
+            + table.getFixedWidth() + index.getWidth();
           if (`${width}px` !== this.css('width')) {
             this.css('width', `${width}px`);
           }
@@ -89,7 +92,7 @@ class XHeightLight extends Widget {
         if (!empty.equals(cCoincideRange)) {
           const width = cols.sectionSumWidth(cCoincideRange.sci, cCoincideRange.eci);
           const left = cols.sectionSumWidth(cViewRange.sci, cCoincideRange.sci - 1)
-            + table.getFixedWidth() + index.width;
+            + table.getFixedWidth() + index.getWidth();
           if (`${width}px` !== this.css('width')) {
             this.css('width', `${width}px`);
           }
@@ -107,7 +110,8 @@ class XHeightLight extends Widget {
         const lCoincideRange = this.coincide(rect, lViewRange);
         if (!empty.equals(lCoincideRange)) {
           const width = cols.sectionSumWidth(lCoincideRange.sci, lCoincideRange.eci);
-          const left = cols.sectionSumWidth(lViewRange.sci, lCoincideRange.sci - 1) + index.width;
+          const left = cols.sectionSumWidth(lViewRange.sci, lCoincideRange.sci - 1)
+            + index.getWidth();
           if (`${width}px` !== this.css('width')) {
             this.css('width', `${width}px`);
           }
@@ -126,7 +130,8 @@ class XHeightLight extends Widget {
         const ltCoincideRange = this.coincide(rect, ltViewRange);
         const tCoincideRange = this.coincide(rect, tViewRange);
         let width = 0;
-        const left = cols.sectionSumWidth(ltViewRange.sci, ltCoincideRange.sci - 1) + index.width;
+        const left = cols.sectionSumWidth(ltViewRange.sci, ltCoincideRange.sci - 1)
+          + index.getWidth();
         if (!empty.equals(ltCoincideRange)) {
           width += cols.sectionSumWidth(ltCoincideRange.sci, ltCoincideRange.eci);
         }
@@ -149,7 +154,8 @@ class XHeightLight extends Widget {
         const ltCoincideRange = this.coincide(rect, ltViewRange);
         if (!empty.equals(ltCoincideRange)) {
           const width = cols.sectionSumWidth(ltCoincideRange.sci, ltCoincideRange.eci);
-          const left = cols.sectionSumWidth(ltViewRange.sci, ltCoincideRange.sci - 1) + index.width;
+          const left = cols.sectionSumWidth(ltViewRange.sci, ltCoincideRange.sci - 1)
+            + index.getWidth();
           if (`${width}px` !== this.css('width')) {
             this.css('width', `${width}px`);
           }
@@ -168,7 +174,7 @@ class XHeightLight extends Widget {
         if (!empty.equals(tCoincideRange)) {
           const width = cols.sectionSumWidth(tCoincideRange.sci, tCoincideRange.eci);
           const left = cols.sectionSumWidth(tViewRange.sci, tCoincideRange.sci - 1)
-            + table.getFixedWidth() + index.width;
+            + table.getFixedWidth() + index.getWidth();
           if (`${width}px` !== this.css('width')) {
             this.css('width', `${width}px`);
           }
@@ -187,7 +193,8 @@ class XHeightLight extends Widget {
         const lCoincideRange = this.coincide(rect, lViewRange);
         const cCoincideRange = this.coincide(rect, cViewRange);
         let width = 0;
-        const left = cols.sectionSumWidth(lViewRange.sci, lCoincideRange.sci - 1) + index.width;
+        const left = cols.sectionSumWidth(lViewRange.sci, lCoincideRange.sci - 1)
+          + index.getWidth();
         if (!empty.equals(lCoincideRange)) {
           width += cols.sectionSumWidth(lCoincideRange.sci, lCoincideRange.eci);
         }
@@ -211,7 +218,8 @@ class XHeightLight extends Widget {
         const ltCoincideRange = this.coincide(rect, ltViewRange);
         const tCoincideRange = this.coincide(rect, tViewRange);
         let width = 0;
-        const left = cols.sectionSumWidth(ltViewRange.sci, ltCoincideRange.sci - 1) + index.width;
+        const left = cols.sectionSumWidth(ltViewRange.sci, ltCoincideRange.sci - 1)
+          + index.getWidth();
         if (!empty.equals(ltCoincideRange)) {
           width += cols.sectionSumWidth(ltCoincideRange.sci, ltCoincideRange.eci);
         }

@@ -42,7 +42,6 @@ class ScreenSelector extends ScreenWidget {
       if (el !== table) return;
       const { x, y } = table.computeEventXy(e1);
       const downSelectAttr = this.getDownXYSelectorAttr(x, y);
-      // console.log('downSelectAttr >>>', downSelectAttr);
       this.setSelectAttr(downSelectAttr);
       this.setDownSelectAttr(downSelectAttr);
       this.setOffset(downSelectAttr);
@@ -132,7 +131,6 @@ class ScreenSelector extends ScreenWidget {
     const size = new Rect({
       x: left, y: top, width, height,
     });
-    size.expandSize(grid.lineWidth());
     this.lt.offset({
       width: size.width,
       height: size.height,
@@ -181,7 +179,6 @@ class ScreenSelector extends ScreenWidget {
     const size = new Rect({
       x: left, y: top, width, height,
     });
-    size.expandSize(grid.lineWidth());
     this.t.offset({
       width: size.width,
       height: size.height,
@@ -230,7 +227,6 @@ class ScreenSelector extends ScreenWidget {
     const size = new Rect({
       x: left, y: top, width, height,
     });
-    size.expandSize(grid.lineWidth());
     this.l.offset({
       width: size.width,
       height: size.height,
@@ -284,7 +280,6 @@ class ScreenSelector extends ScreenWidget {
     const size = new Rect({
       x: left, y: top, width, height,
     });
-    size.expandSize(grid.lineWidth());
     this.br.offset({
       width: size.width,
       height: size.height,

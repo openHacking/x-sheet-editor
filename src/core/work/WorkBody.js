@@ -220,6 +220,14 @@ class WorkBody extends Widget {
     });
   }
 
+  setScale(value) {
+    const { sheetView } = this;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    table.setScale(value);
+    this.updateScroll();
+  }
+
   toTemplate() {
     const { activeIndex, sheetView, tabView } = this;
     const sheet = sheetView.sheetList[activeIndex];

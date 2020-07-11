@@ -452,12 +452,16 @@ class HorizontalFontDraw {
     }
   }
 
-  setTextWrap(textWrap) {
-    this.attr.textWrap = textWrap;
-  }
-
   setOverflowCrop(overflowCrop) {
     this.overflowCrop = overflowCrop;
+  }
+
+  setSize(size) {
+    this.attr.size = size;
+  }
+
+  setTextWrap(textWrap) {
+    this.attr.textWrap = textWrap;
   }
 }
 
@@ -953,12 +957,16 @@ class VerticalFontDraw {
     }
   }
 
-  setTextWrap(textWrap) {
-    this.attr.textWrap = textWrap;
-  }
-
   setOverflowCrop(overflowCrop) {
     this.overflowCrop = overflowCrop;
+  }
+
+  setSize(size) {
+    this.attr.size = size;
+  }
+
+  setTextWrap(textWrap) {
+    this.attr.textWrap = textWrap;
   }
 }
 
@@ -1931,6 +1939,14 @@ class AngleFontDraw {
     return 0;
   }
 
+  setOverflowCrop(overflowCrop) {
+    this.overflowCrop = overflowCrop;
+  }
+
+  setSize(size) {
+    this.attr.size = size;
+  }
+
   draw() {
     const { text } = this;
     if (DrawFont.isBlank(text)) {
@@ -1954,10 +1970,6 @@ class AngleFontDraw {
       default:
         return this.drawTextOverFlow();
     }
-  }
-
-  setOverflowCrop(overflowCrop) {
-    this.overflowCrop = overflowCrop;
   }
 }
 
@@ -2019,22 +2031,21 @@ class Font extends DrawFont {
     }
   }
 
-  setTextWrap(textWrap) {
-    const { attr } = this;
-    switch (attr.direction) {
-      case TEXT_DIRECTION.VERTICAL:
-        this.verticalFontDraw.setTextWrap(textWrap);
-        break;
-      case TEXT_DIRECTION.HORIZONTAL:
-      default:
-        this.horizontalFontDraw.setTextWrap(textWrap);
-    }
-  }
-
   setOverflowCrop(overflowCrop) {
     this.verticalFontDraw.setOverflowCrop(overflowCrop);
     this.horizontalFontDraw.setOverflowCrop(overflowCrop);
     this.angleFontDraw.setOverflowCrop(overflowCrop);
+  }
+
+  setSize(size) {
+    this.verticalFontDraw.setSize(size);
+    this.horizontalFontDraw.setSize(size);
+    this.angleFontDraw.setSize(size);
+  }
+
+  setTextWrap(textWrap) {
+    this.verticalFontDraw.setTextWrap(textWrap);
+    this.horizontalFontDraw.setTextWrap(textWrap);
   }
 }
 

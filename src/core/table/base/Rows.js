@@ -22,16 +22,20 @@ class Rows {
   }
 
   getHeight(ri) {
+    const { table } = this;
+    const { scale } = table;
     const row = this.get(ri);
     if (row && row.height) {
-      return row.height;
+      return scale.to(row.height);
     }
-    return this.height;
+    return scale.to(this.height);
   }
 
   setHeight(ri, height) {
     const row = this.getOrNew(ri);
-    row.height = Utils.minIf(height, this.minHeight);
+    const { table } = this;
+    const { scale } = table;
+    row.height = scale.back(Utils.minIf(height, this.minHeight));
     this.cacheTotalHeight = null;
   }
 

@@ -29,9 +29,9 @@ class YReSizer extends Widget {
   getEventTop(event) {
     const { table } = this;
     const {
-      settings, rows, fixed, scroll,
+      rows, fixed, scroll,
     } = table;
-    const { index } = settings;
+    const { index } = table;
     const { x, y } = table.computeEventXy(event);
     const { ri, ci } = table.getRiCiByXy(x, y);
     if (ci !== -1) {
@@ -39,7 +39,7 @@ class YReSizer extends Widget {
         top: -1, x, y, ri, ci,
       };
     }
-    let top = index.height + rows.sectionSumHeight(0, ri);
+    let top = index.getHeight() + rows.sectionSumHeight(0, ri);
     if (ri > fixed.fxTop) {
       top -= scroll.y;
     }
@@ -50,9 +50,11 @@ class YReSizer extends Widget {
 
   bind() {
     const { table } = this;
-    const { settings, rows, mousePointer, tableDataSnapshot } = table;
+    const {
+      rows, mousePointer, tableDataSnapshot,
+    } = table;
     const { rowsDataProxy } = tableDataSnapshot;
-    const { index } = settings;
+    const { index } = table;
     const { key, type } = Constant.MOUSE_POINTER_TYPE.ROW_RESIZE;
     let moveOff = false;
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
@@ -108,7 +110,7 @@ class YReSizer extends Widget {
       } else {
         this.show();
         this.css('top', `${top - this.height}px`);
-        this.hoverEl.css('width', `${index.width}px`);
+        this.hoverEl.css('width', `${index.getWidth()}px`);
         this.hoverEl.css('height', `${this.height}px`);
       }
     });

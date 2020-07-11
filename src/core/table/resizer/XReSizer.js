@@ -29,15 +29,15 @@ class XReSizer extends Widget {
   getEventLeft(event) {
     const { table } = this;
     const {
-      settings, cols, fixed, scroll,
+      cols, fixed, scroll,
     } = table;
-    const { index } = settings;
+    const { index } = table;
     const { x, y } = table.computeEventXy(event);
     const { ri, ci } = table.getRiCiByXy(x, y);
     if (ri !== -1) {
       return { left: -1, x, y, ri, ci };
     }
-    let left = index.width + cols.sectionSumWidth(0, ci);
+    let left = index.getWidth() + cols.sectionSumWidth(0, ci);
     if (ci > fixed.fxLeft) {
       left -= scroll.x;
     }
@@ -49,10 +49,10 @@ class XReSizer extends Widget {
   bind() {
     const { table } = this;
     const {
-      settings, cols, mousePointer, tableDataSnapshot,
+      cols, mousePointer, tableDataSnapshot,
     } = table;
     const { colsDataProxy } = tableDataSnapshot;
-    const { index } = settings;
+    const { index } = table;
     const { key, type } = Constant.MOUSE_POINTER_TYPE.COL_RESIZE;
     let moveOff = false;
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
@@ -109,7 +109,7 @@ class XReSizer extends Widget {
         this.show();
         this.css('left', `${left - this.width}px`);
         this.hoverEl.css('width', `${this.width}px`);
-        this.hoverEl.css('height', `${index.height}px`);
+        this.hoverEl.css('height', `${index.getHeight()}px`);
       }
     });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
