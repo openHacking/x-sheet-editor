@@ -17,12 +17,6 @@ class YHeightLight extends Widget {
     this.hide();
   }
 
-  setSize() {
-    const { table } = this;
-    const { index } = table;
-    this.css('width', `${index.getWidth()}px`);
-  }
-
   disjoint(sRect, tRect) {
     return sRect.sri > tRect.eri || tRect.sri > sRect.eri;
   }
@@ -37,6 +31,26 @@ class YHeightLight extends Widget {
       tRect.eri < sRect.eri ? tRect.eri : sRect.eri,
       0,
     );
+  }
+
+  setChangeSize() {
+    const { table } = this;
+    const { screenSelector } = table;
+    if (!screenSelector) {
+      return;
+    }
+    const { selectorAttr } = screenSelector;
+    if (!selectorAttr) {
+      return;
+    }
+    const intersectsArea = screenSelector.getIntersectsArea(selectorAttr);
+    this.offsetHeightLight(selectorAttr, intersectsArea);
+  }
+
+  setSize() {
+    const { table } = this;
+    const { index } = table;
+    this.css('width', `${index.getWidth()}px`);
   }
 
   offsetHeightLight(selectorAttr, intersectsArea) {
@@ -253,19 +267,11 @@ class YHeightLight extends Widget {
   bind() {
     const { table } = this;
     const { screenSelector } = table;
-    screenSelector.on(SCREEN_SELECT_EVENT.CHANGE, () => {
-      const { selectorAttr } = screenSelector;
-      if (selectorAttr) {
-        const intersectsArea = screenSelector.getIntersectsArea(selectorAttr);
-        this.offsetHeightLight(selectorAttr, intersectsArea);
-      }
-    });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      const { selectorAttr } = screenSelector;
-      if (selectorAttr) {
-        const intersectsArea = screenSelector.getIntersectsArea(selectorAttr);
-        this.offsetHeightLight(selectorAttr, intersectsArea);
-      }
+      this.setChangeSize();
+    });
+    screenSelector.on(SCREEN_SELECT_EVENT.CHANGE, () => {
+      this.setChangeSize();
     });
   }
 }

@@ -94,13 +94,19 @@ class ScreenSelector extends ScreenWidget {
         this.onChangeStack.forEach(cb => cb());
       }
     });
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, () => {
+      if (this.selectorAttr) {
+        this.setOffset(this.selectorAttr);
+        this.onChangeStack.forEach(cb => cb());
+      }
+    });
   }
 
   setLTOffset(selectorAttr) {
     const { screen } = this;
     const { table } = screen;
     const {
-      xTableFrozenContent, cols, rows, grid,
+      xTableFrozenContent, cols, rows,
     } = table;
     const viewRange = xTableFrozenContent.getScrollView();
     const { rect } = selectorAttr;
@@ -143,7 +149,7 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const {
-      xTop, cols, rows, grid,
+      xTop, cols, rows,
     } = table;
     const viewRange = xTop.getScrollView();
     const { rect } = selectorAttr;
@@ -191,7 +197,7 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const {
-      xLeft, cols, rows, grid,
+      xLeft, cols, rows,
     } = table;
     const viewRange = xLeft.getScrollView();
     const { rect } = selectorAttr;
@@ -239,7 +245,7 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const {
-      cols, rows, grid,
+      cols, rows,
     } = table;
     const viewRange = table.getScrollView();
     const { rect } = selectorAttr;

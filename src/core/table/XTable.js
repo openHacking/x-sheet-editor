@@ -2861,6 +2861,7 @@ class Table extends XTable {
     this.xHeightLight.setSize();
     this.yHeightLight.setSize();
     this.resize();
+    this.trigger(Constant.TABLE_EVENT_TYPE.SCALE_CHANGE);
   }
 }
 
