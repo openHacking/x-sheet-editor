@@ -49,6 +49,7 @@ import { FontFactory } from './base/FontFactory';
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
   RENDER: Symbol('render'),
+  SCALE: Symbol('scale'),
 };
 
 const VIEW_MODE = {
@@ -332,6 +333,10 @@ class XTableUI {
       this.drawX = x;
       return x;
     }
+    if (table.getRenderMode() === RENDER_MODE.SCALE) {
+      this.drawX = x;
+      return x;
+    }
     if (this.getViewMode() === VIEW_MODE.BOUND_OUT) {
       this.drawX = x;
       return x;
@@ -369,6 +374,10 @@ class XTableUI {
     const { table } = this;
     const y = this.getY();
     if (table.getRenderMode() === RENDER_MODE.RENDER) {
+      this.drawY = y;
+      return y;
+    }
+    if (table.getRenderMode() === RENDER_MODE.SCALE) {
       this.drawY = y;
       return y;
     }
@@ -412,6 +421,10 @@ class XTableUI {
       this.borderX = x;
       return x;
     }
+    if (table.getRenderMode() === RENDER_MODE.SCALE) {
+      this.borderX = x;
+      return x;
+    }
     if (this.getViewMode() === VIEW_MODE.BOUND_OUT) {
       this.borderX = x;
       return x;
@@ -449,6 +462,10 @@ class XTableUI {
     const { table } = this;
     const y = this.getY();
     if (table.getRenderMode() === RENDER_MODE.RENDER) {
+      this.borderY = y;
+      return y;
+    }
+    if (table.getRenderMode() === RENDER_MODE.SCALE) {
       this.borderY = y;
       return y;
     }
@@ -797,7 +814,7 @@ class XTableUI {
           break;
         }
       }
-    } else {
+    } else if (RENDER_MODE.RENDER) {
       const height = this.getHeight();
       const width = this.getWidth();
       draw.fillRect(dx, dy, width, height);
@@ -1983,7 +2000,7 @@ class XTableFrozenLeftIndex extends XTableLeftIndexUI {
   render() {
     const { table } = this;
     const renderMode = table.getRenderMode();
-    if (renderMode === RENDER_MODE.RENDER) {
+    if (renderMode === RENDER_MODE.RENDER || renderMode === RENDER_MODE.SCALE) {
       super.render();
     }
   }
@@ -2066,7 +2083,7 @@ class XTableFrozenTopIndex extends XTableTopIndexUI {
   render() {
     const { table } = this;
     const renderMode = table.getRenderMode();
-    if (renderMode === RENDER_MODE.RENDER) {
+    if (renderMode === RENDER_MODE.RENDER || renderMode === RENDER_MODE.SCALE) {
       super.render();
     }
   }
@@ -2152,7 +2169,7 @@ class XTableFrozenContent extends XTableContentUI {
   render() {
     const { table } = this;
     const renderMode = table.getRenderMode();
-    if (renderMode === RENDER_MODE.RENDER) {
+    if (renderMode === RENDER_MODE.RENDER || renderMode === RENDER_MODE.SCALE) {
       super.render();
     }
   }
@@ -2191,7 +2208,7 @@ class XTableFrozenFullRect {
   render() {
     const { table } = this;
     const renderMode = table.getRenderMode();
-    if (renderMode === RENDER_MODE.RENDER) {
+    if (renderMode === RENDER_MODE.RENDER || renderMode === RENDER_MODE.SCALE) {
       this.draw();
     }
   }
@@ -2604,6 +2621,21 @@ class XTable extends Widget {
     const { renderMode } = this;
     return renderMode;
   }
+
+  /**
+   * 界面缩放
+   * @param value
+   */
+  setScale(value) {
+    this.scale.setValue(value);
+    this.renderMode = RENDER_MODE.SCALE;
+    this.draw.attr({
+      fillStyle: this.settings.table.background,
+    });
+    this.draw.fullFillRect();
+    this.resize();
+    this.renderMode = RENDER_MODE.RENDER;
+  }
 }
 
 // ====================== 快捷键 =====================
@@ -2846,11 +2878,10 @@ class Table extends XTable {
   }
 
   setScale(value) {
-    this.scale.setValue(value);
+    super.setScale(value);
     this.screen.setDivideLayer();
     this.xHeightLight.setSize();
     this.yHeightLight.setSize();
-    this.resize();
     this.trigger(Constant.TABLE_EVENT_TYPE.SCALE_CHANGE);
   }
 }

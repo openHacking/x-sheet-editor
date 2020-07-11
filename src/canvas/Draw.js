@@ -1,5 +1,7 @@
 /* global window */
 
+import { h } from '../lib/Element';
+
 function dpr() {
   return window.devicePixelRatio || 1;
 }
@@ -124,6 +126,11 @@ class Draw {
     return this;
   }
 
+  fullClearRect() {
+    const { width, height } = this;
+    this.clearRect(0, 0, width, height);
+  }
+
   rect(x, y, w, h) {
     const { offsetX, offsetY } = this;
     this.ctx.rect(npx(x + offsetX), npx(y + offsetY), npx(w), npx(h));
@@ -134,6 +141,11 @@ class Draw {
     const { offsetX, offsetY } = this;
     this.ctx.fillRect(npx(x + offsetX), npx(y + offsetY), npx(w), npx(h));
     return this;
+  }
+
+  fullFillRect() {
+    const { width, height } = this;
+    this.fillRect(0, 0, width, height);
   }
 
   fillText(text, x, y) {
@@ -173,13 +185,6 @@ class Draw {
       npx(width),
       npx(height),
     );
-  }
-
-  fullColor(width, height, color = '#ffffff') {
-    this.attr({
-      fillStyle: color,
-    });
-    this.fillRect(0, 0, width, height);
   }
 }
 
