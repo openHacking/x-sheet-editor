@@ -1,8 +1,8 @@
 import { Crop } from './Crop';
-import { opx } from './Draw';
 import { Utils } from '../utils/Utils';
 import { Angle, TrigonometricFunction } from './Angle';
 import { Rect } from './Rect';
+import { dpr, opx } from './Draw';
 
 // 垂直文字间距
 const VERTICAL_SPACING = 2;
@@ -35,15 +35,7 @@ const TEXT_DIRECTION = {
 };
 
 class DrawFont {
-  static isBlank(text) {
-    return text === null || text === undefined || text.toString().trim() === '';
-  }
-}
 
-/**
- * 水平方向字体绘制
- */
-class HorizontalFontDraw {
   constructor({
     text, rect, dw, overflow, overflowCrop, attr,
   }) {
@@ -54,6 +46,21 @@ class HorizontalFontDraw {
     this.overflowCrop = overflowCrop;
     this.attr = attr;
   }
+
+  measureWidth(text) {
+    const { dw } = this;
+    return dw.measureText(text).width / dpr();
+  }
+
+  isBlank(text) {
+    return text === null || text === undefined || text.toString().trim() === '';
+  }
+}
+
+/**
+ * 水平方向字体绘制
+ */
+class HorizontalFontDraw extends DrawFont {
 
   drawLine(type, tx, ty, textWidth) {
     const { dw, attr } = this;
@@ -143,7 +150,7 @@ class HorizontalFontDraw {
       underline, strikethrough, align, verticalAlign, padding,
     } = attr;
     const { width, height } = rect;
-    const textWidth = dw.measureWidth(text);
+    const textWidth = this.measureWidth(text);
     let tx = rect.x;
     let ty = rect.y;
     switch (align) {
@@ -214,7 +221,7 @@ class HorizontalFontDraw {
       size, underline, strikethrough, align, verticalAlign, padding,
     } = attr;
     const { width, height } = rect;
-    const textWidth = dw.measureWidth(text);
+    const textWidth = this.measureWidth(text);
     let tx = rect.x;
     let ty = rect.y;
     let paddingH = 0;
@@ -306,7 +313,7 @@ class HorizontalFontDraw {
     const { width, height } = rect;
     const maxTextWidth = width - padding * 2;
     const textArray = [];
-    const textLine = {
+    const line = {
       len: 0,
       start: 0,
     };
@@ -315,10 +322,10 @@ class HorizontalFontDraw {
     let i = 0;
     let maxLen = 0;
     while (i < len) {
-      const charWidth = dw.measureWidth(text.charAt(i));
-      const textWidth = textLine.len + charWidth;
+      const charWidth = this.measureWidth(text.charAt(i));
+      const textWidth = line.len + charWidth;
       if (textWidth > maxTextWidth) {
-        if (textLine.len === 0) {
+        if (line.len === 0) {
           textArray.push({
             text: text.substring(i, i + 1),
             len: textWidth,
@@ -331,32 +338,32 @@ class HorizontalFontDraw {
           }
         } else {
           textArray.push({
-            text: text.substring(textLine.start, i),
-            len: textLine.len,
+            text: text.substring(line.start, i),
+            len: line.len,
             tx: 0,
             ty: hOffset,
           });
-          if (textLine.len > maxLen) {
-            maxLen = textLine.len;
+          if (line.len > maxLen) {
+            maxLen = line.len;
           }
         }
         hOffset += size + HORIZONTAL_LIEN_HEIGHT;
-        textLine.len = 0;
-        textLine.start = i;
+        line.len = 0;
+        line.start = i;
       } else {
-        textLine.len = textWidth;
+        line.len = textWidth;
         i += 1;
       }
     }
-    if (textLine.len > 0) {
+    if (line.len > 0) {
       textArray.push({
-        text: text.substring(textLine.start),
-        len: textLine.len,
+        text: text.substring(line.start),
+        len: line.len,
         tx: 0,
         ty: hOffset,
       });
-      if (textLine.len > maxLen) {
-        maxLen = textLine.len;
+      if (line.len > maxLen) {
+        maxLen = line.len;
       }
     }
     let bx = rect.x;
@@ -424,7 +431,7 @@ class HorizontalFontDraw {
 
   draw() {
     const { text } = this;
-    if (DrawFont.isBlank(text)) {
+    if (this.isBlank(text)) {
       return 0;
     }
     const { dw, attr } = this;
@@ -462,22 +469,13 @@ class HorizontalFontDraw {
   setPadding(padding) {
     this.attr.padding = padding;
   }
+
 }
 
 /**
  * 垂直方向字体绘制
  */
-class VerticalFontDraw {
-  constructor({
-    text, rect, dw, overflow, overflowCrop, attr,
-  }) {
-    this.text = text;
-    this.dw = dw;
-    this.rect = rect;
-    this.overflow = overflow;
-    this.overflowCrop = overflowCrop;
-    this.attr = attr;
-  }
+class VerticalFontDraw extends DrawFont {
 
   drawLine(type, tx, ty, textWidth, align, verticalAlign) {
     const { dw, attr } = this;
@@ -568,7 +566,7 @@ class VerticalFontDraw {
     for (let i = 0; i < text.length; i += 1) {
       const char = text.charAt(i);
       textArray.push({
-        len: dw.measureWidth(char),
+        len: this.measureWidth(char),
         text: char,
         tx: 0,
         ty: hOffset,
@@ -654,7 +652,7 @@ class VerticalFontDraw {
     for (let i = 0; i < text.length; i += 1) {
       const char = text.charAt(i);
       textArray.push({
-        len: dw.measureWidth(char),
+        len: this.measureWidth(char),
         text: char,
         tx: 0,
         ty: hOffset,
@@ -773,7 +771,7 @@ class VerticalFontDraw {
       const last = i === len - 1;
       const first = i === 0;
       const char = text.charAt(i);
-      const charWidth = dw.measureWidth(char);
+      const charWidth = this.measureWidth(char);
       let textHeight;
       if (last) {
         textHeight = textLen + size;
@@ -915,7 +913,7 @@ class VerticalFontDraw {
 
   draw() {
     const { text } = this;
-    if (DrawFont.isBlank(text)) {
+    if (this.isBlank(text)) {
       return 0;
     }
     const { dw, attr } = this;
@@ -966,22 +964,13 @@ class VerticalFontDraw {
   setPadding(padding) {
     this.attr.padding = padding;
   }
+
 }
 
 /**
  * 旋转字体绘制
  */
-class AngleFontDraw {
-  constructor({
-    text, rect, dw, overflow, overflowCrop, attr,
-  }) {
-    this.text = text;
-    this.dw = dw;
-    this.rect = rect;
-    this.overflow = overflow;
-    this.overflowCrop = overflowCrop;
-    this.attr = attr;
-  }
+class AngleFontDraw extends DrawFont {
 
   drawLine(type, tx, ty, textWidth) {
     const { dw, attr } = this;
@@ -1020,7 +1009,7 @@ class AngleFontDraw {
     }
     // 计算文字斜边
     // 的宽度
-    const textWidth = dw.measureWidth(text);
+    const textWidth = this.measureWidth(text);
     const trigonometric = new TrigonometricFunction({
       angle,
       width: textWidth,
@@ -1135,7 +1124,7 @@ class AngleFontDraw {
     }
     // 计算文字斜边
     // 的宽度
-    const textWidth = dw.measureWidth(text);
+    const textWidth = this.measureWidth(text);
     const trigonometric = new TrigonometricFunction({
       angle,
       width: textWidth,
@@ -1281,17 +1270,17 @@ class AngleFontDraw {
 
       // 折行文本计算
       const textArray = [];
-      const textLine = {
+      const line = {
         len: 0,
         start: 0,
       };
       const len = text.length;
       let i = 0;
       while (i < len) {
-        const charWidth = dw.measureWidth(text.charAt(i));
-        const textWidth = textLine.len + charWidth;
+        const charWidth = this.measureWidth(text.charAt(i));
+        const textWidth = line.len + charWidth;
         if (textWidth > textHypotenuseWidth) {
-          if (textLine.len === 0) {
+          if (line.len === 0) {
             textArray.push({
               text: text.substring(i, i + 1),
               len: textWidth,
@@ -1301,23 +1290,23 @@ class AngleFontDraw {
             i += 1;
           } else {
             textArray.push({
-              text: text.substring(textLine.start, i),
-              len: textLine.len,
+              text: text.substring(line.start, i),
+              len: line.len,
               tx: 0,
               ty: 0,
             });
           }
-          textLine.len = 0;
-          textLine.start = i;
+          line.len = 0;
+          line.start = i;
         } else {
-          textLine.len = textWidth;
+          line.len = textWidth;
           i += 1;
         }
       }
-      if (textLine.len > 0) {
+      if (line.len > 0) {
         textArray.push({
-          text: text.substring(textLine.start),
-          len: textLine.len,
+          text: text.substring(line.start),
+          len: line.len,
           tx: 0,
           ty: 0,
         });
@@ -1459,7 +1448,7 @@ class AngleFontDraw {
 
       // 计算文本块的
       // 大小
-      const textWidth = dw.measureWidth(text);
+      const textWidth = this.measureWidth(text);
       trigonometric.setWidth(textWidth);
       const trigonometricWidth = Math.max(trigonometric.cosWidthAngle(), size);
       const trigonometricHeight = trigonometric.sinWidthAngle();
@@ -1550,17 +1539,17 @@ class AngleFontDraw {
 
       // 折行文本计算
       const textArray = [];
-      const textLine = {
+      const line = {
         len: 0,
         start: 0,
       };
       const len = text.length;
       let i = 0;
       while (i < len) {
-        const charWidth = dw.measureWidth(text.charAt(i));
-        const textWidth = textLine.len + charWidth;
+        const charWidth = this.measureWidth(text.charAt(i));
+        const textWidth = line.len + charWidth;
         if (textWidth > textHypotenuseWidth) {
-          if (textLine.len === 0) {
+          if (line.len === 0) {
             textArray.push({
               text: text.substring(i, i + 1),
               len: textWidth,
@@ -1570,23 +1559,23 @@ class AngleFontDraw {
             i += 1;
           } else {
             textArray.push({
-              text: text.substring(textLine.start, i),
-              len: textLine.len,
+              text: text.substring(line.start, i),
+              len: line.len,
               tx: 0,
               ty: 0,
             });
           }
-          textLine.len = 0;
-          textLine.start = i;
+          line.len = 0;
+          line.start = i;
         } else {
-          textLine.len = textWidth;
+          line.len = textWidth;
           i += 1;
         }
       }
-      if (textLine.len > 0) {
+      if (line.len > 0) {
         textArray.push({
-          text: text.substring(textLine.start),
-          len: textLine.len,
+          text: text.substring(line.start),
+          len: line.len,
           tx: 0,
           ty: 0,
         });
@@ -1727,7 +1716,7 @@ class AngleFontDraw {
 
       // 计算文本块的
       // 大小
-      const textWidth = dw.measureWidth(text);
+      const textWidth = this.measureWidth(text);
       trigonometric.setWidth(textWidth);
       const trigonometricWidth = Math.max(trigonometric.cosWidthAngle(), size);
       const trigonometricHeight = trigonometric.sinWidthAngle();
@@ -1805,7 +1794,7 @@ class AngleFontDraw {
     if (angle === 0) {
       const maxTextWidth = width - padding * 2;
       const textArray = [];
-      const textLine = {
+      const line = {
         len: 0,
         start: 0,
       };
@@ -1815,10 +1804,10 @@ class AngleFontDraw {
       let i = 0;
       let maxLen = 0;
       while (i < len) {
-        const charWidth = dw.measureWidth(text.charAt(i));
-        const textWidth = textLine.len + charWidth;
+        const charWidth = this.measureWidth(text.charAt(i));
+        const textWidth = line.len + charWidth;
         if (textWidth > maxTextWidth) {
-          if (textLine.len === 0) {
+          if (line.len === 0) {
             textArray.push({
               text: text.substring(i, i + 1),
               len: textWidth,
@@ -1831,31 +1820,31 @@ class AngleFontDraw {
             }
           } else {
             textArray.push({
-              text: text.substring(textLine.start, i),
-              len: textLine.len,
+              text: text.substring(line.start, i),
+              len: line.len,
               tx: 0,
               ty: 0,
             });
-            if (textLine.len > maxLen) {
-              maxLen = textLine.len;
+            if (line.len > maxLen) {
+              maxLen = line.len;
             }
           }
-          textLine.len = 0;
-          textLine.start = i;
+          line.len = 0;
+          line.start = i;
         } else {
-          textLine.len = textWidth;
+          line.len = textWidth;
           i += 1;
         }
       }
-      if (textLine.len > 0) {
+      if (line.len > 0) {
         textArray.push({
-          text: text.substring(textLine.start),
-          len: textLine.len,
+          text: text.substring(line.start),
+          len: line.len,
           tx: 0,
           ty: 0,
         });
-        if (textLine.len > maxLen) {
-          maxLen = textLine.len;
+        if (line.len > maxLen) {
+          maxLen = line.len;
         }
       }
       const textArrayLen = textArray.length;
@@ -1942,7 +1931,7 @@ class AngleFontDraw {
 
   draw() {
     const { text } = this;
-    if (DrawFont.isBlank(text)) {
+    if (this.isBlank(text)) {
       return 0;
     }
     const { dw, attr } = this;
@@ -1968,19 +1957,19 @@ class AngleFontDraw {
   setPadding(padding) {
     this.attr.padding = padding;
   }
+
 }
 
 /**
  * Base font
  */
-class Font extends DrawFont {
+class Font {
   constructor({
     text, rect, dw, overflow, attr,
   }) {
-    super();
     this.attr = Utils.mergeDeep({}, {
       name: 'Arial',
-      size: opx(14),
+      size: 14,
       color: '#000000',
       bold: false,
       italic: false,

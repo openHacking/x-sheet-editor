@@ -1217,7 +1217,7 @@ class TopMenu extends Widget {
     const sheet = sheetView.getActiveSheet();
     const { table } = sheet;
     const { scale } = table;
-    const value = scale.to(100);
+    const value = scale.digitModeTo(100);
     this.scale.setTitle(`${value}%`);
   }
 

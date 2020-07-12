@@ -26,16 +26,16 @@ class Rows {
     const { scale } = table;
     const row = this.get(ri);
     if (row && row.height) {
-      return scale.to(row.height);
+      return scale.digitModeTo(row.height);
     }
-    return scale.to(this.height);
+    return scale.digitModeTo(this.height);
   }
 
   setHeight(ri, height) {
     const row = this.getOrNew(ri);
     const { table } = this;
     const { scale } = table;
-    row.height = scale.back(Utils.minIf(height, this.minHeight));
+    row.height = scale.digitModeBack(Utils.minIf(height, this.minHeight));
     this.cacheTotalHeight = null;
   }
 

@@ -1,5 +1,5 @@
 import { Rect } from './Rect';
-import { angleToRadian, npx } from './Draw';
+import { angleToRadian } from './Draw';
 
 const ANGLE_ORIGIN = {
   TOP_LEFT: 'top-left',
@@ -13,10 +13,51 @@ const ANGLE_ORIGIN = {
   BOTTOM_RIGHT: 'bottom-right',
 };
 
+class TrigonometricFunction {
+
+  constructor({ angle, width, height }) {
+    this.angle = angle;
+    this.width = width;
+    this.height = height;
+  }
+
+  // 斜边 + sin 角度
+  sinWidthAngle() {
+    const { angle, width } = this;
+    return Math.abs(Math.sin(angleToRadian(angle)) * width);
+  }
+
+  // 斜边 + cos 角度
+  cosWidthAngle() {
+    const { angle, width } = this;
+    return Math.abs(Math.cos(angleToRadian(angle)) * width);
+  }
+
+  // 对边 + sin角度
+  sinHeightAngle() {
+    const { angle, height } = this;
+    return Math.abs(height / Math.sin(angleToRadian(angle)));
+  }
+
+  setWidth(width) {
+    this.width = width;
+  }
+
+  setHeight(height) {
+    this.height = height;
+  }
+
+  setAngle(angle) {
+    this.angle = angle;
+  }
+
+}
+
 class Angle {
+
   constructor({
-    dw,
     angle,
+    dw,
     origin = ANGLE_ORIGIN.MIDDLE_CENTER,
     rect = new Rect({ x: 0, y: 0, width: 0, height: 0 }),
   }) {
@@ -71,9 +112,13 @@ class Angle {
         break;
       default: break;
     }
-    dw.ctx.translate(npx(tx + dw.offsetX), npx(ty + dw.offsetY));
-    dw.rotate(angle);
-    dw.ctx.translate(-npx(tx + dw.offsetX), -npx(ty + dw.offsetY));
+    const offsetX = dw.getOffsetX();
+    const offsetY = dw.getOffsetY();
+    dw.openSkipOffset()
+      .translate(tx + offsetX, ty + offsetY)
+      .rotate(angle)
+      .translate(-(tx + offsetX), -(ty + offsetY))
+      .closeSkipOffset();
     return this;
   }
 
@@ -99,45 +144,6 @@ class Angle {
   setRect(rect) {
     this.rect = rect;
     return this;
-  }
-}
-
-class TrigonometricFunction {
-
-  constructor({ angle, width, height }) {
-    this.angle = angle;
-    this.width = width;
-    this.height = height;
-  }
-
-  // 斜边 + sin 角度
-  sinWidthAngle() {
-    const { angle, width } = this;
-    return Math.abs(Math.sin(angleToRadian(angle)) * width);
-  }
-
-  // 斜边 + cos 角度
-  cosWidthAngle() {
-    const { angle, width } = this;
-    return Math.abs(Math.cos(angleToRadian(angle)) * width);
-  }
-
-  // 对边 + sin角度
-  sinHeightAngle() {
-    const { angle, height } = this;
-    return Math.abs(height / Math.sin(angleToRadian(angle)));
-  }
-
-  setWidth(width) {
-    this.width = width;
-  }
-
-  setHeight(height) {
-    this.height = height;
-  }
-
-  setAngle(angle) {
-    this.angle = angle;
   }
 
 }

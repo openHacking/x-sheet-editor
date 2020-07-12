@@ -36,21 +36,21 @@ class FixedIndex {
     const { table } = this;
     const { scale } = table;
     const { size } = this;
-    return scale.to(size);
+    return scale.digitModeTo(size);
   }
 
   getHeight() {
     const { table } = this;
     const { scale } = table;
     const { height } = this;
-    return scale.to(height);
+    return scale.digitModeTo(height);
   }
 
   getWidth() {
     const { table } = this;
     const { scale } = table;
     const { width } = this;
-    return scale.to(width);
+    return scale.digitModeTo(width);
   }
 
 }

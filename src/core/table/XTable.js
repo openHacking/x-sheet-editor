@@ -262,15 +262,6 @@ class XTableUI {
    * 重置变量区
    */
   reset() {
-    this.width = null;
-    this.height = null;
-
-    this.x = null;
-    this.y = null;
-
-    this.drawX = null;
-    this.drawY = null;
-
     this.mapOriginX = null;
     this.mapOriginY = null;
     this.mapTargetX = null;
@@ -282,8 +273,17 @@ class XTableUI {
     this.scrollVIew = null;
     this.borderView = null;
 
+    this.width = null;
+    this.height = null;
+
     this.borderX = null;
     this.borderY = null;
+
+    this.x = null;
+    this.y = null;
+
+    this.drawX = null;
+    this.drawY = null;
 
     this.viewMode = null;
   }
@@ -1016,30 +1016,13 @@ class XTableLeftIndexUI extends XTableIndexUI {
 class XTableContentUI extends XTableUI {
 
   /**
-   * XTableContentUI
-   * @param table
-   */
-  constructor(table) {
-    super(table);
-    this.contentView = null;
-  }
-
-  /**
-   * 重置变量区
-   */
-  reset() {
-    super.reset();
-    this.contentView = null;
-  }
-
-  /**
    * 绘制越界文本
    */
   drawBoundOutFont() {
     const scrollView = this.getScrollView();
     const { table } = this;
     const {
-      draw, cols, cellsHelper, cells, fontFactory, scale,
+      draw, cols, cellsHelper, cells, fontFactory,
     } = table;
     // 左边区域
     const lView = scrollView.clone();
@@ -1051,7 +1034,6 @@ class XTableContentUI extends XTableUI {
       let max;
       let curr;
       draw.offset(lx, ly);
-      scale.openFloat();
       cellsHelper.getCellSkipMergeCellByViewRange({
         rectRange: lView,
         reverseCols: true,
@@ -1075,6 +1057,7 @@ class XTableContentUI extends XTableUI {
             } = cell;
             const { align } = fontAttr;
             const builder = fontFactory.getBuilder();
+            builder.setDraw(draw);
             builder.setText(Format(format, text));
             builder.setAttr(fontAttr);
             builder.setRect(rect);
@@ -1085,7 +1068,6 @@ class XTableContentUI extends XTableUI {
           }
         },
       });
-      scale.closeFloat();
       draw.offset(0, 0);
     }
     // 右边区域
@@ -1098,7 +1080,6 @@ class XTableContentUI extends XTableUI {
       let max;
       let curr;
       draw.offset(rx, ry);
-      scale.openFloat();
       cellsHelper.getCellSkipMergeCellByViewRange({
         rectRange: rView,
         callback: (row, col, cell, rect, overflow) => {
@@ -1121,6 +1102,7 @@ class XTableContentUI extends XTableUI {
             } = cell;
             const { align } = fontAttr;
             const builder = fontFactory.getBuilder();
+            builder.setDraw(draw);
             builder.setText(Format(format, text));
             builder.setAttr(fontAttr);
             builder.setRect(rect);
@@ -1131,7 +1113,6 @@ class XTableContentUI extends XTableUI {
           }
         },
       });
-      scale.closeFloat();
       draw.offset(0, 0);
     }
   }
@@ -1145,10 +1126,9 @@ class XTableContentUI extends XTableUI {
     const drawY = this.getDrawY();
     const { table } = this;
     const {
-      draw, cellsHelper, fontFactory, scale,
+      draw, cellsHelper, fontFactory,
     } = table;
     draw.offset(drawX, drawY);
-    scale.openFloat();
     cellsHelper.getCellSkipMergeCellByViewRange({
       rectRange: scrollView,
       callback: (row, col, cell, rect, overflow) => {
@@ -1157,6 +1137,7 @@ class XTableContentUI extends XTableUI {
         } = cell;
         const { align } = fontAttr;
         const builder = fontFactory.getBuilder();
+        builder.setDraw(draw);
         builder.setText(Format(format, text));
         builder.setAttr(fontAttr);
         builder.setRect(rect);
@@ -1173,6 +1154,7 @@ class XTableContentUI extends XTableUI {
           format, text, fontAttr,
         } = cell;
         const builder = fontFactory.getBuilder();
+        builder.setDraw(draw);
         builder.setText(Format(format, text));
         builder.setAttr(fontAttr);
         builder.setRect(rect);
@@ -1181,7 +1163,6 @@ class XTableContentUI extends XTableUI {
         cell.setContentWidth(font.draw());
       },
     });
-    scale.closeFloat();
     draw.offset(0, 0);
   }
 
@@ -1360,27 +1341,34 @@ class XTableContentUI extends XTableUI {
     if (viewMode === VIEW_MODE.STATIC && renderMode === RENDER_MODE.SCROLL) {
       return;
     }
+    // 渲染贴图
     this.drawMap();
+    // 清空画布
     this.drawClear();
-    // 裁剪边界
+    // 裁剪界面
     const scrollView = this.getScrollView();
     const x = this.getDrawX();
     const y = this.getDrawY();
     const width = scrollView.w;
     const height = scrollView.h;
-    const { draw } = table;
+    const {
+      draw,
+    } = table;
     const crop = new Crop({
       rect: new Rect({ x, y, width, height }),
       draw,
     });
     crop.open();
-    // 绘制内容
+    // 绘制背景
     this.drawColor();
+    // 文字绘制
     this.drawFont();
     this.drawBoundOutFont();
+    // 绘制网格
     if (this.table.settings.table.showGrid) {
       this.drawGrid();
     }
+    // 绘制边框
     this.drawBorder();
     crop.close();
   }

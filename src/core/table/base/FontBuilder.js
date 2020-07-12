@@ -7,7 +7,12 @@ class FontBuilder {
     this.text = null;
     this.rect = null;
     this.attr = null;
+    this.dw = null;
     this.overflow = null;
+  }
+
+  setDraw(dw) {
+    this.dw = dw;
   }
 
   setText(text) {
@@ -28,18 +33,18 @@ class FontBuilder {
 
   build() {
     const {
-      table, text, rect, attr, overflow,
+      table, text, rect, attr, overflow, dw,
     } = this;
     const { scale } = table;
     const font = new Font({
-      dw: this.table.draw,
+      dw,
       text,
       rect,
       attr,
       overflow,
     });
-    font.setPadding(scale.to(attr.padding));
-    font.setSize(scale.to(attr.size));
+    font.setPadding(scale.digitModeTo(attr.padding));
+    font.setSize(scale.digitModeTo(attr.size));
     return font;
   }
 

@@ -1,7 +1,7 @@
 module.exports = {
   "extends": "airbnb-base",
   "rules": {
-    "no-param-reassign": ["error", { "props": false }],
+    "no-param-reassign": 0,
     "class-methods-use-this": "off",
     "import/prefer-default-export":  0,
     "no-empty-pattern": 0,
