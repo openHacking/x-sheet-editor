@@ -1,5 +1,9 @@
 /* global window */
 
+function angleToRadian(angle) {
+  return -angle * (Math.PI / 180);
+}
+
 function dpr() {
   return window.devicePixelRatio || 1;
 }
@@ -10,10 +14,6 @@ function opx(px) {
 
 function npx(px) {
   return Math.ceil(opx(px));
-}
-
-function angleToRadian(angle) {
-  return -angle * (Math.PI / 180);
 }
 
 class Draw {

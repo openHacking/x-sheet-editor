@@ -29,8 +29,6 @@ class FormatContextMenu extends ELContextMenu {
       new FormatContextMenuItem('日期', '2018年4月18日').data('type', 'date4'),
       new FormatContextMenuItem('日期', '2018/4/18 14:30:30').data('type', 'date5'),
       new FormatContextMenuItem('时间', '14:30:30').data('type', 'time'),
-      new ELContextMenuDivider(),
-      new FormatContextMenuItem('更多格式', ''),
     ];
     this.items.forEach((item) => {
       if (item instanceof FormatContextMenuItem && item.data('type')) {

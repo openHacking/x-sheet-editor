@@ -57,7 +57,7 @@ Constant.MOUSE_POINTER_TYPE = {
 
 const cssPrefix = 'x-sheet';
 
-const XSheetVersion = 'X-Sheet 1.0.0-development';
+const XSheetVersion = 'X-Sheet 1.0.0-develop';
 
 export { cssPrefix };
 export { XSheetVersion };
