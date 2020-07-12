@@ -1,7 +1,7 @@
 import { Crop } from './Crop';
 import { opx } from './Draw';
 import { Utils } from '../utils/Utils';
-import { DrawAngle, TrigonometricFunction } from './DrawAngle';
+import { Angle, TrigonometricFunction } from './Angle';
 import { Rect } from './Rect';
 
 // 垂直文字间距
@@ -1072,7 +1072,7 @@ class AngleFontDraw {
     const ty = rty + (trigonometricHeight / 2 - size / 2);
     // 旋转剪切
     // 绘制文字
-    const dwAngle = new DrawAngle({
+    const dwAngle = new Angle({
       dw,
       angle,
       rect: new Rect({
@@ -1187,7 +1187,7 @@ class AngleFontDraw {
     const ty = rty + (trigonometricHeight / 2 - size / 2);
     // 旋转剪切
     // 绘制文字
-    const dwAngle = new DrawAngle({
+    const dwAngle = new Angle({
       dw,
       angle,
       rect: new Rect({
@@ -1431,7 +1431,7 @@ class AngleFontDraw {
             dw.fillRect(rx, ry, textWidth, textHeight);
             dw.attr({ fillStyle: 'red' });
           }
-          const dwAngle = new DrawAngle({
+          const dwAngle = new Angle({
             dw,
             angle,
             rect: new Rect({
@@ -1508,7 +1508,7 @@ class AngleFontDraw {
 
       // 旋转并且
       // 绘制文本
-      const dwAngle = new DrawAngle({
+      const dwAngle = new Angle({
         dw,
         angle,
         rect: new Rect({
@@ -1699,7 +1699,7 @@ class AngleFontDraw {
 
           // 旋转并且
           // 绘制文本
-          const dwAngle = new DrawAngle({
+          const dwAngle = new Angle({
             dw,
             angle,
             rect: new Rect({
@@ -1776,7 +1776,7 @@ class AngleFontDraw {
 
       // 旋转并且
       // 绘制文本
-      const dwAngle = new DrawAngle({
+      const dwAngle = new Angle({
         dw,
         angle,
         rect: new Rect({

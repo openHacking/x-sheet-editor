@@ -1039,7 +1039,7 @@ class XTableContentUI extends XTableUI {
     const scrollView = this.getScrollView();
     const { table } = this;
     const {
-      draw, cols, cellsHelper, cells, fontFactory,
+      draw, cols, cellsHelper, cells, fontFactory, scale,
     } = table;
     // 左边区域
     const lView = scrollView.clone();
@@ -1051,6 +1051,7 @@ class XTableContentUI extends XTableUI {
       let max;
       let curr;
       draw.offset(lx, ly);
+      scale.openFloat();
       cellsHelper.getCellSkipMergeCellByViewRange({
         rectRange: lView,
         reverseCols: true,
@@ -1084,6 +1085,7 @@ class XTableContentUI extends XTableUI {
           }
         },
       });
+      scale.closeFloat();
       draw.offset(0, 0);
     }
     // 右边区域
@@ -1096,6 +1098,7 @@ class XTableContentUI extends XTableUI {
       let max;
       let curr;
       draw.offset(rx, ry);
+      scale.openFloat();
       cellsHelper.getCellSkipMergeCellByViewRange({
         rectRange: rView,
         callback: (row, col, cell, rect, overflow) => {
@@ -1128,6 +1131,7 @@ class XTableContentUI extends XTableUI {
           }
         },
       });
+      scale.closeFloat();
       draw.offset(0, 0);
     }
   }
@@ -1141,9 +1145,10 @@ class XTableContentUI extends XTableUI {
     const drawY = this.getDrawY();
     const { table } = this;
     const {
-      draw, cellsHelper, fontFactory,
+      draw, cellsHelper, fontFactory, scale,
     } = table;
     draw.offset(drawX, drawY);
+    scale.openFloat();
     cellsHelper.getCellSkipMergeCellByViewRange({
       rectRange: scrollView,
       callback: (row, col, cell, rect, overflow) => {
@@ -1176,6 +1181,7 @@ class XTableContentUI extends XTableUI {
         cell.setContentWidth(font.draw());
       },
     });
+    scale.closeFloat();
     draw.offset(0, 0);
   }
 

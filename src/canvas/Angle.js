@@ -13,7 +13,7 @@ const ANGLE_ORIGIN = {
   BOTTOM_RIGHT: 'bottom-right',
 };
 
-class DrawAngle {
+class Angle {
   constructor({
     dw,
     angle,
@@ -103,6 +103,7 @@ class DrawAngle {
 }
 
 class TrigonometricFunction {
+
   constructor({ angle, width, height }) {
     this.angle = angle;
     this.width = width;
@@ -138,6 +139,11 @@ class TrigonometricFunction {
   setAngle(angle) {
     this.angle = angle;
   }
+
 }
 
-export { DrawAngle, TrigonometricFunction, ANGLE_ORIGIN };
+export {
+  Angle,
+  TrigonometricFunction,
+  ANGLE_ORIGIN,
+};
