@@ -2,7 +2,7 @@ import { Crop } from './Crop';
 import { Utils } from '../utils/Utils';
 import { Angle, TrigonometricFunction } from './Angle';
 import { Rect } from './Rect';
-import { dpr, opx } from './Draw';
+import { dpr } from './Draw';
 
 // 垂直文字间距
 const VERTICAL_SPACING = 2;
@@ -49,7 +49,11 @@ class DrawFont {
 
   measureWidth(text) {
     const { dw } = this;
-    return dw.measureText(text).width / dpr();
+    return dw.measureText(text).width;
+  }
+
+  fontSize(size) {
+    return size;
   }
 
   isBlank(text) {
@@ -439,7 +443,7 @@ class HorizontalFontDraw extends DrawFont {
     dw.attr({
       textAlign: attr.align,
       textBaseline: attr.verticalAlign,
-      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${opx(attr.size)}px ${attr.name}`,
+      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.fontSize(attr.size)}px ${attr.name}`,
       fillStyle: attr.color,
       strokeStyle: attr.color,
     });
@@ -923,7 +927,7 @@ class VerticalFontDraw extends DrawFont {
         dw.attr({
           textAlign: attr.align,
           textBaseline: attr.verticalAlign,
-          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${opx(attr.size)}px ${attr.name}`,
+          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.fontSize(attr.size)}px ${attr.name}`,
           fillStyle: attr.color,
           strokeStyle: attr.color,
         });
@@ -931,7 +935,7 @@ class VerticalFontDraw extends DrawFont {
       case TEXT_WRAP.WORD_WRAP:
         dw.attr({
           textAlign: attr.align,
-          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${opx(attr.size)}px ${attr.name}`,
+          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.fontSize(attr.size)}px ${attr.name}`,
           fillStyle: attr.color,
           strokeStyle: attr.color,
         });
@@ -941,7 +945,7 @@ class VerticalFontDraw extends DrawFont {
         dw.attr({
           textAlign: attr.align,
           textBaseline: attr.verticalAlign,
-          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${opx(attr.size)}px ${attr.name}`,
+          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.fontSize(attr.size)}px ${attr.name}`,
           fillStyle: attr.color,
           strokeStyle: attr.color,
         });
@@ -1939,7 +1943,7 @@ class AngleFontDraw extends DrawFont {
     dw.attr({
       textAlign: ALIGN.left,
       textBaseline: VERTICAL_ALIGN.top,
-      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${opx(attr.size)}px ${attr.name}`,
+      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.fontSize(attr.size)}px ${attr.name}`,
       fillStyle: attr.color,
       strokeStyle: attr.color,
     });

@@ -34,14 +34,14 @@ class Scale extends ScaleBase {
 
   digitModeBack(origin) {
     if (this.useDigitMode) {
-      return origin / this.value;
+      return Math.ceil(origin / this.value);
     }
     return origin;
   }
 
   digitModeTo(origin) {
     if (this.useDigitMode) {
-      return this.value * origin;
+      return Math.ceil(this.value * origin);
     }
     return origin;
   }

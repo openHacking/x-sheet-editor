@@ -33,19 +33,15 @@ class FontBuilder {
 
   build() {
     const {
-      table, text, rect, attr, overflow, dw,
+      text, rect, attr, overflow, dw,
     } = this;
-    const { scale } = table;
-    const font = new Font({
+    return new Font({
       dw,
       text,
       rect,
       attr,
       overflow,
     });
-    font.setPadding(scale.digitModeTo(attr.padding));
-    font.setSize(scale.digitModeTo(attr.size));
-    return font;
   }
 
 }

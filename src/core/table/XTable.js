@@ -1352,7 +1352,7 @@ class XTableContentUI extends XTableUI {
     const width = scrollView.w;
     const height = scrollView.h;
     const {
-      draw,
+      draw, scale,
     } = table;
     const crop = new Crop({
       rect: new Rect({ x, y, width, height }),
@@ -1362,8 +1362,16 @@ class XTableContentUI extends XTableUI {
     // 绘制背景
     this.drawColor();
     // 文字绘制
+    table.reset();
+    scale.closeDigitMode();
+    scale.drawModeTo();
+    draw.closeNpx();
     this.drawFont();
     this.drawBoundOutFont();
+    draw.openNpx();
+    scale.drawModeBack();
+    scale.openDigitMode();
+    table.reset();
     // 绘制网格
     if (this.table.settings.table.showGrid) {
       this.drawGrid();
@@ -2344,10 +2352,10 @@ class XTable extends Widget {
     this.borderHandle = new BorderLineHandle(this);
     this.gridHandle = new GridLineHandle(this);
     // 冻结内容
+    this.xTableFrozenFullRect = new XTableFrozenFullRect(this);
     this.xLeftFrozenIndex = new XTableFrozenLeftIndex(this);
     this.xTopFrozenIndex = new XTableFrozenTopIndex(this);
     this.xTableFrozenContent = new XTableFrozenContent(this);
-    this.xTableFrozenFullRect = new XTableFrozenFullRect(this);
     // 动态内容
     this.xLeftIndex = new XTableLeftIndex(this);
     this.xTopIndex = new XTableTopIndex(this);

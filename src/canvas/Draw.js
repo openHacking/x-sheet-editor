@@ -252,11 +252,8 @@ class Draw2 extends DrawBase {
   }
 
   scale(x = 1, y = 1) {
-    const { useNpx } = this;
-    if (useNpx) {
-      x = npx(x);
-      y = npx(y);
-    }
+    x = opx(x);
+    y = opx(y);
     this.ctx.scale(x, y);
   }
 
