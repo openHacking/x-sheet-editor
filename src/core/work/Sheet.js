@@ -1,7 +1,7 @@
 import { Widget } from '../../lib/Widget';
 import { cssPrefix, Constant } from '../../constant/Constant';
 import { EventBind } from '../../utils/EventBind';
-import { Table } from '../table/Table';
+import { Table } from '../table/XTable';
 
 class Sheet extends Widget {
 
