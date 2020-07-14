@@ -821,171 +821,6 @@ class XTableUI {
 class XTableContentUI extends XTableUI {
 
   /**
-   * 绘制边框
-   */
-  drawBorder() {
-    const borderView = this.getLineView();
-    const borderX = this.getLineX();
-    const borderY = this.getLineY();
-    const { table } = this;
-    const {
-      draw, lineHandle, borderHandle, line,
-    } = table;
-    draw.offset(borderX, borderY);
-    const coincideView = lineHandle.viewRangeAndMergeCoincideView({
-      viewRange: borderView,
-    });
-    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
-    const htLine = borderHandle.htLine(borderView);
-    const hbLine = borderHandle.hbLine(borderView);
-    const vlLine = borderHandle.vlLine(borderView);
-    const vrLine = borderHandle.vrLine(borderView);
-    htLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { top } = borderAttr;
-      const { color, width, type } = top;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
-    });
-    hbLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { bottom } = borderAttr;
-      const { color, width, type } = bottom;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
-    });
-    vlLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { left } = borderAttr;
-      const { color, width, type } = left;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
-    });
-    vrLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { right } = borderAttr;
-      const { color, width, type } = right;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
-    });
-    const htMergeLine = borderHandle.htMergeLine(coincideViewBrink);
-    const hbMergeLine = borderHandle.hbMergeLine(coincideViewBrink);
-    const vlMergeLine = borderHandle.vlMergeLine(coincideViewBrink);
-    const vrMergeLine = borderHandle.vrMergeLine(coincideViewBrink);
-    htMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { top } = borderAttr;
-      const { color, width, type } = top;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
-    });
-    hbMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { bottom } = borderAttr;
-      const { color, width, type } = bottom;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
-    });
-    vlMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { left } = borderAttr;
-      const { color, width, type } = left;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
-    });
-    vrMergeLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { right } = borderAttr;
-      const { color, width, type } = right;
-      line.setType(type);
-      line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
-    });
-    draw.offset(0, 0);
-  }
-
-  /**
-   * 绘制网格
-   */
-  drawGrid() {
-    const borderView = this.getLineView();
-    const borderX = this.getLineX();
-    const borderY = this.getLineY();
-    const { table } = this;
-    const {
-      draw, lineHandle, gridHandle, grid,
-    } = table;
-    draw.offset(borderX, borderY);
-    const coincideView = lineHandle.viewRangeAndMergeCoincideView({
-      viewRange: borderView,
-    });
-    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
-    const hLine = gridHandle.hLine(borderView);
-    const vLine = gridHandle.vLine(borderView);
-    hLine.forEach((item) => {
-      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    vLine.forEach((item) => {
-      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    const hMergeLine = gridHandle.hMergeLine(coincideViewBrink);
-    const vMergeLine = gridHandle.vMergeLine(coincideViewBrink);
-    hMergeLine.forEach((item) => {
-      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    vMergeLine.forEach((item) => {
-      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    draw.offset(0, 0);
-  }
-
-  /**
-   * 绘制背景颜色
-   */
-  drawColor() {
-    const scrollView = this.getScrollView();
-    const { table } = this;
-    const drawX = this.getDrawX();
-    const drawY = this.getDrawY();
-    const {
-      draw, cellsHelper,
-    } = table;
-    draw.offset(drawX, drawY);
-    cellsHelper.getMergeCellByViewRange({
-      rectRange: scrollView,
-      callback: (rect, cell) => {
-        const { background } = cell;
-        const box = new Box({ draw, rect });
-        box.drawBackgroundColor(background);
-      },
-    });
-    cellsHelper.getCellByViewRange({
-      rectRange: scrollView,
-      callback: (i, c, cell, rect) => {
-        const { background } = cell;
-        const box = new Box({ draw, rect });
-        box.drawBackgroundColor(background);
-      },
-    });
-    draw.offset(0, 0);
-  }
-
-  /**
    * 绘制越界文本
    */
   drawBoundOutFont() {
@@ -1151,6 +986,171 @@ class XTableContentUI extends XTableUI {
         font.setTextWrap(TEXT_WRAP.WORD_WRAP);
         cell.setContentWidth(font.draw());
         scale.notFloat();
+      },
+    });
+    draw.offset(0, 0);
+  }
+
+  /**
+   * 绘制边框
+   */
+  drawBorder() {
+    const borderView = this.getLineView();
+    const borderX = this.getLineX();
+    const borderY = this.getLineY();
+    const { table } = this;
+    const {
+      draw, lineHandle, borderHandle, line,
+    } = table;
+    draw.offset(borderX, borderY);
+    const coincideView = lineHandle.viewRangeAndMergeCoincideView({
+      viewRange: borderView,
+    });
+    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
+    const htLine = borderHandle.htLine(borderView);
+    const hbLine = borderHandle.hbLine(borderView);
+    const vlLine = borderHandle.vlLine(borderView);
+    const vrLine = borderHandle.vrLine(borderView);
+    htLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { top } = borderAttr;
+      const { color, width, type } = top;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+    });
+    hbLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { bottom } = borderAttr;
+      const { color, width, type } = bottom;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+    });
+    vlLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { left } = borderAttr;
+      const { color, width, type } = left;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+    });
+    vrLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { right } = borderAttr;
+      const { color, width, type } = right;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+    });
+    const htMergeLine = borderHandle.htMergeLine(coincideViewBrink);
+    const hbMergeLine = borderHandle.hbMergeLine(coincideViewBrink);
+    const vlMergeLine = borderHandle.vlMergeLine(coincideViewBrink);
+    const vrMergeLine = borderHandle.vrMergeLine(coincideViewBrink);
+    htMergeLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { top } = borderAttr;
+      const { color, width, type } = top;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+    });
+    hbMergeLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { bottom } = borderAttr;
+      const { color, width, type } = bottom;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+    });
+    vlMergeLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { left } = borderAttr;
+      const { color, width, type } = left;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+    });
+    vrMergeLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { right } = borderAttr;
+      const { color, width, type } = right;
+      line.setType(type);
+      line.setColor(color);
+      line.setWidth(width);
+      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+    });
+    draw.offset(0, 0);
+  }
+
+  /**
+   * 绘制网格
+   */
+  drawGrid() {
+    const borderView = this.getLineView();
+    const borderX = this.getLineX();
+    const borderY = this.getLineY();
+    const { table } = this;
+    const {
+      draw, lineHandle, gridHandle, grid,
+    } = table;
+    draw.offset(borderX, borderY);
+    const coincideView = lineHandle.viewRangeAndMergeCoincideView({
+      viewRange: borderView,
+    });
+    const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
+    const hLine = gridHandle.hLine(borderView);
+    const vLine = gridHandle.vLine(borderView);
+    hLine.forEach((item) => {
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vLine.forEach((item) => {
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    const hMergeLine = gridHandle.hMergeLine(coincideViewBrink);
+    const vMergeLine = gridHandle.vMergeLine(coincideViewBrink);
+    hMergeLine.forEach((item) => {
+      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    vMergeLine.forEach((item) => {
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    draw.offset(0, 0);
+  }
+
+  /**
+   * 绘制背景颜色
+   */
+  drawColor() {
+    const scrollView = this.getScrollView();
+    const { table } = this;
+    const drawX = this.getDrawX();
+    const drawY = this.getDrawY();
+    const {
+      draw, cellsHelper,
+    } = table;
+    draw.offset(drawX, drawY);
+    cellsHelper.getMergeCellByViewRange({
+      rectRange: scrollView,
+      callback: (rect, cell) => {
+        const { background } = cell;
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(background);
+      },
+    });
+    cellsHelper.getCellByViewRange({
+      rectRange: scrollView,
+      callback: (i, c, cell, rect) => {
+        const { background } = cell;
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(background);
       },
     });
     draw.offset(0, 0);
