@@ -2,7 +2,7 @@ import { Crop } from './Crop';
 import { Utils } from '../utils/Utils';
 import { Angle, TrigonometricFunction } from './Angle';
 import { Rect } from './Rect';
-import { dpr, rounded } from './Draw';
+import { dpr } from './Draw';
 
 // 垂直文字间距
 const VERTICAL_SPACING = 2;
@@ -50,11 +50,11 @@ class DrawFont {
   dprMeasureSize(text) {
     const { dw } = this;
     const width = dw.measureText(text).width;
-    return rounded(width / dpr());
+    return width / dpr();
   }
 
   dprFontSize(size) {
-    return rounded(size * dpr());
+    return size * dpr();
   }
 
   isBlank(text) {

@@ -6,6 +6,7 @@ import { Utils } from '../../../utils/Utils';
  * CellsHelper
  * @author jerry
  */
+
 class CellsHelper {
 
   constructor({ cells, merges, rows, cols }) {
@@ -314,7 +315,7 @@ class CellsHelper {
           x += startX;
           y += startY;
           const rect = new Rect({ x, y, width, height });
-          callback(rect, cell);
+          callback(rect, cell, merge);
         }
       }
     }
@@ -345,4 +346,6 @@ class CellsHelper {
   }
 }
 
-export { CellsHelper };
+export {
+  CellsHelper,
+};

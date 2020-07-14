@@ -1,4 +1,4 @@
-class FixedIndex {
+class Code {
 
   constructor(table, {
     height = 33,
@@ -55,4 +55,4 @@ class FixedIndex {
 
 }
 
-export { FixedIndex };
+export { Code };

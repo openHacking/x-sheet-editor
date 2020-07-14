@@ -43,8 +43,8 @@ import { Keyboard } from './Keyboard';
 import { Focus } from './Focus';
 import { Merge } from './base/Merge';
 import { Scale } from './base/Scale';
-import { FixedIndex } from './base/FixedIndex';
-import { FontFactory } from './base/FontFactory';
+import { Code } from './base/Code';
+import { Text } from './base/Text';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -81,6 +81,10 @@ class XTableScrollView {
 
   record() {
     this.lastScrollView = this.scrollView;
+  }
+
+  undo() {
+    this.lastScrollView = null;
   }
 
   reset() {
@@ -988,7 +992,7 @@ class XTableContentUI extends XTableUI {
     const scrollView = this.getScrollView();
     const { table } = this;
     const {
-      draw, cols, cellsHelper, cells, fontFactory,
+      draw, cols, cellsHelper, cells, textFont, scale,
     } = table;
     // 左边区域
     const lView = scrollView.clone();
@@ -1022,7 +1026,11 @@ class XTableContentUI extends XTableUI {
               format, text, fontAttr,
             } = cell;
             const { align } = fontAttr;
-            const builder = fontFactory.getBuilder();
+            // 避免缩放时换行
+            // 宽度使用浮点运算
+            scale.useFloat();
+            rect.width = cols.getWidth(col);
+            const builder = textFont.getBuilder();
             builder.setDraw(draw);
             builder.setText(Format(format, text));
             builder.setAttr(fontAttr);
@@ -1031,6 +1039,7 @@ class XTableContentUI extends XTableUI {
             const font = builder.build();
             font.setOverflowCrop(align === ALIGN.center);
             cell.setContentWidth(font.draw());
+            scale.notFloat();
           }
         },
       });
@@ -1067,7 +1076,11 @@ class XTableContentUI extends XTableUI {
               format, text, fontAttr,
             } = cell;
             const { align } = fontAttr;
-            const builder = fontFactory.getBuilder();
+            // 避免缩放时换行
+            // 宽度使用浮点运算
+            scale.useFloat();
+            rect.width = cols.getWidth(col);
+            const builder = textFont.getBuilder();
             builder.setDraw(draw);
             builder.setText(Format(format, text));
             builder.setAttr(fontAttr);
@@ -1076,6 +1089,7 @@ class XTableContentUI extends XTableUI {
             const font = builder.build();
             font.setOverflowCrop(align === ALIGN.center);
             cell.setContentWidth(font.draw());
+            scale.notFloat();
           }
         },
       });
@@ -1092,7 +1106,7 @@ class XTableContentUI extends XTableUI {
     const drawY = this.getDrawY();
     const { table } = this;
     const {
-      draw, cellsHelper, fontFactory,
+      draw, cellsHelper, textFont, scale, cols,
     } = table;
     draw.offset(drawX, drawY);
     cellsHelper.getCellSkipMergeCellByViewRange({
@@ -1102,7 +1116,11 @@ class XTableContentUI extends XTableUI {
           format, text, fontAttr,
         } = cell;
         const { align } = fontAttr;
-        const builder = fontFactory.getBuilder();
+        // 避免缩放时换行
+        // 宽度使用浮点运算
+        scale.useFloat();
+        rect.width = cols.getWidth(col);
+        const builder = textFont.getBuilder();
         builder.setDraw(draw);
         builder.setText(Format(format, text));
         builder.setAttr(fontAttr);
@@ -1111,15 +1129,20 @@ class XTableContentUI extends XTableUI {
         const font = builder.build();
         font.setOverflowCrop(align === ALIGN.center);
         cell.setContentWidth(font.draw());
+        scale.notFloat();
       },
     });
     cellsHelper.getMergeCellByViewRange({
       rectRange: scrollView,
-      callback: (rect, cell) => {
+      callback: (rect, cell, merge) => {
         const {
           format, text, fontAttr,
         } = cell;
-        const builder = fontFactory.getBuilder();
+        // 避免缩放时换行
+        // 宽度使用浮点运算
+        scale.useFloat();
+        rect.width = cols.sectionSumWidth(merge.sci, merge.eci);
+        const builder = textFont.getBuilder();
         builder.setDraw(draw);
         builder.setText(Format(format, text));
         builder.setAttr(fontAttr);
@@ -1127,6 +1150,7 @@ class XTableContentUI extends XTableUI {
         const font = builder.build();
         font.setTextWrap(TEXT_WRAP.WORD_WRAP);
         cell.setContentWidth(font.draw());
+        scale.notFloat();
       },
     });
     draw.offset(0, 0);
@@ -2241,7 +2265,7 @@ class XTable extends Widget {
     this.height = null;
     // 表格数据配置
     this.scale = new Scale(this);
-    this.index = new FixedIndex(this, this.settings.index);
+    this.index = new Code(this, this.settings.index);
     this.merges = new Merge(this, this.settings.merge);
     this.rows = new Rows(this, this.settings.rows);
     this.cols = new Cols(this, this.settings.cols);
@@ -2323,7 +2347,7 @@ class XTable extends Widget {
       iFMergeFirstCol: (row, col) => this.merges.getFirstIncludes(row, col).sci === col,
       iFMergeLastCol: (row, col) => this.merges.getFirstIncludes(row, col).eci === col,
     });
-    this.fontFactory = new FontFactory(this);
+    this.textFont = new Text(this);
     // 线段处理
     this.leftIdxGridHandle = new GridLineHandle(this, {
       getWidth: () => this.index.getWidth(),
@@ -2435,7 +2459,7 @@ class XTable extends Widget {
    * @return {*}
    */
   visualHeight() {
-    if (Utils.isNotUnDef(this.height)) {
+    if (Utils.isNumber(this.height)) {
       return this.height;
     }
     const height = this.box().height;
@@ -2448,7 +2472,7 @@ class XTable extends Widget {
    * @return {*}
    */
   visualWidth() {
-    if (Utils.isNotUnDef(this.width)) {
+    if (Utils.isNumber(this.width)) {
       return this.width;
     }
     const width = this.box().width;
@@ -2463,9 +2487,9 @@ class XTable extends Widget {
     const {
       draw, xTableScrollView,
     } = this;
-    xTableScrollView.lastScrollView = null;
-    this.width = null;
+    xTableScrollView.undo();
     this.height = null;
+    this.width = null;
     const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.resize(width, height);
     this.render();

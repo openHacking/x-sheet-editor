@@ -1,6 +1,6 @@
 import { Font } from '../../../canvas/Font';
 
-class FontBuilder {
+class TextBuilder {
 
   constructor(table) {
     this.table = table;
@@ -46,6 +46,18 @@ class FontBuilder {
 
 }
 
+class Text {
+
+  constructor(table) {
+    this.table = table;
+  }
+
+  getBuilder() {
+    return new TextBuilder(this.table);
+  }
+
+}
+
 export {
-  FontBuilder,
+  Text,
 };

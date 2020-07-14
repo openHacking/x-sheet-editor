@@ -5,14 +5,27 @@ class Scale {
   constructor(table) {
     this.table = table;
     this.value = 1;
+    this.checkFloat = false;
+  }
+
+  useFloat() {
+    this.checkFloat = true;
+  }
+
+  notFloat() {
+    this.checkFloat = false;
   }
 
   back(origin) {
-    return rounded(origin / this.value);
+    return this.checkFloat
+      ? origin / this.value
+      : rounded(origin / this.value);
   }
 
   goto(origin) {
-    return rounded(this.value * origin);
+    return this.checkFloat
+      ? this.value * origin
+      : rounded(this.value * origin);
   }
 
   setValue(value) {
