@@ -47,10 +47,6 @@ class DrawFont {
     this.attr = attr;
   }
 
-  isBlank(text) {
-    return text === null || text === undefined || text.toString().trim() === '';
-  }
-
   dprMeasureSize(text) {
     const { dw } = this;
     const width = dw.measureText(text).width;
@@ -59,6 +55,10 @@ class DrawFont {
 
   dprFontSize(size) {
     return rounded(size * dpr());
+  }
+
+  isBlank(text) {
+    return text === null || text === undefined || text.toString().trim() === '';
   }
 }
 

@@ -1,15 +1,14 @@
 /* global window */
 
-function dpr() {
-  return window.devicePixelRatio || 1;
-}
-
 function angleToRadian(angle) {
   return -angle * (Math.PI / 180);
 }
 
+function dpr() {
+  return window.devicePixelRatio || 1;
+}
+
 function rounded(val) {
-  // eslint-disable-next-line no-bitwise
   return Math.ceil(val);
 }
 
