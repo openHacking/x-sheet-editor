@@ -10,7 +10,7 @@ function angleToRadian(angle) {
 
 function rounded(val) {
   // eslint-disable-next-line no-bitwise
-  return ~~(0.5 + val);
+  return Math.ceil(val);
 }
 
 function npx(px = 0) {
