@@ -121,7 +121,7 @@ class TopMenu extends Widget {
         },
       },
     });
-    this.fontSize = new FontSize({
+    this.dprFontSize = new FontSize({
       contextMenu: {
         onUpdate: (size) => {
           const sheet = sheetView.getActiveSheet();
@@ -133,7 +133,7 @@ class TopMenu extends Widget {
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
-          this.fontSize.setTitle(size);
+          this.dprFontSize.setTitle(size);
           if (selectorAttr) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
@@ -790,7 +790,7 @@ class TopMenu extends Widget {
     this.children(this.format);
     this.children(new Divider());
     this.children(this.font);
-    this.children(this.fontSize);
+    this.children(this.dprFontSize);
     this.children(new Divider());
     this.children(this.fontBold);
     this.children(this.fontItalic);
@@ -960,9 +960,9 @@ class TopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.fontSize, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      const { fontSize } = this;
-      const { fontSizeContextMenu } = fontSize;
+    EventBind.bind(this.dprFontSize, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const { dprFontSize } = this;
+      const { fontSizeContextMenu } = dprFontSize;
       const { elPopUp } = fontSizeContextMenu;
       ElPopUp.closeAll([elPopUp]);
       if (fontSizeContextMenu.isOpen()) {
@@ -1217,7 +1217,7 @@ class TopMenu extends Widget {
     const sheet = sheetView.getActiveSheet();
     const { table } = sheet;
     const { scale } = table;
-    const value = scale.digitModeTo(100);
+    const value = scale.goto(100);
     this.scale.setTitle(`${value}%`);
   }
 
@@ -1319,7 +1319,7 @@ class TopMenu extends Widget {
       // eslint-disable-next-line prefer-destructuring
       size = firstCell.fontAttr.size;
     }
-    this.fontSize.setTitle(size);
+    this.dprFontSize.setTitle(size);
   }
 
   setFontBoldStatus() {

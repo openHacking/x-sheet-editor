@@ -1,7 +1,7 @@
 import { Widget } from '../../lib/Widget';
 import { cssPrefix, Constant } from '../../constant/Constant';
 import { EventBind } from '../../utils/EventBind';
-import { Table } from '../table/XTable';
+import { XTable } from '../table/XTable';
 
 class Sheet extends Widget {
 
@@ -12,7 +12,7 @@ class Sheet extends Widget {
   }) {
     super(`${cssPrefix}-sheet`);
     this.options = options;
-    this.table = new Table(this.options.tableConfig);
+    this.table = new XTable(this.options.tableConfig);
   }
 
   bind() {

@@ -26,16 +26,16 @@ class Cols {
     const { scale } = table;
     const col = this._[i];
     if (col && col.width) {
-      return scale.digitModeTo(col.width);
+      return scale.goto(col.width);
     }
-    return scale.digitModeTo(this.width);
+    return scale.goto(this.width);
   }
 
   setWidth(i, width) {
     const col = this.getOrNew(i);
     const { table } = this;
     const { scale } = table;
-    col.width = scale.digitModeBack(Utils.minIf(width, this.minWidth));
+    col.width = scale.back(Utils.minIf(width, this.minWidth));
     this.cacheTotalWidth = null;
   }
 
