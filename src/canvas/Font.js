@@ -2,7 +2,6 @@ import { Crop } from './Crop';
 import { Utils } from '../utils/Utils';
 import { Angle, TrigonometricFunction } from './Angle';
 import { Rect } from './Rect';
-import { dpr } from './Draw';
 
 // 垂直文字间距
 const VERTICAL_SPACING = 2;

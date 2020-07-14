@@ -36,11 +36,7 @@ class FontBuilder {
       text, rect, attr, overflow, dw,
     } = this;
     return new Font({
-      dw,
-      text,
-      rect,
-      attr,
-      overflow,
+      dw, text, rect, attr, overflow,
     });
   }
 

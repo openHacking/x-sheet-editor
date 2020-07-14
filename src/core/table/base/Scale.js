@@ -30,17 +30,20 @@ class Scale extends ScaleBase {
   constructor(table) {
     super(table);
     this.useDigitMode = true;
+    this.mustDigitMode = false;
   }
 
   digitModeBack(origin) {
-    if (this.useDigitMode) {
+    const { useDigitMode, mustDigitMode } = this;
+    if (useDigitMode || mustDigitMode) {
       return Math.ceil(origin / this.value);
     }
     return origin;
   }
 
   digitModeTo(origin) {
-    if (this.useDigitMode) {
+    const { useDigitMode, mustDigitMode } = this;
+    if (useDigitMode || mustDigitMode) {
       return Math.ceil(this.value * origin);
     }
     return origin;
@@ -53,6 +56,16 @@ class Scale extends ScaleBase {
 
   openDigitMode() {
     this.useDigitMode = true;
+    return this;
+  }
+
+  closeMustDigitMode() {
+    this.mustDigitMode = false;
+    return this;
+  }
+
+  openMustDigitMode() {
+    this.mustDigitMode = true;
     return this;
   }
 

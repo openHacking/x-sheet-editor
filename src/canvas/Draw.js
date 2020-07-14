@@ -1,19 +1,21 @@
 /* global window */
 
-function angleToRadian(angle) {
-  return -angle * (Math.PI / 180);
-}
-
 function dpr() {
   return window.devicePixelRatio || 1;
+}
+
+function angleToRadian(angle) {
+  return -angle * (Math.PI / 180);
 }
 
 function opx(px) {
   return px * dpr();
 }
 
-function npx(px = 0) {
-  return Math.ceil(opx(px));
+function npx(px = 0, dpr = true) {
+  return dpr
+    ? Math.ceil(opx(px))
+    : Math.ceil(px);
 }
 
 class CanvasDraw {
@@ -27,7 +29,30 @@ class CanvasDraw {
     this.offsetY = 0;
     this.skipOffset = false;
     this.useOffset = true;
-    this.useNpx = true;
+  }
+
+  getOffsetX() {
+    return this.offsetX;
+  }
+
+  getOffsetY() {
+    return this.offsetY;
+  }
+
+  closeSkipOffset() {
+    this.skipOffset = false;
+    return this;
+  }
+
+  openSkipOffset() {
+    this.skipOffset = true;
+    return this;
+  }
+
+  offset(x = 0, y = 0) {
+    this.offsetX = x;
+    this.offsetY = y;
+    return this;
   }
 
   resize(width, height) {
@@ -41,47 +66,13 @@ class CanvasDraw {
     return this;
   }
 
-  offset(x = 0, y = 0) {
-    this.offsetX = x;
-    this.offsetY = y;
-    return this;
-  }
-
-  getOffsetX() {
-    return this.offsetX;
-  }
-
-  getOffsetY() {
-    return this.offsetY;
-  }
-
-  openSkipOffset() {
-    this.skipOffset = true;
-    return this;
-  }
-
-  closeSkipOffset() {
-    this.skipOffset = false;
-    return this;
-  }
-
-  openNpx() {
-    this.useNpx = true;
-    return this;
-  }
-
-  closeNpx() {
-    this.useNpx = false;
+  closeOffset() {
+    this.useOffset = false;
     return this;
   }
 
   openOffset() {
     this.useOffset = true;
-    return this;
-  }
-
-  closeOffset() {
-    this.useOffset = false;
     return this;
   }
 
@@ -153,81 +144,86 @@ class DrawBase extends CanvasDraw {
 
 class Draw2 extends DrawBase {
 
+  constructor(el) {
+    super(el);
+    this.dpr = true;
+  }
+
   fillText(text, x, y) {
-    const { useNpx, useOffset, skipOffset } = this;
+    const {
+      dpr, useOffset, skipOffset,
+    } = this;
     if (useOffset && skipOffset === false) {
       const { offsetX, offsetY } = this;
       x += offsetX;
       y += offsetY;
     }
-    if (useNpx) {
-      x = npx(x);
-      y = npx(y);
-    }
+    x = npx(x, dpr);
+    y = npx(y, dpr);
     this.ctx.fillText(text, x, y);
     return this;
   }
 
   translate(x, y) {
-    const { useNpx, useOffset, skipOffset } = this;
+    const {
+      dpr, useOffset, skipOffset,
+    } = this;
     if (useOffset && skipOffset === false) {
       const { offsetX, offsetY } = this;
       x += offsetX;
       y += offsetY;
     }
-    if (useNpx) {
-      x = npx(x);
-      y = npx(y);
-    }
+    x = npx(x, dpr);
+    y = npx(y, dpr);
     this.ctx.translate(x, y);
     return this;
   }
 
   rect(x, y, w, h) {
-    const { useNpx, useOffset, skipOffset } = this;
+    const {
+      dpr, useOffset, skipOffset,
+    } = this;
     if (useOffset && skipOffset === false) {
       const { offsetX, offsetY } = this;
       x += offsetX;
       y += offsetY;
     }
-    if (useNpx) {
-      x = npx(x);
-      y = npx(y);
-      w = npx(w);
-      h = npx(h);
-    }
+    x = npx(x, dpr);
+    y = npx(y, dpr);
+    w = npx(w, dpr);
+    h = npx(h, dpr);
     this.ctx.rect(x, y, w, h);
     return this;
   }
 
   fillRect(x, y, w, h) {
-    const { useNpx, useOffset, skipOffset } = this;
+    const {
+      dpr, useOffset, skipOffset,
+    } = this;
     if (useOffset && skipOffset === false) {
       const { offsetX, offsetY } = this;
       x += offsetX;
       y += offsetY;
     }
-    if (useNpx) {
-      x = npx(x);
-      y = npx(y);
-      w = npx(w);
-      h = npx(h);
-    }
+    x = npx(x, dpr);
+    y = npx(y, dpr);
+    w = npx(w, dpr);
+    h = npx(h, dpr);
     this.ctx.fillRect(x, y, w, h);
     return this;
   }
 
   moveTo(x, y) {
-    const { useNpx, useOffset, skipOffset } = this;
+    const {
+      dpr, useOffset, skipOffset,
+    } = this;
     if (useOffset && skipOffset === false) {
       const { offsetX, offsetY } = this;
       x += offsetX;
       y += offsetY;
     }
-    if (useNpx) {
-      x = npx(x);
-      y = npx(y);
-    }
+    x = npx(x, dpr);
+    y = npx(y, dpr);
     const even = this.ctx.lineWidth % 2 === 0;
     const nx = even ? x : x - 0.5;
     const ny = even ? y : y - 0.5;
@@ -235,16 +231,16 @@ class Draw2 extends DrawBase {
   }
 
   lineTo(x, y) {
-    const { useNpx, useOffset, skipOffset } = this;
+    const {
+      dpr, useOffset, skipOffset,
+    } = this;
     if (useOffset && skipOffset === false) {
       const { offsetX, offsetY } = this;
       x += offsetX;
       y += offsetY;
     }
-    if (useNpx) {
-      x = npx(x);
-      y = npx(y);
-    }
+    x = npx(x, dpr);
+    y = npx(y, dpr);
     const even = this.ctx.lineWidth % 2 === 0;
     const nx = even ? x : x - 0.5;
     const ny = even ? y : y - 0.5;
@@ -258,7 +254,9 @@ class Draw2 extends DrawBase {
   }
 
   drawImage(origin, sx, sy, sWidth, sHeight, x, y, width, height) {
-    const { useNpx, useOffset, skipOffset } = this;
+    const {
+      dpr, useOffset, skipOffset,
+    } = this;
     if (useOffset && skipOffset === false) {
       const { offsetX, offsetY } = this;
       sx += offsetX;
@@ -266,17 +264,25 @@ class Draw2 extends DrawBase {
       x += offsetX;
       y += offsetY;
     }
-    if (useNpx) {
-      sx = npx(sx);
-      sy = npx(sy);
-      x = npx(x);
-      y = npx(y);
-      sWidth = npx(sWidth);
-      sHeight = npx(sHeight);
-      width = npx(width);
-      height = npx(height);
-    }
+    sx = npx(sx, dpr);
+    sy = npx(sy, dpr);
+    x = npx(x, dpr);
+    y = npx(y, dpr);
+    sWidth = npx(sWidth, dpr);
+    sHeight = npx(sHeight, dpr);
+    width = npx(width, dpr);
+    height = npx(height, dpr);
     this.ctx.drawImage(origin, sx, sy, sWidth, sHeight, x, y, width, height);
+  }
+
+  closeDpr() {
+    this.dpr = false;
+    return this;
+  }
+
+  openDpr() {
+    this.dpr = true;
+    return this;
   }
 }
 
@@ -304,8 +310,5 @@ class Draw extends Draw2 {
 }
 
 export {
-  Draw,
-  dpr,
-  opx,
-  angleToRadian,
+  Draw, dpr, opx, angleToRadian,
 };
