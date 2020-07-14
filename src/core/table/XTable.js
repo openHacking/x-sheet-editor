@@ -2425,10 +2425,8 @@ class XTable extends Widget {
   bind() {
     const { xTableScrollView } = this;
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      this.reset();
       this.render();
       xTableScrollView.record();
-      this.reset();
     });
   }
 
@@ -2465,12 +2463,11 @@ class XTable extends Widget {
     const {
       draw, xTableScrollView,
     } = this;
+    xTableScrollView.lastScrollView = null;
     this.width = null;
     this.height = null;
-    xTableScrollView.lastScrollView = null;
     const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.resize(width, height);
-    this.reset();
     this.render();
   }
 
@@ -2538,6 +2535,7 @@ class XTable extends Widget {
    * 渲染界面
    */
   render() {
+    this.reset();
     const { fixed } = this;
     const { xTableFrozenFullRect } = this;
     const { xLeftFrozenIndex } = this;
