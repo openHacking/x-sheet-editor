@@ -1,4 +1,4 @@
-import { Constant } from '../../constant/Constant';
+import { Constant } from '../../const/Constant';
 import { EventBind } from '../../utils/EventBind';
 
 class Focus {

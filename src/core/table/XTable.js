@@ -7,7 +7,7 @@ import {
 import { Widget } from '../../lib/Widget';
 import {
   Constant, cssPrefix,
-} from '../../constant/Constant';
+} from '../../const/Constant';
 import { Draw, npx } from '../../canvas/Draw';
 import { Line, LINE_TYPE } from '../../canvas/Line';
 import { Grid } from '../../canvas/Grid';

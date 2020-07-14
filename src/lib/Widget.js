@@ -1,5 +1,5 @@
 import { Element } from './Element';
-import { cssPrefix } from '../constant/Constant';
+import { cssPrefix } from '../const/Constant';
 
 class Widget extends Element {
 

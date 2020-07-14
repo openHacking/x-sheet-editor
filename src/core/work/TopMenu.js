@@ -1,5 +1,5 @@
 import { Widget } from '../../lib/Widget';
-import { cssPrefix, Constant } from '../../constant/Constant';
+import { cssPrefix, Constant } from '../../const/Constant';
 import { Undo } from './tools/Undo';
 import { Redo } from './tools/Redo';
 import { PaintFormat } from './tools/PaintFormat';

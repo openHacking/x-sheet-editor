@@ -1,4 +1,4 @@
-import { cssPrefix, Constant } from '../../../../../constant/Constant';
+import { cssPrefix, Constant } from '../../../../../const/Constant';
 import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
 import { FormatContextMenuItem } from './FormatContextMenuItem';
 import { ELContextMenuDivider } from '../../../../../component/elcontextmenu/ELContextMenuDivider';

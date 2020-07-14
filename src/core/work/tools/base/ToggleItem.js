@@ -1,5 +1,5 @@
 import { Item } from './Item';
-import { cssPrefix } from '../../../../constant/Constant';
+import { cssPrefix } from '../../../../const/Constant';
 
 class ToggleItem extends Item {
   constructor(className) {

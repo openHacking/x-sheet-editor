@@ -1,4 +1,4 @@
-import { cssPrefix } from '../../../constant/Constant';
+import { cssPrefix } from '../../../const/Constant';
 import { Icon } from './Icon';
 import { Utils } from '../../../utils/Utils';
 import { EL_POPUP_POSITION } from '../../../component/elpopup/ElPopUp';

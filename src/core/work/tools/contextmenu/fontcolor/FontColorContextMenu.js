@@ -1,5 +1,5 @@
 import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
-import { cssPrefix, Constant } from '../../../../../constant/Constant';
+import { cssPrefix, Constant } from '../../../../../const/Constant';
 import { FontColorContextMenuItem } from './FontColorContextMenuItem';
 import { ColorArray } from '../../../../../component/colorpicker/colorarray/ColorArray';
 import { h } from '../../../../../lib/Element';

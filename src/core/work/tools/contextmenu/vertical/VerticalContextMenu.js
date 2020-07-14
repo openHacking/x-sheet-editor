@@ -1,5 +1,5 @@
 import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
-import { cssPrefix, Constant } from '../../../../../constant/Constant';
+import { cssPrefix, Constant } from '../../../../../const/Constant';
 import { Utils } from '../../../../../utils/Utils';
 import { h } from '../../../../../lib/Element';
 import { VerticalContextMenuItem } from './VerticalContextMenuItem';

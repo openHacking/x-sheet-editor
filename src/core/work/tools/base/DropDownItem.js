@@ -1,5 +1,5 @@
 import { Item } from './Item';
-import { cssPrefix } from '../../../../constant/Constant';
+import { cssPrefix } from '../../../../const/Constant';
 import { h } from '../../../../lib/Element';
 import { Icon } from '../Icon';
 

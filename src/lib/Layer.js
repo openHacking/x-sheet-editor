@@ -1,5 +1,5 @@
 import { Widget } from './Widget';
-import { cssPrefix } from '../constant/Constant';
+import { cssPrefix } from '../const/Constant';
 
 class Layer extends Widget {
 

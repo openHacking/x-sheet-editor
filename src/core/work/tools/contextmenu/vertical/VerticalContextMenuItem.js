@@ -1,5 +1,5 @@
 import { ELContextMenuItem } from '../../../../../component/elcontextmenu/ELContextMenuItem';
-import { cssPrefix } from '../../../../../constant/Constant';
+import { cssPrefix } from '../../../../../const/Constant';
 
 class VerticalContextMenuItem extends ELContextMenuItem {
   constructor() {

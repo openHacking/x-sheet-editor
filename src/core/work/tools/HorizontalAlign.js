@@ -1,5 +1,5 @@
 import { DropDownItem } from './base/DropDownItem';
-import { cssPrefix } from '../../../constant/Constant';
+import { cssPrefix } from '../../../const/Constant';
 import { Icon } from './Icon';
 import { HorizontalContextMenu } from './contextmenu/horizontal/HorizontalContextMenu';
 import { Utils } from '../../../utils/Utils';

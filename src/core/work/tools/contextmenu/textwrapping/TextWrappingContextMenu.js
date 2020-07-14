@@ -1,5 +1,5 @@
 import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
-import { cssPrefix, Constant } from '../../../../../constant/Constant';
+import { cssPrefix, Constant } from '../../../../../const/Constant';
 import { Utils } from '../../../../../utils/Utils';
 import { TextWrappingIcon1 } from '../icon/textwrapping/TextWrappingIcon1';
 import { TextWrappingIcon2 } from '../icon/textwrapping/TextWrappingIcon2';

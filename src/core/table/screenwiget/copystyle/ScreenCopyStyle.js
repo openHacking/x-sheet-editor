@@ -3,7 +3,7 @@ import { CopyStyle } from './CopyStyle';
 import { ScreenWidget } from '../../screen/ScreenWidget';
 import { RectRange } from '../../base/RectRange';
 import { EventBind } from '../../../../utils/EventBind';
-import { Constant } from '../../../../constant/Constant';
+import { Constant } from '../../../../const/Constant';
 import { Rect } from '../../../../canvas/Rect';
 
 class ScreenCopyStyle extends ScreenWidget {

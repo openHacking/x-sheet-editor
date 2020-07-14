@@ -1,5 +1,5 @@
 import { ELContextMenuItem } from '../../../../../component/elcontextmenu/ELContextMenuItem';
-import { cssPrefix } from '../../../../../constant/Constant';
+import { cssPrefix } from '../../../../../const/Constant';
 import { h } from '../../../../../lib/Element';
 
 class FontColorContextMenuItem extends ELContextMenuItem {

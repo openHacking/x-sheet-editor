@@ -1,5 +1,5 @@
 import { Widget } from '../../lib/Widget';
-import { Constant, cssPrefix } from '../../constant/Constant';
+import { Constant, cssPrefix } from '../../const/Constant';
 import { h } from '../../lib/Element';
 import { EventBind } from '../../utils/EventBind';
 

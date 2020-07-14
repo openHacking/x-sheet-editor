@@ -1,5 +1,5 @@
 import { Widget } from '../../lib/Widget';
-import { cssPrefix } from '../../constant/Constant';
+import { cssPrefix } from '../../const/Constant';
 import { VerticalLayer } from '../../lib/layer/VerticalLayer';
 import { VerticalLayerElement } from '../../lib/layer/VerticalLayerElement';
 import { WorkTop } from './WorkTop';

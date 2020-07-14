@@ -1,5 +1,5 @@
 import { DropDownItem } from './base/DropDownItem';
-import { cssPrefix } from '../../../constant/Constant';
+import { cssPrefix } from '../../../const/Constant';
 import { Icon } from './Icon';
 
 class Functions extends DropDownItem {

@@ -1,6 +1,6 @@
 /* global document window */
 import { Widget } from '../../lib/Widget';
-import { cssPrefix, Constant } from '../../constant/Constant';
+import { cssPrefix, Constant } from '../../const/Constant';
 import { h } from '../../lib/Element';
 import { ScrollBarX } from '../scrollbar/ScrollBarX';
 import { ScrollBarY } from '../scrollbar/ScrollBarY';

@@ -1,5 +1,5 @@
 import { Widget } from '../../lib/Widget';
-import { cssPrefix } from '../../constant/Constant';
+import { cssPrefix } from '../../const/Constant';
 
 let number = 0;
 

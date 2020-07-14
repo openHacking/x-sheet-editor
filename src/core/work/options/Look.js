@@ -1,5 +1,5 @@
 import { Item } from './base/Item';
-import { cssPrefix } from '../../../constant/Constant';
+import { cssPrefix } from '../../../const/Constant';
 
 class Look extends Item {
   constructor() {

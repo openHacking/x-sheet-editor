@@ -1,6 +1,6 @@
 /* global window */
 import { Widget } from '../../lib/Widget';
-import { cssPrefix, Constant, XSheetVersion } from '../../constant/Constant';
+import { cssPrefix, Constant, XSheetVersion } from '../../const/Constant';
 import { VerticalLayer } from '../../lib/layer/VerticalLayer';
 import { HorizontalLayer } from '../../lib/layer/HorizontalLayer';
 import { VerticalLayerElement } from '../../lib/layer/VerticalLayerElement';

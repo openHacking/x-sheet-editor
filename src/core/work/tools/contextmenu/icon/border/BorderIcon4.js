@@ -1,5 +1,5 @@
 import { Item } from '../../../base/Item';
-import { cssPrefix } from '../../../../../../constant/Constant';
+import { cssPrefix } from '../../../../../../const/Constant';
 import { Icon } from '../../../Icon';
 
 class BorderIcon4 extends Item {

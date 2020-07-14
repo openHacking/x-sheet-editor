@@ -1,4 +1,4 @@
-import { cssPrefix } from '../../../constant/Constant';
+import { cssPrefix } from '../../../const/Constant';
 import { Icon } from './Icon';
 import { Item } from './base/Item';
 

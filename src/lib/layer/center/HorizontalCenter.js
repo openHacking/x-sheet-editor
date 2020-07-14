@@ -1,4 +1,4 @@
-import { cssPrefix } from '../../../constant/Constant';
+import { cssPrefix } from '../../../const/Constant';
 import { Utils } from '../../../utils/Utils';
 import { Layer } from '../../Layer';
 

@@ -1,5 +1,5 @@
 import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
-import { Constant, cssPrefix } from '../../../../../constant/Constant';
+import { Constant, cssPrefix } from '../../../../../const/Constant';
 import { Utils } from '../../../../../utils/Utils';
 import { ScaleContextMenuItem } from './ScaleContextMenuItem';
 

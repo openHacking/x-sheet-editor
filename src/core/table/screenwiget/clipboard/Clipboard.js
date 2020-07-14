@@ -1,4 +1,4 @@
-import { cssPrefix } from '../../../../constant/Constant';
+import { cssPrefix } from '../../../../const/Constant';
 import { Widget } from '../../../../lib/Widget';
 
 const svg = `

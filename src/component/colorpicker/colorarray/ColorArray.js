@@ -1,5 +1,5 @@
 import { Widget } from '../../../lib/Widget';
-import { cssPrefix, Constant } from '../../../constant/Constant';
+import { cssPrefix, Constant } from '../../../const/Constant';
 import { ColorItem } from './ColorItem';
 import { Utils } from '../../../utils/Utils';
 

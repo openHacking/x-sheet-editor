@@ -1,6 +1,6 @@
 /* global document */
 import { h } from '../../lib/Element';
-import { cssPrefix, Constant } from '../../constant/Constant';
+import { cssPrefix, Constant } from '../../const/Constant';
 import { Widget } from '../../lib/Widget';
 import { DragPanel } from '../dragpanel/DragPanel';
 import { EventBind } from '../../utils/EventBind';
