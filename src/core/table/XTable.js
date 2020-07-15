@@ -24,7 +24,6 @@ import Format from './Format';
 import { Box } from '../../canvas/Box';
 import { RectRange } from './base/RectRange';
 import { EventBind } from '../../utils/EventBind';
-import { CellsHelper } from './cells/CellsHelper';
 import { Cells } from './cells/Cells';
 import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
 import { Screen } from './screen/Screen';
@@ -45,6 +44,8 @@ import { Merge } from './base/Merge';
 import { Scale } from './base/Scale';
 import { Code } from './base/Code';
 import { Text } from './base/Text';
+import { StyleCellsHelper } from './helper/StyleCellsHelper';
+import { TextCellsHelper } from './helper/TextCellsHelper';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -856,7 +857,7 @@ class XTableContentUI extends XTableUI {
     const scrollView = this.getScrollView();
     const { table } = this;
     const {
-      draw, cols, cellsHelper, cells, textFont,
+      draw, cols, textCellsHelper, cells, textFont, scale,
     } = table;
     // 左边区域
     const lView = scrollView.clone();
@@ -868,7 +869,7 @@ class XTableContentUI extends XTableUI {
       let max;
       let curr;
       draw.offset(lx, ly);
-      cellsHelper.getCellSkipMergeCellByViewRange({
+      textCellsHelper.getCellSkipMergeCellByViewRange({
         rectRange: lView,
         reverseCols: true,
         callback: (row, col, cell, rect, overflow) => {
@@ -889,6 +890,7 @@ class XTableContentUI extends XTableUI {
             const {
               format, text, fontAttr,
             } = cell;
+            scale.useFloat();
             const { align } = fontAttr;
             const builder = textFont.getBuilder();
             builder.setDraw(draw);
@@ -896,10 +898,10 @@ class XTableContentUI extends XTableUI {
             builder.setAttr(fontAttr);
             builder.setRect(rect);
             builder.setOverFlow(overflow);
-            builder.setReCellWidth(col);
             const font = builder.build();
             font.setOverflowCrop(align === ALIGN.center);
             cell.setContentWidth(font.draw());
+            scale.notFloat();
           }
         },
       });
@@ -915,7 +917,7 @@ class XTableContentUI extends XTableUI {
       let max;
       let curr;
       draw.offset(rx, ry);
-      cellsHelper.getCellSkipMergeCellByViewRange({
+      textCellsHelper.getCellSkipMergeCellByViewRange({
         rectRange: rView,
         callback: (row, col, cell, rect, overflow) => {
           if (row !== curr) {
@@ -935,6 +937,7 @@ class XTableContentUI extends XTableUI {
             const {
               format, text, fontAttr,
             } = cell;
+            scale.useFloat();
             const { align } = fontAttr;
             const builder = textFont.getBuilder();
             builder.setDraw(draw);
@@ -942,10 +945,10 @@ class XTableContentUI extends XTableUI {
             builder.setAttr(fontAttr);
             builder.setRect(rect);
             builder.setOverFlow(overflow);
-            builder.setReCellWidth(col);
             const font = builder.build();
             font.setOverflowCrop(align === ALIGN.center);
             cell.setContentWidth(font.draw());
+            scale.notFloat();
           }
         },
       });
@@ -962,15 +965,16 @@ class XTableContentUI extends XTableUI {
     const drawY = this.getDrawY();
     const { table } = this;
     const {
-      draw, cellsHelper, textFont,
+      draw, textCellsHelper, textFont, scale,
     } = table;
     draw.offset(drawX, drawY);
-    cellsHelper.getCellSkipMergeCellByViewRange({
+    textCellsHelper.getCellSkipMergeCellByViewRange({
       rectRange: scrollView,
       callback: (row, col, cell, rect, overflow) => {
         const {
           format, text, fontAttr,
         } = cell;
+        scale.useFloat();
         const { align } = fontAttr;
         const builder = textFont.getBuilder();
         builder.setDraw(draw);
@@ -978,27 +982,28 @@ class XTableContentUI extends XTableUI {
         builder.setAttr(fontAttr);
         builder.setRect(rect);
         builder.setOverFlow(overflow);
-        builder.setReCellWidth(col);
         const font = builder.build();
         font.setOverflowCrop(align === ALIGN.center);
         cell.setContentWidth(font.draw());
+        scale.notFloat();
       },
     });
-    cellsHelper.getMergeCellByViewRange({
+    textCellsHelper.getMergeCellByViewRange({
       rectRange: scrollView,
-      callback: (rect, cell, merge) => {
+      callback: (rect, cell) => {
         const {
           format, text, fontAttr,
         } = cell;
+        scale.useFloat();
         const builder = textFont.getBuilder();
         builder.setDraw(draw);
         builder.setText(Format(format, text));
         builder.setAttr(fontAttr);
         builder.setRect(rect);
-        builder.setReMergeWidth(merge.sci, merge.eci);
         const font = builder.build();
         font.setTextWrap(TEXT_WRAP.WORD_WRAP);
         cell.setContentWidth(font.draw());
+        scale.notFloat();
       },
     });
     draw.offset(0, 0);
@@ -1147,10 +1152,10 @@ class XTableContentUI extends XTableUI {
     const drawX = this.getDrawX();
     const drawY = this.getDrawY();
     const {
-      draw, cellsHelper,
+      draw, styleCellsHelper,
     } = table;
     draw.offset(drawX, drawY);
-    cellsHelper.getMergeCellByViewRange({
+    styleCellsHelper.getMergeCellByViewRange({
       rectRange: scrollView,
       callback: (rect, cell) => {
         const { background } = cell;
@@ -1158,7 +1163,7 @@ class XTableContentUI extends XTableUI {
         box.drawBackgroundColor(background);
       },
     });
-    cellsHelper.getCellByViewRange({
+    styleCellsHelper.getCellByViewRange({
       rectRange: scrollView,
       callback: (i, c, cell, rect) => {
         const { background } = cell;
@@ -2290,11 +2295,19 @@ class XTable extends Widget {
     });
     this.scroll = new Scroll(this);
     // 单元格辅助类
-    this.cellsHelper = new CellsHelper({
+    this.styleCellsHelper = new StyleCellsHelper({
       cells: this.cells,
       merges: this.merges,
       rows: this.rows,
       cols: this.cols,
+      scale: this.scale,
+    });
+    this.textCellsHelper = new TextCellsHelper({
+      cells: this.cells,
+      merges: this.merges,
+      rows: this.rows,
+      cols: this.cols,
+      scale: this.scale,
     });
     // canvas 画布
     this.canvas = new Widget(`${cssPrefix}-table-canvas`, 'canvas');
@@ -2420,12 +2433,12 @@ class XTable extends Widget {
    * 边框渲染优化
    */
   drawBorderOptimize() {
-    const { cellsHelper } = this;
+    const { styleCellsHelper } = this;
     const { xTableScrollView } = this;
     const { borderHandle } = this;
     const scrollView = xTableScrollView.getScrollView();
     let enable = true;
-    cellsHelper.getCellByViewRange({
+    styleCellsHelper.getCellByViewRange({
       rectRange: scrollView,
       callback: (row, col, cell) => {
         const { borderAttr } = cell;

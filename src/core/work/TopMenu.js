@@ -68,7 +68,7 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            cellsHelper,
+            styleCellsHelper,
             tableDataSnapshot,
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
@@ -77,7 +77,7 @@ class TopMenu extends Widget {
           if (selectorAttr) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            cellsHelper.getCellOrNewCellByViewRange({
+            styleCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -98,7 +98,7 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            cellsHelper,
+            styleCellsHelper,
             tableDataSnapshot,
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
@@ -107,7 +107,7 @@ class TopMenu extends Widget {
           if (selectorAttr) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            cellsHelper.getCellOrNewCellByViewRange({
+            styleCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -128,7 +128,7 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            cellsHelper,
+            styleCellsHelper,
             tableDataSnapshot,
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
@@ -137,7 +137,7 @@ class TopMenu extends Widget {
           if (selectorAttr) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            cellsHelper.getCellOrNewCellByViewRange({
+            styleCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -158,7 +158,7 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            cellsHelper,
+            styleCellsHelper,
             tableDataSnapshot,
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
@@ -167,7 +167,7 @@ class TopMenu extends Widget {
           if (selectorAttr) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            cellsHelper.getCellOrNewCellByViewRange({
+            styleCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -188,7 +188,7 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            cellsHelper,
+            styleCellsHelper,
             tableDataSnapshot,
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
@@ -197,7 +197,7 @@ class TopMenu extends Widget {
           if (selectorAttr) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            cellsHelper.getCellOrNewCellByViewRange({
+            styleCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -218,7 +218,7 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            cellsHelper,
+            styleCellsHelper,
             cells,
             tableDataSnapshot,
           } = table;
@@ -257,7 +257,7 @@ class TopMenu extends Widget {
             // Border Type
             switch (borderType) {
               case 'border1':
-                cellsHelper.getCellOrNewCellByViewRange({
+                styleCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
                   callback: (r, c, origin) => {
                     const cell = origin.clone();
@@ -287,7 +287,7 @@ class TopMenu extends Widget {
                 });
                 break;
               case 'border2':
-                cellsHelper.getCellOrNewCellByViewRange({
+                styleCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
                   callback: (r, c, origin) => {
                     const cell = origin.clone();
@@ -365,7 +365,7 @@ class TopMenu extends Widget {
                 });
                 break;
               case 'border3':
-                cellsHelper.getCellOrNewCellByViewRange({
+                styleCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
                   callback: (r, c, origin) => {
                     const cell = origin.clone();
@@ -411,7 +411,7 @@ class TopMenu extends Widget {
                 });
                 break;
               case 'border4':
-                cellsHelper.getCellOrNewCellByViewRange({
+                styleCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
                   callback: (r, c, origin) => {
                     const cell = origin.clone();
@@ -457,7 +457,7 @@ class TopMenu extends Widget {
                 });
                 break;
               case 'border5':
-                cellsHelper.getCellOrNewCellByViewRange({
+                styleCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
                   callback: (r, c, origin) => {
                     const cell = origin.clone();
@@ -511,7 +511,7 @@ class TopMenu extends Widget {
                 });
                 break;
               case 'border6':
-                cellsHelper.getCellOrNewCellByViewRange({
+                styleCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
                   callback: (r, c, origin) => {
                     if (c !== selectorAttr.rect.sci) {
@@ -532,7 +532,7 @@ class TopMenu extends Widget {
                 });
                 break;
               case 'border7':
-                cellsHelper.getCellOrNewCellByViewRange({
+                styleCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
                   callback: (r, c, origin) => {
                     if (r !== selectorAttr.rect.sri) {
@@ -553,7 +553,7 @@ class TopMenu extends Widget {
                 });
                 break;
               case 'border8':
-                cellsHelper.getCellOrNewCellByViewRange({
+                styleCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
                   callback: (r, c, origin) => {
                     if (c !== selectorAttr.rect.eci) {
@@ -574,7 +574,7 @@ class TopMenu extends Widget {
                 });
                 break;
               case 'border9':
-                cellsHelper.getCellOrNewCellByViewRange({
+                styleCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
                   callback: (r, c, origin) => {
                     if (r !== selectorAttr.rect.eri) {
@@ -595,7 +595,7 @@ class TopMenu extends Widget {
                 });
                 break;
               case 'border10':
-                cellsHelper.getCellOrNewCellByViewRange({
+                styleCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
                   callback: (r, c, origin) => {
                     const cell = origin.clone();
@@ -660,7 +660,7 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            cellsHelper,
+            styleCellsHelper,
             tableDataSnapshot,
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
@@ -680,7 +680,7 @@ class TopMenu extends Widget {
           if (selectorAttr) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            cellsHelper.getCellOrNewCellByViewRange({
+            styleCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -701,7 +701,7 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            cellsHelper,
+            styleCellsHelper,
             tableDataSnapshot,
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
@@ -721,7 +721,7 @@ class TopMenu extends Widget {
           if (selectorAttr) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            cellsHelper.getCellOrNewCellByViewRange({
+            styleCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -742,7 +742,7 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            cellsHelper,
+            styleCellsHelper,
             tableDataSnapshot,
           } = table;
           const screenSelector = screen.findByClass(ScreenSelector);
@@ -764,7 +764,7 @@ class TopMenu extends Widget {
           if (selectorAttr) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            cellsHelper.getCellOrNewCellByViewRange({
+            styleCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectorAttr.rect,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -915,7 +915,7 @@ class TopMenu extends Widget {
       const { table } = sheet;
       const {
         screen,
-        cellsHelper,
+        styleCellsHelper,
         tableDataSnapshot,
       } = table;
       const screenSelector = screen.findByClass(ScreenSelector);
@@ -923,7 +923,7 @@ class TopMenu extends Widget {
       if (selectorAttr) {
         tableDataSnapshot.begin();
         const { cellDataProxy } = tableDataSnapshot;
-        cellsHelper.getCellOrNewCellByViewRange({
+        styleCellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectorAttr.rect,
           callback: (r, c, origin) => {
             const { text, merge } = origin;
@@ -979,7 +979,7 @@ class TopMenu extends Widget {
       const {
         screen,
         cells,
-        cellsHelper,
+        styleCellsHelper,
         tableDataSnapshot,
       } = table;
       const screenSelector = screen.findByClass(ScreenSelector);
@@ -989,7 +989,7 @@ class TopMenu extends Widget {
         const bold = !firstCell.fontAttr.bold;
         tableDataSnapshot.begin();
         const { cellDataProxy } = tableDataSnapshot;
-        cellsHelper.getCellOrNewCellByViewRange({
+        styleCellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectorAttr.rect,
           callback: (r, c, origin) => {
             const cell = origin.clone();
@@ -1007,7 +1007,7 @@ class TopMenu extends Widget {
       const {
         screen,
         cells,
-        cellsHelper,
+        styleCellsHelper,
         tableDataSnapshot,
       } = table;
       const screenSelector = screen.findByClass(ScreenSelector);
@@ -1017,7 +1017,7 @@ class TopMenu extends Widget {
         const italic = !firstCell.fontAttr.italic;
         tableDataSnapshot.begin();
         const { cellDataProxy } = tableDataSnapshot;
-        cellsHelper.getCellOrNewCellByViewRange({
+        styleCellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectorAttr.rect,
           callback: (r, c, origin) => {
             const cell = origin.clone();
@@ -1035,7 +1035,7 @@ class TopMenu extends Widget {
       const {
         screen,
         cells,
-        cellsHelper,
+        styleCellsHelper,
         tableDataSnapshot,
       } = table;
       const screenSelector = screen.findByClass(ScreenSelector);
@@ -1045,7 +1045,7 @@ class TopMenu extends Widget {
         const underline = !firstCell.fontAttr.underline;
         tableDataSnapshot.begin();
         const { cellDataProxy } = tableDataSnapshot;
-        cellsHelper.getCellOrNewCellByViewRange({
+        styleCellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectorAttr.rect,
           callback: (r, c, origin) => {
             const cell = origin.clone();
@@ -1063,7 +1063,7 @@ class TopMenu extends Widget {
       const {
         screen,
         cells,
-        cellsHelper,
+        styleCellsHelper,
         tableDataSnapshot,
       } = table;
       const screenSelector = screen.findByClass(ScreenSelector);
@@ -1073,7 +1073,7 @@ class TopMenu extends Widget {
         const strikethrough = !firstCell.fontAttr.strikethrough;
         tableDataSnapshot.begin();
         const { cellDataProxy } = tableDataSnapshot;
-        cellsHelper.getCellOrNewCellByViewRange({
+        styleCellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectorAttr.rect,
           callback: (r, c, origin) => {
             const cell = origin.clone();
