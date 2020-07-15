@@ -1,4 +1,5 @@
 import { Font } from '../../../canvas/Font';
+import { Utils } from '../../../utils/Utils';
 
 class TextBuilder {
 
@@ -9,6 +10,34 @@ class TextBuilder {
     this.attr = null;
     this.dw = null;
     this.overflow = null;
+    this.mergeWidth = null;
+    this.cellWidth = null;
+  }
+
+  setReMergeWidth(sci, eci) {
+    const { table } = this;
+    const {
+      cols, scale,
+    } = table;
+
+    // 避免缩放时换行
+    // 宽度使用浮点运算
+    scale.useFloat();
+    this.mergeWidth = cols.sectionSumWidth(sci, eci);
+    scale.notFloat();
+  }
+
+  setReCellWidth(ci) {
+    const { table } = this;
+    const {
+      cols, scale,
+    } = table;
+
+    // 避免缩放时换行
+    // 宽度使用浮点运算
+    scale.useFloat();
+    this.cellWidth = cols.getWidth(ci);
+    scale.notFloat();
   }
 
   setDraw(dw) {
@@ -35,12 +64,30 @@ class TextBuilder {
     const {
       text, rect, attr, overflow, dw, table,
     } = this;
+
+    const {
+      mergeWidth, cellWidth,
+    } = this;
+
+    // 避免缩放时换行
+    // 宽度使用浮点运算
+    const { scale } = table;
+    scale.useFloat();
+
+    if (Utils.isNumber(cellWidth)) {
+      rect.width = cellWidth;
+    } else if (Utils.isNumber(mergeWidth)) {
+      rect.width = mergeWidth;
+    }
+
     const font = new Font({
       dw, text, rect, attr, overflow,
     });
-    const { scale } = table;
     font.setPadding(scale.goto(attr.padding));
     font.setSize(scale.goto(attr.size));
+
+    scale.notFloat();
+
     return font;
   }
 
