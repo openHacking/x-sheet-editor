@@ -101,14 +101,19 @@ class WorkBody extends Widget {
     if (Utils.isUnDef(sheet)) return;
     const { scrollBarXHorizontalLayer } = this;
     const { table } = sheet;
-    const { xContent, scroll } = table;
+    const {
+      xContent,
+    } = table;
     const totalHeight = table.getScrollTotalHeight();
     const totalWidth = table.getScrollTotalWidth();
+    // 是否显示水平滚动条
     scrollBarXHorizontalLayer.display(totalWidth > xContent.getWidth());
+    // 调整滚动条尺寸
     this.scrollBarY.setSize(xContent.getHeight(), totalHeight);
     this.scrollBarX.setSize(xContent.getWidth(), totalWidth);
-    this.scrollBarY.scrollMove(scroll.y);
-    this.scrollBarX.scrollMove(scroll.x);
+    // 滚动到指定距离
+    this.scrollBarY.scrollMove(table.getTop());
+    this.scrollBarX.scrollMove(table.getLeft());
   }
 
   createSheet() {

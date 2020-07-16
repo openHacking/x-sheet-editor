@@ -665,6 +665,21 @@
 .x-sheet-bottom-grid:hover {
   background-color: #d9d9d9;
 }
+.x-sheet-bottom-full-screen {
+  height: 25px;
+  width: 25px;
+  background-image: url(2bfdf487ed40eccdf8761ec4690c2c23.svg);
+  background-size: 60%;
+  background-position: center;
+  background-repeat: no-repeat;
+  float: right;
+  margin: 2.5px 0 2.5px 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.x-sheet-bottom-full-screen:hover {
+  background-color: #d9d9d9;
+}
 .x-sheet-bottom-sum {
   height: 100%;
   float: left;

@@ -2659,12 +2659,15 @@ class XTable extends Widget {
    * @param value
    */
   setScale(value) {
-    this.scale.setValue(value);
-    this.renderMode = RENDER_MODE.SCALE;
+    // 清空画布
     this.draw.attr({
       fillStyle: this.settings.table.background,
     });
     this.draw.fullFillRect();
+    // 调整缩放级别
+    this.scale.setValue(value);
+    // 重新渲染界面
+    this.renderMode = RENDER_MODE.SCALE;
     this.resize();
     this.renderMode = RENDER_MODE.RENDER;
   }
@@ -2907,6 +2910,18 @@ class Table extends XTable {
     return {
       ri, ci,
     };
+  }
+
+  getTop() {
+    const { rows } = this;
+    const view = this.getScrollView();
+    return rows.sectionSumHeight(0, view.sri - 1);
+  }
+
+  getLeft() {
+    const { cols } = this;
+    const view = this.getScrollView();
+    return cols.sectionSumWidth(0, view.sci - 1);
   }
 
   setScale(value) {

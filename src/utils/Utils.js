@@ -412,6 +412,38 @@ class Utils {
       height: window.innerHeight,
     };
   }
+
+  static exitFullscreen() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    }
+  }
+
+  static fullScreen(element) {
+    if (element.el) {
+      element = element.el;
+    }
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.msRequestFullscreen) {
+      element.msRequestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen();
+    } else if (element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen();
+    }
+  }
+
+  static isFull() {
+    return !!(document.webkitIsFullScreen || document.mozFullScreen
+      || document.msFullscreenElement || document.fullscreenElement);
+  }
 }
 
 Utils.EMPTY = '';

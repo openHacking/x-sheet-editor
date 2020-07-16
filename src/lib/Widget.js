@@ -32,7 +32,7 @@ class Widget extends Element {
 
   attach(widget) {
     this.children(widget);
-    widget.onAttach();
+    widget.onAttach(this);
   }
 
   onAttach() {  }

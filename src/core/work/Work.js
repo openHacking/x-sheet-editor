@@ -13,24 +13,28 @@ class Work extends Widget {
   }) {
     super(`${cssPrefix}-work`);
     this.options = options.workConfig;
-
+    this.root = null;
     // 布局
     this.topLayer = new VerticalLayerElement();
-    this.bodyLayer = new VerticalLayerElement({ style: { flexGrow: 1 } });
+    this.bodyLayer = new VerticalLayerElement({
+      style: {
+        flexGrow: 1,
+      },
+    });
     this.bottomLayer = new VerticalLayerElement();
     this.verticalLayer = new VerticalLayer();
     this.verticalLayer.children(this.topLayer);
     this.verticalLayer.children(this.bodyLayer);
     this.verticalLayer.children(this.bottomLayer);
     this.children(this.verticalLayer);
-
     // 组件
     this.top = new WorkTop(this);
     this.body = new WorkBody(this, this.options.body);
     this.bottom = new WorkBottom(this);
   }
 
-  onAttach() {
+  onAttach(element) {
+    this.root = element;
     const {
       bodyLayer, topLayer, bottomLayer,
     } = this;

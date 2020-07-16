@@ -1,4 +1,4 @@
-/* global document window */
+/* global window */
 import { Widget } from '../../lib/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
 import { h } from '../../lib/Element';
@@ -19,6 +19,8 @@ const EL_POPUP_POSITION = {
 };
 
 const POOL = [];
+
+let root = null;
 
 class ElPopUp extends Widget {
 
@@ -152,8 +154,8 @@ class ElPopUp extends Widget {
   }
 
   open() {
-    if (this.off) {
-      h(document.body).children(this);
+    if (this.off && root) {
+      root.children(this);
       this.position();
       this.scrollbar();
       this.off = false;
@@ -161,8 +163,8 @@ class ElPopUp extends Widget {
   }
 
   close() {
-    if (this.off === false) {
-      h(document.body).remove(this);
+    if (this.off === false && root) {
+      root.remove(this);
       this.off = true;
     }
   }
@@ -174,6 +176,16 @@ class ElPopUp extends Widget {
       }
     });
   }
+
+  static setRoot(element) {
+    if (element.el) {
+      element = h(element.el);
+    } else {
+      element = h(element);
+    }
+    root = element;
+  }
+
 }
 
 export { ElPopUp, EL_POPUP_POSITION };

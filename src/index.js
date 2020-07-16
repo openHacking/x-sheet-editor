@@ -6,6 +6,8 @@ import { Work } from './core/work/Work';
 import { Widget } from './lib/Widget';
 import './styles/base.less';
 import './styles/index.less';
+import { ElPopUp } from './component/elpopup/ElPopUp';
+import { DragPanel } from './component/dragpanel/DragPanel';
 
 class XSheet extends Widget {
 
@@ -27,6 +29,8 @@ class XSheet extends Widget {
     root.children(this);
     this.work = new Work(options);
     this.attach(this.work);
+    ElPopUp.setRoot(this);
+    DragPanel.setRoot(this);
   }
 }
 

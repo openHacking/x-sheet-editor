@@ -8,6 +8,8 @@ import { Utils } from '../../utils/Utils';
 
 const POOL = [];
 
+let root = null;
+
 const DRAG_PANEL_POSITION = {
   LEFT: 1,
   TOP: 2,
@@ -16,6 +18,7 @@ const DRAG_PANEL_POSITION = {
 };
 
 class DragPanel extends Widget {
+
   constructor(options) {
     super(`${cssPrefix}-drag-panel`);
     this.options = Utils.mergeDeep({
@@ -74,20 +77,20 @@ class DragPanel extends Widget {
   }
 
   open() {
-    if (this.off) {
+    if (this.off && root) {
       const { mask } = this;
-      h(document.body).children(mask);
-      h(document.body).children(this);
+      root.children(mask);
+      root.children(this);
       this.position();
       this.off = false;
     }
   }
 
   close() {
-    if (this.off === false) {
+    if (this.off === false && root) {
       const { mask } = this;
-      h(document.body).remove(this);
-      h(document.body).remove(mask);
+      root.remove(this);
+      root.remove(mask);
       this.off = true;
     }
   }
@@ -103,6 +106,16 @@ class DragPanel extends Widget {
       }
     });
   }
+
+  static setRoot(element) {
+    if (element.el) {
+      element = h(element.el);
+    } else {
+      element = h(element);
+    }
+    root = element;
+  }
+
 }
 
 export { DragPanel };
