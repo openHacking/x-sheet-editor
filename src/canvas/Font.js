@@ -13,27 +13,34 @@ const HORIZONTAL_LIEN_HEIGHT = 4;
 // 旋转文本间距
 const ANGLE_LINE_HEIGHT = 4;
 
+// 文本水平对齐方式
 const ALIGN = {
   left: 'left',
   center: 'center',
   right: 'right',
 };
+// 文本垂直对齐方式
 const VERTICAL_ALIGN = {
   top: 'top',
   center: 'middle',
   bottom: 'bottom',
 };
+// 文本对齐类型
 const TEXT_WRAP = {
   OVER_FLOW: 1,
   WORD_WRAP: 2,
   TRUNCATE: 3,
 };
+// 文本绘制方向
 const TEXT_DIRECTION = {
   HORIZONTAL: 'horizontal',
   VERTICAL: 'vertical',
   ANGLE: 'angle',
 };
 
+/**
+ * 绘制文本抽象类
+ */
 class DrawFont {
 
   constructor({
@@ -47,19 +54,51 @@ class DrawFont {
     this.attr = attr;
   }
 
+  /**
+   * 测量文本大小
+   * @param text
+   * @returns {number}
+   */
   dprMeasureSize(text) {
     const { dw } = this;
     const width = dw.measureText(text).width;
     return width / dpr();
   }
 
+  /**
+   * 计算文本大小
+   * @param size
+   * @returns {number}
+   */
   dprFontSize(size) {
     return size * dpr();
   }
 
+  /**
+   * 判断文本是否为空
+   * @param text
+   * @returns {boolean}
+   */
   isBlank(text) {
     return text === null || text === undefined || text.toString().trim() === '';
   }
+
+  /**
+   * 文本中是否存在换行符
+   * @param text
+   */
+  existBreak(text) {
+    return /\n/.test(text);
+  }
+
+  /**
+   * 文本换行
+   * @param text
+   */
+  textBreak(text) {
+    return text.split('\n');
+  }
+
 }
 
 /**
@@ -67,6 +106,13 @@ class DrawFont {
  */
 class HorizontalFontDraw extends DrawFont {
 
+  /**
+   * 绘制文本下划线和文本删除线
+   * @param type
+   * @param tx
+   * @param ty
+   * @param textWidth
+   */
   drawLine(type, tx, ty, textWidth) {
     const { dw, attr } = this;
     const { size, verticalAlign, align } = attr;
@@ -310,7 +356,6 @@ class HorizontalFontDraw extends DrawFont {
    * @returns {number}
    */
   drawTextWarp() {
-    // console.log('drawTextWarp');
     const { text, dw, attr, rect } = this;
     const {
       size, underline, strikethrough, align, verticalAlign, padding,
@@ -434,10 +479,17 @@ class HorizontalFontDraw extends DrawFont {
     return contentWidth;
   }
 
+  /**
+   * 绘制文本
+   * @returns {number}
+   */
   draw() {
     const { text } = this;
     if (this.isBlank(text)) {
       return 0;
+    }
+    if (this.existBreak(text)) {
+      this.setTextWrap(TEXT_WRAP.OVER_FLOW);
     }
     const { dw, attr } = this;
     const { textWrap } = attr;
@@ -459,18 +511,34 @@ class HorizontalFontDraw extends DrawFont {
     }
   }
 
+  /**
+   * 是否overflow是否裁剪
+   * @param overflowCrop
+   */
   setOverflowCrop(overflowCrop) {
     this.overflowCrop = overflowCrop;
   }
 
+  /**
+   * 设置文本大小
+   * @param size
+   */
   setSize(size) {
     this.attr.size = size;
   }
 
+  /**
+   * 设置文本对齐类型
+   * @param textWrap
+   */
   setTextWrap(textWrap) {
     this.attr.textWrap = textWrap;
   }
 
+  /**
+   * 设置填充大小
+   * @param padding
+   */
   setPadding(padding) {
     this.attr.padding = padding;
   }
@@ -482,6 +550,15 @@ class HorizontalFontDraw extends DrawFont {
  */
 class VerticalFontDraw extends DrawFont {
 
+  /**
+   * 绘制文本下划线和文本删除线
+   * @param type
+   * @param tx
+   * @param ty
+   * @param textWidth
+   * @param align
+   * @param verticalAlign
+   */
   drawLine(type, tx, ty, textWidth, align, verticalAlign) {
     const { dw, attr } = this;
     const { size } = attr;
@@ -558,6 +635,10 @@ class VerticalFontDraw extends DrawFont {
     dw.line(s, e);
   }
 
+  /**
+   * 越界的文字截斷
+   * @returns {number}
+   */
   drawTextTruncate() {
     const {
       text, dw, attr, rect,
@@ -644,6 +725,11 @@ class VerticalFontDraw extends DrawFont {
     return contentWidth;
   }
 
+  /**
+   * 文字超過最大可繪製區域后自動
+   * 截斷
+   * @returns {number}
+   */
   drawTextOverFlow() {
     const {
       text, dw, attr, rect, overflow, overflowCrop,
@@ -755,6 +841,10 @@ class VerticalFontDraw extends DrawFont {
     return contentWidth;
   }
 
+  /**
+   * 文字自動換行
+   * @returns {number}
+   */
   drawTextWarp() {
     const {
       text, dw, attr, rect,
@@ -916,10 +1006,17 @@ class VerticalFontDraw extends DrawFont {
     return contentWidth;
   }
 
+  /**
+   * 绘制文本
+   * @returns {number}
+   */
   draw() {
     const { text } = this;
     if (this.isBlank(text)) {
       return 0;
+    }
+    if (this.existBreak(text)) {
+      this.setTextWrap(TEXT_WRAP.OVER_FLOW);
     }
     const { dw, attr } = this;
     const { textWrap } = attr;
@@ -954,18 +1051,34 @@ class VerticalFontDraw extends DrawFont {
     }
   }
 
+  /**
+   * 是否overflow是否裁剪
+   * @param overflowCrop
+   */
   setOverflowCrop(overflowCrop) {
     this.overflowCrop = overflowCrop;
   }
 
+  /**
+   * 设置文本大小
+   * @param size
+   */
   setSize(size) {
     this.attr.size = size;
   }
 
+  /**
+   * 设置文本对齐类型
+   * @param textWrap
+   */
   setTextWrap(textWrap) {
     this.attr.textWrap = textWrap;
   }
 
+  /**
+   * 设置填充大小
+   * @param padding
+   */
   setPadding(padding) {
     this.attr.padding = padding;
   }
@@ -977,6 +1090,13 @@ class VerticalFontDraw extends DrawFont {
  */
 class AngleFontDraw extends DrawFont {
 
+  /**
+   * 绘制文本下划线和文本删除线
+   * @param type
+   * @param tx
+   * @param ty
+   * @param textWidth
+   */
   drawLine(type, tx, ty, textWidth) {
     const { dw, attr } = this;
     const { size } = attr;
@@ -997,6 +1117,10 @@ class AngleFontDraw extends DrawFont {
     dw.line(s, e);
   }
 
+  /**
+   * 越界的文字截斷
+   * @returns {number}
+   */
   drawTextTruncate() {
     const {
       text, dw, attr, rect,
@@ -1112,6 +1236,11 @@ class AngleFontDraw extends DrawFont {
     return contentWidth;
   }
 
+  /**
+   * 文字超過最大可繪製區域后自動
+   * 截斷
+   * @returns {number}
+   */
   drawTextOverFlow() {
     const {
       text, dw, attr, rect, overflow,
@@ -1244,6 +1373,10 @@ class AngleFontDraw extends DrawFont {
     return contentWidth;
   }
 
+  /**
+   * 文字自動換行
+   * @returns {number}
+   */
   drawTextWarp() {
     const {
       text, dw, attr, rect,
@@ -1926,18 +2059,17 @@ class AngleFontDraw extends DrawFont {
     return 0;
   }
 
-  setOverflowCrop(overflowCrop) {
-    this.overflowCrop = overflowCrop;
-  }
-
-  setSize(size) {
-    this.attr.size = size;
-  }
-
+  /**
+   * 绘制文本
+   * @returns {number}
+   */
   draw() {
     const { text } = this;
     if (this.isBlank(text)) {
       return 0;
+    }
+    if (this.existBreak(text)) {
+      this.setTextWrap(TEXT_WRAP.OVER_FLOW);
     }
     const { dw, attr } = this;
     const { textWrap } = attr;
@@ -1959,6 +2091,34 @@ class AngleFontDraw extends DrawFont {
     }
   }
 
+  /**
+   * 是否overflow是否裁剪
+   * @param overflowCrop
+   */
+  setOverflowCrop(overflowCrop) {
+    this.overflowCrop = overflowCrop;
+  }
+
+  /**
+   * 设置文本大小
+   * @param size
+   */
+  setSize(size) {
+    this.attr.size = size;
+  }
+
+  /**
+   * 设置文本对齐类型
+   * @param textWrap
+   */
+  setTextWrap(textWrap) {
+    this.attr.textWrap = textWrap;
+  }
+
+  /**
+   * 设置填充大小
+   * @param padding
+   */
   setPadding(padding) {
     this.attr.padding = padding;
   }
@@ -1966,9 +2126,18 @@ class AngleFontDraw extends DrawFont {
 }
 
 /**
- * Base font
+ * Font Class
  */
 class Font {
+
+  /**
+   * Font
+   * @param text
+   * @param rect
+   * @param dw
+   * @param overflow
+   * @param attr
+   */
   constructor({
     text, rect, dw, overflow, attr,
   }) {
@@ -2010,6 +2179,10 @@ class Font {
     });
   }
 
+  /**
+   * 绘制文本
+   * @returns {number}
+   */
   draw() {
     const { attr } = this;
     switch (attr.direction) {
@@ -2023,34 +2196,51 @@ class Font {
     }
   }
 
+  /**
+   * 是否overflow是否裁剪
+   * @param overflowCrop
+   */
   setOverflowCrop(overflowCrop) {
     this.verticalFontDraw.setOverflowCrop(overflowCrop);
     this.horizontalFontDraw.setOverflowCrop(overflowCrop);
     this.angleFontDraw.setOverflowCrop(overflowCrop);
   }
 
+  /**
+   * 设置文本大小
+   * @param size
+   */
   setSize(size) {
     this.verticalFontDraw.setSize(size);
     this.horizontalFontDraw.setSize(size);
     this.angleFontDraw.setSize(size);
   }
 
+  /**
+   * 文字自動換行
+   * @returns {number}
+   */
   setTextWrap(textWrap) {
     this.verticalFontDraw.setTextWrap(textWrap);
     this.horizontalFontDraw.setTextWrap(textWrap);
+    this.angleFontDraw.setTextWrap(textWrap);
   }
 
+  /**
+   * 设置填充大小
+   * @param padding
+   */
   setPadding(padding) {
     this.verticalFontDraw.setPadding(padding);
     this.horizontalFontDraw.setPadding(padding);
     this.angleFontDraw.setPadding(padding);
   }
+
 }
 
 export {
+  Font,
   VERTICAL_ALIGN,
   ALIGN, TEXT_WRAP,
   TEXT_DIRECTION,
 };
-
-export { Font };
