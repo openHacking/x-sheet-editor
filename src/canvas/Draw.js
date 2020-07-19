@@ -4,12 +4,12 @@ function angleToRadian(angle) {
   return -angle * (Math.PI / 180);
 }
 
-function dpr() {
-  return window.devicePixelRatio || 1;
-}
-
 function rounded(val) {
   return Math.ceil(val);
+}
+
+function dpr() {
+  return rounded(window.devicePixelRatio || 1);
 }
 
 function npx(px = 0) {
