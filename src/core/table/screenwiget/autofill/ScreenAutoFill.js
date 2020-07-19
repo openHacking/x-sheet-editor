@@ -367,9 +367,7 @@ class ScreenAutoFill extends ScreenWidget {
       while (tIndexCi <= autoFillRect.eci) {
         const src = cells.getCell(sIndexRi, sIndexCi);
         if (src) {
-          const target = src.clone({
-            ignoreMerge: true,
-          });
+          const target = src.clone();
           cellDataProxy.setCell(tIndexRi, tIndexCi, target);
         }
         sIndexCi += 1;
@@ -390,7 +388,7 @@ class ScreenAutoFill extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const {
-      merges, cells, tableDataSnapshot,
+      merges, tableDataSnapshot,
     } = table;
     const { mergeDataProxy } = tableDataSnapshot;
     const { autoFillAttr } = this;
@@ -398,10 +396,7 @@ class ScreenAutoFill extends ScreenWidget {
     rect.each((ri, ci) => {
       const merge = merges.getFirstIncludes(ri, ci);
       if (merge) {
-        const cell = cells.getCell(ri, ci);
-        if (cell && cell.merge !== -1) {
-          mergeDataProxy.deleteMerge(cell.merge);
-        }
+        mergeDataProxy.deleteMerge(merge);
       }
     });
   }

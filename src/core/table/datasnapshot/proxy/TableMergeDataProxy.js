@@ -17,21 +17,22 @@ class TableMergeDataProxy extends DataProxy {
     this.change = true;
     const { table } = this;
     const { merges } = table;
-    return merges.add(merge);
+    merges.getIncludes(merge, merge => this.deleteMerge(merge));
+    merges.add(merge, false);
   }
 
-  $deleteMerge(index) {
+  $deleteMerge(merge) {
     this.change = true;
     const { table } = this;
     const { merges } = table;
-    return merges.delete(index);
+    merges.delete(merge);
   }
 
-  deleteMerge(index) {
+  deleteMerge(merge) {
     const { option } = this;
     const { on } = option;
     const { deleteMerge } = on;
-    const merge = this.$deleteMerge(index);
+    this.$deleteMerge(merge);
     deleteMerge(merge);
   }
 
@@ -39,8 +40,8 @@ class TableMergeDataProxy extends DataProxy {
     const { option } = this;
     const { on } = option;
     const { addMerge } = on;
-    const index = this.$addMerge(merge);
-    addMerge(index);
+    this.$addMerge(merge);
+    addMerge(merge);
   }
 
   endNotice() {

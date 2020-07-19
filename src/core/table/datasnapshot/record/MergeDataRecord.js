@@ -4,9 +4,8 @@ const MERGE_RECORD_TYPE = {
 };
 
 class MergeDataRecord {
-  constructor({ merge, index, recordType }) {
+  constructor({ merge, recordType }) {
     this.merge = merge;
-    this.index = index;
     this.recordType = recordType;
   }
 }

@@ -23,10 +23,10 @@ class TableDataSnapshot {
           const { recordLayer } = this;
           recordLayer.push(new MergeDataRecord({ merge, recordType: MERGE_RECORD_TYPE.DELETE }));
         },
-        addMerge: (index) => {
+        addMerge: (merge) => {
           if (this.record === false) return;
           const { recordLayer } = this;
-          recordLayer.push(new MergeDataRecord({ index, recordType: MERGE_RECORD_TYPE.ADD }));
+          recordLayer.push(new MergeDataRecord({ merge, recordType: MERGE_RECORD_TYPE.ADD }));
         },
       },
     });
@@ -76,15 +76,12 @@ class TableDataSnapshot {
         switch (recordType) {
           case MERGE_RECORD_TYPE.DELETE: {
             const { merge } = item;
-            item.index = this.mergeDataProxy.$addMerge(merge);
+            this.mergeDataProxy.$addMerge(merge);
             break;
           }
           case MERGE_RECORD_TYPE.ADD: {
-            const { index } = item;
-            const merge = this.mergeDataProxy.$deleteMerge(index);
-            if (merge) {
-              item.merge = merge;
-            }
+            const { merge } = item;
+            this.mergeDataProxy.$deleteMerge(merge);
             break;
           }
           default: break;
@@ -132,16 +129,13 @@ class TableDataSnapshot {
         const { recordType } = item;
         switch (recordType) {
           case MERGE_RECORD_TYPE.DELETE: {
-            const { index } = item;
-            const merge = this.mergeDataProxy.$deleteMerge(index);
-            if (merge) {
-              item.merge = merge;
-            }
+            const { merge } = item;
+            this.mergeDataProxy.$deleteMerge(merge);
             break;
           }
           case MERGE_RECORD_TYPE.ADD: {
             const { merge } = item;
-            item.index = this.mergeDataProxy.$addMerge(merge);
+            this.mergeDataProxy.$addMerge(merge);
             break;
           }
           default: break;

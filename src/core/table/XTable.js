@@ -40,12 +40,12 @@ import { ScreenCopyStyle } from './screenwiget/copystyle/ScreenCopyStyle';
 import { MousePointer } from './MousePointer';
 import { Keyboard } from './Keyboard';
 import { Focus } from './Focus';
-import { Merge } from './base/Merge';
 import { Scale } from './base/Scale';
 import { Code } from './base/Code';
 import { Text } from './base/Text';
 import { StyleCellsHelper } from './helper/StyleCellsHelper';
 import { TextCellsHelper } from './helper/TextCellsHelper';
+import { Merges } from './base/Merges';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -2284,7 +2284,6 @@ class XTable extends Widget {
     // 表格数据配置
     this.scale = new Scale(this);
     this.index = new Code(this, this.settings.index);
-    this.merges = new Merge(this, this.settings.merge);
     this.rows = new Rows(this, this.settings.rows);
     this.cols = new Cols(this, this.settings.cols);
     this.fixed = new Fixed(this, this.settings.fixed);
@@ -2294,6 +2293,8 @@ class XTable extends Widget {
       data: this.settings.data,
     });
     this.scroll = new Scroll(this);
+    this.merges = new Merges(this, this.settings.merge);
+    this.merges.sync();
     // 单元格辅助类
     this.styleCellsHelper = new StyleCellsHelper({
       cells: this.cells,
@@ -2401,8 +2402,6 @@ class XTable extends Widget {
     this.xLeft = new XTableLeft(this);
     this.xTop = new XTableTop(this);
     this.xContent = new XTableContent(this);
-    // 同步合并单元格
-    this.merges.sync();
   }
 
   /**

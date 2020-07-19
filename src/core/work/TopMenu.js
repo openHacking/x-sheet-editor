@@ -896,9 +896,7 @@ class TopMenu extends Widget {
               const {
                 text, merge,
               } = target;
-              const cell = src.clone({
-                ignoreMerge: true,
-              });
+              const cell = src.clone();
               cell.text = text;
               cell.merge = merge;
               cellDataProxy.setCell(j, v, cell);
@@ -1130,7 +1128,6 @@ class TopMenu extends Widget {
       const {
         screen,
         merges,
-        cells,
         tableDataSnapshot,
       } = table;
       const screenSelector = screen.findByClass(ScreenSelector);
@@ -1140,9 +1137,8 @@ class TopMenu extends Widget {
         const find = merges.getFirstIncludes(merge.sri, merge.sci);
         tableDataSnapshot.begin();
         const { mergeDataProxy } = tableDataSnapshot;
-        if (Utils.isNotUnDef(find)) {
-          const cell = cells.getCell(find.sri, find.sci);
-          mergeDataProxy.deleteMerge(cell.merge);
+        if (Utils.isNotUnDef(find) && merge.equals(find)) {
+          mergeDataProxy.deleteMerge(find);
         } else {
           mergeDataProxy.addMerge(merge);
         }
