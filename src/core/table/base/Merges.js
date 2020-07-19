@@ -11,15 +11,13 @@ class Merges {
    * @param table
    * @param merges
    */
-  constructor(table, {
-    merges = [],
-  }) {
+  constructor(table, { merges = [] }) {
     const {
       rows, cols,
     } = table;
-    this.index = new Array(rows.len * cols.len);
     this.table = table;
     this._ = merges.map(merge => RectRange.valueOf(merge));
+    this.index = new Array(rows.len * cols.len);
   }
 
   /**

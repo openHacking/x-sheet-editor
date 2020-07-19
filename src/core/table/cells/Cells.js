@@ -15,9 +15,7 @@ class Cells {
    * @param rows
    * @param data
    */
-  constructor(table, {
-    cols, rows, data = [],
-  }) {
+  constructor(table, { cols, rows, data = [] }) {
     this.table = table;
     this.cols = cols;
     this.rows = rows;
@@ -72,6 +70,27 @@ class Cells {
       return row[ci];
     }
     return null;
+  }
+
+  /**
+   * 获取指定行列的单元格， 如果当前单元格
+   * 时合并单元格的一部分，判断是否是主合并
+   * 单元格如果是返回合并区域否则返回空
+   * @param ri
+   * @param ci
+   * @return {null}
+   */
+  getMergeCellMasterOrCell(ri, ci) {
+    const { table } = this;
+    const { merges } = table;
+    const merge = merges.getFirstIncludes(ri, ci);
+    if (merge) {
+      if (merge.sri === ri && merge.sci === ci) {
+        return this.getCell(ri, ci);
+      }
+      return null;
+    }
+    return this.getCell(ri, ci);
   }
 
   /**

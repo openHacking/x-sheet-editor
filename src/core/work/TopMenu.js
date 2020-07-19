@@ -891,15 +891,13 @@ class TopMenu extends Widget {
           const { cellDataProxy } = tableDataSnapshot;
           for (let i = srcRect.sri, j = targetRect.sri; i <= srcRect.eri; i += 1, j += 1) {
             for (let k = srcRect.sci, v = targetRect.sci; k <= srcRect.eci; k += 1, v += 1) {
-              const src = cells.getCellOrNew(i, k);
-              const target = cells.getCellOrNew(j, v);
-              const {
-                text, merge,
-              } = target;
-              const cell = src.clone();
-              cell.text = text;
-              cell.merge = merge;
-              cellDataProxy.setCell(j, v, cell);
+              const src = cells.getMergeCellMasterOrCell(i, k);
+              if (src) {
+                const target = cells.getCellOrNew(j, v);
+                const cell = src.clone();
+                cell.text = target.text;
+                cellDataProxy.setCell(j, v, cell);
+              }
             }
           }
           tableDataSnapshot.end();
@@ -924,8 +922,8 @@ class TopMenu extends Widget {
         styleCellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectorAttr.rect,
           callback: (r, c, origin) => {
-            const { text, merge } = origin;
-            cellDataProxy.setCell(r, c, new Cell({ text, merge }));
+            const { text } = origin;
+            cellDataProxy.setCell(r, c, new Cell({ text }));
           },
         });
         tableDataSnapshot.end();
