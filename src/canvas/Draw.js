@@ -9,11 +9,13 @@ function rounded(val) {
 }
 
 function dpr() {
+  // 对缩放比例取整数避免在 1.25
+  // 这种情况下出现计算误差
   return rounded(window.devicePixelRatio || 1);
 }
 
 function npx(px = 0) {
-  return rounded(px * dpr());
+  return px * dpr();
 }
 
 class CanvasDraw {

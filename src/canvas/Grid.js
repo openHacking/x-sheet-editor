@@ -1,17 +1,16 @@
-import { dpr } from './Draw';
 import { Utils } from '../utils/Utils';
 
 class Grid {
 
   constructor(draw, attr = {}) {
     this.draw = draw;
+    this.width = 1;
     this.color = '#000000';
     Utils.mergeDeep(this, attr);
   }
 
   lineWidth() {
-    const width = Math.ceil(dpr());
-    return width > 2 ? width : 1;
+    return this.width;
   }
 
   verticalLine(sx, sy, ex, ey) {
