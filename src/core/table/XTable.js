@@ -8,7 +8,7 @@ import { Widget } from '../../lib/Widget';
 import {
   Constant, cssPrefix,
 } from '../../const/Constant';
-import { Draw, npx } from '../../canvas/Draw';
+import { XDraw } from '../../canvas/XDraw';
 import { Line, LINE_TYPE } from '../../canvas/Line';
 import { Grid } from '../../canvas/Grid';
 import { LineHandle } from './gridborder/LineHandle';
@@ -1029,6 +1029,7 @@ class XTableContentUI extends XTableUI {
     const hbLine = borderHandle.hbLine(borderView);
     const vlLine = borderHandle.vlLine(borderView);
     const vrLine = borderHandle.vrLine(borderView);
+    draw.beginPath();
     htLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { top } = borderAttr;
@@ -1038,6 +1039,7 @@ class XTableContentUI extends XTableUI {
       line.setWidth(width);
       line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
     });
+    draw.beginPath();
     hbLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { bottom } = borderAttr;
@@ -1047,6 +1049,7 @@ class XTableContentUI extends XTableUI {
       line.setWidth(width);
       line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
     });
+    draw.beginPath();
     vlLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { left } = borderAttr;
@@ -1056,6 +1059,7 @@ class XTableContentUI extends XTableUI {
       line.setWidth(width);
       line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
     });
+    draw.beginPath();
     vrLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { right } = borderAttr;
@@ -1069,6 +1073,7 @@ class XTableContentUI extends XTableUI {
     const hbMergeLine = borderHandle.hbMergeLine(coincideViewBrink);
     const vlMergeLine = borderHandle.vlMergeLine(coincideViewBrink);
     const vrMergeLine = borderHandle.vrMergeLine(coincideViewBrink);
+    draw.beginPath();
     htMergeLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { top } = borderAttr;
@@ -1078,6 +1083,7 @@ class XTableContentUI extends XTableUI {
       line.setWidth(width);
       line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
     });
+    draw.beginPath();
     hbMergeLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { bottom } = borderAttr;
@@ -1087,6 +1093,7 @@ class XTableContentUI extends XTableUI {
       line.setWidth(width);
       line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
     });
+    draw.beginPath();
     vlMergeLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { left } = borderAttr;
@@ -1096,6 +1103,7 @@ class XTableContentUI extends XTableUI {
       line.setWidth(width);
       line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
     });
+    draw.beginPath();
     vrMergeLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { right } = borderAttr;
@@ -1126,17 +1134,21 @@ class XTableContentUI extends XTableUI {
     const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
     const hLine = gridHandle.hLine(borderView);
     const vLine = gridHandle.vLine(borderView);
+    draw.beginPath();
     hLine.forEach((item) => {
       grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
+    draw.beginPath();
     vLine.forEach((item) => {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     const hMergeLine = gridHandle.hMergeLine(coincideViewBrink);
     const vMergeLine = gridHandle.vMergeLine(coincideViewBrink);
+    draw.beginPath();
     hMergeLine.forEach((item) => {
       grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
+    draw.beginPath();
     vMergeLine.forEach((item) => {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
@@ -1279,7 +1291,7 @@ class XTableLeftIndexUI extends XTableIndexUI {
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
-      font: `${npx(index.getSize())}px Arial`,
+      font: `${XDraw.rpx(index.getSize())}px Arial`,
       fillStyle: index.getColor(),
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
@@ -1353,7 +1365,7 @@ class XTableTopIndexUI extends XTableIndexUI {
     draw.attr({
       textAlign: 'center',
       textBaseline: 'middle',
-      font: `${npx(index.getSize())}px Arial`,
+      font: `${XDraw.rpx(index.getSize())}px Arial`,
       fillStyle: index.getColor(),
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
@@ -2257,6 +2269,7 @@ class XTable extends Widget {
       index: {
         height: 33,
         width: 50,
+        gridColor: 'red',
       },
       table: {
         showGrid: true,
@@ -2312,11 +2325,8 @@ class XTable extends Widget {
     });
     // canvas 画布
     this.canvas = new Widget(`${cssPrefix}-table-canvas`, 'canvas');
-    this.canvas.attr({
-      'moz-opaque': '',
-    });
     // 绘制资源
-    this.draw = new Draw(this.canvas.el);
+    this.draw = new XDraw(this.canvas.el);
     this.indexGrid = new Grid(this.draw, {
       color: this.index.getGridColor(),
     });
@@ -2596,21 +2606,21 @@ class XTable extends Widget {
     const { xTop } = this;
     const { xContent } = this;
     this.drawBorderOptimize();
-    xTableFrozenFullRect.render();
-    if (fixed.fxLeft > -1 && fixed.fxTop > -1) {
-      xTableFrozenContent.render();
-    }
-    if (fixed.fxTop > -1) {
-      xLeftFrozenIndex.render();
-      xTop.render();
-    }
-    if (fixed.fxLeft > -1) {
-      xTopFrozenIndex.render();
-      xLeft.render();
-    }
-    xContent.render();
+    // xTableFrozenFullRect.render();
+    // if (fixed.fxLeft > -1 && fixed.fxTop > -1) {
+    //   xTableFrozenContent.render();
+    // }
+    // if (fixed.fxTop > -1) {
+    //   xLeftFrozenIndex.render();
+    //   xTop.render();
+    // }
+    // if (fixed.fxLeft > -1) {
+    //   xTopFrozenIndex.render();
+    //   xLeft.render();
+    // }
+   //  xContent.render();
     xLeftIndex.render();
-    xTopIndex.render();
+    // xTopIndex.render();
   }
 
   /**

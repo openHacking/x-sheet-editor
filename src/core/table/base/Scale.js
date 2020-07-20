@@ -1,4 +1,4 @@
-import { rounded } from '../../../canvas/Draw';
+import { XDraw } from '../../../canvas/XDraw';
 
 class Scale {
 
@@ -19,13 +19,13 @@ class Scale {
   back(origin) {
     return this.checkFloat
       ? origin / this.value
-      : rounded(origin / this.value);
+      : XDraw.ceil(origin / this.value);
   }
 
   goto(origin) {
     return this.checkFloat
       ? this.value * origin
-      : rounded(this.value * origin);
+      : XDraw.ceil(this.value * origin);
   }
 
   setValue(value) {

@@ -4,26 +4,8 @@ class Grid {
 
   constructor(draw, attr = {}) {
     this.draw = draw;
-    this.width = 1;
     this.color = '#000000';
     Utils.mergeDeep(this, attr);
-  }
-
-  lineWidth() {
-    return this.width;
-  }
-
-  verticalLine(sx, sy, ex, ey) {
-    if (sx !== ex) {
-      throw new Error('coordinate errors sx should be equal to ex !!!');
-    }
-    const { draw, color } = this;
-    const width = this.lineWidth();
-    draw.attr({
-      fillStyle: color,
-    });
-    const diff = ey - sy;
-    draw.fillRect(sx - width, sy, width, diff);
   }
 
   horizontalLine(sx, sy, ex, ey) {
@@ -31,12 +13,23 @@ class Grid {
       throw new Error('coordinate errors sy should be equal to ey !!!');
     }
     const { draw, color } = this;
-    const width = this.lineWidth();
     draw.attr({
-      fillStyle: color,
+      strokeStyle: color,
+      lineWidth: 1,
     });
-    const diff = ex - sx;
-    draw.fillRect(sx, sy - width, diff, width);
+    draw.line([sx, sy], [ex, ey]);
+  }
+
+  verticalLine(sx, sy, ex, ey) {
+    if (sx !== ex) {
+      throw new Error('coordinate errors sx should be equal to ex !!!');
+    }
+    const { draw, color } = this;
+    draw.attr({
+      strokeStyle: color,
+      lineWidth: 1,
+    });
+    draw.line([sx, sy], [ex, ey]);
   }
 }
 

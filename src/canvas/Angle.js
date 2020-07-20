@@ -1,5 +1,5 @@
 import { Rect } from './Rect';
-import { angleToRadian } from './Draw';
+import { XDraw } from './XDraw';
 
 const ANGLE_ORIGIN = {
   TOP_LEFT: 'top-left',
@@ -24,19 +24,19 @@ class TrigonometricFunction {
   // 斜边 + sin 角度
   sinWidthAngle() {
     const { angle, width } = this;
-    return Math.abs(Math.sin(angleToRadian(angle)) * width);
+    return Math.abs(Math.sin(XDraw.radian(angle)) * width);
   }
 
   // 斜边 + cos 角度
   cosWidthAngle() {
     const { angle, width } = this;
-    return Math.abs(Math.cos(angleToRadian(angle)) * width);
+    return Math.abs(Math.cos(XDraw.radian((angle)) * width));
   }
 
   // 对边 + sin角度
   sinHeightAngle() {
     const { angle, height } = this;
-    return Math.abs(height / Math.sin(angleToRadian(angle)));
+    return Math.abs(height / Math.sin(XDraw.radian(angle)));
   }
 
   setWidth(width) {
@@ -112,13 +112,14 @@ class Angle {
         break;
       default: break;
     }
-    const offsetX = dw.getOffsetX();
-    const offsetY = dw.getOffsetY();
-    dw.openSkipOffset()
+    const {
+      offsetX, offsetY,
+    } = dw;
+    dw.openSkip()
       .translate(tx + offsetX, ty + offsetY)
       .rotate(angle)
       .translate(-(tx + offsetX), -(ty + offsetY))
-      .closeSkipOffset();
+      .closeSkip();
     return this;
   }
 
@@ -129,8 +130,8 @@ class Angle {
   }
 
   static triangleHypotenuse(angle, width) {
-    const cos = Math.cos(angleToRadian(angle));
-    const sin = Math.sin(angleToRadian(angle));
+    const cos = Math.cos(XDraw.radian(angle));
+    const sin = Math.sin(XDraw.radian(angle));
     return {
       width: Math.abs(cos * width), height: Math.abs(sin * width),
     };
