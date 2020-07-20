@@ -78,7 +78,7 @@ class DoubleLine {
       color: '#000000',
       width: 1,
       padding: 1,
-      spacing: 1.5,
+      spacing: 2,
       leftShow: () => false,
       topShow: () => false,
       rightShow: () => false,
