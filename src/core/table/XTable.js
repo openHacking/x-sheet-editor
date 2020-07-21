@@ -2263,13 +2263,14 @@ class XTable extends Widget {
       index: {
         height: 33,
         width: 50,
-        gridColor: 'red'
+        gridColor: '#8e8e8e',
+        color: '#000000'
       },
       table: {
         showGrid: true,
         background: '#ffffff',
         borderColor: '#e5e5e5',
-        gridColor: '#e8e8e8',
+        gridColor: '#c5c5c5',
       },
       data: [],
       rows: {

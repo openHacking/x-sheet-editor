@@ -8,14 +8,15 @@
             padding: 0;
             margin: 0;
         }
+        html, body {
+            height: 100%;
+            display: block;
+        }
     </style>
 </head>
 <body id="dome"></body>
 <script>
-    const dome = document.getElementById("dome");
-    dome.style.width = innerWidth + 'px';
-    dome.style.height = innerHeight + 'px';
-    const xSheet = new XSheet(dome, {
+    const xSheet = new XSheet(document.getElementById("dome"), {
         workConfig: {
             body: {
                 sheets: [{
