@@ -10,22 +10,23 @@ class Base {
   static dpr() {
     return window.devicePixelRatio || 1;
   }
-  static ceil(val) {
+  static round(val) {
     return Math.ceil(val);
   }
   static rpx(px) {
-    return Base.ceil(px * this.dpr())
+    return this.round(px * this.dpr());
   }
   static lpx(px) {
-    return this.rpx(px) - 0.5
+    return this.rpx(px) - 0.5;
   }
   resize(width, height) {
     const { canvas } = this;
-    const dpr = Base.dpr();
-    canvas.style.width = width + "px";
-    canvas.style.height = height + "px";
-    canvas.width = Base.ceil(width * dpr);
-    canvas.height = Base.ceil(height * dpr);
+    width = Base.rpx(width);
+    height = Base.rpx(height);
+    canvas.width = width;
+    canvas.height = height;
+    canvas.style.width = width / Base.dpr() + "px";
+    canvas.style.height = height / Base.dpr() + "px";
     return this;
   }
 }
@@ -126,14 +127,14 @@ class Draw extends Offset {
   }
 }
 class XDraw extends Draw {
-  drawImage(origin, sx, sy, sWidth, sHeight, x, y, width, height) {
-    ({sx, sy} = this.convert(sx, sy));
-    ({x, y} = this.convert(x, y));
+  drawImage(origin, sx, sy, sw, sh, tx, ty, tw, th) {
+    ({x:sx, y:sy} = this.convert(sx, sy));
+    ({x:tx, y:ty} = this.convert(tx, ty));
     this.ctx.drawImage(origin,
         Base.rpx(sx), Base.rpx(sy),
-        Base.rpx(sWidth), Base.rpx(sHeight),
-        Base.rpx(x), Base.rpx(y),
-        Base.rpx(width), Base.rpx(height));
+        Base.rpx(sw), Base.rpx(sh),
+        Base.rpx(tx), Base.rpx(ty),
+        Base.rpx(tw), Base.rpx(th));
   }
   fillText(text, x, y) {
     ({x, y} = this.convert(x, y));

@@ -8,7 +8,7 @@ import { Widget } from '../../lib/Widget';
 import {
   Constant, cssPrefix,
 } from '../../const/Constant';
-import { XDraw } from '../../canvas/XDraw';
+import {ROUND_TYPE, XDraw} from '../../canvas/XDraw';
 import { Line, LINE_TYPE } from '../../canvas/Line';
 import { Grid } from '../../canvas/Grid';
 import { LineHandle } from './gridborder/LineHandle';
@@ -765,7 +765,7 @@ class XTableUI {
     const viewMode = this.getViewMode();
     if (viewMode === VIEW_MODE.CHANGE_ADD && renderMode === RENDER_MODE.SCROLL) {
       const {
-        draw, canvas,
+        draw, canvas
       } = table;
       const { el } = canvas;
       const mapWidth = this.getMapWidth();
@@ -1039,7 +1039,6 @@ class XTableContentUI extends XTableUI {
       line.setWidth(width);
       line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
     });
-    draw.beginPath();
     hbLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { bottom } = borderAttr;
@@ -1059,7 +1058,6 @@ class XTableContentUI extends XTableUI {
       line.setWidth(width);
       line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
     });
-    draw.beginPath();
     vrLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { right } = borderAttr;
@@ -1083,7 +1081,6 @@ class XTableContentUI extends XTableUI {
       line.setWidth(width);
       line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
     });
-    draw.beginPath();
     hbMergeLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { bottom } = borderAttr;
@@ -1103,7 +1100,6 @@ class XTableContentUI extends XTableUI {
       line.setWidth(width);
       line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
     });
-    draw.beginPath();
     vrMergeLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { right } = borderAttr;
@@ -1138,7 +1134,6 @@ class XTableContentUI extends XTableUI {
     hLine.forEach((item) => {
       grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
-    draw.beginPath();
     vLine.forEach((item) => {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
@@ -1148,7 +1143,6 @@ class XTableContentUI extends XTableUI {
     hMergeLine.forEach((item) => {
       grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
-    draw.beginPath();
     vMergeLine.forEach((item) => {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
@@ -2269,7 +2263,7 @@ class XTable extends Widget {
       index: {
         height: 33,
         width: 50,
-        gridColor: 'red',
+        gridColor: 'red'
       },
       table: {
         showGrid: true,
@@ -2606,21 +2600,21 @@ class XTable extends Widget {
     const { xTop } = this;
     const { xContent } = this;
     this.drawBorderOptimize();
-    // xTableFrozenFullRect.render();
-    // if (fixed.fxLeft > -1 && fixed.fxTop > -1) {
-    //   xTableFrozenContent.render();
-    // }
-    // if (fixed.fxTop > -1) {
-    //   xLeftFrozenIndex.render();
-    //   xTop.render();
-    // }
-    // if (fixed.fxLeft > -1) {
-    //   xTopFrozenIndex.render();
-    //   xLeft.render();
-    // }
-   //  xContent.render();
+    xTableFrozenFullRect.render();
+    if (fixed.fxLeft > -1 && fixed.fxTop > -1) {
+      xTableFrozenContent.render();
+    }
+    if (fixed.fxTop > -1) {
+      xLeftFrozenIndex.render();
+      xTop.render();
+    }
+    if (fixed.fxLeft > -1) {
+      xTopFrozenIndex.render();
+      xLeft.render();
+    }
+    xContent.render();
     xLeftIndex.render();
-    // xTopIndex.render();
+    xTopIndex.render();
   }
 
   /**
