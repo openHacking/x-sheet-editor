@@ -8,7 +8,7 @@ import './styles/base.less';
 import './styles/index.less';
 import { ElPopUp } from './component/elpopup/ElPopUp';
 import { DragPanel } from './component/dragpanel/DragPanel';
-import {Utils} from "./utils/Utils";
+import { Utils } from './utils/Utils';
 
 class XSheet extends Widget {
 

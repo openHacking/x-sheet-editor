@@ -1,8 +1,22 @@
 /* global window */
+const ROUND_TYPE = {
+  CEIL: Symbol(),
+  FLOOR: Symbol(),
+  NONE: Symbol()
+}
 class Base {
-  constructor(canvas) {
-    this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
+  static roundType = ROUND_TYPE.CEIL
+  static setRoundType(type) {
+    Base.roundType = type;
+  }
+  static round(val) {
+    switch (Base.roundType) {
+      case ROUND_TYPE.CEIL:
+        return Math.ceil(val);
+      case ROUND_TYPE.FLOOR:
+        return Math.floor(val);
+    }
+    return val;
   }
   static radian(angle) {
     return -angle * (Math.PI / 180);
@@ -10,14 +24,18 @@ class Base {
   static dpr() {
     return window.devicePixelRatio || 1;
   }
-  static round(val) {
-    return Math.ceil(val);
+  static opx(px) {
+    return px * this.dpr();
   }
   static rpx(px) {
-    return this.round(px * this.dpr());
+    return this.round(this.opx(px));
   }
   static lpx(px) {
     return this.rpx(px) - 0.5;
+  }
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
   }
   resize(width, height) {
     const { canvas } = this;
@@ -30,45 +48,7 @@ class Base {
     return this;
   }
 }
-class Offset extends Base {
-  constructor(canvas) {
-    super(canvas);
-    this.offsetX = 0;
-    this.offsetY = 0;
-    this.use = true;
-    this.skip = false;
-  }
-  offset(x, y) {
-    this.offsetX = x;
-    this.offsetY = y;
-  }
-  openSkip() {
-    this.skip = true;
-    return this;
-  }
-  closeSkip() {
-    this.skip = false;
-    return this;
-  }
-  enable() {
-    this.use = true;
-    return this;
-  }
-  disable() {
-    this.use = false;
-    return this;
-  }
-  convert(x, y) {
-    const { use, skip } = this;
-    if (use && !skip) {
-      const { offsetX, offsetY } = this;
-      x += offsetX;
-      y += offsetY;
-    }
-    return { x, y }
-  }
-}
-class Draw extends Offset {
+class Draw extends Base {
   measureText(text) {
     return this.ctx.measureText(text);
   }
@@ -125,59 +105,83 @@ class Draw extends Offset {
     this.ctx.scale(x, y);
     return this;
   }
-}
-class XDraw extends Draw {
-  drawImage(origin, sx, sy, sw, sh, tx, ty, tw, th) {
-    ({x:sx, y:sy} = this.convert(sx, sy));
-    ({x:tx, y:ty} = this.convert(tx, ty));
-    this.ctx.drawImage(origin,
-        Base.rpx(sx), Base.rpx(sy),
-        Base.rpx(sw), Base.rpx(sh),
-        Base.rpx(tx), Base.rpx(ty),
-        Base.rpx(tw), Base.rpx(th));
+  translate(x, y) {
+    this.ctx.translate(x, y);
+    return this;
   }
+  fullRect() {
+    const { canvas } = this;
+    const { width, height } = canvas;
+    this.ctx.fillRect(0, 0, width, height);
+    return this;
+  }
+}
+class Offset extends Draw {
+  constructor(canvas) {
+    super(canvas);
+    this.offsetX = 0;
+    this.offsetY = 0;
+  }
+  offset(x, y) {
+    this.offsetX = x;
+    this.offsetY = y;
+  }
+}
+class XDraw extends Offset {
   fillText(text, x, y) {
-    ({x, y} = this.convert(x, y));
+    const { offsetX, offsetY } = this;
+    x += offsetX;
+    y += offsetY;
     this.ctx.fillText(text, Base.rpx(x), Base.rpx(y));
     return this;
   }
-  translate(x, y) {
-    ({x, y} = this.convert(x, y));
-    this.ctx.translate(Base.rpx(x), Base.rpx(y));
-    return this;
-  }
   rect(x, y, w, h) {
-    ({x, y} = this.convert(x, y));
+    const { offsetX, offsetY } = this;
+    x += offsetX;
+    y += offsetY;
     this.ctx.rect(Base.rpx(x), Base.rpx(y), Base.rpx(w), Base.rpx(h));
     return this;
   }
   fillRect(x, y, w, h) {
-    ({x, y} = this.convert(x, y));
+    const { offsetX, offsetY } = this;
+    x += offsetX;
+    y += offsetY;
     this.ctx.fillRect(Base.rpx(x), Base.rpx(y), Base.rpx(w), Base.rpx(h));
     return this;
   }
   line(...xys) {
     const { ctx } = this;
     if (xys.length > 1) {
+      const { offsetX, offsetY } = this;
       let [x, y] = xys[0];
-      ({x, y} = this.convert(x, y));
+      x += offsetX;
+      y += offsetY;
       ctx.moveTo(Base.lpx(x), Base.lpx(y));
       for (let i = 1, len = xys.length; i < len; i += 1) {
         let [x, y] = xys[i];
-        ({x, y} = this.convert(x, y));
+        x += offsetX;
+        y += offsetY;
         ctx.lineTo(Base.lpx(x), Base.lpx(y));
       }
       ctx.stroke();
     }
     return this;
   }
-  fullFillRect() {
-    const { width, height } = this;
-    const {x, y} = this.convert(0, 0);
-    this.ctx.fillRect(Base.rpx(x), Base.rpx(y), Base.rpx(width), Base.rpx(height));
+  drawImage(el, sx, sy, sw, sh, tx, ty, tw, th) {
+    const { ctx } = this;
+    const { offsetX, offsetY } = this;
+    sx += offsetX;
+    sy += offsetY;
+    tx += offsetX;
+    ty += offsetY;
+    ctx.drawImage(el,
+        XDraw.rpx(sx), XDraw.rpx(sy),
+        XDraw.rpx(sw), XDraw.rpx(sh),
+        XDraw.rpx(tx), XDraw.rpx(ty),
+        XDraw.rpx(tw), XDraw.rpx(th));
     return this;
   }
 }
 export {
-  XDraw,
+  XDraw, ROUND_TYPE
 };

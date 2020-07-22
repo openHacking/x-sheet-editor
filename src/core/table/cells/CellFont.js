@@ -35,7 +35,7 @@ class CellFont {
     underline = false,
     color = 'rgb(0,0,0)',
     name = 'Arial',
-    size = 14,
+    size = 12,
     bold = false,
     italic = false,
     angle = 0,

@@ -8,7 +8,8 @@ import { Widget } from '../../lib/Widget';
 import {
   Constant, cssPrefix,
 } from '../../const/Constant';
-import {ROUND_TYPE, XDraw} from '../../canvas/XDraw';
+// eslint-disable-next-line import/named
+import { XDraw } from '../../canvas/XDraw';
 import { Line, LINE_TYPE } from '../../canvas/Line';
 import { Grid } from '../../canvas/Grid';
 import { LineHandle } from './gridborder/LineHandle';
@@ -765,7 +766,7 @@ class XTableUI {
     const viewMode = this.getViewMode();
     if (viewMode === VIEW_MODE.CHANGE_ADD && renderMode === RENDER_MODE.SCROLL) {
       const {
-        draw, canvas
+        draw, canvas,
       } = table;
       const { el } = canvas;
       const mapWidth = this.getMapWidth();
@@ -774,7 +775,8 @@ class XTableUI {
       const oy = this.getMapOriginY();
       const tx = this.getMapTargetX();
       const ty = this.getMapTargetY();
-      draw.drawImage(el, ox, oy, mapWidth, mapHeight, tx, ty, mapWidth, mapHeight);
+      draw.drawImage(el, ox, oy, mapWidth, mapHeight,
+        tx, ty, mapWidth, mapHeight);
     }
   }
 
@@ -808,7 +810,7 @@ class XTableUI {
             case SCROLL_TYPE.V_BOTTOM: {
               const fullScrollView = this.getFullScrollView();
               const scrollView = this.getScrollView();
-              const height = table.visualHeight() - (fullScrollView.h - scrollView.h);
+              const height = table.canvasHeight() - (fullScrollView.h - scrollView.h);
               const width = this.getWidth();
               draw.fillRect(dx, dy, width, height);
               break;
@@ -831,7 +833,7 @@ class XTableUI {
               const fullScrollView = this.getFullScrollView();
               const scrollView = this.getScrollView();
               const height = this.getHeight();
-              const width = table.visualWidth() - (fullScrollView.w - scrollView.w);
+              const width = table.canvasWidth() - (fullScrollView.w - scrollView.w);
               draw.fillRect(dx, dy, width, height);
               break;
             }
@@ -1425,7 +1427,7 @@ class XTableContent extends XTableContentUI {
     const { table } = this;
     const { index } = table;
     const { xLeft } = table;
-    const width = table.visualWidth() - (index.getWidth() + xLeft.getWidth());
+    const width = table.canvasWidth() - (index.getWidth() + xLeft.getWidth());
     this.width = width;
     return width;
   }
@@ -1437,7 +1439,7 @@ class XTableContent extends XTableContentUI {
     const { table } = this;
     const { xTop } = table;
     const { index } = table;
-    const height = table.visualHeight() - (index.getHeight() + xTop.getHeight());
+    const height = table.canvasHeight() - (index.getHeight() + xTop.getHeight());
     this.height = height;
     return height;
   }
@@ -1532,7 +1534,7 @@ class XTableLeft extends XTableContentUI {
     const { table } = this;
     const { xTop } = table;
     const { index } = table;
-    const height = table.visualHeight() - (index.getHeight() + xTop.getHeight());
+    const height = table.canvasHeight() - (index.getHeight() + xTop.getHeight());
     this.height = height;
     return height;
   }
@@ -1634,7 +1636,7 @@ class XTableTop extends XTableContentUI {
     const { table } = this;
     const { xLeft } = table;
     const { index } = table;
-    const width = table.visualWidth() - (index.getWidth() + xLeft.getWidth());
+    const width = table.canvasWidth() - (index.getWidth() + xLeft.getWidth());
     this.width = width;
     return width;
   }
@@ -1759,7 +1761,7 @@ class XTableLeftIndex extends XTableLeftIndexUI {
     const { table } = this;
     const { xTop } = table;
     const { index } = table;
-    const height = table.visualHeight() - (index.getHeight() + xTop.getHeight());
+    const height = table.canvasHeight() - (index.getHeight() + xTop.getHeight());
     this.height = height;
     return height;
   }
@@ -1856,7 +1858,7 @@ class XTableTopIndex extends XTableTopIndexUI {
     const { table } = this;
     const { xLeft } = table;
     const { index } = table;
-    const width = table.visualWidth() - (index.getWidth() + xLeft.getWidth());
+    const width = table.canvasWidth() - (index.getWidth() + xLeft.getWidth());
     this.width = width;
     return width;
   }
@@ -2261,10 +2263,11 @@ class XTable extends Widget {
     // 表格设置
     this.settings = Utils.mergeDeep({
       index: {
-        height: 33,
-        width: 50,
-        gridColor: '#8e8e8e',
-        color: '#000000'
+        height: 24,
+        width: 46,
+        gridColor: '#c4c4c4',
+        size: 9,
+        color: '#000000',
       },
       table: {
         showGrid: true,
@@ -2275,11 +2278,11 @@ class XTable extends Widget {
       data: [],
       rows: {
         len: 1000,
-        height: 33,
+        height: 21,
       },
       cols: {
         len: 26,
-        width: 137,
+        width: 100,
       },
       merge: [],
       fixed: {
@@ -2287,8 +2290,6 @@ class XTable extends Widget {
         fxLeft: -1,
       },
     }, settings);
-    this.width = null;
-    this.height = null;
     // 表格数据配置
     this.scale = new Scale(this);
     this.index = new Code(this, this.settings.index);
@@ -2407,6 +2408,12 @@ class XTable extends Widget {
     this.xLeft = new XTableLeft(this);
     this.xTop = new XTableTop(this);
     this.xContent = new XTableContent(this);
+    // 表格大小
+    this.visualWidthCache = null;
+    this.visualHeightCache = null;
+    // canvas大小
+    this.canvasWidthCache = null;
+    this.canvasHeightCache = null;
   }
 
   /**
@@ -2489,11 +2496,11 @@ class XTable extends Widget {
    * @return {*}
    */
   visualHeight() {
-    if (Utils.isNumber(this.height)) {
-      return this.height;
+    if (Utils.isNumber(this.visualHeightCache)) {
+      return this.visualHeightCache;
     }
     const height = this.box().height;
-    this.height = height;
+    this.visualHeightCache = height;
     return height;
   }
 
@@ -2502,11 +2509,35 @@ class XTable extends Widget {
    * @return {*}
    */
   visualWidth() {
-    if (Utils.isNumber(this.width)) {
-      return this.width;
+    if (Utils.isNumber(this.visualWidthCache)) {
+      return this.visualWidthCache;
     }
     const width = this.box().width;
-    this.width = width;
+    this.visualWidthCache = width;
+    return width;
+  }
+
+  /**
+   * 画布高度
+   */
+  canvasHeight() {
+    if (Utils.isNumber(this.canvasHeightCache)) {
+      return this.canvasHeightCache;
+    }
+    const height = this.canvas.box().height;
+    this.canvasHeightCache = height;
+    return height;
+  }
+
+  /**
+   * 画布宽度
+   */
+  canvasWidth() {
+    if (Utils.isNumber(this.canvasWidthCache)) {
+      return this.canvasWidthCache;
+    }
+    const width = this.box().width;
+    this.canvasWidthCache = width;
     return width;
   }
 
@@ -2517,9 +2548,11 @@ class XTable extends Widget {
     const {
       draw, xTableScrollView,
     } = this;
+    this.visualWidthCache = null;
+    this.visualHeightCache = null;
+    this.canvasWidthCache = null;
+    this.canvasHeightCache = null;
     xTableScrollView.undo();
-    this.height = null;
-    this.width = null;
     const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.resize(width, height);
     this.render();
@@ -2667,7 +2700,7 @@ class XTable extends Widget {
     this.draw.attr({
       fillStyle: this.settings.table.background,
     });
-    this.draw.fullFillRect();
+    this.draw.fullRect();
     // 调整缩放级别
     this.scale.setValue(value);
     // 重新渲染界面
