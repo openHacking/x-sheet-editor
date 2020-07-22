@@ -112,9 +112,8 @@ class Angle {
         break;
       default: break;
     }
-    const {
-      offsetX, offsetY,
-    } = dw;
+    const offsetX = dw.getOffsetX();
+    const offsetY = dw.getOffsetY();
     dw.translate(tx + offsetX, ty + offsetY)
       .rotate(angle)
       .translate(-(tx + offsetX), -(ty + offsetY));

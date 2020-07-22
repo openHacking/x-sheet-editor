@@ -8,7 +8,6 @@ import { Widget } from '../../lib/Widget';
 import {
   Constant, cssPrefix,
 } from '../../const/Constant';
-// eslint-disable-next-line import/named
 import { XDraw } from '../../canvas/XDraw';
 import { Line, LINE_TYPE } from '../../canvas/Line';
 import { Grid } from '../../canvas/Grid';
@@ -810,7 +809,7 @@ class XTableUI {
             case SCROLL_TYPE.V_BOTTOM: {
               const fullScrollView = this.getFullScrollView();
               const scrollView = this.getScrollView();
-              const height = table.canvasHeight() - (fullScrollView.h - scrollView.h);
+              const height = draw.getDisplayHeight() - (fullScrollView.h - scrollView.h);
               const width = this.getWidth();
               draw.fillRect(dx, dy, width, height);
               break;
@@ -833,7 +832,7 @@ class XTableUI {
               const fullScrollView = this.getFullScrollView();
               const scrollView = this.getScrollView();
               const height = this.getHeight();
-              const width = table.canvasWidth() - (fullScrollView.w - scrollView.w);
+              const width = draw.getDisplayWidth() - (fullScrollView.w - scrollView.w);
               draw.fillRect(dx, dy, width, height);
               break;
             }
@@ -1031,7 +1030,6 @@ class XTableContentUI extends XTableUI {
     const hbLine = borderHandle.hbLine(borderView);
     const vlLine = borderHandle.vlLine(borderView);
     const vrLine = borderHandle.vrLine(borderView);
-    draw.beginPath();
     htLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { top } = borderAttr;
@@ -1050,7 +1048,6 @@ class XTableContentUI extends XTableUI {
       line.setWidth(width);
       line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
     });
-    draw.beginPath();
     vlLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { left } = borderAttr;
@@ -1073,7 +1070,6 @@ class XTableContentUI extends XTableUI {
     const hbMergeLine = borderHandle.hbMergeLine(coincideViewBrink);
     const vlMergeLine = borderHandle.vlMergeLine(coincideViewBrink);
     const vrMergeLine = borderHandle.vrMergeLine(coincideViewBrink);
-    draw.beginPath();
     htMergeLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { top } = borderAttr;
@@ -1092,7 +1088,6 @@ class XTableContentUI extends XTableUI {
       line.setWidth(width);
       line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
     });
-    draw.beginPath();
     vlMergeLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { left } = borderAttr;
@@ -1132,7 +1127,6 @@ class XTableContentUI extends XTableUI {
     const coincideViewBrink = lineHandle.coincideViewBrink({ coincideView });
     const hLine = gridHandle.hLine(borderView);
     const vLine = gridHandle.vLine(borderView);
-    draw.beginPath();
     hLine.forEach((item) => {
       grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
@@ -1141,7 +1135,6 @@ class XTableContentUI extends XTableUI {
     });
     const hMergeLine = gridHandle.hMergeLine(coincideViewBrink);
     const vMergeLine = gridHandle.vMergeLine(coincideViewBrink);
-    draw.beginPath();
     hMergeLine.forEach((item) => {
       grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
     });
@@ -1426,8 +1419,8 @@ class XTableContent extends XTableContentUI {
     }
     const { table } = this;
     const { index } = table;
-    const { xLeft } = table;
-    const width = table.canvasWidth() - (index.getWidth() + xLeft.getWidth());
+    const { xLeft, draw } = table;
+    const width = draw.getDisplayWidth() - (index.getWidth() + xLeft.getWidth());
     this.width = width;
     return width;
   }
@@ -1438,8 +1431,8 @@ class XTableContent extends XTableContentUI {
     }
     const { table } = this;
     const { xTop } = table;
-    const { index } = table;
-    const height = table.canvasHeight() - (index.getHeight() + xTop.getHeight());
+    const { index, draw } = table;
+    const height = draw.getDisplayHeight() - (index.getHeight() + xTop.getHeight());
     this.height = height;
     return height;
   }
@@ -1533,8 +1526,8 @@ class XTableLeft extends XTableContentUI {
     }
     const { table } = this;
     const { xTop } = table;
-    const { index } = table;
-    const height = table.canvasHeight() - (index.getHeight() + xTop.getHeight());
+    const { index, draw } = table;
+    const height = draw.getDisplayHeight() - (index.getHeight() + xTop.getHeight());
     this.height = height;
     return height;
   }
@@ -1635,8 +1628,8 @@ class XTableTop extends XTableContentUI {
     }
     const { table } = this;
     const { xLeft } = table;
-    const { index } = table;
-    const width = table.canvasWidth() - (index.getWidth() + xLeft.getWidth());
+    const { index, draw } = table;
+    const width = draw.getDisplayWidth() - (index.getWidth() + xLeft.getWidth());
     this.width = width;
     return width;
   }
@@ -1760,8 +1753,8 @@ class XTableLeftIndex extends XTableLeftIndexUI {
     }
     const { table } = this;
     const { xTop } = table;
-    const { index } = table;
-    const height = table.canvasHeight() - (index.getHeight() + xTop.getHeight());
+    const { index, draw } = table;
+    const height = draw.getDisplayHeight() - (index.getHeight() + xTop.getHeight());
     this.height = height;
     return height;
   }
@@ -1857,8 +1850,8 @@ class XTableTopIndex extends XTableTopIndexUI {
     }
     const { table } = this;
     const { xLeft } = table;
-    const { index } = table;
-    const width = table.canvasWidth() - (index.getWidth() + xLeft.getWidth());
+    const { index, draw } = table;
+    const width = draw.getDisplayWidth() - (index.getWidth() + xLeft.getWidth());
     this.width = width;
     return width;
   }
@@ -2263,8 +2256,8 @@ class XTable extends Widget {
     // 表格设置
     this.settings = Utils.mergeDeep({
       index: {
-        height: 24,
-        width: 46,
+        height: 30,
+        width: 50,
         gridColor: '#c4c4c4',
         size: 9,
         color: '#000000',
@@ -2278,11 +2271,11 @@ class XTable extends Widget {
       data: [],
       rows: {
         len: 1000,
-        height: 21,
+        height: 30,
       },
       cols: {
         len: 26,
-        width: 100,
+        width: 110,
       },
       merge: [],
       fixed: {
@@ -2411,9 +2404,6 @@ class XTable extends Widget {
     // 表格大小
     this.visualWidthCache = null;
     this.visualHeightCache = null;
-    // canvas大小
-    this.canvasWidthCache = null;
-    this.canvasHeightCache = null;
   }
 
   /**
@@ -2492,6 +2482,38 @@ class XTable extends Widget {
   }
 
   /**
+   * 滚动视图的高度
+   * @returns {*}
+   */
+  getScrollTotalHeight() {
+    const { fixed } = this;
+    const { rows } = this;
+    let height;
+    if (fixed.fxTop > -1) {
+      height = rows.sectionSumHeight(fixed.fxTop, rows.len - 1);
+    } else {
+      height = rows.sectionSumHeight(0, rows.len - 1);
+    }
+    return height;
+  }
+
+  /**
+   * 滚动视图的宽度
+   * @returns {*}
+   */
+  getScrollTotalWidth() {
+    const { fixed } = this;
+    const { cols } = this;
+    let width;
+    if (fixed.fxTop > -1) {
+      width = cols.sectionSumWidth(fixed.fxLeft, cols.len - 1);
+    } else {
+      width = cols.sectionSumWidth(0, cols.len - 1);
+    }
+    return width;
+  }
+
+  /**
    * 可视区域高度
    * @return {*}
    */
@@ -2518,30 +2540,6 @@ class XTable extends Widget {
   }
 
   /**
-   * 画布高度
-   */
-  canvasHeight() {
-    if (Utils.isNumber(this.canvasHeightCache)) {
-      return this.canvasHeightCache;
-    }
-    const height = this.canvas.box().height;
-    this.canvasHeightCache = height;
-    return height;
-  }
-
-  /**
-   * 画布宽度
-   */
-  canvasWidth() {
-    if (Utils.isNumber(this.canvasWidthCache)) {
-      return this.canvasWidthCache;
-    }
-    const width = this.box().width;
-    this.canvasWidthCache = width;
-    return width;
-  }
-
-  /**
    * 重置界面大小
    */
   resize() {
@@ -2550,8 +2548,6 @@ class XTable extends Widget {
     } = this;
     this.visualWidthCache = null;
     this.visualHeightCache = null;
-    this.canvasWidthCache = null;
-    this.canvasHeightCache = null;
     xTableScrollView.undo();
     const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.resize(width, height);
@@ -2649,38 +2645,6 @@ class XTable extends Widget {
     xContent.render();
     xLeftIndex.render();
     xTopIndex.render();
-  }
-
-  /**
-   * 滚动视图的高度
-   * @returns {*}
-   */
-  getScrollTotalHeight() {
-    const { fixed } = this;
-    const { rows } = this;
-    let height;
-    if (fixed.fxTop > -1) {
-      height = rows.sectionSumHeight(fixed.fxTop, rows.len - 1);
-    } else {
-      height = rows.sectionSumHeight(0, rows.len - 1);
-    }
-    return height;
-  }
-
-  /**
-   * 滚动视图的宽度
-   * @returns {*}
-   */
-  getScrollTotalWidth() {
-    const { fixed } = this;
-    const { cols } = this;
-    let width;
-    if (fixed.fxTop > -1) {
-      width = cols.sectionSumWidth(fixed.fxLeft, cols.len - 1);
-    } else {
-      width = cols.sectionSumWidth(0, cols.len - 1);
-    }
-    return width;
   }
 
   /**

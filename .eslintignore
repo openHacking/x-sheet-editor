@@ -2,4 +2,3 @@ build
 dist
 src/template/**
 src/lib
-src/canvas/XDraw.js
