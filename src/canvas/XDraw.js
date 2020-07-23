@@ -113,6 +113,14 @@ class Draw extends Base {
     return this;
   }
 
+  lpx(px) {
+    const { ctx } = this;
+    const lineWidth = ctx.lineWidth;
+    const suffix = lineWidth % 2 === 0
+      ? 0 : 0.5;
+    return px - suffix;
+  }
+
 }
 
 class Pos extends Draw {
@@ -190,14 +198,14 @@ class XDraw extends Pos {
       let [x, y] = xys[0];
       x += this.getOffsetX();
       y += this.getOffsetY();
-      ctx.moveTo(XDraw.upRounding(x) - 0.5,
-        XDraw.upRounding(y) - 0.5);
+      ctx.moveTo(this.lpx(XDraw.upRounding(x)),
+        this.lpx(XDraw.upRounding(y)));
       for (let i = 1, len = xys.length; i < len; i += 1) {
         let [x, y] = xys[i];
         x += this.getOffsetX();
         y += this.getOffsetY();
-        ctx.lineTo(XDraw.upRounding(x) - 0.5,
-          XDraw.upRounding(y) - 0.5);
+        ctx.lineTo(this.lpx(XDraw.upRounding(x)),
+          this.lpx(XDraw.upRounding(y)));
       }
       ctx.stroke();
     }
