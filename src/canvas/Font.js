@@ -246,9 +246,6 @@ class HorizontalFontDraw extends DrawFont {
     });
     crop.open();
     dw.fillText(text, tx, ty);
-    if (underline || strikethrough) {
-      dw.beginPath();
-    }
     if (underline) {
       this.drawLine('underline', tx, ty, textWidth);
     }
@@ -326,9 +323,6 @@ class HorizontalFontDraw extends DrawFont {
       crop.open();
       // console.log('text >>>', text, tx, ty);
       dw.fillText(text, tx, ty);
-      if (underline || strikethrough) {
-        dw.beginPath();
-      }
       if (underline) {
         this.drawLine('underline', tx, ty, textWidth);
       }
@@ -338,9 +332,6 @@ class HorizontalFontDraw extends DrawFont {
       crop.close();
     } else {
       dw.fillText(text, tx, ty);
-      if (underline || strikethrough) {
-        dw.beginPath();
-      }
       if (underline) {
         this.drawLine('underline', tx, ty, textWidth);
       }
@@ -463,11 +454,7 @@ class HorizontalFontDraw extends DrawFont {
       const item = textArray[i];
       item.tx += bx;
       item.ty += by;
-      // console.log('text >>>', item.text, item.tx, item.ty);
       dw.fillText(item.text, item.tx, item.ty);
-      if (underline || strikethrough) {
-        dw.beginPath();
-      }
       if (underline) {
         this.drawLine('underline', item.tx, item.ty, item.len);
       }
@@ -711,9 +698,6 @@ class VerticalFontDraw extends DrawFont {
       item.tx += bx;
       item.ty += by;
       dw.fillText(item.text, item.tx, item.ty);
-      if (underline || strikethrough) {
-        dw.beginPath();
-      }
       if (underline) {
         this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
       }
@@ -810,9 +794,6 @@ class VerticalFontDraw extends DrawFont {
         item.tx += bx;
         item.ty += by;
         dw.fillText(item.text, item.tx, item.ty);
-        if (underline || strikethrough) {
-          dw.beginPath();
-        }
         if (underline) {
           this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
         }
@@ -827,9 +808,6 @@ class VerticalFontDraw extends DrawFont {
         item.tx += bx;
         item.ty += by;
         dw.fillText(item.text, item.tx, item.ty);
-        if (underline || strikethrough) {
-          dw.beginPath();
-        }
         if (underline) {
           this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
         }
@@ -991,9 +969,6 @@ class VerticalFontDraw extends DrawFont {
         item.tx += bx;
         item.ty += by;
         dw.fillText(item.text, item.tx, item.ty);
-        if (underline || strikethrough) {
-          dw.beginPath();
-        }
         if (underline) {
           this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlignValue);
         }
@@ -1222,9 +1197,6 @@ class AngleFontDraw extends DrawFont {
     crop.open();
     dwAngle.rotate();
     dw.fillText(text, tx, ty);
-    if (underline || strikethrough) {
-      dw.beginPath();
-    }
     if (underline) {
       this.drawLine('underline', tx, ty, textWidth);
     }
@@ -1345,9 +1317,6 @@ class AngleFontDraw extends DrawFont {
       crop.open();
       dwAngle.rotate();
       dw.fillText(text, tx, ty);
-      if (underline || strikethrough) {
-        dw.beginPath();
-      }
       if (underline) {
         this.drawLine('underline', tx, ty, textWidth);
       }
@@ -1359,9 +1328,6 @@ class AngleFontDraw extends DrawFont {
     } else {
       dwAngle.rotate();
       dw.fillText(text, tx, ty);
-      if (underline || strikethrough) {
-        dw.beginPath();
-      }
       if (underline) {
         this.drawLine('underline', tx, ty, textWidth);
       }
@@ -1570,9 +1536,6 @@ class AngleFontDraw extends DrawFont {
           });
           dwAngle.rotate();
           dw.fillText(item.text, tx, ty);
-          if (underline || strikethrough) {
-            dw.beginPath();
-          }
           if (underline) {
             this.drawLine('underline', tx, ty, item.len);
           }
@@ -1649,9 +1612,6 @@ class AngleFontDraw extends DrawFont {
       const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
       const ty = rty + (trigonometricHeight / 2 - size / 2);
       dw.fillText(text, tx, ty);
-      if (underline || strikethrough) {
-        dw.beginPath();
-      }
       if (underline) {
         this.drawLine('underline', tx, ty, textWidth);
       }
@@ -1838,9 +1798,6 @@ class AngleFontDraw extends DrawFont {
           });
           dwAngle.rotate();
           dw.fillText(item.text, tx, ty);
-          if (underline || strikethrough) {
-            dw.beginPath();
-          }
           if (underline) {
             this.drawLine('underline', tx, ty, item.len);
           }
@@ -1917,9 +1874,6 @@ class AngleFontDraw extends DrawFont {
       const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
       const ty = rty + (trigonometricHeight / 2 - size / 2);
       dw.fillText(text, tx, ty);
-      if (underline || strikethrough) {
-        dw.beginPath();
-      }
       if (underline) {
         this.drawLine('underline', tx, ty, textWidth);
       }
@@ -2043,9 +1997,6 @@ class AngleFontDraw extends DrawFont {
             break;
         }
         dw.fillText(item.text, tx, ty);
-        if (underline || strikethrough) {
-          dw.beginPath();
-        }
         if (underline) {
           this.drawLine('underline', tx, ty, item.len);
         }

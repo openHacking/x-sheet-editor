@@ -5,27 +5,23 @@ class Scale {
   constructor(table) {
     this.table = table;
     this.value = 1;
-    this.checkFloat = true;
+    this.enableFloat = true;
   }
 
   useFloat() {
-    this.checkFloat = true;
+    this.enableFloat = true;
   }
 
   notFloat() {
-    this.checkFloat = false;
+    this.enableFloat = false;
   }
 
   back(origin) {
-    return this.checkFloat
-      ? origin / this.value
-      : XDraw.round(origin / this.value);
+    return this.enableFloat ? origin / this.value : XDraw.upRounding(origin / this.value);
   }
 
   goto(origin) {
-    return this.checkFloat
-      ? this.value * origin
-      : XDraw.round(this.value * origin);
+    return this.enableFloat ? this.value * origin : XDraw.upRounding(this.value * origin);
   }
 
   setValue(value) {

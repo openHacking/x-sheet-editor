@@ -20,7 +20,6 @@ class SolidLine {
   drawLine(sx, sy, ex, ey) {
     const { draw } = this;
     const { width, color } = this;
-    draw.beginPath();
     draw.attr({
       lineWidth: width,
       strokeStyle: color,
@@ -52,7 +51,6 @@ class DottedLine {
   drawLine(sx, sy, ex, ey) {
     const { draw, dash } = this;
     const { width, color } = this;
-    draw.beginPath();
     draw.attr({
       lineWidth: width,
       strokeStyle: color,
@@ -482,7 +480,6 @@ class DoubleLine {
   drawLine(sx, sy, ex, ey, row, col, pos) {
     const { draw } = this;
     const { width, color } = this;
-    draw.beginPath();
     draw.attr({
       lineWidth: width,
       strokeStyle: color,
