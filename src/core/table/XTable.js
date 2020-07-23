@@ -2256,8 +2256,8 @@ class XTable extends Widget {
     // 表格设置
     this.settings = Utils.mergeDeep({
       index: {
-        height: 30,
-        width: 50,
+        height: 30 * XDraw.dpr(),
+        width: 50 * XDraw.dpr(),
         gridColor: '#c4c4c4',
         size: 9,
         color: '#000000',
@@ -2271,11 +2271,11 @@ class XTable extends Widget {
       data: [],
       rows: {
         len: 1000,
-        height: 30,
+        height: 33 * XDraw.dpr(),
       },
       cols: {
         len: 26,
-        width: 110,
+        width: 130 * XDraw.dpr(),
       },
       merge: [],
       fixed: {

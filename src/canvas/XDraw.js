@@ -14,8 +14,12 @@ class Base {
     return window.devicePixelRatio || 1;
   }
 
-  static rpx(px) {
+  static zpx(px) {
     return this.round(px * this.dpr());
+  }
+
+  static rpx(px) {
+    return this.round(px);
   }
 
   static lpx(px) {
@@ -29,14 +33,10 @@ class Base {
 
   resize(width, height) {
     const { canvas } = this;
-    const resultWidth = Base.rpx(width);
-    const resultHeight = Base.rpx(height);
-    const styleWidth = resultWidth / Base.dpr();
-    const styleHeight = resultHeight / Base.dpr();
-    canvas.width = resultWidth;
-    canvas.height = resultHeight;
-    canvas.style.width = `${styleWidth}px`;
-    canvas.style.height = `${styleHeight}px`;
+    canvas.width = Base.zpx(width);
+    canvas.height = Base.zpx(height);
+    canvas.style.width = `${canvas.width / Base.dpr()}px`;
+    canvas.style.height = `${canvas.height / Base.dpr()}px`;
     return this;
   }
 
@@ -143,6 +143,26 @@ class Offset extends Draw {
 
   getOffsetY() {
     return this.offsetY;
+  }
+
+  fillText() {
+    throw new TypeError('child impl');
+  }
+
+  rect() {
+    throw new TypeError('child impl');
+  }
+
+  fillRect() {
+    throw new TypeError('child impl');
+  }
+
+  line() {
+    throw new TypeError('child impl');
+  }
+
+  drawImage() {
+    throw new TypeError('child impl');
   }
 
 }
