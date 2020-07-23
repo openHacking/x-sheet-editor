@@ -71,7 +71,7 @@ class DrawFont {
    * @returns {number}
    */
   dprFontSize(size) {
-    return size * XDraw.dpr();
+    return XDraw.rpx(size);
   }
 
   /**

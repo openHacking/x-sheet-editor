@@ -2,7 +2,11 @@ import { Utils } from '../../../utils/Utils';
 
 class Rows {
 
-  constructor(table, { data = [], len = 10, height }) {
+  constructor(table, {
+    data = [],
+    len = 10,
+    height,
+  }) {
     this.table = table;
     this._ = [];
     this.minHeight = 5;

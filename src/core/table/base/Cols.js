@@ -2,7 +2,11 @@ import { Utils } from '../../../utils/Utils';
 
 class Cols {
 
-  constructor(table, { data = [], len = 10, width }) {
+  constructor(table, {
+    data = [],
+    len = 10,
+    width,
+  }) {
     this.table = table;
     this._ = [];
     this.minWidth = 5;
@@ -10,10 +14,6 @@ class Cols {
     this.len = len;
     this.cacheTotalWidth = null;
     this.setData(data);
-  }
-
-  get(ci) {
-    return this._[ci];
   }
 
   getOrNew(ci) {
@@ -31,12 +31,8 @@ class Cols {
     return scale.goto(this.width);
   }
 
-  setWidth(i, width) {
-    const col = this.getOrNew(i);
-    const { table } = this;
-    const { scale } = table;
-    col.width = scale.back(Utils.minIf(width, this.minWidth));
-    this.cacheTotalWidth = null;
+  get(ci) {
+    return this._[ci];
   }
 
   eachWidth(ci, ei, cb, sx = 0) {
@@ -46,6 +42,14 @@ class Cols {
       cb(i, colWidth, x);
       x += colWidth;
     }
+  }
+
+  setWidth(i, width) {
+    const col = this.getOrNew(i);
+    const { table } = this;
+    const { scale } = table;
+    col.width = scale.back(Utils.minIf(width, this.minWidth));
+    this.cacheTotalWidth = null;
   }
 
   sectionSumWidth(sci, eci) {
