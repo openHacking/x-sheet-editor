@@ -1,13 +1,9 @@
 import { Utils } from '../../utils/Utils';
 import { Rows } from './base/Rows';
 import { Cols } from './base/Cols';
-import {
-  Scroll, SCROLL_TYPE,
-} from './base/Scroll';
+import { Scroll, SCROLL_TYPE } from './base/Scroll';
 import { Widget } from '../../lib/Widget';
-import {
-  Constant, cssPrefix,
-} from '../../const/Constant';
+import { Constant, cssPrefix } from '../../const/Constant';
 import { XDraw } from '../../canvas/XDraw';
 import { Line, LINE_TYPE } from '../../canvas/Line';
 import { Grid } from '../../canvas/Grid';
@@ -17,9 +13,7 @@ import { GridLineHandle } from './gridborder/GridLineHandle';
 import { Fixed } from './base/Fixed';
 import { Crop } from '../../canvas/Crop';
 import { Rect } from '../../canvas/Rect';
-import {
-  ALIGN, TEXT_WRAP,
-} from '../../canvas/Font';
+import { ALIGN, TEXT_WRAP } from '../../canvas/Font';
 import Format from './Format';
 import { Box } from '../../canvas/Box';
 import { RectRange } from './base/RectRange';
@@ -27,9 +21,7 @@ import { EventBind } from '../../utils/EventBind';
 import { Cells } from './cells/Cells';
 import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
 import { Screen } from './screen/Screen';
-import {
-  SCREEN_SELECT_EVENT, ScreenSelector,
-} from './screenwiget/selector/ScreenSelector';
+import { SCREEN_SELECT_EVENT, ScreenSelector } from './screenwiget/selector/ScreenSelector';
 import { XReSizer } from './resizer/XReSizer';
 import { YReSizer } from './resizer/YReSizer';
 import { XHeightLight } from './highlight/XHeightLight';
