@@ -1,29 +1,9 @@
 /* global window */
 
-const ROUND_TYPE = {
-  CEIL: Symbol(''),
-  FLOOR: Symbol(''),
-  NONE: Symbol(''),
-};
-
 class Base {
 
-  static setRoundType(type) {
-    Base.roundType = type;
-  }
-
   static round(val) {
-    switch (Base.roundType) {
-      case ROUND_TYPE.CEIL:
-        return Math.ceil(val);
-      case ROUND_TYPE.FLOOR:
-        return Math.floor(val);
-    }
-    return val;
-  }
-
-  static fixed(val) {
-    return parseFloat(val.toFixed(1));
+    return Math.ceil(val);
   }
 
   static radian(angle) {
@@ -34,16 +14,8 @@ class Base {
     return window.devicePixelRatio || 1;
   }
 
-  static rpr() {
-    return this.fixed(this.dpr());
-  }
-
-  static npx(px) {
-    return this.round(px * this.dpr());
-  }
-
   static rpx(px) {
-    return this.round(px * this.rpr());
+    return this.round(px * this.dpr());
   }
 
   static lpx(px) {
@@ -53,38 +25,22 @@ class Base {
   constructor(canvas) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
-    this.displayWidth = 0;
-    this.displayHeight = 0;
   }
 
   resize(width, height) {
     const { canvas } = this;
-    const resultWidth = Base.npx(width);
-    const resultHeight = Base.npx(height);
+    const resultWidth = Base.rpx(width);
+    const resultHeight = Base.rpx(height);
     const styleWidth = resultWidth / Base.dpr();
     const styleHeight = resultHeight / Base.dpr();
-    const displayWidth = styleWidth * (1 + Base.dpr() - Base.rpr());
-    const displayHeight = styleHeight * (1 + Base.dpr() - Base.rpr());
     canvas.width = resultWidth;
     canvas.height = resultHeight;
     canvas.style.width = `${styleWidth}px`;
     canvas.style.height = `${styleHeight}px`;
-    this.displayWidth = displayWidth;
-    this.displayHeight = displayHeight;
     return this;
   }
 
-  getDisplayWidth() {
-    return this.displayWidth;
-  }
-
-  getDisplayHeight() {
-    return this.displayHeight;
-  }
-
 }
-
-Base.roundType = ROUND_TYPE.CEIL;
 
 class Draw extends Base {
 
@@ -239,18 +195,16 @@ class XDraw extends Offset {
     sy += this.getOffsetY();
     tx += this.getOffsetX();
     ty += this.getOffsetY();
-    XDraw.setRoundType(ROUND_TYPE.FLOOR);
     ctx.drawImage(el,
       XDraw.rpx(sx), XDraw.rpx(sy),
       XDraw.rpx(sw), XDraw.rpx(sh),
       XDraw.rpx(tx), XDraw.rpx(ty),
       XDraw.rpx(tw), XDraw.rpx(th));
-    XDraw.setRoundType(ROUND_TYPE.CEIL);
     return this;
   }
 
 }
 
 export {
-  XDraw, ROUND_TYPE,
+  XDraw,
 };
