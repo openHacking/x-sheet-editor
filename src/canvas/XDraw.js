@@ -2,6 +2,11 @@
 
 class Base {
 
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+  }
+
   static round(val) {
     return Math.ceil(val);
   }
@@ -14,27 +19,14 @@ class Base {
     return window.devicePixelRatio || 1;
   }
 
-  static zpx(px) {
-    return this.round(px * this.dpr());
-  }
-
   static rpx(px) {
-    return this.round(px);
-  }
-
-  static lpx(px) {
-    return this.rpx(px) - 0.5;
-  }
-
-  constructor(canvas) {
-    this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
+    return px * this.dpr();
   }
 
   resize(width, height) {
     const { canvas } = this;
-    canvas.width = Base.zpx(width);
-    canvas.height = Base.zpx(height);
+    canvas.width = Base.round(Base.rpx(width));
+    canvas.height = Base.round(Base.rpx(height));
     canvas.style.width = `${canvas.width / Base.dpr()}px`;
     canvas.style.height = `${canvas.height / Base.dpr()}px`;
     return this;
@@ -73,7 +65,6 @@ class Draw extends Base {
   save() {
     const { ctx } = this;
     ctx.save();
-    this.beginPath();
     return this;
   }
 
@@ -124,7 +115,7 @@ class Draw extends Base {
 
 }
 
-class Offset extends Draw {
+class Pos extends Draw {
 
   constructor(canvas) {
     super(canvas);
@@ -167,26 +158,28 @@ class Offset extends Draw {
 
 }
 
-class XDraw extends Offset {
+class XDraw extends Pos {
 
   fillText(text, x, y) {
     x += this.getOffsetX();
     y += this.getOffsetY();
-    this.ctx.fillText(text, XDraw.rpx(x), XDraw.rpx(y));
+    this.ctx.fillText(text, XDraw.round(x), XDraw.round(y));
     return this;
   }
 
   rect(x, y, w, h) {
     x += this.getOffsetX();
     y += this.getOffsetY();
-    this.ctx.rect(XDraw.rpx(x), XDraw.rpx(y), XDraw.rpx(w), XDraw.rpx(h));
+    this.ctx.rect(XDraw.round(x), XDraw.round(y),
+      XDraw.round(w), XDraw.round(h));
     return this;
   }
 
   fillRect(x, y, w, h) {
     x += this.getOffsetX();
     y += this.getOffsetY();
-    this.ctx.fillRect(XDraw.rpx(x), XDraw.rpx(y), XDraw.rpx(w), XDraw.rpx(h));
+    this.ctx.fillRect(XDraw.round(x), XDraw.round(y),
+      XDraw.round(w), XDraw.round(h));
     return this;
   }
 
@@ -197,12 +190,14 @@ class XDraw extends Offset {
       let [x, y] = xys[0];
       x += this.getOffsetX();
       y += this.getOffsetY();
-      ctx.moveTo(XDraw.lpx(x), XDraw.lpx(y));
+      ctx.moveTo(XDraw.round(x) - 0.5,
+        XDraw.round(y) - 0.5);
       for (let i = 1, len = xys.length; i < len; i += 1) {
         let [x, y] = xys[i];
         x += this.getOffsetX();
         y += this.getOffsetY();
-        ctx.lineTo(XDraw.lpx(x), XDraw.lpx(y));
+        ctx.lineTo(XDraw.round(x) - 0.5,
+          XDraw.round(y) - 0.5);
       }
       ctx.stroke();
     }
@@ -216,10 +211,10 @@ class XDraw extends Offset {
     tx += this.getOffsetX();
     ty += this.getOffsetY();
     ctx.drawImage(el,
-      XDraw.rpx(sx), XDraw.rpx(sy),
-      XDraw.rpx(sw), XDraw.rpx(sh),
-      XDraw.rpx(tx), XDraw.rpx(ty),
-      XDraw.rpx(tw), XDraw.rpx(th));
+      XDraw.round(sx), XDraw.round(sy),
+      XDraw.round(sw), XDraw.round(sh),
+      XDraw.round(tx), XDraw.round(ty),
+      XDraw.round(tw), XDraw.round(th));
     return this;
   }
 

@@ -5,7 +5,7 @@ class Scale {
   constructor(table) {
     this.table = table;
     this.value = 1;
-    this.checkFloat = false;
+    this.checkFloat = true;
   }
 
   useFloat() {

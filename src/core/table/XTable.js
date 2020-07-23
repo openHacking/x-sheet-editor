@@ -60,7 +60,7 @@ const VIEW_MODE = {
   BOUND_OUT: Symbol('bound_out'),
 };
 
-// =============================== 表格滚动视图 =================================
+// =============================== 表格滚动视图 ================================
 
 class XTableScrollView {
 
@@ -259,7 +259,7 @@ class XTableScrollView {
 
 }
 
-// =============================== 表格绘制抽象类 ===============================
+// =============================== 表格绘制抽象类 ==============================
 
 class XTableUI {
 
@@ -1409,7 +1409,7 @@ class XTableTopIndexUI extends XTableIndexUI {
 
 }
 
-// ============================== 表格动态内容绘制 ==============================
+// ============================== 表格动态内容绘制 =============================
 
 class XTableContent extends XTableContentUI {
 
@@ -2256,8 +2256,8 @@ class XTable extends Widget {
     // 表格设置
     this.settings = Utils.mergeDeep({
       index: {
-        height: 30 * XDraw.dpr(),
-        width: 50 * XDraw.dpr(),
+        height: XDraw.rpx(30),
+        width: XDraw.rpx(50),
         gridColor: '#c4c4c4',
         size: 9,
         color: '#000000',
@@ -2271,11 +2271,11 @@ class XTable extends Widget {
       data: [],
       rows: {
         len: 1000,
-        height: 33 * XDraw.dpr(),
+        height: XDraw.rpx(33),
       },
       cols: {
         len: 26,
-        width: 130 * XDraw.dpr(),
+        width: XDraw.rpx(130),
       },
       merge: [],
       fixed: {
@@ -2550,7 +2550,8 @@ class XTable extends Widget {
     if (Utils.isNumber(this.canvasHeightCache)) {
       return this.canvasHeightCache;
     }
-    const height = this.canvas.box().height;
+    const { canvas } = this;
+    const height = XDraw.rpx(canvas.box().height);
     this.canvasHeightCache = height;
     return height;
   }
@@ -2563,7 +2564,8 @@ class XTable extends Widget {
     if (Utils.isNumber(this.canvasWidthCache)) {
       return this.canvasWidthCache;
     }
-    const width = this.canvas.box().width;
+    const { canvas } = this;
+    const width = XDraw.rpx(canvas.box().width);
     this.canvasWidthCache = width;
     return width;
   }
@@ -2575,11 +2577,11 @@ class XTable extends Widget {
     const {
       draw, xTableScrollView,
     } = this;
+    xTableScrollView.undo();
     this.visualWidthCache = null;
     this.visualHeightCache = null;
     this.canvasWidthCache = null;
     this.canvasHeightCache = null;
-    xTableScrollView.undo();
     const [width, height] = [this.visualWidth(), this.visualHeight()];
     draw.resize(width, height);
     this.render();
