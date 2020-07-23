@@ -5,8 +5,16 @@ import { ALIGN, TEXT_DIRECTION, TEXT_WRAP } from '../../../canvas/Font';
 
 class LineHandle {
 
-  constructor(table) {
-    this.table = table;
+  constructor({
+    merges,
+    rows,
+    cols,
+    cells,
+  }) {
+    this.merges = merges;
+    this.rows = rows;
+    this.cols = cols;
+    this.cells = cells;
   }
 
   /**
@@ -20,8 +28,7 @@ class LineHandle {
    * @param ri
    */
   vLineRightBoundOut(ci, ri) {
-    const { table } = this;
-    const { cells, cols, merges } = table;
+    const { cells, cols, merges } = this;
     const { len } = cols;
     const master = cells.getMergeCellOrCell(ri, ci);
     const next = cells.getMergeCellOrCell(ri, ci + 1);
@@ -174,8 +181,7 @@ class LineHandle {
    * @param ri
    */
   vLineLeftBoundOut(ci, ri) {
-    const { table } = this;
-    const { cells, cols, merges } = table;
+    const { cells, cols, merges } = this;
     const { len } = cols;
     const master = cells.getMergeCellOrCell(ri, ci);
     const last = cells.getMergeCellOrCell(ri, ci - 1);
@@ -327,8 +333,7 @@ class LineHandle {
     bx = 0,
     by = 0,
   }) {
-    const { table } = this;
-    const { cols, rows } = table;
+    const { cols, rows } = this;
     const {
       sri, eri, sci, eci,
     } = viewRange;
@@ -362,8 +367,7 @@ class LineHandle {
     bx = 0,
     by = 0,
   }) {
-    const { table } = this;
-    const { cols, rows } = table;
+    const { cols, rows } = this;
     const {
       sri, eri, sci, eci,
     } = viewRange;
@@ -390,8 +394,7 @@ class LineHandle {
   viewRangeAndMergeCoincideView({
     viewRange = new RectRange(0, 0, 0, 0),
   }) {
-    const { table } = this;
-    const { merges, cols, rows } = table;
+    const { merges, cols, rows } = this;
     const filter = [];
     const result = [];
     this.hEach({
@@ -414,8 +417,7 @@ class LineHandle {
   coincideViewBrink({
     coincideView,
   }) {
-    const { table } = this;
-    const { cols, rows } = table;
+    const { cols, rows } = this;
     const result = [];
     for (let i = 0; i < coincideView.length; i += 1) {
       const { view, rect, merge } = coincideView[i];

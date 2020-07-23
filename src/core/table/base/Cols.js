@@ -1,38 +1,37 @@
 import { Utils } from '../../../utils/Utils';
+import { ScaleAdapter } from './Scale';
 
 class Cols {
 
-  constructor(table, {
-    data = [],
+  constructor({
+    scaleAdapter = new ScaleAdapter(),
     len = 10,
-    width,
+    data = [],
+    width = 110,
   }) {
-    this.table = table;
-    this._ = [];
-    this.minWidth = 5;
-    this.width = Utils.minIf(width, this.minWidth);
+    this.scaleAdapter = scaleAdapter;
     this.len = len;
-    this.cacheTotalWidth = null;
-    this.setData(data);
+    this.data = data;
+    this.min = 5;
+    this.width = Utils.minIf(width, this.min);
   }
 
   getOrNew(ci) {
-    this._[ci] = this._[ci] || {};
-    return this._[ci];
+    this.data[ci] = this.data[ci] || {};
+    return this.data[ci];
   }
 
   getWidth(i) {
-    const { table } = this;
-    const { scale } = table;
-    const col = this._[i];
+    const { scaleAdapter } = this;
+    const col = this.data[i];
     if (col && col.width) {
-      return scale.goto(col.width);
+      return scaleAdapter.goto(col.width);
     }
-    return scale.goto(this.width);
+    return scaleAdapter.goto(this.width);
   }
 
   get(ci) {
-    return this._[ci];
+    return this.data[ci];
   }
 
   eachWidth(ci, ei, cb, sx = 0) {
@@ -46,33 +45,24 @@ class Cols {
 
   setWidth(i, width) {
     const col = this.getOrNew(i);
-    const { table } = this;
-    const { scale } = table;
-    col.width = scale.back(Utils.minIf(width, this.minWidth));
-    this.cacheTotalWidth = null;
-  }
-
-  sectionSumWidth(sci, eci) {
-    return Utils.rangeSum(sci, eci + 1, i => this.getWidth(i));
+    const { scaleAdapter } = this;
+    col.width = scaleAdapter.goto(Utils.minIf(width, this.min));
   }
 
   rectRangeSumWidth(rectRange) {
     return this.sectionSumWidth(rectRange.sci, rectRange.eci);
   }
 
-  totalWidth() {
-    if (Utils.isNumber(this.cacheTotalWidth)) {
-      this.cacheTotalWidth = Utils.rangeSum(0, this.len, i => this.getWidth(i));
-    }
-    return this.cacheTotalWidth;
+  sectionSumWidth(sci, eci) {
+    return Utils.rangeSum(sci, eci + 1, i => this.getWidth(i));
   }
 
   getData() {
-    return this._;
+    return this.data;
   }
 
   setData(data) {
-    this._ = data;
+    this.data = data;
   }
 }
 

@@ -8,15 +8,18 @@ class Merges {
 
   /**
    * Merges
-   * @param table
    * @param merges
+   * @param cols
+   * @param rows
    */
-  constructor(table, { merges = [] }) {
-    const {
-      rows, cols,
-    } = table;
-    this.table = table;
-    this._ = merges.map(merge => RectRange.valueOf(merge));
+  constructor({
+    merges = [],
+    cols,
+    rows,
+  }) {
+    this.rows = rows;
+    this.cols = cols;
+    this.data = merges.map(merge => RectRange.valueOf(merge));
     this.index = new Array(rows.len * cols.len);
   }
 
@@ -26,12 +29,12 @@ class Merges {
    * @param cb
    */
   getIncludes(rectRange, cb) {
-    const { index, _ } = this;
+    const { index, data } = this;
     rectRange.each((ri, ci) => {
       const offset = this.getOffset(ri, ci);
       const no = index[offset];
       if (Utils.isNotUnDef(no)) {
-        cb(_[no]);
+        cb(data[no]);
       }
     });
   }
@@ -43,8 +46,7 @@ class Merges {
    * @return {*}
    */
   getOffset(ri, ci) {
-    const { table } = this;
-    const { cols } = table;
+    const { cols } = this;
     const { len } = cols;
     return (ri * len) + ci;
   }
@@ -56,13 +58,13 @@ class Merges {
    * @return {null|RectRange}
    */
   getFirstIncludes(ri, ci) {
-    const { index, _ } = this;
+    const { index, data } = this;
     const offset = this.getOffset(ri, ci);
     const no = index[offset];
     if (Utils.isUnDef(no)) {
       return null;
     }
-    const item = _[no];
+    const item = data[no];
     if (Utils.isUnDef(item)) {
       return null;
     }
@@ -75,14 +77,14 @@ class Merges {
    * @param checked
    */
   add(rectRange, checked = true) {
-    const { index, _ } = this;
+    const { index, data } = this;
     // 删除旧的关联关系
     if (checked) {
       this.getIncludes(rectRange, old => this.delete(old));
     }
     // 添加新的单元格
-    const len = _.length;
-    _.push(rectRange);
+    const len = data.length;
+    data.push(rectRange);
     // 添加新的关联关系
     rectRange.each((ri, ci) => {
       const offset = this.getOffset(ri, ci);
@@ -95,7 +97,7 @@ class Merges {
    * @param rectRange
    */
   delete(rectRange) {
-    const { index, _ } = this;
+    const { index, data } = this;
     // 删除合并单元格
     const { sri, sci } = rectRange;
     const offset = this.getOffset(sri, sci);
@@ -103,7 +105,7 @@ class Merges {
     if (Utils.isUnDef(no)) {
       return;
     }
-    _.splice(no, 1);
+    data.splice(no, 1);
     // 删除旧单元格索引
     rectRange.each((ri, ci) => {
       const offset = this.getOffset(ri, ci);
@@ -121,8 +123,8 @@ class Merges {
   union(cellRange) {
     let cr = cellRange;
     const filter = [];
-    for (let i = 0; i < this._.length; i += 1) {
-      const item = this._[i];
+    for (let i = 0; i < this.data.length; i += 1) {
+      const item = this.data[i];
       if (filter.find(e => e === item)) {
         continue;
       }
@@ -139,9 +141,9 @@ class Merges {
    * 同步索引
    */
   sync(offset = 0) {
-    const { index, _ } = this;
-    for (let i = offset; i < _.length; i += 1) {
-      const rectRange = _[i];
+    const { index, data } = this;
+    for (let i = offset; i < data.length; i += 1) {
+      const rectRange = data[i];
       rectRange.each((ri, ci) => {
         const offset = this.getOffset(ri, ci);
         index[offset] = i;
@@ -154,7 +156,7 @@ class Merges {
    * @return {RectRange[]}
    */
   getData() {
-    return this._;
+    return this.data;
   }
 
   /**
@@ -162,7 +164,7 @@ class Merges {
    * @param data
    */
   setData(data) {
-    this._ = data;
+    this.data = data;
   }
 
 }

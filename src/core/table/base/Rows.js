@@ -1,46 +1,37 @@
 import { Utils } from '../../../utils/Utils';
+import { ScaleAdapter } from './Scale';
 
 class Rows {
 
-  constructor(table, {
-    data = [],
+  constructor({
+    scaleAdapter = new ScaleAdapter(),
     len = 10,
+    data = [],
     height,
   }) {
-    this.table = table;
-    this._ = [];
-    this.minHeight = 5;
-    this.height = Utils.minIf(height, this.minHeight);
+    this.scaleAdapter = scaleAdapter;
     this.len = len;
-    this.cacheTotalHeight = null;
-    this.setData(data);
-  }
-
-  get(ri) {
-    return this._[ri];
+    this.data = data;
+    this.min = 5;
+    this.height = Utils.minIf(height, this.min);
   }
 
   getOrNew(ri) {
-    this._[ri] = this._[ri] || {};
-    return this._[ri];
+    this.data[ri] = this.data[ri] || {};
+    return this.data[ri];
   }
 
   getHeight(ri) {
-    const { table } = this;
-    const { scale } = table;
+    const { scaleAdapter } = this;
     const row = this.get(ri);
     if (row && row.height) {
-      return scale.goto(row.height);
+      return scaleAdapter.goto(row.height);
     }
-    return scale.goto(this.height);
+    return scaleAdapter.goto(this.height);
   }
 
-  setHeight(ri, height) {
-    const row = this.getOrNew(ri);
-    const { table } = this;
-    const { scale } = table;
-    row.height = scale.back(Utils.minIf(height, this.minHeight));
-    this.cacheTotalHeight = null;
+  get(ri) {
+    return this.data[ri];
   }
 
   eachHeight(ri, ei, cb, sy = 0) {
@@ -52,28 +43,26 @@ class Rows {
     }
   }
 
-  sectionSumHeight(sri, eri) {
-    return Utils.rangeSum(sri, eri + 1, i => this.getHeight(i));
+  setHeight(ri, height) {
+    const row = this.getOrNew(ri);
+    const { scaleAdapter } = this;
+    row.height = scaleAdapter.back(Utils.minIf(height, this.min));
   }
 
   rectRangeSumHeight(rectRange) {
     return this.sectionSumHeight(rectRange.sri, rectRange.eri);
   }
 
-  totalHeight() {
-    if (Utils.isNumber(this.cacheTotalHeight)) {
-      return this.cacheTotalHeight;
-    }
-    this.cacheTotalHeight = Utils.rangeSum(0, this.len, i => this.getHeight(i));
-    return this.cacheTotalHeight;
+  sectionSumHeight(sri, eri) {
+    return Utils.rangeSum(sri, eri + 1, i => this.getHeight(i));
   }
 
   getData() {
-    return this._;
+    return this.data;
   }
 
   setData(data) {
-    this._ = data;
+    this.data = data;
   }
 }
 

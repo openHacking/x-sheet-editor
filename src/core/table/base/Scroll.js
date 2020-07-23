@@ -9,14 +9,17 @@ const SCROLL_TYPE = {
 
 class Scroll {
 
-  constructor(table) {
-    this.table = table;
+  constructor({
+    fixed,
+  }) {
+    this.ri = fixed.fxTop + 1;
+    this.ci = fixed.fxLeft + 1;
     this.x = 0;
     this.y = 0;
-    this.ri = table.fixed.fxTop + 1;
-    this.ci = table.fixed.fxLeft + 1;
     this.type = SCROLL_TYPE.UN;
   }
 }
 
-export { Scroll, SCROLL_TYPE };
+export {
+  Scroll, SCROLL_TYPE,
+};

@@ -1,4 +1,5 @@
 import { Font } from '../../../canvas/Font';
+import { ScaleAdapter } from './Scale';
 
 class TextBuilder {
 
@@ -33,14 +34,14 @@ class TextBuilder {
 
   build() {
     const {
-      text, rect, attr, overflow, dw, table,
+      text, rect, attr, overflow, dw,
     } = this;
-    const { scale } = table;
+    const { scaleAdapter } = this;
     const font = new Font({
       dw, text, rect, attr, overflow,
     });
-    font.setPadding(scale.goto(attr.padding));
-    font.setSize(scale.goto(attr.size));
+    font.setPadding(scaleAdapter.goto(attr.padding));
+    font.setSize(scaleAdapter.goto(attr.size));
     return font;
   }
 
@@ -48,8 +49,10 @@ class TextBuilder {
 
 class Text {
 
-  constructor(table) {
-    this.table = table;
+  constructor({
+    scaleAdapter = new ScaleAdapter(),
+  }) {
+    this.scaleAdapter = scaleAdapter;
   }
 
   getBuilder() {

@@ -5,14 +5,24 @@
 
 class GridLineHandle {
 
-  constructor(table, options) {
-    this.table = table;
-    const { cols, rows } = table;
-    this.options = Object.assign({
-      getWidth: col => cols.getWidth(col),
-      getHeight: row => rows.getHeight(row),
-      checked: true,
-    }, options);
+  constructor({
+    checked = true,
+    merges,
+    rows,
+    cols,
+    cells,
+    lineHandle,
+    getWidth = col => cols.getWidth(col),
+    getHeight = row => rows.getHeight(row),
+  }) {
+    this.checked = checked;
+    this.merges = merges;
+    this.rows = rows;
+    this.cols = cols;
+    this.cells = cells;
+    this.lineHandle = lineHandle;
+    this.getWidth = getWidth;
+    this.getHeight = getHeight;
   }
 
   /**
@@ -22,8 +32,7 @@ class GridLineHandle {
    * @returns {boolean}
    */
   vLineBorderChecked(ci, ri) {
-    const { table } = this;
-    const { cells } = table;
+    const { cells } = this;
     const cell = cells.getMergeCellOrCell(ri, ci);
     const nextCell = cells.getMergeCellOrCell(ri, ci + 1);
     // 跳过绘制边框的单元格
@@ -46,8 +55,7 @@ class GridLineHandle {
    * @returns {boolean}
    */
   hLineBorderChecked(ri, ci) {
-    const { table } = this;
-    const { cells } = table;
+    const { cells } = this;
     const cell = cells.getMergeCellOrCell(ri, ci);
     const nextCell = cells.getMergeCellOrCell(ri + 1, ci);
     // 跳过绘制边框的单元格
@@ -72,8 +80,7 @@ class GridLineHandle {
    * @returns {[]}
    */
   gridHLine(viewRange, bx = 0, by = 0, filter = () => true) {
-    const { table, options } = this;
-    const { lineHandle } = table;
+    const { lineHandle, getHeight, getWidth } = this;
     const line = [];
     let sx;
     let sy;
@@ -83,7 +90,7 @@ class GridLineHandle {
     lineHandle.hEach({
       viewRange,
       newRow: (row, y) => {
-        const height = options.getHeight(row);
+        const height = getHeight(row);
         sx = bx;
         sy = by + y + height;
         ex = sx;
@@ -96,13 +103,13 @@ class GridLineHandle {
           breakpoint = false;
           line.push({ sx, sy, ex, ey });
         }
-        const width = options.getWidth(col);
+        const width = getWidth(col);
         sx = ex + width;
         ex = sx;
       },
       handle: (row, col) => {
         breakpoint = true;
-        const width = options.getWidth(col);
+        const width = getWidth(col);
         ex += width;
       },
       endRow: () => {
@@ -123,8 +130,7 @@ class GridLineHandle {
    * @returns {[]}
    */
   gridVLine(viewRange, bx = 0, by = 0, filter = () => true) {
-    const { table, options } = this;
-    const { lineHandle } = table;
+    const { lineHandle, getHeight, getWidth } = this;
     const line = [];
     let sx;
     let sy;
@@ -134,7 +140,7 @@ class GridLineHandle {
     lineHandle.vEach({
       viewRange,
       newCol: (col, x) => {
-        const width = options.getWidth(col);
+        const width = getWidth(col);
         sx = bx + x + width;
         sy = by;
         ex = sx;
@@ -147,13 +153,13 @@ class GridLineHandle {
           breakpoint = false;
           line.push({ sx, sy, ex, ey });
         }
-        const height = options.getHeight(row);
+        const height = getHeight(row);
         sy = ey + height;
         ey = sy;
       },
       handle: (col, row) => {
         breakpoint = true;
-        const height = options.getHeight(row);
+        const height = getHeight(row);
         ey += height;
       },
       endCol: () => {
@@ -172,9 +178,8 @@ class GridLineHandle {
    * @returns {*[]}
    */
   hLine(viewRange) {
-    const { table } = this;
-    const { merges } = table;
-    if (this.options.checked) {
+    const { merges, checked } = this;
+    if (checked) {
       return this.gridHLine(viewRange, 0, 0, (ri, ci) => {
         const merge = merges.getFirstIncludes(ri, ci);
         if (merge) {
@@ -193,9 +198,8 @@ class GridLineHandle {
    * @returns {*[]}
    */
   vLine(viewRange) {
-    const { table } = this;
-    const { merges, lineHandle } = table;
-    if (this.options.checked) {
+    const { merges, lineHandle, checked } = this;
+    if (checked) {
       return this.gridVLine(viewRange, 0, 0, (ci, ri) => {
         const merge = merges.getFirstIncludes(ri, ci);
         if (merge) {
@@ -218,7 +222,8 @@ class GridLineHandle {
    */
   hMergeLine(mergesBrink) {
     let result = [];
-    if (this.options.checked) {
+    const { checked } = this;
+    if (checked) {
       for (let i = 0; i < mergesBrink.length; i += 1) {
         const brink = mergesBrink[i];
         const { bottom } = brink;
@@ -250,7 +255,8 @@ class GridLineHandle {
    */
   vMergeLine(mergesBrink) {
     let result = [];
-    if (this.options.checked) {
+    const { checked } = this;
+    if (checked) {
       for (let i = 0; i < mergesBrink.length; i += 1) {
         const brink = mergesBrink[i];
         const { right } = brink;

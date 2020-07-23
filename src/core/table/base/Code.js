@@ -1,6 +1,9 @@
+import { ScaleAdapter } from './Scale';
+
 class Code {
 
-  constructor(table, {
+  constructor({
+    scaleAdapter = new ScaleAdapter(),
     height = 33,
     width = 50,
     background = '#f6f7fa',
@@ -8,7 +11,7 @@ class Code {
     size = 11,
     gridColor = '#e8e8e8',
   }) {
-    this.table = table;
+    this.scaleAdapter = scaleAdapter;
     this.height = height;
     this.width = width;
     this.background = background;
@@ -22,35 +25,32 @@ class Code {
     return gridColor;
   }
 
-  getBackground() {
-    const { background } = this;
-    return background;
-  }
-
   getColor() {
     const { color } = this;
     return color;
   }
 
   getSize() {
-    const { table } = this;
-    const { scale } = table;
+    const { scaleAdapter } = this;
     const { size } = this;
-    return scale.goto(size);
+    return scaleAdapter.goto(size);
+  }
+
+  getBackground() {
+    const { background } = this;
+    return background;
   }
 
   getHeight() {
-    const { table } = this;
-    const { scale } = table;
+    const { scaleAdapter } = this;
     const { height } = this;
-    return scale.goto(height);
+    return scaleAdapter.goto(height);
   }
 
   getWidth() {
-    const { table } = this;
-    const { scale } = table;
+    const { scaleAdapter } = this;
     const { width } = this;
-    return scale.goto(width);
+    return scaleAdapter.goto(width);
   }
 
 }

@@ -5,15 +5,25 @@
  */
 class BorderLineHandle {
 
-  constructor(table) {
-    this.table = table;
+  constructor({
+    merges,
+    rows,
+    cols,
+    cells,
+    lineHandle,
+  }) {
+    this.merges = merges;
+    this.rows = rows;
+    this.cols = cols;
+    this.cells = cells;
+    this.lineHandle = lineHandle;
     this.drawOptimization = true;
     this.borderOptimization = true;
   }
 
   borderHTLine(viewRange, bx = 0, by = 0, filter = () => true) {
-    const { table, drawOptimization } = this;
-    const { lineHandle, cols, cells } = table;
+    const { drawOptimization } = this;
+    const { lineHandle, cols, cells } = this;
     const line = [];
     let sx;
     let sy;
@@ -70,8 +80,8 @@ class BorderLineHandle {
   }
 
   borderHBLine(viewRange, bx = 0, by = 0, filter = () => true) {
-    const { table, drawOptimization } = this;
-    const { lineHandle, cols, rows, cells } = table;
+    const { drawOptimization } = this;
+    const { lineHandle, cols, rows, cells } = this;
     const line = [];
     let sx;
     let sy;
@@ -129,8 +139,8 @@ class BorderLineHandle {
   }
 
   borderVLLine(viewRange, bx = 0, by = 0, filter = () => true) {
-    const { table, drawOptimization } = this;
-    const { lineHandle, rows, cells } = table;
+    const { drawOptimization } = this;
+    const { lineHandle, rows, cells } = this;
     const line = [];
     let sx;
     let sy;
@@ -187,8 +197,8 @@ class BorderLineHandle {
   }
 
   borderVRLine(viewRange, bx = 0, by = 0, filter = () => true) {
-    const { table, drawOptimization } = this;
-    const { lineHandle, rows, cols, cells } = table;
+    const { drawOptimization } = this;
+    const { lineHandle, rows, cols, cells } = this;
     const line = [];
     let sx;
     let sy;
@@ -246,8 +256,8 @@ class BorderLineHandle {
   }
 
   htLine(viewRange) {
-    const { table, borderOptimization } = this;
-    const { merges, cells } = table;
+    const { borderOptimization } = this;
+    const { merges, cells } = this;
     return this.borderHTLine(viewRange, 0, 0, (ri, ci) => {
       const merge = merges.getFirstIncludes(ri, ci);
       const cell = cells.getMergeCellOrCell(ri, ci);
@@ -270,8 +280,8 @@ class BorderLineHandle {
   }
 
   hbLine(viewRange) {
-    const { table, borderOptimization } = this;
-    const { merges, cells } = table;
+    const { borderOptimization } = this;
+    const { merges, cells } = this;
     return this.borderHBLine(viewRange, 0, 0, (ri, ci) => {
       const merge = merges.getFirstIncludes(ri, ci);
       const cell = cells.getMergeCellOrCell(ri, ci);
@@ -294,8 +304,8 @@ class BorderLineHandle {
   }
 
   vlLine(viewRange) {
-    const { table, borderOptimization } = this;
-    const { merges, cells, lineHandle } = table;
+    const { borderOptimization } = this;
+    const { merges, cells, lineHandle } = this;
     return this.borderVLLine(viewRange, 0, 0, (ci, ri) => {
       const merge = merges.getFirstIncludes(ri, ci);
       const cell = cells.getMergeCellOrCell(ri, ci);
@@ -329,8 +339,8 @@ class BorderLineHandle {
   }
 
   vrLine(viewRange) {
-    const { table, borderOptimization } = this;
-    const { merges, cells, lineHandle } = table;
+    const { borderOptimization } = this;
+    const { merges, cells, lineHandle } = this;
     return this.borderVRLine(viewRange, 0, 0, (ci, ri) => {
       const merge = merges.getFirstIncludes(ri, ci);
       const cell = cells.getMergeCellOrCell(ri, ci);
@@ -364,8 +374,8 @@ class BorderLineHandle {
   }
 
   htMergeLine(mergesBrink) {
-    const { table, borderOptimization } = this;
-    const { cells } = table;
+    const { borderOptimization } = this;
+    const { cells } = this;
     let result = [];
     for (let i = 0; i < mergesBrink.length; i += 1) {
       const brink = mergesBrink[i];
@@ -395,8 +405,8 @@ class BorderLineHandle {
   }
 
   hbMergeLine(mergesBrink) {
-    const { table, borderOptimization } = this;
-    const { cells } = table;
+    const { borderOptimization } = this;
+    const { cells } = this;
     let result = [];
     for (let i = 0; i < mergesBrink.length; i += 1) {
       const brink = mergesBrink[i];
@@ -426,8 +436,8 @@ class BorderLineHandle {
   }
 
   vlMergeLine(mergesBrink) {
-    const { table, borderOptimization } = this;
-    const { cells } = table;
+    const { borderOptimization } = this;
+    const { cells } = this;
     let result = [];
     for (let i = 0; i < mergesBrink.length; i += 1) {
       const brink = mergesBrink[i];
@@ -457,8 +467,8 @@ class BorderLineHandle {
   }
 
   vrMergeLine(mergesBrink) {
-    const { table, borderOptimization } = this;
-    const { cells } = table;
+    const { borderOptimization } = this;
+    const { cells } = this;
     let result = [];
     for (let i = 0; i < mergesBrink.length; i += 1) {
       const brink = mergesBrink[i];

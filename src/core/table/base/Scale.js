@@ -2,8 +2,7 @@ import { XDraw } from '../../../canvas/XDraw';
 
 class Scale {
 
-  constructor(table) {
-    this.table = table;
+  constructor() {
     this.value = 1;
     this.enableFloat = false;
   }
@@ -30,6 +29,18 @@ class Scale {
 
 }
 
+class ScaleAdapter {
+
+  constructor({
+    goto = v => v,
+    back = v => v,
+  } = {}) {
+    this.goto = goto;
+    this.back = back;
+  }
+
+}
+
 export {
-  Scale,
+  Scale, ScaleAdapter,
 };

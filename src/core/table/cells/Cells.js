@@ -10,13 +10,18 @@ class Cells {
 
   /**
    * Cells
-   * @param table
+   * @param merges
    * @param cols
    * @param rows
    * @param data
    */
-  constructor(table, { cols, rows, data = [] }) {
-    this.table = table;
+  constructor({
+    merges,
+    cols,
+    rows,
+    data = [],
+  }) {
+    this.merges = merges;
     this.cols = cols;
     this.rows = rows;
     this.data = data;
@@ -29,8 +34,7 @@ class Cells {
    * @returns {number}
    */
   getCellBoundOutSize(ri, ci) {
-    const { table } = this;
-    const { cols } = table;
+    const { cols } = this;
     const cell = this.getCell(ri, ci);
     if (cell) {
       const colWidth = cols.getWidth(ci);
@@ -81,8 +85,7 @@ class Cells {
    * @return {null}
    */
   getMergeCellMasterOrCell(ri, ci) {
-    const { table } = this;
-    const { merges } = table;
+    const { merges } = this;
     const merge = merges.getFirstIncludes(ri, ci);
     if (merge) {
       if (merge.sri === ri && merge.sci === ci) {
@@ -101,8 +104,7 @@ class Cells {
    * @param ci
    */
   getMergeCellOrCell(ri, ci) {
-    const { table } = this;
-    const { merges } = table;
+    const { merges } = this;
     const merge = merges.getFirstIncludes(ri, ci);
     if (merge) {
       return this.getCell(merge.sri, merge.sci);
