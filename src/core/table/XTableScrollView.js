@@ -42,27 +42,77 @@ class XTableScrollView {
 
   /**
    * XTableScrollView
+   * @param scroll
+   * @param rows
+   * @param cols
+   * @param getHeight
+   * @param getWidth
+   */
+  constructor({
+    scroll,
+    rows,
+    cols,
+    getHeight = () => 0,
+    getWidth = () => 0,
+  }) {
+    this.scroll = scroll;
+    this.rows = rows;
+    this.cols = cols;
+    this.getHeight = getHeight;
+    this.getWidth = getWidth;
+  }
+
+  /**
+   * 当前视图滚动区域
+   * @returns {RectRange}
+   */
+  getScrollView() {
+    const { rows, cols, scroll, xContent } = this;
+    let [width, height] = [0, 0];
+    const { ri, ci } = scroll;
+    let [eri, eci] = [rows.len, cols.len];
+    for (let i = ri; i < rows.len; i += 1) {
+      height += rows.getHeight(i);
+      eri = i;
+      if (height > xContent.getHeight()) break;
+    }
+    for (let j = ci; j < cols.len; j += 1) {
+      width += cols.getWidth(j);
+      eci = j;
+      if (width > xContent.getWidth()) break;
+    }
+    return new RectRange(ri, ci, eri, eci);
+  }
+
+}
+
+/**
+ * TableAreaView
+ */
+class XTableAreaView {
+
+  /**
+   * TableAreaView
+   * @param xTableScrollView
    * @param rows
    * @param cols
    * @param scroll
-   * @param xContent
    */
   constructor({
+    xTableScrollView,
     rows,
     cols,
     scroll,
-    xContent,
   }) {
-    this.xContent = xContent;
+    this.xTableScrollView = xTableScrollView;
+    this.scroll = scroll;
     this.rows = rows;
     this.cols = cols;
-    this.scroll = scroll;
-    // 上一次滚动的视图
+
     this.lastScrollView = null;
-    // 滚动视图和内容视图
-    this.scrollEnterView = null;
     this.scrollView = null;
-    // 滚动进入的视图和离开的视图
+
+    this.scrollEnterView = null;
     this.enterView = null;
     this.leaveView = null;
   }
@@ -85,8 +135,8 @@ class XTableScrollView {
    * 重置变量区
    */
   reset() {
-    this.scrollEnterView = null;
     this.scrollView = null;
+    this.scrollEnterView = null;
     this.enterView = null;
     this.leaveView = null;
   }
@@ -110,23 +160,11 @@ class XTableScrollView {
     if (Utils.isNotUnDef(this.scrollView)) {
       return this.scrollView.clone();
     }
-    const {
-      rows, cols, scroll, xContent,
-    } = this;
-    let [width, height] = [0, 0];
-    const { ri, ci } = scroll;
-    let [eri, eci] = [rows.len, cols.len];
-    for (let i = ri; i < rows.len; i += 1) {
-      height += rows.getHeight(i);
-      eri = i;
-      if (height > xContent.getHeight()) break;
-    }
-    for (let j = ci; j < cols.len; j += 1) {
-      width += cols.getWidth(j);
-      eci = j;
-      if (width > xContent.getWidth()) break;
-    }
-    const scrollView = new RectRange(ri, ci, eri, eci);
+    const { xTableScrollView } = this;
+    const { cols, rows } = this;
+    const scrollView = xTableScrollView.getScrollView();
+    scrollView.w = cols.rectRangeSumWidth(scrollView);
+    scrollView.h = rows.rectRangeSumHeight(scrollView);
     this.scrollView = scrollView;
     return scrollView.clone();
   }
@@ -139,11 +177,14 @@ class XTableScrollView {
     if (Utils.isNotUnDef(this.leaveView)) {
       return this.leaveView.clone();
     }
-    const { lastScrollView } = this;
-    const { scrollView } = this;
+    const lastScrollView = this.getLastScrollView();
+    const scrollView = this.getScrollView();
+    const { cols, rows } = this;
     if (lastScrollView) {
       const [leaveView] = lastScrollView.coincideDifference(scrollView);
       if (leaveView) {
+        leaveView.w = cols.rectRangeSumWidth(leaveView);
+        leaveView.h = rows.rectRangeSumHeight(leaveView);
         this.leaveView = leaveView;
         return leaveView.clone();
       }
@@ -159,11 +200,14 @@ class XTableScrollView {
     if (Utils.isNotUnDef(this.enterView)) {
       return this.enterView.clone();
     }
-    const { lastScrollView } = this;
-    const { scrollView } = this;
+    const lastScrollView = this.getLastScrollView();
+    const scrollView = this.getScrollView();
+    const { cols, rows } = this;
     if (lastScrollView) {
       const [enterView] = scrollView.coincideDifference(lastScrollView);
       if (enterView) {
+        enterView.w = cols.rectRangeSumWidth(enterView);
+        enterView.h = rows.rectRangeSumHeight(enterView);
         this.enterView = enterView;
         return enterView.clone();
       }
@@ -179,7 +223,8 @@ class XTableScrollView {
     if (Utils.isNotUnDef(this.scrollEnterView)) {
       return this.scrollEnterView.clone();
     }
-    const { scroll } = this;
+    const { table } = this;
+    const { cols, rows, scroll } = table;
     const enterView = this.getEnterView();
     if (enterView) {
       switch (scroll.type) {
@@ -200,6 +245,8 @@ class XTableScrollView {
           break;
         }
       }
+      enterView.w = cols.rectRangeSumWidth(enterView);
+      enterView.h = rows.rectRangeSumHeight(enterView);
       this.scrollEnterView = enterView;
       return enterView.clone();
     }
@@ -209,5 +256,5 @@ class XTableScrollView {
 }
 
 export {
-  XTableScrollView, VIEW_MODE,
+  XTableScrollView, VIEW_MODE, XTableAreaView,
 };
