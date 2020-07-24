@@ -3,7 +3,7 @@ import { ScreenWidget } from '../../screen/ScreenWidget';
 import { AutoFill } from './AutoFill';
 import { EventBind } from '../../../../utils/EventBind';
 import { Constant } from '../../../../const/Constant';
-import { RectRange } from '../../base/RectRange';
+import { RectRange } from '../../tablebase/RectRange';
 import { Utils } from '../../../../utils/Utils';
 
 class ScreenAutoFill extends ScreenWidget {

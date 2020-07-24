@@ -1,6 +1,6 @@
 import { Utils } from '../../utils/Utils';
-import { SCROLL_TYPE } from './base/Scroll';
-import { RectRange } from './base/RectRange';
+import { SCROLL_TYPE } from './tablebase/Scroll';
+import { RectRange } from './tablebase/RectRange';
 
 const VIEW_MODE = {
   CHANGE_ADD: Symbol('change_add'),

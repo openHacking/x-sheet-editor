@@ -1,7 +1,7 @@
 import { Utils } from '../../utils/Utils';
-import { Rows } from './base/Rows';
-import { Cols } from './base/Cols';
-import { SCROLL_TYPE } from './base/Scroll';
+import { Rows } from './tablebase/Rows';
+import { Cols } from './tablebase/Cols';
+import { SCROLL_TYPE } from './tablebase/Scroll';
 import { Widget } from '../../lib/Widget';
 import { Constant, cssPrefix } from '../../const/Constant';
 import { XDraw } from '../../canvas/XDraw';
@@ -15,15 +15,15 @@ import { Rect } from '../../canvas/Rect';
 import { ALIGN, TEXT_WRAP } from '../../canvas/Font';
 import Format from './Format';
 import { Box } from '../../canvas/Box';
-import { RectRange } from './base/RectRange';
+import { RectRange } from './tablebase/RectRange';
 import { EventBind } from '../../utils/EventBind';
-import { Cells } from './cells/Cells';
-import { Scale, ScaleAdapter } from './base/Scale';
-import { Code } from './base/Code';
-import { Text } from './base/Text';
+import { Cells } from './tablecell/Cells';
+import { Scale, ScaleAdapter } from './tablebase/Scale';
+import { Code } from './tablebase/Code';
+import { Text } from './tablebase/Text';
 import { StyleCellsHelper } from './helper/StyleCellsHelper';
 import { TextCellsHelper } from './helper/TextCellsHelper';
-import { Merges } from './base/Merges';
+import { Merges } from './tablebase/Merges';
 import {
   XTableAreaView, XTableScrollView, VIEW_MODE,
 } from './XTableScrollView';
@@ -36,7 +36,7 @@ const RENDER_MODE = {
 
 // =============================== 表格绘制抽象类 ==============================
 
-class XTableDrawUI {
+class XTableUI {
 
   /**
      * XTableUI
@@ -253,7 +253,7 @@ class XTableDrawUI {
   }
 
   /**
-     * 绘制边框&网格的Y坐标
+     * 绘制边框 & 网格的Y坐标
      */
   getLineY() {
     if (Utils.isNumber(this.borderY)) {
@@ -540,9 +540,8 @@ class XTableDrawUI {
     const viewMode = this.getViewMode();
     if (viewMode === VIEW_MODE.CHANGE_ADD && renderMode === RENDER_MODE.SCROLL) {
       const {
-        draw, canvas,
+        draw, el,
       } = table;
-      const { el } = canvas;
       const mapWidth = this.getMapWidth();
       const mapHeight = this.getMapHeight();
       const ox = this.getMapOriginX();
@@ -624,7 +623,7 @@ class XTableDrawUI {
 
 }
 
-class XTableContentUI extends XTableDrawUI {
+class XTableContentUI extends XTableUI {
 
   /**
      * 绘制越界文本
@@ -994,7 +993,7 @@ class XTableContentUI extends XTableDrawUI {
 
 }
 
-class XTableIndexUI extends XTableDrawUI {
+class XTableIndexUI extends XTableUI {
 
   /**
      * 绘制文字
@@ -1184,7 +1183,7 @@ class XTableTopIndexUI extends XTableIndexUI {
 
 }
 
-// ============================== 表格冻结内容绘制 =============================
+// ============================ 表格冻结区域内容绘制 =============================
 
 class XTableFrozenLeftIndex extends XTableLeftIndexUI {
 
@@ -1477,7 +1476,7 @@ class XTableFrozenFullRect {
 
 }
 
-// ============================== 表格动态内容绘制 =============================
+// ============================ 表格动态区域内容绘制 =============================
 
 class XTableLeftIndex extends XTableLeftIndexUI {
 
@@ -2018,7 +2017,7 @@ class XTableTopIndex extends XTableTopIndexUI {
 
 }
 
-// ================================= XTable =================================
+// =============================== XTableImage ==============================
 
 class XTableImage extends Widget {
 
@@ -2035,7 +2034,7 @@ class XTableImage extends Widget {
     fixed,
     settings,
   }) {
-    super(`${cssPrefix}-table`);
+    super(`${cssPrefix}-table-canvas`, 'canvas');
     // 表格设置
     this.settings = Utils.mergeDeep({
       index: {
@@ -2121,10 +2120,8 @@ class XTableImage extends Widget {
       cols: this.cols,
       scale: this.scale,
     });
-    // canvas 画布
-    this.canvas = new Widget(`${cssPrefix}-table-canvas`, 'canvas');
     // 绘制资源
-    this.draw = new XDraw(this.canvas.el);
+    this.draw = new XDraw(this.el);
     this.indexGrid = new Grid(this.draw, {
       color: this.index.getGridColor(),
     });
@@ -2237,9 +2234,6 @@ class XTableImage extends Widget {
     this.xLeft = new XTableLeft(this);
     this.xTop = new XTableTop(this);
     this.xContent = new XTableContent(this);
-    // 表格大小
-    this.visualWidthCache = null;
-    this.visualHeightCache = null;
     // 画布大小
     this.canvasWidthCache = null;
     this.canvasHeightCache = null;
@@ -2323,32 +2317,6 @@ class XTableImage extends Widget {
   }
 
   /**
-     * 可视区域高度
-     * @return {*}
-     */
-  visualHeight() {
-    if (Utils.isNumber(this.visualHeightCache)) {
-      return this.visualHeightCache;
-    }
-    const height = this.box().height;
-    this.visualHeightCache = height;
-    return height;
-  }
-
-  /**
-     * 可视区域宽度
-     * @return {*}
-     */
-  visualWidth() {
-    if (Utils.isNumber(this.visualWidthCache)) {
-      return this.visualWidthCache;
-    }
-    const width = this.box().width;
-    this.visualWidthCache = width;
-    return width;
-  }
-
-  /**
      * 画布高度
      * @returns {null|*}
      */
@@ -2356,8 +2324,7 @@ class XTableImage extends Widget {
     if (Utils.isNumber(this.canvasHeightCache)) {
       return this.canvasHeightCache;
     }
-    const { canvas } = this;
-    const height = XDraw.rpx(canvas.box().height);
+    const height = XDraw.rpx(this.box().height);
     this.canvasHeightCache = height;
     return height;
   }
@@ -2370,8 +2337,7 @@ class XTableImage extends Widget {
     if (Utils.isNumber(this.canvasWidthCache)) {
       return this.canvasWidthCache;
     }
-    const { canvas } = this;
-    const width = XDraw.rpx(canvas.box().width);
+    const width = XDraw.rpx(this.box().width);
     this.canvasWidthCache = width;
     return width;
   }
@@ -2384,12 +2350,12 @@ class XTableImage extends Widget {
       draw, xTableAreaView,
     } = this;
     xTableAreaView.undo();
-    this.visualWidthCache = null;
-    this.visualHeightCache = null;
+    const box = this.parent().box();
     this.canvasWidthCache = null;
     this.canvasHeightCache = null;
-    const [width, height] = [this.visualWidth(), this.visualHeight()];
+    const [width, height] = [box.width, box.height];
     draw.resize(width, height);
+    this.reset();
     this.render();
   }
 
@@ -2406,6 +2372,7 @@ class XTableImage extends Widget {
    */
   scroll() {
     this.renderMode = RENDER_MODE.SCROLL;
+    this.reset();
     this.render();
     this.renderMode = RENDER_MODE.RENDER;
   }
@@ -2414,7 +2381,6 @@ class XTableImage extends Widget {
      * 渲染界面
      */
   render() {
-    this.reset();
     const { fixed } = this;
     const { xTableFrozenFullRect } = this;
     const { xLeftFrozenIndex } = this;

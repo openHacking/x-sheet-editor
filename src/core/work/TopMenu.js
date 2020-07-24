@@ -28,7 +28,7 @@ import { ElPopUp } from '../../component/elpopup/ElPopUp';
 import { LINE_TYPE } from '../../canvas/Line';
 import { Icon } from './tools/Icon';
 import { ALIGN, TEXT_WRAP, VERTICAL_ALIGN } from '../../canvas/Font';
-import { Cell } from '../table/cells/Cell';
+import { Cell } from '../table/tablecell/Cell';
 import { Utils } from '../../utils/Utils';
 import { Scale } from './tools/Scale';
 

@@ -3,7 +3,7 @@ import { cssPrefix, Constant } from '../../../const/Constant';
 import { SCREEN_SELECT_EVENT } from '../screenwiget/selector/ScreenSelector';
 import { EventBind } from '../../../utils/EventBind';
 
-import { RectRange } from '../base/RectRange';
+import { RectRange } from '../tablebase/RectRange';
 
 class XHeightLight extends Widget {
 
