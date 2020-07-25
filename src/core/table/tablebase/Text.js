@@ -3,8 +3,10 @@ import { ScaleAdapter } from './Scale';
 
 class TextBuilder {
 
-  constructor(table) {
-    this.table = table;
+  constructor({
+    scaleAdapter,
+  }) {
+    this.scaleAdapter = scaleAdapter;
     this.text = null;
     this.rect = null;
     this.attr = null;
@@ -56,7 +58,10 @@ class Text {
   }
 
   getBuilder() {
-    return new TextBuilder(this.table);
+    const { scaleAdapter } = this;
+    return new TextBuilder({
+      scaleAdapter,
+    });
   }
 
 }

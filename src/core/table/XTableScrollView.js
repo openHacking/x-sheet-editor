@@ -67,19 +67,21 @@ class XTableScrollView {
    * @returns {RectRange}
    */
   getScrollView() {
-    const { rows, cols, scroll, xContent } = this;
+    const {
+      rows, cols, scroll, getHeight, getWidth,
+    } = this;
     let [width, height] = [0, 0];
     const { ri, ci } = scroll;
     let [eri, eci] = [rows.len, cols.len];
     for (let i = ri; i < rows.len; i += 1) {
       height += rows.getHeight(i);
       eri = i;
-      if (height > xContent.getHeight()) break;
+      if (height > getHeight()) break;
     }
     for (let j = ci; j < cols.len; j += 1) {
       width += cols.getWidth(j);
       eci = j;
-      if (width > xContent.getWidth()) break;
+      if (width > getWidth()) break;
     }
     return new RectRange(ri, ci, eri, eci);
   }
@@ -223,8 +225,7 @@ class XTableAreaView {
     if (Utils.isNotUnDef(this.scrollEnterView)) {
       return this.scrollEnterView.clone();
     }
-    const { table } = this;
-    const { cols, rows, scroll } = table;
+    const { cols, rows, scroll } = this;
     const enterView = this.getEnterView();
     if (enterView) {
       switch (scroll.type) {

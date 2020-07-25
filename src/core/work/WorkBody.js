@@ -212,7 +212,7 @@ class WorkBody extends Widget {
       const { table } = sheet;
       this.updateScroll();
       table.resize();
-      this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
+      // this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
       this.activeIndex = index;
     }
   }
@@ -223,14 +223,6 @@ class WorkBody extends Widget {
         this.setActiveIndex(index);
       }
     });
-  }
-
-  setScale(value) {
-    const { sheetView } = this;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    table.setScale(value);
-    this.updateScroll();
   }
 
   toTemplate() {
@@ -268,6 +260,14 @@ class WorkBody extends Widget {
       const text = `window['${tab.name}'] = ${JSON.stringify(data)}`;
       download(text, `${tab.name}.js`, 'application/x-javascript');
     }
+  }
+
+  setScale(value) {
+    const { sheetView } = this;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    table.setScale(value);
+    this.updateScroll();
   }
 }
 

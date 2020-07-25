@@ -9,6 +9,7 @@ import { XTableAreaView, XTableScrollView } from './XTableScrollView';
 import { Widget } from '../../lib/Widget';
 import { Constant, cssPrefix } from '../../const/Constant';
 import { EventBind } from '../../utils/EventBind';
+import { Scale, ScaleAdapter } from './tablebase/Scale';
 
 class Dimensions {
 
@@ -246,40 +247,103 @@ class XTableTop extends Dimensions {
 
 class XTableContent extends Dimensions {
 
-  getX() {
-    super.getX();
-  }
-
-  getY() {
-    super.getY();
+  getWidth() {
+    if (Utils.isNumber(this.width)) {
+      return this.width;
+    }
+    const { table } = this;
+    const { index } = table;
+    const { xLeft } = table;
+    const width = table.visualWidth() - (index.getWidth() + xLeft.getWidth());
+    this.width = width;
+    return width;
   }
 
   getHeight() {
-    super.getHeight();
+    if (Utils.isNumber(this.height)) {
+      return this.height;
+    }
+    const { table } = this;
+    const { xTop } = table;
+    const { index } = table;
+    const height = table.visualHeight() - (index.getHeight() + xTop.getHeight());
+    this.height = height;
+    return height;
   }
 
-  getWidth() {
-    super.getWidth();
+  getX() {
+    if (Utils.isNumber(this.x)) {
+      return this.x;
+    }
+    const { table } = this;
+    const { xLeft } = table;
+    const { index } = table;
+    const x = index.getWidth() + xLeft.getWidth();
+    this.x = x;
+    return x;
+  }
+
+  getY() {
+    if (Utils.isNumber(this.y)) {
+      return this.y;
+    }
+    const { table } = this;
+    const { xTop } = table;
+    const { index } = table;
+    const y = index.getHeight() + xTop.getHeight();
+    this.y = y;
+    return y;
   }
 
 }
 
 class XTableLeft extends Dimensions {
 
-  getX() {
-    super.getX();
-  }
-
-  getY() {
-    super.getY();
+  getWidth() {
+    if (Utils.isNumber(this.width)) {
+      return this.width;
+    }
+    const { table } = this;
+    const { cols } = table;
+    const { fixed } = table;
+    const width = cols.sectionSumWidth(0, fixed.fxLeft);
+    this.width = width;
+    return width;
   }
 
   getHeight() {
-    super.getHeight();
+    if (Utils.isNumber(this.height)) {
+      return this.height;
+    }
+    const { table } = this;
+    const { xTop } = table;
+    const { index } = table;
+    const height = table.visualHeight() - (index.getHeight() + xTop.getHeight());
+    this.height = height;
+    return height;
   }
 
-  getWidth() {
-    super.getWidth();
+  getX() {
+    if (Utils.isNumber(this.x)) {
+      return this.x;
+    }
+    const { table } = this;
+    const { index } = table;
+    const x = index.getWidth();
+    this.x = x;
+    return x;
+  }
+
+  getY() {
+    if (Utils.isNumber(this.y)) {
+      return this.y;
+    }
+    const { table } = this;
+    const { xTop } = table;
+    const { index } = table;
+    const y = index.getHeight() + xTop.getHeight();
+    this.y = y;
+    return y;
   }
 
 }
@@ -328,16 +392,32 @@ class XTable extends Widget {
       },
     }, settings);
     // 表格数据配置
-    this.index = new Code(this.settings.index);
-    this.rows = new Rows(this.settings.rows);
-    this.cols = new Cols(this.settings.cols);
+    this.scale = new Scale();
+    this.index = new Code({
+      ...this.settings.index,
+      scaleAdapter: new ScaleAdapter({
+        goto: v => this.scale.goto(v),
+      }),
+    });
+    this.rows = new Rows({
+      ...this.settings.rows,
+      scaleAdapter: new ScaleAdapter({
+        goto: v => this.scale.goto(v),
+      }),
+    });
+    this.cols = new Cols({
+      ...this.settings.cols,
+      scaleAdapter: new ScaleAdapter({
+        goto: v => this.scale.goto(v),
+      }),
+    });
     // 冻结视图坐标
     this.fixed = new Fixed(this.settings.fixed);
     // 滚动视图的坐标
     this.scroll = new Scroll({
       fixed: this.fixed,
     });
-    // 表格滚动区域
+    // 表格滚动视图
     this.xTableScrollView = new XTableScrollView({
       scroll: this.scroll,
       rows: this.rows,
@@ -369,6 +449,22 @@ class XTable extends Widget {
     // 视口区域大小
     this.visualHeightCache = null;
     this.visualWidthCache = null;
+  }
+
+  /**
+   * 获取内容区域宽度
+   */
+  getContentWidth() {
+    const { xContent } = this;
+    return xContent.getWidth();
+  }
+
+  /**
+   * 获取内容区域高度
+   */
+  getContentHeight() {
+    const { xContent } = this;
+    return xContent.getHeight();
   }
 
   /**
@@ -404,50 +500,38 @@ class XTable extends Widget {
   }
 
   /**
-   * onAttach
+   * 固定区域宽度
    */
-  onAttach() {
-    const { xTable } = this;
-    this.attach(xTable);
+  getFixedWidth() {
+    const { xLeft } = this;
+    return xLeft.getWidth();
   }
 
   /**
-   * 重置变量区域
+   * 固定区域高度
+   * @returns {*}
    */
-  reset() {
-    const { xTableAreaView } = this;
-    xTableAreaView.reset();
+  getFixedHeight() {
+    const { xTop } = this;
+    return xTop.getHeight();
   }
 
   /**
-   * 事件绑定
+   * 索引栏宽度
+   * @returns {*}
    */
-  bind() {
-    const { xTableImage } = this;
-    EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
-      this.reset();
-      this.render();
-    });
-    EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      this.reset();
-      this.render();
-    });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      xTableImage.scroll();
-    });
+  getIndexWidth() {
+    const { index } = this;
+    return index.getWidth();
   }
 
   /**
-   * 可视区域高度
-   * @return {*}
+   * 索引栏高度
+   * @returns {*}
    */
-  visualHeight() {
-    if (Utils.isNumber(this.visualHeightCache)) {
-      return this.visualHeightCache;
-    }
-    const height = this.box().height;
-    this.visualHeightCache = height;
-    return height;
+  getIndexHeight() {
+    const { index } = this;
+    return index.getHeight();
   }
 
   /**
@@ -461,6 +545,19 @@ class XTable extends Widget {
     const width = this.box().width;
     this.visualWidthCache = width;
     return width;
+  }
+
+  /**
+   * 可视区域高度
+   * @return {*}
+   */
+  visualHeight() {
+    if (Utils.isNumber(this.visualHeightCache)) {
+      return this.visualHeightCache;
+    }
+    const height = this.box().height;
+    this.visualHeightCache = height;
+    return height;
   }
 
   /**
@@ -529,38 +626,47 @@ class XTable extends Widget {
   }
 
   /**
-   * 固定区域高度
-   * @returns {*}
+   * 重置变量区
    */
-  getFixedHeight() {
-    const { xTop } = this;
-    return xTop.getHeight();
-  }
-
-  /**
-   * 固定区域宽度
-   */
-  getFixedWidth() {
+  reset() {
+    const { xTableAreaView } = this;
+    const { xTableFrozenContent } = this;
+    const { xLeftIndex } = this;
+    const { xTopIndex } = this;
     const { xLeft } = this;
-    return xLeft.getWidth();
+    const { xTop } = this;
+    const { xContent } = this;
+    xTableAreaView.reset();
+    xTableFrozenContent.reset();
+    xLeftIndex.reset();
+    xTopIndex.reset();
+    xLeft.reset();
+    xTop.reset();
+    xContent.reset();
   }
 
   /**
-   * 索引栏高度
-   * @returns {*}
+   * onAttach
    */
-  getIndexHeight() {
-    const { index } = this;
-    return index.getHeight();
+  onAttach() {
+    const { xTableImage } = this;
+    this.bind();
+    this.attach(xTableImage);
   }
 
   /**
-   * 索引栏宽度
-   * @returns {*}
+   * 事件绑定
    */
-  getIndexWidth() {
-    const { index } = this;
-    return index.getWidth();
+  bind() {
+    EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+      this.resize();
+    });
+    EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+      this.resize();
+    });
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+      this.scrolling();
+    });
   }
 
   /**
@@ -646,6 +752,46 @@ class XTable extends Widget {
     const { cols } = this;
     const view = this.getScrollView();
     return cols.sectionSumWidth(0, view.sci - 1);
+  }
+
+  /**
+   * 重置界面大小
+   */
+  resize() {
+    const {
+      xTableImage, xTableAreaView,
+    } = this;
+    this.visualHeightCache = null;
+    this.visualWidthCache = null;
+    xTableAreaView.undo();
+    this.reset();
+    xTableImage.resize();
+  }
+
+  /**
+   * 设置缩放比
+   */
+  setScale(val) {
+    const { xTableImage, scale } = this;
+    this.reset();
+    scale.setValue(val);
+    xTableImage.setScale(val);
+  }
+
+  /**
+   * 渲染滚动界面
+   */
+  scrolling() {
+    const { xTableImage } = this;
+    xTableImage.scrolling();
+  }
+
+  /**
+   * 渲染静态界面
+   */
+  render() {
+    const { xTableImage } = this;
+    xTableImage.render();
   }
 
 }

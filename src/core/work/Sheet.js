@@ -1,7 +1,7 @@
 import { Widget } from '../../lib/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
 import { EventBind } from '../../utils/EventBind';
-import { OTable } from '../table/OTable';
+import { XTable } from '../table/XTable';
 
 class Sheet extends Widget {
 
@@ -12,80 +12,36 @@ class Sheet extends Widget {
   }) {
     super(`${cssPrefix}-sheet`);
     this.options = options;
-    this.oTable = new OTable(this.options.tableConfig);
-  }
-
-  onAttach() {
-    const { oTable } = this;
-    const { xTable } = oTable;
-    this.attach(xTable);
-    this.bind();
+    this.table = new XTable({
+      settings: this.options.tableConfig,
+    });
   }
 
   bind() {
-    const { oTable } = this;
-    const { xTable } = oTable;
-    EventBind.bind(xTable, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, (e) => {
+    const { table } = this;
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, (e) => {
       this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, this);
       e.stopPropagation();
     });
-    EventBind.bind(xTable, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, (e) => {
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, (e) => {
       this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, this);
       e.stopPropagation();
     });
-    EventBind.bind(xTable, Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, (e) => {
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, (e) => {
       this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, this);
       e.stopPropagation();
     });
-    EventBind.bind(xTable, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, (e) => {
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, (e) => {
       this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN, this);
       e.stopPropagation();
     });
   }
 
-  scrollY(v) {
-    const { oTable } = this;
-    const { xTable } = oTable;
-    xTable.scrollY(v);
+  onAttach() {
+    const { table } = this;
+    this.attach(table);
+    // this.bind();
   }
-
-  scrollX(v) {
-    const { oTable } = this;
-    const { xTable } = oTable;
-    xTable.scrollX(v);
-  }
-
-  getTableScroll() {
-    const { oTable } = this;
-    const { xTable } = oTable;
-    return xTable.scroll;
-  }
-
-  getTableTop() {
-    const { oTable } = this;
-    return oTable.getTop();
-  }
-
-  getTableLeft() {
-    const { oTable } = this;
-    return oTable.getLeft();
-  }
-
-  getTableRows() {
-
-  }
-
-  getTableCols() {
-
-  }
-
-  getScrollTotalHeight() {}
-
-  getScrollTotalWidth() {}
-
-  resize() {}
-
-  setScale() {}
 }
 
 export { Sheet };
