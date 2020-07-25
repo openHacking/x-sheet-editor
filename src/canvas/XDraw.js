@@ -1,5 +1,10 @@
 /* global window */
 
+// chrome83.0.4103.116
+// 读取devicePixelRatio慢
+// 暂存
+const DPR = window.devicePixelRatio || 1;
+
 class Base {
 
   static upRounding(val) {
@@ -11,7 +16,7 @@ class Base {
   }
 
   static dpr() {
-    return window.devicePixelRatio || 1;
+    return DPR;
   }
 
   static rpx(px) {

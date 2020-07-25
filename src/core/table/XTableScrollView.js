@@ -110,27 +110,7 @@ class XTableAreaView {
     this.scroll = scroll;
     this.rows = rows;
     this.cols = cols;
-
-    this.lastScrollView = null;
     this.scrollView = null;
-
-    this.scrollEnterView = null;
-    this.enterView = null;
-    this.leaveView = null;
-  }
-
-  /**
-   * 记录上一次视图
-   */
-  record() {
-    this.lastScrollView = this.scrollView;
-  }
-
-  /**
-   * 清空上一次视图记录
-   */
-  undo() {
-    this.lastScrollView = null;
   }
 
   /**
@@ -138,20 +118,6 @@ class XTableAreaView {
    */
   reset() {
     this.scrollView = null;
-    this.scrollEnterView = null;
-    this.enterView = null;
-    this.leaveView = null;
-  }
-
-  /**
-   * 获取上一次滚动的视图区域
-   * @returns {null|RectRange}
-   */
-  getLastScrollView() {
-    if (Utils.isNotUnDef(this.lastScrollView)) {
-      return this.lastScrollView.clone();
-    }
-    return null;
   }
 
   /**
@@ -169,6 +135,60 @@ class XTableAreaView {
     scrollView.h = rows.rectRangeSumHeight(scrollView);
     this.scrollView = scrollView;
     return scrollView.clone();
+  }
+
+
+}
+
+/**
+ * XTableHistoryAreaView
+ */
+class XTableHistoryAreaView extends XTableAreaView {
+
+  /**
+   * XTableHistoryAreaView
+   * @param xTableScrollView
+   * @param rows
+   * @param cols
+   * @param scroll
+   */
+  constructor({
+    xTableScrollView,
+    rows,
+    cols,
+    scroll,
+  }) {
+    super({
+      xTableScrollView,
+      rows,
+      cols,
+      scroll,
+    });
+    this.lastScrollView = null;
+    this.enterView = null;
+    this.scrollEnterView = null;
+    this.leaveView = null;
+  }
+
+  /**
+   * 重置变量区
+   */
+  reset() {
+    super.reset();
+    this.scrollEnterView = null;
+    this.enterView = null;
+    this.leaveView = null;
+  }
+
+  /**
+   * 获取上一次滚动的视图区域
+   * @returns {null|RectRange}
+   */
+  getLastScrollView() {
+    if (Utils.isNotUnDef(this.lastScrollView)) {
+      return this.lastScrollView.clone();
+    }
+    return null;
   }
 
   /**
@@ -254,8 +274,25 @@ class XTableAreaView {
     return null;
   }
 
+  /**
+   * 清空上一次视图记录
+   */
+  undo() {
+    this.lastScrollView = null;
+  }
+
+  /**
+   * 记录上一次视图
+   */
+  record() {
+    this.lastScrollView = this.scrollView;
+  }
+
 }
 
 export {
-  XTableScrollView, VIEW_MODE, XTableAreaView,
+  XTableScrollView,
+  VIEW_MODE,
+  XTableAreaView,
+  XTableHistoryAreaView,
 };

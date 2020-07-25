@@ -51,8 +51,9 @@ class YReSizer extends Widget {
   bind() {
     const { table } = this;
     const {
-      rows, mousePointer, tableDataSnapshot,
+      rows, mousePointer,
     } = table;
+    const tableDataSnapshot = table.getTableDataSnapshot();
     const { rowsDataProxy } = tableDataSnapshot;
     const { index } = table;
     const { key, type } = Constant.MOUSE_POINTER_TYPE.ROW_RESIZE;

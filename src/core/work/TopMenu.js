@@ -69,8 +69,8 @@ class TopMenu extends Widget {
           const {
             screen,
             styleCellsHelper,
-            tableDataSnapshot,
           } = table;
+          const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           this.format.setTitle(title);
@@ -99,8 +99,8 @@ class TopMenu extends Widget {
           const {
             screen,
             styleCellsHelper,
-            tableDataSnapshot,
           } = table;
+          const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           this.font.setTitle(type);
@@ -129,8 +129,8 @@ class TopMenu extends Widget {
           const {
             screen,
             styleCellsHelper,
-            tableDataSnapshot,
           } = table;
+          const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           this.dprFontSize.setTitle(size);
@@ -159,8 +159,8 @@ class TopMenu extends Widget {
           const {
             screen,
             styleCellsHelper,
-            tableDataSnapshot,
           } = table;
+          const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           this.fontColor.setColor(color);
@@ -189,8 +189,8 @@ class TopMenu extends Widget {
           const {
             screen,
             styleCellsHelper,
-            tableDataSnapshot,
           } = table;
+          const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           this.fillColor.setColor(color);
@@ -220,8 +220,8 @@ class TopMenu extends Widget {
             screen,
             styleCellsHelper,
             cells,
-            tableDataSnapshot,
           } = table;
+          const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           if (selectorAttr) {
@@ -661,8 +661,8 @@ class TopMenu extends Widget {
           const {
             screen,
             styleCellsHelper,
-            tableDataSnapshot,
           } = table;
+          const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           switch (type) {
@@ -702,8 +702,8 @@ class TopMenu extends Widget {
           const {
             screen,
             styleCellsHelper,
-            tableDataSnapshot,
           } = table;
+          const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           switch (type) {
@@ -743,8 +743,8 @@ class TopMenu extends Widget {
           const {
             screen,
             styleCellsHelper,
-            tableDataSnapshot,
           } = table;
+          const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           let icon;
@@ -840,13 +840,13 @@ class TopMenu extends Widget {
     EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      const { tableDataSnapshot } = table;
+      const tableDataSnapshot = table.getTableDataSnapshot();
       if (tableDataSnapshot.canBack()) tableDataSnapshot.back();
     });
     EventBind.bind(this.redo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      const { tableDataSnapshot } = table;
+      const tableDataSnapshot = table.getTableDataSnapshot();
       if (tableDataSnapshot.canGo()) tableDataSnapshot.go();
     });
     EventBind.bind(this.scale, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
@@ -868,8 +868,8 @@ class TopMenu extends Widget {
       const {
         screen,
         cells,
-        tableDataSnapshot,
       } = table;
+      const tableDataSnapshot = table.getTableDataSnapshot();
       const screenCopyStyle = screen.findByClass(ScreenCopyStyle);
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
@@ -912,8 +912,8 @@ class TopMenu extends Widget {
       const {
         screen,
         styleCellsHelper,
-        tableDataSnapshot,
       } = table;
+      const tableDataSnapshot = table.getTableDataSnapshot();
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
@@ -976,8 +976,8 @@ class TopMenu extends Widget {
         screen,
         cells,
         styleCellsHelper,
-        tableDataSnapshot,
       } = table;
+      const tableDataSnapshot = table.getTableDataSnapshot();
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
@@ -1004,8 +1004,8 @@ class TopMenu extends Widget {
         screen,
         cells,
         styleCellsHelper,
-        tableDataSnapshot,
       } = table;
+      const tableDataSnapshot = table.getTableDataSnapshot();
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
@@ -1032,8 +1032,8 @@ class TopMenu extends Widget {
         screen,
         cells,
         styleCellsHelper,
-        tableDataSnapshot,
       } = table;
+      const tableDataSnapshot = table.getTableDataSnapshot();
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
@@ -1060,8 +1060,8 @@ class TopMenu extends Widget {
         screen,
         cells,
         styleCellsHelper,
-        tableDataSnapshot,
       } = table;
+      const tableDataSnapshot = table.getTableDataSnapshot();
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
@@ -1126,8 +1126,8 @@ class TopMenu extends Widget {
       const {
         screen,
         merges,
-        tableDataSnapshot,
       } = table;
+      const tableDataSnapshot = table.getTableDataSnapshot();
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
       if (selectorAttr) {
@@ -1192,7 +1192,7 @@ class TopMenu extends Widget {
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
     const { table } = sheet;
-    const { tableDataSnapshot } = table;
+    const tableDataSnapshot = table.getTableDataSnapshot();
     this.undo.active(tableDataSnapshot.canBack());
   }
 
@@ -1201,7 +1201,7 @@ class TopMenu extends Widget {
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
     const { table } = sheet;
-    const { tableDataSnapshot } = table;
+    const tableDataSnapshot = table.getTableDataSnapshot();
     this.redo.active(tableDataSnapshot.canGo());
   }
 

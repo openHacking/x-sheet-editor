@@ -24,8 +24,9 @@ import { StyleCellsHelper } from './helper/StyleCellsHelper';
 import { TextCellsHelper } from './helper/TextCellsHelper';
 import { Merges } from './tablebase/Merges';
 import {
-  XTableAreaView, XTableScrollView, VIEW_MODE,
+  XTableScrollView, VIEW_MODE, XTableHistoryAreaView,
 } from './XTableScrollView';
+import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -2021,17 +2022,17 @@ class XTableTopIndex extends XTableTopIndexUI {
 class XTableImage extends Widget {
 
   /**
-   * XTable
+   * xTableScrollView
    * @param xTableScrollView
-   * @param scroll
-   * @param fixed
    * @param settings
+   * @param fixed
+   * @param scroll
    */
   constructor({
     xTableScrollView,
-    scroll,
-    fixed,
     settings,
+    fixed,
+    scroll,
   }) {
     super(`${cssPrefix}-table-canvas`, 'canvas');
     // 表格设置
@@ -2060,27 +2061,30 @@ class XTableImage extends Widget {
       data: [],
       merge: {},
     }, settings);
+    // 冻结的视图 & 滚动的坐标
+    this.fixed = fixed;
+    this.scroll = scroll;
     // 渲染模式
     this.renderMode = RENDER_MODE.RENDER;
     // 表格数据配置
     this.scale = new Scale();
     this.index = new Code({
-      ...this.settings.index,
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.rpx(this.scale.goto(v)),
+        goto: v => this.scale.goto(XDraw.rpx(v)),
       }),
+      ...this.settings.index,
     });
     this.rows = new Rows({
-      ...this.settings.rows,
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.rpx(this.scale.goto(v)),
+        goto: v => this.scale.goto(XDraw.rpx(v)),
       }),
+      ...this.settings.rows,
     });
     this.cols = new Cols({
-      ...this.settings.cols,
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.rpx(this.scale.goto(v)),
+        goto: v => this.scale.goto(XDraw.rpx(v)),
       }),
+      ...this.settings.cols,
     });
     this.merges = new Merges({
       ...this.settings.merge,
@@ -2093,16 +2097,12 @@ class XTableImage extends Widget {
       data: this.settings.data,
       merges: this.merges,
     });
-    // 冻结视图坐标
-    this.fixed = fixed;
-    // 滚动视图的坐标
-    this.scroll = scroll;
     // 表格视图区域
-    this.xTableAreaView = new XTableAreaView({
+    this.xTableAreaView = new XTableHistoryAreaView({
       xTableScrollView,
+      scroll: this.scroll,
       rows: this.rows,
       cols: this.cols,
-      scroll: this.scroll,
     });
     // 单元格辅助类
     this.styleCellsHelper = new StyleCellsHelper({
@@ -2119,6 +2119,8 @@ class XTableImage extends Widget {
       cols: this.cols,
       scale: this.scale,
     });
+    // 数据快照
+    this.tableDataSnapshot = new TableDataSnapshot(this);
     // 绘制资源
     this.draw = new XDraw(this.el);
     this.indexGrid = new Grid(this.draw, {
@@ -2281,30 +2283,6 @@ class XTableImage extends Widget {
   }
 
   /**
-     * 重置变量区
-     */
-  reset() {
-    const { xTableAreaView } = this;
-    const { xLeftFrozenIndex } = this;
-    const { xTopFrozenIndex } = this;
-    const { xTableFrozenContent } = this;
-    const { xLeftIndex } = this;
-    const { xTopIndex } = this;
-    const { xLeft } = this;
-    const { xTop } = this;
-    const { xContent } = this;
-    xTableAreaView.reset();
-    xLeftFrozenIndex.reset();
-    xTopFrozenIndex.reset();
-    xTableFrozenContent.reset();
-    xLeftIndex.reset();
-    xTopIndex.reset();
-    xLeft.reset();
-    xTop.reset();
-    xContent.reset();
-  }
-
-  /**
    * 渲染模式
    */
   getRenderMode() {
@@ -2326,9 +2304,9 @@ class XTableImage extends Widget {
   }
 
   /**
-     * 画布高度
-     * @returns {null|*}
-     */
+   * 画布高度
+   * @returns {null|*}
+   */
   visualHeight() {
     if (Utils.isNumber(this.visualHeightCache)) {
       return this.visualHeightCache;
@@ -2339,8 +2317,8 @@ class XTableImage extends Widget {
   }
 
   /**
-     * 重置界面大小
-     */
+   * 重置界面大小
+   */
   resize() {
     const {
       draw, xTableAreaView,
@@ -2352,24 +2330,6 @@ class XTableImage extends Widget {
     xTableAreaView.undo();
     this.reset();
     this.render();
-  }
-
-  /**
-   * 界面缩放
-   * @param val
-   */
-  setScale(val) {
-    // 清空画布
-    this.draw.attr({
-      fillStyle: this.settings.table.background,
-    });
-    this.draw.fullRect();
-    // 调整缩放级别
-    this.scale.setValue(val);
-    // 重新渲染界面
-    this.renderMode = RENDER_MODE.SCALE;
-    this.resize();
-    this.renderMode = RENDER_MODE.RENDER;
   }
 
   /**
@@ -2414,6 +2374,48 @@ class XTableImage extends Widget {
     xContent.render();
     xLeftIndex.render();
     xTopIndex.render();
+  }
+
+  /**
+   * 重置变量区
+   */
+  reset() {
+    const { xTableAreaView } = this;
+    const { xLeftFrozenIndex } = this;
+    const { xTopFrozenIndex } = this;
+    const { xTableFrozenContent } = this;
+    const { xLeftIndex } = this;
+    const { xTopIndex } = this;
+    const { xLeft } = this;
+    const { xTop } = this;
+    const { xContent } = this;
+    xTableAreaView.reset();
+    xLeftFrozenIndex.reset();
+    xTopFrozenIndex.reset();
+    xTableFrozenContent.reset();
+    xLeftIndex.reset();
+    xTopIndex.reset();
+    xLeft.reset();
+    xTop.reset();
+    xContent.reset();
+  }
+
+  /**
+   * 界面缩放
+   * @param val
+   */
+  setScale(val) {
+    // 清空画布
+    this.draw.attr({
+      fillStyle: this.settings.table.background,
+    });
+    this.draw.fullRect();
+    // 调整缩放级别
+    this.scale.setValue(val);
+    // 重新渲染界面
+    this.renderMode = RENDER_MODE.SCALE;
+    this.resize();
+    this.renderMode = RENDER_MODE.RENDER;
   }
 }
 

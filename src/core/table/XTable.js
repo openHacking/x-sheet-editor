@@ -10,6 +10,18 @@ import { Widget } from '../../lib/Widget';
 import { Constant, cssPrefix } from '../../const/Constant';
 import { EventBind } from '../../utils/EventBind';
 import { Scale, ScaleAdapter } from './tablebase/Scale';
+import { MousePointer } from './MousePointer';
+import { Keyboard } from './Keyboard';
+import { XReSizer } from './resizer/XReSizer';
+import { YReSizer } from './resizer/YReSizer';
+import { XHeightLight } from './highlight/XHeightLight';
+import { YHeightLight } from './highlight/YHeightLight';
+import { Screen } from './screen/Screen';
+import { Edit } from './Edit';
+import { Focus } from './Focus';
+import { SCREEN_SELECT_EVENT, ScreenSelector } from './screenwiget/selector/ScreenSelector';
+import { ScreenAutoFill } from './screenwiget/autofill/ScreenAutoFill';
+import { ScreenCopyStyle } from './screenwiget/copystyle/ScreenCopyStyle';
 
 class Dimensions {
 
@@ -391,25 +403,28 @@ class XTable extends Widget {
         width: 110,
       },
     }, settings);
+    // 视口区域大小
+    this.visualHeightCache = null;
+    this.visualWidthCache = null;
     // 表格数据配置
     this.scale = new Scale();
     this.index = new Code({
-      ...this.settings.index,
       scaleAdapter: new ScaleAdapter({
         goto: v => this.scale.goto(v),
       }),
+      ...this.settings.index,
     });
     this.rows = new Rows({
-      ...this.settings.rows,
       scaleAdapter: new ScaleAdapter({
         goto: v => this.scale.goto(v),
       }),
+      ...this.settings.rows,
     });
     this.cols = new Cols({
-      ...this.settings.cols,
       scaleAdapter: new ScaleAdapter({
         goto: v => this.scale.goto(v),
       }),
+      ...this.settings.cols,
     });
     // 冻结视图坐标
     this.fixed = new Fixed(this.settings.fixed);
@@ -432,13 +447,6 @@ class XTable extends Widget {
       cols: this.cols,
       scroll: this.scroll,
     });
-    // table 区域
-    this.xLeftIndex = new XTableLeftIndex(this);
-    this.xTopIndex = new XTableTopIndex(this);
-    this.xLeft = new XTableLeft(this);
-    this.xTop = new XTableTop(this);
-    this.xContent = new XTableContent(this);
-    this.xTableFrozenContent = new XTableFrozenContent(this);
     // 表格界面
     this.xTableImage = new XTableImage({
       xTableScrollView: this.xTableScrollView,
@@ -446,41 +454,23 @@ class XTable extends Widget {
       scroll: this.scroll,
       fixed: this.fixed,
     });
-    // 视口区域大小
-    this.visualHeightCache = null;
-    this.visualWidthCache = null;
-  }
-
-  /**
-   * 获取内容区域宽度
-   */
-  getContentWidth() {
-    const { xContent } = this;
-    return xContent.getWidth();
-  }
-
-  /**
-   * 获取内容区域高度
-   */
-  getContentHeight() {
-    const { xContent } = this;
-    return xContent.getHeight();
-  }
-
-  /**
-   * 滚动视图的高度
-   * @returns {*}
-   */
-  getScrollTotalHeight() {
-    const { fixed } = this;
-    const { rows } = this;
-    let height;
-    if (fixed.fxTop > -1) {
-      height = rows.sectionSumHeight(fixed.fxTop, rows.len - 1);
-    } else {
-      height = rows.sectionSumHeight(0, rows.len - 1);
-    }
-    return height;
+    // table 区域
+    this.xTableFrozenContent = new XTableFrozenContent(this);
+    this.xLeftIndex = new XTableLeftIndex(this);
+    this.xTopIndex = new XTableTopIndex(this);
+    this.xLeft = new XTableLeft(this);
+    this.xTop = new XTableTop(this);
+    this.xContent = new XTableContent(this);
+    // table组件
+    this.focus = new Focus(this);
+    this.mousePointer = new MousePointer(this);
+    this.keyboard = new Keyboard(this);
+    this.screen = new Screen(this);
+    this.xReSizer = new XReSizer(this);
+    this.yReSizer = new YReSizer(this);
+    this.xHeightLight = new XHeightLight(this);
+    this.yHeightLight = new YHeightLight(this);
+    this.edit = new Edit(this);
   }
 
   /**
@@ -500,20 +490,45 @@ class XTable extends Widget {
   }
 
   /**
-   * 固定区域宽度
+   * 滚动视图的高度
+   * @returns {*}
    */
-  getFixedWidth() {
-    const { xLeft } = this;
-    return xLeft.getWidth();
+  getScrollTotalHeight() {
+    const { fixed } = this;
+    const { rows } = this;
+    let height;
+    if (fixed.fxTop > -1) {
+      height = rows.sectionSumHeight(fixed.fxTop, rows.len - 1);
+    } else {
+      height = rows.sectionSumHeight(0, rows.len - 1);
+    }
+    return height;
   }
 
   /**
-   * 固定区域高度
-   * @returns {*}
+   * 读取快照数据
+   * @returns {TableDataSnapshot}
    */
-  getFixedHeight() {
-    const { xTop } = this;
-    return xTop.getHeight();
+  getTableDataSnapshot() {
+    const { xTableImage } = this;
+    const { tableDataSnapshot } = xTableImage;
+    return tableDataSnapshot;
+  }
+
+  /**
+   * 获取内容区域宽度
+   */
+  getContentWidth() {
+    const { xContent } = this;
+    return xContent.getWidth();
+  }
+
+  /**
+   * 获取内容区域高度
+   */
+  getContentHeight() {
+    const { xContent } = this;
+    return xContent.getHeight();
   }
 
   /**
@@ -532,6 +547,23 @@ class XTable extends Widget {
   getIndexHeight() {
     const { index } = this;
     return index.getHeight();
+  }
+
+  /**
+   * 固定区域宽度
+   */
+  getFixedWidth() {
+    const { xLeft } = this;
+    return xLeft.getWidth();
+  }
+
+  /**
+   * 固定区域高度
+   * @returns {*}
+   */
+  getFixedHeight() {
+    const { xTop } = this;
+    return xTop.getHeight();
   }
 
   /**
@@ -650,14 +682,42 @@ class XTable extends Widget {
    */
   onAttach() {
     const { xTableImage } = this;
-    this.bind();
     this.attach(xTableImage);
+    this.bind();
+    // 表格组件
+    const tableDataSnapshot = this.getTableDataSnapshot();
+    this.screenSelector = new ScreenSelector(this.screen);
+    this.screenAutoFill = new ScreenAutoFill(this.screen, {
+      onBeforeAutoFill: () => {
+        tableDataSnapshot.begin();
+      },
+      onAfterAutoFill: () => {
+        tableDataSnapshot.end();
+      },
+    });
+    this.copyStyle = new ScreenCopyStyle(this.screen, {});
+    this.screen.addWidget(this.screenSelector);
+    this.screen.addWidget(this.screenAutoFill);
+    this.screen.addWidget(this.copyStyle);
+    this.screenSelector.on(SCREEN_SELECT_EVENT.SELECT_CHANGE, () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
+    });
+    this.screenSelector.on(SCREEN_SELECT_EVENT.DOWN_SELECT, () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN);
+    });
+    this.attach(this.screen);
+    this.attach(this.xReSizer);
+    this.attach(this.yReSizer);
+    this.attach(this.xHeightLight);
+    this.attach(this.yHeightLight);
+    this.attach(this.edit);
   }
 
   /**
    * 事件绑定
    */
   bind() {
+    const { mousePointer } = this;
     EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
       this.resize();
     });
@@ -666,6 +726,22 @@ class XTable extends Widget {
     });
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       this.scrolling();
+    });
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
+      const { x, y } = this.computeEventXy(e);
+      const { ri, ci } = this.getRiCiByXy(x, y);
+      if (ri === -1) {
+        const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_ONE_COLUMN;
+        mousePointer.set(type, key);
+        return;
+      }
+      if (ci === -1) {
+        const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_ONE_ROW;
+        mousePointer.set(type, key);
+        return;
+      }
+      const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_CELL;
+      mousePointer.set(type, key);
     });
   }
 
@@ -759,23 +835,12 @@ class XTable extends Widget {
    */
   resize() {
     const {
-      xTableImage, xTableAreaView,
+      xTableImage,
     } = this;
     this.visualHeightCache = null;
     this.visualWidthCache = null;
-    xTableAreaView.undo();
     this.reset();
     xTableImage.resize();
-  }
-
-  /**
-   * 设置缩放比
-   */
-  setScale(val) {
-    const { xTableImage, scale } = this;
-    this.reset();
-    scale.setValue(val);
-    xTableImage.setScale(val);
   }
 
   /**
@@ -783,6 +848,7 @@ class XTable extends Widget {
    */
   scrolling() {
     const { xTableImage } = this;
+    this.reset();
     xTableImage.scrolling();
   }
 
@@ -792,6 +858,16 @@ class XTable extends Widget {
   render() {
     const { xTableImage } = this;
     xTableImage.render();
+  }
+
+  /**
+   * 设置缩放比
+   */
+  setScale(val) {
+    const { xTableImage, scale } = this;
+    this.reset();
+    xTableImage.setScale(val);
+    scale.setValue(val);
   }
 
 }

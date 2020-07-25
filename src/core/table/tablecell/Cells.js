@@ -175,4 +175,6 @@ class Cells {
   }
 }
 
-export { Cells };
+export {
+  Cells,
+};

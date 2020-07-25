@@ -78,7 +78,8 @@ class Edit extends Widget {
   hideEdit() {
     const { select } = this;
     const { table } = this;
-    const { cells, tableDataSnapshot } = table;
+    const { cells } = table;
+    const tableDataSnapshot = table.getTableDataSnapshot();
     const { cellDataProxy } = tableDataSnapshot;
     if (select) {
       const origin = cells.getCellOrNew(select.sri, select.sci);
