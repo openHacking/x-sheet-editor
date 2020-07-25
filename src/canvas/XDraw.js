@@ -1,8 +1,5 @@
 /* global window */
 
-// chrome83.0.4103.116
-// 读取devicePixelRatio慢
-// 暂存
 const DPR = window.devicePixelRatio || 1;
 
 class Base {
@@ -11,12 +8,12 @@ class Base {
     return Math.ceil(val);
   }
 
-  static radian(angle) {
-    return -angle * (Math.PI / 180);
-  }
-
   static dpr() {
     return DPR;
+  }
+
+  static radian(angle) {
+    return -angle * (Math.PI / 180);
   }
 
   static rpx(px) {
