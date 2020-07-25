@@ -55,32 +55,22 @@ class DrawFont {
   }
 
   /**
-   * 测量文本大小
-   * @param text
-   * @returns {number}
-   */
-  dprMeasureSize(text) {
-    const { dw } = this;
-    const width = dw.measureText(text).width;
-    return width / XDraw.dpr();
-  }
-
-  /**
-   * 计算文本大小
+   * 计算文本绘制的真实尺寸
    * @param size
    * @returns {number}
    */
-  dprFontSize(size) {
+  drawRealSize(size) {
     return XDraw.rpx(size);
   }
 
   /**
-   * 判断文本是否为空
+   * 测量文本大小
    * @param text
-   * @returns {boolean}
+   * @returns {number}
    */
-  isBlank(text) {
-    return text === null || text === undefined || text.toString().trim() === '';
+  measureWidth(text) {
+    const { dw } = this;
+    return dw.measureText(text).width;
   }
 
   /**
@@ -97,6 +87,15 @@ class DrawFont {
    */
   textBreak(text) {
     return text.split('\n');
+  }
+
+  /**
+   * 判断文本是否为空
+   * @param text
+   * @returns {boolean}
+   */
+  isBlank(text) {
+    return text === null || text === undefined || text.toString().trim() === '';
   }
 
 }
@@ -201,7 +200,7 @@ class HorizontalFontDraw extends DrawFont {
       underline, strikethrough, align, verticalAlign, padding,
     } = attr;
     const { width, height } = rect;
-    const textWidth = this.dprMeasureSize(text);
+    const textWidth = this.measureWidth(text);
     let tx = rect.x;
     let ty = rect.y;
     switch (align) {
@@ -269,7 +268,7 @@ class HorizontalFontDraw extends DrawFont {
       size, underline, strikethrough, align, verticalAlign, padding,
     } = attr;
     const { width, height } = rect;
-    const textWidth = this.dprMeasureSize(text);
+    const textWidth = this.measureWidth(text);
     let tx = rect.x;
     let ty = rect.y;
     let paddingH = 0;
@@ -363,7 +362,7 @@ class HorizontalFontDraw extends DrawFont {
     let i = 0;
     let maxLen = 0;
     while (i < len) {
-      const charWidth = this.dprMeasureSize(text.charAt(i));
+      const charWidth = this.measureWidth(text.charAt(i));
       const textWidth = line.len + charWidth;
       if (textWidth > maxTextWidth) {
         if (line.len === 0) {
@@ -483,7 +482,7 @@ class HorizontalFontDraw extends DrawFont {
     dw.attr({
       textAlign: attr.align,
       textBaseline: attr.verticalAlign,
-      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.dprFontSize(attr.size)}px ${attr.name}`,
+      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.drawRealSize(attr.size)}px ${attr.name}`,
       fillStyle: attr.color,
       strokeStyle: attr.color,
     });
@@ -639,7 +638,7 @@ class VerticalFontDraw extends DrawFont {
     for (let i = 0; i < text.length; i += 1) {
       const char = text.charAt(i);
       textArray.push({
-        len: this.dprMeasureSize(char),
+        len: this.measureWidth(char),
         text: char,
         tx: 0,
         ty: hOffset,
@@ -727,7 +726,7 @@ class VerticalFontDraw extends DrawFont {
     for (let i = 0; i < text.length; i += 1) {
       const char = text.charAt(i);
       textArray.push({
-        len: this.dprMeasureSize(char),
+        len: this.measureWidth(char),
         text: char,
         tx: 0,
         ty: hOffset,
@@ -844,7 +843,7 @@ class VerticalFontDraw extends DrawFont {
       const last = i === len - 1;
       const first = i === 0;
       const char = text.charAt(i);
-      const charWidth = this.dprMeasureSize(char);
+      const charWidth = this.measureWidth(char);
       let textHeight;
       if (last) {
         textHeight = textLen + size;
@@ -1000,7 +999,7 @@ class VerticalFontDraw extends DrawFont {
         dw.attr({
           textAlign: attr.align,
           textBaseline: attr.verticalAlign,
-          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.dprFontSize(attr.size)}px ${attr.name}`,
+          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.drawRealSize(attr.size)}px ${attr.name}`,
           fillStyle: attr.color,
           strokeStyle: attr.color,
         });
@@ -1008,7 +1007,7 @@ class VerticalFontDraw extends DrawFont {
       case TEXT_WRAP.WORD_WRAP:
         dw.attr({
           textAlign: attr.align,
-          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.dprFontSize(attr.size)}px ${attr.name}`,
+          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.drawRealSize(attr.size)}px ${attr.name}`,
           fillStyle: attr.color,
           strokeStyle: attr.color,
         });
@@ -1018,7 +1017,7 @@ class VerticalFontDraw extends DrawFont {
         dw.attr({
           textAlign: attr.align,
           textBaseline: attr.verticalAlign,
-          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.dprFontSize(attr.size)}px ${attr.name}`,
+          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.drawRealSize(attr.size)}px ${attr.name}`,
           fillStyle: attr.color,
           strokeStyle: attr.color,
         });
@@ -1113,7 +1112,7 @@ class AngleFontDraw extends DrawFont {
     }
     // 计算文字斜边
     // 的宽度
-    const textWidth = this.dprMeasureSize(text);
+    const textWidth = this.measureWidth(text);
     const trigonometric = new TrigonometricFunction({
       angle,
       width: textWidth,
@@ -1230,7 +1229,7 @@ class AngleFontDraw extends DrawFont {
     }
     // 计算文字斜边
     // 的宽度
-    const textWidth = this.dprMeasureSize(text);
+    const textWidth = this.measureWidth(text);
     const trigonometric = new TrigonometricFunction({
       angle,
       width: textWidth,
@@ -1381,7 +1380,7 @@ class AngleFontDraw extends DrawFont {
       const len = text.length;
       let i = 0;
       while (i < len) {
-        const charWidth = this.dprMeasureSize(text.charAt(i));
+        const charWidth = this.measureWidth(text.charAt(i));
         const textWidth = line.len + charWidth;
         if (textWidth > textHypotenuseWidth) {
           if (line.len === 0) {
@@ -1549,7 +1548,7 @@ class AngleFontDraw extends DrawFont {
 
       // 计算文本块的
       // 大小
-      const textWidth = this.dprMeasureSize(text);
+      const textWidth = this.measureWidth(text);
       trigonometric.setWidth(textWidth);
       const trigonometricWidth = Math.max(trigonometric.cosWidthAngle(), size);
       const trigonometricHeight = trigonometric.sinWidthAngle();
@@ -1644,7 +1643,7 @@ class AngleFontDraw extends DrawFont {
       const len = text.length;
       let i = 0;
       while (i < len) {
-        const charWidth = this.dprMeasureSize(text.charAt(i));
+        const charWidth = this.measureWidth(text.charAt(i));
         const textWidth = line.len + charWidth;
         if (textWidth > textHypotenuseWidth) {
           if (line.len === 0) {
@@ -1811,7 +1810,7 @@ class AngleFontDraw extends DrawFont {
 
       // 计算文本块的
       // 大小
-      const textWidth = this.dprMeasureSize(text);
+      const textWidth = this.measureWidth(text);
       trigonometric.setWidth(textWidth);
       const trigonometricWidth = Math.max(trigonometric.cosWidthAngle(), size);
       const trigonometricHeight = trigonometric.sinWidthAngle();
@@ -1896,7 +1895,7 @@ class AngleFontDraw extends DrawFont {
       let i = 0;
       let maxLen = 0;
       while (i < len) {
-        const charWidth = this.dprMeasureSize(text.charAt(i));
+        const charWidth = this.measureWidth(text.charAt(i));
         const textWidth = line.len + charWidth;
         if (textWidth > maxTextWidth) {
           if (line.len === 0) {
@@ -2027,7 +2026,7 @@ class AngleFontDraw extends DrawFont {
     dw.attr({
       textAlign: ALIGN.left,
       textBaseline: VERTICAL_ALIGN.top,
-      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.dprFontSize(attr.size)}px ${attr.name}`,
+      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.drawRealSize(attr.size)}px ${attr.name}`,
       fillStyle: attr.color,
       strokeStyle: attr.color,
     });

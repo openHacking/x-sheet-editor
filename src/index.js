@@ -1,6 +1,8 @@
 /* global window, document */
 
-import { cssPrefix, XSheetVersion } from './const/Constant';
+import {
+  cssPrefix, XSheetVersion,
+} from './const/Constant';
 import { h } from './lib/Element';
 import { Work } from './core/work/Work';
 import { Widget } from './lib/Widget';
@@ -9,6 +11,7 @@ import './styles/index.less';
 import { ElPopUp } from './component/elpopup/ElPopUp';
 import { DragPanel } from './component/dragpanel/DragPanel';
 import { Utils } from './utils/Utils';
+import '../template/travel';
 
 class XSheet extends Widget {
 
