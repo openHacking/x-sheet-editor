@@ -399,9 +399,11 @@ class XTable extends Widget {
         height: 28,
       },
       cols: {
-        len: 26,
+        len: 36,
         width: 110,
       },
+      data: [],
+      merge: {},
     }, settings);
     // 视口区域大小
     this.visualHeightCache = null;
@@ -450,7 +452,7 @@ class XTable extends Widget {
     // 表格界面
     this.xTableImage = new XTableImage({
       xTableScrollView: this.xTableScrollView,
-      settings,
+      settings: this.settings,
       scroll: this.scroll,
       fixed: this.fixed,
     });

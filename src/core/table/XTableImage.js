@@ -2036,31 +2036,7 @@ class XTableImage extends Widget {
   }) {
     super(`${cssPrefix}-table-canvas`, 'canvas');
     // 表格设置
-    this.settings = Utils.mergeDeep({
-      index: {
-        height: 25,
-        width: 40,
-        gridColor: '#c4c4c4',
-        size: 9,
-        color: '#000000',
-      },
-      table: {
-        showGrid: true,
-        background: '#ffffff',
-        borderColor: '#e5e5e5',
-        gridColor: '#c5c5c5',
-      },
-      rows: {
-        len: 1000,
-        height: 28,
-      },
-      cols: {
-        len: 26,
-        width: 110,
-      },
-      data: [],
-      merge: {},
-    }, settings);
+    this.settings = settings;
     // 冻结的视图 & 滚动的坐标
     this.fixed = fixed;
     this.scroll = scroll;
