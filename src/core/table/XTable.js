@@ -589,7 +589,7 @@ class XTable extends Widget {
     if (Utils.isNumber(this.visualHeightCache)) {
       return this.visualHeightCache;
     }
-    const height = this.box().height;
+    const height = Math.floor(this.box().height);
     this.visualHeightCache = height;
     return height;
   }

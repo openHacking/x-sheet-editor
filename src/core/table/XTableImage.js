@@ -2,13 +2,13 @@ import { Utils } from '../../utils/Utils';
 import { Rows } from './tablebase/Rows';
 import { Cols } from './tablebase/Cols';
 import { SCROLL_TYPE } from './tablebase/Scroll';
+import { BorderLineHandle } from './gridborder/BorderLineHandle';
 import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../const/Constant';
 import { XDraw } from '../../canvas/XDraw';
 import { Line, LINE_TYPE } from '../../canvas/Line';
 import { Grid } from '../../canvas/Grid';
 import { LineHandle } from './gridborder/LineHandle';
-import { BorderLineHandle } from './gridborder/BorderLineHandle';
 import { GridLineHandle } from './gridborder/GridLineHandle';
 import { Crop } from '../../canvas/Crop';
 import { Rect } from '../../canvas/Rect';
@@ -26,7 +26,9 @@ import { Merges } from './tablebase/Merges';
 import {
   XTableScrollView, VIEW_MODE, XTableHistoryAreaView,
 } from './XTableScrollView';
-import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
+import {
+  TableDataSnapshot,
+} from './datasnapshot/TableDataSnapshot';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -2274,7 +2276,7 @@ class XTableImage extends Widget {
     if (Utils.isNumber(this.visualWidthCache)) {
       return this.visualWidthCache;
     }
-    const width = XDraw.upRounding(XDraw.rpx(this.box().width));
+    const width = Math.floor(XDraw.rpx(this.box().width));
     this.visualWidthCache = width;
     return width;
   }
@@ -2287,7 +2289,7 @@ class XTableImage extends Widget {
     if (Utils.isNumber(this.visualHeightCache)) {
       return this.visualHeightCache;
     }
-    const height = XDraw.upRounding(XDraw.rpx(this.box().height));
+    const height = Math.floor(XDraw.rpx(this.box().height));
     this.visualHeightCache = height;
     return height;
   }
