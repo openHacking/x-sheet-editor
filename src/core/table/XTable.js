@@ -439,7 +439,6 @@ class XTable extends Widget {
       scroll: this.scroll,
       rows: this.rows,
       cols: this.cols,
-      scale: this.scale,
       getHeight: () => this.xContent.getHeight(),
       getWidth: () => this.xContent.getWidth(),
     });
