@@ -55,15 +55,6 @@ class DrawFont {
   }
 
   /**
-   * 计算文本绘制的真实尺寸
-   * @param size
-   * @returns {number}
-   */
-  drawRealSize(size) {
-    return XDraw.rpx(size);
-  }
-
-  /**
    * 测量文本大小
    * @param text
    * @returns {number}
@@ -82,20 +73,20 @@ class DrawFont {
   }
 
   /**
-   * 文本换行
-   * @param text
-   */
-  textBreak(text) {
-    return text.split('\n');
-  }
-
-  /**
    * 判断文本是否为空
    * @param text
    * @returns {boolean}
    */
   isBlank(text) {
     return text === null || text === undefined || text.toString().trim() === '';
+  }
+
+  /**
+   * 文本换行
+   * @param text
+   */
+  textBreak(text) {
+    return text.split('\n');
   }
 
 }
@@ -482,7 +473,7 @@ class HorizontalFontDraw extends DrawFont {
     dw.attr({
       textAlign: attr.align,
       textBaseline: attr.verticalAlign,
-      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.drawRealSize(attr.size)}px ${attr.name}`,
+      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`,
       fillStyle: attr.color,
       strokeStyle: attr.color,
     });
@@ -999,7 +990,7 @@ class VerticalFontDraw extends DrawFont {
         dw.attr({
           textAlign: attr.align,
           textBaseline: attr.verticalAlign,
-          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.drawRealSize(attr.size)}px ${attr.name}`,
+          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`,
           fillStyle: attr.color,
           strokeStyle: attr.color,
         });
@@ -1007,7 +998,7 @@ class VerticalFontDraw extends DrawFont {
       case TEXT_WRAP.WORD_WRAP:
         dw.attr({
           textAlign: attr.align,
-          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.drawRealSize(attr.size)}px ${attr.name}`,
+          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`,
           fillStyle: attr.color,
           strokeStyle: attr.color,
         });
@@ -1017,7 +1008,7 @@ class VerticalFontDraw extends DrawFont {
         dw.attr({
           textAlign: attr.align,
           textBaseline: attr.verticalAlign,
-          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.drawRealSize(attr.size)}px ${attr.name}`,
+          font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`,
           fillStyle: attr.color,
           strokeStyle: attr.color,
         });
@@ -2026,7 +2017,7 @@ class AngleFontDraw extends DrawFont {
     dw.attr({
       textAlign: ALIGN.left,
       textBaseline: VERTICAL_ALIGN.top,
-      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${this.drawRealSize(attr.size)}px ${attr.name}`,
+      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`,
       fillStyle: attr.color,
       strokeStyle: attr.color,
     });

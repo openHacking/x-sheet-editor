@@ -1,5 +1,6 @@
 import { Font } from '../../../canvas/Font';
 import { ScaleAdapter } from './Scale';
+import { XDraw } from '../../../canvas/XDraw';
 
 class TextBuilder {
 
@@ -42,8 +43,10 @@ class TextBuilder {
     const font = new Font({
       dw, text, rect, attr, overflow,
     });
-    font.setPadding(scaleAdapter.goto(attr.padding));
-    font.setSize(scaleAdapter.goto(attr.size));
+    const size = XDraw.rpx(scaleAdapter.goto(attr.size));
+    const padding = XDraw.rpx(scaleAdapter.goto(attr.padding));
+    font.setSize(Math.floor(size));
+    font.setPadding(Math.floor(padding));
     return font;
   }
 

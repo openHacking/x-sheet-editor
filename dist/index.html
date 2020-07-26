@@ -16,55 +16,7 @@
 <link rel="shortcut icon" href="logo.ico"><link href="XSheet.css" rel="stylesheet"></head>
 <body id="dome"><script type="text/javascript" src="XSheet.js"></script></body>
 <script>
-    const xSheet = new XSheet(document.getElementById("dome"), {
-        workConfig: {
-            body: {
-                sheets: [{
-                    tableConfig: {
-                        data: [
-                            [{
-                                ID: '1584265551097',
-                                text: '竖排竖排文字竖排文字竖排文字文字',
-                                format: 'default',
-                                background: null,
-                                fontAttr: {
-                                    textWrap: 2,
-                                    strikethrough: false,
-                                    underline: false,
-                                    color: 'rgb(0,0,0)',
-                                    name: 'Arial',
-                                    bold: false,
-                                    italic: false,
-                                },
-                                borderAttr: {
-                                    time: '1584265551097',
-                                    left: {
-                                        display: false,
-                                        width: 1,
-                                        color: '#000000',
-                                    },
-                                    top: {
-                                        display: false,
-                                        width: 1,
-                                        color: '#000000',
-                                    },
-                                    right: {
-                                        display: false,
-                                        width: 1,
-                                        color: '#000000',
-                                    },
-                                    bottom: {
-                                        display: false,
-                                        width: 1,
-                                        color: '#000000',
-                                    },
-                                },
-                            }],
-                        ]
-                    }
-                }],
-            },
-        },
-    });
+    const dome = document.getElementById("dome");
+    const xSheet = new XSheet(dome);
 </script>
 </html>
