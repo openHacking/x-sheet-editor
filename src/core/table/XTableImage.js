@@ -534,8 +534,8 @@ class XTableUI {
   }
 
   /**
-     * 绘制贴图
-     */
+   * 绘制贴图
+   */
   drawMap() {
     const { table } = this;
     const renderMode = table.getRenderMode();
@@ -2048,19 +2048,19 @@ class XTableImage extends Widget {
     this.scale = new Scale();
     this.index = new Code({
       scaleAdapter: new ScaleAdapter({
-        goto: v => this.scale.goto(XDraw.rpx(v)),
+        goto: v => Math.floor(XDraw.rpx(this.scale.goto(v))),
       }),
       ...this.settings.index,
     });
     this.rows = new Rows({
       scaleAdapter: new ScaleAdapter({
-        goto: v => this.scale.goto(XDraw.rpx(v)),
+        goto: v => Math.floor(XDraw.rpx(this.scale.goto(v))),
       }),
       ...this.settings.rows,
     });
     this.cols = new Cols({
       scaleAdapter: new ScaleAdapter({
-        goto: v => this.scale.goto(XDraw.rpx(v)),
+        goto: v => Math.floor(XDraw.rpx(this.scale.goto(v))),
       }),
       ...this.settings.cols,
     });
@@ -2276,7 +2276,7 @@ class XTableImage extends Widget {
     if (Utils.isNumber(this.visualWidthCache)) {
       return this.visualWidthCache;
     }
-    const width = Math.floor(XDraw.rpx(this.box().width));
+    const width = XDraw.rpx(this.box().width);
     this.visualWidthCache = width;
     return width;
   }
@@ -2289,7 +2289,7 @@ class XTableImage extends Widget {
     if (Utils.isNumber(this.visualHeightCache)) {
       return this.visualHeightCache;
     }
-    const height = Math.floor(XDraw.rpx(this.box().height));
+    const height = XDraw.rpx(this.box().height);
     this.visualHeightCache = height;
     return height;
   }

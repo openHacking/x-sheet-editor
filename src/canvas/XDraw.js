@@ -4,7 +4,7 @@ const DPR = window.devicePixelRatio || 1;
 
 class Base {
 
-  static upRounding(val) {
+  static rounding(val) {
     return Math.ceil(val);
   }
 
@@ -27,8 +27,8 @@ class Base {
 
   resize(width, height) {
     const { canvas } = this;
-    canvas.width = Base.upRounding(Base.rpx(width));
-    canvas.height = Base.upRounding(Base.rpx(height));
+    canvas.width = Base.rounding(Base.rpx(width));
+    canvas.height = Base.rounding(Base.rpx(height));
     canvas.style.width = `${canvas.width / Base.dpr()}px`;
     canvas.style.height = `${canvas.height / Base.dpr()}px`;
     return this;
@@ -173,23 +173,23 @@ class XDraw extends Pos {
   fillText(text, x, y) {
     x += this.getOffsetX();
     y += this.getOffsetY();
-    this.ctx.fillText(text, XDraw.upRounding(x), XDraw.upRounding(y));
+    this.ctx.fillText(text, XDraw.rounding(x), XDraw.rounding(y));
     return this;
   }
 
   rect(x, y, w, h) {
     x += this.getOffsetX();
     y += this.getOffsetY();
-    this.ctx.rect(XDraw.upRounding(x), XDraw.upRounding(y),
-      XDraw.upRounding(w), XDraw.upRounding(h));
+    this.ctx.rect(XDraw.rounding(x), XDraw.rounding(y),
+      XDraw.rounding(w), XDraw.rounding(h));
     return this;
   }
 
   fillRect(x, y, w, h) {
     x += this.getOffsetX();
     y += this.getOffsetY();
-    this.ctx.fillRect(XDraw.upRounding(x), XDraw.upRounding(y),
-      XDraw.upRounding(w), XDraw.upRounding(h));
+    this.ctx.fillRect(XDraw.rounding(x), XDraw.rounding(y),
+      XDraw.rounding(w), XDraw.rounding(h));
     return this;
   }
 
@@ -200,14 +200,14 @@ class XDraw extends Pos {
       let [x, y] = xys[0];
       x += this.getOffsetX();
       y += this.getOffsetY();
-      ctx.moveTo(this.lpx(XDraw.upRounding(x)),
-        this.lpx(XDraw.upRounding(y)));
+      ctx.moveTo(this.lpx(XDraw.rounding(x)),
+        this.lpx(XDraw.rounding(y)));
       for (let i = 1, len = xys.length; i < len; i += 1) {
         let [x, y] = xys[i];
         x += this.getOffsetX();
         y += this.getOffsetY();
-        ctx.lineTo(this.lpx(XDraw.upRounding(x)),
-          this.lpx(XDraw.upRounding(y)));
+        ctx.lineTo(this.lpx(XDraw.rounding(x)),
+          this.lpx(XDraw.rounding(y)));
       }
       ctx.stroke();
     }
@@ -221,10 +221,10 @@ class XDraw extends Pos {
     tx += this.getOffsetX();
     ty += this.getOffsetY();
     ctx.drawImage(el,
-      XDraw.upRounding(sx), XDraw.upRounding(sy),
-      XDraw.upRounding(sw), XDraw.upRounding(sh),
-      XDraw.upRounding(tx), XDraw.upRounding(ty),
-      XDraw.upRounding(tw), XDraw.upRounding(th));
+      XDraw.rounding(sx), XDraw.rounding(sy),
+      XDraw.rounding(sw), XDraw.rounding(sh),
+      XDraw.rounding(tx), XDraw.rounding(ty),
+      XDraw.rounding(tw), XDraw.rounding(th));
     return this;
   }
 

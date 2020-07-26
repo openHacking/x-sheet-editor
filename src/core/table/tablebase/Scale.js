@@ -1,5 +1,3 @@
-import { XDraw } from '../../../canvas/XDraw';
-
 class Scale {
 
   constructor() {
@@ -16,11 +14,11 @@ class Scale {
   }
 
   back(origin) {
-    return this.enableFloat ? origin / this.value : XDraw.upRounding(origin / this.value);
+    return this.enableFloat ? origin / this.value : Math.floor(origin / this.value);
   }
 
   goto(origin) {
-    return this.enableFloat ? this.value * origin : XDraw.upRounding(this.value * origin);
+    return this.enableFloat ? this.value * origin : Math.floor(this.value * origin);
   }
 
   setValue(value) {

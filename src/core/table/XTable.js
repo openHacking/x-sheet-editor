@@ -439,6 +439,7 @@ class XTable extends Widget {
       scroll: this.scroll,
       rows: this.rows,
       cols: this.cols,
+      scale: this.scale,
       getHeight: () => this.xContent.getHeight(),
       getWidth: () => this.xContent.getWidth(),
     });
@@ -589,7 +590,7 @@ class XTable extends Widget {
     if (Utils.isNumber(this.visualHeightCache)) {
       return this.visualHeightCache;
     }
-    const height = Math.floor(this.box().height);
+    const height = this.box().height;
     this.visualHeightCache = height;
     return height;
   }
