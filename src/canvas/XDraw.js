@@ -5,7 +5,7 @@ const DPR = window.devicePixelRatio || 1;
 class Base {
 
   static rounding(val) {
-    return Math.ceil(val);
+    return Math.floor(val);
   }
 
   static dpr() {

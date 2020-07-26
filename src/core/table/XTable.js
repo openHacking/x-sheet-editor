@@ -378,10 +378,10 @@ class XTable extends Widget {
     // 表格设置
     this.settings = Utils.mergeDeep({
       index: {
-        height: 25,
-        width: 40,
+        height: 36,
+        width: 45,
         gridColor: '#c4c4c4',
-        size: 9,
+        size: 10,
         color: '#000000',
       },
       table: {
@@ -396,11 +396,11 @@ class XTable extends Widget {
       },
       rows: {
         len: 1000,
-        height: 28,
+        height: 36,
       },
       cols: {
         len: 36,
-        width: 110,
+        width: 150,
       },
       data: [],
       merge: {},
@@ -439,6 +439,7 @@ class XTable extends Widget {
       scroll: this.scroll,
       rows: this.rows,
       cols: this.cols,
+      scale: this.scale,
       getHeight: () => this.xContent.getHeight(),
       getWidth: () => this.xContent.getWidth(),
     });

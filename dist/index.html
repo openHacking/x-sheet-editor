@@ -17,6 +17,18 @@
 <body id="dome"><script type="text/javascript" src="XSheet.js"></script></body>
 <script>
     const dome = document.getElementById("dome");
-    const xSheet = new XSheet(dome);
+    const xSheet = new XSheet(dome, {
+      workConfig: {
+        body: {
+          sheets: [{
+            tableConfig: {
+              data: [
+                [{text:'jerry jerry jerry jerry jerry jerry jerry jerry jerry jerry jerry jerry jerry jerry',fontAttr:{textWrap:2}}]
+              ]
+            },
+          }],
+        },
+      },
+    });
 </script>
 </html>

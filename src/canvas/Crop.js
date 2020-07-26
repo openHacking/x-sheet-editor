@@ -12,9 +12,9 @@ class Crop {
     const {
       x, y, width, height,
     } = rect;
-    draw.save();
-    draw.rect(x, y, width + offset, height + offset);
-    draw.clip();
+    draw.save()
+      .rect(x, y, width + offset, height + offset)
+      .clip();
     return this;
   }
 
