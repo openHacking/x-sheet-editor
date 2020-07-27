@@ -44,13 +44,12 @@ const TEXT_DIRECTION = {
 class DrawFont {
 
   constructor({
-    text, rect, dw, overflow, overflowCrop, attr,
+    text, rect, dw, overflow, attr,
   }) {
     this.text = text;
     this.dw = dw;
     this.rect = rect;
     this.overflow = overflow;
-    this.overflowCrop = overflowCrop;
     this.attr = attr;
   }
 
@@ -253,7 +252,7 @@ class HorizontalFontDraw extends DrawFont {
    */
   drawTextOverFlow() {
     const {
-      text, dw, attr, rect, overflow, overflowCrop,
+      text, dw, attr, rect, overflow,
     } = this;
     const {
       size, underline, strikethrough, align, verticalAlign, padding,
@@ -304,14 +303,12 @@ class HorizontalFontDraw extends DrawFont {
       default:
         contentWidth = textWidth;
     }
-    if (overflowCrop || (overflow && (textWidth + paddingH > overflow.width
-      || size + paddingV > overflow.height))) {
+    if (textWidth + paddingH > overflow.width || size + paddingV > overflow.height) {
       const crop = new Crop({
         draw: dw,
         rect: overflow,
       });
       crop.open();
-      // console.log('text >>>', text, tx, ty);
       dw.fillText(text, tx, ty);
       if (underline) {
         this.drawLine('underline', tx, ty, textWidth);
@@ -486,14 +483,6 @@ class HorizontalFontDraw extends DrawFont {
       default:
         return this.drawTextOverFlow();
     }
-  }
-
-  /**
-   * 是否overflow是否裁剪
-   * @param overflowCrop
-   */
-  setOverflowCrop(overflowCrop) {
-    this.overflowCrop = overflowCrop;
   }
 
   /**
@@ -706,7 +695,7 @@ class VerticalFontDraw extends DrawFont {
    */
   drawTextOverFlow() {
     const {
-      text, dw, attr, rect, overflow, overflowCrop,
+      text, dw, attr, rect, overflow,
     } = this;
     const {
       underline, strikethrough, align, verticalAlign, size, padding,
@@ -772,8 +761,7 @@ class VerticalFontDraw extends DrawFont {
       default:
         contentWidth = size;
     }
-    if (overflowCrop || (overflow && (hOffset + paddingV > overflow.height
-      || size + paddingH > overflow.width))) {
+    if (hOffset + paddingV > overflow.height || size + paddingH > overflow.width) {
       const crop = new Crop({
         draw: dw,
         rect: overflow,
@@ -1017,14 +1005,6 @@ class VerticalFontDraw extends DrawFont {
   }
 
   /**
-   * 是否overflow是否裁剪
-   * @param overflowCrop
-   */
-  setOverflowCrop(overflowCrop) {
-    this.overflowCrop = overflowCrop;
-  }
-
-  /**
    * 设置文本大小
    * @param size
    */
@@ -1208,7 +1188,7 @@ class AngleFontDraw extends DrawFont {
       text, dw, attr, rect, overflow,
     } = this;
     const {
-      underline, strikethrough, align, verticalAlign, size, overflowCrop, padding,
+      underline, strikethrough, align, verticalAlign, size, padding,
     } = attr;
     let { angle } = attr;
     const { width, height } = rect;
@@ -1302,8 +1282,7 @@ class AngleFontDraw extends DrawFont {
       });
     }
     // 文本是否越界
-    if (overflowCrop || (overflow && (trigonometricWidth > overflow.width
-      || trigonometricHeight > overflow.height))) {
+    if (trigonometricWidth > overflow.width || trigonometricHeight > overflow.height) {
       crop.open();
       dwAngle.rotate();
       dw.fillText(text, tx, ty);
@@ -2033,14 +2012,6 @@ class AngleFontDraw extends DrawFont {
   }
 
   /**
-   * 是否overflow是否裁剪
-   * @param overflowCrop
-   */
-  setOverflowCrop(overflowCrop) {
-    this.overflowCrop = overflowCrop;
-  }
-
-  /**
    * 设置文本大小
    * @param size
    */
@@ -2135,16 +2106,6 @@ class Font {
       default:
         return this.horizontalFontDraw.draw();
     }
-  }
-
-  /**
-   * 是否overflow是否裁剪
-   * @param overflowCrop
-   */
-  setOverflowCrop(overflowCrop) {
-    this.verticalFontDraw.setOverflowCrop(overflowCrop);
-    this.horizontalFontDraw.setOverflowCrop(overflowCrop);
-    this.angleFontDraw.setOverflowCrop(overflowCrop);
   }
 
   /**

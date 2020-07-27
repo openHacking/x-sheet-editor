@@ -22,7 +22,6 @@ import { Focus } from './Focus';
 import { SCREEN_SELECT_EVENT, ScreenSelector } from './screenwiget/selector/ScreenSelector';
 import { ScreenAutoFill } from './screenwiget/autofill/ScreenAutoFill';
 import { ScreenCopyStyle } from './screenwiget/copystyle/ScreenCopyStyle';
-import { XDraw } from '../../canvas/XDraw';
 
 class Dimensions {
 
@@ -401,7 +400,7 @@ class XTable extends Widget {
       },
       cols: {
         len: 36,
-        width: 130,
+        width: 128,
       },
       data: [],
       merge: {},

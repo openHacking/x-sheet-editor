@@ -99,6 +99,7 @@ class XReSizer extends Widget {
       if (moveOff) return;
       // eslint-disable-next-line prefer-const
       let { left, ci } = this.getEventLeft(e);
+      console.log(ci, left);
       const min = left - cols.getWidth(ci) + cols.minWidth;
       const visualWidth = table.visualWidth();
       if (left > visualWidth) {

@@ -657,9 +657,7 @@ class XTableContentUI extends XTableUI {
           max += rect.width;
           const { text, fontAttr } = cell;
           const { align, textWrap } = fontAttr;
-          if (Utils.isBlank(text)
-                        || align === ALIGN.right
-                        || textWrap !== TEXT_WRAP.OVER_FLOW) {
+          if (Utils.isBlank(text) || align === ALIGN.right || textWrap !== TEXT_WRAP.OVER_FLOW) {
             return;
           }
           const size = cells.getCellBoundOutSize(row, col);
@@ -668,7 +666,6 @@ class XTableContentUI extends XTableUI {
               format, text, fontAttr,
             } = cell;
             scale.useFloat();
-            const { align } = fontAttr;
             const builder = textFont.getBuilder();
             builder.setDraw(draw);
             builder.setText(Format(format, text));
@@ -676,7 +673,6 @@ class XTableContentUI extends XTableUI {
             builder.setRect(rect);
             builder.setOverFlow(overflow);
             const font = builder.build();
-            font.setOverflowCrop(align === ALIGN.center);
             cell.setContentWidth(font.draw());
             scale.notFloat();
           }
@@ -704,9 +700,7 @@ class XTableContentUI extends XTableUI {
           max += rect.width;
           const { text, fontAttr } = cell;
           const { align, textWrap } = fontAttr;
-          if (Utils.isBlank(text)
-                        || align === ALIGN.left
-                        || textWrap !== TEXT_WRAP.OVER_FLOW) {
+          if (Utils.isBlank(text) || align === ALIGN.left || textWrap !== TEXT_WRAP.OVER_FLOW) {
             return;
           }
           const size = cells.getCellBoundOutSize(row, col);
@@ -715,7 +709,6 @@ class XTableContentUI extends XTableUI {
               format, text, fontAttr,
             } = cell;
             scale.useFloat();
-            const { align } = fontAttr;
             const builder = textFont.getBuilder();
             builder.setDraw(draw);
             builder.setText(Format(format, text));
@@ -723,7 +716,6 @@ class XTableContentUI extends XTableUI {
             builder.setRect(rect);
             builder.setOverFlow(overflow);
             const font = builder.build();
-            font.setOverflowCrop(align === ALIGN.center);
             cell.setContentWidth(font.draw());
             scale.notFloat();
           }
@@ -752,7 +744,6 @@ class XTableContentUI extends XTableUI {
           format, text, fontAttr,
         } = cell;
         scale.useFloat();
-        const { align } = fontAttr;
         const builder = textFont.getBuilder();
         builder.setDraw(draw);
         builder.setText(Format(format, text));
@@ -760,7 +751,6 @@ class XTableContentUI extends XTableUI {
         builder.setRect(rect);
         builder.setOverFlow(overflow);
         const font = builder.build();
-        font.setOverflowCrop(align === ALIGN.center);
         cell.setContentWidth(font.draw());
         scale.notFloat();
       },
