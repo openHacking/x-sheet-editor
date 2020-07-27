@@ -45,8 +45,8 @@ class TextBuilder {
     });
     const size = XDraw.rpx(scaleAdapter.goto(attr.size));
     const padding = XDraw.rpx(scaleAdapter.goto(attr.padding));
-    font.setSize(XDraw.rounding(size));
-    font.setPadding(XDraw.rounding(padding));
+    font.setSize(size);
+    font.setPadding(padding);
     return font;
   }
 

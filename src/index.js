@@ -11,7 +11,6 @@ import './styles/index.less';
 import { ElPopUp } from './component/elpopup/ElPopUp';
 import { DragPanel } from './component/dragpanel/DragPanel';
 import { Utils } from './utils/Utils';
-import '../template/travel';
 
 class XSheet extends Widget {
 
