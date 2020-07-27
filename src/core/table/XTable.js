@@ -439,7 +439,6 @@ class XTable extends Widget {
       scroll: this.scroll,
       rows: this.rows,
       cols: this.cols,
-      scale: this.scale,
       getHeight: () => this.xContent.getHeight(),
       getWidth: () => this.xContent.getWidth(),
     });
@@ -457,7 +456,7 @@ class XTable extends Widget {
       scroll: this.scroll,
       fixed: this.fixed,
     });
-    // table 区域
+    // table区域
     this.xTableFrozenContent = new XTableFrozenContent(this);
     this.xLeftIndex = new XTableLeftIndex(this);
     this.xTopIndex = new XTableTopIndex(this);
@@ -474,6 +473,16 @@ class XTable extends Widget {
     this.xHeightLight = new XHeightLight(this);
     this.yHeightLight = new YHeightLight(this);
     this.edit = new Edit(this);
+  }
+
+  /**
+   * 读取快照数据
+   * @returns {TableDataSnapshot}
+   */
+  getTableDataSnapshot() {
+    const { xTableImage } = this;
+    const { tableDataSnapshot } = xTableImage;
+    return tableDataSnapshot;
   }
 
   /**
@@ -506,16 +515,6 @@ class XTable extends Widget {
       height = rows.sectionSumHeight(0, rows.len - 1);
     }
     return height;
-  }
-
-  /**
-   * 读取快照数据
-   * @returns {TableDataSnapshot}
-   */
-  getTableDataSnapshot() {
-    const { xTableImage } = this;
-    const { tableDataSnapshot } = xTableImage;
-    return tableDataSnapshot;
   }
 
   /**
@@ -869,8 +868,8 @@ class XTable extends Widget {
   setScale(val) {
     const { xTableImage, scale } = this;
     this.reset();
-    xTableImage.setScale(val);
     scale.setValue(val);
+    xTableImage.setScale(val);
   }
 
 }

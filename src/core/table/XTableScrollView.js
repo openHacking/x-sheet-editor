@@ -45,7 +45,6 @@ class XTableScrollView {
    * @param scroll
    * @param rows
    * @param cols
-   * @param scale
    * @param getHeight
    * @param getWidth
    */
@@ -53,14 +52,12 @@ class XTableScrollView {
     scroll,
     rows,
     cols,
-    scale,
     getHeight = () => 0,
     getWidth = () => 0,
   }) {
     this.scroll = scroll;
     this.rows = rows;
     this.cols = cols;
-    this.scale = scale;
     this.getHeight = getHeight;
     this.getWidth = getWidth;
   }
@@ -71,23 +68,21 @@ class XTableScrollView {
    */
   getScrollView() {
     const {
-      rows, cols, scale, scroll, getHeight, getWidth,
+      rows, cols, scroll, getHeight, getWidth,
     } = this;
     const { ri, ci } = scroll;
     let [width, height] = [0, 0];
     let [eri, eci] = [rows.len, cols.len];
-    scale.useFloat();
     for (let i = ri; i < rows.len; i += 1) {
       height += rows.getHeight(i);
       eri = i;
-      if (height >= getHeight()) break;
+      if (height > getHeight()) break;
     }
     for (let j = ci; j < cols.len; j += 1) {
       width += cols.getWidth(j);
       eci = j;
-      if (width >= getWidth()) break;
+      if (width > getWidth()) break;
     }
-    scale.notFloat();
     return new RectRange(ri, ci, eri, eci);
   }
 
