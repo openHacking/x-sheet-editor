@@ -22,6 +22,7 @@ import { Focus } from './Focus';
 import { SCREEN_SELECT_EVENT, ScreenSelector } from './screenwiget/selector/ScreenSelector';
 import { ScreenAutoFill } from './screenwiget/autofill/ScreenAutoFill';
 import { ScreenCopyStyle } from './screenwiget/copystyle/ScreenCopyStyle';
+import { XDraw } from '../../canvas/XDraw';
 
 class Dimensions {
 
@@ -378,8 +379,8 @@ class XTable extends Widget {
     // 表格设置
     this.settings = Utils.mergeDeep({
       index: {
-        height: 36,
-        width: 45,
+        height: 30,
+        width: 40,
         gridColor: '#c4c4c4',
         size: 10,
         color: '#000000',
@@ -396,11 +397,11 @@ class XTable extends Widget {
       },
       rows: {
         len: 1000,
-        height: 36,
+        height: 28,
       },
       cols: {
         len: 36,
-        width: 150,
+        width: 130,
       },
       data: [],
       merge: {},
@@ -576,7 +577,7 @@ class XTable extends Widget {
     if (Utils.isNumber(this.visualWidthCache)) {
       return this.visualWidthCache;
     }
-    const width = this.box().width;
+    const width = XDraw.rounding(this.box().width);
     this.visualWidthCache = width;
     return width;
   }
@@ -589,7 +590,7 @@ class XTable extends Widget {
     if (Utils.isNumber(this.visualHeightCache)) {
       return this.visualHeightCache;
     }
-    const height = this.box().height;
+    const height = XDraw.rounding(this.box().height);
     this.visualHeightCache = height;
     return height;
   }
@@ -850,7 +851,7 @@ class XTable extends Widget {
    */
   scrolling() {
     const { xTableImage } = this;
-    this.reset();
+    // this.reset();
     xTableImage.scrolling();
   }
 

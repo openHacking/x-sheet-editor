@@ -2276,7 +2276,7 @@ class XTableImage extends Widget {
     if (Utils.isNumber(this.visualWidthCache)) {
       return this.visualWidthCache;
     }
-    const width = XDraw.rpx(this.box().width);
+    const width = XDraw.rounding(XDraw.rpx(this.box().width));
     this.visualWidthCache = width;
     return width;
   }
@@ -2289,7 +2289,7 @@ class XTableImage extends Widget {
     if (Utils.isNumber(this.visualHeightCache)) {
       return this.visualHeightCache;
     }
-    const height = XDraw.rpx(this.box().height);
+    const height = XDraw.rounding(XDraw.rpx(this.box().height));
     this.visualHeightCache = height;
     return height;
   }
