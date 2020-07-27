@@ -9,10 +9,6 @@ class Base {
     return (0.5 + val) << 0;
   }
 
-  static checkInteger(val) {
-    return val % 1 === 0;
-  }
-
   static dpr() {
     return DPR;
   }
