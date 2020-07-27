@@ -46,7 +46,7 @@ const calendar_2020 = {
         null,
         null,
         null,
-        { height: 50 },
+        { height: 70 },
       ],
     },
     cols: {

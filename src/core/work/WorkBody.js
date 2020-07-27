@@ -207,10 +207,10 @@ class WorkBody extends Widget {
     const tab = tabView.setActiveTab(index);
     if (sheet && tab) {
       const { table } = sheet;
-      this.updateScroll();
       table.resize();
       // this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
       this.activeIndex = index;
+      this.updateScroll();
     }
   }
 
