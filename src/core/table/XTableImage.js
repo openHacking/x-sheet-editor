@@ -2048,19 +2048,19 @@ class XTableImage extends Widget {
     this.scale = new Scale();
     this.index = new Code({
       scaleAdapter: new ScaleAdapter({
-        goto: v => this.scale.goto(XDraw.rounding(XDraw.rpx(v))),
+        goto: v => XDraw.rounding(XDraw.rpx(this.scale.goto(v))),
       }),
       ...this.settings.index,
     });
     this.rows = new Rows({
       scaleAdapter: new ScaleAdapter({
-        goto: v => this.scale.goto(XDraw.rounding(XDraw.rpx(v))),
+        goto: v => XDraw.rounding(XDraw.rpx(this.scale.goto(v))),
       }),
       ...this.settings.rows,
     });
     this.cols = new Cols({
       scaleAdapter: new ScaleAdapter({
-        goto: v => this.scale.goto(XDraw.rounding(XDraw.rpx(v))),
+        goto: v => XDraw.rounding(XDraw.rpx(this.scale.goto(v))),
       }),
       ...this.settings.cols,
     });
