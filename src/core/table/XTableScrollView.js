@@ -76,12 +76,12 @@ class XTableScrollView {
     for (let i = ri; i < rows.len; i += 1) {
       height += rows.getHeight(i);
       eri = i;
-      if (height > getHeight()) break;
+      if (height >= getHeight()) break;
     }
     for (let j = ci; j < cols.len; j += 1) {
       width += cols.getWidth(j);
       eci = j;
-      if (width > getWidth()) break;
+      if (width >= getWidth()) break;
     }
     return new RectRange(ri, ci, eri, eci);
   }

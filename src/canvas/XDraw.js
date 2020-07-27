@@ -5,9 +5,8 @@ const DPR = window.devicePixelRatio || 1;
 class Base {
 
   static rounding(val) {
-    // 向下取整
     // eslint-disable-next-line no-bitwise
-    return val >> 0;
+    return ~~val;
   }
 
   static dpr() {

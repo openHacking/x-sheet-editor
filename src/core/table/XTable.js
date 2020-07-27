@@ -577,7 +577,7 @@ class XTable extends Widget {
     if (Utils.isNumber(this.visualWidthCache)) {
       return this.visualWidthCache;
     }
-    const width = XDraw.rounding(this.box().width);
+    const width = this.box().width;
     this.visualWidthCache = width;
     return width;
   }
@@ -590,7 +590,7 @@ class XTable extends Widget {
     if (Utils.isNumber(this.visualHeightCache)) {
       return this.visualHeightCache;
     }
-    const height = XDraw.rounding(this.box().height);
+    const height = this.box().height;
     this.visualHeightCache = height;
     return height;
   }
