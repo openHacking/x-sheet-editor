@@ -2370,6 +2370,7 @@ class XTableImage extends Widget {
     this.resize();
     this.renderMode = RENDER_MODE.RENDER;
   }
+
 }
 
 export {

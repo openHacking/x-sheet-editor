@@ -607,13 +607,10 @@ class XTable extends Widget {
     const { index } = this;
     const fixedHeight = this.getFixedHeight();
     const fixedWidth = this.getFixedWidth();
-
     let [left, top] = [x, y];
     let [ci, ri] = [-1, -1];
-
     left -= index.getWidth();
     top -= index.getHeight();
-
     // left
     if (left <= fixedWidth && x > index.getWidth()) {
       let total = 0;
@@ -621,7 +618,7 @@ class XTable extends Widget {
         const width = cols.getWidth(i);
         total += width;
         ci = i;
-        if (total > left) break;
+        if (total >= left) break;
       }
     } else if (x > index.getWidth()) {
       let total = fixedWidth;
@@ -630,10 +627,9 @@ class XTable extends Widget {
         const width = cols.getWidth(i);
         total += width;
         ci = i;
-        if (total > left) break;
+        if (total >= left) break;
       }
     }
-
     // top
     if (top < fixedHeight && y > index.getHeight()) {
       let total = 0;
@@ -653,7 +649,6 @@ class XTable extends Widget {
         if (total > top) break;
       }
     }
-
     return {
       ri, ci,
     };
