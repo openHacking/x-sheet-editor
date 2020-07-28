@@ -22,7 +22,7 @@ import { Focus } from './Focus';
 import { SCREEN_SELECT_EVENT, ScreenSelector } from './screenwiget/selector/ScreenSelector';
 import { ScreenAutoFill } from './screenwiget/autofill/ScreenAutoFill';
 import { ScreenCopyStyle } from './screenwiget/copystyle/ScreenCopyStyle';
-import {XDraw} from "../../canvas/XDraw";
+import { XDraw } from '../../canvas/XDraw';
 
 class Dimensions {
 
@@ -397,7 +397,7 @@ class XTable extends Widget {
       },
       rows: {
         len: 1000,
-        height: 28,
+        height: 30,
       },
       cols: {
         len: 36,
@@ -846,7 +846,7 @@ class XTable extends Widget {
    */
   scrolling() {
     const { xTableImage } = this;
-    // this.reset();
+    this.reset();
     xTableImage.scrolling();
   }
 

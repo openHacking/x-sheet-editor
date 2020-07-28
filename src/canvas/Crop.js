@@ -13,6 +13,7 @@ class Crop {
       x, y, width, height,
     } = rect;
     draw.save()
+      .beginPath()
       .rect(x, y, width + offset, height + offset)
       .clip();
     return this;

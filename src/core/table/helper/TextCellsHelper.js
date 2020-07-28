@@ -40,8 +40,8 @@ class TextCellsHelper extends BaseCellsHelper {
             const rect = new Rect({
               x, y, width: cols.getWidth(j), height,
             });
-            scale.notFloat();
             const overFlow = this.getCellOverFlow(i, j, rect, cell);
+            scale.notFloat();
             const result = callback(i, j, cell, rect, overFlow);
             if (result === false) {
               return;
@@ -64,8 +64,8 @@ class TextCellsHelper extends BaseCellsHelper {
             const rect = new Rect({
               x, y, width: cols.getWidth(j), height,
             });
-            scale.notFloat();
             const overFlow = this.getCellOverFlow(i, j, rect, cell);
+            scale.notFloat();
             const result = callback(i, j, cell, rect, overFlow);
             if (result === false) {
               return;
@@ -88,8 +88,8 @@ class TextCellsHelper extends BaseCellsHelper {
             const rect = new Rect({
               x, y, width: cols.getWidth(j), height,
             });
-            scale.notFloat();
             const overFlow = this.getCellOverFlow(i, j, rect, cell);
+            scale.notFloat();
             const result = callback(i, j, cell, rect, overFlow);
             if (result === false) {
               return;
@@ -112,8 +112,8 @@ class TextCellsHelper extends BaseCellsHelper {
             const rect = new Rect({
               x, y, width: cols.getWidth(j), height,
             });
-            scale.notFloat();
             const overFlow = this.getCellOverFlow(i, j, rect, cell);
+            scale.notFloat();
             const result = callback(i, j, cell, rect, overFlow);
             if (result === false) {
               return;

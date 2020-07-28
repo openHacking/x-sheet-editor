@@ -14,8 +14,7 @@ class Base {
   }
 
   static cvCssPx(px) {
-    const diff = px - (this.rpx(px) / this.dpr());
-    return px - diff;
+    return this.rpx(px) / this.dpr();
   }
 
   static radian(angle) {
