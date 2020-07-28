@@ -13,6 +13,11 @@ class Base {
     return DPR;
   }
 
+  static cvCssPx(px) {
+    const diff = px - (this.rpx(px) / this.dpr());
+    return px - diff;
+  }
+
   static radian(angle) {
     return -angle * (Math.PI / 180);
   }
@@ -23,11 +28,6 @@ class Base {
 
   static dpx(px) {
     return px * this.dpr();
-  }
-
-  static cssPx(px) {
-    const diff = px - (this.rounding(this.rpx(px)) / this.dpr());
-    return px - diff;
   }
 
   constructor(canvas) {

@@ -413,19 +413,19 @@ class XTable extends Widget {
     this.scale = new Scale();
     this.index = new Code({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.cssPx(this.scale.goto(v)),
+        goto: v => XDraw.cvCssPx(this.scale.goto(v)),
       }),
       ...this.settings.index,
     });
     this.rows = new Rows({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.cssPx(this.scale.goto(v)),
+        goto: v => XDraw.cvCssPx(this.scale.goto(v)),
       }),
       ...this.settings.rows,
     });
     this.cols = new Cols({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.cssPx(this.scale.goto(v)),
+        goto: v => XDraw.cvCssPx(this.scale.goto(v)),
       }),
       ...this.settings.cols,
     });
