@@ -518,22 +518,6 @@ class XTable extends Widget {
   }
 
   /**
-   * 获取内容区域宽度
-   */
-  getContentWidth() {
-    const { xContent } = this;
-    return xContent.getWidth();
-  }
-
-  /**
-   * 获取内容区域高度
-   */
-  getContentHeight() {
-    const { xContent } = this;
-    return xContent.getHeight();
-  }
-
-  /**
    * 索引栏宽度
    * @returns {*}
    */
@@ -549,6 +533,22 @@ class XTable extends Widget {
   getIndexHeight() {
     const { index } = this;
     return index.getHeight();
+  }
+
+  /**
+   * 获取内容区域宽度
+   */
+  getContentWidth() {
+    const { xContent } = this;
+    return xContent.getWidth();
+  }
+
+  /**
+   * 获取内容区域高度
+   */
+  getContentHeight() {
+    const { xContent } = this;
+    return xContent.getHeight();
   }
 
   /**

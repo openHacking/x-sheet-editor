@@ -2203,9 +2203,6 @@ class XTableImage extends Widget {
     this.xLeft = new XTableLeft(this);
     this.xTop = new XTableTop(this);
     this.xContent = new XTableContent(this);
-    // 画布大小
-    this.visualWidthCache = null;
-    this.visualHeightCache = null;
     // 同步合并单元格
     this.merges.sync();
   }
@@ -2263,12 +2260,7 @@ class XTableImage extends Widget {
    * @returns {null|*}
    */
   visualWidth() {
-    if (Utils.isNumber(this.visualWidthCache)) {
-      return this.visualWidthCache;
-    }
-    const width = XDraw.rpx(this.box().width);
-    this.visualWidthCache = width;
-    return width;
+    return this.el.width;
   }
 
   /**
@@ -2276,12 +2268,7 @@ class XTableImage extends Widget {
    * @returns {null|*}
    */
   visualHeight() {
-    if (Utils.isNumber(this.visualHeightCache)) {
-      return this.visualHeightCache;
-    }
-    const height = XDraw.rpx(this.box().height);
-    this.visualHeightCache = height;
-    return height;
+    return this.el.height;
   }
 
   /**
@@ -2292,8 +2279,6 @@ class XTableImage extends Widget {
       draw, xTableAreaView,
     } = this;
     const box = this.parent().box();
-    this.visualWidthCache = null;
-    this.visualHeightCache = null;
     draw.resize(box.width, box.height);
     xTableAreaView.undo();
     this.reset();
