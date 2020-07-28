@@ -18,7 +18,16 @@ class Base {
   }
 
   static rpx(px) {
+    return this.rounding(this.dpx(px));
+  }
+
+  static dpx(px) {
     return px * this.dpr();
+  }
+
+  static cssPx(px) {
+    const diff = px - (this.rounding(this.rpx(px)) / this.dpr());
+    return px - diff;
   }
 
   constructor(canvas) {
@@ -28,8 +37,8 @@ class Base {
 
   resize(width, height) {
     const { canvas } = this;
-    canvas.width = Base.rounding(Base.rpx(width));
-    canvas.height = Base.rounding(Base.rpx(height));
+    canvas.width = Base.rpx(width);
+    canvas.height = Base.rpx(height);
     canvas.style.width = `${canvas.width / Base.dpr()}px`;
     canvas.style.height = `${canvas.height / Base.dpr()}px`;
     return this;

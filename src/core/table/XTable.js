@@ -22,6 +22,7 @@ import { Focus } from './Focus';
 import { SCREEN_SELECT_EVENT, ScreenSelector } from './screenwiget/selector/ScreenSelector';
 import { ScreenAutoFill } from './screenwiget/autofill/ScreenAutoFill';
 import { ScreenCopyStyle } from './screenwiget/copystyle/ScreenCopyStyle';
+import {XDraw} from "../../canvas/XDraw";
 
 class Dimensions {
 
@@ -400,7 +401,7 @@ class XTable extends Widget {
       },
       cols: {
         len: 36,
-        width: 128,
+        width: 130,
       },
       data: [],
       merge: {},
@@ -412,19 +413,19 @@ class XTable extends Widget {
     this.scale = new Scale();
     this.index = new Code({
       scaleAdapter: new ScaleAdapter({
-        goto: v => this.scale.goto(v),
+        goto: v => XDraw.cssPx(this.scale.goto(v)),
       }),
       ...this.settings.index,
     });
     this.rows = new Rows({
       scaleAdapter: new ScaleAdapter({
-        goto: v => this.scale.goto(v),
+        goto: v => XDraw.cssPx(this.scale.goto(v)),
       }),
       ...this.settings.rows,
     });
     this.cols = new Cols({
       scaleAdapter: new ScaleAdapter({
-        goto: v => this.scale.goto(v),
+        goto: v => XDraw.cssPx(this.scale.goto(v)),
       }),
       ...this.settings.cols,
     });
@@ -721,9 +722,6 @@ class XTable extends Widget {
     EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.resize();
     });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      this.scrolling();
-    });
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       const { x, y } = this.computeEventXy(e);
       const { ri, ci } = this.getRiCiByXy(x, y);
@@ -739,6 +737,9 @@ class XTable extends Widget {
       }
       const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_CELL;
       mousePointer.set(type, key);
+    });
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+      this.scrolling();
     });
   }
 
