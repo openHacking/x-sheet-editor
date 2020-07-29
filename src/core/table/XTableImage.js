@@ -2049,6 +2049,7 @@ class XTableImage extends Widget {
     this.cols = new Cols(Utils.mergeDeep({
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.rpx(this.scale.goto(v)),
+        back: v => this.scale.back(v),
       }),
     }, this.settings.cols));
     this.merges = new Merges(Utils.mergeDeep({
