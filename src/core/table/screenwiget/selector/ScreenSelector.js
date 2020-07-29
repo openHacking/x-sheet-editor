@@ -577,7 +577,8 @@ class ScreenSelector extends ScreenWidget {
   getDownXYSelectorAttr(x, y) {
     const { screen } = this;
     const { table } = screen;
-    const { merges, rows, cols } = table;
+    const { rows, cols } = table;
+    const merges = table.getTableMerges();
     const { ri, ci } = table.getRiCiByXy(x, y);
     if (ri === -1 && ci === -1) {
       const rect = new RectRange(0, 0, rows.len - 1, cols.len - 1);
@@ -609,8 +610,9 @@ class ScreenSelector extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const {
-      merges, rows, cols,
+      rows, cols,
     } = table;
+    const merges = table.getTableMerges();
     const { rect: selectRect, edgeType } = selectorAttr;
     const viewRange = this.getViewRange();
     let { ri, ci } = table.getRiCiByXy(x, y);

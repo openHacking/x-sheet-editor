@@ -239,8 +239,9 @@ class ScreenAutoFill extends ScreenWidget {
     const { screenSelector } = table;
     const { selectorAttr } = screenSelector;
     const {
-      cols, rows, merges,
+      cols, rows,
     } = table;
+    const merges = table.getTableMerges();
     const {
       rect: selectorRect, edge, edgeType,
     } = selectorAttr;
@@ -351,7 +352,7 @@ class ScreenAutoFill extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const { screenSelector } = table;
-    const { cells } = table;
+    const cells = table.getTableCells();
     const tableDataSnapshot = table.getTableDataSnapshot();
     const { cellDataProxy } = tableDataSnapshot;
     const { autoFillAttr } = this;
@@ -386,7 +387,7 @@ class ScreenAutoFill extends ScreenWidget {
   splitMerge() {
     const { screen } = this;
     const { table } = screen;
-    const { merges } = table;
+    const merges = table.getTableMerges();
     const tableDataSnapshot = table.getTableDataSnapshot();
     const { mergeDataProxy } = tableDataSnapshot;
     const { autoFillAttr } = this;
@@ -403,9 +404,7 @@ class ScreenAutoFill extends ScreenWidget {
     const { screen } = this;
     const { table } = screen;
     const { screenSelector } = table;
-    const {
-      merges,
-    } = table;
+    const merges = table.getTableMerges();
     const tableDataSnapshot = table.getTableDataSnapshot();
     const { mergeDataProxy } = tableDataSnapshot;
     const { autoFillAttr } = this;

@@ -57,7 +57,8 @@ class Edit extends Widget {
 
   showEdit() {
     const { table, input } = this;
-    const { screen, cells } = table;
+    const { screen } = table;
+    const cells = table.getTableCells();
     const selector = screen.findByClass(ScreenSelector);
     const { selectorAttr } = selector;
     if (selectorAttr) {
@@ -78,7 +79,7 @@ class Edit extends Widget {
   hideEdit() {
     const { select } = this;
     const { table } = this;
-    const { cells } = table;
+    const cells = table.getTableCells();
     const tableDataSnapshot = table.getTableDataSnapshot();
     const { cellDataProxy } = tableDataSnapshot;
     if (select) {

@@ -229,8 +229,10 @@ class WorkBody extends Widget {
     if (sheet && tab) {
       const { table } = sheet;
       const {
-        rows, cols, merges, cells, settings,
+        rows, cols, settings,
       } = table;
+      const cells = table.getTableCells();
+      const merges = table.getTableMerges();
       const data = {
         name: tab.name,
         tableConfig: {

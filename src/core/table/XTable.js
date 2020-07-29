@@ -23,11 +23,13 @@ import { SCREEN_SELECT_EVENT, ScreenSelector } from './screenwiget/selector/Scre
 import { ScreenAutoFill } from './screenwiget/autofill/ScreenAutoFill';
 import { ScreenCopyStyle } from './screenwiget/copystyle/ScreenCopyStyle';
 import { XDraw } from '../../canvas/XDraw';
+import { RectRange } from './tablebase/RectRange';
 
 class Dimensions {
 
   constructor(table) {
     this.table = table;
+    this.scrollView = null;
     this.width = null;
     this.height = null;
     this.x = null;
@@ -35,6 +37,7 @@ class Dimensions {
   }
 
   reset() {
+    this.scrollView = null;
     this.width = null;
     this.height = null;
     this.x = null;
@@ -109,6 +112,20 @@ class XTableFrozenContent extends Dimensions {
     return y;
   }
 
+  getScrollView() {
+    if (Utils.isNotUnDef(this.scrollView)) {
+      return this.scrollView.clone();
+    }
+    const { table } = this;
+    const { rows, cols } = table;
+    const { fixed } = table;
+    const view = new RectRange(0, 0, fixed.fxTop, fixed.fxLeft);
+    view.w = cols.rectRangeSumWidth(view);
+    view.h = rows.rectRangeSumHeight(view);
+    this.scrollView = view;
+    return view.clone();
+  }
+
 }
 
 class XTableTopIndex extends Dimensions {
@@ -157,6 +174,21 @@ class XTableTopIndex extends Dimensions {
     return y;
   }
 
+  getScrollView() {
+    if (Utils.isNotUnDef(this.scrollView)) {
+      return this.scrollView.clone();
+    }
+    const { table } = this;
+    const { index } = table;
+    const { xTableAreaView } = table;
+    const scrollView = xTableAreaView.getScrollView();
+    scrollView.sri = 0;
+    scrollView.eri = 0;
+    scrollView.h = index.getHeight();
+    this.scrollView = scrollView;
+    return scrollView.clone();
+  }
+
 }
 
 class XTableLeftIndex extends Dimensions {
@@ -203,6 +235,21 @@ class XTableLeftIndex extends Dimensions {
     const y = index.getHeight() + xTop.getHeight();
     this.y = y;
     return y;
+  }
+
+  getScrollView() {
+    if (Utils.isNotUnDef(this.scrollView)) {
+      return this.scrollView.clone();
+    }
+    const { table } = this;
+    const { xTableAreaView } = table;
+    const { index } = table;
+    const scrollView = xTableAreaView.getScrollView();
+    scrollView.sci = 0;
+    scrollView.eci = 0;
+    scrollView.w = index.getWidth();
+    this.scrollView = scrollView;
+    return scrollView.clone();
   }
 
 }
@@ -254,6 +301,22 @@ class XTableTop extends Dimensions {
     const y = index.getHeight();
     this.y = y;
     return y;
+  }
+
+  getScrollView() {
+    if (Utils.isNotUnDef(this.scrollView)) {
+      return this.scrollView.clone();
+    }
+    const { table } = this;
+    const { fixed } = table;
+    const { rows } = table;
+    const { xTableAreaView } = table;
+    const scrollView = xTableAreaView.getScrollView();
+    scrollView.sri = 0;
+    scrollView.eri = fixed.fxTop;
+    scrollView.h = rows.sectionSumHeight(scrollView.sci, scrollView.eci);
+    this.scrollView = scrollView;
+    return scrollView.clone();
   }
 
 }
@@ -308,6 +371,17 @@ class XTableContent extends Dimensions {
     return y;
   }
 
+  getScrollView() {
+    if (Utils.isNotUnDef(this.scrollView)) {
+      return this.scrollView.clone();
+    }
+    const { table } = this;
+    const { xTableAreaView } = table;
+    const scrollView = xTableAreaView.getScrollView();
+    this.scrollView = scrollView;
+    return scrollView.clone();
+  }
+
 }
 
 class XTableLeft extends Dimensions {
@@ -357,6 +431,89 @@ class XTableLeft extends Dimensions {
     const y = index.getHeight() + xTop.getHeight();
     this.y = y;
     return y;
+  }
+
+  getScrollView() {
+    if (Utils.isNotUnDef(this.scrollView)) {
+      return this.scrollView.clone();
+    }
+    const { table } = this;
+    const { fixed } = table;
+    const { cols } = table;
+    const { xTableAreaView } = table;
+    const scrollView = xTableAreaView.getScrollView();
+    scrollView.sci = 0;
+    scrollView.eci = fixed.fxLeft;
+    scrollView.w = cols.sectionSumWidth(scrollView.sci, scrollView.eci);
+    this.scrollView = scrollView;
+    return scrollView.clone();
+  }
+
+}
+
+// ================================= 快捷键 =================================
+
+class KeyBoardTab {
+
+  constructor(table) {
+    const { keyboard, cols, rows, edit, merges, screenSelector } = table;
+    let tabId = 0;
+    let tabNext = null;
+    keyboard.register({
+      el: table,
+      focus: true,
+      stop: false,
+      attr: {
+        code: 9,
+        callback: () => {
+          edit.hideEdit();
+          const { selectorAttr } = screenSelector;
+          const id = selectorAttr;
+          const rect = selectorAttr.rect.clone();
+          if (tabId !== id) {
+            const { sri, sci } = rect;
+            tabId = id;
+            tabNext = { sri, sci };
+          }
+          const cLen = cols.len - 1;
+          const rLen = rows.len - 1;
+          let { sri, sci } = tabNext;
+          const srcMerges = merges.getFirstIncludes(sri, sci);
+          if (srcMerges) {
+            sci = srcMerges.eci;
+          }
+          if (sci >= cLen && sri >= rLen) {
+            return;
+          }
+          if (sci >= cLen) {
+            sri += 1;
+            sci = 0;
+          } else {
+            sci += 1;
+          }
+          tabNext.sri = sri;
+          tabNext.sci = sci;
+          let eri = sri;
+          let eci = sci;
+          const targetMerges = merges.getFirstIncludes(sri, sci);
+          if (targetMerges) {
+            sri = targetMerges.sri;
+            sci = targetMerges.sci;
+            eri = targetMerges.eri;
+            eci = targetMerges.eci;
+          }
+          rect.sri = sri;
+          rect.sci = sci;
+          rect.eri = eri;
+          rect.eci = eci;
+          screenSelector.selectorAttr.rect = rect;
+          screenSelector.setOffset(screenSelector.selectorAttr);
+          screenSelector.onChangeStack.forEach(cb => cb());
+          screenSelector.onSelectChangeStack.forEach(cb => cb());
+          edit.showEdit();
+        },
+      },
+    });
   }
 
 }
@@ -483,6 +640,25 @@ class XTable extends Widget {
     const { xTableImage } = this;
     const { tableDataSnapshot } = xTableImage;
     return tableDataSnapshot;
+  }
+
+  /**
+   * 读取合并单元格
+   */
+  getTableMerges() {
+    const { xTableImage } = this;
+    const { merges } = xTableImage;
+    return merges;
+  }
+
+  /**
+   * 获取表格单元格
+   * @returns {Cells}
+   */
+  getTableCells() {
+    const { xTableImage } = this;
+    const { cells } = xTableImage;
+    return cells;
   }
 
   /**
@@ -681,6 +857,8 @@ class XTable extends Widget {
     const { xTableImage } = this;
     this.attach(xTableImage);
     this.bind();
+    // 注册快捷键
+    this.keyBoardTab = new KeyBoardTab(this);
     // 表格组件
     const tableDataSnapshot = this.getTableDataSnapshot();
     this.screenSelector = new ScreenSelector(this.screen);
