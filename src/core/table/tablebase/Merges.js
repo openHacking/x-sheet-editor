@@ -116,7 +116,7 @@ class Merges {
   }
 
   /**
-   * 返回联合的合并单元格(性能差慎用)
+   * 返回联合的合并单元格(性能差,以后优化)
    * @param cellRange
    * @return {RectRange}
    */
