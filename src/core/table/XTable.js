@@ -398,10 +398,12 @@ class XTable extends Widget {
       rows: {
         len: 1000,
         height: 30,
+        data: [],
       },
       cols: {
         len: 36,
         width: 130,
+        data: [],
       },
       data: [],
       merge: {},
@@ -411,24 +413,21 @@ class XTable extends Widget {
     this.visualWidthCache = null;
     // 表格数据配置
     this.scale = new Scale();
-    this.index = new Code({
+    this.index = new Code(Utils.mergeDeep({
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.cvCssPx(this.scale.goto(v)),
       }),
-      ...this.settings.index,
-    });
-    this.rows = new Rows({
+    }, this.settings.index));
+    this.rows = new Rows(Utils.mergeDeep({
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.cvCssPx(this.scale.goto(v)),
       }),
-      ...this.settings.rows,
-    });
-    this.cols = new Cols({
+    }, this.settings.rows));
+    this.cols = new Cols(Utils.mergeDeep({
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.cvCssPx(this.scale.goto(v)),
       }),
-      ...this.settings.cols,
-    });
+    }, this.settings.cols));
     // 冻结视图坐标
     this.fixed = new Fixed(this.settings.fixed);
     // 滚动视图的坐标

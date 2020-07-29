@@ -2036,29 +2036,25 @@ class XTableImage extends Widget {
     this.renderMode = RENDER_MODE.RENDER;
     // 表格数据配置
     this.scale = new Scale();
-    this.index = new Code({
+    this.index = new Code(Utils.mergeDeep({
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.rpx(this.scale.goto(v)),
       }),
-      ...this.settings.index,
-    });
-    this.rows = new Rows({
+    }, this.settings.index));
+    this.rows = new Rows(Utils.mergeDeep({
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.rpx(this.scale.goto(v)),
       }),
-      ...this.settings.rows,
-    });
-    this.cols = new Cols({
+    }, this.settings.rows));
+    this.cols = new Cols(Utils.mergeDeep({
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.rpx(this.scale.goto(v)),
       }),
-      ...this.settings.cols,
-    });
-    this.merges = new Merges({
-      ...this.settings.merge,
+    }, this.settings.cols));
+    this.merges = new Merges(Utils.mergeDeep({
       rows: this.rows,
       cols: this.cols,
-    });
+    }, this.settings.merge));
     this.cells = new Cells({
       rows: this.rows,
       cols: this.cols,

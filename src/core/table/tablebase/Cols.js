@@ -46,7 +46,7 @@ class Cols {
   setWidth(i, width) {
     const col = this.getOrNew(i);
     const { scaleAdapter } = this;
-    col.width = scaleAdapter.goto(Utils.minIf(width, this.min));
+    col.width = scaleAdapter.back(Utils.minIf(width, this.min));
   }
 
   rectRangeSumWidth(rectRange) {
