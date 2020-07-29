@@ -21,11 +21,6 @@ class XReSizer extends Widget {
     ]);
   }
 
-  onAttach() {
-    this.bind();
-    this.table.focus.register({ el: this });
-  }
-
   getEventLeft(event) {
     const { table } = this;
     const {
@@ -44,6 +39,11 @@ class XReSizer extends Widget {
     return {
       left, x, y, ri, ci,
     };
+  }
+
+  onAttach() {
+    this.bind();
+    this.table.focus.register({ el: this });
   }
 
   bind() {
@@ -70,7 +70,7 @@ class XReSizer extends Widget {
       mousePointer.on(key);
       mousePointer.set(type, key);
       const { left, ci } = this.getEventLeft(e);
-      const min = left - cols.getWidth(ci) + cols.minWidth;
+      const min = left - cols.getWidth(ci) + cols.min;
       let { x: mx } = table.computeEventXy(e);
       EventBind.mouseMoveUp(document, (e) => {
         ({ x: mx } = table.computeEventXy(e));
