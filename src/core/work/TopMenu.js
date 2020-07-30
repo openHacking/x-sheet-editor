@@ -68,8 +68,8 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            styleCellsHelper,
           } = table;
+          const styleCellsHelper = table.getStyleCellsHelper();
           const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
@@ -98,8 +98,8 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            styleCellsHelper,
           } = table;
+          const styleCellsHelper = table.getStyleCellsHelper();
           const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
@@ -128,8 +128,8 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            styleCellsHelper,
           } = table;
+          const styleCellsHelper = table.getStyleCellsHelper();
           const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
@@ -158,8 +158,8 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            styleCellsHelper,
           } = table;
+          const styleCellsHelper = table.getStyleCellsHelper();
           const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
@@ -188,8 +188,8 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            styleCellsHelper,
           } = table;
+          const styleCellsHelper = table.getStyleCellsHelper();
           const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
@@ -218,8 +218,8 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            styleCellsHelper,
           } = table;
+          const styleCellsHelper = table.getStyleCellsHelper();
           const cells = table.getTableCells();
           const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
@@ -660,8 +660,8 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            styleCellsHelper,
           } = table;
+          const styleCellsHelper = table.getStyleCellsHelper();
           const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
@@ -701,8 +701,8 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            styleCellsHelper,
           } = table;
+          const styleCellsHelper = table.getStyleCellsHelper();
           const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
@@ -742,8 +742,8 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const {
             screen,
-            styleCellsHelper,
           } = table;
+          const styleCellsHelper = table.getStyleCellsHelper();
           const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
@@ -911,8 +911,8 @@ class TopMenu extends Widget {
       const { table } = sheet;
       const {
         screen,
-        styleCellsHelper,
       } = table;
+      const styleCellsHelper = table.getStyleCellsHelper();
       const tableDataSnapshot = table.getTableDataSnapshot();
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
@@ -974,8 +974,8 @@ class TopMenu extends Widget {
       const { table } = sheet;
       const {
         screen,
-        styleCellsHelper,
       } = table;
+      const styleCellsHelper = table.getStyleCellsHelper();
       const cells = table.getTableCells();
       const tableDataSnapshot = table.getTableDataSnapshot();
       const screenSelector = screen.findByClass(ScreenSelector);
@@ -1002,8 +1002,8 @@ class TopMenu extends Widget {
       const { table } = sheet;
       const {
         screen,
-        styleCellsHelper,
       } = table;
+      const styleCellsHelper = table.getStyleCellsHelper();
       const cells = table.getTableCells();
       const tableDataSnapshot = table.getTableDataSnapshot();
       const screenSelector = screen.findByClass(ScreenSelector);
@@ -1030,8 +1030,8 @@ class TopMenu extends Widget {
       const { table } = sheet;
       const {
         screen,
-        styleCellsHelper,
       } = table;
+      const styleCellsHelper = table.getStyleCellsHelper();
       const cells = table.getTableCells();
       const tableDataSnapshot = table.getTableDataSnapshot();
       const screenSelector = screen.findByClass(ScreenSelector);
@@ -1058,8 +1058,8 @@ class TopMenu extends Widget {
       const { table } = sheet;
       const {
         screen,
-        styleCellsHelper,
       } = table;
+      const styleCellsHelper = table.getStyleCellsHelper();
       const cells = table.getTableCells();
       const tableDataSnapshot = table.getTableDataSnapshot();
       const screenSelector = screen.findByClass(ScreenSelector);

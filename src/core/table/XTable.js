@@ -652,6 +652,16 @@ class XTable extends Widget {
   }
 
   /**
+   * 单元辅助实例
+   * @returns {StyleCellsHelper}
+   */
+  getStyleCellsHelper() {
+    const { xTableImage } = this;
+    const { styleCellsHelper } = xTableImage;
+    return styleCellsHelper;
+  }
+
+  /**
    * 获取表格单元格
    * @returns {Cells}
    */
@@ -1039,9 +1049,12 @@ class XTable extends Widget {
    * 设置缩放比
    */
   setScale(val) {
-    const { xTableImage, scale } = this;
+    const { xTableImage } = this;
     this.reset();
-    scale.setValue(val);
+    this.scale.setValue(val);
+    this.screen.setDivideLayer();
+    this.xHeightLight.setSize();
+    this.yHeightLight.setSize();
     xTableImage.setScale(val);
   }
 

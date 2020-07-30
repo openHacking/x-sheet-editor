@@ -2287,11 +2287,12 @@ class XTableImage extends Widget {
    */
   scrolling() {
     const { xTableAreaView } = this;
-    this.renderMode = RENDER_MODE.SCROLL;
     this.reset();
+    this.renderMode = RENDER_MODE.SCROLL;
     this.render();
     xTableAreaView.record();
     this.renderMode = RENDER_MODE.RENDER;
+    this.reset();
   }
 
   /**
