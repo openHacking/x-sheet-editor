@@ -1125,8 +1125,8 @@ class TopMenu extends Widget {
       const { table } = sheet;
       const {
         screen,
-        merges,
       } = table;
+      const merges = table.getTableMerges();
       const tableDataSnapshot = table.getTableDataSnapshot();
       const screenSelector = screen.findByClass(ScreenSelector);
       const { selectorAttr } = screenSelector;
