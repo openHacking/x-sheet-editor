@@ -559,7 +559,7 @@ class XTable extends Widget {
       },
       cols: {
         len: 36,
-        width: 130,
+        width: 90,
         data: [],
       },
       data: [],
