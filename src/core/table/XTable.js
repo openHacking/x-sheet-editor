@@ -662,6 +662,16 @@ class XTable extends Widget {
   }
 
   /**
+   * 单元辅助实例
+   * @returns {OperateCellsHelper}
+   */
+  getOperateCellsHelper() {
+    const { xTableImage } = this;
+    const { operateCellsHelper } = xTableImage;
+    return operateCellsHelper;
+  }
+
+  /**
    * 获取表格单元格
    * @returns {Cells}
    */

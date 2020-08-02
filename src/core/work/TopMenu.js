@@ -216,10 +216,8 @@ class TopMenu extends Widget {
         onUpdate: (borderType, color, lineType) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          const {
-            screen,
-          } = table;
-          const styleCellsHelper = table.getStyleCellsHelper();
+          const { screen } = table;
+          const operateCellsHelper = table.getOperateCellsHelper();
           const cells = table.getTableCells();
           const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
@@ -229,7 +227,6 @@ class TopMenu extends Widget {
             const { cellDataProxy } = tableDataSnapshot;
             let width = 1;
             let type = LINE_TYPE.SOLID_LINE;
-            // Line Type
             switch (lineType) {
               case 'line1':
                 width = 1;
@@ -254,389 +251,103 @@ class TopMenu extends Widget {
                 break;
               default: break;
             }
-            // Border Type
             switch (borderType) {
               case 'border1':
-                styleCellsHelper.getCellOrNewCellByViewRange({
+                operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, origin) => {
-                    const cell = origin.clone();
-                    // 显示
-                    cell.borderAttr.left.display = true;
+                  callback: (ri, ci, cell) => {
                     cell.borderAttr.top.display = true;
                     cell.borderAttr.right.display = true;
                     cell.borderAttr.bottom.display = true;
-                    // 颜色
-                    cell.borderAttr.left.color = color;
-                    cell.borderAttr.top.color = color;
-                    cell.borderAttr.right.color = color;
-                    cell.borderAttr.bottom.color = color;
-                    // 宽度
-                    cell.borderAttr.left.width = width;
+                    cell.borderAttr.left.display = true;
                     cell.borderAttr.top.width = width;
                     cell.borderAttr.right.width = width;
                     cell.borderAttr.bottom.width = width;
-                    // 类型
-                    cell.borderAttr.left.type = type;
+                    cell.borderAttr.left.width = width;
                     cell.borderAttr.top.type = type;
                     cell.borderAttr.right.type = type;
                     cell.borderAttr.bottom.type = type;
-                    // 修改
-                    cellDataProxy.setCell(r, c, cell);
+                    cell.borderAttr.left.type = type;
+                    cell.borderAttr.top.color = color;
+                    cell.borderAttr.right.color = color;
+                    cell.borderAttr.bottom.color = color;
+                    cell.borderAttr.left.color = color;
                   },
                 });
                 break;
               case 'border2':
-                styleCellsHelper.getCellOrNewCellByViewRange({
+                operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, origin) => {
-                    const cell = origin.clone();
-                    // 显示
-                    if (selectorAttr.rect.sri === r) {
-                      cell.borderAttr.bottom.display = true;
-                    } else if (selectorAttr.rect.eri === r) {
-                      cell.borderAttr.top.display = true;
+                  callback: (ri, ci, cell, merge) => {
+                    if (merge) {
+                      const { sri, sci, eri, eci } = merge;
                     } else {
-                      cell.borderAttr.bottom.display = true;
-                      cell.borderAttr.top.display = true;
+
                     }
-                    if (selectorAttr.rect.sci === c) {
-                      cell.borderAttr.right.display = true;
-                    } else if (selectorAttr.rect.eci === c) {
-                      cell.borderAttr.left.display = true;
-                    } else {
-                      cell.borderAttr.right.display = true;
-                      cell.borderAttr.left.display = true;
-                    }
-                    // 颜色
-                    if (selectorAttr.rect.sri === r) {
-                      cell.borderAttr.bottom.color = color;
-                    } else if (selectorAttr.rect.eri === r) {
-                      cell.borderAttr.top.color = color;
-                    } else {
-                      cell.borderAttr.bottom.color = color;
-                      cell.borderAttr.top.color = color;
-                    }
-                    if (selectorAttr.rect.sci === c) {
-                      cell.borderAttr.right.color = color;
-                    } else if (selectorAttr.rect.eci === c) {
-                      cell.borderAttr.left.color = color;
-                    } else {
-                      cell.borderAttr.right.color = color;
-                      cell.borderAttr.left.color = color;
-                    }
-                    // 宽度
-                    if (selectorAttr.rect.sri === r) {
-                      cell.borderAttr.bottom.width = width;
-                    } else if (selectorAttr.rect.eri === r) {
-                      cell.borderAttr.top.width = width;
-                    } else {
-                      cell.borderAttr.bottom.width = width;
-                      cell.borderAttr.top.width = width;
-                    }
-                    if (selectorAttr.rect.sci === c) {
-                      cell.borderAttr.right.width = width;
-                    } else if (selectorAttr.rect.eci === c) {
-                      cell.borderAttr.left.width = width;
-                    } else {
-                      cell.borderAttr.right.width = width;
-                      cell.borderAttr.left.width = width;
-                    }
-                    // 类型
-                    if (selectorAttr.rect.sri === r) {
-                      cell.borderAttr.bottom.type = type;
-                    } else if (selectorAttr.rect.eri === r) {
-                      cell.borderAttr.top.type = type;
-                    } else {
-                      cell.borderAttr.bottom.type = type;
-                      cell.borderAttr.top.type = type;
-                    }
-                    if (selectorAttr.rect.sci === c) {
-                      cell.borderAttr.right.type = type;
-                    } else if (selectorAttr.rect.eci === c) {
-                      cell.borderAttr.left.type = type;
-                    } else {
-                      cell.borderAttr.right.type = type;
-                      cell.borderAttr.left.type = type;
-                    }
-                    // 修改
-                    cellDataProxy.setCell(r, c, cell);
                   },
                 });
                 break;
               case 'border3':
-                styleCellsHelper.getCellOrNewCellByViewRange({
+                operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, origin) => {
-                    const cell = origin.clone();
-                    // 显示
-                    if (selectorAttr.rect.sri === r) {
-                      cell.borderAttr.bottom.display = true;
-                    } else if (selectorAttr.rect.eri === r) {
-                      cell.borderAttr.top.display = true;
-                    } else {
-                      cell.borderAttr.bottom.display = true;
-                      cell.borderAttr.top.display = true;
-                    }
-                    // 颜色
-                    if (selectorAttr.rect.sri === r) {
-                      cell.borderAttr.bottom.color = color;
-                    } else if (selectorAttr.rect.eri === r) {
-                      cell.borderAttr.top.color = color;
-                    } else {
-                      cell.borderAttr.bottom.color = color;
-                      cell.borderAttr.top.color = color;
-                    }
-                    // 宽度
-                    if (selectorAttr.rect.sri === r) {
-                      cell.borderAttr.bottom.width = width;
-                    } else if (selectorAttr.rect.eri === r) {
-                      cell.borderAttr.top.width = width;
-                    } else {
-                      cell.borderAttr.bottom.width = width;
-                      cell.borderAttr.top.width = width;
-                    }
-                    // 类型
-                    if (selectorAttr.rect.sri === r) {
-                      cell.borderAttr.bottom.type = type;
-                    } else if (selectorAttr.rect.eri === r) {
-                      cell.borderAttr.top.type = type;
-                    } else {
-                      cell.borderAttr.bottom.type = type;
-                      cell.borderAttr.top.type = type;
-                    }
-                    // 修改
-                    cellDataProxy.setCell(r, c, cell);
+                  callback: (ri, ci, cell, merge) => {
+
                   },
                 });
                 break;
               case 'border4':
-                styleCellsHelper.getCellOrNewCellByViewRange({
+                operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, origin) => {
-                    const cell = origin.clone();
-                    // 显示
-                    if (selectorAttr.rect.sci === c) {
-                      cell.borderAttr.right.display = true;
-                    } else if (selectorAttr.rect.eci === c) {
-                      cell.borderAttr.left.display = true;
-                    } else {
-                      cell.borderAttr.right.display = true;
-                      cell.borderAttr.left.display = true;
-                    }
-                    // 颜色
-                    if (selectorAttr.rect.sci === c) {
-                      cell.borderAttr.right.color = color;
-                    } else if (selectorAttr.rect.eci === c) {
-                      cell.borderAttr.left.color = color;
-                    } else {
-                      cell.borderAttr.right.color = color;
-                      cell.borderAttr.left.color = color;
-                    }
-                    // 宽度
-                    if (selectorAttr.rect.sci === c) {
-                      cell.borderAttr.right.width = width;
-                    } else if (selectorAttr.rect.eci === c) {
-                      cell.borderAttr.left.width = width;
-                    } else {
-                      cell.borderAttr.right.width = width;
-                      cell.borderAttr.left.width = width;
-                    }
-                    // 类型
-                    if (selectorAttr.rect.sci === c) {
-                      cell.borderAttr.right.type = type;
-                    } else if (selectorAttr.rect.eci === c) {
-                      cell.borderAttr.left.type = type;
-                    } else {
-                      cell.borderAttr.right.type = type;
-                      cell.borderAttr.left.type = type;
-                    }
-                    // 修改
-                    cellDataProxy.setCell(r, c, cell);
+                  callback: (ri, ci, cell, merge) => {
+
                   },
                 });
                 break;
               case 'border5':
-                styleCellsHelper.getCellOrNewCellByViewRange({
+                operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, origin) => {
-                    const cell = origin.clone();
-                    // 显示
-                    if (selectorAttr.rect.sci === c) {
-                      cell.borderAttr.left.display = true;
-                    } else if (selectorAttr.rect.eci === c) {
-                      cell.borderAttr.right.display = true;
-                    }
-                    if (selectorAttr.rect.sri === r) {
-                      cell.borderAttr.top.display = true;
-                    } else if (selectorAttr.rect.eri === r) {
-                      cell.borderAttr.bottom.display = true;
-                    }
-                    // 颜色
-                    if (selectorAttr.rect.sci === c) {
-                      cell.borderAttr.left.color = color;
-                    } else if (selectorAttr.rect.eci === c) {
-                      cell.borderAttr.right.color = color;
-                    }
-                    if (selectorAttr.rect.sri === r) {
-                      cell.borderAttr.top.color = color;
-                    } else if (selectorAttr.rect.eri === r) {
-                      cell.borderAttr.bottom.color = color;
-                    }
-                    // 宽度
-                    if (selectorAttr.rect.sci === c) {
-                      cell.borderAttr.left.width = width;
-                    } else if (selectorAttr.rect.eci === c) {
-                      cell.borderAttr.right.width = width;
-                    }
-                    if (selectorAttr.rect.sri === r) {
-                      cell.borderAttr.top.width = width;
-                    } else if (selectorAttr.rect.eri === r) {
-                      cell.borderAttr.bottom.width = width;
-                    }
-                    // 类型
-                    if (selectorAttr.rect.sci === c) {
-                      cell.borderAttr.left.type = type;
-                    } else if (selectorAttr.rect.eci === c) {
-                      cell.borderAttr.right.type = type;
-                    }
-                    if (selectorAttr.rect.sri === r) {
-                      cell.borderAttr.top.type = type;
-                    } else if (selectorAttr.rect.eri === r) {
-                      cell.borderAttr.bottom.type = type;
-                    }
-                    // 修改
-                    cellDataProxy.setCell(r, c, cell);
+                  callback: (ri, ci, cell, merge) => {
+
                   },
                 });
                 break;
               case 'border6':
-                styleCellsHelper.getCellOrNewCellByViewRange({
+                operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, origin) => {
-                    if (c !== selectorAttr.rect.sci) {
-                      return;
-                    }
-                    const cell = origin.clone();
-                    // 显示
-                    cell.borderAttr.left.display = true;
-                    // 颜色
-                    cell.borderAttr.left.color = color;
-                    // 宽度
-                    cell.borderAttr.left.width = width;
-                    // 类型
-                    cell.borderAttr.left.type = type;
-                    // 修改
-                    cellDataProxy.setCell(r, c, cell);
+                  callback: (ri, ci, cell, merge) => {
+
                   },
                 });
                 break;
               case 'border7':
-                styleCellsHelper.getCellOrNewCellByViewRange({
+                operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, origin) => {
-                    if (r !== selectorAttr.rect.sri) {
-                      return;
-                    }
-                    const cell = origin.clone();
-                    // 显示
-                    cell.borderAttr.top.display = true;
-                    // 颜色
-                    cell.borderAttr.top.color = color;
-                    // 宽度
-                    cell.borderAttr.top.width = width;
-                    // 类型
-                    cell.borderAttr.top.type = type;
-                    // 修改
-                    cellDataProxy.setCell(r, c, cell);
+                  callback: (ri, ci, cell, merge) => {
+
                   },
                 });
                 break;
               case 'border8':
-                styleCellsHelper.getCellOrNewCellByViewRange({
+                operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, origin) => {
-                    if (c !== selectorAttr.rect.eci) {
-                      return;
-                    }
-                    const cell = origin.clone();
-                    // 显示
-                    cell.borderAttr.right.display = true;
-                    // 颜色
-                    cell.borderAttr.right.color = color;
-                    // 宽度
-                    cell.borderAttr.right.width = width;
-                    // 类型
-                    cell.borderAttr.right.type = type;
-                    // 修改
-                    cellDataProxy.setCell(r, c, cell);
+                  callback: (ri, ci, cell, merge) => {
+
                   },
                 });
                 break;
               case 'border9':
-                styleCellsHelper.getCellOrNewCellByViewRange({
+                operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, origin) => {
-                    if (r !== selectorAttr.rect.eri) {
-                      return;
-                    }
-                    const cell = origin.clone();
-                    // 显示
-                    cell.borderAttr.bottom.display = true;
-                    // 颜色
-                    cell.borderAttr.bottom.color = color;
-                    // 宽度
-                    cell.borderAttr.bottom.width = width;
-                    // 类型
-                    cell.borderAttr.bottom.type = type;
-                    // 修改
-                    cellDataProxy.setCell(r, c, cell);
+                  callback: (ri, ci, cell, merge) => {
+
                   },
                 });
                 break;
               case 'border10':
-                styleCellsHelper.getCellOrNewCellByViewRange({
+                operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: selectorAttr.rect,
-                  callback: (r, c, origin) => {
-                    const cell = origin.clone();
-                    // 显示
-                    if (selectorAttr.rect.sri === r) {
-                      const top = cells.getCellOrNew(r - 1, c);
-                      top.borderAttr.bottom.display = false;
-                    }
-                    if (selectorAttr.rect.eri === r) {
-                      const bottom = cells.getCellOrNew(r + 1, c);
-                      bottom.borderAttr.top.display = false;
-                    }
-                    if (selectorAttr.rect.sci === c) {
-                      const left = cells.getCellOrNew(r, c - 1);
-                      left.borderAttr.right.display = false;
-                    }
-                    if (selectorAttr.rect.eci === c) {
-                      const right = cells.getCellOrNew(r, c + 1);
-                      right.borderAttr.left.display = false;
-                    }
-                    cell.borderAttr.left.display = false;
-                    cell.borderAttr.top.display = false;
-                    cell.borderAttr.right.display = false;
-                    cell.borderAttr.bottom.display = false;
-                    // 颜色
-                    cell.borderAttr.left.color = false;
-                    cell.borderAttr.top.color = false;
-                    cell.borderAttr.right.color = false;
-                    cell.borderAttr.bottom.color = false;
-                    // 宽度
-                    cell.borderAttr.left.width = false;
-                    cell.borderAttr.top.width = false;
-                    cell.borderAttr.right.width = false;
-                    cell.borderAttr.bottom.width = false;
-                    // 类型
-                    cell.borderAttr.left.type = false;
-                    cell.borderAttr.top.type = false;
-                    cell.borderAttr.right.type = false;
-                    cell.borderAttr.bottom.type = false;
-                    // 修改
-                    cellDataProxy.setCell(r, c, cell);
+                  callback: (ri, ci, cell, merge) => {
+
                   },
                 });
                 break;

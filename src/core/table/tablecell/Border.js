@@ -16,7 +16,7 @@ class Border {
    * @param type
    */
   constructor({
-    time = Utils.now(),
+    time = 0,
     display = false,
     width = 1,
     color = '#000000',

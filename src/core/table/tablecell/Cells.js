@@ -77,6 +77,23 @@ class Cells {
   }
 
   /**
+   * 获取指定行列的单元格如果没有返回新的
+   * @param ri
+   * @param ci
+   */
+  getCellOrNew(ri, ci) {
+    if (Utils.isUnDef(this.data[ri])) {
+      this.data[ri] = [];
+    }
+    if (Utils.isUnDef(this.data[ri][ci])) {
+      this.data[ri][ci] = {
+        text: '',
+      };
+    }
+    return this.getCell(ri, ci);
+  }
+
+  /**
    * 获取指定行列的单元格， 如果当前单元格
    * 时合并单元格的一部分，判断是否是主合并
    * 单元格如果是返回合并区域否则返回空
@@ -113,20 +130,19 @@ class Cells {
   }
 
   /**
-   * 获取指定行列的单元格如果没有返回新的
+   * 获取指定行和列的单元格，如果获取到的
+   * 单元格是合并单元格的部分则返回合并单元格起始
+   * 单元格, 如果单元格不存在创建新的
    * @param ri
    * @param ci
    */
-  getCellOrNew(ri, ci) {
-    if (Utils.isUnDef(this.data[ri])) {
-      this.data[ri] = [];
+  getMergeCellOrNewCell(ri, ci) {
+    const { merges } = this;
+    const merge = merges.getFirstIncludes(ri, ci);
+    if (merge) {
+      return this.getCellOrNew(merge.sri, merge.sci);
     }
-    if (Utils.isUnDef(this.data[ri][ci])) {
-      this.data[ri][ci] = {
-        text: '',
-      };
-    }
-    return this.getCell(ri, ci);
+    return this.getCellOrNew(ri, ci);
   }
 
   /**
