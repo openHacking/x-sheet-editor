@@ -538,7 +538,7 @@ class XTable extends Widget {
       index: {
         height: 30,
         width: 40,
-        gridColor: '#c4c4c4',
+        gridColor: '#e8e8e8',
         size: 10,
         color: '#000000',
       },
@@ -546,7 +546,7 @@ class XTable extends Widget {
         showGrid: true,
         background: '#ffffff',
         borderColor: '#e5e5e5',
-        gridColor: '#c5c5c5',
+        gridColor: '#e8e8e8',
       },
       fixed: {
         fxTop: -1,
