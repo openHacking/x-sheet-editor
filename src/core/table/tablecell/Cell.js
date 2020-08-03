@@ -37,6 +37,15 @@ class Cell {
     this.contentWidth = contentWidth;
   }
 
+  toCssStyle() {
+    const { background, fontAttr } = this;
+    let css = `
+      background:${background};
+    `;
+    css = css.replace(/\s/g, '');
+    return fontAttr.toCssStyle() + css;
+  }
+
   clone() {
     const {
       background,

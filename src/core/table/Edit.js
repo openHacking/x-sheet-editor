@@ -64,11 +64,10 @@ class Edit extends Widget {
     if (selectorAttr) {
       const { rect } = selectorAttr;
       const cell = cells.getCellOrNew(rect.sri, rect.sci);
-      const { fontAttr } = cell;
       this.select = rect;
       this.editOffset(rect);
       this.text = cell.text;
-      this.input.attr('style', fontAttr.toCssStyle());
+      this.input.attr('style', cell.toCssStyle());
       if (Utils.isBlank(this.text)) {
         input.html('<p>&nbsp;</p>');
       } else {

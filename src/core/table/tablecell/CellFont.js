@@ -61,12 +61,14 @@ class CellFont {
     const {
       align, size, color, bold, italic, name,
     } = this;
-    return `
+    let css = `
       text-align:${align};
       font-size: ${size}px;color: ${color};font-weight: ${bold ? 'bold' : 'initial'};
       font-style: ${italic ? 'italic' : 'initial'};
       font-family: ${name};
-    `.replace(/\s/g, '');
+    `;
+    css = css.replace(/\s/g, '');
+    return css;
   }
 
   clone() {
