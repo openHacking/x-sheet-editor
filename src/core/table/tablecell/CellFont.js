@@ -57,6 +57,18 @@ class CellFont {
     this.padding = padding;
   }
 
+  toCssStyle() {
+    const {
+      align, size, color, bold, italic, name,
+    } = this;
+    return `
+      text-align:${align};
+      font-size: ${size}px;color: ${color};font-weight: ${bold ? 'bold' : 'initial'};
+      font-style: ${italic ? 'italic' : 'initial'};
+      font-family: ${name};
+    `.replace(/\s/g, '');
+  }
+
   clone() {
     const {
       align,
