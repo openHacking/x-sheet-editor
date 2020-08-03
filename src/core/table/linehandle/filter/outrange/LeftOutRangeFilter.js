@@ -31,8 +31,8 @@ class LeftOutRangeFilter extends LineFilter {
       cells, cols,
     } = this;
 
-    const last = cells.getMergeCellOrCell(ri, ci - 1);
-    const master = cells.getMergeCellOrCell(ri, ci);
+    const last = cells.getCell(ri, ci - 1);
+    const master = cells.getCell(ri, ci);
 
     if (Utils.isUnDef(master) || Utils.isBlank(master.text)) {
       return true;
@@ -96,8 +96,8 @@ class LeftOutRangeFilter extends LineFilter {
     } = this;
 
     const { len } = cols;
-    const last = cells.getMergeCellOrCell(ri, ci - 1);
-    const master = cells.getMergeCellOrCell(ri, ci);
+    const last = cells.getCell(ri, ci - 1);
+    const master = cells.getCell(ri, ci);
 
     let rightWidth = cols.getWidth(ci + 1) + cols.getWidth(ci);
 
@@ -166,7 +166,7 @@ class LeftOutRangeFilter extends LineFilter {
       cells, cols,
     } = this;
 
-    const master = cells.getMergeCellOrCell(ri, ci);
+    const master = cells.getCell(ri, ci);
 
     let leftWidth = cols.getWidth(ci - 1);
 

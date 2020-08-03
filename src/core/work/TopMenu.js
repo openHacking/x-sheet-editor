@@ -218,13 +218,13 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const { screen } = table;
           const operateCellsHelper = table.getOperateCellsHelper();
-          const cells = table.getTableCells();
           const tableDataSnapshot = table.getTableDataSnapshot();
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           if (selectorAttr) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
+            const { rect } = selectorAttr;
             let width = 1;
             let type = LINE_TYPE.SOLID_LINE;
             switch (lineType) {
@@ -254,100 +254,201 @@ class TopMenu extends Widget {
             switch (borderType) {
               case 'border1':
                 operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
+                  rectRange: rect,
                   callback: (ri, ci, cell) => {
-                    cell.borderAttr.top.display = true;
-                    cell.borderAttr.right.display = true;
-                    cell.borderAttr.bottom.display = true;
-                    cell.borderAttr.left.display = true;
-                    cell.borderAttr.top.width = width;
-                    cell.borderAttr.right.width = width;
-                    cell.borderAttr.bottom.width = width;
-                    cell.borderAttr.left.width = width;
-                    cell.borderAttr.top.type = type;
-                    cell.borderAttr.right.type = type;
-                    cell.borderAttr.bottom.type = type;
-                    cell.borderAttr.left.type = type;
-                    cell.borderAttr.top.color = color;
-                    cell.borderAttr.right.color = color;
-                    cell.borderAttr.bottom.color = color;
-                    cell.borderAttr.left.color = color;
+                    const newCell = cell.clone();
+                    const { borderAttr } = newCell;
+                    borderAttr.setAllDisplay(true);
+                    borderAttr.setAllColor(color);
+                    borderAttr.setAllWidth(width);
+                    borderAttr.setAllType(type);
+                    cellDataProxy.setCell(ri, ci, newCell);
                   },
                 });
                 break;
               case 'border2':
                 operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (ri, ci, cell, merge) => {
-                    if (merge) {
-                      const { sri, sci, eri, eci } = merge;
-                    } else {
-
+                  rectRange: rect,
+                  callback: (ri, ci, cell) => {
+                    const newCell = cell.clone();
+                    const { borderAttr } = newCell;
+                    if (ri !== rect.sri) {
+                      borderAttr.setTDisplay(true);
+                      borderAttr.setTColor(color);
+                      borderAttr.setTWidth(width);
+                      borderAttr.setTType(type);
                     }
+                    if (ri !== rect.eri) {
+                      borderAttr.setBDisplay(true);
+                      borderAttr.setBColor(color);
+                      borderAttr.setBWidth(width);
+                      borderAttr.setBType(type);
+                    }
+                    if (ci !== rect.sci) {
+                      borderAttr.setLDisplay(true);
+                      borderAttr.setLColor(color);
+                      borderAttr.setLWidth(width);
+                      borderAttr.setLType(type);
+                    }
+                    if (ci !== rect.eci) {
+                      borderAttr.setRDisplay(true);
+                      borderAttr.setRColor(color);
+                      borderAttr.setRWidth(width);
+                      borderAttr.setRType(type);
+                    }
+                    cellDataProxy.setCell(ri, ci, newCell);
                   },
                 });
                 break;
               case 'border3':
                 operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (ri, ci, cell, merge) => {
-
+                  rectRange: rect,
+                  callback: (ri, ci, cell) => {
+                    const newCell = cell.clone();
+                    const { borderAttr } = newCell;
+                    if (ri !== rect.sri) {
+                      borderAttr.setTDisplay(true);
+                      borderAttr.setTColor(color);
+                      borderAttr.setTWidth(width);
+                      borderAttr.setTType(type);
+                    }
+                    if (ri !== rect.eri) {
+                      borderAttr.setBDisplay(true);
+                      borderAttr.setBColor(color);
+                      borderAttr.setBWidth(width);
+                      borderAttr.setBType(type);
+                    }
                   },
                 });
                 break;
               case 'border4':
                 operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (ri, ci, cell, merge) => {
-
+                  rectRange: rect,
+                  callback: (ri, ci, cell) => {
+                    const newCell = cell.clone();
+                    const { borderAttr } = newCell;
+                    if (ci !== rect.sci) {
+                      borderAttr.setLDisplay(true);
+                      borderAttr.setLColor(color);
+                      borderAttr.setLWidth(width);
+                      borderAttr.setLType(type);
+                    }
+                    if (ci !== rect.eci) {
+                      borderAttr.setRDisplay(true);
+                      borderAttr.setRColor(color);
+                      borderAttr.setRWidth(width);
+                      borderAttr.setRType(type);
+                    }
+                    cellDataProxy.setCell(ri, ci, newCell);
                   },
                 });
                 break;
               case 'border5':
                 operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (ri, ci, cell, merge) => {
-
+                  rectRange: rect,
+                  callback: (ri, ci, cell) => {
+                    const newCell = cell.clone();
+                    const { borderAttr } = newCell;
+                    if (ri === rect.sri) {
+                      borderAttr.setTDisplay(true);
+                      borderAttr.setTColor(color);
+                      borderAttr.setTWidth(width);
+                      borderAttr.setTType(type);
+                    }
+                    if (ri === rect.eri) {
+                      borderAttr.setBDisplay(true);
+                      borderAttr.setBColor(color);
+                      borderAttr.setBWidth(width);
+                      borderAttr.setBType(type);
+                    }
+                    if (ci === rect.sci) {
+                      borderAttr.setLDisplay(true);
+                      borderAttr.setLColor(color);
+                      borderAttr.setLWidth(width);
+                      borderAttr.setLType(type);
+                    }
+                    if (ci === rect.eci) {
+                      borderAttr.setRDisplay(true);
+                      borderAttr.setRColor(color);
+                      borderAttr.setRWidth(width);
+                      borderAttr.setRType(type);
+                    }
+                    cellDataProxy.setCell(ri, ci, newCell);
                   },
                 });
                 break;
               case 'border6':
                 operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (ri, ci, cell, merge) => {
-
+                  rectRange: rect,
+                  callback: (ri, ci, cell) => {
+                    const newCell = cell.clone();
+                    const { borderAttr } = newCell;
+                    if (ci === rect.sci) {
+                      borderAttr.setLDisplay(true);
+                      borderAttr.setLColor(color);
+                      borderAttr.setLWidth(width);
+                      borderAttr.setLType(type);
+                    }
+                    cellDataProxy.setCell(ri, ci, newCell);
                   },
                 });
                 break;
               case 'border7':
                 operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (ri, ci, cell, merge) => {
-
+                  rectRange: rect,
+                  callback: (ri, ci, cell) => {
+                    const newCell = cell.clone();
+                    const { borderAttr } = newCell;
+                    if (ri === rect.sri) {
+                      borderAttr.setTDisplay(true);
+                      borderAttr.setTColor(color);
+                      borderAttr.setTWidth(width);
+                      borderAttr.setTType(type);
+                    }
+                    cellDataProxy.setCell(ri, ci, newCell);
                   },
                 });
                 break;
               case 'border8':
                 operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (ri, ci, cell, merge) => {
-
+                  rectRange: rect,
+                  callback: (ri, ci, cell) => {
+                    const newCell = cell.clone();
+                    const { borderAttr } = newCell;
+                    if (ci === rect.eci) {
+                      borderAttr.setRDisplay(true);
+                      borderAttr.setRColor(color);
+                      borderAttr.setRWidth(width);
+                      borderAttr.setRType(type);
+                    }
+                    cellDataProxy.setCell(ri, ci, newCell);
                   },
                 });
                 break;
               case 'border9':
                 operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (ri, ci, cell, merge) => {
-
+                  rectRange: rect,
+                  callback: (ri, ci, cell) => {
+                    const newCell = cell.clone();
+                    const { borderAttr } = newCell;
+                    if (ri === rect.eri) {
+                      borderAttr.setBDisplay(true);
+                      borderAttr.setBColor(color);
+                      borderAttr.setBWidth(width);
+                      borderAttr.setBType(type);
+                    }
+                    cellDataProxy.setCell(ri, ci, newCell);
                   },
                 });
                 break;
               case 'border10':
                 operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: selectorAttr.rect,
-                  callback: (ri, ci, cell, merge) => {
-
+                  rectRange: rect,
+                  callback: (ri, ci, cell) => {
+                    const newCell = cell.clone();
+                    const { borderAttr } = newCell;
+                    borderAttr.setAllDisplay(false);
+                    cellDataProxy.setCell(ri, ci, newCell);
                   },
                 });
                 break;
@@ -579,6 +680,7 @@ class TopMenu extends Widget {
       const {
         screen,
       } = table;
+      const merges = table.getTableMerges();
       const cells = table.getTableCells();
       const tableDataSnapshot = table.getTableDataSnapshot();
       const screenCopyStyle = screen.findByClass(ScreenCopyStyle);
@@ -594,15 +696,24 @@ class TopMenu extends Widget {
           this.paintFormat.active(false);
           this.paintFormat.removeSheet(sheet);
           screenSelector.remove(SCREEN_SELECT_EVENT.SELECT_CHANGE_OVER, cb);
-
+          // 复制区域和目标区域
           const srcRect = selectorAttr.rect;
           const targetRect = screenSelector.selectorAttr.rect;
-
+          // 开始复制
           tableDataSnapshot.begin();
           const { cellDataProxy } = tableDataSnapshot;
           for (let i = srcRect.sri, j = targetRect.sri; i <= srcRect.eri; i += 1, j += 1) {
             for (let k = srcRect.sci, v = targetRect.sci; k <= srcRect.eci; k += 1, v += 1) {
-              const src = cells.getMergeCellMasterOrCell(i, k);
+              const merge = merges.getFirstIncludes(i, k);
+              let src = null;
+              if (merge) {
+                // 是master单元格?
+                if (merge.sri === i && merge.sci === k) {
+                  src = cells.getCell(i, k);
+                }
+              } else {
+                src = cells.getCell(i, k);
+              }
               if (src) {
                 const target = cells.getCellOrNew(j, v);
                 const cell = src.clone();

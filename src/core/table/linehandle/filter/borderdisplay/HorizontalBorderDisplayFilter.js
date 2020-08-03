@@ -6,8 +6,8 @@ class HorizontalBorderDisplayFilter extends LineFilter {
     cells,
   }) {
     super((ri, ci) => {
-      const next = cells.getMergeCellOrCell(ri + 1, ci);
-      const cell = cells.getMergeCellOrCell(ri, ci);
+      const next = cells.getCell(ri + 1, ci);
+      const cell = cells.getCell(ri, ci);
       let display = false;
       if (cell && !display) display = cell.borderAttr.bottom.display;
       if (next && !display) display = next.borderAttr.top.display;

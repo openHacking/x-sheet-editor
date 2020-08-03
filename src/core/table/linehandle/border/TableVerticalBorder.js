@@ -71,7 +71,7 @@ class TableVerticalBorder extends TableBorder {
     for (let i = 0; i < brink.length; i += 1) {
       const { left } = brink[i];
       if (left) {
-        const item = this.computerRightVerticalLine({
+        const item = this.computerLeftVerticalLine({
           viewRange: left.view,
           bx: left.x,
           by: left.y,

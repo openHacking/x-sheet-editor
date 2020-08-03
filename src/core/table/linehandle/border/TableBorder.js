@@ -62,15 +62,7 @@ class TableBorder extends BaseLine {
         const cell = cells.getCell(row, col);
         const { borderAttr } = cell;
         ex += width;
-        line.push({
-          sx,
-          sy,
-          ex,
-          ey,
-          row,
-          col,
-          borderAttr,
-        });
+        line.push({ sx, sy, ex, ey, row, col, borderAttr });
         sx = ex;
       },
     });
@@ -181,15 +173,7 @@ class TableBorder extends BaseLine {
         const cell = cells.getCell(row, col);
         const { borderAttr } = cell;
         ey += height;
-        line.push({
-          sx,
-          sy,
-          ex,
-          ey,
-          row,
-          col,
-          borderAttr,
-        });
+        line.push({ sx, sy, ex, ey, row, col, borderAttr });
         sy = ey;
       },
     });

@@ -2140,7 +2140,7 @@ class XTableImage extends Widget {
       rows: this.rows,
       cols: this.cols,
       scale: this.scale,
-    })
+    });
     // 数据快照
     this.tableDataSnapshot = new TableDataSnapshot(this);
     // 绘制资源
@@ -2156,7 +2156,7 @@ class XTableImage extends Widget {
     });
     const leftShowFilter = new FilterChain(ChainLogic.AND, [
       new LineFilter((ri, ci) => {
-        const cell = this.cells.getMergeCellOrCell(ri, ci);
+        const cell = this.cells.getCell(ri, ci);
         if (Utils.isUnDef(cell)) {
           return false;
         }
@@ -2165,7 +2165,7 @@ class XTableImage extends Widget {
       new LineFilter((ri, ci) => leftOutRangeFilter.execute(ri, ci)),
     ]);
     const topShowFilter = new LineFilter((ri, ci) => {
-      const cell = this.cells.getMergeCellOrCell(ri, ci);
+      const cell = this.cells.getCell(ri, ci);
       if (Utils.isUnDef(cell)) {
         return false;
       }
@@ -2173,7 +2173,7 @@ class XTableImage extends Widget {
     });
     const rightShowFilter = new FilterChain(ChainLogic.AND, [
       new LineFilter((ri, ci) => {
-        const cell = this.cells.getMergeCellOrCell(ri, ci);
+        const cell = this.cells.getCell(ri, ci);
         if (Utils.isUnDef(cell)) {
           return false;
         }
@@ -2182,7 +2182,7 @@ class XTableImage extends Widget {
       new LineFilter((ri, ci) => rightOutRangeFilter.execute(ri, ci)),
     ]);
     const bottomShowFilter = new LineFilter((ri, ci) => {
-      const cell = this.cells.getMergeCellOrCell(ri, ci);
+      const cell = this.cells.getCell(ri, ci);
       if (Utils.isUnDef(cell)) {
         return false;
       }

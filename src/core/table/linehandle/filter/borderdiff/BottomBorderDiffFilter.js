@@ -7,8 +7,8 @@ class BottomBorderDiffFilter extends LineFilter {
     cells,
   }) {
     super((ri, ci) => {
-      const next = cells.getMergeCellOrCell(ri + 1, ci);
-      const cell = cells.getMergeCellOrCell(ri, ci);
+      const next = cells.getCell(ri + 1, ci);
+      const cell = cells.getCell(ri, ci);
       // 当前单元格不存在
       if (Utils.isUnDef(cell)) {
         return false;
@@ -24,7 +24,7 @@ class BottomBorderDiffFilter extends LineFilter {
         return bottom.display;
       }
       // 比较优先级
-      const result = bottom.compareTime(top);
+      const result = bottom.priority(top);
       return result === 1 || result === 0;
     });
   }

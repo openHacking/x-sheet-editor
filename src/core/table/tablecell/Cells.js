@@ -8,13 +8,6 @@ import { ALIGN } from '../../../canvas/Font';
  */
 class Cells {
 
-  /**
-   * Cells
-   * @param merges
-   * @param cols
-   * @param rows
-   * @param data
-   */
   constructor({
     merges,
     cols,
@@ -27,12 +20,50 @@ class Cells {
     this.data = data;
   }
 
-  /**
-   * 获取单元格内容的越界宽度
-   * @param ri
-   * @param ci
-   * @returns {number}
-   */
+  setCellOrNew(ri, ci, cell) {
+    if (Utils.isUnDef(this.data[ri])) {
+      this.data[ri] = [];
+    }
+    this.data[ri][ci] = cell;
+  }
+
+  setCell(ri, ci, cell) {
+    const row = this.data[ri];
+    if (row && row[ci]) {
+      row[ci] = cell;
+    }
+  }
+
+  getCellOrNew(ri, ci) {
+    if (Utils.isUnDef(this.data[ri])) {
+      this.data[ri] = [];
+    }
+    if (Utils.isUnDef(this.data[ri][ci])) {
+      this.data[ri][ci] = {
+        text: '',
+      };
+    }
+    return this.getCell(ri, ci);
+  }
+
+  getCell(ri, ci) {
+    const row = this.data[ri];
+    if (row && row[ci]) {
+      let item = row[ci];
+      if (item instanceof Cell) {
+        return row[ci];
+      }
+      if (Utils.isString(item)) {
+        item = {
+          text: item,
+        };
+      }
+      row[ci] = new Cell(item);
+      return row[ci];
+    }
+    return null;
+  }
+
   getCellBoundOutSize(ri, ci) {
     const { cols } = this;
     const cell = this.getCell(ri, ci);
@@ -53,138 +84,10 @@ class Cells {
     return 0;
   }
 
-  /**
-   * 获取指定行和列的单元格
-   * @param ri
-   * @param ci
-   */
-  getCell(ri, ci) {
-    const row = this.data[ri];
-    if (row && row[ci]) {
-      let item = row[ci];
-      if (item instanceof Cell) {
-        return row[ci];
-      }
-      if (Utils.isString(item)) {
-        item = {
-          text: item,
-        };
-      }
-      row[ci] = new Cell(item);
-      return row[ci];
-    }
-    return null;
-  }
-
-  /**
-   * 获取指定行列的单元格如果没有返回新的
-   * @param ri
-   * @param ci
-   */
-  getCellOrNew(ri, ci) {
-    if (Utils.isUnDef(this.data[ri])) {
-      this.data[ri] = [];
-    }
-    if (Utils.isUnDef(this.data[ri][ci])) {
-      this.data[ri][ci] = {
-        text: '',
-      };
-    }
-    return this.getCell(ri, ci);
-  }
-
-  /**
-   * 获取指定行列的单元格， 如果当前单元格
-   * 时合并单元格的一部分，判断是否是主合并
-   * 单元格如果是返回合并区域否则返回空
-   * @param ri
-   * @param ci
-   * @return {null}
-   */
-  getMergeCellMasterOrCell(ri, ci) {
-    const { merges } = this;
-    const merge = merges.getFirstIncludes(ri, ci);
-    if (merge) {
-      if (merge.sri === ri && merge.sci === ci) {
-        return this.getCell(ri, ci);
-      }
-      return null;
-    }
-    return this.getCell(ri, ci);
-  }
-
-  /**
-   * 获取指定行和列的单元格，如果获取到的
-   * 单元格是合并单元格的部分则返回合并单元格起始
-   * 单元格
-   * @param ri
-   * @param ci
-   */
-  getMergeCellOrCell(ri, ci) {
-    const { merges } = this;
-    const merge = merges.getFirstIncludes(ri, ci);
-    if (merge) {
-      return this.getCell(merge.sri, merge.sci);
-    }
-    return this.getCell(ri, ci);
-  }
-
-  /**
-   * 获取指定行和列的单元格，如果获取到的
-   * 单元格是合并单元格的部分则返回合并单元格起始
-   * 单元格, 如果单元格不存在创建新的
-   * @param ri
-   * @param ci
-   */
-  getMergeCellOrNewCell(ri, ci) {
-    const { merges } = this;
-    const merge = merges.getFirstIncludes(ri, ci);
-    if (merge) {
-      return this.getCellOrNew(merge.sri, merge.sci);
-    }
-    return this.getCellOrNew(ri, ci);
-  }
-
-  /**
-   * 设置指定单元格
-   * @param ri
-   * @param ci
-   * @param cell
-   */
-  setCell(ri, ci, cell) {
-    const row = this.data[ri];
-    if (row && row[ci]) {
-      row[ci] = cell;
-    }
-  }
-
-  /**
-   * 设置指定单元格
-   * 如果不存在则创建
-   * @param ri
-   * @param ci
-   * @param cell
-   */
-  setCellOrNew(ri, ci, cell) {
-    if (Utils.isUnDef(this.data[ri])) {
-      this.data[ri] = [];
-    }
-    this.data[ri][ci] = cell;
-  }
-
-  /**
-   * getData
-   * @returns {*[]}
-   */
   getData() {
     return this.data;
   }
 
-  /**
-   * setData
-   * @param data
-   * @returns {Cells}
-   */
   setData(data = []) {
     this.data = data;
     return this;

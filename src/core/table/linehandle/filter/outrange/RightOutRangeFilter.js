@@ -31,8 +31,8 @@ class RightOutRangeFilter extends LineFilter {
       cells, cols,
     } = this;
 
-    const next = cells.getMergeCellOrCell(ri, ci + 1);
-    const master = cells.getMergeCellOrCell(ri, ci);
+    const next = cells.getCell(ri, ci + 1);
+    const master = cells.getCell(ri, ci);
 
     if (Utils.isUnDef(master) || Utils.isBlank(master.text)) {
       return true;
@@ -96,7 +96,7 @@ class RightOutRangeFilter extends LineFilter {
     } = this;
 
     const { len } = cols;
-    const master = cells.getMergeCellOrCell(ri, ci);
+    const master = cells.getCell(ri, ci);
 
     let rightWidth = cols.getWidth(ci + 1);
 
@@ -163,8 +163,8 @@ class RightOutRangeFilter extends LineFilter {
       cells, cols,
     } = this;
 
-    const next = cells.getMergeCellOrCell(ri, ci + 1);
-    const master = cells.getMergeCellOrCell(ri, ci);
+    const next = cells.getCell(ri, ci + 1);
+    const master = cells.getCell(ri, ci);
 
     let leftWidth = cols.getWidth(ci - 1) + cols.getWidth(ci);
 
