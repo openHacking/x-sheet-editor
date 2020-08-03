@@ -537,7 +537,7 @@ class XTable extends Widget {
     this.settings = Utils.mergeDeep({
       index: {
         height: 30,
-        width: 40,
+        width: 50,
         gridColor: '#e8e8e8',
         size: 10,
         color: '#000000',

@@ -1,5 +1,4 @@
 import { Rect } from './Rect';
-import { XDraw } from './XDraw';
 
 const ANGLE_ORIGIN = {
   TOP_LEFT: 'top-left',
@@ -12,46 +11,6 @@ const ANGLE_ORIGIN = {
   BOTTOM_CENTER: 'bottom-center',
   BOTTOM_RIGHT: 'bottom-right',
 };
-
-class TrigonometricFunction {
-
-  constructor({ angle, width, height }) {
-    this.angle = angle;
-    this.width = width;
-    this.height = height;
-  }
-
-  // 斜边 + sin 角度
-  sinWidthAngle() {
-    const { angle, width } = this;
-    return Math.abs(Math.sin(XDraw.radian(angle)) * width);
-  }
-
-  // 斜边 + cos 角度
-  cosWidthAngle() {
-    const { angle, width } = this;
-    return Math.abs(Math.cos(XDraw.radian((angle)) * width));
-  }
-
-  // 对边 + sin角度
-  sinHeightAngle() {
-    const { angle, height } = this;
-    return Math.abs(height / Math.sin(XDraw.radian(angle)));
-  }
-
-  setWidth(width) {
-    this.width = width;
-  }
-
-  setHeight(height) {
-    this.height = height;
-  }
-
-  setAngle(angle) {
-    this.angle = angle;
-  }
-
-}
 
 class Angle {
 
@@ -126,28 +85,9 @@ class Angle {
     return this;
   }
 
-  static triangleHypotenuse(angle, width) {
-    const cos = Math.cos(XDraw.radian(angle));
-    const sin = Math.sin(XDraw.radian(angle));
-    return {
-      width: Math.abs(cos * width), height: Math.abs(sin * width),
-    };
-  }
-
-  setOrigin(origin) {
-    this.origin = origin;
-    return this;
-  }
-
-  setRect(rect) {
-    this.rect = rect;
-    return this;
-  }
-
 }
 
 export {
   Angle,
-  TrigonometricFunction,
   ANGLE_ORIGIN,
 };
