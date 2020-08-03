@@ -47,6 +47,45 @@ class StyleCellsHelper extends BaseCellsHelper {
   }
 
   /**
+   * 遍历指定区域中的单元格
+   * 单元格不存在创建新的
+   * @param rectRange
+   * @param callback
+   * @param startX
+   * @param startY
+   */
+  getCellOrNewCellByViewRange({
+    rectRange,
+    callback,
+    startX = 0,
+    startY = 0,
+  }) {
+    const { rows, cols, cells } = this;
+    const {
+      sri, eri, sci, eci,
+    } = rectRange;
+    let y = startY;
+    for (let i = sri; i <= eri; i += 1) {
+      const height = rows.getHeight(i);
+      let x = startX;
+      for (let j = sci; j <= eci; j += 1) {
+        const width = cols.getWidth(j);
+        const cell = cells.getCellOrNew(i, j);
+        if (cell) {
+          const rect = new Rect({ x, y, width, height });
+          const overFlow = this.getCellOverFlow(i, j, rect, cell);
+          const result = callback(i, j, cell, rect, overFlow);
+          if (result === false) {
+            return;
+          }
+        }
+        x += width;
+      }
+      y += height;
+    }
+  }
+
+  /**
    * 遍历指定区域中的合并单元格
    * @param rectRange
    * @param callback
