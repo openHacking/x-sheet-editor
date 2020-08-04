@@ -39,7 +39,7 @@ class RTCosKit {
    * @param angle
    */
   static nearby({ tilt, angle }) {
-    return Math.abs(tilt / Math.cos(XDraw.radian((angle))));
+    return Math.abs(tilt * Math.cos(XDraw.radian((angle))));
   }
 
   /**
