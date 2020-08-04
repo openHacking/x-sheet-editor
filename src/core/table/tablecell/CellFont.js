@@ -61,8 +61,20 @@ class CellFont {
     const {
       align, size, color, bold, italic, name,
     } = this;
+    let justifyContent = 'left';
+    switch (align) {
+      case ALIGN.left:
+        justifyContent = 'flex-start';
+        break;
+      case ALIGN.center:
+        justifyContent = 'center';
+        break;
+      case ALIGN.right:
+        justifyContent = 'flex-end';
+        break;
+    }
     let css = `
-      text-align:${align};
+      justify-content:${justifyContent};
       font-size: ${size}px;color: ${color};font-weight: ${bold ? 'bold' : 'initial'};
       font-style: ${italic ? 'italic' : 'initial'};
       font-family: ${name};
