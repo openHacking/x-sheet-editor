@@ -14,6 +14,27 @@ class BaseCellsHelper {
     this.scale = scale;
   }
 
+  getCellOverFlow(ri, ci, rect, cell) {
+    const { fontAttr } = cell;
+    const {
+      direction, textWrap,
+    } = fontAttr;
+    const { x, y, width, height } = rect;
+    if (textWrap !== TEXT_WRAP.OVER_FLOW) {
+      return null;
+    }
+    if (direction === TEXT_DIRECTION.VERTICAL) {
+      const max = this.getCellTextMaxHeight(ri, ci);
+      return new Rect({
+        x, y: y + max.offset, width, height: max.height,
+      });
+    }
+    const max = this.getCellTextMaxWidth(ri, ci);
+    return new Rect({
+      x: x + max.offset, y, width: max.width, height,
+    });
+  }
+
   getCellTextMaxHeight(ri, ci) {
     const { cells, rows } = this;
     const cell = cells.getCell(ri, ci);
@@ -32,8 +53,7 @@ class BaseCellsHelper {
           break;
         }
       }
-    }
-    if (verticalAlign === VERTICAL_ALIGN.center) {
+    } else if (verticalAlign === VERTICAL_ALIGN.center) {
       for (let i = ri, { len } = rows; i <= len; i += 1) {
         const cell = cells.getCell(i, ci);
         if (i === ci) {
@@ -54,8 +74,7 @@ class BaseCellsHelper {
           break;
         }
       }
-    }
-    if (verticalAlign === VERTICAL_ALIGN.bottom) {
+    } else if (verticalAlign === VERTICAL_ALIGN.bottom) {
       for (let i = ri; i >= 0; i -= 1) {
         const cell = cells.getCell(ri, i);
         if (i === ci) {
@@ -79,7 +98,6 @@ class BaseCellsHelper {
     const { align } = fontAttr;
     let width = 0;
     let offset = 0;
-    // 左边对齐
     if (align === ALIGN.left) {
       // 计算当前单元格右边
       // 空白的单元格的总宽度
@@ -94,9 +112,7 @@ class BaseCellsHelper {
           break;
         }
       }
-    }
-    // 居中对其
-    if (align === ALIGN.center) {
+    } else if (align === ALIGN.center) {
       let rightWidth = 0;
       let leftWidth = 0;
       for (let i = ci + 1, { len } = cols; i <= len; i += 1) {
@@ -120,9 +136,7 @@ class BaseCellsHelper {
         }
       }
       width = cols.getWidth(ci) + leftWidth + rightWidth;
-    }
-    // 右边对其
-    if (align === ALIGN.right) {
+    } else if (align === ALIGN.right) {
       // 计算当前单元格左边
       // 空白的单元格的总宽度
       for (let i = ci; i >= 0; i -= 1) {
@@ -140,21 +154,6 @@ class BaseCellsHelper {
       }
     }
     return { width, offset };
-  }
-
-  getCellOverFlow(ri, ci, rect, cell) {
-    const { fontAttr } = cell;
-    const { direction, textWrap } = fontAttr;
-    const { x, y, width, height } = rect;
-    if (textWrap === TEXT_WRAP.OVER_FLOW) {
-      if (direction === TEXT_DIRECTION.VERTICAL) {
-        const max = this.getCellTextMaxHeight(ri, ci);
-        return new Rect({ x, y: y + max.offset, width, height: max.height });
-      }
-      const max = this.getCellTextMaxWidth(ri, ci);
-      return new Rect({ x: x + max.offset, y, width: max.width, height });
-    }
-    return null;
   }
 }
 
