@@ -252,7 +252,9 @@ class HorizontalFontDraw extends DrawFont {
       default:
         contentWidth = textWidth;
     }
-    if (textWidth + paddingH > overflow.width || size + paddingV > overflow.height) {
+    const target = align === ALIGN.center
+      ? rect : overflow;
+    if (textWidth + paddingH > target.width || size + paddingV > target.height) {
       const crop = new Crop({
         draw: dw,
         rect: overflow,
@@ -746,7 +748,9 @@ class AngleFontDraw extends DrawFont {
       });
     }
     // 文本是否越界
-    if (trigonometricWidth > overflow.width || trigonometricHeight > overflow.height) {
+    const target = align === ALIGN.center
+      ? rect : overflow;
+    if (trigonometricWidth > target.width || trigonometricHeight > target.height) {
       crop.open();
       dwAngle.rotate();
       dw.fillText(text, tx, ty);
@@ -1710,7 +1714,9 @@ class VerticalFontDraw extends DrawFont {
       default:
         contentWidth = size;
     }
-    if (hOffset + paddingV > overflow.height || size + paddingH > overflow.width) {
+    const target = align === ALIGN.center
+      ? rect : overflow;
+    if (hOffset + paddingV > target.height || size + paddingH > target.width) {
       const crop = new Crop({
         draw: dw,
         rect: overflow,

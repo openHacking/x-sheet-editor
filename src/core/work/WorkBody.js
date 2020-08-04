@@ -32,7 +32,7 @@ class WorkBody extends Widget {
 
     // 版本标识
     this.poweredBy = h('div', `${cssPrefix}-powered-by-tips`);
-    this.poweredBy.text(XSheetVersion);
+    this.poweredBy.html(`<a target="_blank" href="https://gitee.com/eigi/x-sheet">${XSheetVersion}</a>`);
     this.children(this.poweredBy);
 
     // sheet表
