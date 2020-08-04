@@ -252,9 +252,18 @@ class HorizontalFontDraw extends DrawFont {
       default:
         contentWidth = textWidth;
     }
-    const target = align === ALIGN.center
-      ? rect : overflow;
-    if (textWidth + paddingH > target.width || size + paddingV > target.height) {
+    // 边界检查
+    const outSize = textWidth + paddingH > overflow.width || size + paddingV > overflow.height;
+    let outPoint = false;
+    if (align === ALIGN.center) {
+      const outWidth = textWidth / 2 - width / 2;
+      if (outWidth > 0) {
+        if (overflow.x > rect.x - outWidth) {
+          outPoint = true;
+        }
+      }
+    }
+    if (outSize || outPoint) {
       const crop = new Crop({
         draw: dw,
         rect: overflow,
@@ -747,10 +756,9 @@ class AngleFontDraw extends DrawFont {
         }),
       });
     }
-    // 文本是否越界
-    const target = align === ALIGN.center
-      ? rect : overflow;
-    if (trigonometricWidth > target.width || trigonometricHeight > target.height) {
+    // 边界检查
+    const outSize = trigonometricHeight > overflow.height;
+    if (outSize) {
       crop.open();
       dwAngle.rotate();
       dw.fillText(text, tx, ty);
@@ -1672,19 +1680,16 @@ class VerticalFontDraw extends DrawFont {
     }
     let bx = rect.x;
     let by = rect.y;
-    let paddingH = 0;
     let paddingV = 0;
     switch (align) {
       case ALIGN.left:
         bx += padding;
-        paddingH = padding;
         break;
       case ALIGN.center:
         bx += width / 2;
         break;
       case ALIGN.right:
         bx += width - padding;
-        paddingH = padding;
         break;
       default:
         break;
@@ -1714,9 +1719,9 @@ class VerticalFontDraw extends DrawFont {
       default:
         contentWidth = size;
     }
-    const target = align === ALIGN.center
-      ? rect : overflow;
-    if (hOffset + paddingV > target.height || size + paddingH > target.width) {
+    // 边界检查
+    const outSize = hOffset + paddingV > overflow.height;
+    if (outSize) {
       const crop = new Crop({
         draw: dw,
         rect: overflow,
