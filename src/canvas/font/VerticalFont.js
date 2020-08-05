@@ -1,6 +1,7 @@
 import { BaseFont } from './BaseFont';
 import { ALIGN, VERTICAL_ALIGN } from '../Font';
 import { Utils } from '../../utils/Utils';
+import { Crop } from '../Crop';
 
 class VerticalFont extends BaseFont {
 
@@ -100,7 +101,7 @@ class VerticalFont extends BaseFont {
     dw.line(s, e);
   }
 
-  truncate() {
+  truncateFont() {
     const {
       text, dw, attr, rect,
     } = this;
@@ -114,29 +115,230 @@ class VerticalFont extends BaseFont {
     const breakLen = breakArray.length;
     let bi = 0;
     let wOffset = 0;
-    let hOffset = 0;
+    let maxLen = 0;
     while (bi < breakLen) {
-      hOffset = 0;
       const text = breakArray[bi];
       const textLen = text.length;
+      let hOffset = 0;
       let ii = 0;
       while (ii < textLen) {
         const char = text.charAt(ii);
         textArray.push({
-          len: this.measureWidth(char),
+          len: this.textWidth(char),
           text: char,
           tx: wOffset,
           ty: hOffset,
         });
-        hOffset += size + (ii < textLen - 1 ? spacing : 0)
+        hOffset += size + spacing;
         ii += 1;
+      }
+      wOffset += size + lineHeight;
+      if (hOffset > maxLen) {
+        maxLen = hOffset;
       }
       bi += 1;
     }
+    // 计算文本坐标
+    let bx = rect.x;
+    let by = rect.y;
+    let pw = 0;
+    let ph = 0;
+    switch (align) {
+      case ALIGN.center:
+        bx += width / 2 - wOffset / 2;
+        pw = 0;
+        break;
+      case ALIGN.right:
+        bx += width - wOffset - padding;
+        pw = padding;
+        break;
+      case ALIGN.left:
+        bx += padding;
+        pw = padding;
+        break;
+    }
+    switch (verticalAlign) {
+      case VERTICAL_ALIGN.center:
+        by += height / 2 - maxLen / 2;
+        ph = 0;
+        break;
+      case VERTICAL_ALIGN.bottom:
+        by += height - maxLen - padding;
+        ph = padding;
+        break;
+      case VERTICAL_ALIGN.top:
+        by += padding;
+        ph = padding;
+        break;
+    }
+    // 边界检查
+    const outbounds = maxLen + ph > height || wOffset + pw > width;
+    if (outbounds) {
+      const crop = new Crop({
+        draw: dw,
+        rect,
+      });
+      crop.open();
+      const textLen = textArray.length;
+      let ti = 0;
+      while (ti < textLen) {
+        const item = textArray[ti];
+        item.tx += bx;
+        item.ty += by;
+        dw.fillText(item.text, item.tx, item.ty);
+        if (underline) {
+          this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
+        }
+        ti += 1;
+      }
+      crop.close();
+    } else {
+      const textLen = textArray.length;
+      let ti = 0;
+      while (ti < textLen) {
+        const item = textArray[ti];
+        item.tx += bx;
+        item.ty += by;
+        dw.fillText(item.text, item.tx, item.ty);
+        if (underline) {
+          this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
+        }
+        ti += 1;
+      }
+    }
+    return 0;
   }
 
-  overflow() {}
+  overflowFont() {
+    return this.truncateFont();
+  }
 
-  wrapText() {}
+  wrapTextFont() {
+    const {
+      text, dw, attr, rect,
+    } = this;
+    const {
+      underline, strikethrough, align, verticalAlign, padding, size, lineHeight, spacing,
+    } = attr;
+    // 计算文本折行
+    const breakArray = this.textBreak(text);
+    const textArray = [];
+    const { width, height } = rect;
+    const maxHeight = height - (padding * 2);
+    const breakLen = breakArray.length;
+    let bi = 0;
+    let wOffset = 0;
+    let maxLen = 0;
+    while (bi < breakLen) {
+      const text = breakArray[bi];
+      const textLen = text.length;
+      let hOffset = 0;
+      let ii = 0;
+      while (ii < textLen) {
+        const char = text.charAt(ii);
+        textArray.push({
+          len: this.textWidth(char),
+          text: char,
+          tx: wOffset,
+          ty: hOffset,
+        });
+        hOffset += size + spacing;
+        if (hOffset > maxHeight) {
+          if (hOffset > maxLen) {
+            maxLen = hOffset;
+          }
+          hOffset = 0;
+          wOffset += size + lineHeight;
+        }
+        ii += 1;
+      }
+      wOffset += size + lineHeight;
+      if (hOffset > maxLen) {
+        maxLen = hOffset;
+      }
+      bi += 1;
+    }
+    // 计算文本坐标
+    let bx = rect.x;
+    let by = rect.y;
+    let pw = 0;
+    switch (align) {
+      case ALIGN.center:
+        bx += width / 2 - wOffset / 2;
+        pw = 0;
+        break;
+      case ALIGN.right:
+        bx += width - wOffset - padding;
+        pw = padding;
+        break;
+      case ALIGN.left:
+        bx += padding;
+        pw = padding;
+        break;
+    }
+    switch (verticalAlign) {
+      case VERTICAL_ALIGN.center:
+        by += height / 2 - maxLen / 2;
+        break;
+      case VERTICAL_ALIGN.bottom:
+        by += height - maxLen - padding;
+        break;
+      case VERTICAL_ALIGN.top:
+        by += padding;
+        break;
+    }
+    // 边界检查
+    const outbounds = wOffset + pw > width;
+    if (outbounds) {
+      const crop = new Crop({
+        draw: dw,
+        rect,
+      });
+      crop.open();
+      const textLen = textArray.length;
+      let ti = 0;
+      while (ti < textLen) {
+        const item = textArray[ti];
+        item.tx += bx;
+        item.ty += by;
+        dw.fillText(item.text, item.tx, item.ty);
+        if (underline) {
+          this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
+        }
+        ti += 1;
+      }
+      crop.close();
+    } else {
+      const textLen = textArray.length;
+      let ti = 0;
+      while (ti < textLen) {
+        const item = textArray[ti];
+        item.tx += bx;
+        item.ty += by;
+        dw.fillText(item.text, item.tx, item.ty);
+        if (underline) {
+          this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
+        }
+        ti += 1;
+      }
+    }
+    return 0;
+  }
 
 }
+
+export {
+  VerticalFont,
+};

@@ -23,15 +23,15 @@ class BaseFont {
     return text.split('\n');
   }
 
-  truncate() {
+  truncateFont() {
     throw new TypeError('child impl');
   }
 
-  overFlow() {
+  overflowFont() {
     throw new TypeError('child impl');
   }
 
-  wrapText() {
+  wrapTextFont() {
     throw new TypeError('child impl');
   }
 
