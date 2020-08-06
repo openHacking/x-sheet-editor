@@ -9,7 +9,6 @@ import { Line, LINE_TYPE } from '../../canvas/Line';
 import { Grid } from '../../canvas/Grid';
 import { Crop } from '../../canvas/Crop';
 import { Rect } from '../../canvas/Rect';
-import { ALIGN, TEXT_WRAP } from '../../canvas/Font';
 import Format from './Format';
 import { Box } from '../../canvas/Box';
 import { RectRange } from './tablebase/RectRange';
@@ -35,6 +34,7 @@ import { LineFilter } from './linehandle/filter/LineFilter';
 import { LeftOutRangeFilter } from './linehandle/filter/outrange/LeftOutRangeFilter';
 import { RightOutRangeFilter } from './linehandle/filter/outrange/RightOutRangeFilter';
 import { OperateCellsHelper } from './helper/OperateCellsHelper';
+import {BaseFont} from "../../canvas/font/BaseFont";
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -663,7 +663,7 @@ class XTableContentUI extends XTableUI {
           max += rect.width;
           const { text, fontAttr } = cell;
           const { align, textWrap } = fontAttr;
-          if (Utils.isBlank(text) || align === ALIGN.right || textWrap !== TEXT_WRAP.OVER_FLOW) {
+          if (Utils.isBlank(text) || align === BaseFont.ALIGN.right || textWrap !== BaseFont.TEXT_WRAP.OVER_FLOW) {
             return;
           }
           const size = cells.getCellBoundOutSize(row, col);
@@ -706,7 +706,7 @@ class XTableContentUI extends XTableUI {
           max += rect.width;
           const { text, fontAttr } = cell;
           const { align, textWrap } = fontAttr;
-          if (Utils.isBlank(text) || align === ALIGN.left || textWrap !== TEXT_WRAP.OVER_FLOW) {
+          if (Utils.isBlank(text) || align === BaseFont.ALIGN.left || textWrap !== BaseFont.TEXT_WRAP.OVER_FLOW) {
             return;
           }
           const size = cells.getCellBoundOutSize(row, col);
@@ -774,7 +774,7 @@ class XTableContentUI extends XTableUI {
         builder.setAttr(fontAttr);
         builder.setRect(rect);
         const font = builder.build();
-        font.setTextWrap(TEXT_WRAP.WORD_WRAP);
+        font.setTextWrap(BaseFont.TEXT_WRAP.WORD_WRAP);
         cell.setContentWidth(font.draw());
         scale.notFloat();
       },

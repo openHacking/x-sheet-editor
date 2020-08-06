@@ -1,9 +1,4 @@
-import {
-  ALIGN,
-  TEXT_DIRECTION,
-  TEXT_WRAP,
-  VERTICAL_ALIGN,
-} from '../../../canvas/Font';
+import { BaseFont } from '../../../canvas/font/BaseFont';
 
 /**
  *  CellFont
@@ -28,9 +23,9 @@ class CellFont {
    * @param padding
    */
   constructor({
-    align = ALIGN.left,
-    verticalAlign = VERTICAL_ALIGN.center,
-    textWrap = TEXT_WRAP.OVER_FLOW,
+    align = BaseFont.ALIGN.left,
+    verticalAlign = BaseFont.VERTICAL_ALIGN.center,
+    textWrap = BaseFont.TEXT_WRAP.OVER_FLOW,
     strikethrough = false,
     underline = false,
     color = 'rgb(0,0,0)',
@@ -39,7 +34,7 @@ class CellFont {
     bold = false,
     italic = false,
     angle = 0,
-    direction = TEXT_DIRECTION.HORIZONTAL,
+    direction = BaseFont.TEXT_DIRECTION.HORIZONTAL,
     padding = 5,
   }) {
     this.align = align;
@@ -63,13 +58,13 @@ class CellFont {
     } = this;
     let justifyContent = 'left';
     switch (align) {
-      case ALIGN.left:
+      case BaseFont.ALIGN.left:
         justifyContent = 'flex-start';
         break;
-      case ALIGN.center:
+      case BaseFont.ALIGN.center:
         justifyContent = 'center';
         break;
-      case ALIGN.right:
+      case BaseFont.ALIGN.right:
         justifyContent = 'flex-end';
         break;
     }

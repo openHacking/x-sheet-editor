@@ -7,8 +7,7 @@ import { TextWrappingIcon3 } from '../icon/textwrapping/TextWrappingIcon3';
 import { h } from '../../../../../lib/Element';
 import { TextWrappingContextMenuItem } from './TextWrappingContextMenuItem';
 import { EventBind } from '../../../../../utils/EventBind';
-
-import { TEXT_WRAP } from '../../../../../canvas/Font';
+import { BaseFont } from '../../../../../canvas/font/BaseFont';
 
 class TextWrappingContextMenu extends ELContextMenu {
   constructor(options = {}) {
@@ -28,17 +27,17 @@ class TextWrappingContextMenu extends ELContextMenu {
     this.addItem(this.textWrappingIcons);
     // 添加事件
     EventBind.bind(this.textWrappingIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      this.options.onUpdate(TEXT_WRAP.TRUNCATE);
+      this.options.onUpdate(BaseFont.TEXT_WRAP.TRUNCATE);
       e.stopPropagation();
       e.preventDefault();
     });
     EventBind.bind(this.textWrappingIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      this.options.onUpdate(TEXT_WRAP.OVER_FLOW);
+      this.options.onUpdate(BaseFont.TEXT_WRAP.OVER_FLOW);
       e.stopPropagation();
       e.preventDefault();
     });
     EventBind.bind(this.textWrappingIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      this.options.onUpdate(TEXT_WRAP.WORD_WRAP);
+      this.options.onUpdate(BaseFont.TEXT_WRAP.WORD_WRAP);
       e.stopPropagation();
       e.preventDefault();
     });

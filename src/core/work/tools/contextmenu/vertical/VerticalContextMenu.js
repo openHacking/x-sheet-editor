@@ -7,8 +7,7 @@ import { VerticalIcon1 } from '../icon/vertical/VerticalIcon1';
 import { VerticalIcon2 } from '../icon/vertical/VerticalIcon2';
 import { VerticalIcon3 } from '../icon/vertical/VerticalIcon3';
 import { EventBind } from '../../../../../utils/EventBind';
-
-import { VERTICAL_ALIGN } from '../../../../../canvas/Font';
+import { BaseFont } from '../../../../../canvas/font/BaseFont';
 
 class VerticalContextMenu extends ELContextMenu {
   constructor(options = {}) {
@@ -28,17 +27,17 @@ class VerticalContextMenu extends ELContextMenu {
     this.addItem(this.verticalIcons);
     // 添加事件
     EventBind.bind(this.verticalIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      this.options.onUpdate(VERTICAL_ALIGN.top);
+      this.options.onUpdate(BaseFont.VERTICAL_ALIGN.top);
       e.stopPropagation();
       e.preventDefault();
     });
     EventBind.bind(this.verticalIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      this.options.onUpdate(VERTICAL_ALIGN.center);
+      this.options.onUpdate(BaseFont.VERTICAL_ALIGN.center);
       e.stopPropagation();
       e.preventDefault();
     });
     EventBind.bind(this.verticalIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      this.options.onUpdate(VERTICAL_ALIGN.bottom);
+      this.options.onUpdate(BaseFont.VERTICAL_ALIGN.bottom);
       e.stopPropagation();
       e.preventDefault();
     });

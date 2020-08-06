@@ -1,10 +1,6 @@
 import { LineFilter } from '../LineFilter';
 import { Utils } from '../../../../../utils/Utils';
-import {
-  ALIGN,
-  TEXT_DIRECTION,
-  TEXT_WRAP,
-} from '../../../../../canvas/Font';
+import { BaseFont } from '../../../../../canvas/font/BaseFont';
 
 class LeftOutRangeFilter extends LineFilter {
 
@@ -44,19 +40,19 @@ class LeftOutRangeFilter extends LineFilter {
 
     // 检查文本的绘制方向
     // 区别对待旋转文本
-    if (direction === TEXT_DIRECTION.ANGLE) {
+    if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
       const { angle, textWrap } = fontAttr;
       if (angle === 90 || angle === -90) {
         checked = false;
       }
-      if (textWrap === TEXT_WRAP.TRUNCATE) {
+      if (textWrap === BaseFont.TEXT_WRAP.TRUNCATE) {
         checked = false;
       }
     } else {
       // 跳过裁剪类型不是overflow
       // 类型的单元格
       const { textWrap } = fontAttr;
-      if (textWrap !== TEXT_WRAP.OVER_FLOW) {
+      if (textWrap !== BaseFont.TEXT_WRAP.OVER_FLOW) {
         checked = false;
       }
     }
@@ -65,7 +61,7 @@ class LeftOutRangeFilter extends LineFilter {
     // 类型的单元格
     const { align } = fontAttr;
     const maxWidth = cols.getWidth(ci);
-    if (align !== ALIGN.right && align !== ALIGN.center) {
+    if (align !== BaseFont.ALIGN.right && align !== BaseFont.ALIGN.center) {
       checked = false;
     }
 
@@ -118,25 +114,25 @@ class LeftOutRangeFilter extends LineFilter {
       // 区别对待旋转文本
       const { fontAttr } = cell;
       const { direction } = fontAttr;
-      if (direction === TEXT_DIRECTION.ANGLE) {
+      if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
         const { angle, textWrap } = fontAttr;
         if (angle === 90 || angle === -90) {
           break;
         }
-        if (textWrap === TEXT_WRAP.TRUNCATE) {
+        if (textWrap === BaseFont.TEXT_WRAP.TRUNCATE) {
           break;
         }
       } else {
         // 跳过裁剪类型不是overflow
         // 类型的单元格
         const { textWrap } = fontAttr;
-        if (textWrap !== TEXT_WRAP.OVER_FLOW) {
+        if (textWrap !== BaseFont.TEXT_WRAP.OVER_FLOW) {
           break;
         }
         // 跳过对齐方式不是right和center
         // 类型的单元格
         const { align } = fontAttr;
-        if (align !== ALIGN.right && align !== ALIGN.center) {
+        if (align !== BaseFont.ALIGN.right && align !== BaseFont.ALIGN.center) {
           break;
         }
       }
@@ -187,25 +183,25 @@ class LeftOutRangeFilter extends LineFilter {
       // 区别对待旋转文本
       const { fontAttr } = cell;
       const { direction } = fontAttr;
-      if (direction === TEXT_DIRECTION.ANGLE) {
+      if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
         const { angle, textWrap } = fontAttr;
         if (angle === 90 || angle === -90) {
           break;
         }
-        if (textWrap === TEXT_WRAP.TRUNCATE) {
+        if (textWrap === BaseFont.TEXT_WRAP.TRUNCATE) {
           break;
         }
       } else {
         // 跳过裁剪类型不是overflow
         // 类型的单元格
         const { textWrap } = fontAttr;
-        if (textWrap !== TEXT_WRAP.OVER_FLOW) {
+        if (textWrap !== BaseFont.TEXT_WRAP.OVER_FLOW) {
           break;
         }
         // 跳过对齐方式不是left和center
         // 类型的单元格
         const { align } = fontAttr;
-        if (align !== ALIGN.left && align !== ALIGN.center) {
+        if (align !== BaseFont.ALIGN.left && align !== BaseFont.ALIGN.center) {
           break;
         }
       }

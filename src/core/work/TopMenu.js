@@ -27,10 +27,10 @@ import { SCREEN_SELECT_EVENT, ScreenSelector } from '../table/screenwiget/select
 import { ElPopUp } from '../../component/elpopup/ElPopUp';
 import { LINE_TYPE } from '../../canvas/Line';
 import { Icon } from './tools/Icon';
-import { ALIGN, TEXT_WRAP, VERTICAL_ALIGN } from '../../canvas/Font';
 import { Cell } from '../table/tablecell/Cell';
 import { Utils } from '../../utils/Utils';
 import { Scale } from './tools/Scale';
+import {BaseFont} from "../../canvas/font/BaseFont";
 
 class Divider extends Widget {
   constructor() {
@@ -478,13 +478,13 @@ class TopMenu extends Widget {
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           switch (type) {
-            case ALIGN.left:
+            case BaseFont.ALIGN.left:
               this.horizontalAlign.setIcon(new Icon('align-left'));
               break;
-            case ALIGN.center:
+            case BaseFont.ALIGN.center:
               this.horizontalAlign.setIcon(new Icon('align-center'));
               break;
-            case ALIGN.right:
+            case BaseFont.ALIGN.right:
               this.horizontalAlign.setIcon(new Icon('align-right'));
               break;
             default: break;
@@ -519,13 +519,13 @@ class TopMenu extends Widget {
           const screenSelector = screen.findByClass(ScreenSelector);
           const { selectorAttr } = screenSelector;
           switch (type) {
-            case VERTICAL_ALIGN.top:
+            case BaseFont.VERTICAL_ALIGN.top:
               this.verticalAlign.setIcon(new Icon('align-top'));
               break;
-            case VERTICAL_ALIGN.center:
+            case BaseFont.VERTICAL_ALIGN.center:
               this.verticalAlign.setIcon(new Icon('align-middle'));
               break;
-            case VERTICAL_ALIGN.bottom:
+            case BaseFont.VERTICAL_ALIGN.bottom:
               this.verticalAlign.setIcon(new Icon('align-bottom'));
               break;
             default: break;
@@ -561,13 +561,13 @@ class TopMenu extends Widget {
           const { selectorAttr } = screenSelector;
           let icon;
           switch (type) {
-            case TEXT_WRAP.TRUNCATE:
+            case BaseFont.BaseFont.VERTICAL_ALIGN.TRUNCATE:
               icon = new Icon('truncate');
               break;
-            case TEXT_WRAP.WORD_WRAP:
+            case BaseFont.BaseFont.VERTICAL_ALIGN.WORD_WRAP:
               icon = new Icon('text-wrap');
               break;
-            case TEXT_WRAP.OVER_FLOW:
+            case BaseFont.BaseFont.VERTICAL_ALIGN.OVER_FLOW:
             default:
               icon = new Icon('overflow');
               break;
@@ -1266,13 +1266,13 @@ class TopMenu extends Widget {
     if (selectorAttr) {
       const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
       switch (firstCell.fontAttr.align) {
-        case ALIGN.left:
+        case BaseFont.ALIGN.left:
           icon = new Icon('align-left');
           break;
-        case ALIGN.center:
+        case BaseFont.ALIGN.center:
           icon = new Icon('align-center');
           break;
-        case ALIGN.right:
+        case BaseFont.ALIGN.right:
           icon = new Icon('align-right');
           break;
         default: break;
@@ -1294,13 +1294,13 @@ class TopMenu extends Widget {
     if (selectorAttr) {
       const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
       switch (firstCell.fontAttr.verticalAlign) {
-        case VERTICAL_ALIGN.top:
+        case BaseFont.VERTICAL_ALIGN.top:
           icon = new Icon('align-top');
           break;
-        case VERTICAL_ALIGN.center:
+        case BaseFont.VERTICAL_ALIGN.center:
           icon = new Icon('align-middle');
           break;
-        case VERTICAL_ALIGN.bottom:
+        case BaseFont.VERTICAL_ALIGN.bottom:
           icon = new Icon('align-bottom');
           break;
         default: break;
@@ -1322,13 +1322,13 @@ class TopMenu extends Widget {
     if (selectorAttr) {
       const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
       switch (firstCell.fontAttr.textWrap) {
-        case TEXT_WRAP.TRUNCATE:
+        case BaseFont.BaseFont.VERTICAL_ALIGN.TRUNCATE:
           icon = new Icon('truncate');
           break;
-        case TEXT_WRAP.WORD_WRAP:
+        case BaseFont.BaseFont.VERTICAL_ALIGN.WORD_WRAP:
           icon = new Icon('text-wrap');
           break;
-        case TEXT_WRAP.OVER_FLOW:
+        case BaseFont.BaseFont.VERTICAL_ALIGN.OVER_FLOW:
         default:
           icon = new Icon('overflow');
           break;

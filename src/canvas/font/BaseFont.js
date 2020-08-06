@@ -39,6 +39,18 @@ class BaseFont {
     throw new TypeError('child impl');
   }
 
+  setTextWrap(textWrap) {
+    this.attr.textWrap = textWrap;
+  }
+
+  setSize(size) {
+    this.attr.size = size;
+  }
+
+  setPadding(padding) {
+    this.attr.padding = padding;
+  }
+
 }
 BaseFont.VERTICAL_ALIGN = {
   top: 'top',
@@ -51,9 +63,9 @@ BaseFont.ALIGN = {
   right: 'right',
 };
 BaseFont.TEXT_WRAP = {
-  left: 'left',
-  center: 'center',
-  right: 'right',
+  OVER_FLOW: 1,
+  WORD_WRAP: 2,
+  TRUNCATE: 3,
 };
 BaseFont.TEXT_DIRECTION = {
   HORIZONTAL: 'horizontal',

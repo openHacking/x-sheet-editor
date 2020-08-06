@@ -1,6 +1,6 @@
 import { Cell } from './Cell';
 import { Utils } from '../../../utils/Utils';
-import { ALIGN } from '../../../canvas/Font';
+import {BaseFont} from "../../../canvas/font/BaseFont";
 
 /**
  * Cells
@@ -72,10 +72,10 @@ class Cells {
       const { contentWidth, fontAttr } = cell;
       const { align } = fontAttr;
       switch (align) {
-        case ALIGN.right:
-        case ALIGN.left:
+        case BaseFont.ALIGN.right:
+        case BaseFont.ALIGN.left:
           return contentWidth;
-        case ALIGN.center:
+        case BaseFont.ALIGN.center:
           return colWidth + ((contentWidth - colWidth) / 2);
         default:
           return 0;

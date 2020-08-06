@@ -1,6 +1,5 @@
 import { BaseFont } from './BaseFont';
 import { Utils } from '../../utils/Utils';
-import { ALIGN, TEXT_WRAP, VERTICAL_ALIGN } from '../Font';
 import { Crop } from '../Crop';
 
 class HorizontalFont extends BaseFont {
@@ -31,15 +30,15 @@ class HorizontalFont extends BaseFont {
     const e = [0, 0];
     if (type === 'strike') {
       switch (align) {
-        case ALIGN.right:
+        case BaseFont.ALIGN.right:
           s[0] = tx - textWidth;
           e[0] = tx;
           break;
-        case ALIGN.center:
+        case BaseFont.ALIGN.center:
           s[0] = tx - textWidth / 2;
           e[0] = tx + textWidth / 2;
           break;
-        case ALIGN.left:
+        case BaseFont.ALIGN.left:
           s[0] = tx;
           e[0] = tx + textWidth;
           break;
@@ -47,15 +46,15 @@ class HorizontalFont extends BaseFont {
           break;
       }
       switch (verticalAlign) {
-        case VERTICAL_ALIGN.top:
+        case BaseFont.VERTICAL_ALIGN.top:
           s[1] = ty + size / 2;
           e[1] = ty + size / 2;
           break;
-        case VERTICAL_ALIGN.center:
+        case BaseFont.VERTICAL_ALIGN.center:
           s[1] = ty;
           e[1] = ty;
           break;
-        case VERTICAL_ALIGN.bottom:
+        case BaseFont.VERTICAL_ALIGN.bottom:
           s[1] = ty - size / 2;
           e[1] = ty - size / 2;
           break;
@@ -65,15 +64,15 @@ class HorizontalFont extends BaseFont {
     }
     if (type === 'underline') {
       switch (align) {
-        case ALIGN.right:
+        case BaseFont.ALIGN.right:
           s[0] = tx - textWidth;
           e[0] = tx;
           break;
-        case ALIGN.center:
+        case BaseFont.ALIGN.center:
           s[0] = tx - textWidth / 2;
           e[0] = tx + textWidth / 2;
           break;
-        case ALIGN.left:
+        case BaseFont.ALIGN.left:
           s[0] = tx;
           e[0] = tx + textWidth;
           break;
@@ -81,15 +80,15 @@ class HorizontalFont extends BaseFont {
           break;
       }
       switch (verticalAlign) {
-        case VERTICAL_ALIGN.top:
+        case BaseFont.VERTICAL_ALIGN.top:
           s[1] = ty + size;
           e[1] = ty + size;
           break;
-        case VERTICAL_ALIGN.center:
+        case BaseFont.VERTICAL_ALIGN.center:
           s[1] = ty + size / 2;
           e[1] = ty + size / 2;
           break;
-        case VERTICAL_ALIGN.bottom:
+        case BaseFont.VERTICAL_ALIGN.bottom:
           s[1] = ty;
           e[1] = ty;
           break;
@@ -115,11 +114,11 @@ class HorizontalFont extends BaseFont {
       strokeStyle: attr.color,
     });
     switch (textWrap) {
-      case TEXT_WRAP.OVER_FLOW:
+      case BaseFont.TEXT_WRAP.OVER_FLOW:
         return this.overflowFont();
-      case TEXT_WRAP.TRUNCATE:
+      case BaseFont.TEXT_WRAP.TRUNCATE:
         return this.truncateFont();
-      case TEXT_WRAP.WORD_WRAP:
+      case BaseFont.TEXT_WRAP.WORD_WRAP:
         return this.wrapTextFont();
     }
     return 0;
@@ -161,29 +160,29 @@ class HorizontalFont extends BaseFont {
     let pw = 0;
     let ph = 0;
     switch (align) {
-      case ALIGN.center:
+      case BaseFont.ALIGN.center:
         bx += width / 2;
         pw = 0;
         break;
-      case ALIGN.left:
+      case BaseFont.ALIGN.left:
         bx += padding;
         pw = padding;
         break;
-      case ALIGN.right:
+      case BaseFont.ALIGN.right:
         bx += width - padding;
         pw = padding;
         break;
     }
     switch (verticalAlign) {
-      case VERTICAL_ALIGN.center:
+      case BaseFont.VERTICAL_ALIGN.center:
         by += height / 2 - hOffset / 2;
         ph = 0;
         break;
-      case VERTICAL_ALIGN.top:
+      case BaseFont.VERTICAL_ALIGN.top:
         by += padding;
         ph = padding;
         break;
-      case VERTICAL_ALIGN.bottom:
+      case BaseFont.VERTICAL_ALIGN.bottom:
         by += height - hOffset - padding;
         ph = padding;
         break;
@@ -271,29 +270,29 @@ class HorizontalFont extends BaseFont {
     let pw = 0;
     let ph = 0;
     switch (align) {
-      case ALIGN.center:
+      case BaseFont.ALIGN.center:
         bx += width / 2;
         pw = 0;
         break;
-      case ALIGN.left:
+      case BaseFont.ALIGN.left:
         bx += padding;
         pw = padding;
         break;
-      case ALIGN.right:
+      case BaseFont.ALIGN.right:
         bx += width - padding;
         pw = padding;
         break;
     }
     switch (verticalAlign) {
-      case VERTICAL_ALIGN.center:
+      case BaseFont.VERTICAL_ALIGN.center:
         by += height / 2 - hOffset / 2;
         ph = 0;
         break;
-      case VERTICAL_ALIGN.top:
+      case BaseFont.VERTICAL_ALIGN.top:
         by += padding;
         ph = padding;
         break;
-      case VERTICAL_ALIGN.bottom:
+      case BaseFont.VERTICAL_ALIGN.bottom:
         by += height - hOffset - padding;
         ph = padding;
         break;
@@ -301,7 +300,7 @@ class HorizontalFont extends BaseFont {
     // 边界检查
     const outbounds = maxLen + pw > overflow.width || hOffset + ph > overflow.height;
     let pointOffset = false;
-    if (align === ALIGN.center) {
+    if (align === BaseFont.ALIGN.center) {
       const diff = maxLen / 2 - width / 2;
       if (diff > 0) {
         if (overflow.x > rect.x - diff) {
@@ -354,11 +353,11 @@ class HorizontalFont extends BaseFont {
     // 计算文本占据的宽度(padding)
     let haveWidth = 0;
     switch (align) {
-      case ALIGN.right:
-      case ALIGN.left:
+      case BaseFont.ALIGN.right:
+      case BaseFont.ALIGN.left:
         haveWidth = padding + maxLen;
         break;
-      case ALIGN.center:
+      case BaseFont.ALIGN.center:
         haveWidth = maxLen;
         break;
     }
@@ -430,28 +429,28 @@ class HorizontalFont extends BaseFont {
     let by = rect.y;
     let ph = 0;
     switch (align) {
-      case ALIGN.left:
+      case BaseFont.ALIGN.left:
         bx += padding;
         break;
-      case ALIGN.center:
+      case BaseFont.ALIGN.center:
         bx += width / 2;
         break;
-      case ALIGN.right:
+      case BaseFont.ALIGN.right:
         bx += width - padding;
         break;
       default:
         break;
     }
     switch (verticalAlign) {
-      case VERTICAL_ALIGN.center:
+      case BaseFont.VERTICAL_ALIGN.center:
         by += height / 2 - hOffset / 2;
         ph = 0;
         break;
-      case VERTICAL_ALIGN.top:
+      case BaseFont.VERTICAL_ALIGN.top:
         by += padding;
         ph = padding;
         break;
-      case VERTICAL_ALIGN.bottom:
+      case BaseFont.VERTICAL_ALIGN.bottom:
         by += height - hOffset - padding;
         ph = padding;
         break;

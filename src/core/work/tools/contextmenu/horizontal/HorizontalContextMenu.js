@@ -7,8 +7,7 @@ import { HorizontalIcon2 } from '../icon/horizontal/HorizontalIcon2';
 import { HorizontalIcon3 } from '../icon/horizontal/HorizontalIcon3';
 import { HorizontalContextMenuItem } from './HorizontalContextMenuItem';
 import { EventBind } from '../../../../../utils/EventBind';
-
-import { ALIGN } from '../../../../../canvas/Font';
+import { BaseFont } from '../../../../../canvas/font/BaseFont';
 
 class HorizontalContextMenu extends ELContextMenu {
   constructor(options = {}) {
@@ -28,17 +27,17 @@ class HorizontalContextMenu extends ELContextMenu {
     this.addItem(this.horizontalIcons);
     // 添加事件
     EventBind.bind(this.horizontalIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      this.options.onUpdate(ALIGN.left);
+      this.options.onUpdate(BaseFont.ALIGN.left);
       e.stopPropagation();
       e.preventDefault();
     });
     EventBind.bind(this.horizontalIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      this.options.onUpdate(ALIGN.center);
+      this.options.onUpdate(BaseFont.ALIGN.center);
       e.stopPropagation();
       e.preventDefault();
     });
     EventBind.bind(this.horizontalIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      this.options.onUpdate(ALIGN.right);
+      this.options.onUpdate(BaseFont.ALIGN.right);
       e.stopPropagation();
       e.preventDefault();
     });

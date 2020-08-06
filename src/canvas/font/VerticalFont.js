@@ -1,5 +1,4 @@
 import { BaseFont } from './BaseFont';
-import { ALIGN, TEXT_WRAP, VERTICAL_ALIGN } from '../Font';
 import { Utils } from '../../utils/Utils';
 import { Crop } from '../Crop';
 
@@ -32,15 +31,15 @@ class VerticalFont extends BaseFont {
     const e = [0, 0];
     if (type === 'strike') {
       switch (align) {
-        case ALIGN.right:
+        case BaseFont.ALIGN.right:
           s[0] = tx - textWidth;
           e[0] = tx;
           break;
-        case ALIGN.center:
+        case BaseFont.ALIGN.center:
           s[0] = tx - textWidth / 2;
           e[0] = tx + textWidth / 2;
           break;
-        case ALIGN.left:
+        case BaseFont.ALIGN.left:
           s[0] = tx;
           e[0] = tx + textWidth;
           break;
@@ -48,15 +47,15 @@ class VerticalFont extends BaseFont {
           break;
       }
       switch (verticalAlign) {
-        case VERTICAL_ALIGN.top:
+        case BaseFont.VERTICAL_ALIGN.top:
           s[1] = ty + size / 2;
           e[1] = ty + size / 2;
           break;
-        case VERTICAL_ALIGN.center:
+        case BaseFont.VERTICAL_ALIGN.center:
           s[1] = ty;
           e[1] = ty;
           break;
-        case VERTICAL_ALIGN.bottom:
+        case BaseFont.VERTICAL_ALIGN.bottom:
           s[1] = ty - size / 2;
           e[1] = ty - size / 2;
           break;
@@ -66,15 +65,15 @@ class VerticalFont extends BaseFont {
     }
     if (type === 'underline') {
       switch (align) {
-        case ALIGN.right:
+        case BaseFont.ALIGN.right:
           s[0] = tx - textWidth;
           e[0] = tx;
           break;
-        case ALIGN.center:
+        case BaseFont.ALIGN.center:
           s[0] = tx - textWidth / 2;
           e[0] = tx + textWidth / 2;
           break;
-        case ALIGN.left:
+        case BaseFont.ALIGN.left:
           s[0] = tx;
           e[0] = tx + textWidth;
           break;
@@ -82,15 +81,15 @@ class VerticalFont extends BaseFont {
           break;
       }
       switch (verticalAlign) {
-        case VERTICAL_ALIGN.top:
+        case BaseFont.VERTICAL_ALIGN.top:
           s[1] = ty + size;
           e[1] = ty + size;
           break;
-        case VERTICAL_ALIGN.center:
+        case BaseFont.VERTICAL_ALIGN.center:
           s[1] = ty + size / 2;
           e[1] = ty + size / 2;
           break;
-        case VERTICAL_ALIGN.bottom:
+        case BaseFont.VERTICAL_ALIGN.bottom:
           s[1] = ty;
           e[1] = ty;
           break;
@@ -109,18 +108,18 @@ class VerticalFont extends BaseFont {
     const { dw, attr } = this;
     const { textWrap } = attr;
     dw.attr({
-      textAlign: ALIGN.left,
-      textBaseline: VERTICAL_ALIGN.top,
+      textAlign: BaseFont.ALIGN.left,
+      textBaseline: BaseFont.VERTICAL_ALIGN.top,
       font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`,
       fillStyle: attr.color,
       strokeStyle: attr.color,
     });
     switch (textWrap) {
-      case TEXT_WRAP.OVER_FLOW:
+      case BaseFont.TEXT_WRAP.OVER_FLOW:
         return this.drawTextOverFlow();
-      case TEXT_WRAP.TRUNCATE:
+      case BaseFont.TEXT_WRAP.TRUNCATE:
         return this.drawTextTruncate();
-      case TEXT_WRAP.WORD_WRAP:
+      case BaseFont.TEXT_WRAP.WORD_WRAP:
         return this.drawTextWarp();
     }
     return 0;
@@ -169,29 +168,29 @@ class VerticalFont extends BaseFont {
     let pw = 0;
     let ph = 0;
     switch (align) {
-      case ALIGN.center:
+      case BaseFont.ALIGN.center:
         bx += width / 2 - wOffset / 2;
         pw = 0;
         break;
-      case ALIGN.right:
+      case BaseFont.ALIGN.right:
         bx += width - wOffset - padding;
         pw = padding;
         break;
-      case ALIGN.left:
+      case BaseFont.ALIGN.left:
         bx += padding;
         pw = padding;
         break;
     }
     switch (verticalAlign) {
-      case VERTICAL_ALIGN.center:
+      case BaseFont.VERTICAL_ALIGN.center:
         by += height / 2 - maxLen / 2;
         ph = 0;
         break;
-      case VERTICAL_ALIGN.bottom:
+      case BaseFont.VERTICAL_ALIGN.bottom:
         by += height - maxLen - padding;
         ph = padding;
         break;
-      case VERTICAL_ALIGN.top:
+      case BaseFont.VERTICAL_ALIGN.top:
         by += padding;
         ph = padding;
         break;
@@ -294,27 +293,27 @@ class VerticalFont extends BaseFont {
     let by = rect.y;
     let pw = 0;
     switch (align) {
-      case ALIGN.center:
+      case BaseFont.ALIGN.center:
         bx += width / 2 - wOffset / 2;
         pw = 0;
         break;
-      case ALIGN.right:
+      case BaseFont.ALIGN.right:
         bx += width - wOffset - padding;
         pw = padding;
         break;
-      case ALIGN.left:
+      case BaseFont.ALIGN.left:
         bx += padding;
         pw = padding;
         break;
     }
     switch (verticalAlign) {
-      case VERTICAL_ALIGN.center:
+      case BaseFont.VERTICAL_ALIGN.center:
         by += height / 2 - maxLen / 2;
         break;
-      case VERTICAL_ALIGN.bottom:
+      case BaseFont.VERTICAL_ALIGN.bottom:
         by += height - maxLen - padding;
         break;
-      case VERTICAL_ALIGN.top:
+      case BaseFont.VERTICAL_ALIGN.top:
         by += padding;
         break;
     }

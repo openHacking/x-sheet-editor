@@ -1,6 +1,6 @@
-import { Font } from '../../../canvas/Font';
 import { ScaleAdapter } from './Scale';
 import { XDraw } from '../../../canvas/XDraw';
+import { XFont } from '../../../canvas/font/XFont';
 
 class TextBuilder {
 
@@ -40,7 +40,7 @@ class TextBuilder {
       text, rect, attr, overflow, dw,
     } = this;
     const { scaleAdapter } = this;
-    const font = new Font({
+    const font = new XFont({
       dw, text, rect, attr, overflow,
     });
     const size = XDraw.dpx(scaleAdapter.goto(attr.size));
