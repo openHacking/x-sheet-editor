@@ -20,7 +20,23 @@ class BaseFont {
   }
 
   textBreak(text) {
-    return text.split('\n');
+    return text.split(/\\n/);
+  }
+
+  isBlank(text) {
+    return text === null || text === undefined || text.toString().trim() === '';
+  }
+
+  setTextWrap(textWrap) {
+    this.attr.textWrap = textWrap;
+  }
+
+  setSize(size) {
+    this.attr.size = size;
+  }
+
+  setPadding(padding) {
+    this.attr.padding = padding;
   }
 
   truncateFont() {
@@ -37,18 +53,6 @@ class BaseFont {
 
   draw() {
     throw new TypeError('child impl');
-  }
-
-  setTextWrap(textWrap) {
-    this.attr.textWrap = textWrap;
-  }
-
-  setSize(size) {
-    this.attr.size = size;
-  }
-
-  setPadding(padding) {
-    this.attr.padding = padding;
   }
 
 }

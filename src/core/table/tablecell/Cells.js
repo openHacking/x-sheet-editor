@@ -1,6 +1,6 @@
 import { Cell } from './Cell';
 import { Utils } from '../../../utils/Utils';
-import {BaseFont} from "../../../canvas/font/BaseFont";
+import { BaseFont } from '../../../canvas/font/BaseFont';
 
 /**
  * Cells

@@ -17,6 +17,23 @@
 <body id="dome"></body>
 <script>
     const dome = document.getElementById("dome");
-    const xSheet = new XSheet(dome);
+    const xSheet = new XSheet(dome, {
+      workConfig: {
+        body: {
+          sheets: [{
+            tableConfig: {
+              data: [[{
+                  fontAttr: {
+                    verticalAlign: 'top',
+                    textWrap: 2,
+                    direction: 'vertical',
+                  },
+                  text: 'heheheheehehe'
+                }]]
+            },
+          }],
+        },
+      },
+    });
 </script>
 </html>

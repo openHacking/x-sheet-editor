@@ -116,11 +116,11 @@ class VerticalFont extends BaseFont {
     });
     switch (textWrap) {
       case BaseFont.TEXT_WRAP.OVER_FLOW:
-        return this.drawTextOverFlow();
+        return this.overflowFont();
       case BaseFont.TEXT_WRAP.TRUNCATE:
-        return this.drawTextTruncate();
+        return this.truncateFont();
       case BaseFont.TEXT_WRAP.WORD_WRAP:
-        return this.drawTextWarp();
+        return this.wrapTextFont();
     }
     return 0;
   }
@@ -156,11 +156,17 @@ class VerticalFont extends BaseFont {
         hOffset += size + spacing;
         ii += 1;
       }
-      wOffset += size + lineHeight;
+      if (hOffset > 0) {
+        hOffset -= spacing;
+      }
       if (hOffset > maxLen) {
         maxLen = hOffset;
       }
+      wOffset += size + lineHeight;
       bi += 1;
+    }
+    if (wOffset > 0) {
+      wOffset -= lineHeight;
     }
     // 计算文本坐标
     let bx = rect.x;
@@ -196,7 +202,8 @@ class VerticalFont extends BaseFont {
         break;
     }
     // 边界检查
-    const outbounds = maxLen + ph > height || wOffset + pw > width;
+    const totalWidth = (textArray.length * (size + lineHeight)) - lineHeight;
+    const outbounds = maxLen + ph > height || totalWidth + pw > width;
     if (outbounds) {
       const crop = new Crop({
         draw: dw,
@@ -274,19 +281,19 @@ class VerticalFont extends BaseFont {
         });
         hOffset += size + spacing;
         if (hOffset > maxHeight) {
-          if (hOffset > maxLen) {
-            maxLen = hOffset;
-          }
           hOffset = 0;
           wOffset += size + lineHeight;
         }
         ii += 1;
       }
-      wOffset += size + lineHeight;
       if (hOffset > maxLen) {
         maxLen = hOffset;
       }
+      wOffset += size + lineHeight;
       bi += 1;
+    }
+    if (wOffset > 0) {
+      wOffset -= lineHeight;
     }
     // 计算文本坐标
     let bx = rect.x;
@@ -318,7 +325,8 @@ class VerticalFont extends BaseFont {
         break;
     }
     // 边界检查
-    const outbounds = wOffset + pw > width;
+    const totalWidth = (textArray.length * (size + lineHeight)) - lineHeight;
+    const outbounds = totalWidth + pw > width;
     if (outbounds) {
       const crop = new Crop({
         draw: dw,

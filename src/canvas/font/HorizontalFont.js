@@ -140,6 +140,9 @@ class HorizontalFont extends BaseFont {
     let hOffset = 0;
     let maxLen = 0;
     while (bi < breakLen) {
+      if (bi > 0) {
+        hOffset += size + lineHeight;
+      }
       const text = breakArray[bi];
       const item = {
         tx: 0,
@@ -152,7 +155,9 @@ class HorizontalFont extends BaseFont {
         maxLen = item.len;
       }
       bi += 1;
-      hOffset += size + lineHeight;
+    }
+    if (hOffset > 0) {
+      hOffset -= lineHeight;
     }
     // 计算文本坐标
     let bx = rect.x;
@@ -188,7 +193,8 @@ class HorizontalFont extends BaseFont {
         break;
     }
     // 边界检查
-    const outbounds = maxLen + pw > width || hOffset + ph > height;
+    const totalHeight = (textArray.length * (size + lineHeight)) - lineHeight;
+    const outbounds = maxLen + pw > width || totalHeight + ph > height;
     if (outbounds) {
       // 裁剪宽度
       const crop = new Crop({
@@ -250,6 +256,9 @@ class HorizontalFont extends BaseFont {
     let hOffset = 0;
     let maxLen = 0;
     while (bi < breakLen) {
+      if (bi > 0) {
+        hOffset += size + lineHeight;
+      }
       const text = breakArray[bi];
       const item = {
         tx: 0,
@@ -262,7 +271,9 @@ class HorizontalFont extends BaseFont {
         maxLen = item.len;
       }
       bi += 1;
-      hOffset += size + lineHeight;
+    }
+    if (hOffset > 0) {
+      hOffset -= lineHeight;
     }
     // 计算文本坐标
     let bx = rect.x;
@@ -298,7 +309,8 @@ class HorizontalFont extends BaseFont {
         break;
     }
     // 边界检查
-    const outbounds = maxLen + pw > overflow.width || hOffset + ph > overflow.height;
+    const totalHeight = (textArray.length * (size + lineHeight)) - lineHeight;
+    const outbounds = maxLen + pw > overflow.width || totalHeight + ph > overflow.height;
     let pointOffset = false;
     if (align === BaseFont.ALIGN.center) {
       const diff = maxLen / 2 - width / 2;
@@ -380,6 +392,9 @@ class HorizontalFont extends BaseFont {
     let bi = 0;
     let hOffset = 0;
     while (bi < breakLen) {
+      if (bi > 0) {
+        hOffset += size + lineHeight;
+      }
       const text = breakArray[bi];
       const textLen = text.length;
       let ii = 0;
@@ -424,6 +439,9 @@ class HorizontalFont extends BaseFont {
       }
       bi += 1;
     }
+    if (hOffset > 0) {
+      hOffset -= lineHeight;
+    }
     // 计算文本坐标
     let bx = rect.x;
     let by = rect.y;
@@ -456,7 +474,8 @@ class HorizontalFont extends BaseFont {
         break;
     }
     // 边界检查
-    const outbounds = hOffset + ph > height;
+    const totalHeight = (textArray.length * (size + lineHeight)) - lineHeight;
+    const outbounds = totalHeight + ph > height;
     if (outbounds) {
       // 裁剪宽度
       const crop = new Crop({

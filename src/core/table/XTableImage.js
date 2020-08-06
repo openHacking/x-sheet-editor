@@ -34,7 +34,7 @@ import { LineFilter } from './linehandle/filter/LineFilter';
 import { LeftOutRangeFilter } from './linehandle/filter/outrange/LeftOutRangeFilter';
 import { RightOutRangeFilter } from './linehandle/filter/outrange/RightOutRangeFilter';
 import { OperateCellsHelper } from './helper/OperateCellsHelper';
-import {BaseFont} from "../../canvas/font/BaseFont";
+import { BaseFont } from '../../canvas/font/BaseFont';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),

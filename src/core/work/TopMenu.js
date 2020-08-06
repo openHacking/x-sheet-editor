@@ -30,7 +30,7 @@ import { Icon } from './tools/Icon';
 import { Cell } from '../table/tablecell/Cell';
 import { Utils } from '../../utils/Utils';
 import { Scale } from './tools/Scale';
-import {BaseFont} from "../../canvas/font/BaseFont";
+import { BaseFont } from '../../canvas/font/BaseFont';
 
 class Divider extends Widget {
   constructor() {
@@ -561,13 +561,13 @@ class TopMenu extends Widget {
           const { selectorAttr } = screenSelector;
           let icon;
           switch (type) {
-            case BaseFont.BaseFont.VERTICAL_ALIGN.TRUNCATE:
+            case BaseFont.VERTICAL_ALIGN.TRUNCATE:
               icon = new Icon('truncate');
               break;
-            case BaseFont.BaseFont.VERTICAL_ALIGN.WORD_WRAP:
+            case BaseFont.VERTICAL_ALIGN.WORD_WRAP:
               icon = new Icon('text-wrap');
               break;
-            case BaseFont.BaseFont.VERTICAL_ALIGN.OVER_FLOW:
+            case BaseFont.VERTICAL_ALIGN.OVER_FLOW:
             default:
               icon = new Icon('overflow');
               break;
@@ -1322,13 +1322,13 @@ class TopMenu extends Widget {
     if (selectorAttr) {
       const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
       switch (firstCell.fontAttr.textWrap) {
-        case BaseFont.BaseFont.VERTICAL_ALIGN.TRUNCATE:
+        case BaseFont.VERTICAL_ALIGN.TRUNCATE:
           icon = new Icon('truncate');
           break;
-        case BaseFont.BaseFont.VERTICAL_ALIGN.WORD_WRAP:
+        case BaseFont.VERTICAL_ALIGN.WORD_WRAP:
           icon = new Icon('text-wrap');
           break;
-        case BaseFont.BaseFont.VERTICAL_ALIGN.OVER_FLOW:
+        case BaseFont.VERTICAL_ALIGN.OVER_FLOW:
         default:
           icon = new Icon('overflow');
           break;
