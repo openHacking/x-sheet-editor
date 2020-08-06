@@ -40,7 +40,26 @@ class BaseFont {
   }
 
 }
-
+BaseFont.VERTICAL_ALIGN = {
+  top: 'top',
+  center: 'middle',
+  bottom: 'bottom',
+};
+BaseFont.ALIGN = {
+  left: 'left',
+  center: 'center',
+  right: 'right',
+};
+BaseFont.TEXT_WRAP = {
+  left: 'left',
+  center: 'center',
+  right: 'right',
+};
+BaseFont.TEXT_DIRECTION = {
+  HORIZONTAL: 'horizontal',
+  VERTICAL: 'vertical',
+  ANGLE: 'angle',
+};
 export {
   BaseFont,
 };

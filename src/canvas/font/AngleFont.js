@@ -3,7 +3,6 @@ import { Utils } from '../../utils/Utils';
 import { RTCosKit, RTSinKit } from '../RTFunction';
 import { Angle } from '../Angle';
 import { Rect } from '../Rect';
-import { ALIGN, TEXT_WRAP, VERTICAL_ALIGN } from '../Font';
 import { Crop } from '../Crop';
 
 class AngleFont extends BaseFont {
@@ -56,8 +55,8 @@ class AngleFont extends BaseFont {
     const { dw, attr } = this;
     const { textWrap, angle } = attr;
     dw.attr({
-      textAlign: ALIGN.left,
-      textBaseline: VERTICAL_ALIGN.top,
+      textAlign: BaseFont.ALIGN.left,
+      textBaseline: BaseFont.VERTICAL_ALIGN.top,
       font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`,
       fillStyle: attr.color,
       strokeStyle: attr.color,
@@ -69,16 +68,16 @@ class AngleFont extends BaseFont {
       });
     } else {
       dw.attr({
-        textAlign: ALIGN.left,
-        textBaseline: VERTICAL_ALIGN.top,
+        textAlign: BaseFont.ALIGN.left,
+        textBaseline: BaseFont.VERTICAL_ALIGN.top,
       });
     }
     switch (textWrap) {
-      case TEXT_WRAP.OVER_FLOW:
+      case BaseFont.TEXT_WRAP.OVER_FLOW:
         return this.drawTextOverFlow();
-      case TEXT_WRAP.TRUNCATE:
+      case BaseFont.TEXT_WRAP.TRUNCATE:
         return this.drawTextTruncate();
-      case TEXT_WRAP.WORD_WRAP:
+      case BaseFont.TEXT_WRAP.WORD_WRAP:
         return this.drawTextWarp();
     }
     return 0;
@@ -156,29 +155,25 @@ class AngleFont extends BaseFont {
         let bx = rect.x;
         let by = rect.y;
         switch (align) {
-          case ALIGN.left:
-            bx += padding;
-            break;
-          case ALIGN.center:
+          case BaseFont.ALIGN.center:
             bx += width / 2 - totalWidth / 2;
             break;
-          case ALIGN.right:
-            bx += width - totalWidth - padding;
+          case BaseFont.ALIGN.left:
+            bx += padding;
             break;
-          default:
+          case BaseFont.ALIGN.right:
+            bx += width - totalWidth - padding;
             break;
         }
         switch (verticalAlign) {
-          case VERTICAL_ALIGN.top:
-            by += padding;
-            break;
-          case VERTICAL_ALIGN.center:
+          case BaseFont.VERTICAL_ALIGN.center:
             by += height / 2 - textHeight / 2;
             break;
-          case VERTICAL_ALIGN.bottom:
-            by += height - textHeight - padding;
+          case BaseFont.VERTICAL_ALIGN.top:
+            by += padding;
             break;
-          default:
+          case BaseFont.VERTICAL_ALIGN.bottom:
+            by += height - textHeight - padding;
             break;
         }
         // 渲染文本
@@ -192,12 +187,12 @@ class AngleFont extends BaseFont {
           let ax = 0;
           let ay = 0;
           switch (align) {
-            case ALIGN.center: {
+            case BaseFont.ALIGN.center: {
               ax = rx + textWidth / 2;
               ay = ry + textHeight / 2;
               break;
             }
-            case ALIGN.left: {
+            case BaseFont.ALIGN.left: {
               const tilt = item.len / 2;
               const tw = Math.max(RTCosKit.nearby({
                 tilt,
@@ -211,7 +206,7 @@ class AngleFont extends BaseFont {
               ay += ry + textHeight - th;
               break;
             }
-            case ALIGN.right: {
+            case BaseFont.ALIGN.right: {
               const tilt = item.len / 2;
               const tw = Math.max(RTCosKit.nearby({
                 tilt,
@@ -225,8 +220,6 @@ class AngleFont extends BaseFont {
               ay += ry + th;
               break;
             }
-            default:
-              break;
           }
           const tx = ax - item.len / 2;
           const ty = ay - size / 2;
@@ -255,13 +248,13 @@ class AngleFont extends BaseFont {
         // 计算文本占据的宽度(padding)
         let haveWidth;
         switch (align) {
-          case ALIGN.right:
-          case ALIGN.left:
+          case BaseFont.ALIGN.center:
+            haveWidth = totalWidth;
+            break;
+          case BaseFont.ALIGN.right:
+          case BaseFont.ALIGN.left:
             haveWidth = totalWidth + padding * 2;
             break;
-          case ALIGN.center:
-          default:
-            haveWidth = totalWidth;
         }
         return haveWidth;
       }
@@ -279,29 +272,25 @@ class AngleFont extends BaseFont {
       let rtx = rect.x;
       let rty = rect.y;
       switch (align) {
-        case ALIGN.left:
-          rtx += padding;
-          break;
-        case ALIGN.center:
+        case BaseFont.ALIGN.center:
           rtx += width / 2 - trigonometricWidth / 2;
           break;
-        case ALIGN.right:
-          rtx += width - trigonometricWidth - padding;
+        case BaseFont.ALIGN.left:
+          rtx += padding;
           break;
-        default:
+        case BaseFont.ALIGN.right:
+          rtx += width - trigonometricWidth - padding;
           break;
       }
       switch (verticalAlign) {
-        case VERTICAL_ALIGN.top:
-          rty += padding;
-          break;
-        case VERTICAL_ALIGN.center:
+        case BaseFont.VERTICAL_ALIGN.center:
           rty += height / 2 - trigonometricHeight / 2;
           break;
-        case VERTICAL_ALIGN.bottom:
-          rty += height - trigonometricHeight - padding;
+        case BaseFont.VERTICAL_ALIGN.top:
+          rty += padding;
           break;
-        default:
+        case BaseFont.VERTICAL_ALIGN.bottom:
+          rty += height - trigonometricHeight - padding;
           break;
       }
       // 旋转并且绘制文本
@@ -329,12 +318,13 @@ class AngleFont extends BaseFont {
       // 计算文本占据的宽度(padding)
       let haveWidth = 0;
       switch (align) {
-        case ALIGN.right:
-        case ALIGN.left:
+        case BaseFont.ALIGN.center:
+          haveWidth = trigonometricWidth;
+          break;
+        case BaseFont.ALIGN.right:
+        case BaseFont.ALIGN.left:
           haveWidth = trigonometricWidth + padding * 2;
           break;
-        case ALIGN.center:
-          haveWidth = trigonometricWidth;
       }
       return haveWidth;
     }
@@ -390,29 +380,25 @@ class AngleFont extends BaseFont {
         let bx = rect.x;
         let by = rect.y;
         switch (align) {
-          case ALIGN.left:
-            bx += padding;
-            break;
-          case ALIGN.center:
+          case BaseFont.ALIGN.center:
             bx += width / 2 - totalWidth / 2;
             break;
-          case ALIGN.right:
-            bx += width - totalWidth - padding;
+          case BaseFont.ALIGN.left:
+            bx += padding;
             break;
-          default:
+          case BaseFont.ALIGN.right:
+            bx += width - totalWidth - padding;
             break;
         }
         switch (verticalAlign) {
-          case VERTICAL_ALIGN.top:
-            by += padding;
-            break;
-          case VERTICAL_ALIGN.center:
+          case BaseFont.VERTICAL_ALIGN.center:
             by += height / 2 - textHeight / 2;
             break;
-          case VERTICAL_ALIGN.bottom:
-            by += height - textHeight - padding;
+          case BaseFont.VERTICAL_ALIGN.top:
+            by += padding;
             break;
-          default:
+          case BaseFont.VERTICAL_ALIGN.bottom:
+            by += height - textHeight - padding;
             break;
         }
         // 渲染文本
@@ -426,12 +412,12 @@ class AngleFont extends BaseFont {
           let ax = 0;
           let ay = 0;
           switch (align) {
-            case ALIGN.center: {
+            case BaseFont.ALIGN.center: {
               ax = rx + textWidth / 2;
               ay = ry + textHeight / 2;
               break;
             }
-            case ALIGN.left: {
+            case BaseFont.ALIGN.left: {
               const tilt = item.len / 2;
               const tw = Math.max(RTCosKit.nearby({
                 tilt,
@@ -445,7 +431,7 @@ class AngleFont extends BaseFont {
               ay += ry + th;
               break;
             }
-            case ALIGN.right: {
+            case BaseFont.ALIGN.right: {
               const tilt = item.len / 2;
               const tw = Math.max(RTCosKit.nearby({
                 tilt,
@@ -459,8 +445,6 @@ class AngleFont extends BaseFont {
               ay += ry + textHeight - th;
               break;
             }
-            default:
-              break;
           }
           const tx = ax - item.len / 2;
           const ty = ay - size / 2;
@@ -489,12 +473,13 @@ class AngleFont extends BaseFont {
         // 计算文本占据的宽度(padding)
         let haveWidth = 0;
         switch (align) {
-          case ALIGN.right:
-          case ALIGN.left:
+          case BaseFont.ALIGN.center:
+            haveWidth = totalWidth;
+            break;
+          case BaseFont.ALIGN.right:
+          case BaseFont.ALIGN.left:
             haveWidth = totalWidth + padding * 2;
             break;
-          case ALIGN.center:
-            haveWidth = totalWidth;
         }
         return haveWidth;
       }
@@ -512,29 +497,25 @@ class AngleFont extends BaseFont {
       let rtx = rect.x;
       let rty = rect.y;
       switch (align) {
-        case ALIGN.left:
-          rtx += padding;
-          break;
-        case ALIGN.center:
+        case BaseFont.ALIGN.center:
           rtx += width / 2 - trigonometricWidth / 2;
           break;
-        case ALIGN.right:
-          rtx += width - trigonometricWidth - padding;
+        case BaseFont.ALIGN.left:
+          rtx += padding;
           break;
-        default:
+        case BaseFont.ALIGN.right:
+          rtx += width - trigonometricWidth - padding;
           break;
       }
       switch (verticalAlign) {
-        case VERTICAL_ALIGN.top:
-          rty += padding;
-          break;
-        case VERTICAL_ALIGN.center:
+        case BaseFont.VERTICAL_ALIGN.center:
           rty += height / 2 - trigonometricHeight / 2;
           break;
-        case VERTICAL_ALIGN.bottom:
-          rty += height - trigonometricHeight - padding;
+        case BaseFont.VERTICAL_ALIGN.top:
+          rty += padding;
           break;
-        default:
+        case BaseFont.VERTICAL_ALIGN.bottom:
+          rty += height - trigonometricHeight - padding;
           break;
       }
       // 旋转并且绘制文本
@@ -562,12 +543,13 @@ class AngleFont extends BaseFont {
       // 计算文本占据的宽度(padding)
       let haveWidth;
       switch (align) {
-        case ALIGN.right:
-        case ALIGN.left:
+        case BaseFont.ALIGN.center:
+          haveWidth = trigonometricWidth;
+          break;
+        case BaseFont.ALIGN.right:
+        case BaseFont.ALIGN.left:
           haveWidth = trigonometricWidth + padding * 2;
           break;
-        case ALIGN.center:
-          haveWidth = trigonometricWidth;
       }
       return haveWidth;
     }
@@ -601,29 +583,29 @@ class AngleFont extends BaseFont {
       let pw = 0;
       let ph = 0;
       switch (align) {
-        case ALIGN.center:
+        case BaseFont.ALIGN.center:
           bx += width / 2;
           pw = 0;
           break;
-        case ALIGN.left:
+        case BaseFont.ALIGN.left:
           bx += padding;
           pw = padding;
           break;
-        case ALIGN.right:
+        case BaseFont.ALIGN.right:
           bx += width - padding;
           pw = padding;
           break;
       }
       switch (verticalAlign) {
-        case VERTICAL_ALIGN.center:
+        case BaseFont.VERTICAL_ALIGN.center:
           by += height / 2 - hOffset / 2;
           ph = 0;
           break;
-        case VERTICAL_ALIGN.top:
+        case BaseFont.VERTICAL_ALIGN.top:
           by += padding;
           ph = padding;
           break;
-        case VERTICAL_ALIGN.bottom:
+        case BaseFont.VERTICAL_ALIGN.bottom:
           by += height - hOffset - padding;
           ph = padding;
           break;
@@ -779,29 +761,25 @@ class AngleFont extends BaseFont {
         let bx = rect.x;
         let by = rect.y;
         switch (align) {
-          case ALIGN.left:
-            bx += padding;
-            break;
-          case ALIGN.center:
+          case BaseFont.ALIGN.center:
             bx += width / 2 - totalWidth / 2;
             break;
-          case ALIGN.right:
-            bx += width - totalWidth - padding;
+          case BaseFont.ALIGN.left:
+            bx += padding;
             break;
-          default:
+          case BaseFont.ALIGN.right:
+            bx += width - totalWidth - padding;
             break;
         }
         switch (verticalAlign) {
-          case VERTICAL_ALIGN.top:
-            by += padding;
-            break;
-          case VERTICAL_ALIGN.center:
+          case BaseFont.VERTICAL_ALIGN.center:
             by += height / 2 - textHeight / 2;
             break;
-          case VERTICAL_ALIGN.bottom:
-            by += height - textHeight - padding;
+          case BaseFont.VERTICAL_ALIGN.top:
+            by += padding;
             break;
-          default:
+          case BaseFont.VERTICAL_ALIGN.bottom:
+            by += height - textHeight - padding;
             break;
         }
         // 渲染文本
@@ -815,12 +793,12 @@ class AngleFont extends BaseFont {
           let ax = 0;
           let ay = 0;
           switch (align) {
-            case ALIGN.center: {
+            case BaseFont.ALIGN.center: {
               ax = rx + textWidth / 2;
               ay = ry + textHeight / 2;
               break;
             }
-            case ALIGN.left: {
+            case BaseFont.ALIGN.left: {
               const tilt = item.len / 2;
               const tw = Math.max(RTCosKit.nearby({
                 tilt,
@@ -834,7 +812,7 @@ class AngleFont extends BaseFont {
               ay += ry + textHeight - th;
               break;
             }
-            case ALIGN.right: {
+            case BaseFont.ALIGN.right: {
               const tilt = item.len / 2;
               const tw = Math.max(RTCosKit.nearby({
                 tilt,
@@ -848,8 +826,6 @@ class AngleFont extends BaseFont {
               ay += ry + th;
               break;
             }
-            default:
-              break;
           }
           const tx = ax - item.len / 2;
           const ty = ay - size / 2;
@@ -878,13 +854,13 @@ class AngleFont extends BaseFont {
         // 计算文本占据的宽度(padding)
         let haveWidth;
         switch (align) {
-          case ALIGN.right:
-          case ALIGN.left:
+          case BaseFont.ALIGN.center:
+            haveWidth = totalWidth;
+            break;
+          case BaseFont.ALIGN.right:
+          case BaseFont.ALIGN.left:
             haveWidth = totalWidth + padding * 2;
             break;
-          case ALIGN.center:
-          default:
-            haveWidth = totalWidth;
         }
         return haveWidth;
       }
@@ -902,29 +878,25 @@ class AngleFont extends BaseFont {
       let rtx = rect.x;
       let rty = rect.y;
       switch (align) {
-        case ALIGN.left:
-          rtx += padding;
-          break;
-        case ALIGN.center:
+        case BaseFont.ALIGN.center:
           rtx += width / 2 - trigonometricWidth / 2;
           break;
-        case ALIGN.right:
-          rtx += width - trigonometricWidth - padding;
+        case BaseFont.ALIGN.left:
+          rtx += padding;
           break;
-        default:
+        case BaseFont.ALIGN.right:
+          rtx += width - trigonometricWidth - padding;
           break;
       }
       switch (verticalAlign) {
-        case VERTICAL_ALIGN.top:
-          rty += padding;
-          break;
-        case VERTICAL_ALIGN.center:
+        case BaseFont.VERTICAL_ALIGN.center:
           rty += height / 2 - trigonometricHeight / 2;
           break;
-        case VERTICAL_ALIGN.bottom:
-          rty += height - trigonometricHeight - padding;
+        case BaseFont.VERTICAL_ALIGN.top:
+          rty += padding;
           break;
-        default:
+        case BaseFont.VERTICAL_ALIGN.bottom:
+          rty += height - trigonometricHeight - padding;
           break;
       }
       // 旋转并且绘制文本
@@ -952,12 +924,13 @@ class AngleFont extends BaseFont {
       // 计算文本占据的宽度(padding)
       let haveWidth = 0;
       switch (align) {
-        case ALIGN.right:
-        case ALIGN.left:
+        case BaseFont.ALIGN.center:
+          haveWidth = trigonometricWidth;
+          break;
+        case BaseFont.ALIGN.right:
+        case BaseFont.ALIGN.left:
           haveWidth = trigonometricWidth + padding * 2;
           break;
-        case ALIGN.center:
-          haveWidth = trigonometricWidth;
       }
       return haveWidth;
     }
@@ -1013,29 +986,25 @@ class AngleFont extends BaseFont {
         let bx = rect.x;
         let by = rect.y;
         switch (align) {
-          case ALIGN.left:
-            bx += padding;
-            break;
-          case ALIGN.center:
+          case BaseFont.ALIGN.center:
             bx += width / 2 - totalWidth / 2;
             break;
-          case ALIGN.right:
-            bx += width - totalWidth - padding;
+          case BaseFont.ALIGN.left:
+            bx += padding;
             break;
-          default:
+          case BaseFont.ALIGN.right:
+            bx += width - totalWidth - padding;
             break;
         }
         switch (verticalAlign) {
-          case VERTICAL_ALIGN.top:
-            by += padding;
-            break;
-          case VERTICAL_ALIGN.center:
+          case BaseFont.VERTICAL_ALIGN.center:
             by += height / 2 - textHeight / 2;
             break;
-          case VERTICAL_ALIGN.bottom:
-            by += height - textHeight - padding;
+          case BaseFont.VERTICAL_ALIGN.top:
+            by += padding;
             break;
-          default:
+          case BaseFont.VERTICAL_ALIGN.bottom:
+            by += height - textHeight - padding;
             break;
         }
         // 渲染文本
@@ -1049,12 +1018,12 @@ class AngleFont extends BaseFont {
           let ax = 0;
           let ay = 0;
           switch (align) {
-            case ALIGN.center: {
+            case BaseFont.ALIGN.center: {
               ax = rx + textWidth / 2;
               ay = ry + textHeight / 2;
               break;
             }
-            case ALIGN.left: {
+            case BaseFont.ALIGN.left: {
               const tilt = item.len / 2;
               const tw = Math.max(RTCosKit.nearby({
                 tilt,
@@ -1068,7 +1037,7 @@ class AngleFont extends BaseFont {
               ay += ry + th;
               break;
             }
-            case ALIGN.right: {
+            case BaseFont.ALIGN.right: {
               const tilt = item.len / 2;
               const tw = Math.max(RTCosKit.nearby({
                 tilt,
@@ -1082,8 +1051,6 @@ class AngleFont extends BaseFont {
               ay += ry + textHeight - th;
               break;
             }
-            default:
-              break;
           }
           const tx = ax - item.len / 2;
           const ty = ay - size / 2;
@@ -1112,12 +1079,13 @@ class AngleFont extends BaseFont {
         // 计算文本占据的宽度(padding)
         let haveWidth = 0;
         switch (align) {
-          case ALIGN.right:
-          case ALIGN.left:
+          case BaseFont.ALIGN.center:
+            haveWidth = totalWidth;
+            break;
+          case BaseFont.ALIGN.right:
+          case BaseFont.ALIGN.left:
             haveWidth = totalWidth + padding * 2;
             break;
-          case ALIGN.center:
-            haveWidth = totalWidth;
         }
         return haveWidth;
       }
@@ -1135,29 +1103,25 @@ class AngleFont extends BaseFont {
       let rtx = rect.x;
       let rty = rect.y;
       switch (align) {
-        case ALIGN.left:
-          rtx += padding;
-          break;
-        case ALIGN.center:
+        case BaseFont.ALIGN.center:
           rtx += width / 2 - trigonometricWidth / 2;
           break;
-        case ALIGN.right:
-          rtx += width - trigonometricWidth - padding;
+        case BaseFont.ALIGN.left:
+          rtx += padding;
           break;
-        default:
+        case BaseFont.ALIGN.right:
+          rtx += width - trigonometricWidth - padding;
           break;
       }
       switch (verticalAlign) {
-        case VERTICAL_ALIGN.top:
-          rty += padding;
-          break;
-        case VERTICAL_ALIGN.center:
+        case BaseFont.VERTICAL_ALIGN.center:
           rty += height / 2 - trigonometricHeight / 2;
           break;
-        case VERTICAL_ALIGN.bottom:
-          rty += height - trigonometricHeight - padding;
+        case BaseFont.VERTICAL_ALIGN.top:
+          rty += padding;
           break;
-        default:
+        case BaseFont.VERTICAL_ALIGN.bottom:
+          rty += height - trigonometricHeight - padding;
           break;
       }
       // 旋转并且绘制文本
@@ -1185,12 +1149,13 @@ class AngleFont extends BaseFont {
       // 计算文本占据的宽度(padding)
       let haveWidth;
       switch (align) {
-        case ALIGN.right:
-        case ALIGN.left:
+        case BaseFont.ALIGN.center:
+          haveWidth = trigonometricWidth;
+          break;
+        case BaseFont.ALIGN.right:
+        case BaseFont.ALIGN.left:
           haveWidth = trigonometricWidth + padding * 2;
           break;
-        case ALIGN.center:
-          haveWidth = trigonometricWidth;
       }
       return haveWidth;
     }
@@ -1253,28 +1218,26 @@ class AngleFont extends BaseFont {
       let by = rect.y;
       let ph = 0;
       switch (align) {
-        case ALIGN.left:
-          bx += padding;
-          break;
-        case ALIGN.center:
+        case BaseFont.ALIGN.center:
           bx += width / 2;
           break;
-        case ALIGN.right:
-          bx += width - padding;
+        case BaseFont.ALIGN.left:
+          bx += padding;
           break;
-        default:
+        case BaseFont.ALIGN.right:
+          bx += width - padding;
           break;
       }
       switch (verticalAlign) {
-        case VERTICAL_ALIGN.center:
+        case BaseFont.VERTICAL_ALIGN.center:
           by += height / 2 - hOffset / 2;
           ph = 0;
           break;
-        case VERTICAL_ALIGN.top:
+        case BaseFont.VERTICAL_ALIGN.top:
           by += padding;
           ph = padding;
           break;
-        case VERTICAL_ALIGN.bottom:
+        case BaseFont.VERTICAL_ALIGN.bottom:
           by += height - hOffset - padding;
           ph = padding;
           break;
