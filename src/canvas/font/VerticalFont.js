@@ -1,5 +1,5 @@
 import { BaseFont } from './BaseFont';
-import { ALIGN, VERTICAL_ALIGN } from '../Font';
+import { ALIGN, TEXT_WRAP, VERTICAL_ALIGN } from '../Font';
 import { Utils } from '../../utils/Utils';
 import { Crop } from '../Crop';
 
@@ -99,6 +99,31 @@ class VerticalFont extends BaseFont {
       }
     }
     dw.line(s, e);
+  }
+
+  draw() {
+    const { text } = this;
+    if (this.isBlank(text)) {
+      return 0;
+    }
+    const { dw, attr } = this;
+    const { textWrap } = attr;
+    dw.attr({
+      textAlign: ALIGN.left,
+      textBaseline: VERTICAL_ALIGN.top,
+      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`,
+      fillStyle: attr.color,
+      strokeStyle: attr.color,
+    });
+    switch (textWrap) {
+      case TEXT_WRAP.OVER_FLOW:
+        return this.drawTextOverFlow();
+      case TEXT_WRAP.TRUNCATE:
+        return this.drawTextTruncate();
+      case TEXT_WRAP.WORD_WRAP:
+        return this.drawTextWarp();
+    }
+    return 0;
   }
 
   truncateFont() {

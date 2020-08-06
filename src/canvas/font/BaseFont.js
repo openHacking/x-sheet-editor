@@ -35,6 +35,10 @@ class BaseFont {
     throw new TypeError('child impl');
   }
 
+  draw() {
+    throw new TypeError('child impl');
+  }
+
 }
 
 export {

@@ -1,6 +1,6 @@
 import { BaseFont } from './BaseFont';
 import { Utils } from '../../utils/Utils';
-import { ALIGN, VERTICAL_ALIGN } from '../Font';
+import { ALIGN, TEXT_WRAP, VERTICAL_ALIGN } from '../Font';
 import { Crop } from '../Crop';
 
 class HorizontalFont extends BaseFont {
@@ -98,6 +98,31 @@ class HorizontalFont extends BaseFont {
       }
     }
     dw.line(s, e);
+  }
+
+  draw() {
+    const { text } = this;
+    if (this.isBlank(text)) {
+      return 0;
+    }
+    const { dw, attr } = this;
+    const { textWrap } = attr;
+    dw.attr({
+      textAlign: attr.align,
+      textBaseline: attr.verticalAlign,
+      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`,
+      fillStyle: attr.color,
+      strokeStyle: attr.color,
+    });
+    switch (textWrap) {
+      case TEXT_WRAP.OVER_FLOW:
+        return this.overflowFont();
+      case TEXT_WRAP.TRUNCATE:
+        return this.truncateFont();
+      case TEXT_WRAP.WORD_WRAP:
+        return this.wrapTextFont();
+    }
+    return 0;
   }
 
   truncateFont() {
