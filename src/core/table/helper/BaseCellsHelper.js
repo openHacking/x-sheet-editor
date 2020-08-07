@@ -5,8 +5,9 @@ import { BaseFont } from '../../../canvas/font/BaseFont';
 class BaseCellsHelper {
 
   constructor({
-    cells, merges, rows, cols, scale,
+    cells, merges, rows, cols, scale, xTableAreaView,
   }) {
+    this.xTableAreaView = xTableAreaView;
     this.cells = cells;
     this.merges = merges;
     this.rows = rows;
@@ -15,80 +16,33 @@ class BaseCellsHelper {
   }
 
   getCellOverFlow(ri, ci, rect, cell) {
+    const { xTableAreaView } = this;
     const { fontAttr } = cell;
     const {
-      direction, textWrap,
+      direction, textWrap, angle,
     } = fontAttr;
-    const { x, y, width, height } = rect;
-    if (textWrap !== BaseFont.TEXT_WRAP.OVER_FLOW) {
-      return null;
-    }
-    if (direction === BaseFont.TEXT_DIRECTION.VERTICAL) {
-      const max = this.getCellTextMaxHeight(ri, ci);
+    const {
+      x, y, height,
+    } = rect;
+    if (textWrap === BaseFont.TEXT_WRAP.OVER_FLOW) {
+      const max = this.getCellTextMaxWidth(ri, ci);
       return new Rect({
-        x, y: y + max.offset, width, height: max.height,
+        x: x + max.offset, y, width: max.width, height,
       });
     }
-    const max = this.getCellTextMaxWidth(ri, ci);
-    return new Rect({
-      x: x + max.offset, y, width: max.width, height,
-    });
-  }
-
-  getCellTextMaxHeight(ri, ci) {
-    const { cells, rows } = this;
-    const cell = cells.getCell(ri, ci);
-    const { fontAttr } = cell;
-    const { verticalAlign } = fontAttr;
-    let height = 0;
-    let offset = 0;
-    if (verticalAlign === BaseFont.VERTICAL_ALIGN.top) {
-      for (let i = ri, { len } = rows; i <= len; i += 1) {
-        const cell = cells.getCell(i, ci);
-        if (i === ci) {
-          height += rows.getHeight(i);
-        } else if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
-          height += rows.getHeight(i);
-        } else {
-          break;
-        }
+    if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
+      if (angle === 0) {
+        const max = this.getCellTextMaxWidth(ri, ci);
+        return new Rect({
+          x: x + max.offset, y, width: max.width, height,
+        });
       }
-    } else if (verticalAlign === BaseFont.VERTICAL_ALIGN.center) {
-      for (let i = ri, { len } = rows; i <= len; i += 1) {
-        const cell = cells.getCell(i, ci);
-        if (i === ci) {
-          height += rows.getHeight(i);
-        } else if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
-          height += rows.getHeight(i);
-        } else {
-          break;
-        }
-      }
-      for (let i = ri - 1; i >= 0; i -= 1) {
-        const cell = cells.getCell(ri, i);
-        if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
-          const tmp = rows.getHeight(i);
-          height += tmp;
-          offset -= tmp;
-        } else {
-          break;
-        }
-      }
-    } else if (verticalAlign === BaseFont.VERTICAL_ALIGN.bottom) {
-      for (let i = ri; i >= 0; i -= 1) {
-        const cell = cells.getCell(ri, i);
-        if (i === ci) {
-          height += rows.getHeight(i);
-        } else if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
-          const tmp = rows.getHeight(i);
-          height += tmp;
-          offset -= tmp;
-        } else {
-          break;
-        }
-      }
+      const scrollView = xTableAreaView.getScrollView();
+      return new Rect({
+        x: 0, y, width: scrollView.w, height,
+      });
     }
-    return { height, offset };
+    return null;
   }
 
   getCellTextMaxWidth(ri, ci) {

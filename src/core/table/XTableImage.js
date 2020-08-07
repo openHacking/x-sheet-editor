@@ -2120,7 +2120,16 @@ class XTableImage extends Widget {
       cols: this.cols,
     });
     // 单元格辅助类
+    this.operateCellsHelper = new OperateCellsHelper({
+      xTableAreaView: this.xTableAreaView,
+      cells: this.cells,
+      merges: this.merges,
+      rows: this.rows,
+      cols: this.cols,
+      scale: this.scale,
+    });
     this.styleCellsHelper = new StyleCellsHelper({
+      xTableAreaView: this.xTableAreaView,
       cells: this.cells,
       merges: this.merges,
       rows: this.rows,
@@ -2128,13 +2137,7 @@ class XTableImage extends Widget {
       scale: this.scale,
     });
     this.textCellsHelper = new TextCellsHelper({
-      cells: this.cells,
-      merges: this.merges,
-      rows: this.rows,
-      cols: this.cols,
-      scale: this.scale,
-    });
-    this.operateCellsHelper = new OperateCellsHelper({
+      xTableAreaView: this.xTableAreaView,
       cells: this.cells,
       merges: this.merges,
       rows: this.rows,

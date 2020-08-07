@@ -92,7 +92,7 @@ class AngleFont extends BaseFont {
       text, dw, attr, rect,
     } = this;
     const {
-      underline, strikethrough, align, verticalAlign, size, padding, lineHeight,
+      underline, strikethrough, align, verticalAlign, size, padding, lineHeight, overflow,
     } = attr;
     let { angle } = attr;
     if (angle > 90) {
@@ -140,8 +140,7 @@ class AngleFont extends BaseFont {
       }
       // 多行文本
       if (textArrayLen > 1) {
-        // 计算每个文本块的
-        // 宽度和高度
+        // 计算每个文本块的宽度和高度
         const textWidth = Math.max(RTCosKit.nearby({
           tilt: textHypotenuseWidth,
           angle,
@@ -154,96 +153,186 @@ class AngleFont extends BaseFont {
         const totalWidth = textWidth + ((textArray.length - 1) * spacing);
         let bx = rect.x;
         let by = rect.y;
+        let pw = 0;
+        let ph = 0;
         switch (align) {
           case BaseFont.ALIGN.center:
             bx += width / 2 - totalWidth / 2;
+            pw = 0;
             break;
           case BaseFont.ALIGN.left:
             bx += padding;
+            pw = padding;
             break;
           case BaseFont.ALIGN.right:
             bx += width - totalWidth - padding;
+            pw = padding;
             break;
         }
         switch (verticalAlign) {
           case BaseFont.VERTICAL_ALIGN.center:
             by += height / 2 - textHeight / 2;
+            ph = 0;
             break;
           case BaseFont.VERTICAL_ALIGN.top:
             by += padding;
+            ph = padding;
             break;
           case BaseFont.VERTICAL_ALIGN.bottom:
             by += height - textHeight - padding;
+            ph = padding;
             break;
         }
-        // 渲染文本
-        const textLen = textArray.length;
-        let jj = 0;
-        while (jj < textLen) {
-          // 计算文本的 绘制位置 旋转中心
-          const item = textArray[jj];
-          const rx = item.tx + bx;
-          const ry = item.ty + by;
-          let ax = 0;
-          let ay = 0;
-          switch (align) {
-            case BaseFont.ALIGN.center: {
-              ax = rx + textWidth / 2;
-              ay = ry + textHeight / 2;
-              break;
-            }
-            case BaseFont.ALIGN.left: {
-              const tilt = item.len / 2;
-              const tw = Math.max(RTCosKit.nearby({
-                tilt,
-                angle,
-              }), size);
-              const th = RTSinKit.inverse({
-                tilt,
-                angle,
-              });
-              ax += rx + tw;
-              ay += ry + textHeight - th;
-              break;
-            }
-            case BaseFont.ALIGN.right: {
-              const tilt = item.len / 2;
-              const tw = Math.max(RTCosKit.nearby({
-                tilt,
-                angle,
-              }), size);
-              const th = RTSinKit.inverse({
-                tilt,
-                angle,
-              });
-              ax += rx + textWidth - tw;
-              ay += ry + th;
-              break;
-            }
-          }
-          const tx = ax - item.len / 2;
-          const ty = ay - size / 2;
-          // 旋转并且 绘制文本
-          const dwAngle = new Angle({
-            dw,
-            angle,
-            rect: new Rect({
-              x: tx,
-              y: ty,
-              width: item.len,
-              height: size,
-            }),
+        // 边界检查
+        const outbounds = totalWidth + pw > overflow.width
+            || textHeight + ph > overflow.height;
+        if (outbounds) {
+          // 裁剪宽度
+          const crop = new Crop({
+            draw: dw,
+            rect: overflow,
           });
-          dwAngle.rotate();
-          dw.fillText(item.text, tx, ty);
-          if (underline) {
-            this.drawLine('underline', tx, ty, item.len);
+          crop.open();
+          // 渲染文本
+          const textLen = textArray.length;
+          let jj = 0;
+          while (jj < textLen) {
+            // 计算文本的 绘制位置 旋转中心
+            const item = textArray[jj];
+            const rx = item.tx + bx;
+            const ry = item.ty + by;
+            let ax = 0;
+            let ay = 0;
+            switch (align) {
+              case BaseFont.ALIGN.center: {
+                ax = rx + textWidth / 2;
+                ay = ry + textHeight / 2;
+                break;
+              }
+              case BaseFont.ALIGN.left: {
+                const tilt = item.len / 2;
+                const tw = Math.max(RTCosKit.nearby({
+                  tilt,
+                  angle,
+                }), size);
+                const th = RTSinKit.inverse({
+                  tilt,
+                  angle,
+                });
+                ax += rx + tw;
+                ay += ry + textHeight - th;
+                break;
+              }
+              case BaseFont.ALIGN.right: {
+                const tilt = item.len / 2;
+                const tw = Math.max(RTCosKit.nearby({
+                  tilt,
+                  angle,
+                }), size);
+                const th = RTSinKit.inverse({
+                  tilt,
+                  angle,
+                });
+                ax += rx + textWidth - tw;
+                ay += ry + th;
+                break;
+              }
+            }
+            const tx = ax - item.len / 2;
+            const ty = ay - size / 2;
+            // 旋转并且 绘制文本
+            const dwAngle = new Angle({
+              dw,
+              angle,
+              rect: new Rect({
+                x: tx,
+                y: ty,
+                width: item.len,
+                height: size,
+              }),
+            });
+            dwAngle.rotate();
+            dw.fillText(item.text, tx, ty);
+            if (underline) {
+              this.drawLine('underline', tx, ty, item.len);
+            }
+            if (strikethrough) {
+              this.drawLine('strike', tx, ty, item.len);
+            }
+            dwAngle.revert();
+            jj += 1;
           }
-          if (strikethrough) {
-            this.drawLine('strike', tx, ty, item.len);
+          crop.close();
+        } else {
+          // 渲染文本
+          const textLen = textArray.length;
+          let jj = 0;
+          while (jj < textLen) {
+            // 计算文本的 绘制位置 旋转中心
+            const item = textArray[jj];
+            const rx = item.tx + bx;
+            const ry = item.ty + by;
+            let ax = 0;
+            let ay = 0;
+            switch (align) {
+              case BaseFont.ALIGN.center: {
+                ax = rx + textWidth / 2;
+                ay = ry + textHeight / 2;
+                break;
+              }
+              case BaseFont.ALIGN.left: {
+                const tilt = item.len / 2;
+                const tw = Math.max(RTCosKit.nearby({
+                  tilt,
+                  angle,
+                }), size);
+                const th = RTSinKit.inverse({
+                  tilt,
+                  angle,
+                });
+                ax += rx + tw;
+                ay += ry + textHeight - th;
+                break;
+              }
+              case BaseFont.ALIGN.right: {
+                const tilt = item.len / 2;
+                const tw = Math.max(RTCosKit.nearby({
+                  tilt,
+                  angle,
+                }), size);
+                const th = RTSinKit.inverse({
+                  tilt,
+                  angle,
+                });
+                ax += rx + textWidth - tw;
+                ay += ry + th;
+                break;
+              }
+            }
+            const tx = ax - item.len / 2;
+            const ty = ay - size / 2;
+            // 旋转并且 绘制文本
+            const dwAngle = new Angle({
+              dw,
+              angle,
+              rect: new Rect({
+                x: tx,
+                y: ty,
+                width: item.len,
+                height: size,
+              }),
+            });
+            dwAngle.rotate();
+            dw.fillText(item.text, tx, ty);
+            if (underline) {
+              this.drawLine('underline', tx, ty, item.len);
+            }
+            if (strikethrough) {
+              this.drawLine('strike', tx, ty, item.len);
+            }
+            dwAngle.revert();
+            jj += 1;
           }
-          dwAngle.revert();
-          jj += 1;
         }
         // 计算文本占据的宽度(padding)
         let haveWidth;
@@ -271,50 +360,93 @@ class AngleFont extends BaseFont {
       // 计算文本绘制位置旋转中心
       let rtx = rect.x;
       let rty = rect.y;
+      let pw = 0;
+      let ph = 0;
       switch (align) {
         case BaseFont.ALIGN.center:
           rtx += width / 2 - trigonometricWidth / 2;
+          pw = 0;
           break;
         case BaseFont.ALIGN.left:
           rtx += padding;
+          pw = padding;
           break;
         case BaseFont.ALIGN.right:
           rtx += width - trigonometricWidth - padding;
+          pw = padding;
           break;
       }
       switch (verticalAlign) {
         case BaseFont.VERTICAL_ALIGN.center:
           rty += height / 2 - trigonometricHeight / 2;
+          ph = 0;
           break;
         case BaseFont.VERTICAL_ALIGN.top:
           rty += padding;
+          ph = padding;
           break;
         case BaseFont.VERTICAL_ALIGN.bottom:
           rty += height - trigonometricHeight - padding;
+          ph = padding;
           break;
       }
-      // 旋转并且绘制文本
-      const dwAngle = new Angle({
-        dw,
-        angle,
-        rect: new Rect({
-          x: rtx,
-          y: rty,
-          width: trigonometricWidth,
-          height: trigonometricHeight,
-        }),
-      });
-      dwAngle.rotate();
-      const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
-      const ty = rty + (trigonometricHeight / 2 - size / 2);
-      dw.fillText(text, tx, ty);
-      if (underline) {
-        this.drawLine('underline', tx, ty, textWidth);
+      // 边界检查
+      const outbounds = trigonometricWidth + pw > overflow.width
+          || trigonometricHeight + ph > overflow.height;
+      if (outbounds) {
+        // 裁剪宽度
+        const crop = new Crop({
+          draw: dw,
+          rect: overflow,
+        });
+        crop.open();
+        // 旋转并且绘制文本
+        const dwAngle = new Angle({
+          dw,
+          angle,
+          rect: new Rect({
+            x: rtx,
+            y: rty,
+            width: trigonometricWidth,
+            height: trigonometricHeight,
+          }),
+        });
+        dwAngle.rotate();
+        const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
+        const ty = rty + (trigonometricHeight / 2 - size / 2);
+        dw.fillText(text, tx, ty);
+        if (underline) {
+          this.drawLine('underline', tx, ty, textWidth);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', tx, ty, textWidth);
+        }
+        dwAngle.revert();
+        crop.close();
+      } else {
+        // 旋转并且绘制文本
+        const dwAngle = new Angle({
+          dw,
+          angle,
+          rect: new Rect({
+            x: rtx,
+            y: rty,
+            width: trigonometricWidth,
+            height: trigonometricHeight,
+          }),
+        });
+        dwAngle.rotate();
+        const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
+        const ty = rty + (trigonometricHeight / 2 - size / 2);
+        dw.fillText(text, tx, ty);
+        if (underline) {
+          this.drawLine('underline', tx, ty, textWidth);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', tx, ty, textWidth);
+        }
+        dwAngle.revert();
       }
-      if (strikethrough) {
-        this.drawLine('strike', tx, ty, textWidth);
-      }
-      dwAngle.revert();
       // 计算文本占据的宽度(padding)
       let haveWidth = 0;
       switch (align) {
@@ -379,96 +511,186 @@ class AngleFont extends BaseFont {
         const totalWidth = textWidth + ((textArray.length - 1) * spacing);
         let bx = rect.x;
         let by = rect.y;
+        let pw = 0;
+        let ph = 0;
         switch (align) {
           case BaseFont.ALIGN.center:
             bx += width / 2 - totalWidth / 2;
+            pw = 0;
             break;
           case BaseFont.ALIGN.left:
             bx += padding;
+            pw = padding;
             break;
           case BaseFont.ALIGN.right:
             bx += width - totalWidth - padding;
+            pw = padding;
             break;
         }
         switch (verticalAlign) {
           case BaseFont.VERTICAL_ALIGN.center:
             by += height / 2 - textHeight / 2;
+            ph = 0;
             break;
           case BaseFont.VERTICAL_ALIGN.top:
             by += padding;
+            ph = padding;
             break;
           case BaseFont.VERTICAL_ALIGN.bottom:
             by += height - textHeight - padding;
+            ph = padding;
             break;
         }
-        // 渲染文本
-        const textLen = textArray.length;
-        let jj = 0;
-        while (jj < textLen) {
-          // 计算文本的绘制位置旋转中心
-          const item = textArray[jj];
-          const rx = item.tx + bx;
-          const ry = item.ty + by;
-          let ax = 0;
-          let ay = 0;
-          switch (align) {
-            case BaseFont.ALIGN.center: {
-              ax = rx + textWidth / 2;
-              ay = ry + textHeight / 2;
-              break;
-            }
-            case BaseFont.ALIGN.left: {
-              const tilt = item.len / 2;
-              const tw = Math.max(RTCosKit.nearby({
-                tilt,
-                angle,
-              }), size);
-              const th = RTSinKit.inverse({
-                tilt,
-                angle,
-              });
-              ax += rx + tw;
-              ay += ry + th;
-              break;
-            }
-            case BaseFont.ALIGN.right: {
-              const tilt = item.len / 2;
-              const tw = Math.max(RTCosKit.nearby({
-                tilt,
-                angle,
-              }), size);
-              const th = RTSinKit.inverse({
-                tilt,
-                angle,
-              });
-              ax += rx + textWidth - tw;
-              ay += ry + textHeight - th;
-              break;
-            }
-          }
-          const tx = ax - item.len / 2;
-          const ty = ay - size / 2;
-          // 旋转并且绘制文本
-          const dwAngle = new Angle({
-            dw,
-            angle,
-            rect: new Rect({
-              x: tx,
-              y: ty,
-              width: item.len,
-              height: size,
-            }),
+        // 边界检查
+        const outbounds = totalWidth + pw > overflow.width
+            || textHeight + ph > overflow.height;
+        if (outbounds) {
+          // 裁剪宽度
+          const crop = new Crop({
+            draw: dw,
+            rect: overflow,
           });
-          dwAngle.rotate();
-          dw.fillText(item.text, tx, ty);
-          if (underline) {
-            this.drawLine('underline', tx, ty, item.len);
+          crop.open();
+          // 渲染文本
+          const textLen = textArray.length;
+          let jj = 0;
+          while (jj < textLen) {
+            // 计算文本的绘制位置旋转中心
+            const item = textArray[jj];
+            const rx = item.tx + bx;
+            const ry = item.ty + by;
+            let ax = 0;
+            let ay = 0;
+            switch (align) {
+              case BaseFont.ALIGN.center: {
+                ax = rx + textWidth / 2;
+                ay = ry + textHeight / 2;
+                break;
+              }
+              case BaseFont.ALIGN.left: {
+                const tilt = item.len / 2;
+                const tw = Math.max(RTCosKit.nearby({
+                  tilt,
+                  angle,
+                }), size);
+                const th = RTSinKit.inverse({
+                  tilt,
+                  angle,
+                });
+                ax += rx + tw;
+                ay += ry + th;
+                break;
+              }
+              case BaseFont.ALIGN.right: {
+                const tilt = item.len / 2;
+                const tw = Math.max(RTCosKit.nearby({
+                  tilt,
+                  angle,
+                }), size);
+                const th = RTSinKit.inverse({
+                  tilt,
+                  angle,
+                });
+                ax += rx + textWidth - tw;
+                ay += ry + textHeight - th;
+                break;
+              }
+            }
+            const tx = ax - item.len / 2;
+            const ty = ay - size / 2;
+            // 旋转并且绘制文本
+            const dwAngle = new Angle({
+              dw,
+              angle,
+              rect: new Rect({
+                x: tx,
+                y: ty,
+                width: item.len,
+                height: size,
+              }),
+            });
+            dwAngle.rotate();
+            dw.fillText(item.text, tx, ty);
+            if (underline) {
+              this.drawLine('underline', tx, ty, item.len);
+            }
+            if (strikethrough) {
+              this.drawLine('strike', tx, ty, item.len);
+            }
+            dwAngle.revert();
+            jj += 1;
           }
-          if (strikethrough) {
-            this.drawLine('strike', tx, ty, item.len);
+          crop.close();
+        } else {
+          // 渲染文本
+          const textLen = textArray.length;
+          let jj = 0;
+          while (jj < textLen) {
+            // 计算文本的绘制位置旋转中心
+            const item = textArray[jj];
+            const rx = item.tx + bx;
+            const ry = item.ty + by;
+            let ax = 0;
+            let ay = 0;
+            switch (align) {
+              case BaseFont.ALIGN.center: {
+                ax = rx + textWidth / 2;
+                ay = ry + textHeight / 2;
+                break;
+              }
+              case BaseFont.ALIGN.left: {
+                const tilt = item.len / 2;
+                const tw = Math.max(RTCosKit.nearby({
+                  tilt,
+                  angle,
+                }), size);
+                const th = RTSinKit.inverse({
+                  tilt,
+                  angle,
+                });
+                ax += rx + tw;
+                ay += ry + th;
+                break;
+              }
+              case BaseFont.ALIGN.right: {
+                const tilt = item.len / 2;
+                const tw = Math.max(RTCosKit.nearby({
+                  tilt,
+                  angle,
+                }), size);
+                const th = RTSinKit.inverse({
+                  tilt,
+                  angle,
+                });
+                ax += rx + textWidth - tw;
+                ay += ry + textHeight - th;
+                break;
+              }
+            }
+            const tx = ax - item.len / 2;
+            const ty = ay - size / 2;
+            // 旋转并且绘制文本
+            const dwAngle = new Angle({
+              dw,
+              angle,
+              rect: new Rect({
+                x: tx,
+                y: ty,
+                width: item.len,
+                height: size,
+              }),
+            });
+            dwAngle.rotate();
+            dw.fillText(item.text, tx, ty);
+            if (underline) {
+              this.drawLine('underline', tx, ty, item.len);
+            }
+            if (strikethrough) {
+              this.drawLine('strike', tx, ty, item.len);
+            }
+            dwAngle.revert();
+            jj += 1;
           }
-          dwAngle.revert();
-          jj += 1;
         }
         // 计算文本占据的宽度(padding)
         let haveWidth = 0;
@@ -496,50 +718,93 @@ class AngleFont extends BaseFont {
       // 计算文本绘制位置旋转中心
       let rtx = rect.x;
       let rty = rect.y;
+      let pw = 0;
+      let ph = 0;
       switch (align) {
         case BaseFont.ALIGN.center:
           rtx += width / 2 - trigonometricWidth / 2;
+          pw = 0;
           break;
         case BaseFont.ALIGN.left:
           rtx += padding;
+          pw = padding;
           break;
         case BaseFont.ALIGN.right:
           rtx += width - trigonometricWidth - padding;
+          pw = padding;
           break;
       }
       switch (verticalAlign) {
         case BaseFont.VERTICAL_ALIGN.center:
           rty += height / 2 - trigonometricHeight / 2;
+          ph = 0;
           break;
         case BaseFont.VERTICAL_ALIGN.top:
           rty += padding;
+          ph = padding;
           break;
         case BaseFont.VERTICAL_ALIGN.bottom:
           rty += height - trigonometricHeight - padding;
+          ph = padding;
           break;
       }
-      // 旋转并且绘制文本
-      const dwAngle = new Angle({
-        dw,
-        angle,
-        rect: new Rect({
-          x: rtx,
-          y: rty,
-          width: trigonometricWidth,
-          height: trigonometricHeight,
-        }),
-      });
-      dwAngle.rotate();
-      const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
-      const ty = rty + (trigonometricHeight / 2 - size / 2);
-      dw.fillText(text, tx, ty);
-      if (underline) {
-        this.drawLine('underline', tx, ty, textWidth);
+      // 边界检查
+      const outbounds = trigonometricWidth + pw > overflow.width
+          || trigonometricHeight + ph > overflow.height;
+      if (outbounds) {
+        // 裁剪宽度
+        const crop = new Crop({
+          draw: dw,
+          rect: overflow,
+        });
+        crop.open();
+        // 旋转并且绘制文本
+        const dwAngle = new Angle({
+          dw,
+          angle,
+          rect: new Rect({
+            x: rtx,
+            y: rty,
+            width: trigonometricWidth,
+            height: trigonometricHeight,
+          }),
+        });
+        dwAngle.rotate();
+        const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
+        const ty = rty + (trigonometricHeight / 2 - size / 2);
+        dw.fillText(text, tx, ty);
+        if (underline) {
+          this.drawLine('underline', tx, ty, textWidth);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', tx, ty, textWidth);
+        }
+        dwAngle.revert();
+        crop.close();
+      } else {
+        // 旋转并且绘制文本
+        const dwAngle = new Angle({
+          dw,
+          angle,
+          rect: new Rect({
+            x: rtx,
+            y: rty,
+            width: trigonometricWidth,
+            height: trigonometricHeight,
+          }),
+        });
+        dwAngle.rotate();
+        const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
+        const ty = rty + (trigonometricHeight / 2 - size / 2);
+        dw.fillText(text, tx, ty);
+        if (underline) {
+          this.drawLine('underline', tx, ty, textWidth);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', tx, ty, textWidth);
+        }
+        dwAngle.revert();
       }
-      if (strikethrough) {
-        this.drawLine('strike', tx, ty, textWidth);
-      }
-      dwAngle.revert();
       // 计算文本占据的宽度(padding)
       let haveWidth;
       switch (align) {
@@ -563,6 +828,9 @@ class AngleFont extends BaseFont {
       let hOffset = 0;
       let maxLen = 0;
       while (bi < breakLen) {
+        if (bi > 0) {
+          hOffset += size + lineHeight;
+        }
         const text = breakArray[bi];
         const item = {
           tx: 0,
@@ -575,7 +843,9 @@ class AngleFont extends BaseFont {
           maxLen = item.len;
         }
         bi += 1;
-        hOffset += size + lineHeight;
+      }
+      if (hOffset > 0) {
+        hOffset -= lineHeight;
       }
       // 计算文本坐标
       let bx = rect.x;
@@ -611,12 +881,22 @@ class AngleFont extends BaseFont {
           break;
       }
       // 边界检查
-      const outbounds = maxLen + pw > width || hOffset + ph > height;
-      if (outbounds) {
+      const totalHeight = (textArray.length * (size + lineHeight)) - lineHeight;
+      const outbounds = maxLen + pw > overflow.width || totalHeight + ph > overflow.height;
+      let pointOffset = false;
+      if (align === BaseFont.ALIGN.center) {
+        const diff = maxLen / 2 - width / 2;
+        if (diff > 0) {
+          if (overflow.x > rect.x - diff) {
+            pointOffset = true;
+          }
+        }
+      }
+      if (outbounds || pointOffset) {
         // 裁剪宽度
         const crop = new Crop({
           draw: dw,
-          rect,
+          rect: overflow,
         });
         crop.open();
         // 文本绘制
@@ -654,7 +934,18 @@ class AngleFont extends BaseFont {
           ti += 1;
         }
       }
-      return 0;
+      // 计算文本占据的宽度(padding)
+      let haveWidth = 0;
+      switch (align) {
+        case BaseFont.ALIGN.right:
+        case BaseFont.ALIGN.left:
+          haveWidth = padding + maxLen;
+          break;
+        case BaseFont.ALIGN.center:
+          haveWidth = maxLen;
+          break;
+      }
+      return haveWidth;
     }
     return 0;
   }
@@ -664,7 +955,7 @@ class AngleFont extends BaseFont {
       text, dw, attr, rect,
     } = this;
     const {
-      underline, strikethrough, align, verticalAlign, size, padding, lineHeight,
+      underline, strikethrough, align, verticalAlign, size, padding, lineHeight, overflow,
     } = attr;
     let { angle } = attr;
     if (angle > 90) {
@@ -760,96 +1051,186 @@ class AngleFont extends BaseFont {
         const totalWidth = textWidth + ((textArray.length - 1) * spacing);
         let bx = rect.x;
         let by = rect.y;
+        let pw = 0;
+        let ph = 0;
         switch (align) {
           case BaseFont.ALIGN.center:
             bx += width / 2 - totalWidth / 2;
+            pw = 0;
             break;
           case BaseFont.ALIGN.left:
             bx += padding;
+            pw = padding;
             break;
           case BaseFont.ALIGN.right:
             bx += width - totalWidth - padding;
+            pw = padding;
             break;
         }
         switch (verticalAlign) {
           case BaseFont.VERTICAL_ALIGN.center:
             by += height / 2 - textHeight / 2;
+            ph = 0;
             break;
           case BaseFont.VERTICAL_ALIGN.top:
             by += padding;
+            ph = padding;
             break;
           case BaseFont.VERTICAL_ALIGN.bottom:
             by += height - textHeight - padding;
+            ph = padding;
             break;
         }
-        // 渲染文本
-        const textLen = textArray.length;
-        let jj = 0;
-        while (jj < textLen) {
-          // 计算文本的 绘制位置 旋转中心
-          const item = textArray[jj];
-          const rx = item.tx + bx;
-          const ry = item.ty + by;
-          let ax = 0;
-          let ay = 0;
-          switch (align) {
-            case BaseFont.ALIGN.center: {
-              ax = rx + textWidth / 2;
-              ay = ry + textHeight / 2;
-              break;
-            }
-            case BaseFont.ALIGN.left: {
-              const tilt = item.len / 2;
-              const tw = Math.max(RTCosKit.nearby({
-                tilt,
-                angle,
-              }), size);
-              const th = RTSinKit.inverse({
-                tilt,
-                angle,
-              });
-              ax += rx + tw;
-              ay += ry + textHeight - th;
-              break;
-            }
-            case BaseFont.ALIGN.right: {
-              const tilt = item.len / 2;
-              const tw = Math.max(RTCosKit.nearby({
-                tilt,
-                angle,
-              }), size);
-              const th = RTSinKit.inverse({
-                tilt,
-                angle,
-              });
-              ax += rx + textWidth - tw;
-              ay += ry + th;
-              break;
-            }
-          }
-          const tx = ax - item.len / 2;
-          const ty = ay - size / 2;
-          // 旋转并且 绘制文本
-          const dwAngle = new Angle({
-            dw,
-            angle,
-            rect: new Rect({
-              x: tx,
-              y: ty,
-              width: item.len,
-              height: size,
-            }),
+        // 边界检查
+        const outbounds = totalWidth + pw > overflow.width
+            || textHeight + ph > overflow.height;
+        if (outbounds) {
+          // 裁剪宽度
+          const crop = new Crop({
+            draw: dw,
+            rect: overflow,
           });
-          dwAngle.rotate();
-          dw.fillText(item.text, tx, ty);
-          if (underline) {
-            this.drawLine('underline', tx, ty, item.len);
+          crop.open();
+          // 渲染文本
+          const textLen = textArray.length;
+          let jj = 0;
+          while (jj < textLen) {
+            // 计算文本的 绘制位置 旋转中心
+            const item = textArray[jj];
+            const rx = item.tx + bx;
+            const ry = item.ty + by;
+            let ax = 0;
+            let ay = 0;
+            switch (align) {
+              case BaseFont.ALIGN.center: {
+                ax = rx + textWidth / 2;
+                ay = ry + textHeight / 2;
+                break;
+              }
+              case BaseFont.ALIGN.left: {
+                const tilt = item.len / 2;
+                const tw = Math.max(RTCosKit.nearby({
+                  tilt,
+                  angle,
+                }), size);
+                const th = RTSinKit.inverse({
+                  tilt,
+                  angle,
+                });
+                ax += rx + tw;
+                ay += ry + textHeight - th;
+                break;
+              }
+              case BaseFont.ALIGN.right: {
+                const tilt = item.len / 2;
+                const tw = Math.max(RTCosKit.nearby({
+                  tilt,
+                  angle,
+                }), size);
+                const th = RTSinKit.inverse({
+                  tilt,
+                  angle,
+                });
+                ax += rx + textWidth - tw;
+                ay += ry + th;
+                break;
+              }
+            }
+            const tx = ax - item.len / 2;
+            const ty = ay - size / 2;
+            // 旋转并且 绘制文本
+            const dwAngle = new Angle({
+              dw,
+              angle,
+              rect: new Rect({
+                x: tx,
+                y: ty,
+                width: item.len,
+                height: size,
+              }),
+            });
+            dwAngle.rotate();
+            dw.fillText(item.text, tx, ty);
+            if (underline) {
+              this.drawLine('underline', tx, ty, item.len);
+            }
+            if (strikethrough) {
+              this.drawLine('strike', tx, ty, item.len);
+            }
+            dwAngle.revert();
+            jj += 1;
           }
-          if (strikethrough) {
-            this.drawLine('strike', tx, ty, item.len);
+          crop.close();
+        } else {
+          // 渲染文本
+          const textLen = textArray.length;
+          let jj = 0;
+          while (jj < textLen) {
+            // 计算文本的 绘制位置 旋转中心
+            const item = textArray[jj];
+            const rx = item.tx + bx;
+            const ry = item.ty + by;
+            let ax = 0;
+            let ay = 0;
+            switch (align) {
+              case BaseFont.ALIGN.center: {
+                ax = rx + textWidth / 2;
+                ay = ry + textHeight / 2;
+                break;
+              }
+              case BaseFont.ALIGN.left: {
+                const tilt = item.len / 2;
+                const tw = Math.max(RTCosKit.nearby({
+                  tilt,
+                  angle,
+                }), size);
+                const th = RTSinKit.inverse({
+                  tilt,
+                  angle,
+                });
+                ax += rx + tw;
+                ay += ry + textHeight - th;
+                break;
+              }
+              case BaseFont.ALIGN.right: {
+                const tilt = item.len / 2;
+                const tw = Math.max(RTCosKit.nearby({
+                  tilt,
+                  angle,
+                }), size);
+                const th = RTSinKit.inverse({
+                  tilt,
+                  angle,
+                });
+                ax += rx + textWidth - tw;
+                ay += ry + th;
+                break;
+              }
+            }
+            const tx = ax - item.len / 2;
+            const ty = ay - size / 2;
+            // 旋转并且 绘制文本
+            const dwAngle = new Angle({
+              dw,
+              angle,
+              rect: new Rect({
+                x: tx,
+                y: ty,
+                width: item.len,
+                height: size,
+              }),
+            });
+            dwAngle.rotate();
+            dw.fillText(item.text, tx, ty);
+            if (underline) {
+              this.drawLine('underline', tx, ty, item.len);
+            }
+            if (strikethrough) {
+              this.drawLine('strike', tx, ty, item.len);
+            }
+            dwAngle.revert();
+            jj += 1;
           }
-          dwAngle.revert();
-          jj += 1;
         }
         // 计算文本占据的宽度(padding)
         let haveWidth;
@@ -877,50 +1258,93 @@ class AngleFont extends BaseFont {
       // 计算文本绘制位置旋转中心
       let rtx = rect.x;
       let rty = rect.y;
+      let pw = 0;
+      let ph = 0;
       switch (align) {
         case BaseFont.ALIGN.center:
           rtx += width / 2 - trigonometricWidth / 2;
+          pw = 0;
           break;
         case BaseFont.ALIGN.left:
           rtx += padding;
+          pw = padding;
           break;
         case BaseFont.ALIGN.right:
           rtx += width - trigonometricWidth - padding;
+          pw = padding;
           break;
       }
       switch (verticalAlign) {
         case BaseFont.VERTICAL_ALIGN.center:
           rty += height / 2 - trigonometricHeight / 2;
+          ph = 0;
           break;
         case BaseFont.VERTICAL_ALIGN.top:
           rty += padding;
+          ph = padding;
           break;
         case BaseFont.VERTICAL_ALIGN.bottom:
           rty += height - trigonometricHeight - padding;
+          ph = padding;
           break;
       }
-      // 旋转并且绘制文本
-      const dwAngle = new Angle({
-        dw,
-        angle,
-        rect: new Rect({
-          x: rtx,
-          y: rty,
-          width: trigonometricWidth,
-          height: trigonometricHeight,
-        }),
-      });
-      dwAngle.rotate();
-      const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
-      const ty = rty + (trigonometricHeight / 2 - size / 2);
-      dw.fillText(text, tx, ty);
-      if (underline) {
-        this.drawLine('underline', tx, ty, textWidth);
+      // 边界检查
+      const outbounds = trigonometricWidth + pw > overflow.width
+          || trigonometricHeight + ph > overflow.height;
+      if (outbounds) {
+        // 裁剪宽度
+        const crop = new Crop({
+          draw: dw,
+          rect: overflow,
+        });
+        crop.open();
+        // 旋转并且绘制文本
+        const dwAngle = new Angle({
+          dw,
+          angle,
+          rect: new Rect({
+            x: rtx,
+            y: rty,
+            width: trigonometricWidth,
+            height: trigonometricHeight,
+          }),
+        });
+        dwAngle.rotate();
+        const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
+        const ty = rty + (trigonometricHeight / 2 - size / 2);
+        dw.fillText(text, tx, ty);
+        if (underline) {
+          this.drawLine('underline', tx, ty, textWidth);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', tx, ty, textWidth);
+        }
+        dwAngle.revert();
+        crop.close();
+      } else {
+        // 旋转并且绘制文本
+        const dwAngle = new Angle({
+          dw,
+          angle,
+          rect: new Rect({
+            x: rtx,
+            y: rty,
+            width: trigonometricWidth,
+            height: trigonometricHeight,
+          }),
+        });
+        dwAngle.rotate();
+        const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
+        const ty = rty + (trigonometricHeight / 2 - size / 2);
+        dw.fillText(text, tx, ty);
+        if (underline) {
+          this.drawLine('underline', tx, ty, textWidth);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', tx, ty, textWidth);
+        }
+        dwAngle.revert();
       }
-      if (strikethrough) {
-        this.drawLine('strike', tx, ty, textWidth);
-      }
-      dwAngle.revert();
       // 计算文本占据的宽度(padding)
       let haveWidth = 0;
       switch (align) {
@@ -985,96 +1409,186 @@ class AngleFont extends BaseFont {
         const totalWidth = textWidth + ((textArray.length - 1) * spacing);
         let bx = rect.x;
         let by = rect.y;
+        let pw = 0;
+        const ph = 0;
         switch (align) {
           case BaseFont.ALIGN.center:
             bx += width / 2 - totalWidth / 2;
+            pw = 0;
             break;
           case BaseFont.ALIGN.left:
             bx += padding;
+            pw = padding;
             break;
           case BaseFont.ALIGN.right:
             bx += width - totalWidth - padding;
+            pw = padding;
             break;
         }
         switch (verticalAlign) {
           case BaseFont.VERTICAL_ALIGN.center:
             by += height / 2 - textHeight / 2;
+            pw = 0;
             break;
           case BaseFont.VERTICAL_ALIGN.top:
             by += padding;
+            pw = padding;
             break;
           case BaseFont.VERTICAL_ALIGN.bottom:
             by += height - textHeight - padding;
+            pw = padding;
             break;
         }
-        // 渲染文本
-        const textLen = textArray.length;
-        let jj = 0;
-        while (jj < textLen) {
-          // 计算文本的绘制位置旋转中心
-          const item = textArray[jj];
-          const rx = item.tx + bx;
-          const ry = item.ty + by;
-          let ax = 0;
-          let ay = 0;
-          switch (align) {
-            case BaseFont.ALIGN.center: {
-              ax = rx + textWidth / 2;
-              ay = ry + textHeight / 2;
-              break;
-            }
-            case BaseFont.ALIGN.left: {
-              const tilt = item.len / 2;
-              const tw = Math.max(RTCosKit.nearby({
-                tilt,
-                angle,
-              }), size);
-              const th = RTSinKit.inverse({
-                tilt,
-                angle,
-              });
-              ax += rx + tw;
-              ay += ry + th;
-              break;
-            }
-            case BaseFont.ALIGN.right: {
-              const tilt = item.len / 2;
-              const tw = Math.max(RTCosKit.nearby({
-                tilt,
-                angle,
-              }), size);
-              const th = RTSinKit.inverse({
-                tilt,
-                angle,
-              });
-              ax += rx + textWidth - tw;
-              ay += ry + textHeight - th;
-              break;
-            }
-          }
-          const tx = ax - item.len / 2;
-          const ty = ay - size / 2;
-          // 旋转并且绘制文本
-          const dwAngle = new Angle({
-            dw,
-            angle,
-            rect: new Rect({
-              x: tx,
-              y: ty,
-              width: item.len,
-              height: size,
-            }),
+        // 边界检查
+        const outbounds = totalWidth + pw > overflow.width
+            || textHeight + ph > overflow.height;
+        if (outbounds) {
+          // 裁剪宽度
+          const crop = new Crop({
+            draw: dw,
+            rect: overflow,
           });
-          dwAngle.rotate();
-          dw.fillText(item.text, tx, ty);
-          if (underline) {
-            this.drawLine('underline', tx, ty, item.len);
+          crop.open();
+          // 渲染文本
+          const textLen = textArray.length;
+          let jj = 0;
+          while (jj < textLen) {
+            // 计算文本的绘制位置旋转中心
+            const item = textArray[jj];
+            const rx = item.tx + bx;
+            const ry = item.ty + by;
+            let ax = 0;
+            let ay = 0;
+            switch (align) {
+              case BaseFont.ALIGN.center: {
+                ax = rx + textWidth / 2;
+                ay = ry + textHeight / 2;
+                break;
+              }
+              case BaseFont.ALIGN.left: {
+                const tilt = item.len / 2;
+                const tw = Math.max(RTCosKit.nearby({
+                  tilt,
+                  angle,
+                }), size);
+                const th = RTSinKit.inverse({
+                  tilt,
+                  angle,
+                });
+                ax += rx + tw;
+                ay += ry + th;
+                break;
+              }
+              case BaseFont.ALIGN.right: {
+                const tilt = item.len / 2;
+                const tw = Math.max(RTCosKit.nearby({
+                  tilt,
+                  angle,
+                }), size);
+                const th = RTSinKit.inverse({
+                  tilt,
+                  angle,
+                });
+                ax += rx + textWidth - tw;
+                ay += ry + textHeight - th;
+                break;
+              }
+            }
+            const tx = ax - item.len / 2;
+            const ty = ay - size / 2;
+            // 旋转并且绘制文本
+            const dwAngle = new Angle({
+              dw,
+              angle,
+              rect: new Rect({
+                x: tx,
+                y: ty,
+                width: item.len,
+                height: size,
+              }),
+            });
+            dwAngle.rotate();
+            dw.fillText(item.text, tx, ty);
+            if (underline) {
+              this.drawLine('underline', tx, ty, item.len);
+            }
+            if (strikethrough) {
+              this.drawLine('strike', tx, ty, item.len);
+            }
+            dwAngle.revert();
+            jj += 1;
           }
-          if (strikethrough) {
-            this.drawLine('strike', tx, ty, item.len);
+          crop.close();
+        } else {
+          // 渲染文本
+          const textLen = textArray.length;
+          let jj = 0;
+          while (jj < textLen) {
+            // 计算文本的绘制位置旋转中心
+            const item = textArray[jj];
+            const rx = item.tx + bx;
+            const ry = item.ty + by;
+            let ax = 0;
+            let ay = 0;
+            switch (align) {
+              case BaseFont.ALIGN.center: {
+                ax = rx + textWidth / 2;
+                ay = ry + textHeight / 2;
+                break;
+              }
+              case BaseFont.ALIGN.left: {
+                const tilt = item.len / 2;
+                const tw = Math.max(RTCosKit.nearby({
+                  tilt,
+                  angle,
+                }), size);
+                const th = RTSinKit.inverse({
+                  tilt,
+                  angle,
+                });
+                ax += rx + tw;
+                ay += ry + th;
+                break;
+              }
+              case BaseFont.ALIGN.right: {
+                const tilt = item.len / 2;
+                const tw = Math.max(RTCosKit.nearby({
+                  tilt,
+                  angle,
+                }), size);
+                const th = RTSinKit.inverse({
+                  tilt,
+                  angle,
+                });
+                ax += rx + textWidth - tw;
+                ay += ry + textHeight - th;
+                break;
+              }
+            }
+            const tx = ax - item.len / 2;
+            const ty = ay - size / 2;
+            // 旋转并且绘制文本
+            const dwAngle = new Angle({
+              dw,
+              angle,
+              rect: new Rect({
+                x: tx,
+                y: ty,
+                width: item.len,
+                height: size,
+              }),
+            });
+            dwAngle.rotate();
+            dw.fillText(item.text, tx, ty);
+            if (underline) {
+              this.drawLine('underline', tx, ty, item.len);
+            }
+            if (strikethrough) {
+              this.drawLine('strike', tx, ty, item.len);
+            }
+            dwAngle.revert();
+            jj += 1;
           }
-          dwAngle.revert();
-          jj += 1;
         }
         // 计算文本占据的宽度(padding)
         let haveWidth = 0;
@@ -1102,50 +1616,93 @@ class AngleFont extends BaseFont {
       // 计算文本绘制位置旋转中心
       let rtx = rect.x;
       let rty = rect.y;
+      let pw = 0;
+      let ph = 0;
       switch (align) {
         case BaseFont.ALIGN.center:
           rtx += width / 2 - trigonometricWidth / 2;
+          pw = 0;
           break;
         case BaseFont.ALIGN.left:
           rtx += padding;
+          pw = padding;
           break;
         case BaseFont.ALIGN.right:
           rtx += width - trigonometricWidth - padding;
+          pw = padding;
           break;
       }
       switch (verticalAlign) {
         case BaseFont.VERTICAL_ALIGN.center:
           rty += height / 2 - trigonometricHeight / 2;
+          ph = 0;
           break;
         case BaseFont.VERTICAL_ALIGN.top:
           rty += padding;
+          ph = padding;
           break;
         case BaseFont.VERTICAL_ALIGN.bottom:
           rty += height - trigonometricHeight - padding;
+          ph = padding;
           break;
       }
-      // 旋转并且绘制文本
-      const dwAngle = new Angle({
-        dw,
-        angle,
-        rect: new Rect({
-          x: rtx,
-          y: rty,
-          width: trigonometricWidth,
-          height: trigonometricHeight,
-        }),
-      });
-      dwAngle.rotate();
-      const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
-      const ty = rty + (trigonometricHeight / 2 - size / 2);
-      dw.fillText(text, tx, ty);
-      if (underline) {
-        this.drawLine('underline', tx, ty, textWidth);
+      // 边界检查
+      const outbounds = trigonometricWidth + pw > overflow.width
+          || trigonometricHeight + ph > overflow.height;
+      if (outbounds) {
+        // 裁剪宽度
+        const crop = new Crop({
+          draw: dw,
+          rect: overflow,
+        });
+        crop.open();
+        // 旋转并且绘制文本
+        const dwAngle = new Angle({
+          dw,
+          angle,
+          rect: new Rect({
+            x: rtx,
+            y: rty,
+            width: trigonometricWidth,
+            height: trigonometricHeight,
+          }),
+        });
+        dwAngle.rotate();
+        const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
+        const ty = rty + (trigonometricHeight / 2 - size / 2);
+        dw.fillText(text, tx, ty);
+        if (underline) {
+          this.drawLine('underline', tx, ty, textWidth);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', tx, ty, textWidth);
+        }
+        dwAngle.revert();
+        crop.close();
+      } else {
+        // 旋转并且绘制文本
+        const dwAngle = new Angle({
+          dw,
+          angle,
+          rect: new Rect({
+            x: rtx,
+            y: rty,
+            width: trigonometricWidth,
+            height: trigonometricHeight,
+          }),
+        });
+        dwAngle.rotate();
+        const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
+        const ty = rty + (trigonometricHeight / 2 - size / 2);
+        dw.fillText(text, tx, ty);
+        if (underline) {
+          this.drawLine('underline', tx, ty, textWidth);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', tx, ty, textWidth);
+        }
+        dwAngle.revert();
       }
-      if (strikethrough) {
-        this.drawLine('strike', tx, ty, textWidth);
-      }
-      dwAngle.revert();
       // 计算文本占据的宽度(padding)
       let haveWidth;
       switch (align) {
@@ -1169,6 +1726,9 @@ class AngleFont extends BaseFont {
       let bi = 0;
       let hOffset = 0;
       while (bi < breakLen) {
+        if (bi > 0) {
+          hOffset += size + lineHeight;
+        }
         const text = breakArray[bi];
         const textLen = text.length;
         let ii = 0;
@@ -1213,19 +1773,24 @@ class AngleFont extends BaseFont {
         }
         bi += 1;
       }
+      if (hOffset > 0) {
+        hOffset -= lineHeight;
+      }
       // 计算文本坐标
       let bx = rect.x;
       let by = rect.y;
       let ph = 0;
       switch (align) {
-        case BaseFont.ALIGN.center:
-          bx += width / 2;
-          break;
         case BaseFont.ALIGN.left:
           bx += padding;
           break;
+        case BaseFont.ALIGN.center:
+          bx += width / 2;
+          break;
         case BaseFont.ALIGN.right:
           bx += width - padding;
+          break;
+        default:
           break;
       }
       switch (verticalAlign) {
@@ -1243,7 +1808,8 @@ class AngleFont extends BaseFont {
           break;
       }
       // 边界检查
-      const outbounds = hOffset + ph > height;
+      const totalHeight = (textArray.length * (size + lineHeight)) - lineHeight;
+      const outbounds = totalHeight + ph > height;
       if (outbounds) {
         // 裁剪宽度
         const crop = new Crop({

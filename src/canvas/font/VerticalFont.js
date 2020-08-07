@@ -5,8 +5,8 @@ import { Crop } from '../Crop';
 class VerticalFont extends BaseFont {
 
   constructor({
-    overflow,
     text,
+    overflow,
     rect,
     dw,
     attr,
@@ -273,18 +273,34 @@ class VerticalFont extends BaseFont {
       let ii = 0;
       while (ii < textLen) {
         const char = text.charAt(ii);
-        textArray.push({
+        const item = {
           len: this.textWidth(char),
           text: char,
           tx: wOffset,
           ty: hOffset,
-        });
-        hOffset += size + spacing;
-        if (hOffset > maxHeight) {
-          hOffset = 0;
-          wOffset += size + lineHeight;
+        };
+        if (ii === 0) {
+          textArray.push(item);
+        } else {
+          textArray.push(item);
+          if (item.ty + size > maxHeight) {
+            if (hOffset > 0) {
+              hOffset -= spacing;
+            }
+            if (hOffset > maxLen) {
+              maxLen = hOffset;
+            }
+            hOffset = 0;
+            wOffset += size + lineHeight;
+            item.tx = wOffset;
+            item.ty = hOffset;
+          }
         }
+        hOffset += size + spacing;
         ii += 1;
+      }
+      if (hOffset > 0) {
+        hOffset -= spacing;
       }
       if (hOffset > maxLen) {
         maxLen = hOffset;
