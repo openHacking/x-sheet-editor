@@ -561,14 +561,13 @@ class TopMenu extends Widget {
           const { selectorAttr } = screenSelector;
           let icon;
           switch (type) {
-            case BaseFont.VERTICAL_ALIGN.TRUNCATE:
+            case BaseFont.TEXT_WRAP.TRUNCATE:
               icon = new Icon('truncate');
               break;
-            case BaseFont.VERTICAL_ALIGN.WORD_WRAP:
+            case BaseFont.TEXT_WRAP.WORD_WRAP:
               icon = new Icon('text-wrap');
               break;
-            case BaseFont.VERTICAL_ALIGN.OVER_FLOW:
-            default:
+            case BaseFont.TEXT_WRAP.OVER_FLOW:
               icon = new Icon('overflow');
               break;
           }
@@ -1322,14 +1321,13 @@ class TopMenu extends Widget {
     if (selectorAttr) {
       const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
       switch (firstCell.fontAttr.textWrap) {
-        case BaseFont.VERTICAL_ALIGN.TRUNCATE:
+        case BaseFont.TEXT_WRAP.TRUNCATE:
           icon = new Icon('truncate');
           break;
-        case BaseFont.VERTICAL_ALIGN.WORD_WRAP:
+        case BaseFont.TEXT_WRAP.WORD_WRAP:
           icon = new Icon('text-wrap');
           break;
-        case BaseFont.VERTICAL_ALIGN.OVER_FLOW:
-        default:
+        case BaseFont.TEXT_WRAP.OVER_FLOW:
           icon = new Icon('overflow');
           break;
       }
