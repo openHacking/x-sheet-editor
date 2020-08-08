@@ -24,12 +24,6 @@ class BaseCellsHelper {
     const {
       x, y, height,
     } = rect;
-    if (textWrap === BaseFont.TEXT_WRAP.OVER_FLOW) {
-      const max = this.getCellTextMaxWidth(ri, ci);
-      return new Rect({
-        x: x + max.offset, y, width: max.width, height,
-      });
-    }
     if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
       if (angle === 0) {
         const max = this.getCellTextMaxWidth(ri, ci);
@@ -40,6 +34,12 @@ class BaseCellsHelper {
       const scrollView = xTableAreaView.getScrollView();
       return new Rect({
         x: 0, y, width: scrollView.w, height,
+      });
+    }
+    if (textWrap === BaseFont.TEXT_WRAP.OVER_FLOW) {
+      const max = this.getCellTextMaxWidth(ri, ci);
+      return new Rect({
+        x: x + max.offset, y, width: max.width, height,
       });
     }
     return null;

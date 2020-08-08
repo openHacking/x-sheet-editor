@@ -242,8 +242,12 @@ class HorizontalFont extends BaseFont {
 
   overflowFont() {
     const {
-      text, dw, attr, rect, overflow,
+      text, dw, attr, rect,
     } = this;
+    let { overflow } = this;
+    if (!overflow) {
+      overflow = rect;
+    }
     const {
       underline, strikethrough, align, verticalAlign, padding, size, lineHeight,
     } = attr;

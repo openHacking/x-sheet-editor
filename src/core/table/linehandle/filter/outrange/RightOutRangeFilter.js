@@ -88,7 +88,7 @@ class RightOutRangeFilter extends LineFilter {
   right(ri, ci) {
 
     const {
-      cells, cols,
+      cells, cols, merges,
     } = this;
 
     const { len } = cols;
@@ -99,9 +99,13 @@ class RightOutRangeFilter extends LineFilter {
     // 检查右边是否越界
     for (let j = ci + 1; j <= len; j += 1, rightWidth += cols.getWidth(j)) {
 
-      // 过滤掉空单元格
+      // 过滤掉空单元格&合并单元格
       const cell = cells.getCell(ri, j);
-      if (cell === null) {
+      if (Utils.isUnDef(cell)) {
+        continue;
+      }
+      const merge = merges.getFirstIncludes(ri, j);
+      if (Utils.isNotUnDef(merge)) {
         continue;
       }
       const { text } = cell;
@@ -120,6 +124,12 @@ class RightOutRangeFilter extends LineFilter {
           break;
         }
         if (textWrap === BaseFont.TEXT_WRAP.TRUNCATE) {
+          break;
+        }
+        // 跳过对齐方式不是right和center
+        // 类型的单元格
+        const { align } = fontAttr;
+        if (align !== BaseFont.ALIGN.right && align !== BaseFont.ALIGN.center) {
           break;
         }
       } else {
@@ -156,7 +166,7 @@ class RightOutRangeFilter extends LineFilter {
   left(ri, ci) {
 
     const {
-      cells, cols,
+      cells, cols, merges,
     } = this;
 
     const next = cells.getCell(ri, ci + 1);
@@ -170,6 +180,10 @@ class RightOutRangeFilter extends LineFilter {
       // 过滤掉空单元格
       const cell = cells.getCell(ri, i);
       if (Utils.isUnDef(cell)) {
+        continue;
+      }
+      const merge = merges.getFirstIncludes(ri, i);
+      if (Utils.isNotUnDef(merge)) {
         continue;
       }
       const { text } = cell;
@@ -190,9 +204,14 @@ class RightOutRangeFilter extends LineFilter {
         if (textWrap === BaseFont.TEXT_WRAP.TRUNCATE) {
           break;
         }
+        // 跳过对齐方式不是left和center
+        // 类型的单元格
+        const { align } = fontAttr;
+        if (align !== BaseFont.ALIGN.left && align !== BaseFont.ALIGN.center) {
+          break;
+        }
       } else {
         const { textWrap } = fontAttr;
-        const { align } = fontAttr;
         // 跳过裁剪类型不是overflow
         // 类型的单元格
         if (textWrap !== BaseFont.TEXT_WRAP.OVER_FLOW) {
@@ -200,6 +219,7 @@ class RightOutRangeFilter extends LineFilter {
         }
         // 跳过对齐方式不是left和center
         // 类型的单元格
+        const { align } = fontAttr;
         if (align !== BaseFont.ALIGN.left && align !== BaseFont.ALIGN.center) {
           break;
         }

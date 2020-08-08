@@ -8,6 +8,7 @@
             padding: 0;
             margin: 0;
         }
+
         html, body {
             height: 100%;
             display: block;
@@ -16,22 +17,7 @@
 </head>
 <body id="dome"></body>
 <script>
-    const dome = document.getElementById("dome");
-    const xSheet = new XSheet(dome, {
-      workConfig: {
-        body: {
-          sheets: [{
-            tableConfig: {
-              data: [[{
-                  fontAttr: {
-                      //direction: 'angle',
-                  },
-                  text: 'heheheheehehe'
-                }]]
-            },
-          }],
-        },
-      },
-    });
+  const dome = document.getElementById('dome');
+  const xSheet = new XSheet(dome);
 </script>
 </html>

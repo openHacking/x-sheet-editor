@@ -57,7 +57,7 @@ class LeftOutRangeFilter extends LineFilter {
       }
     }
 
-    // 跳过对齐方式不是left和center
+    // 跳过对齐方式不是right和center
     // 类型的单元格
     const { align } = fontAttr;
     const maxWidth = cols.getWidth(ci);
@@ -88,7 +88,7 @@ class LeftOutRangeFilter extends LineFilter {
   right(ri, ci) {
 
     const {
-      cells, cols,
+      cells, cols, merges,
     } = this;
 
     const { len } = cols;
@@ -100,9 +100,13 @@ class LeftOutRangeFilter extends LineFilter {
     // 检查右边是否越界
     for (let j = ci + 1; j <= len; j += 1, rightWidth += cols.getWidth(j)) {
 
-      // 过滤掉空单元格
+      // 过滤掉空单元格&合并单元格
       const cell = cells.getCell(ri, j);
       if (Utils.isUnDef(cell)) {
+        continue;
+      }
+      const merge = merges.getFirstIncludes(ri, j);
+      if (Utils.isNotUnDef(merge)) {
         continue;
       }
       const { text } = cell;
@@ -120,6 +124,12 @@ class LeftOutRangeFilter extends LineFilter {
           break;
         }
         if (textWrap === BaseFont.TEXT_WRAP.TRUNCATE) {
+          break;
+        }
+        // 跳过对齐方式不是right和center
+        // 类型的单元格
+        const { align } = fontAttr;
+        if (align !== BaseFont.ALIGN.right && align !== BaseFont.ALIGN.center) {
           break;
         }
       } else {
@@ -159,7 +169,7 @@ class LeftOutRangeFilter extends LineFilter {
   left(ri, ci) {
 
     const {
-      cells, cols,
+      cells, cols, merges,
     } = this;
 
     const master = cells.getCell(ri, ci);
@@ -169,9 +179,13 @@ class LeftOutRangeFilter extends LineFilter {
     // 检查左边是否越界
     for (let i = ci - 1; i >= 0; i -= 1, leftWidth += cols.getWidth(i)) {
 
-      // 过滤掉空单元格
+      // 过滤掉空单元格&合并单元格
       const cell = cells.getCell(ri, i);
-      if (cell === null) {
+      if (Utils.isUnDef(cell)) {
+        continue;
+      }
+      const merge = merges.getFirstIncludes(ri, i);
+      if (Utils.isNotUnDef(merge)) {
         continue;
       }
       const { text } = cell;
@@ -189,6 +203,12 @@ class LeftOutRangeFilter extends LineFilter {
           break;
         }
         if (textWrap === BaseFont.TEXT_WRAP.TRUNCATE) {
+          break;
+        }
+        // 跳过对齐方式不是left和center
+        // 类型的单元格
+        const { align } = fontAttr;
+        if (align !== BaseFont.ALIGN.left && align !== BaseFont.ALIGN.center) {
           break;
         }
       } else {

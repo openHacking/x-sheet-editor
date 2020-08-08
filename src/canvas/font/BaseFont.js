@@ -20,7 +20,7 @@ class BaseFont {
   }
 
   textBreak(text) {
-    return text.split(/\\n/);
+    return text.split(/\n/);
   }
 
   isBlank(text) {

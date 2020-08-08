@@ -74,11 +74,11 @@ class AngleFont extends BaseFont {
     }
     switch (textWrap) {
       case BaseFont.TEXT_WRAP.OVER_FLOW:
-        return this.drawTextOverFlow();
+        return this.overflowFont();
       case BaseFont.TEXT_WRAP.TRUNCATE:
-        return this.drawTextTruncate();
+        return this.truncateFont();
       case BaseFont.TEXT_WRAP.WORD_WRAP:
-        return this.drawTextWarp();
+        return this.wrapTextFont();
     }
     return 0;
   }
@@ -91,8 +91,12 @@ class AngleFont extends BaseFont {
     const {
       text, dw, attr, rect,
     } = this;
+    let { overflow } = this;
+    if (!overflow) {
+      overflow = rect;
+    }
     const {
-      underline, strikethrough, align, verticalAlign, size, padding, lineHeight, overflow,
+      underline, strikethrough, align, verticalAlign, size, padding, lineHeight,
     } = attr;
     let { angle } = attr;
     if (angle > 90) {
@@ -103,54 +107,55 @@ class AngleFont extends BaseFont {
     }
     const { width, height } = rect;
     if (angle > 0) {
-      // 计算斜角文本的最大绘制宽度
-      const textHypotenuseWidth = RTSinKit.tilt({
-        inverse: height - padding * 2,
-        angle,
-      });
-      // 计算文本块之间的间隙
-      const spacing = RTSinKit.tilt({
-        inverse: size + lineHeight,
-        angle,
-      });
       // 折行文本计算
       const breakArray = this.textBreak(text);
       const textArray = [];
       const breakLen = breakArray.length;
       let bi = 0;
+      let maxLen = 0;
       while (bi < breakLen) {
         const text = breakArray[bi];
+        const textWidth = this.textWidth(text);
+        if (textWidth > maxLen) {
+          maxLen = textWidth;
+        }
         textArray.push({
           text,
-          len: this.textWidth(text),
+          len: textWidth,
           tx: 0,
           ty: 0,
         });
         bi += 1;
       }
-      // 计算x坐标偏移量
       const textArrayLen = textArray.length;
-      let wOffset = 0;
-      let ii = 0;
-      while (ii < textArrayLen) {
-        const item = textArray[ii];
-        item.tx = wOffset;
-        wOffset += spacing;
-        ii += 1;
-      }
       // 多行文本
       if (textArrayLen > 1) {
-        // 计算每个文本块的宽度和高度
+        // 文本间隙
+        const spacing = RTSinKit.tilt({
+          inverse: size + lineHeight,
+          angle,
+        });
+        // 文本宽高
         const textWidth = Math.max(RTCosKit.nearby({
-          tilt: textHypotenuseWidth,
+          tilt: maxLen,
           angle,
         }), size);
         const textHeight = RTSinKit.inverse({
-          tilt: textHypotenuseWidth,
+          tilt: maxLen,
           angle,
         });
-        // 计算总宽度
-        const totalWidth = textWidth + ((textArray.length - 1) * spacing);
+        // 总宽度
+        const totalWidth = textWidth + ((textArrayLen - 1) * spacing);
+        // x坐标偏移量
+        let wOffset = 0;
+        let ii = 0;
+        while (ii < textArrayLen) {
+          const item = textArray[ii];
+          item.tx = wOffset;
+          wOffset += spacing;
+          ii += 1;
+        }
+        // 文本坐标
         let bx = rect.x;
         let by = rect.y;
         let pw = 0;
@@ -185,7 +190,7 @@ class AngleFont extends BaseFont {
         }
         // 边界检查
         const outbounds = totalWidth + pw > overflow.width
-            || textHeight + ph > overflow.height;
+          || textHeight + ph > overflow.height;
         if (outbounds) {
           // 裁剪宽度
           const crop = new Crop({
@@ -194,9 +199,8 @@ class AngleFont extends BaseFont {
           });
           crop.open();
           // 渲染文本
-          const textLen = textArray.length;
           let jj = 0;
-          while (jj < textLen) {
+          while (jj < textArrayLen) {
             // 计算文本的 绘制位置 旋转中心
             const item = textArray[jj];
             const rx = item.tx + bx;
@@ -265,9 +269,8 @@ class AngleFont extends BaseFont {
           crop.close();
         } else {
           // 渲染文本
-          const textLen = textArray.length;
           let jj = 0;
-          while (jj < textLen) {
+          while (jj < textArrayLen) {
             // 计算文本的 绘制位置 旋转中心
             const item = textArray[jj];
             const rx = item.tx + bx;
@@ -334,7 +337,7 @@ class AngleFont extends BaseFont {
             jj += 1;
           }
         }
-        // 计算文本占据的宽度(padding)
+        // 文本占据的宽度(padding)
         let haveWidth;
         switch (align) {
           case BaseFont.ALIGN.center:
@@ -342,12 +345,12 @@ class AngleFont extends BaseFont {
             break;
           case BaseFont.ALIGN.right:
           case BaseFont.ALIGN.left:
-            haveWidth = totalWidth + padding * 2;
+            haveWidth = totalWidth + padding;
             break;
         }
         return haveWidth;
       }
-      // 计算文本块大小
+      // 文本大小
       const textWidth = this.textWidth(text);
       const trigonometricWidth = Math.max(RTCosKit.nearby({
         tilt: textWidth,
@@ -357,7 +360,7 @@ class AngleFont extends BaseFont {
         tilt: textWidth,
         angle,
       });
-      // 计算文本绘制位置旋转中心
+      // 文本坐标
       let rtx = rect.x;
       let rty = rect.y;
       let pw = 0;
@@ -392,7 +395,7 @@ class AngleFont extends BaseFont {
       }
       // 边界检查
       const outbounds = trigonometricWidth + pw > overflow.width
-          || trigonometricHeight + ph > overflow.height;
+        || trigonometricHeight + ph > overflow.height;
       if (outbounds) {
         // 裁剪宽度
         const crop = new Crop({
@@ -455,60 +458,61 @@ class AngleFont extends BaseFont {
           break;
         case BaseFont.ALIGN.right:
         case BaseFont.ALIGN.left:
-          haveWidth = trigonometricWidth + padding * 2;
+          haveWidth = trigonometricWidth + padding;
           break;
       }
       return haveWidth;
     }
     if (angle < 0) {
-      // 计算斜角文本的最大绘制宽度
-      const textHypotenuseWidth = RTSinKit.tilt({
-        inverse: height - padding * 2,
-        angle,
-      });
-      // 计算文本块之间的间隙
-      const spacing = RTSinKit.tilt({
-        inverse: size + lineHeight,
-        angle,
-      });
       // 折行文本计算
       const breakArray = this.textBreak(text);
       const textArray = [];
       const breakLen = breakArray.length;
       let bi = 0;
+      let maxLen = 0;
       while (bi < breakLen) {
         const text = breakArray[bi];
+        const textWidth = this.textWidth(text);
+        if (textWidth > maxLen) {
+          maxLen = textWidth;
+        }
         textArray.push({
           text,
-          len: this.textWidth(text),
+          len: textWidth,
           tx: 0,
           ty: 0,
         });
         bi += 1;
       }
-      // 计算x坐标偏移量
       const textArrayLen = textArray.length;
-      let wOffset = 0;
-      let ii = 0;
-      while (ii < textArrayLen) {
-        const item = textArray[ii];
-        item.tx = wOffset;
-        wOffset += spacing;
-        ii += 1;
-      }
       // 多行文本
       if (textArrayLen > 1) {
+        // 计算文本块之间的间隙
+        const spacing = RTSinKit.tilt({
+          inverse: size + lineHeight,
+          angle,
+        });
         // 计算每个文本块宽度和高度
         const textWidth = Math.max(RTCosKit.nearby({
-          tilt: textHypotenuseWidth,
+          tilt: maxLen,
           angle,
         }), size);
         const textHeight = RTSinKit.inverse({
-          tilt: textHypotenuseWidth,
+          tilt: maxLen,
           angle,
         });
         // 文本总宽度
-        const totalWidth = textWidth + ((textArray.length - 1) * spacing);
+        const totalWidth = textWidth + ((textArrayLen - 1) * spacing);
+        // 计算x坐标偏移量
+        let wOffset = 0;
+        let ii = textArrayLen - 1;
+        while (ii >= 0) {
+          const item = textArray[ii];
+          item.tx = wOffset;
+          wOffset += spacing;
+          ii -= 1;
+        }
+        // 文本坐标
         let bx = rect.x;
         let by = rect.y;
         let pw = 0;
@@ -552,9 +556,8 @@ class AngleFont extends BaseFont {
           });
           crop.open();
           // 渲染文本
-          const textLen = textArray.length;
           let jj = 0;
-          while (jj < textLen) {
+          while (jj < textArrayLen) {
             // 计算文本的绘制位置旋转中心
             const item = textArray[jj];
             const rx = item.tx + bx;
@@ -623,9 +626,8 @@ class AngleFont extends BaseFont {
           crop.close();
         } else {
           // 渲染文本
-          const textLen = textArray.length;
           let jj = 0;
-          while (jj < textLen) {
+          while (jj < textArrayLen) {
             // 计算文本的绘制位置旋转中心
             const item = textArray[jj];
             const rx = item.tx + bx;
@@ -700,7 +702,7 @@ class AngleFont extends BaseFont {
             break;
           case BaseFont.ALIGN.right:
           case BaseFont.ALIGN.left:
-            haveWidth = totalWidth + padding * 2;
+            haveWidth = totalWidth + padding;
             break;
         }
         return haveWidth;
@@ -954,8 +956,12 @@ class AngleFont extends BaseFont {
     const {
       text, dw, attr, rect,
     } = this;
+    let { overflow } = this;
+    if (!overflow) {
+      overflow = rect;
+    }
     const {
-      underline, strikethrough, align, verticalAlign, size, padding, lineHeight, overflow,
+      underline, strikethrough, align, verticalAlign, size, padding, lineHeight,
     } = attr;
     let { angle } = attr;
     if (angle > 90) {
@@ -966,14 +972,8 @@ class AngleFont extends BaseFont {
     }
     const { width, height } = rect;
     if (angle > 0) {
-      // 计算斜角文本的最大绘制宽度
       const textHypotenuseWidth = RTSinKit.tilt({
-        inverse: height - padding * 2,
-        angle,
-      });
-      // 计算文本块之间的间隙
-      const spacing = RTSinKit.tilt({
-        inverse: size + lineHeight,
+        inverse: height - (padding * 2),
         angle,
       });
       // 折行文本计算
@@ -981,6 +981,7 @@ class AngleFont extends BaseFont {
       const textArray = [];
       const breakLen = breakArray.length;
       let bi = 0;
+      let maxLen = 0;
       while (bi < breakLen) {
         const text = breakArray[bi];
         const textLen = text.length;
@@ -999,6 +1000,9 @@ class AngleFont extends BaseFont {
                 tx: 0,
                 ty: 0,
               });
+              if (textWidth > maxLen) {
+                maxLen = textWidth;
+              }
               ii += 1;
             } else {
               textArray.push({
@@ -1007,6 +1011,9 @@ class AngleFont extends BaseFont {
                 tx: 0,
                 ty: 0,
               });
+              if (line.len > maxLen) {
+                maxLen = line.len;
+              }
             }
             line.len = 0;
             line.start = ii;
@@ -1023,32 +1030,40 @@ class AngleFont extends BaseFont {
             ty: 0,
           });
         }
+        if (line.len > maxLen) {
+          maxLen = line.len;
+        }
         bi += 1;
       }
-      // 计算x坐标偏移量
       const textArrayLen = textArray.length;
-      let wOffset = 0;
-      let ii = 0;
-      while (ii < textArrayLen) {
-        const item = textArray[ii];
-        item.tx = wOffset;
-        wOffset += spacing;
-        ii += 1;
-      }
       // 多行文本
       if (textArrayLen > 1) {
-        // 计算每个文本块的
-        // 宽度和高度
+        // 文本间隙
+        const spacing = RTSinKit.tilt({
+          inverse: size + lineHeight,
+          angle,
+        });
+        // 文本宽高
         const textWidth = Math.max(RTCosKit.nearby({
-          tilt: textHypotenuseWidth,
+          tilt: maxLen,
           angle,
         }), size);
         const textHeight = RTSinKit.inverse({
-          tilt: textHypotenuseWidth,
+          tilt: maxLen,
           angle,
         });
-        // 计算总宽度
-        const totalWidth = textWidth + ((textArray.length - 1) * spacing);
+        // 总宽度
+        const totalWidth = textWidth + ((textArrayLen - 1) * spacing);
+        // x坐标偏移量
+        let wOffset = 0;
+        let ii = 0;
+        while (ii < textArrayLen) {
+          const item = textArray[ii];
+          item.tx = wOffset;
+          wOffset += spacing;
+          ii += 1;
+        }
+        // 文本坐标
         let bx = rect.x;
         let by = rect.y;
         let pw = 0;
@@ -1083,7 +1098,7 @@ class AngleFont extends BaseFont {
         }
         // 边界检查
         const outbounds = totalWidth + pw > overflow.width
-            || textHeight + ph > overflow.height;
+          || textHeight + ph > overflow.height;
         if (outbounds) {
           // 裁剪宽度
           const crop = new Crop({
@@ -1092,9 +1107,8 @@ class AngleFont extends BaseFont {
           });
           crop.open();
           // 渲染文本
-          const textLen = textArray.length;
           let jj = 0;
-          while (jj < textLen) {
+          while (jj < textArrayLen) {
             // 计算文本的 绘制位置 旋转中心
             const item = textArray[jj];
             const rx = item.tx + bx;
@@ -1163,9 +1177,8 @@ class AngleFont extends BaseFont {
           crop.close();
         } else {
           // 渲染文本
-          const textLen = textArray.length;
           let jj = 0;
-          while (jj < textLen) {
+          while (jj < textArrayLen) {
             // 计算文本的 绘制位置 旋转中心
             const item = textArray[jj];
             const rx = item.tx + bx;
@@ -1232,7 +1245,7 @@ class AngleFont extends BaseFont {
             jj += 1;
           }
         }
-        // 计算文本占据的宽度(padding)
+        // 文本占据的宽度(padding)
         let haveWidth;
         switch (align) {
           case BaseFont.ALIGN.center:
@@ -1240,12 +1253,12 @@ class AngleFont extends BaseFont {
             break;
           case BaseFont.ALIGN.right:
           case BaseFont.ALIGN.left:
-            haveWidth = totalWidth + padding * 2;
+            haveWidth = totalWidth + padding;
             break;
         }
         return haveWidth;
       }
-      // 计算文本块大小
+      // 文本大小
       const textWidth = this.textWidth(text);
       const trigonometricWidth = Math.max(RTCosKit.nearby({
         tilt: textWidth,
@@ -1255,7 +1268,7 @@ class AngleFont extends BaseFont {
         tilt: textWidth,
         angle,
       });
-      // 计算文本绘制位置旋转中心
+      // 文本坐标
       let rtx = rect.x;
       let rty = rect.y;
       let pw = 0;
@@ -1290,7 +1303,7 @@ class AngleFont extends BaseFont {
       }
       // 边界检查
       const outbounds = trigonometricWidth + pw > overflow.width
-          || trigonometricHeight + ph > overflow.height;
+        || trigonometricHeight + ph > overflow.height;
       if (outbounds) {
         // 裁剪宽度
         const crop = new Crop({
@@ -1353,20 +1366,14 @@ class AngleFont extends BaseFont {
           break;
         case BaseFont.ALIGN.right:
         case BaseFont.ALIGN.left:
-          haveWidth = trigonometricWidth + padding * 2;
+          haveWidth = trigonometricWidth + padding;
           break;
       }
       return haveWidth;
     }
     if (angle < 0) {
-      // 计算斜角文本的最大绘制宽度
       const textHypotenuseWidth = RTSinKit.tilt({
-        inverse: height - padding * 2,
-        angle,
-      });
-      // 计算文本块之间的间隙
-      const spacing = RTSinKit.tilt({
-        inverse: size + lineHeight,
+        inverse: height - (padding * 2),
         angle,
       });
       // 折行文本计算
@@ -1374,43 +1381,93 @@ class AngleFont extends BaseFont {
       const textArray = [];
       const breakLen = breakArray.length;
       let bi = 0;
+      let maxLen = 0;
       while (bi < breakLen) {
         const text = breakArray[bi];
-        textArray.push({
-          text,
-          len: this.textWidth(text),
-          tx: 0,
-          ty: 0,
-        });
+        const textLen = text.length;
+        const line = {
+          len: 0,
+          start: 0,
+        };
+        let ii = 0;
+        while (ii < textLen) {
+          const textWidth = line.len + this.textWidth(text.charAt(ii));
+          if (textWidth > textHypotenuseWidth) {
+            if (line.len === 0) {
+              textArray.push({
+                text: text.substring(ii, ii + 1),
+                len: textWidth,
+                tx: 0,
+                ty: 0,
+              });
+              if (textWidth > maxLen) {
+                maxLen = textWidth;
+              }
+              ii += 1;
+            } else {
+              textArray.push({
+                text: text.substring(line.start, ii),
+                len: line.len,
+                tx: 0,
+                ty: 0,
+              });
+              if (line.len > maxLen) {
+                maxLen = line.len;
+              }
+            }
+            line.len = 0;
+            line.start = ii;
+          } else {
+            line.len = textWidth;
+            ii += 1;
+          }
+        }
+        if (line.len > 0) {
+          textArray.push({
+            text: text.substring(line.start),
+            len: line.len,
+            tx: 0,
+            ty: 0,
+          });
+        }
+        if (line.len > maxLen) {
+          maxLen = line.len;
+        }
         bi += 1;
       }
-      // 计算x坐标偏移量
       const textArrayLen = textArray.length;
-      let wOffset = 0;
-      let ii = 0;
-      while (ii < textArrayLen) {
-        const item = textArray[ii];
-        item.tx = wOffset;
-        wOffset += spacing;
-        ii += 1;
-      }
       // 多行文本
       if (textArrayLen > 1) {
+        // 计算文本块之间的间隙
+        const spacing = RTSinKit.tilt({
+          inverse: size + lineHeight,
+          angle,
+        });
         // 计算每个文本块宽度和高度
         const textWidth = Math.max(RTCosKit.nearby({
-          tilt: textHypotenuseWidth,
+          tilt: maxLen,
           angle,
         }), size);
         const textHeight = RTSinKit.inverse({
-          tilt: textHypotenuseWidth,
+          tilt: maxLen,
           angle,
         });
         // 文本总宽度
-        const totalWidth = textWidth + ((textArray.length - 1) * spacing);
+        const totalWidth = textWidth + ((textArrayLen - 1) * spacing);
+        // 计算x坐标偏移量
+        let wOffset = 0;
+        let ii = textArrayLen - 1;
+        while (ii >= 0) {
+          const item = textArray[ii];
+          item.tx = wOffset;
+          wOffset += spacing;
+          ii -= 1;
+        }
+        // 文本坐标
         let bx = rect.x;
         let by = rect.y;
         let pw = 0;
-        const ph = 0;
+        let ph = 0;
         switch (align) {
           case BaseFont.ALIGN.center:
             bx += width / 2 - totalWidth / 2;
@@ -1428,20 +1485,20 @@ class AngleFont extends BaseFont {
         switch (verticalAlign) {
           case BaseFont.VERTICAL_ALIGN.center:
             by += height / 2 - textHeight / 2;
-            pw = 0;
+            ph = 0;
             break;
           case BaseFont.VERTICAL_ALIGN.top:
             by += padding;
-            pw = padding;
+            ph = padding;
             break;
           case BaseFont.VERTICAL_ALIGN.bottom:
             by += height - textHeight - padding;
-            pw = padding;
+            ph = padding;
             break;
         }
         // 边界检查
         const outbounds = totalWidth + pw > overflow.width
-            || textHeight + ph > overflow.height;
+          || textHeight + ph > overflow.height;
         if (outbounds) {
           // 裁剪宽度
           const crop = new Crop({
@@ -1450,9 +1507,8 @@ class AngleFont extends BaseFont {
           });
           crop.open();
           // 渲染文本
-          const textLen = textArray.length;
           let jj = 0;
-          while (jj < textLen) {
+          while (jj < textArrayLen) {
             // 计算文本的绘制位置旋转中心
             const item = textArray[jj];
             const rx = item.tx + bx;
@@ -1521,9 +1577,8 @@ class AngleFont extends BaseFont {
           crop.close();
         } else {
           // 渲染文本
-          const textLen = textArray.length;
           let jj = 0;
-          while (jj < textLen) {
+          while (jj < textArrayLen) {
             // 计算文本的绘制位置旋转中心
             const item = textArray[jj];
             const rx = item.tx + bx;
@@ -1598,7 +1653,7 @@ class AngleFont extends BaseFont {
             break;
           case BaseFont.ALIGN.right:
           case BaseFont.ALIGN.left:
-            haveWidth = totalWidth + padding * 2;
+            haveWidth = totalWidth + padding;
             break;
         }
         return haveWidth;
@@ -1648,7 +1703,7 @@ class AngleFont extends BaseFont {
       }
       // 边界检查
       const outbounds = trigonometricWidth + pw > overflow.width
-          || trigonometricHeight + ph > overflow.height;
+        || trigonometricHeight + ph > overflow.height;
       if (outbounds) {
         // 裁剪宽度
         const crop = new Crop({
