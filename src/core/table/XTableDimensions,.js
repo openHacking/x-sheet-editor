@@ -5,25 +5,26 @@ import { Rows } from './tablebase/Rows';
 import { Cols } from './tablebase/Cols';
 import { Fixed } from './tablebase/Fixed';
 import { Scroll, SCROLL_TYPE } from './tablebase/Scroll';
-import { XTableAreaView, XTableScrollView } from './XTableScrollView';
 import { Widget } from '../../lib/Widget';
 import { Constant, cssPrefix } from '../../const/Constant';
 import { EventBind } from '../../utils/EventBind';
 import { Scale, ScaleAdapter } from './tablebase/Scale';
-import { MousePointer } from './MousePointer';
-import { Keyboard } from './Keyboard';
+import { XTableMousePointer } from './XTableMousePointer';
+import { XTableKeyboard } from './XTableKeyboard';
 import { XReSizer } from './resizer/XReSizer';
 import { YReSizer } from './resizer/YReSizer';
 import { XHeightLight } from './highlight/XHeightLight';
 import { YHeightLight } from './highlight/YHeightLight';
 import { Screen } from './screen/Screen';
-import { Edit } from './Edit';
-import { Focus } from './Focus';
+import { XTableFocus } from './XTableFocus';
 import { SCREEN_SELECT_EVENT, ScreenSelector } from './screenwiget/selector/ScreenSelector';
 import { ScreenAutoFill } from './screenwiget/autofill/ScreenAutoFill';
 import { ScreenCopyStyle } from './screenwiget/copystyle/ScreenCopyStyle';
 import { XDraw } from '../../canvas/XDraw';
 import { RectRange } from './tablebase/RectRange';
+import { XTableScrollView } from './XTableScrollView';
+import { XTableAreaView } from './XTableAreaView';
+import { XTableEdit } from './XTableEdit';
 
 class Dimensions {
 
@@ -527,7 +528,7 @@ class KeyBoardTab {
 /**
  * XTable
  */
-class XTable extends Widget {
+class XTableDimensions extends Widget {
 
   /**
    * XTable
@@ -625,15 +626,15 @@ class XTable extends Widget {
     this.xTop = new XTableTop(this);
     this.xContent = new XTableContent(this);
     // table组件
-    this.focus = new Focus(this);
-    this.mousePointer = new MousePointer(this);
-    this.keyboard = new Keyboard(this);
+    this.focus = new XTableFocus(this);
+    this.mousePointer = new XTableMousePointer(this);
+    this.keyboard = new XTableKeyboard(this);
     this.screen = new Screen(this);
     this.xReSizer = new XReSizer(this);
     this.yReSizer = new YReSizer(this);
     this.xHeightLight = new XHeightLight(this);
     this.yHeightLight = new YHeightLight(this);
-    this.edit = new Edit(this);
+    this.edit = new XTableEdit(this);
   }
 
   /**
@@ -1074,4 +1075,6 @@ class XTable extends Widget {
 
 }
 
-export { XTable };
+export {
+  XTableDimensions,
+};

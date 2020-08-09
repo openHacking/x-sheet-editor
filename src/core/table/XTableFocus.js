@@ -1,7 +1,7 @@
 import { Constant } from '../../const/Constant';
 import { EventBind } from '../../utils/EventBind';
 
-class Focus {
+class XTableFocus {
 
   constructor(table) {
     this.table = table;
@@ -36,4 +36,4 @@ class Focus {
 
 }
 
-export { Focus };
+export { XTableFocus };

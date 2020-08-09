@@ -3,7 +3,7 @@ import { Constant } from '../../const/Constant';
 
 /* global document */
 
-class Keyboard {
+class XTableKeyboard {
 
   constructor(table) {
     this.table = table;
@@ -39,4 +39,4 @@ class Keyboard {
   }
 }
 
-export { Keyboard };
+export { XTableKeyboard };

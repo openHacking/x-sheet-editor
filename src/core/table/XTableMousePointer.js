@@ -2,7 +2,7 @@ import cell from '../../../assets/svg/cell.png';
 import sResize from '../../../assets/svg/s-resize.png';
 import eResize from '../../../assets/svg/e-resize.png';
 
-class MousePointer {
+class XTableMousePointer {
 
   constructor(table) {
     this.table = table;
@@ -41,4 +41,4 @@ class MousePointer {
   }
 }
 
-export { MousePointer };
+export { XTableMousePointer };

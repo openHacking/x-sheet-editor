@@ -1,7 +1,7 @@
 import { Widget } from '../../lib/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
 import { EventBind } from '../../utils/EventBind';
-import { XTable } from '../table/XTable';
+import { XTableDimensions } from '../table/XTableDimensions,';
 
 class Sheet extends Widget {
 
@@ -12,7 +12,7 @@ class Sheet extends Widget {
   }) {
     super(`${cssPrefix}-sheet`);
     this.options = options;
-    this.table = new XTable({
+    this.table = new XTableDimensions({
       settings: this.options.tableConfig,
     });
   }
@@ -40,7 +40,7 @@ class Sheet extends Widget {
   onAttach() {
     const { table } = this;
     this.attach(table);
-    // this.bind();
+    this.bind();
   }
 }
 

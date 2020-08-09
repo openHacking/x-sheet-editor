@@ -6,16 +6,8 @@ class TextBuilder {
 
   constructor({
     scaleAdapter,
-    scale,
-    merges,
-    rows,
-    cols,
   }) {
     this.scaleAdapter = scaleAdapter;
-    this.scale = scale;
-    this.merges = merges;
-    this.rows = rows;
-    this.cols = cols;
     this.text = null;
     this.rect = null;
     this.attr = null;
@@ -63,32 +55,16 @@ class Text {
 
   constructor({
     scaleAdapter = new ScaleAdapter(),
-    scale,
-    merges,
-    rows,
-    cols,
   }) {
     this.scaleAdapter = scaleAdapter;
-    this.scale = scale;
-    this.merges = merges;
-    this.rows = rows;
-    this.cols = cols;
   }
 
   getBuilder() {
     const {
       scaleAdapter,
-      scale,
-      merges,
-      rows,
-      cols,
     } = this;
     return new TextBuilder({
       scaleAdapter,
-      scale,
-      merges,
-      rows,
-      cols,
     });
   }
 

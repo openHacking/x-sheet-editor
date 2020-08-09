@@ -2,12 +2,11 @@ import { Widget } from '../../lib/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
 import { h } from '../../lib/Element';
 import { EventBind } from '../../utils/EventBind';
-
 import { ScreenSelector } from './screenwiget/selector/ScreenSelector';
 import { Utils } from '../../utils/Utils';
 import { RectRange } from './tablebase/RectRange';
 
-class Edit extends Widget {
+class XTableEdit extends Widget {
 
   constructor(table) {
     super(`${cssPrefix}-table-edit`);
@@ -334,4 +333,6 @@ class Edit extends Widget {
   }
 }
 
-export { Edit };
+export {
+  XTableEdit,
+};

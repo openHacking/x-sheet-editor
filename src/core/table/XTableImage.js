@@ -9,7 +9,7 @@ import { Line, LINE_TYPE } from '../../canvas/Line';
 import { Grid } from '../../canvas/Grid';
 import { Crop } from '../../canvas/Crop';
 import { Rect } from '../../canvas/Rect';
-import Format from './Format';
+import XTableFormat from './XTableFormat';
 import { Box } from '../../canvas/Box';
 import { RectRange } from './tablebase/RectRange';
 import { Cells } from './tablecell/Cells';
@@ -19,9 +19,6 @@ import { Text } from './tablebase/Text';
 import { StyleCellsHelper } from './helper/StyleCellsHelper';
 import { TextCellsHelper } from './helper/TextCellsHelper';
 import { Merges } from './tablebase/Merges';
-import {
-  XTableScrollView, VIEW_MODE, XTableHistoryAreaView,
-} from './XTableScrollView';
 import {
   TableDataSnapshot,
 } from './datasnapshot/TableDataSnapshot';
@@ -35,6 +32,8 @@ import { LeftOutRangeFilter } from './linehandle/filter/outrange/LeftOutRangeFil
 import { RightOutRangeFilter } from './linehandle/filter/outrange/RightOutRangeFilter';
 import { OperateCellsHelper } from './helper/OperateCellsHelper';
 import { BaseFont } from '../../canvas/font/BaseFont';
+import { XTableHistoryAreaView } from './XTableHistoryAreaView';
+import { VIEW_MODE, XTableScrollView } from './XTableScrollView';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -674,7 +673,7 @@ class XTableContentUI extends XTableUI {
             } = cell;
             const builder = textFont.getBuilder();
             builder.setDraw(draw);
-            builder.setText(Format(format, text));
+            builder.setText(XTableFormat(format, text));
             builder.setAttr(fontAttr);
             builder.setRect(rect);
             builder.setOverFlow(overflow);
@@ -716,7 +715,7 @@ class XTableContentUI extends XTableUI {
             } = cell;
             const builder = textFont.getBuilder();
             builder.setDraw(draw);
-            builder.setText(Format(format, text));
+            builder.setText(XTableFormat(format, text));
             builder.setAttr(fontAttr);
             builder.setRect(rect);
             builder.setOverFlow(overflow);
@@ -749,7 +748,7 @@ class XTableContentUI extends XTableUI {
         } = cell;
         const builder = textFont.getBuilder();
         builder.setDraw(draw);
-        builder.setText(Format(format, text));
+        builder.setText(XTableFormat(format, text));
         builder.setAttr(fontAttr);
         builder.setRect(rect);
         builder.setOverFlow(overflow);
@@ -765,7 +764,7 @@ class XTableContentUI extends XTableUI {
         } = cell;
         const builder = textFont.getBuilder();
         builder.setDraw(draw);
-        builder.setText(Format(format, text));
+        builder.setText(XTableFormat(format, text));
         builder.setAttr(fontAttr);
         builder.setRect(rect);
         const font = builder.build();
@@ -2206,10 +2205,6 @@ class XTableImage extends Widget {
       scaleAdapter: new ScaleAdapter({
         goto: v => this.scale.goto(v),
       }),
-      scale: this.scale,
-      merges: this.merges,
-      rows: this.rows,
-      cols: this.cols,
     });
     // 单元格网格处理
     this.cellHorizontalGrid = new TableHorizontalGrid({
@@ -2458,7 +2453,5 @@ class XTableImage extends Widget {
 }
 
 export {
-  RENDER_MODE,
-  VIEW_MODE,
   XTableImage,
 };
