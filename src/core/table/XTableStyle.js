@@ -2051,9 +2051,9 @@ class XTableTopIndex extends XTableTopIndexUI {
 
 }
 
-// =============================== XTableImage ==============================
+// =============================== XTableStyle ==============================
 
-class XTableImage extends Widget {
+class XTableStyle extends Widget {
 
   /**
    * xTableScrollView
@@ -2078,26 +2078,30 @@ class XTableImage extends Widget {
     this.renderMode = RENDER_MODE.RENDER;
     // 表格数据配置
     this.scale = new Scale();
-    this.index = new Code(Utils.mergeDeep({
+    this.index = new Code({
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.rpx(this.scale.goto(v)),
       }),
-    }, this.settings.index));
-    this.rows = new Rows(Utils.mergeDeep({
+      ...this.settings.index,
+    });
+    this.rows = new Rows({
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.rpx(this.scale.goto(v)),
       }),
-    }, this.settings.rows));
-    this.cols = new Cols(Utils.mergeDeep({
+      ...this.settings.rows,
+    });
+    this.cols = new Cols({
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.rpx(this.scale.goto(v)),
         back: v => this.scale.back(v),
       }),
-    }, this.settings.cols));
-    this.merges = new Merges(Utils.mergeDeep({
+      ...this.settings.cols,
+    });
+    this.merges = new Merges({
+      ...this.settings.merge,
       rows: this.rows,
       cols: this.cols,
-    }, this.settings.merge));
+    });
     this.cells = new Cells({
       rows: this.rows,
       cols: this.cols,
@@ -2453,5 +2457,5 @@ class XTableImage extends Widget {
 }
 
 export {
-  XTableImage,
+  XTableStyle,
 };

@@ -1,4 +1,3 @@
-import { XTableImage } from './XTableImage';
 import { Utils } from '../../utils/Utils';
 import { Code } from './tablebase/Code';
 import { Rows } from './tablebase/Rows';
@@ -25,6 +24,7 @@ import { RectRange } from './tablebase/RectRange';
 import { XTableScrollView } from './XTableScrollView';
 import { XTableAreaView } from './XTableAreaView';
 import { XTableEdit } from './XTableEdit';
+import { XTableStyle } from './XTableStyle';
 
 class Dimensions {
 
@@ -575,21 +575,24 @@ class XTableDimensions extends Widget {
     this.visualWidthCache = null;
     // 表格数据配置
     this.scale = new Scale();
-    this.index = new Code(Utils.mergeDeep({
+    this.index = new Code({
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.cvCssPx(this.scale.goto(v)),
       }),
-    }, this.settings.index));
-    this.rows = new Rows(Utils.mergeDeep({
+      ...this.settings.index,
+    });
+    this.rows = new Rows({
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.cvCssPx(this.scale.goto(v)),
       }),
-    }, this.settings.rows));
-    this.cols = new Cols(Utils.mergeDeep({
+      ...this.settings.rows,
+    });
+    this.cols = new Cols({
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.cvCssPx(this.scale.goto(v)),
       }),
-    }, this.settings.cols));
+      ...this.settings.cols,
+    });
     // 冻结视图坐标
     this.fixed = new Fixed(this.settings.fixed);
     // 滚动视图的坐标
@@ -612,7 +615,7 @@ class XTableDimensions extends Widget {
       scroll: this.scroll,
     });
     // 表格界面
-    this.xTableImage = new XTableImage({
+    this.xTableStyle = new XTableStyle({
       xTableScrollView: this.xTableScrollView,
       settings: this.settings,
       scroll: this.scroll,
@@ -642,8 +645,8 @@ class XTableDimensions extends Widget {
    * @returns {TableDataSnapshot}
    */
   getTableDataSnapshot() {
-    const { xTableImage } = this;
-    const { tableDataSnapshot } = xTableImage;
+    const { xTableStyle } = this;
+    const { tableDataSnapshot } = xTableStyle;
     return tableDataSnapshot;
   }
 
@@ -651,8 +654,8 @@ class XTableDimensions extends Widget {
    * 读取合并单元格
    */
   getTableMerges() {
-    const { xTableImage } = this;
-    const { merges } = xTableImage;
+    const { xTableStyle } = this;
+    const { merges } = xTableStyle;
     return merges;
   }
 
@@ -661,8 +664,8 @@ class XTableDimensions extends Widget {
    * @returns {StyleCellsHelper}
    */
   getStyleCellsHelper() {
-    const { xTableImage } = this;
-    const { styleCellsHelper } = xTableImage;
+    const { xTableStyle } = this;
+    const { styleCellsHelper } = xTableStyle;
     return styleCellsHelper;
   }
 
@@ -671,8 +674,8 @@ class XTableDimensions extends Widget {
    * @returns {OperateCellsHelper}
    */
   getOperateCellsHelper() {
-    const { xTableImage } = this;
-    const { operateCellsHelper } = xTableImage;
+    const { xTableStyle } = this;
+    const { operateCellsHelper } = xTableStyle;
     return operateCellsHelper;
   }
 
@@ -681,8 +684,8 @@ class XTableDimensions extends Widget {
    * @returns {Cells}
    */
   getTableCells() {
-    const { xTableImage } = this;
-    const { cells } = xTableImage;
+    const { xTableStyle } = this;
+    const { cells } = xTableStyle;
     return cells;
   }
 
@@ -879,8 +882,8 @@ class XTableDimensions extends Widget {
    * onAttach
    */
   onAttach() {
-    const { xTableImage } = this;
-    this.attach(xTableImage);
+    const { xTableStyle } = this;
+    this.attach(xTableStyle);
     this.bind();
     // 表格组件
     const tableDataSnapshot = this.getTableDataSnapshot();
@@ -1035,42 +1038,42 @@ class XTableDimensions extends Widget {
    */
   resize() {
     const {
-      xTableImage,
+      xTableStyle,
     } = this;
     this.visualHeightCache = null;
     this.visualWidthCache = null;
     this.reset();
-    xTableImage.resize();
+    xTableStyle.resize();
   }
 
   /**
    * 渲染滚动界面
    */
   scrolling() {
-    const { xTableImage } = this;
+    const { xTableStyle } = this;
     this.reset();
-    xTableImage.scrolling();
+    xTableStyle.scrolling();
   }
 
   /**
    * 渲染静态界面
    */
   render() {
-    const { xTableImage } = this;
-    xTableImage.render();
+    const { xTableStyle } = this;
+    xTableStyle.render();
   }
 
   /**
    * 设置缩放比
    */
   setScale(val) {
-    const { xTableImage } = this;
+    const { xTableStyle } = this;
     this.reset();
     this.scale.setValue(val);
     this.screen.setDivideLayer();
     this.xHeightLight.setSize();
     this.yHeightLight.setSize();
-    xTableImage.setScale(val);
+    xTableStyle.setScale(val);
   }
 
 }
