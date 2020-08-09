@@ -34,8 +34,7 @@ class StyleCellsHelper extends BaseCellsHelper {
         const cell = cells.getCell(i, j);
         if (cell) {
           const rect = new Rect({ x, y, width, height });
-          const overFlow = this.getCellOverFlow(i, j, rect, cell);
-          const result = callback(i, j, cell, rect, overFlow);
+          const result = callback(i, j, cell, rect);
           if (result === false) {
             return;
           }
@@ -73,8 +72,7 @@ class StyleCellsHelper extends BaseCellsHelper {
         const cell = cells.getCellOrNew(i, j);
         if (cell) {
           const rect = new Rect({ x, y, width, height });
-          const overFlow = this.getCellOverFlow(i, j, rect, cell);
-          const result = callback(i, j, cell, rect, overFlow);
+          const result = callback(i, j, cell, rect);
           if (result === false) {
             return;
           }

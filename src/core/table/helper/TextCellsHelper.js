@@ -22,7 +22,7 @@ class TextCellsHelper extends BaseCellsHelper {
     startY = 0,
   }) {
     const {
-      rows, cols, cells, scale,
+      rows, cols, cells,
     } = this;
     const {
       sri, eri, sci, eci,
@@ -36,12 +36,10 @@ class TextCellsHelper extends BaseCellsHelper {
           const width = cols.getWidth(j);
           const cell = cells.getCell(i, j);
           if (cell) {
-            scale.useFloat();
             const rect = new Rect({
-              x, y, width: cols.getWidth(j), height,
+              x, y, width, height,
             });
             const overFlow = this.getCellOverFlow(i, j, rect, cell);
-            scale.notFloat();
             const result = callback(i, j, cell, rect, overFlow);
             if (result === false) {
               return;
@@ -60,12 +58,10 @@ class TextCellsHelper extends BaseCellsHelper {
           const width = cols.getWidth(j);
           const cell = cells.getCell(i, j);
           if (cell) {
-            scale.useFloat();
             const rect = new Rect({
-              x, y, width: cols.getWidth(j), height,
+              x, y, width, height,
             });
             const overFlow = this.getCellOverFlow(i, j, rect, cell);
-            scale.notFloat();
             const result = callback(i, j, cell, rect, overFlow);
             if (result === false) {
               return;
@@ -84,12 +80,10 @@ class TextCellsHelper extends BaseCellsHelper {
           const width = cols.getWidth(j);
           const cell = cells.getCell(i, j);
           if (cell) {
-            scale.useFloat();
             const rect = new Rect({
-              x, y, width: cols.getWidth(j), height,
+              x, y, width, height,
             });
             const overFlow = this.getCellOverFlow(i, j, rect, cell);
-            scale.notFloat();
             const result = callback(i, j, cell, rect, overFlow);
             if (result === false) {
               return;
@@ -108,12 +102,10 @@ class TextCellsHelper extends BaseCellsHelper {
           const width = cols.getWidth(j);
           const cell = cells.getCell(i, j);
           if (cell) {
-            scale.useFloat();
             const rect = new Rect({
-              x, y, width: cols.getWidth(j), height,
+              x, y, width, height,
             });
             const overFlow = this.getCellOverFlow(i, j, rect, cell);
-            scale.notFloat();
             const result = callback(i, j, cell, rect, overFlow);
             if (result === false) {
               return;
@@ -140,7 +132,7 @@ class TextCellsHelper extends BaseCellsHelper {
     startY = 0,
   }) {
     const {
-      rows, cols, cells, merges, scale,
+      rows, cols, cells, merges,
     } = this;
     const {
       sri, eri, sci, eci,
@@ -167,9 +159,7 @@ class TextCellsHelper extends BaseCellsHelper {
         y += startY;
         // 计算尺寸
         const height = rows.sectionSumHeight(merge.sri, merge.eri);
-        scale.useFloat();
         const width = cols.sectionSumWidth(merge.sci, merge.eci);
-        scale.notFloat();
         const cell = cells.getCellOrNew(merge.sri, merge.sci);
         const rect = new Rect({ x, y, width, height });
         callback(rect, cell, merge);

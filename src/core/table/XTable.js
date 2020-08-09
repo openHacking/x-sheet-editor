@@ -456,7 +456,8 @@ class XTableLeft extends Dimensions {
 class KeyBoardTab {
 
   constructor(table) {
-    const { keyboard, cols, rows, edit, merges, screenSelector } = table;
+    const { keyboard, cols, rows, edit, screenSelector } = table;
+    const merges = table.getTableMerges();
     let tabId = 0;
     let tabNext = null;
     keyboard.register({
@@ -468,6 +469,9 @@ class KeyBoardTab {
         callback: () => {
           edit.hideEdit();
           const { selectorAttr } = screenSelector;
+          if (!selectorAttr) {
+            return;
+          }
           const id = selectorAttr;
           const rect = selectorAttr.rect.clone();
           if (tabId !== id) {
@@ -877,8 +881,6 @@ class XTable extends Widget {
     const { xTableImage } = this;
     this.attach(xTableImage);
     this.bind();
-    // 注册快捷键
-    this.keyBoardTab = new KeyBoardTab(this);
     // 表格组件
     const tableDataSnapshot = this.getTableDataSnapshot();
     this.screenSelector = new ScreenSelector(this.screen);
@@ -906,6 +908,8 @@ class XTable extends Widget {
     this.attach(this.xHeightLight);
     this.attach(this.yHeightLight);
     this.attach(this.edit);
+    // 注册快捷键
+    this.keyBoardTab = new KeyBoardTab(this);
   }
 
   /**

@@ -6,8 +6,16 @@ class TextBuilder {
 
   constructor({
     scaleAdapter,
+    scale,
+    merges,
+    rows,
+    cols,
   }) {
     this.scaleAdapter = scaleAdapter;
+    this.scale = scale;
+    this.merges = merges;
+    this.rows = rows;
+    this.cols = cols;
     this.text = null;
     this.rect = null;
     this.attr = null;
@@ -37,14 +45,13 @@ class TextBuilder {
 
   build() {
     const {
-      text, rect, attr, overflow, dw,
+      text, rect, attr, overflow, dw, scaleAdapter,
     } = this;
-    const { scaleAdapter } = this;
     const font = new XFont({
       dw, text, rect, attr, overflow,
     });
-    const size = XDraw.dpx(scaleAdapter.goto(attr.size));
-    const padding = XDraw.dpx(scaleAdapter.goto(attr.padding));
+    const size = XDraw.rpx(scaleAdapter.goto(attr.size));
+    const padding = XDraw.rpx(scaleAdapter.goto(attr.padding));
     font.setSize(size);
     font.setPadding(padding);
     return font;
@@ -56,14 +63,32 @@ class Text {
 
   constructor({
     scaleAdapter = new ScaleAdapter(),
+    scale,
+    merges,
+    rows,
+    cols,
   }) {
     this.scaleAdapter = scaleAdapter;
+    this.scale = scale;
+    this.merges = merges;
+    this.rows = rows;
+    this.cols = cols;
   }
 
   getBuilder() {
-    const { scaleAdapter } = this;
+    const {
+      scaleAdapter,
+      scale,
+      merges,
+      rows,
+      cols,
+    } = this;
     return new TextBuilder({
       scaleAdapter,
+      scale,
+      merges,
+      rows,
+      cols,
     });
   }
 

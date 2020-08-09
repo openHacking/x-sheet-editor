@@ -1,26 +1,15 @@
-import { XDraw } from '../../../canvas/XDraw';
-
 class Scale {
 
   constructor() {
     this.value = 1;
-    this.enableFloat = false;
-  }
-
-  useFloat() {
-    this.enableFloat = true;
-  }
-
-  notFloat() {
-    this.enableFloat = false;
   }
 
   back(origin) {
-    return this.enableFloat ? origin / this.value : XDraw.rounding(origin / this.value);
+    return origin / this.value;
   }
 
   goto(origin) {
-    return this.enableFloat ? this.value * origin : XDraw.rounding(this.value * origin);
+    return this.value * origin;
   }
 
   setValue(value) {

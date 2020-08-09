@@ -7,11 +7,7 @@ import { BaseFont } from './BaseFont';
 class XFont {
 
   constructor({
-    overflow,
-    text,
-    dw,
-    rect,
-    attr,
+    overflow, text, dw, rect, attr,
   }) {
     this.attr = Utils.mergeDeep({}, {
       verticalAlign: BaseFont.VERTICAL_ALIGN.center,

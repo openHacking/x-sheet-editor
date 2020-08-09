@@ -547,7 +547,7 @@ class AngleFont extends BaseFont {
         }
         // 边界检查
         const outbounds = totalWidth + pw > overflow.width
-            || textHeight + ph > overflow.height;
+          || textHeight + ph > overflow.height;
         if (outbounds) {
           // 裁剪宽度
           const crop = new Crop({
@@ -752,7 +752,7 @@ class AngleFont extends BaseFont {
       }
       // 边界检查
       const outbounds = trigonometricWidth + pw > overflow.width
-          || trigonometricHeight + ph > overflow.height;
+        || trigonometricHeight + ph > overflow.height;
       if (outbounds) {
         // 裁剪宽度
         const crop = new Crop({

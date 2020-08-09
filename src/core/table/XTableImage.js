@@ -640,7 +640,7 @@ class XTableContentUI extends XTableUI {
     const scrollView = this.getScrollView();
     const { table } = this;
     const {
-      draw, cols, textCellsHelper, cells, textFont, scale,
+      draw, cols, textCellsHelper, cells, textFont,
     } = table;
     // 左边区域
     const lView = scrollView.clone();
@@ -672,7 +672,6 @@ class XTableContentUI extends XTableUI {
             const {
               format, text, fontAttr,
             } = cell;
-            scale.useFloat();
             const builder = textFont.getBuilder();
             builder.setDraw(draw);
             builder.setText(Format(format, text));
@@ -681,7 +680,6 @@ class XTableContentUI extends XTableUI {
             builder.setOverFlow(overflow);
             const font = builder.build();
             cell.setContentWidth(font.draw());
-            scale.notFloat();
           }
         },
       });
@@ -716,7 +714,6 @@ class XTableContentUI extends XTableUI {
             const {
               format, text, fontAttr,
             } = cell;
-            scale.useFloat();
             const builder = textFont.getBuilder();
             builder.setDraw(draw);
             builder.setText(Format(format, text));
@@ -725,7 +722,6 @@ class XTableContentUI extends XTableUI {
             builder.setOverFlow(overflow);
             const font = builder.build();
             cell.setContentWidth(font.draw());
-            scale.notFloat();
           }
         },
       });
@@ -742,7 +738,7 @@ class XTableContentUI extends XTableUI {
     const drawY = this.getDrawY();
     const { table } = this;
     const {
-      draw, textCellsHelper, textFont, scale,
+      draw, textCellsHelper, textFont,
     } = table;
     draw.offset(drawX, drawY);
     textCellsHelper.getCellSkipMergeCellByViewRange({
@@ -751,7 +747,6 @@ class XTableContentUI extends XTableUI {
         const {
           format, text, fontAttr,
         } = cell;
-        scale.useFloat();
         const builder = textFont.getBuilder();
         builder.setDraw(draw);
         builder.setText(Format(format, text));
@@ -760,7 +755,6 @@ class XTableContentUI extends XTableUI {
         builder.setOverFlow(overflow);
         const font = builder.build();
         cell.setContentWidth(font.draw());
-        scale.notFloat();
       },
     });
     textCellsHelper.getMergeCellByViewRange({
@@ -769,7 +763,6 @@ class XTableContentUI extends XTableUI {
         const {
           format, text, fontAttr,
         } = cell;
-        scale.useFloat();
         const builder = textFont.getBuilder();
         builder.setDraw(draw);
         builder.setText(Format(format, text));
@@ -777,7 +770,6 @@ class XTableContentUI extends XTableUI {
         builder.setRect(rect);
         const font = builder.build();
         cell.setContentWidth(font.draw());
-        scale.notFloat();
       },
     });
     draw.offset(0, 0);
@@ -2214,6 +2206,10 @@ class XTableImage extends Widget {
       scaleAdapter: new ScaleAdapter({
         goto: v => this.scale.goto(v),
       }),
+      scale: this.scale,
+      merges: this.merges,
+      rows: this.rows,
+      cols: this.cols,
     });
     // 单元格网格处理
     this.cellHorizontalGrid = new TableHorizontalGrid({

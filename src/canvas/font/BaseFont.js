@@ -1,11 +1,7 @@
 class BaseFont {
 
   constructor({
-    overflow,
-    text,
-    rect,
-    dw,
-    attr,
+    overflow, text, rect, dw, attr,
   }) {
     this.overflow = overflow;
     this.text = text;
