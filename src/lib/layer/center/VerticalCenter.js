@@ -4,7 +4,7 @@ import { Layer } from '../../Layer';
 
 class VerticalCenter extends Layer {
   constructor(options) {
-    super('div', `${cssPrefix}-vertical-center`);
+    super(`${cssPrefix}-vertical-center`);
     this.options = Utils.mergeDeep({
       style: {},
     }, options);

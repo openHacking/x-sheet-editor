@@ -48,7 +48,7 @@ class WorkBody extends Widget {
     this.scrollBarXVerticalCenter.children(this.scrollBarXLayer);
     this.scrollBarXHorizontalLayer.children(this.scrollBarXVerticalCenter);
 
-    // 选修卡
+    // 选项卡
     this.sheetSwitchTabLayer = new HorizontalLayerElement({ style: { flexGrow: 3 } });
 
     // 水平布局
@@ -101,6 +101,9 @@ class WorkBody extends Widget {
     if (Utils.isUnDef(sheet)) return;
     const { scrollBarXHorizontalLayer } = this;
     const { table } = sheet;
+    // 更新表格大小
+    table.resize();
+    // 获取表格大小
     const totalHeight = table.getScrollTotalHeight();
     const totalWidth = table.getScrollTotalWidth();
     // 是否显示水平滚动条
