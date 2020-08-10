@@ -29,28 +29,40 @@ class WorkBody extends Widget {
     this.sheets = this.workConfig.sheets;
     this.tabSheet = [];
     this.activeIndex = -1;
-
     // 版本标识
     this.poweredBy = h('div', `${cssPrefix}-powered-by-tips`);
-    this.poweredBy.html(`<a target="_blank" href="https://gitee.com/eigi/x-sheet">${XSheetVersion}</a>`);
+    this.poweredBy.html(`<a target="_blank" href="https://gitee.com/eigi/x-sheet">
+${XSheetVersion}
+</a>`);
     this.children(this.poweredBy);
-
     // sheet表
-    this.sheetViewLayer = new HorizontalLayerElement({ style: { flexGrow: 1 } });
-
+    this.sheetViewLayer = new HorizontalLayerElement({
+      style: {
+        flexGrow: 1,
+      },
+    });
     // 垂直滚动条
-    this.scrollBarYLayer = new HorizontalLayerElement({ style: { overflow: 'inherit' } });
-
+    this.scrollBarYLayer = new HorizontalLayerElement({
+      style: {
+        overflow: 'inherit',
+      },
+    });
     // 水平滚动条
     this.scrollBarXLayer = new VerticalCenterElement();
     this.scrollBarXVerticalCenter = new VerticalCenter();
-    this.scrollBarXHorizontalLayer = new HorizontalLayerElement({ style: { flexGrow: 2 } });
+    this.scrollBarXHorizontalLayer = new HorizontalLayerElement({
+      style: {
+        flexGrow: 2,
+      },
+    });
     this.scrollBarXVerticalCenter.children(this.scrollBarXLayer);
     this.scrollBarXHorizontalLayer.children(this.scrollBarXVerticalCenter);
-
     // 选项卡
-    this.sheetSwitchTabLayer = new HorizontalLayerElement({ style: { flexGrow: 3 } });
-
+    this.sheetSwitchTabLayer = new HorizontalLayerElement({
+      style: {
+        flexGrow: 3,
+      },
+    });
     // 水平布局
     this.horizontalLayer1 = new HorizontalLayer();
     this.horizontalLayer2 = new HorizontalLayer();
@@ -58,10 +70,13 @@ class WorkBody extends Widget {
     this.horizontalLayer1.children(this.scrollBarYLayer);
     this.horizontalLayer2.children(this.sheetSwitchTabLayer);
     this.horizontalLayer2.children(this.scrollBarXHorizontalLayer);
-
     // 根布局
     // eslint-disable-next-line max-len
-    this.horizontalLayer1Layer = new VerticalLayerElement({ style: { flexGrow: 1 } });
+    this.horizontalLayer1Layer = new VerticalLayerElement({
+      style: {
+        flexGrow: 1,
+      },
+    });
     this.horizontalLayer2Layer = new VerticalLayerElement();
     this.layerVerticalLayer = new VerticalLayer();
     this.horizontalLayer1Layer.children(this.horizontalLayer1);
@@ -69,7 +84,6 @@ class WorkBody extends Widget {
     this.layerVerticalLayer.children(this.horizontalLayer1Layer);
     this.layerVerticalLayer.children(this.horizontalLayer2Layer);
     this.children(this.layerVerticalLayer);
-
     // 组件
     this.scrollBarY = new ScrollBarY({
       scroll: (move) => {
