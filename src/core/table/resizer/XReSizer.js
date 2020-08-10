@@ -70,7 +70,7 @@ class XReSizer extends Widget {
       mousePointer.on(key);
       mousePointer.set(type, key);
       const { left, ci } = this.getEventLeft(e);
-      const min = left - cols.getWidth(ci) + cols.minWidth;
+      const min = left - cols.getWidth(ci) + cols.min;
       let { x: mx } = table.computeEventXy(e);
       EventBind.mouseMoveUp(document, (e) => {
         ({ x: mx } = table.computeEventXy(e));
@@ -99,7 +99,7 @@ class XReSizer extends Widget {
       if (moveOff) return;
       // eslint-disable-next-line prefer-const
       let { left, ci } = this.getEventLeft(e);
-      const min = left - cols.getWidth(ci) + cols.minWidth;
+      const min = left - cols.getWidth(ci) + cols.min;
       const visualWidth = table.visualWidth();
       if (left > visualWidth) {
         left = visualWidth;

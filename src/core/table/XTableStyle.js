@@ -2122,7 +2122,6 @@ class XTableStyle extends Widget {
       merges: this.merges,
       rows: this.rows,
       cols: this.cols,
-      scale: this.scale,
     });
     this.styleCellsHelper = new StyleCellsHelper({
       xTableAreaView: this.xTableAreaView,
@@ -2130,7 +2129,6 @@ class XTableStyle extends Widget {
       merges: this.merges,
       rows: this.rows,
       cols: this.cols,
-      scale: this.scale,
     });
     this.textCellsHelper = new TextCellsHelper({
       xTableAreaView: this.xTableAreaView,
@@ -2138,7 +2136,6 @@ class XTableStyle extends Widget {
       merges: this.merges,
       rows: this.rows,
       cols: this.cols,
-      scale: this.scale,
     });
     // 数据快照
     this.tableDataSnapshot = new TableDataSnapshot(this);
@@ -2368,51 +2365,6 @@ class XTableStyle extends Widget {
   }
 
   /**
-   * 渲染滚动界面
-   */
-  scrolling() {
-    const { xTableAreaView } = this;
-    this.reset();
-    this.renderMode = RENDER_MODE.SCROLL;
-    this.render();
-    xTableAreaView.record();
-    this.renderMode = RENDER_MODE.RENDER;
-    this.reset();
-  }
-
-  /**
-   * 渲染静态界面
-   */
-  render() {
-    const { fixed } = this;
-    const { xTableFrozenFullRect } = this;
-    const { xLeftFrozenIndex } = this;
-    const { xTopFrozenIndex } = this;
-    const { xTableFrozenContent } = this;
-    const { xLeftIndex } = this;
-    const { xTopIndex } = this;
-    const { xLeft } = this;
-    const { xTop } = this;
-    const { xContent } = this;
-    this.drawBorderOptimize();
-    xTableFrozenFullRect.render();
-    if (fixed.fxLeft > -1 && fixed.fxTop > -1) {
-      xTableFrozenContent.render();
-    }
-    if (fixed.fxTop > -1) {
-      xLeftFrozenIndex.render();
-      xTop.render();
-    }
-    if (fixed.fxLeft > -1) {
-      xTopFrozenIndex.render();
-      xLeft.render();
-    }
-    xContent.render();
-    xLeftIndex.render();
-    xTopIndex.render();
-  }
-
-  /**
    * 重置变量区
    */
   reset() {
@@ -2452,6 +2404,51 @@ class XTableStyle extends Widget {
     this.renderMode = RENDER_MODE.SCALE;
     this.resize();
     this.renderMode = RENDER_MODE.RENDER;
+  }
+
+  /**
+   * 渲染静态界面
+   */
+  render() {
+    const { fixed } = this;
+    const { xTableFrozenFullRect } = this;
+    const { xLeftFrozenIndex } = this;
+    const { xTopFrozenIndex } = this;
+    const { xTableFrozenContent } = this;
+    const { xLeftIndex } = this;
+    const { xTopIndex } = this;
+    const { xLeft } = this;
+    const { xTop } = this;
+    const { xContent } = this;
+    this.drawBorderOptimize();
+    xTableFrozenFullRect.render();
+    if (fixed.fxLeft > -1 && fixed.fxTop > -1) {
+      xTableFrozenContent.render();
+    }
+    if (fixed.fxTop > -1) {
+      xLeftFrozenIndex.render();
+      xTop.render();
+    }
+    if (fixed.fxLeft > -1) {
+      xTopFrozenIndex.render();
+      xLeft.render();
+    }
+    xContent.render();
+    xLeftIndex.render();
+    xTopIndex.render();
+  }
+
+  /**
+   * 渲染滚动界面
+   */
+  scrolling() {
+    const { xTableAreaView } = this;
+    this.reset();
+    this.renderMode = RENDER_MODE.SCROLL;
+    this.render();
+    xTableAreaView.record();
+    this.renderMode = RENDER_MODE.RENDER;
+    this.reset();
   }
 
 }

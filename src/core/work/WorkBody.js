@@ -71,13 +71,19 @@ class WorkBody extends Widget {
     this.children(this.layerVerticalLayer);
 
     // 组件
-    this.sheetView = new SheetView();
     this.scrollBarY = new ScrollBarY({
       scroll: (move) => {
         const sheet = this.sheetView.getActiveSheet();
         sheet.table.scrollY(move);
       },
     });
+    this.scrollBarX = new ScrollBarX({
+      scroll: (move) => {
+        const sheet = this.sheetView.getActiveSheet();
+        sheet.table.scrollX(move);
+      },
+    });
+    this.sheetView = new SheetView();
     this.tabView = new TabView({
       onAdd: () => {
         const sheet = new Sheet();
@@ -86,12 +92,6 @@ class WorkBody extends Widget {
       },
       onSwitch: (tab) => {
         this.setActiveTab(tab);
-      },
-    });
-    this.scrollBarX = new ScrollBarX({
-      scroll: (move) => {
-        const sheet = this.sheetView.getActiveSheet();
-        sheet.table.scrollX(move);
       },
     });
   }
@@ -111,6 +111,8 @@ class WorkBody extends Widget {
     // 滚动到指定距离
     this.scrollBarY.scrollMove(table.getTop());
     this.scrollBarX.scrollMove(table.getLeft());
+    // 更新表格大小
+    table.resize();
   }
 
   createSheet() {
@@ -150,10 +152,6 @@ class WorkBody extends Widget {
     });
     EventBind.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
       Utils.throttle(() => {
-        const { sheetView } = this;
-        const sheet = sheetView.getActiveSheet();
-        const { table } = sheet;
-        table.resize();
         this.updateScroll();
       });
     });
@@ -181,10 +179,10 @@ class WorkBody extends Widget {
     const {
       sheetViewLayer, scrollBarYLayer, sheetSwitchTabLayer, scrollBarXLayer,
     } = this;
-    sheetViewLayer.attach(this.sheetView);
     scrollBarYLayer.attach(this.scrollBarY);
-    sheetSwitchTabLayer.attach(this.tabView);
     scrollBarXLayer.attach(this.scrollBarX);
+    sheetSwitchTabLayer.attach(this.tabView);
+    sheetViewLayer.attach(this.sheetView);
     this.bind();
     this.createSheet();
     this.updateScroll();
@@ -206,11 +204,9 @@ class WorkBody extends Widget {
     const sheet = sheetView.setActiveSheet(index);
     const tab = tabView.setActiveTab(index);
     if (sheet && tab) {
-      const { table } = sheet;
-      table.resize();
+      this.updateScroll();
       this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
       this.activeIndex = index;
-      this.updateScroll();
     }
   }
 

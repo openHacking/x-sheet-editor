@@ -859,26 +859,6 @@ class XTableDimensions extends Widget {
   }
 
   /**
-   * 重置变量区
-   */
-  reset() {
-    const { xTableAreaView } = this;
-    const { xTableFrozenContent } = this;
-    const { xLeftIndex } = this;
-    const { xTopIndex } = this;
-    const { xLeft } = this;
-    const { xTop } = this;
-    const { xContent } = this;
-    xTableAreaView.reset();
-    xTableFrozenContent.reset();
-    xLeftIndex.reset();
-    xTopIndex.reset();
-    xLeft.reset();
-    xTop.reset();
-    xContent.reset();
-  }
-
-  /**
    * onAttach
    */
   onAttach() {
@@ -943,9 +923,6 @@ class XTableDimensions extends Widget {
       const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_CELL;
       mousePointer.set(type, key);
     });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      this.scrolling();
-    });
   }
 
   /**
@@ -981,7 +958,7 @@ class XTableDimensions extends Widget {
     scroll.type = type;
     scroll.ci = ci;
     scroll.x = x1;
-    this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
+    this.scrolling();
     scroll.type = SCROLL_TYPE.UN;
   }
 
@@ -1009,7 +986,7 @@ class XTableDimensions extends Widget {
     scroll.type = type;
     scroll.ri = ri;
     scroll.y = y1;
-    this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
+    this.scrolling();
     scroll.type = SCROLL_TYPE.UN;
   }
 
@@ -1047,20 +1024,23 @@ class XTableDimensions extends Widget {
   }
 
   /**
-   * 渲染滚动界面
+   * 重置变量区
    */
-  scrolling() {
-    const { xTableStyle } = this;
-    this.reset();
-    xTableStyle.scrolling();
-  }
-
-  /**
-   * 渲染静态界面
-   */
-  render() {
-    const { xTableStyle } = this;
-    xTableStyle.render();
+  reset() {
+    const { xTableAreaView } = this;
+    const { xTableFrozenContent } = this;
+    const { xLeftIndex } = this;
+    const { xTopIndex } = this;
+    const { xLeft } = this;
+    const { xTop } = this;
+    const { xContent } = this;
+    xTableAreaView.reset();
+    xTableFrozenContent.reset();
+    xLeftIndex.reset();
+    xTopIndex.reset();
+    xLeft.reset();
+    xTop.reset();
+    xContent.reset();
   }
 
   /**
@@ -1074,6 +1054,25 @@ class XTableDimensions extends Widget {
     this.xHeightLight.setSize();
     this.yHeightLight.setSize();
     xTableStyle.setScale(val);
+    this.trigger(Constant.TABLE_EVENT_TYPE.SCALE_CHANGE);
+  }
+
+  /**
+   * 渲染静态界面
+   */
+  render() {
+    const { xTableStyle } = this;
+    xTableStyle.render();
+  }
+
+  /**
+   * 渲染滚动界面
+   */
+  scrolling() {
+    const { xTableStyle } = this;
+    this.reset();
+    xTableStyle.scrolling();
+    this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
   }
 
 }

@@ -72,7 +72,7 @@ class YReSizer extends Widget {
       mousePointer.on(key);
       mousePointer.set(type, key);
       const { top, ri } = this.getEventTop(e);
-      const min = top - rows.getHeight(ri) + rows.minHeight;
+      const min = top - rows.getHeight(ri) + rows.min;
       let { y: my } = table.computeEventXy(e);
       EventBind.mouseMoveUp(document, (e) => {
         ({ y: my } = table.computeEventXy(e));
@@ -101,7 +101,7 @@ class YReSizer extends Widget {
       if (moveOff) return;
       // eslint-disable-next-line prefer-const
       let { top, ri } = this.getEventTop(e);
-      const min = top - rows.getHeight(ri) + rows.minHeight;
+      const min = top - rows.getHeight(ri) + rows.min;
       const visualHeight = table.visualHeight();
       if (top > visualHeight) {
         top = visualHeight;

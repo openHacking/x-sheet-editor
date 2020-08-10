@@ -7,6 +7,7 @@ import { Utils } from '../../utils/Utils';
 import { EventBind } from '../../utils/EventBind';
 
 class ScrollBarY extends Widget {
+
   constructor(option) {
     super(`${cssPrefix}-scroll-bar-y`);
     this.option = Utils.mergeDeep({
@@ -100,6 +101,7 @@ class ScrollBarY extends Widget {
   computeScrollTo(move) {
     return (move / this.maxBlockTop) * (this.contentHeight - this.viewPortHeight);
   }
+
 }
 
 export { ScrollBarY };

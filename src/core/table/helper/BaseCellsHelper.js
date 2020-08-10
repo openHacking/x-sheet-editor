@@ -5,14 +5,13 @@ import { BaseFont } from '../../../canvas/font/BaseFont';
 class BaseCellsHelper {
 
   constructor({
-    cells, merges, rows, cols, scale, xTableAreaView,
+    cells, merges, rows, cols, xTableAreaView,
   }) {
     this.xTableAreaView = xTableAreaView;
     this.cells = cells;
     this.merges = merges;
     this.rows = rows;
     this.cols = cols;
-    this.scale = scale;
   }
 
   getCellOverFlow(ri, ci, rect, cell) {
