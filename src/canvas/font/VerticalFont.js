@@ -147,10 +147,11 @@ class VerticalFont extends BaseFont {
       let ii = 0;
       while (ii < textLen) {
         const char = text.charAt(ii);
+        const width = this.textWidth(char);
         textArray.push({
-          len: this.textWidth(char),
+          len: width,
           text: char,
-          tx: wOffset,
+          tx: wOffset + (size / 2 - width / 2),
           ty: hOffset,
         });
         hOffset += size + spacing;
@@ -273,10 +274,11 @@ class VerticalFont extends BaseFont {
       let ii = 0;
       while (ii < textLen) {
         const char = text.charAt(ii);
+        const width = this.textWidth(char);
         const item = {
-          len: this.textWidth(char),
+          len: width,
           text: char,
-          tx: wOffset,
+          tx: wOffset + (size / 2 - width / 2),
           ty: hOffset,
         };
         if (ii === 0) {
