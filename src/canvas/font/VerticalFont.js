@@ -31,69 +31,37 @@ class VerticalFont extends BaseFont {
     const e = [0, 0];
     if (type === 'strike') {
       switch (align) {
-        case BaseFont.ALIGN.right:
-          s[0] = tx - textWidth;
-          e[0] = tx;
-          break;
         case BaseFont.ALIGN.center:
-          s[0] = tx - textWidth / 2;
-          e[0] = tx + textWidth / 2;
-          break;
         case BaseFont.ALIGN.left:
+        case BaseFont.ALIGN.right:
           s[0] = tx;
           e[0] = tx + textWidth;
           break;
-        default:
-          break;
       }
       switch (verticalAlign) {
+        case BaseFont.VERTICAL_ALIGN.center:
         case BaseFont.VERTICAL_ALIGN.top:
+        case BaseFont.VERTICAL_ALIGN.bottom:
           s[1] = ty + size / 2;
           e[1] = ty + size / 2;
-          break;
-        case BaseFont.VERTICAL_ALIGN.center:
-          s[1] = ty;
-          e[1] = ty;
-          break;
-        case BaseFont.VERTICAL_ALIGN.bottom:
-          s[1] = ty - size / 2;
-          e[1] = ty - size / 2;
-          break;
-        default:
           break;
       }
     }
     if (type === 'underline') {
       switch (align) {
-        case BaseFont.ALIGN.right:
-          s[0] = tx - textWidth;
-          e[0] = tx;
-          break;
         case BaseFont.ALIGN.center:
-          s[0] = tx - textWidth / 2;
-          e[0] = tx + textWidth / 2;
-          break;
         case BaseFont.ALIGN.left:
+        case BaseFont.ALIGN.right:
           s[0] = tx;
           e[0] = tx + textWidth;
           break;
-        default:
-          break;
       }
       switch (verticalAlign) {
+        case BaseFont.VERTICAL_ALIGN.center:
         case BaseFont.VERTICAL_ALIGN.top:
+        case BaseFont.VERTICAL_ALIGN.bottom:
           s[1] = ty + size;
           e[1] = ty + size;
-          break;
-        case BaseFont.VERTICAL_ALIGN.center:
-          s[1] = ty + size / 2;
-          e[1] = ty + size / 2;
-          break;
-        case BaseFont.VERTICAL_ALIGN.bottom:
-          s[1] = ty;
-          e[1] = ty;
-          break;
-        default:
           break;
       }
     }
