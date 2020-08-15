@@ -1,6 +1,13 @@
 import { BaseCellsHelper } from './BaseCellsHelper';
 import { Rect } from '../../../canvas/Rect';
 import { Utils } from '../../../utils/Utils';
+import { RectRange } from '../tablebase/RectRange';
+
+const BREAK_LOOP = {
+  CONTINUE: 3,
+  ROW: 1,
+  RETURN: 2,
+};
 
 class TextCellsHelper extends BaseCellsHelper {
 
@@ -9,6 +16,8 @@ class TextCellsHelper extends BaseCellsHelper {
    * @param reverseRows
    * @param reverseCols
    * @param rectRange
+   * @param newRow
+   * @param newCol
    * @param callback
    * @param startX
    * @param startY
@@ -16,8 +25,10 @@ class TextCellsHelper extends BaseCellsHelper {
   getCellByViewRange({
     reverseRows = false,
     reverseCols = false,
-    rectRange,
-    callback,
+    rectRange = new RectRange(0, 0, 0, 0, 0, 0),
+    newRow = () => {},
+    newCol = () => {},
+    callback = () => {},
     startX = 0,
     startY = 0,
   }) {
@@ -32,64 +43,79 @@ class TextCellsHelper extends BaseCellsHelper {
       for (let i = eri; sri <= i; i -= 1) {
         const height = rows.getHeight(i);
         let x = startX;
+        newRow(i);
+        y -= height;
         for (let j = eci; sci <= j; j -= 1) {
           const width = cols.getWidth(j);
           const cell = cells.getCell(i, j);
+          newCol(j);
+          x -= width;
           if (cell) {
             const rect = new Rect({
               x, y, width, height,
             });
             const overFlow = this.getCellOverFlow(i, j, rect, cell);
             const result = callback(i, j, cell, rect, overFlow);
-            if (result === false) {
+            if (result === BREAK_LOOP.ROW) {
+              break;
+            }
+            if (result === BREAK_LOOP.RETURN) {
               return;
             }
           }
-          x -= width;
         }
-        y -= height;
       }
     } else if (reverseRows) {
       let y = startY;
       for (let i = eri; sri <= i; i -= 1) {
         const height = rows.getHeight(i);
         let x = startX;
+        newRow(i);
+        y -= height;
         for (let j = sci; j <= eci; j += 1) {
           const width = cols.getWidth(j);
           const cell = cells.getCell(i, j);
+          newCol(j);
           if (cell) {
             const rect = new Rect({
               x, y, width, height,
             });
             const overFlow = this.getCellOverFlow(i, j, rect, cell);
             const result = callback(i, j, cell, rect, overFlow);
-            if (result === false) {
+            if (result === BREAK_LOOP.ROW) {
+              break;
+            }
+            if (result === BREAK_LOOP.RETURN) {
               return;
             }
           }
           x += width;
         }
-        y -= height;
       }
     } else if (reverseCols) {
       let y = startY;
       for (let i = sri; i <= eri; i += 1) {
         const height = rows.getHeight(i);
         let x = startX;
+        newRow(i);
         for (let j = eci; sci <= j; j -= 1) {
           const width = cols.getWidth(j);
           const cell = cells.getCell(i, j);
+          newCol(j);
+          x -= width;
           if (cell) {
             const rect = new Rect({
               x, y, width, height,
             });
             const overFlow = this.getCellOverFlow(i, j, rect, cell);
             const result = callback(i, j, cell, rect, overFlow);
-            if (result === false) {
+            if (result === BREAK_LOOP.ROW) {
+              break;
+            }
+            if (result === BREAK_LOOP.RETURN) {
               return;
             }
           }
-          x -= width;
         }
         y += height;
       }
@@ -98,16 +124,21 @@ class TextCellsHelper extends BaseCellsHelper {
       for (let i = sri; i <= eri; i += 1) {
         const height = rows.getHeight(i);
         let x = startX;
+        newRow(i);
         for (let j = sci; j <= eci; j += 1) {
           const width = cols.getWidth(j);
           const cell = cells.getCell(i, j);
+          newCol(j);
           if (cell) {
             const rect = new Rect({
               x, y, width, height,
             });
             const overFlow = this.getCellOverFlow(i, j, rect, cell);
             const result = callback(i, j, cell, rect, overFlow);
-            if (result === false) {
+            if (result === BREAK_LOOP.ROW) {
+              break;
+            }
+            if (result === BREAK_LOOP.RETURN) {
               return;
             }
           }
@@ -174,23 +205,29 @@ class TextCellsHelper extends BaseCellsHelper {
    * @param reverseRows
    * @param reverseCols
    * @param rectRange
+   * @param newRow
+   * @param newCol
    * @param callback
    * @param startX
    * @param startY
    */
   getCellSkipMergeCellByViewRange({
-    reverseRows = false,
-    reverseCols = false,
+    reverseRows,
+    reverseCols,
     rectRange,
+    newRow,
+    newCol,
     callback,
-    startX = 0,
-    startY = 0,
+    startX,
+    startY,
   }) {
     const { merges } = this;
     this.getCellByViewRange({
       reverseRows,
       reverseCols,
       rectRange,
+      newRow,
+      newCol,
       callback: (ri, ci, cell, rect, overflow) => {
         const merge = merges.getFirstIncludes(ri, ci);
         if (merge === null) {
@@ -204,5 +241,5 @@ class TextCellsHelper extends BaseCellsHelper {
 }
 
 export {
-  TextCellsHelper,
+  TextCellsHelper, BREAK_LOOP,
 };

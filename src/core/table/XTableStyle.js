@@ -17,7 +17,7 @@ import { Scale, ScaleAdapter } from './tablebase/Scale';
 import { Code } from './tablebase/Code';
 import { Text } from './tablebase/Text';
 import { StyleCellsHelper } from './helper/StyleCellsHelper';
-import { TextCellsHelper } from './helper/TextCellsHelper';
+import { BREAK_LOOP, TextCellsHelper } from './helper/TextCellsHelper';
 import { Merges } from './tablebase/Merges';
 import {
   TableDataSnapshot,
@@ -639,93 +639,106 @@ class XTableContentUI extends XTableUI {
     const scrollView = this.getScrollView();
     const { table } = this;
     const {
-      draw, cols, textCellsHelper, cells, textFont,
+      draw, cols, textCellsHelper, cells, textFont, merges,
     } = table;
+    const drawX = this.getDrawX();
+    const drawY = this.getDrawY();
+    draw.offset(drawX, drawY);
     // 左边区域
     const lView = scrollView.clone();
     lView.sci = 0;
     lView.eci = scrollView.sci - 1;
     if (lView.eci > -1) {
-      const lx = this.getDrawX() - cols.getWidth(lView.eci);
-      const ly = this.getDrawY();
       let max;
-      let curr;
-      draw.offset(lx, ly);
-      textCellsHelper.getCellSkipMergeCellByViewRange({
-        rectRange: lView,
+      textCellsHelper.getCellByViewRange({
         reverseCols: true,
+        rectRange: lView,
+        newCol: (col) => {
+          max += cols.getWidth(col);
+        },
+        newRow: () => {
+          max = 0;
+        },
         callback: (row, col, cell, rect, overflow) => {
-          if (row !== curr) {
-            max = 0;
-            curr = row;
+          if (merges.getFirstIncludes(row, col)) {
+            return BREAK_LOOP.ROW;
           }
-          max += rect.width;
-          const { text, fontAttr } = cell;
+          const { text } = cell;
+          if (Utils.isBlank(text)) {
+            return BREAK_LOOP.CONTINUE;
+          }
+          const { fontAttr } = cell;
           const { align, textWrap } = fontAttr;
-          if (Utils.isBlank(text) || align === BaseFont.ALIGN.right
-            || textWrap !== BaseFont.TEXT_WRAP.OVER_FLOW) {
-            return;
+          const allowAlign = align === BaseFont.ALIGN.left
+            || align === BaseFont.ALIGN.center;
+          if (allowAlign && textWrap === BaseFont.TEXT_WRAP.OVER_FLOW) {
+            const size = cells.getCellBoundOutSize(row, col);
+            if (size === 0 || size > max) {
+              const {
+                format, text, fontAttr,
+              } = cell;
+              const builder = textFont.getBuilder();
+              builder.setDraw(draw);
+              builder.setText(XTableFormat(format, text));
+              builder.setAttr(fontAttr);
+              builder.setRect(rect);
+              builder.setOverFlow(overflow);
+              const font = builder.build();
+              cell.setContentWidth(font.draw());
+            }
           }
-          const size = cells.getCellBoundOutSize(row, col);
-          if (size === 0 || size > max) {
-            const {
-              format, text, fontAttr,
-            } = cell;
-            const builder = textFont.getBuilder();
-            builder.setDraw(draw);
-            builder.setText(XTableFormat(format, text));
-            builder.setAttr(fontAttr);
-            builder.setRect(rect);
-            builder.setOverFlow(overflow);
-            const font = builder.build();
-            cell.setContentWidth(font.draw());
-          }
+          return BREAK_LOOP.ROW;
         },
       });
-      draw.offset(0, 0);
     }
     // 右边区域
     const rView = scrollView.clone();
     rView.sci = scrollView.eci + 1;
     rView.eci = cols.len - 1;
     if (rView.sci < cols.len) {
-      const rx = this.getDrawX() + scrollView.w;
-      const ry = this.getDrawY();
       let max;
-      let curr;
-      draw.offset(rx, ry);
       textCellsHelper.getCellSkipMergeCellByViewRange({
         rectRange: rView,
+        startX: scrollView.w,
+        newCol: (col) => {
+          max += cols.getWidth(col);
+        },
+        newRow: () => {
+          max = 0;
+        },
         callback: (row, col, cell, rect, overflow) => {
-          if (row !== curr) {
-            max = 0;
-            curr = row;
+          if (merges.getFirstIncludes(row, col)) {
+            return BREAK_LOOP.ROW;
           }
-          max += rect.width;
-          const { text, fontAttr } = cell;
+          const { text } = cell;
+          if (Utils.isBlank(text)) {
+            return BREAK_LOOP.CONTINUE;
+          }
+          const { fontAttr } = cell;
           const { align, textWrap } = fontAttr;
-          if (Utils.isBlank(text) || align === BaseFont.ALIGN.left
-            || textWrap !== BaseFont.TEXT_WRAP.OVER_FLOW) {
-            return;
+          const allowAlign = align === BaseFont.ALIGN.right
+            || align === BaseFont.ALIGN.center;
+          if (allowAlign && textWrap === BaseFont.TEXT_WRAP.OVER_FLOW) {
+            const size = cells.getCellBoundOutSize(row, col);
+            if (size === 0 || size > max) {
+              const {
+                format, text, fontAttr,
+              } = cell;
+              const builder = textFont.getBuilder();
+              builder.setDraw(draw);
+              builder.setText(XTableFormat(format, text));
+              builder.setAttr(fontAttr);
+              builder.setRect(rect);
+              builder.setOverFlow(overflow);
+              const font = builder.build();
+              cell.setContentWidth(font.draw());
+            }
           }
-          const size = cells.getCellBoundOutSize(row, col);
-          if (size === 0 || size > max) {
-            const {
-              format, text, fontAttr,
-            } = cell;
-            const builder = textFont.getBuilder();
-            builder.setDraw(draw);
-            builder.setText(XTableFormat(format, text));
-            builder.setAttr(fontAttr);
-            builder.setRect(rect);
-            builder.setOverFlow(overflow);
-            const font = builder.build();
-            cell.setContentWidth(font.draw());
-          }
+          return BREAK_LOOP.ROW;
         },
       });
-      draw.offset(0, 0);
     }
+    draw.offset(0, 0);
   }
 
   /**
