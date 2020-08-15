@@ -71,7 +71,6 @@ ${XSheetVersion}
     this.horizontalLayer2.children(this.sheetSwitchTabLayer);
     this.horizontalLayer2.children(this.scrollBarXHorizontalLayer);
     // 根布局
-    // eslint-disable-next-line max-len
     this.horizontalLayer1Layer = new VerticalLayerElement({
       style: {
         flexGrow: 1,
