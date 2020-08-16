@@ -966,7 +966,7 @@ class XTableContentUI extends XTableUI {
     const drawX = this.getDrawX();
     const drawY = this.getDrawY();
     const {
-      draw, styleCellsHelper,
+      draw, styleCellsHelper, merges,
     } = table;
     draw.offset(drawX, drawY);
     styleCellsHelper.getMergeCellByViewRange({
@@ -979,7 +979,11 @@ class XTableContentUI extends XTableUI {
     });
     styleCellsHelper.getCellByViewRange({
       rectRange: scrollView,
-      callback: (i, c, cell, rect) => {
+      callback: (row, col, cell, rect) => {
+        const merge = merges.getFirstIncludes(row, col);
+        if (merge && (merge.sri !== row || merge.sci !== row)) {
+          return;
+        }
         const { background } = cell;
         const box = new Box({ draw, rect });
         box.drawBackgroundColor(background);
