@@ -94,7 +94,7 @@
 .x-sheet-scroll-bar-y {
   width: 17px;
   height: 100%;
-  background: #dfdfdf;
+  background: #f1f1f1;
   position: relative;
 }
 .x-sheet-scroll-bar-y-last-but {
@@ -104,7 +104,7 @@
   top: 0;
   background-image: url(87aeb08fa9c573408df1960dddd2f86c.svg);
   background-size: 100% 100%;
-  background-color: #dfdfdf;
+  background-color: #f1f1f1;
 }
 .x-sheet-scroll-bar-y-next-but {
   width: 100%;
@@ -113,7 +113,7 @@
   bottom: 0;
   background-image: url(5c9cd65ac12221bc4211e24bd3382f5d.svg);
   background-size: 100% 100%;
-  background-color: #dfdfdf;
+  background-color: #f1f1f1;
 }
 .x-sheet-scroll-bar-y-content {
   position: absolute;

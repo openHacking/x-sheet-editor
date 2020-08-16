@@ -1,7 +1,7 @@
 import { LINE_TYPE } from '../../../canvas/Line';
 import { Utils } from '../../../utils/Utils';
 
-let zIndex = 0;
+let zIndexID = 0;
 
 /**
  * Border
@@ -10,8 +10,8 @@ let zIndex = 0;
 class Border {
 
   static getZIndex() {
-    zIndex += 1;
-    return zIndex;
+    zIndexID += 1;
+    return zIndexID;
   }
 
   /**
@@ -35,6 +35,9 @@ class Border {
     this.$width = width;
     this.$color = color;
     this.$type = type;
+    if (zIndex > zIndexID) {
+      zIndexID = zIndex;
+    }
   }
 
   get zIndex() {
