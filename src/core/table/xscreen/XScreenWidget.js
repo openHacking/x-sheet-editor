@@ -1,22 +1,17 @@
 import { cssPrefix } from '../../../const/Constant';
 import { Widget } from '../../../lib/Widget';
-import { Utils } from '../../../utils/Utils';
 
 class XScreenWidget extends Widget {
 
   constructor({
-    xScreen, groupId,
+    xScreen, ltEl, tEl, brEl, lEl
   }) {
     super(`${cssPrefix}-screen-widget`);
-    this.groupId = groupId || Utils.uuid();
     this.xScreen = xScreen;
-  }
-
-  clone() {
-    const { xScreen, groupId } = this;
-    return new this.constructor({
-      xScreen, groupId,
-    });
+    this.ltEl = new Widget(`${cssPrefix}-screen-widget-lt`).child(ltEl);
+    this.tEl = new Widget(`${cssPrefix}-screen-widget-t`).child(tEl);
+    this.brEl = new Widget(`${cssPrefix}-screen-widget-br`).child(brEl);
+    this.lEl = new Widget(`${cssPrefix}-screen-widget-l`).child(lEl);
   }
 
   setBottom() {}
