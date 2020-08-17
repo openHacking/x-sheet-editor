@@ -1,10 +1,12 @@
 // eslint-disable-next-line no-unused-vars
 /* global navigator document window */
 
+function S4() {
+  // eslint-disable-next-line no-bitwise
+  return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+}
+
 const alphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-
-let throttleHandle = null;
-
 const DATA_TYPE = {
   String: 1,
   Boolean: 2,
@@ -21,6 +23,8 @@ const DATA_TYPE = {
   Symbol: 13,
   Un: 14,
 };
+
+let throttleHandle = null;
 
 class Utils {
 
@@ -443,6 +447,10 @@ class Utils {
   static isFull() {
     return !!(document.webkitIsFullScreen || document.mozFullScreen
       || document.msFullscreenElement || document.fullscreenElement);
+  }
+
+  static uuid() {
+    return (`${S4() + S4()}${S4()}${S4()}${S4()}${S4()}${S4()}${S4()}`);
   }
 }
 
