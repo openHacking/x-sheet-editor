@@ -1,7 +1,7 @@
-import { Widget } from '../../../../lib/Widget';
 import { cssPrefix } from '../../../../const/Constant';
+import { XScreenZone } from './XScreenZone';
 
-class XScreenLZone extends Widget {
+class XScreenLZone extends XScreenZone {
 
   constructor() {
     super(`${cssPrefix}-xScreen-l-zone`);
