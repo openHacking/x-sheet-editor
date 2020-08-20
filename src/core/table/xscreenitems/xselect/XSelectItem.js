@@ -4,9 +4,9 @@ import { Constant } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
 
 const SELECT_LOCAL = {
-  LT: Symbol(''),
-  L: Symbol(''),
-  T: Symbol(''),
+  LT: Symbol('LT'),
+  L: Symbol('L'),
+  T: Symbol('T'),
 };
 
 class XSelectItem extends XScreenItem {
@@ -30,7 +30,7 @@ class XSelectItem extends XScreenItem {
       const { el } = activate;
       if (el !== table) return;
       const { x, y } = table.computeEventXy(e1);
-      const selectRange = this.downSelectRange(x, y);
+      this.downSelectRange(x, y);
     });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.CHANGE_HEIGHT, () => {});
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.CHANGE_WIDTH, () => {});
@@ -104,5 +104,6 @@ class XSelectItem extends XScreenItem {
 }
 
 export {
-  XSelectItem, SELECT_LOCAL,
+  XSelectItem,
+  SELECT_LOCAL,
 };
