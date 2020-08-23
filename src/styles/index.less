@@ -51,13 +51,22 @@
   left: 0;
   top: 0;
 }
-.@{css-prefix}-screen {
+
+// 屏幕分割 & 区
+.@{css-prefix}-x-screen {
   display: block;
   width: 100%;
   height: 100%;
   position: relative;
 }
-.@{css-prefix}-screen-element {
+.@{css-prefix}-x-screen-lt-zone {
+  border-right: 1px solid #42a642;
+  border-bottom: 1px solid #42a642;
+}
+.@{css-prefix}-x-screen-t-zone {
+  border-bottom: 1px solid #42a642;
+}
+.@{css-prefix}-x-screen-br-zone {
   display: block;
   width: 100%;
   height: 100%;
@@ -66,15 +75,37 @@
   top: 0;
   overflow: hidden;
 }
-.@{css-prefix}-screen-element-lt {
+.@{css-prefix}-x-screen-l-zone {
   border-right: 1px solid #42a642;
-  border-bottom: 1px solid #42a642;
 }
-.@{css-prefix}-screen-element-t {
-  border-bottom: 1px solid #42a642;
+
+// 屏幕分割 & 块
+.@{css-prefix}-x-screen-part {
+  position: absolute;
 }
-.@{css-prefix}-screen-element-l {
-  border-right: 1px solid #42a642;
+.@{css-prefix}-x-screen-lt-part {}
+.@{css-prefix}-x-screen-l-part {}
+.@{css-prefix}-x-screen-t-part {}
+.@{css-prefix}-x-screen-br-part {}
+
+// 屏幕分割 & 块边框
+.@{css-prefix}-part-border {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  position: static;
+}
+.@{css-prefix}-part-border.show-top-border {
+  border-top: 3px solid #42a642;
+}
+.@{css-prefix}-part-border.show-bottom-border {
+  border-bottom: 3px solid #42a642;
+}
+.@{css-prefix}-part-border.show-left-border {
+  border-left: 3px solid #42a642;
+}
+.@{css-prefix}-part-border.show-right-border {
+  border-right: 3px solid #42a642;
 }
 
 // 表格编辑框
@@ -200,26 +231,29 @@
 }
 
 // 选择框
-.@{css-prefix}-selector {
-  width: 0;
-  height: 0;
-  position: absolute;
-}
-.@{css-prefix}-selector-area {
-  border: 3px solid #42a642;
+.@{css-prefix}-x-select-area {
   background: rgba(181, 202, 242, 0.1);
   width: 100%;
   height: 100%;
-  box-sizing: border-box;
 }
-.@{css-prefix}-selector-corner {
-  pointer-events: auto;
+.@{css-prefix}-x-select-corner {
   position: absolute;
-  font-size: 0;
   height: 5px;
   width: 5px;
   border: 2px solid #ffffff;
   background: #42a642;
+}
+.@{css-prefix}-x-select-corner.br-pos {
+  right: 0;
+  bottom: 0;
+}
+.@{css-prefix}-x-select-corner.tr-pos {
+  right: 0;
+  top: 0;
+}
+.@{css-prefix}-x-select-corner.bl-pos {
+  left: 0;
+  bottom: 0;
 }
 
 // 样式复制

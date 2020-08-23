@@ -25,6 +25,8 @@ import { XTableScrollView } from './XTableScrollView';
 import { XTableAreaView } from './XTableAreaView';
 import { XTableEdit } from './XTableEdit';
 import { XTableStyle } from './XTableStyle';
+import { XScreen } from './xscreen/XScreen';
+import { XSelectItem } from './xscreenitems/xselect/XSelectItem';
 
 class Dimensions {
 
@@ -633,6 +635,7 @@ class XTableDimensions extends Widget {
     this.mousePointer = new XTableMousePointer(this);
     this.keyboard = new XTableKeyboard(this);
     this.screen = new Screen(this);
+    this.xScreen = new XScreen(this);
     this.xReSizer = new XReSizer(this);
     this.yReSizer = new YReSizer(this);
     this.xHeightLight = new XHeightLight(this);
@@ -886,12 +889,15 @@ class XTableDimensions extends Widget {
     this.screenSelector.on(SCREEN_SELECT_EVENT.DOWN_SELECT, () => {
       this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN);
     });
-    this.attach(this.screen);
+    // this.attach(this.screen);
+    this.attach(this.xScreen);
     this.attach(this.xReSizer);
     this.attach(this.yReSizer);
     this.attach(this.xHeightLight);
     this.attach(this.yHeightLight);
     this.attach(this.edit);
+    //
+    this.xScreen.addItem(new XSelectItem(this));
     // 注册快捷键
     this.keyBoardTab = new KeyBoardTab(this);
   }

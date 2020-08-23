@@ -4,7 +4,7 @@ import { XScreenZone } from './XScreenZone';
 class XScreenTZone extends XScreenZone {
 
   constructor() {
-    super(`${cssPrefix}-xScreen-t-zone`);
+    super(`${cssPrefix}-x-screen-t-zone`);
   }
 
 }

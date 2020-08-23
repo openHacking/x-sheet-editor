@@ -1,9 +1,10 @@
 import { Widget } from '../../../../lib/Widget';
+import { cssPrefix } from '../../../../const/Constant';
 
 class XScreenPart extends Widget {
 
   constructor(className) {
-    super(className);
+    super(`${cssPrefix}-x-screen-part ${className}`);
     this.xScreenZone = null;
   }
 

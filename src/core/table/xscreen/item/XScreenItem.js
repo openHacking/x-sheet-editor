@@ -1,22 +1,23 @@
-import { XScreenLTPart } from './part/XScreenLTPart';
-import { XScreenTPart } from './part/XScreenTPart';
-import { XScreenBRPart } from './part/XScreenBRPart';
-import { XScreenLPart } from './part/XScreenLPart';
+import { XScreenLTPart } from '../part/XScreenLTPart';
+import { XScreenTPart } from '../part/XScreenTPart';
+import { XScreenBRPart } from '../part/XScreenBRPart';
+import { XScreenLPart } from '../part/XScreenLPart';
 
 class XScreenItem {
 
   constructor({
     table,
-    lt = new XScreenLTPart(),
-    t = new XScreenTPart(),
-    br = new XScreenBRPart(),
-    l = new XScreenLPart(),
   } = {}) {
     this.table = table;
-    this.lt = lt;
-    this.t = t;
-    this.br = br;
-    this.l = l;
+    this.lt = new XScreenLTPart();
+    this.t = new XScreenTPart();
+    this.br = new XScreenBRPart();
+    this.l = new XScreenLPart();
+    this.xScreen = null;
+  }
+
+  setXScreen(xScreen) {
+    this.xScreen = xScreen;
   }
 
   setWidth(width) {
@@ -45,6 +46,20 @@ class XScreenItem {
     this.t.show();
     this.br.show();
     this.l.show();
+  }
+
+  offset(rectRange) {
+    const { table } = this;
+    const {
+      cols, rows,
+    } = table;
+    const scrollView = table.getScrollView();
+    const left = cols.sectionSumWidth(scrollView.sci, rectRange.sci - 1);
+    const top = rows.sectionSumHeight(scrollView.sri, rectRange.sri - 1);
+    this.setLeft(left);
+    this.setTop(top);
+    this.setWidth(rectRange.w);
+    this.setHeight(rectRange.h);
   }
 
   setLeft(left) {

@@ -3,8 +3,8 @@ import { cssPrefix } from '../../../../const/Constant';
 
 class XScreenLTPart extends XScreenPart {
 
-  constructor() {
-    super(`${cssPrefix}-xScreen-lt-part`);
+  constructor(className = '') {
+    super(`${cssPrefix}-x-screen-lt-part ${className}`);
   }
 
 }
