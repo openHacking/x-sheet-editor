@@ -1,5 +1,4 @@
 import { XScreenItem } from './XScreenItem';
-import { cssPrefix } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
 import { DISPLAY_AREA } from '../XScreen';
 import { XScreenLTPart } from '../part/XScreenLTPart';
@@ -21,12 +20,12 @@ const RANGE_OVER_GO = {
 
 class XScreenBorderItem extends XScreenItem {
 
-  constructor({ table }) {
+  constructor({ table }, className = '') {
     super({ table });
-    this.blt = new XScreenLTPart(`${cssPrefix}-part-border`);
-    this.bt = new XScreenTPart(`${cssPrefix}-part-border`);
-    this.bl = new XScreenLPart(`${cssPrefix}-part-border`);
-    this.bbr = new XScreenBRPart(`${cssPrefix}-part-border`);
+    this.blt = new XScreenLTPart(className);
+    this.bt = new XScreenTPart(className);
+    this.bl = new XScreenLPart(className);
+    this.bbr = new XScreenBRPart(className);
     this.lt.child(this.blt);
     this.t.child(this.bt);
     this.l.child(this.bl);
@@ -40,7 +39,9 @@ class XScreenBorderItem extends XScreenItem {
     const bottom = range.eri < scrollView.sri || range.eri > scrollView.eri;
     const left = range.sci < scrollView.sci || range.sci > scrollView.eci;
     const right = range.eci < scrollView.sci || range.eci > scrollView.eci;
-    return { top, bottom, left, right };
+    return {
+      top, bottom, left, right,
+    };
   }
 
   rectRangeOverGo(range) {

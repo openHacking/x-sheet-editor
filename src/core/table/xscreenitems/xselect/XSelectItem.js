@@ -1,5 +1,5 @@
 /* global document */
-import { XScreenBorderItem } from '../../xscreen/item/XScreenBorderItem';
+import { XScreenCssBorderItem } from '../../xscreen/item/XScreenCssBorderItem';
 import { EventBind } from '../../../../utils/EventBind';
 import {
   Constant,
@@ -16,16 +16,17 @@ const SELECT_LOCAL = {
   BR: Symbol('BR'),
 };
 
-class XSelectItem extends XScreenBorderItem {
+class XSelectItem extends XScreenCssBorderItem {
 
   constructor(table) {
     super({ table });
-    this.selectOffset = { top: 0, left: 0, width: 0, height: 0 };
+    this.targetOffset = { top: 0, left: 0, width: 0, height: 0 };
     this.selectLocal = SELECT_LOCAL.BR;
     this.selectRange = null;
     this.targetRange = null;
     this.downRange = null;
     this.moveRange = null;
+    this.overGo = null;
     this.ltElem = new Widget(`${cssPrefix}-x-select-area`);
     this.brElem = new Widget(`${cssPrefix}-x-select-area`);
     this.lElem = new Widget(`${cssPrefix}-x-select-area`);
@@ -42,115 +43,12 @@ class XSelectItem extends XScreenBorderItem {
     this.bl.child(this.lElem);
     this.bt.child(this.tElem);
     this.bbr.child(this.brElem);
-    this.hide();
+    this.setBorderType('solid');
+  }
+
+  onAdd() {
     this.bind();
-  }
-
-  targetOffsetHandle() {
-    const { targetRange } = this;
-    if (targetRange.equals(RectRange.EMPTY)) {
-      return;
-    }
-    const { table } = this;
-    const { cols, rows } = table;
-    const scrollView = table.getScrollView();
-    this.selectOffset.left = cols.sectionSumWidth(scrollView.sci, targetRange.sci - 1);
-    this.selectOffset.top = rows.sectionSumHeight(scrollView.sri, targetRange.sri - 1);
-    this.selectOffset.width = targetRange.w;
-    this.selectOffset.height = targetRange.h;
-    this.setWidth(this.selectOffset.width);
-    this.setHeight(this.selectOffset.height);
-    this.setTop(this.selectOffset.top);
-    this.setLeft(this.selectOffset.left);
-  }
-
-  targetBorderHandle() {
-    const { targetRange } = this;
-    if (targetRange.equals(RectRange.EMPTY)) {
-      return;
-    }
-    const { selectRange } = this;
-    const {
-      top, bottom, left, right,
-    } = this.rectRangeBoundOut(selectRange);
-    this.hideAllBorder();
-    const overGo = this.rectRangeOverGo(selectRange);
-    if (!top) {
-      this.showTBorder(overGo);
-    }
-    if (!bottom) {
-      this.showBBorder(overGo);
-    }
-    if (!left) {
-      this.showLBorder(overGo);
-    }
-    if (!right) {
-      this.showRBorder(overGo);
-    }
-  }
-
-  targetRangeHandle() {
-    const { selectRange } = this;
-    if (Utils.isUnDef(selectRange)) {
-      this.targetRange = RectRange.EMPTY;
-      return;
-    }
-    const { table } = this;
-    const { cols, rows } = table;
-    const scrollView = table.getScrollView();
-    const targetRange = scrollView.coincide(selectRange);
-    targetRange.w = cols.rectRangeSumWidth(targetRange);
-    targetRange.h = rows.rectRangeSumHeight(targetRange);
-    this.targetRange = targetRange;
-    if (targetRange.equals(RectRange.EMPTY)) {
-      this.hide();
-    } else {
-      this.show();
-    }
-  }
-
-  targetCornerHandle() {
-    const { targetRange } = this;
-    if (targetRange.equals(RectRange.EMPTY)) {
-      return;
-    }
-    const { selectLocal } = this;
-    // remove br
-    this.brCorner.removeClass('br-pos');
-    this.lCorner.removeClass('br-pos');
-    this.tCorner.removeClass('br-pos');
-    this.ltCorner.removeClass('br-pos');
-    // remove tr
-    this.brCorner.removeClass('tr-pos');
-    this.lCorner.removeClass('tr-pos');
-    this.tCorner.removeClass('tr-pos');
-    this.ltCorner.removeClass('tr-pos');
-    // remove bl
-    this.brCorner.removeClass('bl-pos');
-    this.lCorner.removeClass('bl-pos');
-    this.tCorner.removeClass('bl-pos');
-    this.ltCorner.removeClass('bl-pos');
-    switch (selectLocal) {
-      case SELECT_LOCAL.L:
-        this.brCorner.addClass('bl-pos');
-        this.lCorner.addClass('bl-pos');
-        this.tCorner.addClass('bl-pos');
-        this.ltCorner.addClass('bl-pos');
-        break;
-      case SELECT_LOCAL.LT:
-      case SELECT_LOCAL.BR:
-        this.brCorner.addClass('br-pos');
-        this.lCorner.addClass('br-pos');
-        this.tCorner.addClass('br-pos');
-        this.ltCorner.addClass('br-pos');
-        break;
-      case SELECT_LOCAL.T:
-        this.brCorner.addClass('tr-pos');
-        this.lCorner.addClass('tr-pos');
-        this.tCorner.addClass('tr-pos');
-        this.ltCorner.addClass('tr-pos');
-        break;
-    }
+    this.hide();
   }
 
   bind() {
@@ -216,6 +114,115 @@ class XSelectItem extends XScreenBorderItem {
       this.targetBorderHandle();
       this.targetCornerHandle();
     });
+  }
+
+  targetOffsetHandle() {
+    const { targetRange } = this;
+    if (targetRange.equals(RectRange.EMPTY)) {
+      return;
+    }
+    const { table } = this;
+    const { cols, rows } = table;
+    const scrollView = table.getScrollView();
+    this.targetOffset.left = cols.sectionSumWidth(scrollView.sci, targetRange.sci - 1);
+    this.targetOffset.top = rows.sectionSumHeight(scrollView.sri, targetRange.sri - 1);
+    this.targetOffset.width = targetRange.w;
+    this.targetOffset.height = targetRange.h;
+    this.setWidth(this.targetOffset.width);
+    this.setHeight(this.targetOffset.height);
+    this.setTop(this.targetOffset.top);
+    this.setLeft(this.targetOffset.left);
+  }
+
+  targetBorderHandle() {
+    const { targetRange } = this;
+    if (targetRange.equals(RectRange.EMPTY)) {
+      return;
+    }
+    const { selectRange } = this;
+    const {
+      top, bottom, left, right,
+    } = this.rectRangeBoundOut(selectRange);
+    this.hideAllBorder();
+    const overGo = this.rectRangeOverGo(selectRange);
+    if (!top) {
+      this.showTBorder(overGo);
+    }
+    if (!bottom) {
+      this.showBBorder(overGo);
+    }
+    if (!left) {
+      this.showLBorder(overGo);
+    }
+    if (!right) {
+      this.showRBorder(overGo);
+    }
+    this.overGo = overGo;
+  }
+
+  targetRangeHandle() {
+    const { selectRange } = this;
+    if (Utils.isUnDef(selectRange)) {
+      this.hide();
+      this.targetRange = RectRange.EMPTY;
+      return;
+    }
+    const { table } = this;
+    const { cols, rows } = table;
+    const scrollView = table.getScrollView();
+    const targetRange = scrollView.coincide(selectRange);
+    targetRange.w = cols.rectRangeSumWidth(targetRange);
+    targetRange.h = rows.rectRangeSumHeight(targetRange);
+    this.targetRange = targetRange;
+    if (targetRange.equals(RectRange.EMPTY)) {
+      this.hide();
+    } else {
+      this.show();
+    }
+  }
+
+  targetCornerHandle() {
+    const { targetRange } = this;
+    if (targetRange.equals(RectRange.EMPTY)) {
+      return;
+    }
+    const { selectLocal } = this;
+    // remove br
+    this.brCorner.removeClass('br-pos');
+    this.lCorner.removeClass('br-pos');
+    this.tCorner.removeClass('br-pos');
+    this.ltCorner.removeClass('br-pos');
+    // remove tr
+    this.brCorner.removeClass('tr-pos');
+    this.lCorner.removeClass('tr-pos');
+    this.tCorner.removeClass('tr-pos');
+    this.ltCorner.removeClass('tr-pos');
+    // remove bl
+    this.brCorner.removeClass('bl-pos');
+    this.lCorner.removeClass('bl-pos');
+    this.tCorner.removeClass('bl-pos');
+    this.ltCorner.removeClass('bl-pos');
+    switch (selectLocal) {
+      case SELECT_LOCAL.L:
+        this.brCorner.addClass('bl-pos');
+        this.lCorner.addClass('bl-pos');
+        this.tCorner.addClass('bl-pos');
+        this.ltCorner.addClass('bl-pos');
+        break;
+      case SELECT_LOCAL.LT:
+      case SELECT_LOCAL.BR:
+        this.brCorner.addClass('br-pos');
+        this.lCorner.addClass('br-pos');
+        this.tCorner.addClass('br-pos');
+        this.ltCorner.addClass('br-pos');
+        break;
+      case SELECT_LOCAL.T:
+        this.brCorner.addClass('tr-pos');
+        this.lCorner.addClass('tr-pos');
+        this.tCorner.addClass('tr-pos');
+        this.ltCorner.addClass('tr-pos');
+        break;
+    }
   }
 
   downSelectRange(x, y) {

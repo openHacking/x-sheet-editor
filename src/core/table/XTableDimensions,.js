@@ -27,6 +27,8 @@ import { XTableEdit } from './XTableEdit';
 import { XTableStyle } from './XTableStyle';
 import { XScreen } from './xscreen/XScreen';
 import { XSelectItem } from './xscreenitems/xselect/XSelectItem';
+import { XautoFillItem } from './xscreenitems/xautofill/XautoFillItem';
+import { XcopyStyle } from './xscreenitems/xcopystyle/XcopyStyle';
 
 class Dimensions {
 
@@ -634,7 +636,6 @@ class XTableDimensions extends Widget {
     this.focus = new XTableFocus(this);
     this.mousePointer = new XTableMousePointer(this);
     this.keyboard = new XTableKeyboard(this);
-    this.screen = new Screen(this);
     this.xScreen = new XScreen(this);
     this.xReSizer = new XReSizer(this);
     this.yReSizer = new YReSizer(this);
@@ -868,36 +869,15 @@ class XTableDimensions extends Widget {
     const { xTableStyle } = this;
     this.attach(xTableStyle);
     this.bind();
-    // 表格组件
-    const tableDataSnapshot = this.getTableDataSnapshot();
-    this.screenSelector = new ScreenSelector(this.screen);
-    this.screenAutoFill = new ScreenAutoFill(this.screen, {
-      onBeforeAutoFill: () => {
-        tableDataSnapshot.begin();
-      },
-      onAfterAutoFill: () => {
-        tableDataSnapshot.end();
-      },
-    });
-    this.copyStyle = new ScreenCopyStyle(this.screen, {});
-    this.screen.addWidget(this.screenSelector);
-    this.screen.addWidget(this.screenAutoFill);
-    this.screen.addWidget(this.copyStyle);
-    this.screenSelector.on(SCREEN_SELECT_EVENT.SELECT_CHANGE, () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
-    });
-    this.screenSelector.on(SCREEN_SELECT_EVENT.DOWN_SELECT, () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN);
-    });
-    // this.attach(this.screen);
     this.attach(this.xScreen);
+    this.xScreen.addItem(new XSelectItem(this));
+    this.xScreen.addItem(new XautoFillItem(this));
+    this.xScreen.addItem(new XcopyStyle(this));
     this.attach(this.xReSizer);
     this.attach(this.yReSizer);
     this.attach(this.xHeightLight);
     this.attach(this.yHeightLight);
     this.attach(this.edit);
-    //
-    this.xScreen.addItem(new XSelectItem(this));
     // 注册快捷键
     this.keyBoardTab = new KeyBoardTab(this);
   }

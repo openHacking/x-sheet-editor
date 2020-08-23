@@ -88,24 +88,153 @@
 .@{css-prefix}-x-screen-t-part {}
 .@{css-prefix}-x-screen-br-part {}
 
-// 屏幕分割 & 块边框
-.@{css-prefix}-part-border {
+// 屏幕分割 & 块边框 Css Border
+.@{css-prefix}-part-border-css {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
   position: static;
 }
-.@{css-prefix}-part-border.show-top-border {
-  border-top: 3px solid #42a642;
+// Css Border Type
+.@{css-prefix}-part-border-css.solid.show-top-border {
+  border-top-style: solid;
 }
-.@{css-prefix}-part-border.show-bottom-border {
-  border-bottom: 3px solid #42a642;
+.@{css-prefix}-part-border-css.solid.show-bottom-border {
+  border-bottom-style: solid;
 }
-.@{css-prefix}-part-border.show-left-border {
-  border-left: 3px solid #42a642;
+.@{css-prefix}-part-border-css.solid.show-left-border {
+  border-left-style: solid;
 }
-.@{css-prefix}-part-border.show-right-border {
-  border-right: 3px solid #42a642;
+.@{css-prefix}-part-border-css.solid.show-right-border {
+  border-right-style: solid;
+}
+.@{css-prefix}-part-border-css.dashed.show-top-border {
+  border-top-style: dashed;
+}
+.@{css-prefix}-part-border-css.dashed.show-bottom-border {
+  border-bottom-style: dashed;
+}
+.@{css-prefix}-part-border-css.dashed.show-left-border {
+  border-left-style: dashed;
+}
+.@{css-prefix}-part-border-css.dashed.show-right-border {
+  border-right-style: dashed;
+}
+// Css Border Style
+.@{css-prefix}-part-border-css.show-top-border {
+  border-top-width: 3px;
+  border-top-color: #42a642;
+}
+.@{css-prefix}-part-border-css.show-bottom-border {
+  border-bottom-width: 3px;
+  border-bottom-color: #42a642;
+}
+.@{css-prefix}-part-border-css.show-left-border {
+  border-left-width: 3px;
+  border-left-color: #42a642;
+}
+.@{css-prefix}-part-border-css.show-right-border {
+  border-right-width: 3px;
+  border-right-color: #42a642;
+}
+
+// 屏幕分割 & 块边框 Svg Border
+@keyframes copy-style-stroked-dashoffset-animation-top {
+  to { stroke-dashoffset: 20; }
+}
+@keyframes copy-style-stroked-dashoffset-animation-left {
+  to { stroke-dashoffset: -20; }
+}
+@keyframes copy-style-stroked-dashoffset-animation-bottom {
+  to { stroke-dashoffset: -20; }
+}
+@keyframes copy-style-stroked-dashoffset-animation-right {
+  to { stroke-dashoffset: 20; }
+}
+.@{css-prefix}-part-border-svg {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  position: static;
+}
+.@{css-prefix}-copy-style-svg {
+  position: relative;
+  z-index: 2;
+}
+.@{css-prefix}-copy-style-stroked {
+  display: none;
+}
+.@{css-prefix}-part-border-svg.show-top-border > .@{css-prefix}-copy-style-stroked-top {
+  display: block;
+  stroke: #ffffff;
+  stroke-width: 7;
+  stroke-dasharray: 10;
+  animation: copy-style-stroked-dashoffset-animation-top 0.5s forwards infinite linear;
+}
+.@{css-prefix}-part-border-svg.show-bottom-border > .@{css-prefix}-copy-style-stroked-bottom {
+  display: block;
+  stroke: #ffffff;
+  stroke-width: 6;
+  stroke-dasharray: 10;
+  animation: copy-style-stroked-dashoffset-animation-bottom 0.5s forwards infinite linear;
+}
+.@{css-prefix}-part-border-svg.show-left-border > .@{css-prefix}-copy-style-stroked-left {
+  display: block;
+  stroke: #ffffff;
+  stroke-width: 6;
+  stroke-dasharray: 10;
+  animation: copy-style-stroked-dashoffset-animation-left 0.5s forwards infinite linear;
+}
+.@{css-prefix}-part-border-svg.show-right-border > .@{css-prefix}-copy-style-stroked-right {
+  display: block;
+  stroke: #ffffff;
+  stroke-width: 6;
+  stroke-dasharray: 10;
+  animation: copy-style-stroked-dashoffset-animation-right 0.5s forwards infinite linear;
+}
+
+// 自动填充
+.@{css-prefix}-x-autofill-area {
+  background: rgba(166, 166, 166, 0.2);
+  width: 100%;
+  height: 100%;
+}
+
+// 选择框
+.@{css-prefix}-x-select-area {
+  background: rgba(166, 166, 166, 0.2);
+  width: 100%;
+  height: 100%;
+}
+.@{css-prefix}-x-select-corner {
+  position: absolute;
+  height: 5px;
+  width: 5px;
+  border: 2px solid #ffffff;
+  background: #42a642;
+}
+.@{css-prefix}-x-select-corner.br-pos {
+  right: 0;
+  bottom: 0;
+}
+.@{css-prefix}-x-select-corner.tr-pos {
+  right: 0;
+  top: 0;
+}
+.@{css-prefix}-x-select-corner.bl-pos {
+  left: 0;
+  bottom: 0;
+}
+
+// 复制样式
+.@{css-prefix}-copy-style-area {
+  background: rgba(166, 166, 166, 0.2);
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
 }
 
 // 表格编辑框
@@ -193,132 +322,6 @@
   position: absolute;
   width: 100%;
   right: 0;
-}
-
-// 自动填充
-.@{css-prefix}-autofill {
-  width: 0;
-  height: 0;
-  position: absolute;
-}
-.@{css-prefix}-autofill-area {
-  border: 2px dashed #42a642;
-  background: rgba(181, 202, 242, 0.1);
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-}
-
-// 粘贴板
-@keyframes clipboard-stroke-dashoffset-animation {
-  to { stroke-dashoffset: 19; }
-}
-.@{css-prefix}-clipboard {
-  position: absolute;
-  display: block;
-  width: 197.8px;
-  height: 97.8px;
-  left: 599.2px;
-  top: 200px;
-}
-.@{css-prefix}-clipboard-stroked {
-  display: block;
-  stroke: #4b89ff;
-  fill: transparent;
-  stroke-width: 3;
-  stroke-dasharray: 10;
-  animation: clipboard-stroke-dashoffset-animation 0.5s forwards infinite linear;
-}
-
-// 选择框
-.@{css-prefix}-x-select-area {
-  background: rgba(181, 202, 242, 0.1);
-  width: 100%;
-  height: 100%;
-}
-.@{css-prefix}-x-select-corner {
-  position: absolute;
-  height: 5px;
-  width: 5px;
-  border: 2px solid #ffffff;
-  background: #42a642;
-}
-.@{css-prefix}-x-select-corner.br-pos {
-  right: 0;
-  bottom: 0;
-}
-.@{css-prefix}-x-select-corner.tr-pos {
-  right: 0;
-  top: 0;
-}
-.@{css-prefix}-x-select-corner.bl-pos {
-  left: 0;
-  bottom: 0;
-}
-
-// 样式复制
-@keyframes copy-style-stroked-dashoffset-animation-top {
-  to { stroke-dashoffset: 20; }
-}
-@keyframes copy-style-stroked-dashoffset-animation-left {
-  to { stroke-dashoffset: -20; }
-}
-@keyframes copy-style-stroked-dashoffset-animation-bottom {
-  to { stroke-dashoffset: -20; }
-}
-@keyframes copy-style-stroked-dashoffset-animation-right {
-  to { stroke-dashoffset: 20; }
-}
-.@{css-prefix}-copy-style {
-  width: 0;
-  height: 0;
-  position: absolute;
-}
-.@{css-prefix}-copy-style-mask {
-  border: 3px solid #42a642;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
-.@{css-prefix}-copy-style-svg {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-}
-.@{css-prefix}-copy-style-stroked-top {
-  display: block;
-  stroke: #ffffff;
-  stroke-width: 7;
-  stroke-dasharray: 10;
-  animation: copy-style-stroked-dashoffset-animation-top 0.5s forwards infinite linear;
-}
-.@{css-prefix}-copy-style-stroked-left {
-  display: block;
-  stroke: #ffffff;
-  stroke-width: 6;
-  stroke-dasharray: 10;
-  animation: copy-style-stroked-dashoffset-animation-left 0.5s forwards infinite linear;
-}
-.@{css-prefix}-copy-style-stroked-bottom {
-  display: block;
-  stroke: #ffffff;
-  stroke-width: 6;
-  stroke-dasharray: 10;
-  animation: copy-style-stroked-dashoffset-animation-bottom 0.5s forwards infinite linear;
-}
-.@{css-prefix}-copy-style-stroked-right {
-  display: block;
-  stroke: #ffffff;
-  stroke-width: 6;
-  stroke-dasharray: 10;
-  animation: copy-style-stroked-dashoffset-animation-right 0.5s forwards infinite linear;
 }
 
 // sheet 选项卡

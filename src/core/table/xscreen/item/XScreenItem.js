@@ -84,6 +84,8 @@ class XScreenItem {
     this.br.offset({ top: top + offsetTop });
   }
 
+  onAdd() {}
+
 }
 
 export {
