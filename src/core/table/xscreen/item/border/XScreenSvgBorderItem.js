@@ -1,4 +1,4 @@
-import { cssPrefix } from '../../../../const/Constant';
+import { cssPrefix } from '../../../../../const/Constant';
 import { XScreenBorderItem } from './XScreenBorderItem';
 
 const SVG = `

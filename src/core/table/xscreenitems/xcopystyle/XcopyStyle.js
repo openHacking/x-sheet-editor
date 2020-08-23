@@ -1,4 +1,4 @@
-import { XScreenSvgBorderItem } from '../../xscreen/item/XScreenSvgBorderItem';
+import { XScreenSvgBorderItem } from '../../xscreen/item/border/XScreenSvgBorderItem';
 import { XSelectItem } from '../xselect/XSelectItem';
 import { RectRange } from '../../tablebase/RectRange';
 import { Widget } from '../../../../lib/Widget';

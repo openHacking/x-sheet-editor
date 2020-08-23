@@ -1,5 +1,9 @@
 import { Widget } from '../../../lib/Widget';
-import { cssPrefix, Constant } from '../../../const/Constant';
+import { RANGE_OVER_GO } from '../xscreen/item/border/XScreenBorderItem';
+import {
+  cssPrefix,
+  Constant,
+} from '../../../const/Constant';
 import { EventBind } from '../../../utils/EventBind';
 import { XSelectItem } from '../xscreenitems/xselect/XSelectItem';
 
@@ -63,33 +67,57 @@ class YHeightLight extends Widget {
   getTop() {
     const { table } = this;
     const {
-      xScreen, rows,
+      xScreen, rows, fixed,
     } = table;
     const xSelect = xScreen.findType(XSelectItem);
     const scrollView = table.getScrollView();
     const {
-      selectRange,
+      selectRange, overGo,
     } = xSelect;
     if (!selectRange) {
       return 0;
     }
+    // 固定位置
+    const { fixTop } = fixed;
+    switch (overGo) {
+      case RANGE_OVER_GO.LTT:
+      case RANGE_OVER_GO.LT:
+      case RANGE_OVER_GO.LTL:
+      case RANGE_OVER_GO.BRL:
+      case RANGE_OVER_GO.ALL:
+        return rows.sectionSumHeight(selectRange.sri, fixTop);
+    }
+    // 滚动位置
     return rows.sectionSumHeight(scrollView.sri, selectRange.sri - 1);
   }
 
   getHeight() {
     const { table } = this;
     const {
-      xScreen, rows,
+      xScreen, rows, fixed,
     } = table;
     const xSelect = xScreen.findType(XSelectItem);
     const scrollView = table.getScrollView();
     const {
-      selectRange,
+      selectRange, overGo,
     } = xSelect;
+    // 固定宽度
+    const { fixTop } = fixed;
+    let fixHeight = 0;
+    switch (overGo) {
+      case RANGE_OVER_GO.LTT:
+      case RANGE_OVER_GO.LT:
+      case RANGE_OVER_GO.LTL:
+      case RANGE_OVER_GO.BRL:
+      case RANGE_OVER_GO.ALL:
+        fixHeight = rows.sectionSumHeight(selectRange.sri, fixTop);
+        break;
+    }
+    // 滚动宽度
     const range = selectRange.clone();
     range.sci = scrollView.sci;
     range.eci = scrollView.sci;
-    return rows.rectRangeSumHeight(scrollView.coincide(range));
+    return fixHeight + rows.rectRangeSumHeight(scrollView.coincide(range));
   }
 }
 

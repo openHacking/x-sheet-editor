@@ -1,5 +1,5 @@
 import { XScreenBorderItem } from './XScreenBorderItem';
-import { cssPrefix } from '../../../../const/Constant';
+import { cssPrefix } from '../../../../../const/Constant';
 
 class XScreenCssBorderItem extends XScreenBorderItem {
 

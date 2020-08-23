@@ -1,5 +1,5 @@
 /* global document */
-import { XScreenCssBorderItem } from '../../xscreen/item/XScreenCssBorderItem';
+import { XScreenCssBorderItem } from '../../xscreen/item/border/XScreenCssBorderItem';
 import { EventBind } from '../../../../utils/EventBind';
 import {
   Constant,

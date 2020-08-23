@@ -1,10 +1,10 @@
-import { XScreenItem } from './XScreenItem';
-import { RectRange } from '../../tablebase/RectRange';
-import { DISPLAY_AREA } from '../XScreen';
-import { XScreenLTPart } from '../part/XScreenLTPart';
-import { XScreenTPart } from '../part/XScreenTPart';
-import { XScreenLPart } from '../part/XScreenLPart';
-import { XScreenBRPart } from '../part/XScreenBRPart';
+import { XScreenItem } from '../XScreenItem';
+import { RectRange } from '../../../tablebase/RectRange';
+import { DISPLAY_AREA } from '../../XScreen';
+import { XScreenLTPart } from '../../part/XScreenLTPart';
+import { XScreenTPart } from '../../part/XScreenTPart';
+import { XScreenLPart } from '../../part/XScreenLPart';
+import { XScreenBRPart } from '../../part/XScreenBRPart';
 
 const RANGE_OVER_GO = {
   LT: Symbol('lt'),
