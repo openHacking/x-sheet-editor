@@ -1,5 +1,5 @@
 /* global document */
-import { CssBorderItem } from '../../xscreen/item/border/CssBorderItem';
+import { XScreenCssBorderItem } from '../../xscreen/item/border/XScreenCssBorderItem';
 import { EventBind } from '../../../../utils/EventBind';
 import {
   Constant,
@@ -15,7 +15,7 @@ const SELECT_LOCAL = {
   BR: Symbol('BR'),
 };
 
-class XSelectItem extends CssBorderItem {
+class XSelectItem extends XScreenCssBorderItem {
 
   constructor(table) {
     super({ table });
@@ -185,8 +185,10 @@ class XSelectItem extends CssBorderItem {
     const { selectRange } = this;
     this.selectBoundOut = this.measureBoundOut(selectRange);
     if (this.selectBoundOut) {
+      this.hide();
       return;
     }
+    this.show();
     this.targetOffset.width = this.measureWidth(selectRange);
     this.targetOffset.height = this.measureHeight(selectRange);
     this.targetOffset.top = this.measureTop(selectRange);
@@ -203,22 +205,22 @@ class XSelectItem extends CssBorderItem {
       return;
     }
     const { selectRange } = this;
+    const overGo = this.rangeOverGo(selectRange);
     const {
       top, bottom, left, right,
-    } = this.borderBoundOut(selectRange);
+    } = this.borderDisplay(selectRange, overGo);
     this.hideAllBorder();
-    const overGo = this.rangeOverGo(selectRange);
     this.overGo = overGo;
-    if (!top) {
+    if (top) {
       this.showTBorder(overGo);
     }
-    if (!bottom) {
+    if (bottom) {
       this.showBBorder(overGo);
     }
-    if (!left) {
+    if (left) {
       this.showLBorder(overGo);
     }
-    if (!right) {
+    if (right) {
       this.showRBorder(overGo);
     }
   }

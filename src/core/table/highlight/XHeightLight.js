@@ -78,7 +78,7 @@ class XHeightLight extends Widget {
       return 0;
     }
     // 固定位置
-    const { fixLeft } = fixed;
+    const { fxLeft } = fixed;
     switch (overGo) {
       case RANGE_OVER_GO.LT:
       case RANGE_OVER_GO.L:
@@ -86,7 +86,7 @@ class XHeightLight extends Widget {
       case RANGE_OVER_GO.LTL:
       case RANGE_OVER_GO.BRL:
       case RANGE_OVER_GO.ALL:
-        return cols.sectionSumWidth(selectRange.sci, fixLeft);
+        return cols.sectionSumWidth(selectRange.sci, fxLeft);
     }
     // 滚动位置
     return cols.sectionSumWidth(scrollView.sci, selectRange.sci - 1);
@@ -103,7 +103,7 @@ class XHeightLight extends Widget {
       selectRange, overGo,
     } = xSelect;
     // 固定宽度
-    const { fixLeft } = fixed;
+    const { fxLeft } = fixed;
     let fixWidth = 0;
     switch (overGo) {
       case RANGE_OVER_GO.LT:
@@ -112,7 +112,7 @@ class XHeightLight extends Widget {
       case RANGE_OVER_GO.LTL:
       case RANGE_OVER_GO.BRL:
       case RANGE_OVER_GO.ALL:
-        fixWidth = cols.sectionSumWidth(selectRange.sci, fixLeft);
+        fixWidth = cols.sectionSumWidth(selectRange.sci, fxLeft);
         break;
     }
     // 滚动宽度

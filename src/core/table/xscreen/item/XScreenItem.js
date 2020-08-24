@@ -20,6 +20,8 @@ class XScreenItem {
     this.xScreen = xScreen;
   }
 
+  onAdd() {}
+
   hide() {
     this.lt.hide();
     this.t.hide();
@@ -34,7 +36,19 @@ class XScreenItem {
     this.l.show();
   }
 
-  onAdd() {}
+  setHeight(height) {
+    this.lt.offset({ height });
+    this.t.offset({ height });
+    this.br.offset({ height });
+    this.l.offset({ height });
+  }
+
+  setWidth(width) {
+    this.lt.offset({ width });
+    this.t.offset({ width });
+    this.br.offset({ width });
+    this.l.offset({ width });
+  }
 
 }
 

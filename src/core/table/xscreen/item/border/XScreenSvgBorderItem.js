@@ -1,5 +1,5 @@
 import { cssPrefix } from '../../../../../const/Constant';
-import { BorderItem } from './BorderItem';
+import { XScreenBorderItem } from './XScreenBorderItem';
 
 const SVG = `
   <svg class="${cssPrefix}-copy-style-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
@@ -10,7 +10,7 @@ const SVG = `
   </svg>
 `;
 
-class SvgBorderItem extends BorderItem {
+class XScreenSvgBorderItem extends XScreenBorderItem {
 
   constructor({ table }) {
     super({ table }, `${cssPrefix}-part-border-svg`);
@@ -23,5 +23,5 @@ class SvgBorderItem extends BorderItem {
 }
 
 export {
-  SvgBorderItem,
+  XScreenSvgBorderItem,
 };

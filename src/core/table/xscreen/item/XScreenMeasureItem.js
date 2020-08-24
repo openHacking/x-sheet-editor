@@ -1,18 +1,18 @@
-import { OffsetItem } from './OffsetItem';
 import { RectRange } from '../../tablebase/RectRange';
+import { XScreenPositionItem } from './XScreenPositionItem';
 
-class MeasureFixed extends OffsetItem {
+class MeasureFixed extends XScreenPositionItem {
 
   measureFixedHeight(range) {
     const { table } = this;
     const {
       fixed, rows,
     } = table;
-    const { fixTop } = fixed;
-    if (range.sri >= fixTop) {
+    const { fxTop } = fixed;
+    if (range.sri >= fxTop) {
       return 0;
     }
-    return rows.sectionSumHeight(range.sri, fixTop);
+    return rows.sectionSumHeight(range.sri, fxTop);
   }
 
   measureFixedWidth(range) {
@@ -20,11 +20,11 @@ class MeasureFixed extends OffsetItem {
     const {
       fixed, cols,
     } = table;
-    const { fixLeft } = fixed;
-    if (range.sci >= fixLeft) {
+    const { fxLeft } = fixed;
+    if (range.sci >= fxLeft) {
       return 0;
     }
-    return cols.sectionSumWidth(range.sci, fixLeft);
+    return cols.sectionSumWidth(range.sci, fxLeft);
   }
 
   measureFixedLeft(range) {
@@ -32,8 +32,8 @@ class MeasureFixed extends OffsetItem {
     const {
       fixed, cols,
     } = table;
-    const { fixLeft } = fixed;
-    if (range.sci >= fixLeft) {
+    const { fxLeft } = fixed;
+    if (range.sci >= fxLeft) {
       return 0;
     }
     return cols.sectionSumWidth(0, range.sci - 1);
@@ -44,8 +44,8 @@ class MeasureFixed extends OffsetItem {
     const {
       fixed, rows,
     } = table;
-    const { fixTop } = fixed;
-    if (range.sri >= fixTop) {
+    const { fxTop } = fixed;
+    if (range.sri >= fxTop) {
       return 0;
     }
     return rows.sectionSumHeight(0, range.sri - 1);
@@ -59,7 +59,7 @@ class MeasureScrollView extends MeasureFixed {
     const { table } = this;
     const { rows } = table;
     const scrollView = table.getScrollView();
-    const targetView = scrollView.contains(range);
+    const targetView = scrollView.coincide(range);
     if (targetView.equals(RectRange.EMPTY)) {
       return 0;
     }
@@ -70,7 +70,7 @@ class MeasureScrollView extends MeasureFixed {
     const { table } = this;
     const { cols } = table;
     const scrollView = table.getScrollView();
-    const targetView = scrollView.contains(range);
+    const targetView = scrollView.coincide(range);
     if (targetView.equals(RectRange.EMPTY)) {
       return 0;
     }
@@ -81,7 +81,7 @@ class MeasureScrollView extends MeasureFixed {
     const { table } = this;
     const { cols } = table;
     const scrollView = table.getScrollView();
-    const targetView = scrollView.contains(range);
+    const targetView = scrollView.coincide(range);
     if (targetView.equals(RectRange.EMPTY)) {
       return 0;
     }
@@ -92,7 +92,7 @@ class MeasureScrollView extends MeasureFixed {
     const { table } = this;
     const { rows } = table;
     const scrollView = table.getScrollView();
-    const targetView = scrollView.contains(range);
+    const targetView = scrollView.coincide(range);
     if (targetView.equals(RectRange.EMPTY)) {
       return 0;
     }
@@ -101,7 +101,7 @@ class MeasureScrollView extends MeasureFixed {
 
 }
 
-class MeasureItem extends MeasureScrollView {
+class XScreenMeasureItem extends MeasureScrollView {
 
   measureHeight(range) {
     return this.measureFixedHeight(range) + this.measureScrollViewHeight(range);
@@ -126,13 +126,13 @@ class MeasureItem extends MeasureScrollView {
     const { table } = this;
     const { fixed } = table;
     const {
-      fixLeft, fixTop,
+      fxLeft, fxTop,
     } = fixed;
     const scrollView = table.getScrollView();
-    if (fixLeft > -1 && fixTop > -1) {
-      const lt = new RectRange(0, 0, fixTop, fixLeft);
-      const l = new RectRange(scrollView.sri, 0, scrollView.eri, fixLeft);
-      const t = new RectRange(0, scrollView.sci, fixTop, scrollView.eci);
+    if (fxLeft > -1 && fxTop > -1) {
+      const lt = new RectRange(0, 0, fxTop, fxLeft);
+      const l = new RectRange(scrollView.sri, 0, scrollView.eri, fxLeft);
+      const t = new RectRange(0, scrollView.sci, fxTop, scrollView.eci);
       if (!lt.coincide(range).equals(RectRange.EMPTY)) {
         return false;
       }
@@ -142,13 +142,13 @@ class MeasureItem extends MeasureScrollView {
       if (!t.coincide(range).equals(RectRange.EMPTY)) {
         return false;
       }
-    } if (fixLeft > -1) {
-      const l = new RectRange(scrollView.sri, 0, scrollView.eri, fixLeft);
+    } if (fxLeft > -1) {
+      const l = new RectRange(scrollView.sri, 0, scrollView.eri, fxLeft);
       if (!l.coincide(range).equals(RectRange.EMPTY)) {
         return false;
       }
-    } else if (fixTop > -1) {
-      const t = new RectRange(0, scrollView.sci, fixTop, scrollView.eci);
+    } else if (fxTop > -1) {
+      const t = new RectRange(0, scrollView.sci, fxTop, scrollView.eci);
       if (!t.coincide(range).equals(RectRange.EMPTY)) {
         return false;
       }
@@ -160,5 +160,5 @@ class MeasureItem extends MeasureScrollView {
 }
 
 export {
-  MeasureItem,
+  XScreenMeasureItem,
 };

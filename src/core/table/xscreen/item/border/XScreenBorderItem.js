@@ -4,7 +4,7 @@ import { XScreenLTPart } from '../../part/XScreenLTPart';
 import { XScreenTPart } from '../../part/XScreenTPart';
 import { XScreenLPart } from '../../part/XScreenLPart';
 import { XScreenBRPart } from '../../part/XScreenBRPart';
-import { MeasureItem } from '../MeasureItem';
+import { XScreenMeasureItem } from '../XScreenMeasureItem';
 
 const RANGE_OVER_GO = {
   LT: Symbol('lt'),
@@ -18,7 +18,7 @@ const RANGE_OVER_GO = {
   ALL: Symbol('all'),
 };
 
-class BorderItem extends MeasureItem {
+class XScreenBorderItem extends XScreenMeasureItem {
 
   constructor({ table }, className = '') {
     super({ table });
@@ -32,40 +32,83 @@ class BorderItem extends MeasureItem {
     this.br.child(this.bbr);
   }
 
-  borderBoundOut(range) {
+  borderDisplay(range, overGo) {
     const { table } = this;
-    const { fixed } = table;
-    const {
-      fixLeft, fixTop,
-    } = fixed;
     const scrollView = table.getScrollView();
-    const edge = {
-      bottom: false,
-      left: false,
-      top: false,
-      right: false,
+    const display = {
+      bottom: false, left: false, top: false, right: false,
     };
-    if (fixLeft > -1 && fixTop > -1) {
-
-    } else if (fixLeft > -1) {
-
-    } else if (fixTop > -1) {
-
+    switch (overGo) {
+      case RANGE_OVER_GO.LT:
+        display.bottom = true;
+        display.top = true;
+        display.left = true;
+        display.right = true;
+        break;
+      case RANGE_OVER_GO.T:
+        display.bottom = true;
+        display.top = true;
+        display.left = range.sci >= scrollView.sci && range.sci <= scrollView.eci;
+        display.right = range.eci <= scrollView.eci && range.eci >= scrollView.sci;
+        break;
+      case RANGE_OVER_GO.BR:
+        display.bottom = range.eri <= scrollView.eri && range.eri >= scrollView.sri;
+        display.top = range.sri >= scrollView.sri && range.sri <= scrollView.eri;
+        display.left = range.sci >= scrollView.sci && range.sci <= scrollView.eci;
+        display.right = range.eci <= scrollView.eci && range.eci >= scrollView.sci;
+        break;
+      case RANGE_OVER_GO.L:
+        display.bottom = range.eri <= scrollView.eri && range.eri >= scrollView.sri;
+        display.top = range.sri >= scrollView.sri && range.sri <= scrollView.eri;
+        display.left = true;
+        display.right = true;
+        break;
+      case RANGE_OVER_GO.LTT:
+        display.bottom = true;
+        display.top = true;
+        display.left = true;
+        display.right = range.eci <= scrollView.eci && range.eci >= scrollView.sci;
+        break;
+      case RANGE_OVER_GO.LTL:
+        display.bottom = range.eri <= scrollView.eri && range.eri >= scrollView.sri;
+        display.top = true;
+        display.left = true;
+        display.right = true;
+        break;
+      case RANGE_OVER_GO.BRT:
+        display.bottom = range.eri <= scrollView.eri && range.eri >= scrollView.sri;
+        display.top = true;
+        display.left = range.sci >= scrollView.sci && range.sci <= scrollView.eci;
+        display.right = range.eci <= scrollView.eci && range.eci >= scrollView.sci;
+        break;
+      case RANGE_OVER_GO.BRL:
+        display.bottom = range.eri <= scrollView.eri && range.eri >= scrollView.sri;
+        display.top = range.sri >= scrollView.sri && range.sri <= scrollView.eri;
+        display.left = true;
+        display.right = range.eci <= scrollView.eci && range.eci >= scrollView.sci;
+        break;
+      case RANGE_OVER_GO.ALL:
+        display.bottom = range.eri <= scrollView.eri && range.eri >= scrollView.sri;
+        display.top = true;
+        display.left = true;
+        display.right = range.eci <= scrollView.eci && range.eci >= scrollView.sci;
+        break;
     }
+    return display;
   }
 
   rangeOverGo(range) {
     const { table } = this;
     const { cols, rows } = table;
     const { fixed } = table;
-    const { fixTop, fixLeft } = fixed;
+    const { fxTop, fxLeft } = fixed;
     const rowsLen = rows.len - 1;
     const colsLen = cols.len - 1;
-    if (fixTop > -1 && fixLeft > -1) {
-      const lt = new RectRange(0, 0, fixTop, fixLeft);
-      const t = new RectRange(0, fixLeft, fixTop, colsLen);
-      const br = new RectRange(fixTop, fixLeft, rowsLen, colsLen);
-      const l = new RectRange(fixTop, 0, rowsLen, fixLeft);
+    if (fxTop > -1 && fxLeft > -1) {
+      const lt = new RectRange(0, 0, fxTop, fxLeft);
+      const t = new RectRange(0, fxLeft, fxTop, colsLen);
+      const br = new RectRange(fxTop, fxLeft, rowsLen, colsLen);
+      const l = new RectRange(fxTop, 0, rowsLen, fxLeft);
       if (lt.contains(range)) {
         return RANGE_OVER_GO.LT;
       }
@@ -78,10 +121,10 @@ class BorderItem extends MeasureItem {
       if (l.contains(range)) {
         return RANGE_OVER_GO.L;
       }
-      const ltt = new RectRange(0, 0, fixTop, colsLen);
-      const ltl = new RectRange(0, 0, rowsLen, fixLeft);
-      const brt = new RectRange(0, fixLeft, rowsLen, colsLen);
-      const brl = new RectRange(fixTop, 0, rowsLen, colsLen);
+      const ltt = new RectRange(0, 0, fxTop, colsLen);
+      const ltl = new RectRange(0, 0, rowsLen, fxLeft);
+      const brt = new RectRange(0, fxLeft, rowsLen, colsLen);
+      const brl = new RectRange(fxTop, 0, rowsLen, colsLen);
       if (ltt.contains(range)) {
         return RANGE_OVER_GO.LTT;
       }
@@ -95,9 +138,9 @@ class BorderItem extends MeasureItem {
         return RANGE_OVER_GO.BRL;
       }
       return RANGE_OVER_GO.ALL;
-    } if (fixTop > -1) {
-      const t = new RectRange(0, 0, fixTop, colsLen);
-      const br = new RectRange(fixTop, 0, rowsLen, colsLen);
+    } if (fxTop > -1) {
+      const t = new RectRange(0, 0, fxTop, colsLen);
+      const br = new RectRange(fxTop, 0, rowsLen, colsLen);
       if (t.contains(range)) {
         return RANGE_OVER_GO.T;
       }
@@ -105,9 +148,9 @@ class BorderItem extends MeasureItem {
         return RANGE_OVER_GO.BR;
       }
       return RANGE_OVER_GO.ALL;
-    } if (fixLeft > -1) {
-      const br = new RectRange(0, fixLeft, rowsLen, colsLen);
-      const l = new RectRange(0, 0, rowsLen, fixLeft);
+    } if (fxLeft > -1) {
+      const br = new RectRange(0, fxLeft, rowsLen, colsLen);
+      const l = new RectRange(0, 0, rowsLen, fxLeft);
       if (br.contains(range)) {
         return RANGE_OVER_GO.BR;
       }
@@ -292,5 +335,5 @@ class BorderItem extends MeasureItem {
 }
 
 export {
-  BorderItem, RANGE_OVER_GO,
+  XScreenBorderItem, RANGE_OVER_GO,
 };

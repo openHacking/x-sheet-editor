@@ -1,16 +1,16 @@
-import { SvgBorderItem } from '../../xscreen/item/border/SvgBorderItem';
+import { XScreenSvgBorderItem } from '../../xscreen/item/border/XScreenSvgBorderItem';
 import { XSelectItem } from '../xselect/XSelectItem';
-import { RectRange } from '../../tablebase/RectRange';
 import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { EventBind } from '../../../../utils/EventBind';
 
-class XcopyStyle extends SvgBorderItem {
+class XcopyStyle extends XScreenSvgBorderItem {
 
   constructor(table) {
     super({ table });
+    this.targetOffset = { top: 0, left: 0, width: 0, height: 0 };
     this.selectRange = null;
-    this.targetRange = null;
+    this.overGo = null;
     this.ltElem = new Widget(`${cssPrefix}-x-copy-style-area`);
     this.brElem = new Widget(`${cssPrefix}-x-copy-style-area`);
     this.lElem = new Widget(`${cssPrefix}-x-copy-style-area`);
@@ -29,9 +29,49 @@ class XcopyStyle extends SvgBorderItem {
   bind() {
     const { table } = this;
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      this.offsetHandle();
-      this.borderHandle();
+      this.selectOffsetHandle();
+      this.selectBorderHandle();
     });
+  }
+
+  selectOffsetHandle() {
+    const { selectRange } = this;
+    this.selectBoundOut = this.measureBoundOut(selectRange);
+    if (this.selectBoundOut) {
+      this.hide();
+      return;
+    }
+    this.show();
+    this.targetOffset.width = this.measureWidth(selectRange);
+    this.targetOffset.height = this.measureHeight(selectRange);
+    this.targetOffset.top = this.measureTop(selectRange);
+    this.targetOffset.left = this.measureLeft(selectRange);
+    this.setTop(this.targetOffset.top);
+    this.setLeft(this.targetOffset.left);
+    this.setHeight(this.targetOffset.height);
+    this.setWidth(this.targetOffset.width);
+  }
+
+  selectBorderHandle() {
+    const {
+      overGo, selectRange,
+    } = this;
+    const {
+      top, bottom, left, right,
+    } = this.borderDisplay(selectRange, overGo);
+    this.hideAllBorder();
+    if (top) {
+      this.showTBorder(overGo);
+    }
+    if (bottom) {
+      this.showBBorder(overGo);
+    }
+    if (left) {
+      this.showLBorder(overGo);
+    }
+    if (right) {
+      this.showRBorder(overGo);
+    }
   }
 
   hideCopyStyle() {
@@ -40,55 +80,15 @@ class XcopyStyle extends SvgBorderItem {
 
   showCopyStyle() {
     this.show();
-    this.offsetHandle();
-    this.borderHandle();
-  }
-
-  offsetHandle() {
     const { xScreen } = this;
     const xSelect = xScreen.findType(XSelectItem);
     const {
-      targetRange, selectRange,
+      selectRange, overGo,
     } = xSelect;
     this.selectRange = selectRange;
-    this.targetRange = targetRange;
-    if (targetRange === RectRange.EMPTY) {
-      this.hide();
-      return;
-    }
-    this.show();
-    const { targetOffset } = xSelect;
-    this.setHeight(targetOffset.height);
-    this.setWidth(targetOffset.width);
-    this.setTop(targetOffset.top);
-    this.setLeft(targetOffset.left);
-  }
-
-  borderHandle() {
-    const { xScreen } = this;
-    const xSelect = xScreen.findType(XSelectItem);
-    const { targetRange } = xSelect;
-    if (targetRange.equals(RectRange.EMPTY)) {
-      return;
-    }
-    const { selectRange } = xSelect;
-    const {
-      top, bottom, left, right,
-    } = this.rectRangeBoundOut(selectRange);
-    this.hideAllBorder();
-    const overGo = this.rangeOverGo(selectRange);
-    if (!top) {
-      this.showTBorder(overGo);
-    }
-    if (!bottom) {
-      this.showBBorder(overGo);
-    }
-    if (!left) {
-      this.showLBorder(overGo);
-    }
-    if (!right) {
-      this.showRBorder(overGo);
-    }
+    this.overGo = overGo;
+    this.selectOffsetHandle();
+    this.selectBorderHandle();
   }
 
 }

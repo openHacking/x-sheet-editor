@@ -78,7 +78,7 @@ class YHeightLight extends Widget {
       return 0;
     }
     // 固定位置
-    const { fixTop } = fixed;
+    const { fxTop } = fixed;
     switch (overGo) {
       case RANGE_OVER_GO.LT:
       case RANGE_OVER_GO.T:
@@ -86,7 +86,7 @@ class YHeightLight extends Widget {
       case RANGE_OVER_GO.LTL:
       case RANGE_OVER_GO.BRL:
       case RANGE_OVER_GO.ALL:
-        return rows.sectionSumHeight(selectRange.sri, fixTop);
+        return rows.sectionSumHeight(selectRange.sri, fxTop);
     }
     // 滚动位置
     return rows.sectionSumHeight(scrollView.sri, selectRange.sri - 1);
@@ -103,7 +103,7 @@ class YHeightLight extends Widget {
       selectRange, overGo,
     } = xSelect;
     // 固定宽度
-    const { fixTop } = fixed;
+    const { fxTop } = fixed;
     let fixHeight = 0;
     switch (overGo) {
       case RANGE_OVER_GO.LT:
@@ -112,7 +112,7 @@ class YHeightLight extends Widget {
       case RANGE_OVER_GO.LTL:
       case RANGE_OVER_GO.BRL:
       case RANGE_OVER_GO.ALL:
-        fixHeight = rows.sectionSumHeight(selectRange.sri, fixTop);
+        fixHeight = rows.sectionSumHeight(selectRange.sri, fxTop);
         break;
     }
     // 滚动宽度
