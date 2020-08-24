@@ -1,5 +1,5 @@
 /* global document */
-import { XScreenCssBorderItem } from '../../xscreen/item/border/XScreenCssBorderItem';
+import { CssBorderItem } from '../../xscreen/item/border/CssBorderItem';
 import { EventBind } from '../../../../utils/EventBind';
 import {
   Constant,
@@ -16,7 +16,7 @@ const SELECT_LOCAL = {
   BR: Symbol('BR'),
 };
 
-class XSelectItem extends XScreenCssBorderItem {
+class XSelectItem extends CssBorderItem {
 
   constructor(table) {
     super({ table });
@@ -117,22 +117,93 @@ class XSelectItem extends XScreenCssBorderItem {
     });
   }
 
+  moveSelectRange(x, y) {
+    const { table } = this;
+    const {
+      rows, cols,
+    } = table;
+    const { downRange, selectLocal } = this;
+    const merges = table.getTableMerges();
+    const viewRange = table.getScrollView();
+    let { ri, ci } = table.getRiCiByXy(x, y);
+    if (ri === -1) {
+      ri = viewRange.sri;
+    }
+    if (ci === -1) {
+      ci = viewRange.sci;
+    }
+    if (selectLocal === SELECT_LOCAL.LT) {
+      const rect = downRange.union(new RectRange(0, 0, rows.len - 1, cols.len - 1));
+      this.moveRange = downRange.union(rect);
+      this.selectRange = this.moveRange;
+      this.selectLocal = SELECT_LOCAL.LT;
+      return;
+    }
+    if (selectLocal === SELECT_LOCAL.L) {
+      const rect = downRange.union(new RectRange(ri, 0, ri, 0));
+      this.moveRange = downRange.union(rect);
+      this.selectRange = this.moveRange;
+      this.selectLocal = SELECT_LOCAL.L;
+      return;
+    }
+    if (selectLocal === SELECT_LOCAL.T) {
+      const rect = downRange.union(new RectRange(0, ci, 0, ci));
+      this.moveRange = downRange.union(rect);
+      this.selectRange = this.moveRange;
+      this.selectLocal = SELECT_LOCAL.T;
+      return;
+    }
+    const rect = downRange.union(new RectRange(ri, ci, ri, ci));
+    this.moveRange = merges.union(rect);
+    this.selectRange = this.moveRange;
+    this.selectLocal = SELECT_LOCAL.BR;
+  }
+
+  downSelectRange(x, y) {
+    const { table } = this;
+    const { rows, cols } = table;
+    const merges = table.getTableMerges();
+    const { ri, ci } = table.getRiCiByXy(x, y);
+    if (ri === -1 && ci === -1) {
+      this.downRange = new RectRange(0, 0, rows.len - 1, cols.len - 1);
+      this.selectRange = this.downRange;
+      this.selectLocal = SELECT_LOCAL.LT;
+      return;
+    }
+    if (ri === -1) {
+      this.downRange = new RectRange(0, ci, rows.len - 1, ci);
+      this.selectRange = this.downRange;
+      this.selectLocal = SELECT_LOCAL.T;
+      return;
+    }
+    if (ci === -1) {
+      this.downRange = new RectRange(ri, 0, ri, cols.len - 1);
+      this.selectRange = this.downRange;
+      this.selectLocal = SELECT_LOCAL.L;
+      return;
+    }
+    this.downRange = merges.getFirstIncludes(ri, ci)
+      || new RectRange(ri, ci, ri, ci);
+    this.selectRange = this.downRange;
+    this.selectLocal = SELECT_LOCAL.BR;
+  }
+
   targetOffsetHandle() {
     const { targetRange } = this;
     if (targetRange.equals(RectRange.EMPTY)) {
       return;
     }
     const { table } = this;
-    const { cols, rows } = table;
     const scrollView = table.getScrollView();
+    const { cols, rows } = table;
+    this.targetOffset.height = targetRange.h;
+    this.targetOffset.width = targetRange.w;
     this.targetOffset.left = cols.sectionSumWidth(scrollView.sci, targetRange.sci - 1);
     this.targetOffset.top = rows.sectionSumHeight(scrollView.sri, targetRange.sri - 1);
-    this.targetOffset.width = targetRange.w;
-    this.targetOffset.height = targetRange.h;
-    this.setWidth(this.targetOffset.width);
-    this.setHeight(this.targetOffset.height);
     this.setTop(this.targetOffset.top);
     this.setLeft(this.targetOffset.left);
+    this.setHeight(this.targetOffset.height);
+    this.setWidth(this.targetOffset.width);
   }
 
   targetBorderHandle() {
@@ -224,77 +295,6 @@ class XSelectItem extends XScreenCssBorderItem {
         this.ltCorner.addClass('tr-pos');
         break;
     }
-  }
-
-  downSelectRange(x, y) {
-    const { table } = this;
-    const { rows, cols } = table;
-    const merges = table.getTableMerges();
-    const { ri, ci } = table.getRiCiByXy(x, y);
-    if (ri === -1 && ci === -1) {
-      this.downRange = new RectRange(0, 0, rows.len - 1, cols.len - 1);
-      this.selectRange = this.downRange;
-      this.selectLocal = SELECT_LOCAL.LT;
-      return;
-    }
-    if (ri === -1) {
-      this.downRange = new RectRange(0, ci, rows.len - 1, ci);
-      this.selectRange = this.downRange;
-      this.selectLocal = SELECT_LOCAL.T;
-      return;
-    }
-    if (ci === -1) {
-      this.downRange = new RectRange(ri, 0, ri, cols.len - 1);
-      this.selectRange = this.downRange;
-      this.selectLocal = SELECT_LOCAL.L;
-      return;
-    }
-    this.downRange = merges.getFirstIncludes(ri, ci)
-      || new RectRange(ri, ci, ri, ci);
-    this.selectRange = this.downRange;
-    this.selectLocal = SELECT_LOCAL.BR;
-  }
-
-  moveSelectRange(x, y) {
-    const { table } = this;
-    const {
-      rows, cols,
-    } = table;
-    const { downRange, selectLocal } = this;
-    const merges = table.getTableMerges();
-    const viewRange = table.getScrollView();
-    let { ri, ci } = table.getRiCiByXy(x, y);
-    if (ri === -1) {
-      ri = viewRange.sri;
-    }
-    if (ci === -1) {
-      ci = viewRange.sci;
-    }
-    if (selectLocal === SELECT_LOCAL.LT) {
-      const rect = downRange.union(new RectRange(0, 0, rows.len - 1, cols.len - 1));
-      this.moveRange = downRange.union(rect);
-      this.selectRange = this.moveRange;
-      this.selectLocal = SELECT_LOCAL.LT;
-      return;
-    }
-    if (selectLocal === SELECT_LOCAL.L) {
-      const rect = downRange.union(new RectRange(ri, 0, ri, 0));
-      this.moveRange = downRange.union(rect);
-      this.selectRange = this.moveRange;
-      this.selectLocal = SELECT_LOCAL.L;
-      return;
-    }
-    if (selectLocal === SELECT_LOCAL.T) {
-      const rect = downRange.union(new RectRange(0, ci, 0, ci));
-      this.moveRange = downRange.union(rect);
-      this.selectRange = this.moveRange;
-      this.selectLocal = SELECT_LOCAL.T;
-      return;
-    }
-    const rect = downRange.union(new RectRange(ri, ci, ri, ci));
-    this.moveRange = merges.union(rect);
-    this.selectRange = this.moveRange;
-    this.selectLocal = SELECT_LOCAL.BR;
   }
 
 }

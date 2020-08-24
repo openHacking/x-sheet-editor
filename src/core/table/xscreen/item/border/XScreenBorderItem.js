@@ -1,10 +1,10 @@
-import { XScreenItem } from '../XScreenItem';
 import { RectRange } from '../../../tablebase/RectRange';
 import { DISPLAY_AREA } from '../../XScreen';
 import { XScreenLTPart } from '../../part/XScreenLTPart';
 import { XScreenTPart } from '../../part/XScreenTPart';
 import { XScreenLPart } from '../../part/XScreenLPart';
 import { XScreenBRPart } from '../../part/XScreenBRPart';
+import { XScreenMeasureItem } from '../XScreenMeasureItem';
 
 const RANGE_OVER_GO = {
   LT: Symbol('lt'),
@@ -18,7 +18,7 @@ const RANGE_OVER_GO = {
   ALL: Symbol('all'),
 };
 
-class XScreenBorderItem extends XScreenItem {
+class XScreenBorderItem extends XScreenMeasureItem {
 
   constructor({ table }, className = '') {
     super({ table });

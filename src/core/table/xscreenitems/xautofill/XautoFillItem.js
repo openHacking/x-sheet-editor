@@ -1,5 +1,5 @@
 /* global document */
-import { XScreenCssBorderItem } from '../../xscreen/item/border/XScreenCssBorderItem';
+import { CssBorderItem } from '../../xscreen/item/border/CssBorderItem';
 import {
   SELECT_LOCAL,
   XSelectItem,
@@ -10,7 +10,7 @@ import { RectRange } from '../../tablebase/RectRange';
 import { Utils } from '../../../../utils/Utils';
 import { EventBind } from '../../../../utils/EventBind';
 
-class XautoFillItem extends XScreenCssBorderItem {
+class XautoFillItem extends CssBorderItem {
 
   constructor(table, options = {}) {
     super({ table });

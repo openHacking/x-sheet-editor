@@ -1,11 +1,11 @@
-import { XScreenSvgBorderItem } from '../../xscreen/item/border/XScreenSvgBorderItem';
+import { SvgBorderItem } from '../../xscreen/item/border/SvgBorderItem';
 import { XSelectItem } from '../xselect/XSelectItem';
 import { RectRange } from '../../tablebase/RectRange';
 import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { EventBind } from '../../../../utils/EventBind';
 
-class XcopyStyle extends XScreenSvgBorderItem {
+class XcopyStyle extends SvgBorderItem {
 
   constructor(table) {
     super({ table });

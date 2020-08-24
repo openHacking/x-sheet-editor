@@ -10,7 +10,7 @@ const SVG = `
   </svg>
 `;
 
-class XScreenSvgBorderItem extends XScreenBorderItem {
+class SvgBorderItem extends XScreenBorderItem {
 
   constructor({ table }) {
     super({ table }, `${cssPrefix}-part-border-svg`);
@@ -23,5 +23,5 @@ class XScreenSvgBorderItem extends XScreenBorderItem {
 }
 
 export {
-  XScreenSvgBorderItem,
+  SvgBorderItem,
 };
