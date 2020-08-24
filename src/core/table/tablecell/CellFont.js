@@ -55,7 +55,7 @@ class CellFont {
 
   toCssStyle() {
     const {
-      align, size, color, bold, italic, name, padding, verticalAlign,
+      align, size, color, bold, italic, name, verticalAlign,
     } = this;
     let justifyContent = 'left';
     let alignItems = 'center';

@@ -1029,12 +1029,14 @@ class XTableDimensions extends Widget {
    * 设置缩放比
    */
   setScale(val) {
-    const { xTableStyle } = this;
+    const {
+      xTableStyle, scale, xScreen, xHeightLight, yHeightLight,
+    } = this;
     this.reset();
-    this.scale.setValue(val);
-    this.screen.setDivideLayer();
-    this.xHeightLight.setSize();
-    this.yHeightLight.setSize();
+    scale.setValue(val);
+    xScreen.sizeHandle();
+    xHeightLight.offsetHandle();
+    yHeightLight.offsetHandle();
     xTableStyle.setScale(val);
     this.trigger(Constant.TABLE_EVENT_TYPE.SCALE_CHANGE);
   }
