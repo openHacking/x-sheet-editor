@@ -28,6 +28,14 @@ class XcopyStyle extends XScreenSvgBorderItem {
 
   bind() {
     const { table } = this;
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+      this.selectOffsetHandle();
+      this.selectBorderHandle();
+    });
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+      this.selectOffsetHandle();
+      this.selectBorderHandle();
+    });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       this.selectOffsetHandle();
       this.selectBorderHandle();

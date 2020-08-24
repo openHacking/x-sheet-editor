@@ -1,4 +1,5 @@
 import { BaseFont } from '../../../canvas/font/BaseFont';
+import { XDraw } from '../../../canvas/XDraw';
 
 /**
  *  CellFont
@@ -85,7 +86,7 @@ class CellFont {
     }
     let css = `
       justify-content:${justifyContent};
-      font-size: ${size}px;color: ${color};font-weight: ${bold ? 'bold' : 'initial'};
+      font-size: ${XDraw.cvCssPx(size)}px;color: ${color};font-weight: ${bold ? 'bold' : 'initial'};
       font-style: ${italic ? 'italic' : 'initial'};
       font-family: ${name};
       align-items: ${alignItems};

@@ -39,6 +39,12 @@ class YHeightLight extends Widget {
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, () => {
       this.offsetHandle();
     });
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+      this.offsetHandle();
+    });
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+      this.offsetHandle();
+    });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       this.offsetHandle();
     });
