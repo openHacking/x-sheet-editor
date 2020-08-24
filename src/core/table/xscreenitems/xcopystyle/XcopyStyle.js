@@ -2,7 +2,8 @@ import { XScreenSvgBorderItem } from '../../xscreen/item/border/XScreenSvgBorder
 import { XSelectItem } from '../xselect/XSelectItem';
 import { RectRange } from '../../tablebase/RectRange';
 import { Widget } from '../../../../lib/Widget';
-import { cssPrefix } from '../../../../const/Constant';
+import { Constant, cssPrefix } from '../../../../const/Constant';
+import { EventBind } from '../../../../utils/EventBind';
 
 class XcopyStyle extends XScreenSvgBorderItem {
 
@@ -10,10 +11,10 @@ class XcopyStyle extends XScreenSvgBorderItem {
     super({ table });
     this.selectRange = null;
     this.targetRange = null;
-    this.ltElem = new Widget(`${cssPrefix}-x-select-area`);
-    this.brElem = new Widget(`${cssPrefix}-x-select-area`);
-    this.lElem = new Widget(`${cssPrefix}-x-select-area`);
-    this.tElem = new Widget(`${cssPrefix}-x-select-area`);
+    this.ltElem = new Widget(`${cssPrefix}-x-copy-style-area`);
+    this.brElem = new Widget(`${cssPrefix}-x-copy-style-area`);
+    this.lElem = new Widget(`${cssPrefix}-x-copy-style-area`);
+    this.tElem = new Widget(`${cssPrefix}-x-copy-style-area`);
     this.blt.child(this.ltElem);
     this.bl.child(this.lElem);
     this.bt.child(this.tElem);
@@ -21,7 +22,16 @@ class XcopyStyle extends XScreenSvgBorderItem {
   }
 
   onAdd() {
-    this.hide();
+    this.hideCopyStyle();
+    this.bind();
+  }
+
+  bind() {
+    const { table } = this;
+    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+      this.offsetHandle();
+      this.borderHandle();
+    });
   }
 
   hideCopyStyle() {
@@ -29,6 +39,7 @@ class XcopyStyle extends XScreenSvgBorderItem {
   }
 
   showCopyStyle() {
+    this.show();
     this.offsetHandle();
     this.borderHandle();
   }
@@ -42,8 +53,10 @@ class XcopyStyle extends XScreenSvgBorderItem {
     this.selectRange = selectRange;
     this.targetRange = targetRange;
     if (targetRange === RectRange.EMPTY) {
+      this.hide();
       return;
     }
+    this.show();
     const { targetOffset } = xSelect;
     this.setHeight(targetOffset.height);
     this.setWidth(targetOffset.width);

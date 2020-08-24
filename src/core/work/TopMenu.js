@@ -22,9 +22,6 @@ import { Fixed } from './tools/Fixed';
 import { Filter } from './tools/Filter';
 import { Functions } from './tools/Functions';
 import { EventBind } from '../../utils/EventBind';
-import {
-  SCREEN_SELECT_EVENT,
-} from '../table/screenwiget/selector/ScreenSelector';
 import { ElPopUp } from '../../component/elpopup/ElPopUp';
 import { LINE_TYPE } from '../../canvas/Line';
 import { Icon } from './tools/Icon';
@@ -692,7 +689,7 @@ class TopMenu extends Widget {
         xCopyStyle.showCopyStyle();
         this.paintFormat.active(true);
         this.paintFormat.addSheet(sheet);
-        table.on(SCREEN_SELECT_EVENT.SELECT_OVER, () => {
+        table.on(Constant.TABLE_EVENT_TYPE.SELECT_OVER, () => {
           xCopyStyle.hideCopyStyle();
           // 清除复制
           this.paintFormat.active(false);
