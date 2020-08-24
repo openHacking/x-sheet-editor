@@ -3,7 +3,6 @@ import { cssPrefix, Constant } from '../../const/Constant';
 import { h } from '../../lib/Element';
 import { EventBind } from '../../utils/EventBind';
 import { Utils } from '../../utils/Utils';
-import { RectRange } from './tablebase/RectRange';
 import { XSelectItem } from './xscreenitems/xselect/XSelectItem';
 
 class XTableEdit extends Widget {
@@ -103,9 +102,9 @@ class XTableEdit extends Widget {
     const { xScreen } = table;
     const xSelect = xScreen.findType(XSelectItem);
     const {
-      targetRange, targetOffset,
+      selectBoundOut, targetOffset,
     } = xSelect;
-    if (targetRange.equals(RectRange.EMPTY)) {
+    if (selectBoundOut) {
       return;
     }
     this.offset({
