@@ -16,20 +16,6 @@ class OffsetItem extends XScreenItem {
     this.setHeight(rectRange.h);
   }
 
-  setWidth(width) {
-    this.lt.offset({ width });
-    this.t.offset({ width });
-    this.br.offset({ width });
-    this.l.offset({ width });
-  }
-
-  setHeight(height) {
-    this.lt.offset({ height });
-    this.t.offset({ height });
-    this.br.offset({ height });
-    this.l.offset({ height });
-  }
-
   setLeft(left) {
     const { table } = this;
     const { fixed } = table;
@@ -50,6 +36,20 @@ class OffsetItem extends XScreenItem {
     this.l.offset({ top });
     this.t.offset({ top: top - offsetTop });
     this.br.offset({ top: top - offsetTop });
+  }
+
+  setHeight(height) {
+    this.lt.offset({ height });
+    this.t.offset({ height });
+    this.br.offset({ height });
+    this.l.offset({ height });
+  }
+
+  setWidth(width) {
+    this.lt.offset({ width });
+    this.t.offset({ width });
+    this.br.offset({ width });
+    this.l.offset({ width });
   }
 
 }

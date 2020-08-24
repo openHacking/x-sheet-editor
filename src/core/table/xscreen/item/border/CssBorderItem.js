@@ -1,7 +1,7 @@
-import { XScreenBorderItem } from './XScreenBorderItem';
+import { BorderItem } from './BorderItem';
 import { cssPrefix } from '../../../../../const/Constant';
 
-class CssBorderItem extends XScreenBorderItem {
+class CssBorderItem extends BorderItem {
 
   constructor({ table }) {
     super({ table }, `${cssPrefix}-part-border-css`);

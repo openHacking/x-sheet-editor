@@ -6,7 +6,6 @@ import {
   cssPrefix,
 } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
-import { Utils } from '../../../../utils/Utils';
 import { Widget } from '../../../../lib/Widget';
 
 const SELECT_LOCAL = {
@@ -23,7 +22,7 @@ class XSelectItem extends CssBorderItem {
     this.targetOffset = { top: 0, left: 0, width: 0, height: 0 };
     this.selectLocal = SELECT_LOCAL.BR;
     this.selectRange = null;
-    this.targetRange = null;
+    this.selectBoundOut = false;
     this.downRange = null;
     this.moveRange = null;
     this.overGo = null;
@@ -55,16 +54,14 @@ class XSelectItem extends CssBorderItem {
     const { table } = this;
     const { mousePointer, focus } = table;
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      this.targetRangeHandle();
-      this.targetOffsetHandle();
-      this.targetBorderHandle();
-      this.targetCornerHandle();
+      this.selectOffsetHandle();
+      this.selectBorderHandle();
+      this.selectCornerHandle();
     });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.CHANGE_WIDTH, () => {
-      this.targetRangeHandle();
-      this.targetOffsetHandle();
-      this.targetBorderHandle();
-      this.targetCornerHandle();
+      this.selectOffsetHandle();
+      this.selectBorderHandle();
+      this.selectCornerHandle();
     });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
       if (e1.button !== 0) return;
@@ -73,10 +70,9 @@ class XSelectItem extends CssBorderItem {
       if (el !== table) return;
       const { x, y } = table.computeEventXy(e1);
       this.downSelectRange(x, y);
-      this.targetRangeHandle();
-      this.targetOffsetHandle();
-      this.targetBorderHandle();
-      this.targetCornerHandle();
+      this.selectOffsetHandle();
+      this.selectBorderHandle();
+      this.selectCornerHandle();
       const { selectLocal } = this;
       let key = Constant.MOUSE_POINTER_TYPE.SELECT_CELL;
       switch (selectLocal) {
@@ -93,10 +89,9 @@ class XSelectItem extends CssBorderItem {
       EventBind.mouseMoveUp(document, (e2) => {
         const { x, y } = table.computeEventXy(e2);
         this.moveSelectRange(x, y);
-        this.targetRangeHandle();
-        this.targetOffsetHandle();
-        this.targetBorderHandle();
-        this.targetCornerHandle();
+        this.selectOffsetHandle();
+        this.selectBorderHandle();
+        this.selectCornerHandle();
         table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
       }, () => {
         table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_OVER);
@@ -104,16 +99,14 @@ class XSelectItem extends CssBorderItem {
       });
     });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCALE_CHANGE, () => {
-      this.targetRangeHandle();
-      this.targetOffsetHandle();
-      this.targetBorderHandle();
-      this.targetCornerHandle();
+      this.selectOffsetHandle();
+      this.selectBorderHandle();
+      this.selectCornerHandle();
     });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      this.targetRangeHandle();
-      this.targetOffsetHandle();
-      this.targetBorderHandle();
-      this.targetCornerHandle();
+      this.selectOffsetHandle();
+      this.selectBorderHandle();
+      this.selectCornerHandle();
     });
   }
 
@@ -188,35 +181,34 @@ class XSelectItem extends CssBorderItem {
     this.selectLocal = SELECT_LOCAL.BR;
   }
 
-  targetOffsetHandle() {
-    const { targetRange } = this;
-    if (targetRange.equals(RectRange.EMPTY)) {
+  selectOffsetHandle() {
+    const { selectRange } = this;
+    this.selectBoundOut = this.measureBoundOut(selectRange);
+    if (this.selectBoundOut) {
       return;
     }
-    const { table } = this;
-    const scrollView = table.getScrollView();
-    const { cols, rows } = table;
-    this.targetOffset.height = targetRange.h;
-    this.targetOffset.width = targetRange.w;
-    this.targetOffset.left = cols.sectionSumWidth(scrollView.sci, targetRange.sci - 1);
-    this.targetOffset.top = rows.sectionSumHeight(scrollView.sri, targetRange.sri - 1);
+    this.targetOffset.width = this.measureWidth(selectRange);
+    this.targetOffset.height = this.measureHeight(selectRange);
+    this.targetOffset.top = this.measureTop(selectRange);
+    this.targetOffset.left = this.measureLeft(selectRange);
     this.setTop(this.targetOffset.top);
     this.setLeft(this.targetOffset.left);
     this.setHeight(this.targetOffset.height);
     this.setWidth(this.targetOffset.width);
   }
 
-  targetBorderHandle() {
-    const { targetRange } = this;
-    if (targetRange.equals(RectRange.EMPTY)) {
+  selectBorderHandle() {
+    const { selectBoundOut } = this;
+    if (selectBoundOut) {
       return;
     }
     const { selectRange } = this;
     const {
       top, bottom, left, right,
-    } = this.rectRangeBoundOut(selectRange);
+    } = this.borderBoundOut(selectRange);
     this.hideAllBorder();
-    const overGo = this.rectRangeOverGo(selectRange);
+    const overGo = this.rangeOverGo(selectRange);
+    this.overGo = overGo;
     if (!top) {
       this.showTBorder(overGo);
     }
@@ -229,33 +221,11 @@ class XSelectItem extends CssBorderItem {
     if (!right) {
       this.showRBorder(overGo);
     }
-    this.overGo = overGo;
   }
 
-  targetRangeHandle() {
-    const { selectRange } = this;
-    if (Utils.isUnDef(selectRange)) {
-      this.hide();
-      this.targetRange = RectRange.EMPTY;
-      return;
-    }
-    const { table } = this;
-    const { cols, rows } = table;
-    const scrollView = table.getScrollView();
-    const targetRange = scrollView.coincide(selectRange);
-    targetRange.w = cols.rectRangeSumWidth(targetRange);
-    targetRange.h = rows.rectRangeSumHeight(targetRange);
-    this.targetRange = targetRange;
-    if (targetRange.equals(RectRange.EMPTY)) {
-      this.hide();
-    } else {
-      this.show();
-    }
-  }
-
-  targetCornerHandle() {
-    const { targetRange } = this;
-    if (targetRange.equals(RectRange.EMPTY)) {
+  selectCornerHandle() {
+    const { selectBoundOut } = this;
+    if (selectBoundOut) {
       return;
     }
     const { selectLocal } = this;

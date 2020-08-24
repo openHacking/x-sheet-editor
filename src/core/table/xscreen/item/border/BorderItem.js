@@ -4,7 +4,7 @@ import { XScreenLTPart } from '../../part/XScreenLTPart';
 import { XScreenTPart } from '../../part/XScreenTPart';
 import { XScreenLPart } from '../../part/XScreenLPart';
 import { XScreenBRPart } from '../../part/XScreenBRPart';
-import { XScreenMeasureItem } from '../XScreenMeasureItem';
+import { MeasureItem } from '../MeasureItem';
 
 const RANGE_OVER_GO = {
   LT: Symbol('lt'),
@@ -18,7 +18,7 @@ const RANGE_OVER_GO = {
   ALL: Symbol('all'),
 };
 
-class XScreenBorderItem extends XScreenMeasureItem {
+class BorderItem extends MeasureItem {
 
   constructor({ table }, className = '') {
     super({ table });
@@ -32,19 +32,29 @@ class XScreenBorderItem extends XScreenMeasureItem {
     this.br.child(this.bbr);
   }
 
-  rectRangeBoundOut(range) {
+  borderBoundOut(range) {
     const { table } = this;
+    const { fixed } = table;
+    const {
+      fixLeft, fixTop,
+    } = fixed;
     const scrollView = table.getScrollView();
-    const top = range.sri < scrollView.sri || range.sri > scrollView.eri;
-    const bottom = range.eri < scrollView.sri || range.eri > scrollView.eri;
-    const left = range.sci < scrollView.sci || range.sci > scrollView.eci;
-    const right = range.eci < scrollView.sci || range.eci > scrollView.eci;
-    return {
-      top, bottom, left, right,
+    const edge = {
+      bottom: false,
+      left: false,
+      top: false,
+      right: false,
     };
+    if (fixLeft > -1 && fixTop > -1) {
+
+    } else if (fixLeft > -1) {
+
+    } else if (fixTop > -1) {
+
+    }
   }
 
-  rectRangeOverGo(range) {
+  rangeOverGo(range) {
     const { table } = this;
     const { cols, rows } = table;
     const { fixed } = table;
@@ -282,5 +292,5 @@ class XScreenBorderItem extends XScreenMeasureItem {
 }
 
 export {
-  XScreenBorderItem, RANGE_OVER_GO,
+  BorderItem, RANGE_OVER_GO,
 };

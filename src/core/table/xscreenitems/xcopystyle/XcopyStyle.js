@@ -76,7 +76,7 @@ class XcopyStyle extends SvgBorderItem {
       top, bottom, left, right,
     } = this.rectRangeBoundOut(selectRange);
     this.hideAllBorder();
-    const overGo = this.rectRangeOverGo(selectRange);
+    const overGo = this.rangeOverGo(selectRange);
     if (!top) {
       this.showTBorder(overGo);
     }

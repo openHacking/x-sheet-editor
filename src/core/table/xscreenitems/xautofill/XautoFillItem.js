@@ -245,7 +245,7 @@ class XautoFillItem extends CssBorderItem {
       top, bottom, left, right,
     } = this.rectRangeBoundOut(moveRange);
     this.hideAllBorder();
-    const overGo = this.rectRangeOverGo(moveRange);
+    const overGo = this.rangeOverGo(moveRange);
     if (!top) {
       this.showTBorder(overGo);
     }
