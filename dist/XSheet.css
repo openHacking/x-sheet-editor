@@ -94,7 +94,7 @@
 .x-sheet-scroll-bar-y {
   width: 17px;
   height: 100%;
-  background: #f1f1f1;
+  background: #dfdfdf;
   position: relative;
 }
 .x-sheet-scroll-bar-y-last-but {
@@ -104,7 +104,7 @@
   top: 0;
   background-image: url(87aeb08fa9c573408df1960dddd2f86c.svg);
   background-size: 100% 100%;
-  background-color: #f1f1f1;
+  background-color: #dfdfdf;
 }
 .x-sheet-scroll-bar-y-next-but {
   width: 100%;
@@ -113,7 +113,7 @@
   bottom: 0;
   background-image: url(5c9cd65ac12221bc4211e24bd3382f5d.svg);
   background-size: 100% 100%;
-  background-color: #f1f1f1;
+  background-color: #dfdfdf;
 }
 .x-sheet-scroll-bar-y-content {
   position: absolute;
@@ -358,13 +358,20 @@
   left: 0;
   top: 0;
 }
-.x-sheet-screen {
+.x-sheet-x-screen {
   display: block;
   width: 100%;
   height: 100%;
   position: relative;
 }
-.x-sheet-screen-element {
+.x-sheet-x-screen-lt-zone {
+  border-right: 1px solid #42a642;
+  border-bottom: 1px solid #42a642;
+}
+.x-sheet-x-screen-t-zone {
+  border-bottom: 1px solid #42a642;
+}
+.x-sheet-x-screen-br-zone {
   display: block;
   width: 100%;
   height: 100%;
@@ -373,15 +380,156 @@
   top: 0;
   overflow: hidden;
 }
-.x-sheet-screen-element-lt {
+.x-sheet-x-screen-l-zone {
   border-right: 1px solid #42a642;
-  border-bottom: 1px solid #42a642;
 }
-.x-sheet-screen-element-t {
-  border-bottom: 1px solid #42a642;
+.x-sheet-x-screen-part {
+  position: absolute;
 }
-.x-sheet-screen-element-l {
-  border-right: 1px solid #42a642;
+.x-sheet-part-border-css {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  position: static;
+}
+.x-sheet-part-border-css.solid.show-top-border {
+  border-top-style: solid;
+}
+.x-sheet-part-border-css.solid.show-bottom-border {
+  border-bottom-style: solid;
+}
+.x-sheet-part-border-css.solid.show-left-border {
+  border-left-style: solid;
+}
+.x-sheet-part-border-css.solid.show-right-border {
+  border-right-style: solid;
+}
+.x-sheet-part-border-css.dashed.show-top-border {
+  border-top-style: dashed;
+}
+.x-sheet-part-border-css.dashed.show-bottom-border {
+  border-bottom-style: dashed;
+}
+.x-sheet-part-border-css.dashed.show-left-border {
+  border-left-style: dashed;
+}
+.x-sheet-part-border-css.dashed.show-right-border {
+  border-right-style: dashed;
+}
+.x-sheet-part-border-css.show-top-border {
+  border-top-width: 3px;
+  border-top-color: #42a642;
+}
+.x-sheet-part-border-css.show-bottom-border {
+  border-bottom-width: 3px;
+  border-bottom-color: #42a642;
+}
+.x-sheet-part-border-css.show-left-border {
+  border-left-width: 3px;
+  border-left-color: #42a642;
+}
+.x-sheet-part-border-css.show-right-border {
+  border-right-width: 3px;
+  border-right-color: #42a642;
+}
+@keyframes copy-style-stroked-dashoffset-animation-top {
+  to {
+    stroke-dashoffset: 20;
+  }
+}
+@keyframes copy-style-stroked-dashoffset-animation-left {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+@keyframes copy-style-stroked-dashoffset-animation-bottom {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+@keyframes copy-style-stroked-dashoffset-animation-right {
+  to {
+    stroke-dashoffset: 20;
+  }
+}
+.x-sheet-part-border-svg {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  position: static;
+}
+.x-sheet-copy-style-svg {
+  position: relative;
+  z-index: 2;
+}
+.x-sheet-copy-style-stroked {
+  display: none;
+}
+.x-sheet-part-border-svg.show-top-border > .x-sheet-copy-style-stroked-top {
+  display: block;
+  stroke: #ffffff;
+  stroke-width: 7;
+  stroke-dasharray: 10;
+  animation: copy-style-stroked-dashoffset-animation-top 0.5s forwards infinite linear;
+}
+.x-sheet-part-border-svg.show-bottom-border > .x-sheet-copy-style-stroked-bottom {
+  display: block;
+  stroke: #ffffff;
+  stroke-width: 6;
+  stroke-dasharray: 10;
+  animation: copy-style-stroked-dashoffset-animation-bottom 0.5s forwards infinite linear;
+}
+.x-sheet-part-border-svg.show-left-border > .x-sheet-copy-style-stroked-left {
+  display: block;
+  stroke: #ffffff;
+  stroke-width: 6;
+  stroke-dasharray: 10;
+  animation: copy-style-stroked-dashoffset-animation-left 0.5s forwards infinite linear;
+}
+.x-sheet-part-border-svg.show-right-border > .x-sheet-copy-style-stroked-right {
+  display: block;
+  stroke: #ffffff;
+  stroke-width: 6;
+  stroke-dasharray: 10;
+  animation: copy-style-stroked-dashoffset-animation-right 0.5s forwards infinite linear;
+}
+.x-sheet-x-autofill-area {
+  background: rgba(166, 166, 166, 0.2);
+  width: 100%;
+  height: 100%;
+}
+.x-sheet-x-select-area {
+  background: rgba(166, 166, 166, 0.2);
+  width: 100%;
+  height: 100%;
+}
+.x-sheet-x-select-corner {
+  position: absolute;
+  height: 5px;
+  width: 5px;
+  border: 2px solid #ffffff;
+  background: #42a642;
+}
+.x-sheet-x-select-corner.br-pos {
+  right: 0;
+  bottom: 0;
+}
+.x-sheet-x-select-corner.tr-pos {
+  right: 0;
+  top: 0;
+}
+.x-sheet-x-select-corner.bl-pos {
+  left: 0;
+  bottom: 0;
+}
+.x-sheet-copy-style-area {
+  background: rgba(166, 166, 166, 0.2);
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
 }
 .x-sheet-table-edit {
   position: absolute;
@@ -461,131 +609,6 @@
   position: absolute;
   width: 100%;
   right: 0;
-}
-.x-sheet-autofill {
-  width: 0;
-  height: 0;
-  position: absolute;
-}
-.x-sheet-autofill-area {
-  border: 2px dashed #42a642;
-  background: rgba(181, 202, 242, 0.1);
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-}
-@keyframes clipboard-stroke-dashoffset-animation {
-  to {
-    stroke-dashoffset: 19;
-  }
-}
-.x-sheet-clipboard {
-  position: absolute;
-  display: block;
-  width: 197.8px;
-  height: 97.8px;
-  left: 599.2px;
-  top: 200px;
-}
-.x-sheet-clipboard-stroked {
-  display: block;
-  stroke: #4b89ff;
-  fill: transparent;
-  stroke-width: 3;
-  stroke-dasharray: 10;
-  animation: clipboard-stroke-dashoffset-animation 0.5s forwards infinite linear;
-}
-.x-sheet-selector {
-  width: 0;
-  height: 0;
-  position: absolute;
-}
-.x-sheet-selector-area {
-  border: 3px solid #42a642;
-  background: rgba(181, 202, 242, 0.1);
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-}
-.x-sheet-selector-corner {
-  pointer-events: auto;
-  position: absolute;
-  font-size: 0;
-  height: 5px;
-  width: 5px;
-  border: 2px solid #ffffff;
-  background: #42a642;
-}
-@keyframes copy-style-stroked-dashoffset-animation-top {
-  to {
-    stroke-dashoffset: 20;
-  }
-}
-@keyframes copy-style-stroked-dashoffset-animation-left {
-  to {
-    stroke-dashoffset: -20;
-  }
-}
-@keyframes copy-style-stroked-dashoffset-animation-bottom {
-  to {
-    stroke-dashoffset: -20;
-  }
-}
-@keyframes copy-style-stroked-dashoffset-animation-right {
-  to {
-    stroke-dashoffset: 20;
-  }
-}
-.x-sheet-copy-style {
-  width: 0;
-  height: 0;
-  position: absolute;
-}
-.x-sheet-copy-style-mask {
-  border: 3px solid #42a642;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
-.x-sheet-copy-style-svg {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-}
-.x-sheet-copy-style-stroked-top {
-  display: block;
-  stroke: #ffffff;
-  stroke-width: 7;
-  stroke-dasharray: 10;
-  animation: copy-style-stroked-dashoffset-animation-top 0.5s forwards infinite linear;
-}
-.x-sheet-copy-style-stroked-left {
-  display: block;
-  stroke: #ffffff;
-  stroke-width: 6;
-  stroke-dasharray: 10;
-  animation: copy-style-stroked-dashoffset-animation-left 0.5s forwards infinite linear;
-}
-.x-sheet-copy-style-stroked-bottom {
-  display: block;
-  stroke: #ffffff;
-  stroke-width: 6;
-  stroke-dasharray: 10;
-  animation: copy-style-stroked-dashoffset-animation-bottom 0.5s forwards infinite linear;
-}
-.x-sheet-copy-style-stroked-right {
-  display: block;
-  stroke: #ffffff;
-  stroke-width: 6;
-  stroke-dasharray: 10;
-  animation: copy-style-stroked-dashoffset-animation-right 0.5s forwards infinite linear;
 }
 .x-sheet-sheet-switch-tab {
   height: 25px;
