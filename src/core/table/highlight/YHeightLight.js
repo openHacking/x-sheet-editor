@@ -80,8 +80,9 @@ class YHeightLight extends Widget {
     // 固定位置
     const { fixTop } = fixed;
     switch (overGo) {
-      case RANGE_OVER_GO.LTT:
       case RANGE_OVER_GO.LT:
+      case RANGE_OVER_GO.T:
+      case RANGE_OVER_GO.LTT:
       case RANGE_OVER_GO.LTL:
       case RANGE_OVER_GO.BRL:
       case RANGE_OVER_GO.ALL:
@@ -105,8 +106,9 @@ class YHeightLight extends Widget {
     const { fixTop } = fixed;
     let fixHeight = 0;
     switch (overGo) {
-      case RANGE_OVER_GO.LTT:
       case RANGE_OVER_GO.LT:
+      case RANGE_OVER_GO.T:
+      case RANGE_OVER_GO.LTT:
       case RANGE_OVER_GO.LTL:
       case RANGE_OVER_GO.BRL:
       case RANGE_OVER_GO.ALL:

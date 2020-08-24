@@ -23,6 +23,7 @@ Constant.TABLE_EVENT_TYPE = {
   DATA_CHANGE: 'tableDataChange'.toLocaleLowerCase(),
   SELECT_CHANGE: 'tableSelectChange'.toLocaleLowerCase(),
   SELECT_DOWN: 'tableSelectDown'.toLocaleLowerCase(),
+  SELECT_OVER: 'tableSelectOver'.toLocaleLowerCase(),
   SCALE_CHANGE: 'scaleChange'.toLocaleLowerCase(),
 };
 Constant.WORK_BODY_EVENT_TYPE = {

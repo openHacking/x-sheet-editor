@@ -22,8 +22,9 @@ import { Fixed } from './tools/Fixed';
 import { Filter } from './tools/Filter';
 import { Functions } from './tools/Functions';
 import { EventBind } from '../../utils/EventBind';
-import { ScreenCopyStyle } from '../table/screenwiget/copystyle/ScreenCopyStyle';
-import { SCREEN_SELECT_EVENT, ScreenSelector } from '../table/screenwiget/selector/ScreenSelector';
+import {
+  SCREEN_SELECT_EVENT,
+} from '../table/screenwiget/selector/ScreenSelector';
 import { ElPopUp } from '../../component/elpopup/ElPopUp';
 import { LINE_TYPE } from '../../canvas/Line';
 import { Icon } from './tools/Icon';
@@ -31,6 +32,8 @@ import { Cell } from '../table/tablecell/Cell';
 import { Utils } from '../../utils/Utils';
 import { Scale } from './tools/Scale';
 import { BaseFont } from '../../canvas/font/BaseFont';
+import { XSelectItem } from '../table/xscreenitems/xselect/XSelectItem';
+import { XcopyStyle } from '../table/xscreenitems/xcopystyle/XcopyStyle';
 
 class Divider extends Widget {
   constructor() {
@@ -67,18 +70,18 @@ class TopMenu extends Widget {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
           const {
-            screen,
+            xScreen,
           } = table;
           const styleCellsHelper = table.getStyleCellsHelper();
           const tableDataSnapshot = table.getTableDataSnapshot();
-          const screenSelector = screen.findByClass(ScreenSelector);
-          const { selectorAttr } = screenSelector;
+          const xSelect = xScreen.findType(XSelectItem);
+          const { selectRange } = xSelect;
           this.format.setTitle(title);
-          if (selectorAttr) {
+          if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
             styleCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectorAttr.rect,
+              rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
                 cell.format = format;
@@ -97,18 +100,18 @@ class TopMenu extends Widget {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
           const {
-            screen,
+            xScreen,
           } = table;
           const styleCellsHelper = table.getStyleCellsHelper();
           const tableDataSnapshot = table.getTableDataSnapshot();
-          const screenSelector = screen.findByClass(ScreenSelector);
-          const { selectorAttr } = screenSelector;
+          const xSelect = xScreen.findType(XSelectItem);
+          const { selectRange } = xSelect;
           this.font.setTitle(type);
-          if (selectorAttr) {
+          if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
             styleCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectorAttr.rect,
+              rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
                 cell.fontAttr.name = type;
@@ -127,18 +130,18 @@ class TopMenu extends Widget {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
           const {
-            screen,
+            xScreen,
           } = table;
           const styleCellsHelper = table.getStyleCellsHelper();
           const tableDataSnapshot = table.getTableDataSnapshot();
-          const screenSelector = screen.findByClass(ScreenSelector);
-          const { selectorAttr } = screenSelector;
+          const xSelect = xScreen.findType(XSelectItem);
+          const { selectRange } = xSelect;
           this.dprFontSize.setTitle(size);
-          if (selectorAttr) {
+          if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
             styleCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectorAttr.rect,
+              rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
                 cell.fontAttr.size = size;
@@ -157,18 +160,18 @@ class TopMenu extends Widget {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
           const {
-            screen,
+            xScreen,
           } = table;
           const styleCellsHelper = table.getStyleCellsHelper();
           const tableDataSnapshot = table.getTableDataSnapshot();
-          const screenSelector = screen.findByClass(ScreenSelector);
-          const { selectorAttr } = screenSelector;
+          const xSelect = xScreen.findType(XSelectItem);
+          const { selectRange } = xSelect;
           this.fontColor.setColor(color);
-          if (selectorAttr) {
+          if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
             styleCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectorAttr.rect,
+              rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
                 cell.fontAttr.color = color;
@@ -187,18 +190,18 @@ class TopMenu extends Widget {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
           const {
-            screen,
+            xScreen,
           } = table;
           const styleCellsHelper = table.getStyleCellsHelper();
           const tableDataSnapshot = table.getTableDataSnapshot();
-          const screenSelector = screen.findByClass(ScreenSelector);
-          const { selectorAttr } = screenSelector;
+          const xSelect = xScreen.findType(XSelectItem);
+          const { selectRange } = xSelect;
           this.fillColor.setColor(color);
-          if (selectorAttr) {
+          if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
             styleCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectorAttr.rect,
+              rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
                 cell.background = color;
@@ -216,15 +219,15 @@ class TopMenu extends Widget {
         onUpdate: (borderType, color, lineType) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          const { screen } = table;
+          const { xScreen } = table;
           const operateCellsHelper = table.getOperateCellsHelper();
           const tableDataSnapshot = table.getTableDataSnapshot();
-          const screenSelector = screen.findByClass(ScreenSelector);
-          const { selectorAttr } = screenSelector;
-          if (selectorAttr) {
+          const xSelect = xScreen.findType(XSelectItem);
+          const { selectRange } = xSelect;
+          if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            const { rect } = selectorAttr;
+            const rect = selectRange;
             let width = 1;
             let type = LINE_TYPE.SOLID_LINE;
             switch (lineType) {
@@ -471,12 +474,12 @@ class TopMenu extends Widget {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
           const {
-            screen,
+            xScreen,
           } = table;
           const styleCellsHelper = table.getStyleCellsHelper();
           const tableDataSnapshot = table.getTableDataSnapshot();
-          const screenSelector = screen.findByClass(ScreenSelector);
-          const { selectorAttr } = screenSelector;
+          const xSelect = xScreen.findType(XSelectItem);
+          const { selectRange } = xSelect;
           switch (type) {
             case BaseFont.ALIGN.left:
               this.horizontalAlign.setIcon(new Icon('align-left'));
@@ -489,11 +492,11 @@ class TopMenu extends Widget {
               break;
             default: break;
           }
-          if (selectorAttr) {
+          if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
             styleCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectorAttr.rect,
+              rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
                 cell.fontAttr.align = type;
@@ -512,12 +515,12 @@ class TopMenu extends Widget {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
           const {
-            screen,
+            xScreen,
           } = table;
           const styleCellsHelper = table.getStyleCellsHelper();
           const tableDataSnapshot = table.getTableDataSnapshot();
-          const screenSelector = screen.findByClass(ScreenSelector);
-          const { selectorAttr } = screenSelector;
+          const xSelect = xScreen.findType(XSelectItem);
+          const { selectRange } = xSelect;
           switch (type) {
             case BaseFont.VERTICAL_ALIGN.top:
               this.verticalAlign.setIcon(new Icon('align-top'));
@@ -530,11 +533,11 @@ class TopMenu extends Widget {
               break;
             default: break;
           }
-          if (selectorAttr) {
+          if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
             styleCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectorAttr.rect,
+              rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
                 cell.fontAttr.verticalAlign = type;
@@ -553,12 +556,12 @@ class TopMenu extends Widget {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
           const {
-            screen,
+            xScreen,
           } = table;
           const styleCellsHelper = table.getStyleCellsHelper();
           const tableDataSnapshot = table.getTableDataSnapshot();
-          const screenSelector = screen.findByClass(ScreenSelector);
-          const { selectorAttr } = screenSelector;
+          const xSelect = xScreen.findType(XSelectItem);
+          const { selectRange } = xSelect;
           let icon;
           switch (type) {
             case BaseFont.TEXT_WRAP.TRUNCATE:
@@ -572,11 +575,11 @@ class TopMenu extends Widget {
               break;
           }
           this.textWrapping.setIcon(icon);
-          if (selectorAttr) {
+          if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
             styleCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectorAttr.rect,
+              rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
                 cell.fontAttr.textWrap = type;
@@ -677,27 +680,26 @@ class TopMenu extends Widget {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const {
-        screen,
+        xScreen,
       } = table;
       const merges = table.getTableMerges();
       const cells = table.getTableCells();
       const tableDataSnapshot = table.getTableDataSnapshot();
-      const screenCopyStyle = screen.findByClass(ScreenCopyStyle);
-      const screenSelector = screen.findByClass(ScreenSelector);
-      const { selectorAttr } = screenSelector;
-      if (selectorAttr) {
-        screenCopyStyle.setShow(selectorAttr);
+      const xCopyStyle = xScreen.findType(XcopyStyle);
+      const xSelect = xScreen.findType(XSelectItem);
+      const { selectRange } = xSelect;
+      if (selectRange) {
+        xCopyStyle.showCopyStyle();
         this.paintFormat.active(true);
         this.paintFormat.addSheet(sheet);
-        const cb = () => {
+        table.on(SCREEN_SELECT_EVENT.SELECT_OVER, () => {
+          xCopyStyle.hideCopyStyle();
           // 清除复制
-          screenCopyStyle.setHide();
           this.paintFormat.active(false);
           this.paintFormat.removeSheet(sheet);
-          screenSelector.remove(SCREEN_SELECT_EVENT.SELECT_CHANGE_OVER, cb);
-          // 复制区域和目标区域
-          const srcRect = selectorAttr.rect;
-          const targetRect = screenSelector.selectorAttr.rect;
+          // 目标区域 复制区域
+          const targetRect = xCopyStyle.selectRange;
+          const srcRect = xSelect.selectRange;
           // 开始复制
           tableDataSnapshot.begin();
           const { cellDataProxy } = tableDataSnapshot;
@@ -723,25 +725,24 @@ class TopMenu extends Widget {
           }
           tableDataSnapshot.end();
           table.render();
-        };
-        screenSelector.on(SCREEN_SELECT_EVENT.SELECT_CHANGE_OVER, cb);
+        });
       }
     });
     EventBind.bind(this.clearFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const {
-        screen,
+        xScreen,
       } = table;
       const styleCellsHelper = table.getStyleCellsHelper();
       const tableDataSnapshot = table.getTableDataSnapshot();
-      const screenSelector = screen.findByClass(ScreenSelector);
-      const { selectorAttr } = screenSelector;
-      if (selectorAttr) {
+      const xSelect = xScreen.findType(XSelectItem);
+      const { selectRange } = xSelect;
+      if (selectRange) {
         tableDataSnapshot.begin();
         const { cellDataProxy } = tableDataSnapshot;
         styleCellsHelper.getCellOrNewCellByViewRange({
-          rectRange: selectorAttr.rect,
+          rectRange: selectRange,
           callback: (r, c, origin) => {
             const { text } = origin;
             cellDataProxy.setCell(r, c, new Cell({ text }));
@@ -794,20 +795,20 @@ class TopMenu extends Widget {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const {
-        screen,
+        xScreen,
       } = table;
       const styleCellsHelper = table.getStyleCellsHelper();
       const cells = table.getTableCells();
       const tableDataSnapshot = table.getTableDataSnapshot();
-      const screenSelector = screen.findByClass(ScreenSelector);
-      const { selectorAttr } = screenSelector;
-      if (selectorAttr) {
-        const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+      const xSelect = xScreen.findType(XSelectItem);
+      const { selectRange } = xSelect;
+      if (selectRange) {
+        const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
         const bold = !firstCell.fontAttr.bold;
         tableDataSnapshot.begin();
         const { cellDataProxy } = tableDataSnapshot;
         styleCellsHelper.getCellOrNewCellByViewRange({
-          rectRange: selectorAttr.rect,
+          rectRange: selectRange,
           callback: (r, c, origin) => {
             const cell = origin.clone();
             cell.fontAttr.bold = bold;
@@ -822,20 +823,20 @@ class TopMenu extends Widget {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const {
-        screen,
+        xScreen,
       } = table;
       const styleCellsHelper = table.getStyleCellsHelper();
       const cells = table.getTableCells();
       const tableDataSnapshot = table.getTableDataSnapshot();
-      const screenSelector = screen.findByClass(ScreenSelector);
-      const { selectorAttr } = screenSelector;
-      if (selectorAttr) {
-        const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+      const xSelect = xScreen.findType(XSelectItem);
+      const { selectRange } = xSelect;
+      if (selectRange) {
+        const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
         const italic = !firstCell.fontAttr.italic;
         tableDataSnapshot.begin();
         const { cellDataProxy } = tableDataSnapshot;
         styleCellsHelper.getCellOrNewCellByViewRange({
-          rectRange: selectorAttr.rect,
+          rectRange: selectRange,
           callback: (r, c, origin) => {
             const cell = origin.clone();
             cell.fontAttr.italic = italic;
@@ -850,20 +851,20 @@ class TopMenu extends Widget {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const {
-        screen,
+        xScreen,
       } = table;
       const styleCellsHelper = table.getStyleCellsHelper();
       const cells = table.getTableCells();
       const tableDataSnapshot = table.getTableDataSnapshot();
-      const screenSelector = screen.findByClass(ScreenSelector);
-      const { selectorAttr } = screenSelector;
-      if (selectorAttr) {
-        const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+      const xSelect = xScreen.findType(XSelectItem);
+      const { selectRange } = xSelect;
+      if (selectRange) {
+        const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
         const underline = !firstCell.fontAttr.underline;
         tableDataSnapshot.begin();
         const { cellDataProxy } = tableDataSnapshot;
         styleCellsHelper.getCellOrNewCellByViewRange({
-          rectRange: selectorAttr.rect,
+          rectRange: selectRange,
           callback: (r, c, origin) => {
             const cell = origin.clone();
             cell.fontAttr.underline = underline;
@@ -878,20 +879,20 @@ class TopMenu extends Widget {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const {
-        screen,
+        xScreen,
       } = table;
       const styleCellsHelper = table.getStyleCellsHelper();
       const cells = table.getTableCells();
       const tableDataSnapshot = table.getTableDataSnapshot();
-      const screenSelector = screen.findByClass(ScreenSelector);
-      const { selectorAttr } = screenSelector;
-      if (selectorAttr) {
-        const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+      const xSelect = xScreen.findType(XSelectItem);
+      const { selectRange } = xSelect;
+      if (selectRange) {
+        const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
         const strikethrough = !firstCell.fontAttr.strikethrough;
         tableDataSnapshot.begin();
         const { cellDataProxy } = tableDataSnapshot;
         styleCellsHelper.getCellOrNewCellByViewRange({
-          rectRange: selectorAttr.rect,
+          rectRange: selectRange,
           callback: (r, c, origin) => {
             const cell = origin.clone();
             cell.fontAttr.strikethrough = strikethrough;
@@ -945,14 +946,14 @@ class TopMenu extends Widget {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const {
-        screen,
+        xScreen,
       } = table;
       const merges = table.getTableMerges();
       const tableDataSnapshot = table.getTableDataSnapshot();
-      const screenSelector = screen.findByClass(ScreenSelector);
-      const { selectorAttr } = screenSelector;
-      if (selectorAttr) {
-        const merge = selectorAttr.rect.clone();
+      const xSelect = xScreen.findType(XSelectItem);
+      const { selectRange } = xSelect;
+      if (selectRange) {
+        const merge = selectRange.clone();
         const find = merges.getFirstIncludes(merge.sri, merge.sci);
         tableDataSnapshot.begin();
         const { mergeDataProxy } = tableDataSnapshot;
@@ -1008,6 +1009,89 @@ class TopMenu extends Widget {
     });
   }
 
+  setHorizontalAlignStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const cells = table.getTableCells();
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    let icon = new Icon('align-left');
+    if (selectRange) {
+      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+      switch (firstCell.fontAttr.align) {
+        case BaseFont.ALIGN.left:
+          icon = new Icon('align-left');
+          break;
+        case BaseFont.ALIGN.center:
+          icon = new Icon('align-center');
+          break;
+        case BaseFont.ALIGN.right:
+          icon = new Icon('align-right');
+          break;
+        default: break;
+      }
+    }
+    this.horizontalAlign.setIcon(icon);
+  }
+
+  setVerticalAlignStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const cells = table.getTableCells();
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    let icon = new Icon('align-middle');
+    if (selectRange) {
+      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+      switch (firstCell.fontAttr.verticalAlign) {
+        case BaseFont.VERTICAL_ALIGN.top:
+          icon = new Icon('align-top');
+          break;
+        case BaseFont.VERTICAL_ALIGN.center:
+          icon = new Icon('align-middle');
+          break;
+        case BaseFont.VERTICAL_ALIGN.bottom:
+          icon = new Icon('align-bottom');
+          break;
+        default: break;
+      }
+    }
+    this.verticalAlign.setIcon(icon);
+  }
+
+  setTextWrappingStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const cells = table.getTableCells();
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    let icon = new Icon('text-wrap');
+    if (selectRange) {
+      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+      switch (firstCell.fontAttr.textWrap) {
+        case BaseFont.TEXT_WRAP.TRUNCATE:
+          icon = new Icon('truncate');
+          break;
+        case BaseFont.TEXT_WRAP.WORD_WRAP:
+          icon = new Icon('text-wrap');
+          break;
+        case BaseFont.TEXT_WRAP.OVER_FLOW:
+          icon = new Icon('overflow');
+          break;
+      }
+    }
+    this.textWrapping.setIcon(icon);
+  }
+
   setUndoStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
@@ -1048,14 +1132,14 @@ class TopMenu extends Widget {
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
     const { table } = sheet;
-    const { screen } = table;
+    const { xScreen } = table;
     const cells = table.getTableCells();
-    const screenSelector = screen.findByClass(ScreenSelector);
-    const { selectorAttr } = screenSelector;
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
     let text = '常规';
     let format = 'default';
-    if (selectorAttr) {
-      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+    if (selectRange) {
+      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
       // eslint-disable-next-line prefer-destructuring
       format = firstCell.format;
       switch (format) {
@@ -1108,231 +1192,18 @@ class TopMenu extends Widget {
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
     const { table } = sheet;
-    const { screen } = table;
+    const { xScreen } = table;
     const cells = table.getTableCells();
-    const screenSelector = screen.findByClass(ScreenSelector);
-    const { selectorAttr } = screenSelector;
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
     let name = 'Arial';
-    if (selectorAttr) {
-      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
+    if (selectRange) {
+      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
       // eslint-disable-next-line prefer-destructuring
       name = firstCell.fontAttr.name;
     }
     this.font.setTitle(name);
     this.font.fontContextMenu.setActiveByType(name);
-  }
-
-  setFontSizeStatus() {
-    const { body } = this.workTop.work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    const { screen } = table;
-    const cells = table.getTableCells();
-    const screenSelector = screen.findByClass(ScreenSelector);
-    const { selectorAttr } = screenSelector;
-    let size = '12';
-    if (selectorAttr) {
-      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
-      // eslint-disable-next-line prefer-destructuring
-      size = firstCell.fontAttr.size;
-    }
-    this.dprFontSize.setTitle(size);
-  }
-
-  setFontBoldStatus() {
-    const { body } = this.workTop.work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    const { screen } = table;
-    const cells = table.getTableCells();
-    const screenSelector = screen.findByClass(ScreenSelector);
-    const { selectorAttr } = screenSelector;
-    let bold = false;
-    if (selectorAttr) {
-      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
-      // eslint-disable-next-line prefer-destructuring
-      bold = firstCell.fontAttr.bold;
-    }
-    this.fontBold.active(bold);
-  }
-
-  setFontItalicStatus() {
-    const { body } = this.workTop.work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    const { screen } = table;
-    const cells = table.getTableCells();
-    const screenSelector = screen.findByClass(ScreenSelector);
-    const { selectorAttr } = screenSelector;
-    let italic = false;
-    if (selectorAttr) {
-      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
-      // eslint-disable-next-line prefer-destructuring
-      italic = firstCell.fontAttr.italic;
-    }
-    this.fontItalic.active(italic);
-  }
-
-  setUnderLineStatus() {
-    const { body } = this.workTop.work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    const { screen } = table;
-    const cells = table.getTableCells();
-    const screenSelector = screen.findByClass(ScreenSelector);
-    const { selectorAttr } = screenSelector;
-    let underline = false;
-    if (selectorAttr) {
-      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
-      // eslint-disable-next-line prefer-destructuring
-      underline = firstCell.fontAttr.underline;
-    }
-    this.underLine.active(underline);
-  }
-
-  setFontStrikeStatus() {
-    const { body } = this.workTop.work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    const { screen } = table;
-    const cells = table.getTableCells();
-    const screenSelector = screen.findByClass(ScreenSelector);
-    const { selectorAttr } = screenSelector;
-    let strikethrough = false;
-    if (selectorAttr) {
-      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
-      // eslint-disable-next-line prefer-destructuring
-      strikethrough = firstCell.fontAttr.strikethrough;
-    }
-    this.fontStrike.active(strikethrough);
-  }
-
-  setFontColorStatus() {
-    const { body } = this.workTop.work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    const { screen } = table;
-    const cells = table.getTableCells();
-    const screenSelector = screen.findByClass(ScreenSelector);
-    const { selectorAttr } = screenSelector;
-    let color = 'rgb(0, 0, 0)';
-    if (selectorAttr) {
-      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
-      // eslint-disable-next-line prefer-destructuring
-      color = firstCell.fontAttr.color;
-    }
-    this.fontColor.setColor(color);
-    this.fontColor.fontColorContextMenu.setActiveByColor(color);
-  }
-
-  setFillColorStatus() {
-    const { body } = this.workTop.work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    const { screen } = table;
-    const cells = table.getTableCells();
-    const screenSelector = screen.findByClass(ScreenSelector);
-    const { selectorAttr } = screenSelector;
-    let color = 'rgb(255, 255, 255)';
-    if (selectorAttr) {
-      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
-      // eslint-disable-next-line prefer-destructuring
-      if (firstCell.background) {
-        color = firstCell.background;
-      }
-    }
-    this.fillColor.setColor(color);
-    this.fillColor.fillColorContextMenu.setActiveByColor(color);
-  }
-
-  setHorizontalAlignStatus() {
-    const { body } = this.workTop.work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    const { screen } = table;
-    const cells = table.getTableCells();
-    const screenSelector = screen.findByClass(ScreenSelector);
-    const { selectorAttr } = screenSelector;
-    let icon = new Icon('align-left');
-    if (selectorAttr) {
-      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
-      switch (firstCell.fontAttr.align) {
-        case BaseFont.ALIGN.left:
-          icon = new Icon('align-left');
-          break;
-        case BaseFont.ALIGN.center:
-          icon = new Icon('align-center');
-          break;
-        case BaseFont.ALIGN.right:
-          icon = new Icon('align-right');
-          break;
-        default: break;
-      }
-    }
-    this.horizontalAlign.setIcon(icon);
-  }
-
-  setVerticalAlignStatus() {
-    const { body } = this.workTop.work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    const { screen } = table;
-    const cells = table.getTableCells();
-    const screenSelector = screen.findByClass(ScreenSelector);
-    const { selectorAttr } = screenSelector;
-    let icon = new Icon('align-middle');
-    if (selectorAttr) {
-      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
-      switch (firstCell.fontAttr.verticalAlign) {
-        case BaseFont.VERTICAL_ALIGN.top:
-          icon = new Icon('align-top');
-          break;
-        case BaseFont.VERTICAL_ALIGN.center:
-          icon = new Icon('align-middle');
-          break;
-        case BaseFont.VERTICAL_ALIGN.bottom:
-          icon = new Icon('align-bottom');
-          break;
-        default: break;
-      }
-    }
-    this.verticalAlign.setIcon(icon);
-  }
-
-  setTextWrappingStatus() {
-    const { body } = this.workTop.work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    const { screen } = table;
-    const cells = table.getTableCells();
-    const screenSelector = screen.findByClass(ScreenSelector);
-    const { selectorAttr } = screenSelector;
-    let icon = new Icon('text-wrap');
-    if (selectorAttr) {
-      const firstCell = cells.getCellOrNew(selectorAttr.rect.sri, selectorAttr.rect.sci);
-      switch (firstCell.fontAttr.textWrap) {
-        case BaseFont.TEXT_WRAP.TRUNCATE:
-          icon = new Icon('truncate');
-          break;
-        case BaseFont.TEXT_WRAP.WORD_WRAP:
-          icon = new Icon('text-wrap');
-          break;
-        case BaseFont.TEXT_WRAP.OVER_FLOW:
-          icon = new Icon('overflow');
-          break;
-      }
-    }
-    this.textWrapping.setIcon(icon);
   }
 
   setStatus() {
@@ -1352,6 +1223,136 @@ class TopMenu extends Widget {
     this.setHorizontalAlignStatus();
     this.setVerticalAlignStatus();
     this.setTextWrappingStatus();
+  }
+
+  setUnderLineStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const cells = table.getTableCells();
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    let underline = false;
+    if (selectRange) {
+      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+      // eslint-disable-next-line prefer-destructuring
+      underline = firstCell.fontAttr.underline;
+    }
+    this.underLine.active(underline);
+  }
+
+  setFontSizeStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const cells = table.getTableCells();
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    let size = '12';
+    if (selectRange) {
+      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+      // eslint-disable-next-line prefer-destructuring
+      size = firstCell.fontAttr.size;
+    }
+    this.dprFontSize.setTitle(size);
+  }
+
+  setFontBoldStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const cells = table.getTableCells();
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    let bold = false;
+    if (selectRange) {
+      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+      // eslint-disable-next-line prefer-destructuring
+      bold = firstCell.fontAttr.bold;
+    }
+    this.fontBold.active(bold);
+  }
+
+  setFontStrikeStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const cells = table.getTableCells();
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    let strikethrough = false;
+    if (selectRange) {
+      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+      // eslint-disable-next-line prefer-destructuring
+      strikethrough = firstCell.fontAttr.strikethrough;
+    }
+    this.fontStrike.active(strikethrough);
+  }
+
+  setFontColorStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const cells = table.getTableCells();
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    let color = 'rgb(0, 0, 0)';
+    if (selectRange) {
+      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+      // eslint-disable-next-line prefer-destructuring
+      color = firstCell.fontAttr.color;
+    }
+    this.fontColor.setColor(color);
+    this.fontColor.fontColorContextMenu.setActiveByColor(color);
+  }
+
+  setFontItalicStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const cells = table.getTableCells();
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    let italic = false;
+    if (selectRange) {
+      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+      // eslint-disable-next-line prefer-destructuring
+      italic = firstCell.fontAttr.italic;
+    }
+    this.fontItalic.active(italic);
+  }
+
+  setFillColorStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const cells = table.getTableCells();
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    let color = 'rgb(255, 255, 255)';
+    if (selectRange) {
+      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+      // eslint-disable-next-line prefer-destructuring
+      if (firstCell.background) {
+        color = firstCell.background;
+      }
+    }
+    this.fillColor.setColor(color);
+    this.fillColor.fillColorContextMenu.setActiveByColor(color);
   }
 }
 

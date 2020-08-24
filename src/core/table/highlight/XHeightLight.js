@@ -80,8 +80,9 @@ class XHeightLight extends Widget {
     // 固定位置
     const { fixLeft } = fixed;
     switch (overGo) {
-      case RANGE_OVER_GO.LTT:
       case RANGE_OVER_GO.LT:
+      case RANGE_OVER_GO.L:
+      case RANGE_OVER_GO.LTT:
       case RANGE_OVER_GO.LTL:
       case RANGE_OVER_GO.BRL:
       case RANGE_OVER_GO.ALL:
@@ -105,8 +106,9 @@ class XHeightLight extends Widget {
     const { fixLeft } = fixed;
     let fixWidth = 0;
     switch (overGo) {
-      case RANGE_OVER_GO.LTT:
       case RANGE_OVER_GO.LT:
+      case RANGE_OVER_GO.L:
+      case RANGE_OVER_GO.LTT:
       case RANGE_OVER_GO.LTL:
       case RANGE_OVER_GO.BRL:
       case RANGE_OVER_GO.ALL:

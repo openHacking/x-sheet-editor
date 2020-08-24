@@ -99,6 +99,7 @@ class XSelectItem extends XScreenCssBorderItem {
         this.targetCornerHandle();
         table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
       }, () => {
+        table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_OVER);
         mousePointer.off(key);
       });
     });

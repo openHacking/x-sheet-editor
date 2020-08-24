@@ -8,6 +8,8 @@ class XcopyStyle extends XScreenSvgBorderItem {
 
   constructor(table) {
     super({ table });
+    this.selectRange = null;
+    this.targetRange = null;
     this.ltElem = new Widget(`${cssPrefix}-x-select-area`);
     this.brElem = new Widget(`${cssPrefix}-x-select-area`);
     this.lElem = new Widget(`${cssPrefix}-x-select-area`);
@@ -34,7 +36,11 @@ class XcopyStyle extends XScreenSvgBorderItem {
   offsetHandle() {
     const { xScreen } = this;
     const xSelect = xScreen.findType(XSelectItem);
-    const { targetRange } = xSelect;
+    const {
+      targetRange, selectRange,
+    } = xSelect;
+    this.selectRange = selectRange;
+    this.targetRange = targetRange;
     if (targetRange === RectRange.EMPTY) {
       return;
     }
