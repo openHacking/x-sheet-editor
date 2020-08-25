@@ -18,6 +18,19 @@
 <body id="dome"></body>
 <script>
   const dome = document.getElementById('dome');
-  const xSheet = new XSheet(dome);
+  const xSheet = new XSheet(dome, {
+    workConfig: {
+      body: {
+        sheets: [{
+          tableConfig: {
+            cols: {
+              len: 314
+            },
+            data: XSheet.Utils.autoData(1000, 314, '2342')
+          },
+        }],
+      },
+    },
+  });
 </script>
 </html>

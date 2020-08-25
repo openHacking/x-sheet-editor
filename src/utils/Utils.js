@@ -452,6 +452,18 @@ class Utils {
   static uuid() {
     return (`${S4() + S4()}${S4()}${S4()}${S4()}${S4()}${S4()}${S4()}`);
   }
+
+  static autoData(row, col, msg) {
+    const data = [];
+    for (let i = 0; i < row; i += 1) {
+      const item = [];
+      for (let j = 0; j < row; j += 1) {
+        item.push(`${i}行${j}列${msg}`);
+      }
+      data.push(item);
+    }
+    return data;
+  }
 }
 
 Utils.EMPTY = '';
