@@ -34,7 +34,6 @@ import { OperateCellsHelper } from './helper/OperateCellsHelper';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { XTableHistoryAreaView } from './XTableHistoryAreaView';
 import { VIEW_MODE, XTableScrollView } from './XTableScrollView';
-import { OffFragment } from '../../canvas/OffFragment';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -2092,8 +2091,6 @@ class XTableStyle extends Widget {
     // 冻结的视图 & 滚动的坐标
     this.fixed = fixed;
     this.scroll = scroll;
-    //
-    this.offFragment = new OffFragment();
     // 渲染模式
     this.renderMode = RENDER_MODE.RENDER;
     // 表格数据配置
@@ -2464,7 +2461,6 @@ class XTableStyle extends Widget {
   scrolling() {
     const {
       xTableAreaView,
-      offFragment,
     } = this;
     this.reset();
     this.renderMode = RENDER_MODE.SCROLL;
@@ -2472,7 +2468,6 @@ class XTableStyle extends Widget {
     xTableAreaView.record();
     this.renderMode = RENDER_MODE.RENDER;
     this.reset();
-    offFragment.save();
   }
 
 }
