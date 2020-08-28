@@ -18,16 +18,6 @@
 <body id="dome"></body>
 <script>
   const dome = document.getElementById('dome');
-  const xSheet = new XSheet(dome, {
-    workConfig: {
-      body: {
-        sheets: [{
-          tableConfig: {
-            data: XSheet.Utils.autoData(1, 1, 'XSheet 高性能 JavaScript Web 表格控件')
-          },
-        }],
-      },
-    },
-  });
+  const xSheet = new XSheet(dome);
 </script>
 </html>

@@ -19,10 +19,10 @@ class DisplayFont extends BaseFont {
             const width = this.textWidth(char);
             lOffset += width;
             if (lOffset > 0) {
+              display += char;
               if (lOffset > rectWidth) {
                 return display;
               }
-              display += char;
             }
             bi += 1;
           }
@@ -38,10 +38,10 @@ class DisplayFont extends BaseFont {
           const char = text.charAt(bi);
           const width = this.textWidth(char);
           total += width;
+          display += char;
           if (total > rectWidth) {
             return display;
           }
-          display += char;
           bi += 1;
         }
         break;
@@ -54,10 +54,10 @@ class DisplayFont extends BaseFont {
           const char = text.charAt(bi);
           const width = this.textWidth(char);
           total += width;
+          display = char + display;
           if (total > rectWidth) {
             return display;
           }
-          display = char + display;
           bi -= 1;
         }
         break;
