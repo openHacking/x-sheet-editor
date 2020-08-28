@@ -150,16 +150,18 @@ ${XSheetVersion}
       const sheet = this.sheetView.getActiveSheet();
       if (Utils.isUnDef(sheet)) return;
       const { table } = sheet;
-      const { rows, scroll } = table;
+      const { scroll } = table;
       const { scrollTo } = this.scrollBarY;
       let { deltaY } = evt;
-      if (evt.detail) deltaY = evt.detail * 40;
+      if (evt.detail) {
+        deltaY = evt.detail * 40;
+      }
       if (deltaY > 0) {
         // down
-        this.scrollBarY.scrollMove(scrollTo + rows.getHeight(scroll.ri));
+        this.scrollBarY.scrollMove(scrollTo + Math.abs(deltaY));
       } else {
         // up
-        this.scrollBarY.scrollMove(scrollTo - rows.getHeight(scroll.ri - 1));
+        this.scrollBarY.scrollMove(scrollTo - Math.abs(deltaY));
       }
       if (scroll.blockTop < scroll.maxBlockTop && scroll.blockTop > 0) {
         evt.preventDefault();
