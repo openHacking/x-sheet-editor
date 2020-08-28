@@ -1,8 +1,9 @@
 import { BaseFont } from './BaseFont';
 import { Utils } from '../../utils/Utils';
 import { Crop } from '../Crop';
+import { DisplayFont } from './DisplayFont';
 
-class HorizontalFont extends BaseFont {
+class HorizontalFont extends DisplayFont {
 
   constructor({
     overflow,
@@ -143,7 +144,7 @@ class HorizontalFont extends BaseFont {
       if (bi > 0) {
         hOffset += size + lineHeight;
       }
-      const text = breakArray[bi];
+      const text = this.displayFont(rect, breakArray[bi]);
       const item = {
         tx: 0,
         ty: hOffset,

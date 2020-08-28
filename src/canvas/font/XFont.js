@@ -19,7 +19,7 @@ class XFont {
       strikethrough: false,
       bold: false,
       italic: false,
-      textWrap: false,
+      textWrap: BaseFont.TEXT_WRAP.TRUNCATE,
       align: BaseFont.ALIGN.left,
       angle: 0,
       padding: 8,

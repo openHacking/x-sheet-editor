@@ -26,7 +26,7 @@ class CellFont {
   constructor({
     align = BaseFont.ALIGN.left,
     verticalAlign = BaseFont.VERTICAL_ALIGN.center,
-    textWrap = BaseFont.TEXT_WRAP.OVER_FLOW,
+    textWrap = BaseFont.TEXT_WRAP.TRUNCATE,
     strikethrough = false,
     underline = false,
     color = 'rgb(0,0,0)',
