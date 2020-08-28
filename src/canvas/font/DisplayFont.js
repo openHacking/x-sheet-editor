@@ -7,9 +7,9 @@ class DisplayFont extends BaseFont {
     const { align } = attr;
     const { width: rectWidth } = rect;
     const textLen = text.length;
-    const textWidth = this.textWidth(text);
     switch (align) {
       case BaseFont.ALIGN.center: {
+        const textWidth = this.textWidth(text);
         let lOffset = rectWidth / 2 - textWidth / 2;
         if (lOffset < 0) {
           let display = '';
