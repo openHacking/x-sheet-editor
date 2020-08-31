@@ -1,4 +1,5 @@
 import { Utils } from '../utils/Utils';
+import { XDraw } from './XDraw';
 
 const LINE_TYPE = {
   SOLID_LINE: 0,
@@ -76,7 +77,7 @@ class DoubleLine {
       color: '#000000',
       width: 1,
       padding: 1,
-      spacing: 1.5,
+      spacing: DoubleLine.spacing,
       leftShow: () => false,
       topShow: () => false,
       rightShow: () => false,
@@ -503,6 +504,7 @@ class DoubleLine {
     this.width = width;
   }
 }
+DoubleLine.spacing = XDraw.dpr() >= 2 ? 3 : 2;
 
 class Line {
 

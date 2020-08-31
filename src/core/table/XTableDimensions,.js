@@ -559,12 +559,12 @@ class XTableDimensions extends Widget {
       },
       rows: {
         len: 1000,
-        height: 30,
+        height: 25,
         data: [],
       },
       cols: {
         len: 36,
-        width: 90,
+        width: 106,
         data: [],
       },
       data: [],
