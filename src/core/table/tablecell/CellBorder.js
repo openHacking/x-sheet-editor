@@ -78,27 +78,27 @@ class CellBorder {
 
   // ======================边框宽度=======================
 
-  setAllWidth(width) {
-    this.setLWidth(width);
-    this.setTWidth(width);
-    this.setRWidth(width);
-    this.setBWidth(width);
+  setAllWidthType(widthType) {
+    this.setLWidthType(widthType);
+    this.setTWidthType(widthType);
+    this.setRWidthType(widthType);
+    this.setBWidthType(widthType);
   }
 
-  setLWidth(width) {
-    this.left.width = width;
+  setLWidthType(widthType) {
+    this.left.widthType = widthType;
   }
 
-  setTWidth(width) {
-    this.top.width = width;
+  setTWidthType(widthType) {
+    this.top.widthType = widthType;
   }
 
-  setRWidth(width) {
-    this.right.width = width;
+  setRWidthType(widthType) {
+    this.right.widthType = widthType;
   }
 
-  setBWidth(width) {
-    this.bottom.width = width;
+  setBWidthType(widthType) {
+    this.bottom.widthType = widthType;
   }
 
   // ======================边框类型=======================

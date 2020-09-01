@@ -822,38 +822,38 @@ class XTableContentUI extends XTableUI {
     topHorizontalLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { top } = borderAttr;
-      const { color, width, type } = top;
+      const { color, widthType, type } = top;
+      line.setWidthType(widthType);
       line.setType(type);
       line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+      line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
     });
     bottomHorizontalLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { bottom } = borderAttr;
-      const { color, width, type } = bottom;
+      const { color, widthType, type } = bottom;
+      line.setWidthType(widthType);
       line.setType(type);
       line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+      line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
     });
     leftVerticalLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { left } = borderAttr;
-      const { color, width, type } = left;
+      const { color, widthType, type } = left;
+      line.setWidthType(widthType);
       line.setType(type);
       line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+      line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
     });
     rightVerticalLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { right } = borderAttr;
-      const { color, width, type } = right;
+      const { color, widthType, type } = right;
+      line.setWidthType(widthType);
       line.setType(type);
       line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+      line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
     });
     // 绘制合并单元格水平线段
     // 和垂直线段
@@ -872,38 +872,38 @@ class XTableContentUI extends XTableUI {
     topMergeHorizontalLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { top } = borderAttr;
-      const { color, width, type } = top;
+      const { color, widthType, type } = top;
+      line.setWidthType(widthType);
       line.setType(type);
       line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+      line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
     });
     bottomMergeHorizontalLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { bottom } = borderAttr;
-      const { color, width, type } = bottom;
+      const { color, widthType, type } = bottom;
+      line.setWidthType(widthType);
       line.setType(type);
       line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+      line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
     });
     leftMergeVerticalLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { left } = borderAttr;
-      const { color, width, type } = left;
+      const { color, widthType, type } = left;
+      line.setWidthType(widthType);
       line.setType(type);
       line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+      line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
     });
     rightMergeVerticalLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { right } = borderAttr;
-      const { color, width, type } = right;
+      const { color, widthType, type } = right;
+      line.setWidthType(widthType);
       line.setType(type);
       line.setColor(color);
-      line.setWidth(width);
-      line.drawLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+      line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
     });
     draw.offset(0, 0);
   }
@@ -935,7 +935,7 @@ class XTableContentUI extends XTableUI {
       viewRange: borderView,
     });
     horizontalLine.forEach((item) => {
-      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.horizonLine(item.sx, item.sy, item.ex, item.ey);
     });
     verticalLine.forEach((item) => {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
@@ -949,7 +949,7 @@ class XTableContentUI extends XTableUI {
       brink,
     });
     mergeHorizontalLine.forEach((item) => {
-      grid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+      grid.horizonLine(item.sx, item.sy, item.ex, item.ey);
     });
     mergeVerticalLine.forEach((item) => {
       grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
@@ -1125,7 +1125,7 @@ class XTableLeftIndexUI extends XTableIndexUI {
       viewRange: borderView,
     });
     horizontalLine.forEach((item) => {
-      indexGrid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+      indexGrid.horizonLine(item.sx, item.sy, item.ex, item.ey);
     });
     verticalLine.forEach((item) => {
       indexGrid.verticalLine(item.sx, item.sy, item.ex, item.ey);
@@ -1203,7 +1203,7 @@ class XTableTopIndexUI extends XTableIndexUI {
       viewRange: borderView,
     });
     horizontalLine.forEach((item) => {
-      indexGrid.horizontalLine(item.sx, item.sy, item.ex, item.ey);
+      indexGrid.horizonLine(item.sx, item.sy, item.ex, item.ey);
     });
     verticalLine.forEach((item) => {
       indexGrid.verticalLine(item.sx, item.sy, item.ex, item.ey);
@@ -1512,7 +1512,7 @@ class XTableFrozenFullRect {
     draw.fillRect(0, 0, index.getWidth(), indexHeight);
     draw.offset(0, 0);
     // 绘制边框
-    indexGrid.horizontalLine(0, indexHeight, indexWidth, indexHeight);
+    indexGrid.horizonLine(0, indexHeight, indexWidth, indexHeight);
     indexGrid.verticalLine(indexWidth, dy, indexWidth, indexHeight);
     draw.restore();
   }

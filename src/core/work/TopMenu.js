@@ -31,6 +31,7 @@ import { Scale } from './tools/Scale';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { XSelectItem } from '../table/xscreenitems/xselect/XSelectItem';
 import { XcopyStyle } from '../table/xscreenitems/xcopystyle/XcopyStyle';
+import { XDraw } from '../../canvas/XDraw';
 
 class Divider extends Widget {
   constructor() {
@@ -225,19 +226,19 @@ class TopMenu extends Widget {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
             const rect = selectRange;
-            let width = 1;
+            let widthType = XDraw.LINE_WIDTH_TYPE.level1;
             let type = LINE_TYPE.SOLID_LINE;
             switch (lineType) {
               case 'line1':
-                width = 1;
+                widthType = XDraw.LINE_WIDTH_TYPE.level1;
                 type = LINE_TYPE.SOLID_LINE;
                 break;
               case 'line2':
-                width = 2;
+                widthType = XDraw.LINE_WIDTH_TYPE.level2;
                 type = LINE_TYPE.SOLID_LINE;
                 break;
               case 'line3':
-                width = 3;
+                widthType = XDraw.LINE_WIDTH_TYPE.level3;
                 type = LINE_TYPE.SOLID_LINE;
                 break;
               case 'line4':
@@ -249,7 +250,6 @@ class TopMenu extends Widget {
               case 'line6':
                 type = LINE_TYPE.DOUBLE_LINE;
                 break;
-              default: break;
             }
             switch (borderType) {
               case 'border1':
@@ -260,7 +260,7 @@ class TopMenu extends Widget {
                     const { borderAttr } = newCell;
                     borderAttr.setAllDisplay(true);
                     borderAttr.setAllColor(color);
-                    borderAttr.setAllWidth(width);
+                    borderAttr.setAllWidthType(widthType);
                     borderAttr.setAllType(type);
                     cellDataProxy.setCell(ri, ci, newCell);
                   },
@@ -275,25 +275,25 @@ class TopMenu extends Widget {
                     if (ri !== rect.sri) {
                       borderAttr.setTDisplay(true);
                       borderAttr.setTColor(color);
-                      borderAttr.setTWidth(width);
+                      borderAttr.setTWidthType(widthType);
                       borderAttr.setTType(type);
                     }
                     if (ri !== rect.eri) {
                       borderAttr.setBDisplay(true);
                       borderAttr.setBColor(color);
-                      borderAttr.setBWidth(width);
+                      borderAttr.setBWidthType(widthType);
                       borderAttr.setBType(type);
                     }
                     if (ci !== rect.sci) {
                       borderAttr.setLDisplay(true);
                       borderAttr.setLColor(color);
-                      borderAttr.setLWidth(width);
+                      borderAttr.setLWidthType(widthType);
                       borderAttr.setLType(type);
                     }
                     if (ci !== rect.eci) {
                       borderAttr.setRDisplay(true);
                       borderAttr.setRColor(color);
-                      borderAttr.setRWidth(width);
+                      borderAttr.setRWidthType(widthType);
                       borderAttr.setRType(type);
                     }
                     cellDataProxy.setCell(ri, ci, newCell);
@@ -309,13 +309,13 @@ class TopMenu extends Widget {
                     if (ri !== rect.sri) {
                       borderAttr.setTDisplay(true);
                       borderAttr.setTColor(color);
-                      borderAttr.setTWidth(width);
+                      borderAttr.setTWidthType(widthType);
                       borderAttr.setTType(type);
                     }
                     if (ri !== rect.eri) {
                       borderAttr.setBDisplay(true);
                       borderAttr.setBColor(color);
-                      borderAttr.setBWidth(width);
+                      borderAttr.setBWidthType(widthType);
                       borderAttr.setBType(type);
                     }
                   },
@@ -330,13 +330,13 @@ class TopMenu extends Widget {
                     if (ci !== rect.sci) {
                       borderAttr.setLDisplay(true);
                       borderAttr.setLColor(color);
-                      borderAttr.setLWidth(width);
+                      borderAttr.setLWidthType(widthType);
                       borderAttr.setLType(type);
                     }
                     if (ci !== rect.eci) {
                       borderAttr.setRDisplay(true);
                       borderAttr.setRColor(color);
-                      borderAttr.setRWidth(width);
+                      borderAttr.setRWidthType(widthType);
                       borderAttr.setRType(type);
                     }
                     cellDataProxy.setCell(ri, ci, newCell);
@@ -352,25 +352,25 @@ class TopMenu extends Widget {
                     if (ri === rect.sri) {
                       borderAttr.setTDisplay(true);
                       borderAttr.setTColor(color);
-                      borderAttr.setTWidth(width);
+                      borderAttr.setTWidthType(widthType);
                       borderAttr.setTType(type);
                     }
                     if (ri === rect.eri) {
                       borderAttr.setBDisplay(true);
                       borderAttr.setBColor(color);
-                      borderAttr.setBWidth(width);
+                      borderAttr.setBWidthType(widthType);
                       borderAttr.setBType(type);
                     }
                     if (ci === rect.sci) {
                       borderAttr.setLDisplay(true);
                       borderAttr.setLColor(color);
-                      borderAttr.setLWidth(width);
+                      borderAttr.setLWidthType(widthType);
                       borderAttr.setLType(type);
                     }
                     if (ci === rect.eci) {
                       borderAttr.setRDisplay(true);
                       borderAttr.setRColor(color);
-                      borderAttr.setRWidth(width);
+                      borderAttr.setRWidthType(widthType);
                       borderAttr.setRType(type);
                     }
                     cellDataProxy.setCell(ri, ci, newCell);
@@ -386,7 +386,7 @@ class TopMenu extends Widget {
                     if (ci === rect.sci) {
                       borderAttr.setLDisplay(true);
                       borderAttr.setLColor(color);
-                      borderAttr.setLWidth(width);
+                      borderAttr.setLWidthType(widthType);
                       borderAttr.setLType(type);
                     }
                     cellDataProxy.setCell(ri, ci, newCell);
@@ -402,7 +402,7 @@ class TopMenu extends Widget {
                     if (ri === rect.sri) {
                       borderAttr.setTDisplay(true);
                       borderAttr.setTColor(color);
-                      borderAttr.setTWidth(width);
+                      borderAttr.setTWidthType(widthType);
                       borderAttr.setTType(type);
                     }
                     cellDataProxy.setCell(ri, ci, newCell);
@@ -418,7 +418,7 @@ class TopMenu extends Widget {
                     if (ci === rect.eci) {
                       borderAttr.setRDisplay(true);
                       borderAttr.setRColor(color);
-                      borderAttr.setRWidth(width);
+                      borderAttr.setRWidthType(widthType);
                       borderAttr.setRType(type);
                     }
                     cellDataProxy.setCell(ri, ci, newCell);
@@ -434,7 +434,7 @@ class TopMenu extends Widget {
                     if (ri === rect.eri) {
                       borderAttr.setBDisplay(true);
                       borderAttr.setBColor(color);
-                      borderAttr.setBWidth(width);
+                      borderAttr.setBWidthType(widthType);
                       borderAttr.setBType(type);
                     }
                     cellDataProxy.setCell(ri, ci, newCell);
@@ -452,7 +452,6 @@ class TopMenu extends Widget {
                   },
                 });
                 break;
-              default: break;
             }
             tableDataSnapshot.end();
             table.render();

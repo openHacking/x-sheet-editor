@@ -1,5 +1,6 @@
 import { LINE_TYPE } from '../../../canvas/Line';
 import { Utils } from '../../../utils/Utils';
+import { XDraw } from '../../../canvas/XDraw';
 
 let zIndexID = 0;
 
@@ -19,20 +20,20 @@ class Border {
    * @param zIndex
    * @param time
    * @param display
-   * @param width
+   * @param widthType
    * @param color
    * @param type
    */
   constructor({
+    widthType = XDraw.LINE_WIDTH_TYPE.level1,
     zIndex = 0,
     display = false,
-    width = 1,
     color = '#000000',
     type = LINE_TYPE.SOLID_LINE,
   }) {
     this.$zIndex = zIndex;
     this.$display = display;
-    this.$width = width;
+    this.$widthType = widthType;
     this.$color = color;
     this.$type = type;
     if (zIndex > zIndexID) {
@@ -53,13 +54,13 @@ class Border {
     this.$display = value;
   }
 
-  get width() {
-    return this.$width;
+  get widthType() {
+    return this.$widthType;
   }
 
-  set width(value) {
+  set widthType(value) {
     this.$zIndex = Border.getZIndex();
-    this.$width = value;
+    this.$widthType = value;
   }
 
   get color() {
@@ -81,19 +82,19 @@ class Border {
   }
 
   equal(target) {
+    const widthType = this.widthType === target.widthType;
     const color = this.color === target.color;
-    const width = this.width === target.width;
     const type = this.type === target.type;
-    return color && width && type;
+    return color && widthType && type;
   }
 
   toJSON() {
     const zIndex = this.$zIndex;
     const display = this.$display;
-    const width = this.$width;
+    const widthType = this.$widthType;
     const color = this.$color;
     const type = this.$type;
-    return { zIndex, display, width, color, type };
+    return { zIndex, display, widthType, color, type };
   }
 
   priority(border) {

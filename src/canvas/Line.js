@@ -14,28 +14,36 @@ class SolidLine {
     this.draw = draw;
     Utils.mergeDeep(this, {
       color: '#000000',
-      width: 1,
+      widthType: XDraw.LINE_WIDTH_TYPE.level1,
     }, attr);
   }
 
-  drawLine(sx, sy, ex, ey) {
-    const { draw } = this;
-    const { width, color } = this;
-    draw.attr({
-      lineWidth: width,
-      strokeStyle: color,
-    });
-    draw.setLineDash([]);
-    draw.line([sx, sy], [ex, ey]);
+  setWidthType(widthType) {
+    this.widthType = widthType;
   }
 
   setColor(color) {
     this.color = color;
   }
 
-  setWidth(width) {
-    this.width = width;
+  horizonLine(sx, sy, ex, ey) {
+    const { draw } = this;
+    const { widthType, color } = this;
+    draw.setLineColor(color);
+    draw.setLineType(widthType);
+    draw.setLineDash([]);
+    draw.horizonLine([sx, sy], [ex, ey]);
   }
+
+  verticalLine(sx, sy, ex, ey) {
+    const { draw } = this;
+    const { widthType, color } = this;
+    draw.setLineColor(color);
+    draw.setLineType(widthType);
+    draw.setLineDash([]);
+    draw.verticalLine([sx, sy], [ex, ey]);
+  }
+
 }
 
 class DottedLine {
@@ -44,29 +52,37 @@ class DottedLine {
     this.draw = draw;
     Utils.mergeDeep(this, {
       color: '#000000',
-      width: 1,
+      widthType: XDraw.LINE_WIDTH_TYPE.level1,
       dash: [5],
     }, attr);
   }
 
-  drawLine(sx, sy, ex, ey) {
-    const { draw, dash } = this;
-    const { width, color } = this;
-    draw.attr({
-      lineWidth: width,
-      strokeStyle: color,
-    });
-    draw.setLineDash(dash);
-    draw.line([sx, sy], [ex, ey]);
+  setWidthType(widthType) {
+    this.widthType = widthType;
   }
 
   setColor(color) {
     this.color = color;
   }
 
-  setWidth(width) {
-    this.width = width;
+  horizonLine(sx, sy, ex, ey) {
+    const { draw, dash } = this;
+    const { widthType, color } = this;
+    draw.setLineColor(color);
+    draw.setLineType(widthType);
+    draw.setLineDash(dash);
+    draw.horizonLine([sx, sy], [ex, ey]);
   }
+
+  verticalLine(sx, sy, ex, ey) {
+    const { draw, dash } = this;
+    const { widthType, color } = this;
+    draw.setLineColor(color);
+    draw.setLineType(widthType);
+    draw.setLineDash(dash);
+    draw.verticalLine([sx, sy], [ex, ey]);
+  }
+
 }
 
 class DoubleLine {
@@ -75,7 +91,7 @@ class DoubleLine {
     this.draw = draw;
     Utils.mergeDeep(this, {
       color: '#000000',
-      width: 1,
+      widthType: XDraw.LINE_WIDTH_TYPE.level1,
       padding: 1,
       spacing: DoubleLine.spacing,
       leftShow: () => false,
@@ -88,6 +104,46 @@ class DoubleLine {
       iFMergeFirstCol: () => false,
       iFMergeLastCol: () => false,
     }, attr);
+  }
+
+  setWidthType(widthType) {
+    this.widthType = widthType;
+  }
+
+  setColor(color) {
+    this.color = color;
+  }
+
+  horizonLine(sx, sy, ex, ey, row, col, pos) {
+    const { draw } = this;
+    const { widthType, color } = this;
+    draw.setLineColor(color);
+    draw.setLineType(widthType);
+    draw.setLineDash([]);
+    const external = this.handleExternal(sx, sy, ex, ey, row, col, pos);
+    const internal = this.handleInternal(sx, sy, ex, ey, row, col, pos);
+    if (!Utils.isEmptyObject(internal)) {
+      draw.horizonLine([internal.sx, internal.sy], [internal.ex, internal.ey]);
+    }
+    if (!Utils.isEmptyObject(external)) {
+      draw.horizonLine([external.sx, external.sy], [external.ex, external.ey]);
+    }
+  }
+
+  verticalLine(sx, sy, ex, ey, row, col, pos) {
+    const { draw } = this;
+    const { widthType, color } = this;
+    draw.setLineColor(color);
+    draw.setLineType(widthType);
+    draw.setLineDash([]);
+    const external = this.handleExternal(sx, sy, ex, ey, row, col, pos);
+    const internal = this.handleInternal(sx, sy, ex, ey, row, col, pos);
+    if (!Utils.isEmptyObject(internal)) {
+      draw.verticalLine([internal.sx, internal.sy], [internal.ex, internal.ey]);
+    }
+    if (!Utils.isEmptyObject(external)) {
+      draw.verticalLine([external.sx, external.sy], [external.ex, external.ey]);
+    }
   }
 
   handleExternal(sx, sy, ex, ey, row, col, pos) {
@@ -478,37 +534,13 @@ class DoubleLine {
     return internal;
   }
 
-  drawLine(sx, sy, ex, ey, row, col, pos) {
-    const { draw } = this;
-    const { width, color } = this;
-    draw.attr({
-      lineWidth: width,
-      strokeStyle: color,
-    });
-    draw.setLineDash([]);
-    const external = this.handleExternal(sx, sy, ex, ey, row, col, pos);
-    const internal = this.handleInternal(sx, sy, ex, ey, row, col, pos);
-    if (!Utils.isEmptyObject(internal)) {
-      draw.line([internal.sx, internal.sy], [internal.ex, internal.ey]);
-    }
-    if (!Utils.isEmptyObject(external)) {
-      draw.line([external.sx, external.sy], [external.ex, external.ey]);
-    }
-  }
-
-  setColor(color) {
-    this.color = color;
-  }
-
-  setWidth(width) {
-    this.width = width;
-  }
 }
 DoubleLine.spacing = XDraw.dpr() >= 2 ? 3 : 2;
 
 class Line {
 
   constructor(draw, attr = {}) {
+    this.widthType = XDraw.LINE_WIDTH_TYPE.level1;
     this.type = LINE_TYPE.SOLID_LINE;
     this.solidLine = new SolidLine(draw, Utils.mergeDeep({}, attr));
     this.dottedLine = new DottedLine(draw, Utils.mergeDeep({
@@ -520,39 +552,10 @@ class Line {
     this.doubleLine = new DoubleLine(draw, Utils.mergeDeep({}, attr));
   }
 
-  drawLine(sx, sy, ex, ey, row, col, pos) {
-    const {
-      type,
-      solidLine,
-      dottedLine,
-      pointLine,
-      doubleLine,
-    } = this;
-    switch (type) {
-      case LINE_TYPE.SOLID_LINE:
-        solidLine.drawLine(sx, sy, ex, ey);
-        break;
-      case LINE_TYPE.DOTTED_LINE:
-        dottedLine.drawLine(sx, sy, ex, ey);
-        break;
-      case LINE_TYPE.POINT_LINE:
-        pointLine.drawLine(sx, sy, ex, ey);
-        break;
-      case LINE_TYPE.DOUBLE_LINE:
-        doubleLine.drawLine(sx, sy, ex, ey, row, col, pos);
-        break;
-      default: break;
-    }
-  }
-
-  setType(type) {
-    this.type = type;
-  }
-
-  setWidth(width) {
-    if (width) {
+  setWidthType(widthType) {
+    if (widthType) {
       if (this.type === LINE_TYPE.SOLID_LINE) {
-        this.solidLine.setWidth(width);
+        this.solidLine.setWidthType(widthType);
       }
     }
   }
@@ -565,6 +568,61 @@ class Line {
       this.doubleLine.setColor(color);
     }
   }
+
+  setType(type) {
+    this.type = type;
+  }
+
+  horizonLine(sx, sy, ex, ey, row, col, pos) {
+    const {
+      type,
+      solidLine,
+      dottedLine,
+      pointLine,
+      doubleLine,
+    } = this;
+    switch (type) {
+      case LINE_TYPE.SOLID_LINE:
+        solidLine.horizonLine(sx, sy, ex, ey);
+        break;
+      case LINE_TYPE.DOTTED_LINE:
+        dottedLine.horizonLine(sx, sy, ex, ey);
+        break;
+      case LINE_TYPE.POINT_LINE:
+        pointLine.horizonLine(sx, sy, ex, ey);
+        break;
+      case LINE_TYPE.DOUBLE_LINE:
+        doubleLine.horizonLine(sx, sy, ex, ey, row, col, pos);
+        break;
+    }
+  }
+
+  verticalLine(sx, sy, ex, ey, row, col, pos) {
+    const {
+      type,
+      solidLine,
+      dottedLine,
+      pointLine,
+      doubleLine,
+    } = this;
+    switch (type) {
+      case LINE_TYPE.SOLID_LINE:
+        solidLine.verticalLine(sx, sy, ex, ey);
+        break;
+      case LINE_TYPE.DOTTED_LINE:
+        dottedLine.verticalLine(sx, sy, ex, ey);
+        break;
+      case LINE_TYPE.POINT_LINE:
+        pointLine.verticalLine(sx, sy, ex, ey);
+        break;
+      case LINE_TYPE.DOUBLE_LINE:
+        doubleLine.verticalLine(sx, sy, ex, ey, row, col, pos);
+        break;
+    }
+  }
+
 }
 
-export { Line, LINE_TYPE };
+export {
+  Line, LINE_TYPE, SolidLine,
+};
