@@ -322,6 +322,8 @@ class HorizontalFont extends DisplayFont {
       if (diff > 0) {
         if (overflow.x > rect.x - diff) {
           pointOffset = true;
+        } else if (overflow.x + overflow.width < rect.x + rect.width + diff) {
+          pointOffset = true;
         }
       }
     }
