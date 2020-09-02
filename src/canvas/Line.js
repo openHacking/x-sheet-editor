@@ -14,8 +14,13 @@ class SolidLine {
     this.draw = draw;
     Utils.mergeDeep(this, {
       color: '#000000',
+      baseLineType: XDraw.BASELINE_TYPE.default,
       widthType: XDraw.LINE_WIDTH_TYPE.low,
     }, attr);
+  }
+
+  setBaseLineType(baseLineType) {
+    this.baseLineType = baseLineType;
   }
 
   setWidthType(widthType) {
@@ -28,8 +33,11 @@ class SolidLine {
 
   horizonLine(sx, sy, ex, ey) {
     const { draw } = this;
-    const { widthType, color } = this;
+    const {
+      widthType, color, baseLineType,
+    } = this;
     draw.setLineColor(color);
+    draw.setBaseLineType(baseLineType);
     draw.setLineWidthType(widthType);
     draw.setLineDash([]);
     draw.horizonLine([sx, sy], [ex, ey]);
@@ -37,8 +45,11 @@ class SolidLine {
 
   verticalLine(sx, sy, ex, ey) {
     const { draw } = this;
-    const { widthType, color } = this;
+    const {
+      widthType, color, baseLineType,
+    } = this;
     draw.setLineColor(color);
+    draw.setBaseLineType(baseLineType);
     draw.setLineWidthType(widthType);
     draw.setLineDash([]);
     draw.verticalLine([sx, sy], [ex, ey]);
@@ -52,9 +63,14 @@ class DottedLine {
     this.draw = draw;
     Utils.mergeDeep(this, {
       color: '#000000',
+      baseLineType: XDraw.BASELINE_TYPE.default,
       widthType: XDraw.LINE_WIDTH_TYPE.low,
       dash: [5],
     }, attr);
+  }
+
+  setBaseLineType(baseLineType) {
+    this.baseLineType = baseLineType;
   }
 
   setWidthType(widthType) {
@@ -67,8 +83,11 @@ class DottedLine {
 
   horizonLine(sx, sy, ex, ey) {
     const { draw, dash } = this;
-    const { widthType, color } = this;
+    const {
+      widthType, color, baseLineType,
+    } = this;
     draw.setLineColor(color);
+    draw.setBaseLineType(baseLineType);
     draw.setLineWidthType(widthType);
     draw.setLineDash(dash);
     draw.horizonLine([sx, sy], [ex, ey]);
@@ -76,8 +95,11 @@ class DottedLine {
 
   verticalLine(sx, sy, ex, ey) {
     const { draw, dash } = this;
-    const { widthType, color } = this;
+    const {
+      widthType, color, baseLineType,
+    } = this;
     draw.setLineColor(color);
+    draw.setBaseLineType(baseLineType);
     draw.setLineWidthType(widthType);
     draw.setLineDash(dash);
     draw.verticalLine([sx, sy], [ex, ey]);
@@ -91,6 +113,7 @@ class DoubleLine {
     this.draw = draw;
     Utils.mergeDeep(this, {
       color: '#000000',
+      baseLineType: XDraw.BASELINE_TYPE.default,
       widthType: XDraw.LINE_WIDTH_TYPE.low,
       padding: 1,
       spacing: DoubleLine.spacing,
@@ -106,6 +129,10 @@ class DoubleLine {
     }, attr);
   }
 
+  setBaseLineType(baseLineType) {
+    this.baseLineType = baseLineType;
+  }
+
   setWidthType(widthType) {
     this.widthType = widthType;
   }
@@ -116,8 +143,11 @@ class DoubleLine {
 
   horizonLine(sx, sy, ex, ey, row, col, pos) {
     const { draw } = this;
-    const { widthType, color } = this;
+    const {
+      widthType, color, baseLineType,
+    } = this;
     draw.setLineColor(color);
+    draw.setBaseLineType(baseLineType);
     draw.setLineWidthType(widthType);
     draw.setLineDash([]);
     const external = this.handleExternal(sx, sy, ex, ey, row, col, pos);
@@ -132,8 +162,11 @@ class DoubleLine {
 
   verticalLine(sx, sy, ex, ey, row, col, pos) {
     const { draw } = this;
-    const { widthType, color } = this;
+    const {
+      widthType, color, baseLineType,
+    } = this;
     draw.setLineColor(color);
+    draw.setBaseLineType(baseLineType);
     draw.setLineWidthType(widthType);
     draw.setLineDash([]);
     const external = this.handleExternal(sx, sy, ex, ey, row, col, pos);

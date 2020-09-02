@@ -205,11 +205,16 @@ class CorsLine extends BaseLine {
   constructor(canvas) {
     super(canvas);
     this.lineWidthType = CorsLine.LINE_WIDTH_TYPE.low;
+    this.baseLineType = CorsLine.BASELINE_TYPE.default;
     this.lineColor = '#000000';
   }
 
   setLineWidthType(type) {
     this.lineWidthType = type;
+  }
+
+  setBaseLineType(type) {
+    this.baseLineType = type;
   }
 
   setLineColor(color) {
@@ -221,7 +226,7 @@ class CorsLine extends BaseLine {
       throw new TypeError('Error Horizon Line');
     }
     const {
-      lineWidthType, lineColor,
+      lineWidthType, lineColor, baseLineType,
     } = this;
     let lineWidth = LINE_WIDTH_LOW;
     switch (lineWidthType) {
@@ -236,10 +241,20 @@ class CorsLine extends BaseLine {
         break;
     }
     if (LINE_WIDTH_LOW > 1) {
-      sx -= LINE_WIDTH_LOW;
-      sy -= LINE_WIDTH_LOW;
-      ex -= LINE_WIDTH_LOW;
-      ey -= LINE_WIDTH_LOW;
+      switch (baseLineType) {
+        case CorsLine.BASELINE_TYPE.inside:
+          sx -= lineWidth;
+          sy -= lineWidth;
+          ex -= lineWidth;
+          ey -= lineWidth;
+          break;
+        case CorsLine.BASELINE_TYPE.outer:
+          sx += lineWidth;
+          sy += lineWidth;
+          ex += lineWidth;
+          ey += lineWidth;
+          break;
+      }
     }
     this.attr({
       strokeStyle: lineColor,
@@ -253,7 +268,7 @@ class CorsLine extends BaseLine {
       throw new TypeError('Error Vertical Line');
     }
     const {
-      lineWidthType, lineColor,
+      lineWidthType, lineColor, baseLineType,
     } = this;
     let lineWidth = LINE_WIDTH_LOW;
     switch (lineWidthType) {
@@ -268,10 +283,20 @@ class CorsLine extends BaseLine {
         break;
     }
     if (LINE_WIDTH_LOW > 1) {
-      sx -= LINE_WIDTH_LOW;
-      sy -= LINE_WIDTH_LOW;
-      ex -= LINE_WIDTH_LOW;
-      ey -= LINE_WIDTH_LOW;
+      switch (baseLineType) {
+        case CorsLine.BASELINE_TYPE.inside:
+          sx -= lineWidth;
+          sy -= lineWidth;
+          ex -= lineWidth;
+          ey -= lineWidth;
+          break;
+        case CorsLine.BASELINE_TYPE.outer:
+          sx += lineWidth;
+          sy += lineWidth;
+          ex += lineWidth;
+          ey += lineWidth;
+          break;
+      }
     }
     this.attr({
       strokeStyle: lineColor,
@@ -285,6 +310,11 @@ CorsLine.LINE_WIDTH_TYPE = {
   low: 'low',
   medium: 'medium',
   high: 'high',
+};
+CorsLine.BASELINE_TYPE = {
+  inside: 'inside',
+  outer: 'outer',
+  default: 'default',
 };
 
 class XDraw extends CorsLine {

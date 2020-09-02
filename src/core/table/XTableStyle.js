@@ -1124,9 +1124,11 @@ class XTableLeftIndexUI extends XTableIndexUI {
     const verticalLine = leftIndexVerticalGrid.getVerticalLine({
       viewRange: borderView,
     });
+    indexGrid.setBaseLineType(XDraw.BASELINE_TYPE.default);
     horizontalLine.forEach((item) => {
       indexGrid.horizonLine(item.sx, item.sy, item.ex, item.ey);
     });
+    indexGrid.setBaseLineType(XDraw.BASELINE_TYPE.inside);
     verticalLine.forEach((item) => {
       indexGrid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
@@ -1202,9 +1204,11 @@ class XTableTopIndexUI extends XTableIndexUI {
     const verticalLine = topIndexVerticalGrid.getVerticalLine({
       viewRange: borderView,
     });
+    indexGrid.setBaseLineType(XDraw.BASELINE_TYPE.inside);
     horizontalLine.forEach((item) => {
       indexGrid.horizonLine(item.sx, item.sy, item.ex, item.ey);
     });
+    indexGrid.setBaseLineType(XDraw.BASELINE_TYPE.default);
     verticalLine.forEach((item) => {
       indexGrid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
@@ -1512,6 +1516,7 @@ class XTableFrozenFullRect {
     draw.fillRect(0, 0, index.getWidth(), indexHeight);
     draw.offset(0, 0);
     // 绘制边框
+    indexGrid.setBaseLineType(XDraw.BASELINE_TYPE.inside);
     indexGrid.horizonLine(0, indexHeight, indexWidth, indexHeight);
     indexGrid.verticalLine(indexWidth, dy, indexWidth, indexHeight);
     draw.restore();
