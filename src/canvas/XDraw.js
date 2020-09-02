@@ -194,7 +194,8 @@ class BaseLine extends Position {
   lpx(pixel) {
     const { ctx } = this;
     const { lineWidth } = ctx;
-    return lineWidth % 2 === 0 ? pixel : pixel - 0.5;
+    return lineWidth % 2 === 0
+      ? pixel : pixel - 0.5;
   }
 
 }
@@ -244,10 +245,7 @@ class CorsLine extends BaseLine {
       strokeStyle: lineColor,
       lineWidth,
     });
-    super.polyline((xys) => {
-      const [x, y] = xys;
-      return [Base.rounding(x + this.getOffsetX()), this.lpx(Base.rounding(y + this.getOffsetY()))];
-    }, [sx, sy], [ex, ey]);
+    super.line([sx, sy], [ex, ey]);
   }
 
   verticalLine([sx, sy], [ex, ey]) {
@@ -279,10 +277,7 @@ class CorsLine extends BaseLine {
       strokeStyle: lineColor,
       lineWidth,
     });
-    super.polyline((xys) => {
-      const [x, y] = xys;
-      return [this.lpx(Base.rounding(x + this.getOffsetX())), Base.rounding(y + this.getOffsetY())];
-    }, [sx, sy], [ex, ey]);
+    super.line([sx, sy], [ex, ey]);
   }
 
 }
