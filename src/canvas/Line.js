@@ -14,7 +14,7 @@ class SolidLine {
     this.draw = draw;
     Utils.mergeDeep(this, {
       color: '#000000',
-      widthType: XDraw.LINE_WIDTH_TYPE.level1,
+      widthType: XDraw.LINE_WIDTH_TYPE.low,
     }, attr);
   }
 
@@ -30,7 +30,7 @@ class SolidLine {
     const { draw } = this;
     const { widthType, color } = this;
     draw.setLineColor(color);
-    draw.setLineType(widthType);
+    draw.setLineWidthType(widthType);
     draw.setLineDash([]);
     draw.horizonLine([sx, sy], [ex, ey]);
   }
@@ -39,7 +39,7 @@ class SolidLine {
     const { draw } = this;
     const { widthType, color } = this;
     draw.setLineColor(color);
-    draw.setLineType(widthType);
+    draw.setLineWidthType(widthType);
     draw.setLineDash([]);
     draw.verticalLine([sx, sy], [ex, ey]);
   }
@@ -52,7 +52,7 @@ class DottedLine {
     this.draw = draw;
     Utils.mergeDeep(this, {
       color: '#000000',
-      widthType: XDraw.LINE_WIDTH_TYPE.level1,
+      widthType: XDraw.LINE_WIDTH_TYPE.low,
       dash: [5],
     }, attr);
   }
@@ -69,7 +69,7 @@ class DottedLine {
     const { draw, dash } = this;
     const { widthType, color } = this;
     draw.setLineColor(color);
-    draw.setLineType(widthType);
+    draw.setLineWidthType(widthType);
     draw.setLineDash(dash);
     draw.horizonLine([sx, sy], [ex, ey]);
   }
@@ -78,7 +78,7 @@ class DottedLine {
     const { draw, dash } = this;
     const { widthType, color } = this;
     draw.setLineColor(color);
-    draw.setLineType(widthType);
+    draw.setLineWidthType(widthType);
     draw.setLineDash(dash);
     draw.verticalLine([sx, sy], [ex, ey]);
   }
@@ -91,7 +91,7 @@ class DoubleLine {
     this.draw = draw;
     Utils.mergeDeep(this, {
       color: '#000000',
-      widthType: XDraw.LINE_WIDTH_TYPE.level1,
+      widthType: XDraw.LINE_WIDTH_TYPE.low,
       padding: 1,
       spacing: DoubleLine.spacing,
       leftShow: () => false,
@@ -118,7 +118,7 @@ class DoubleLine {
     const { draw } = this;
     const { widthType, color } = this;
     draw.setLineColor(color);
-    draw.setLineType(widthType);
+    draw.setLineWidthType(widthType);
     draw.setLineDash([]);
     const external = this.handleExternal(sx, sy, ex, ey, row, col, pos);
     const internal = this.handleInternal(sx, sy, ex, ey, row, col, pos);
@@ -134,7 +134,7 @@ class DoubleLine {
     const { draw } = this;
     const { widthType, color } = this;
     draw.setLineColor(color);
-    draw.setLineType(widthType);
+    draw.setLineWidthType(widthType);
     draw.setLineDash([]);
     const external = this.handleExternal(sx, sy, ex, ey, row, col, pos);
     const internal = this.handleInternal(sx, sy, ex, ey, row, col, pos);
@@ -540,7 +540,7 @@ DoubleLine.spacing = XDraw.dpr() >= 2 ? 3 : 2;
 class Line {
 
   constructor(draw, attr = {}) {
-    this.widthType = XDraw.LINE_WIDTH_TYPE.level1;
+    this.widthType = XDraw.LINE_WIDTH_TYPE.low;
     this.type = LINE_TYPE.SOLID_LINE;
     this.solidLine = new SolidLine(draw, Utils.mergeDeep({}, attr));
     this.dottedLine = new DottedLine(draw, Utils.mergeDeep({

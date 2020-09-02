@@ -226,19 +226,19 @@ class TopMenu extends Widget {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
             const rect = selectRange;
-            let widthType = XDraw.LINE_WIDTH_TYPE.level1;
+            let widthType = XDraw.LINE_WIDTH_TYPE.low;
             let type = LINE_TYPE.SOLID_LINE;
             switch (lineType) {
               case 'line1':
-                widthType = XDraw.LINE_WIDTH_TYPE.level1;
+                widthType = XDraw.LINE_WIDTH_TYPE.low;
                 type = LINE_TYPE.SOLID_LINE;
                 break;
               case 'line2':
-                widthType = XDraw.LINE_WIDTH_TYPE.level2;
+                widthType = XDraw.LINE_WIDTH_TYPE.medium;
                 type = LINE_TYPE.SOLID_LINE;
                 break;
               case 'line3':
-                widthType = XDraw.LINE_WIDTH_TYPE.level3;
+                widthType = XDraw.LINE_WIDTH_TYPE.high;
                 type = LINE_TYPE.SOLID_LINE;
                 break;
               case 'line4':

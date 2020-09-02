@@ -543,7 +543,7 @@ class XTableDimensions extends Widget {
       index: {
         height: 30,
         width: 50,
-        gridColor: '#000000',
+        gridColor: '#bababa',
         size: 10,
         color: '#000000',
       },
@@ -551,7 +551,7 @@ class XTableDimensions extends Widget {
         showGrid: true,
         background: '#ffffff',
         borderColor: '#000000',
-        gridColor: '#000000',
+        gridColor: '#d7d7d7',
       },
       fixed: {
         fxTop: -1,

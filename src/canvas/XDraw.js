@@ -1,6 +1,9 @@
 /* global window */
 
 const DPR = window.devicePixelRatio || 1;
+const LINE_WIDTH_LOW = Math.round(DPR);
+const LINE_WIDTH_MEDIUM = Math.round(DPR * 2);
+const LINE_WIDTH_HIGH = Math.round(DPR * 3);
 
 class Base {
 
@@ -33,6 +36,23 @@ class Base {
     this.ctx = canvas.getContext('2d');
   }
 
+  attr(options) {
+    // eslint-disable-next-line guard-for-in,no-restricted-syntax
+    for (const key in options) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (options.hasOwnProperty(key)) {
+        let value = options[key];
+        if (typeof value === 'string' || value instanceof String) {
+          value = value.trim();
+        }
+        if (this.ctx[key] !== value) {
+          this.ctx[key] = value;
+        }
+      }
+    }
+    return this;
+  }
+
   resize(width, height) {
     const { canvas } = this;
     canvas.width = Base.rpx(width);
@@ -45,11 +65,6 @@ class Base {
 }
 
 class Wrapping extends Base {
-
-  constructor(canvas) {
-    super(canvas);
-    this.dash = [];
-  }
 
   beginPath() {
     const { ctx } = this;
@@ -88,7 +103,6 @@ class Wrapping extends Base {
 
   setLineDash(dash) {
     const { ctx } = this;
-    this.dash = dash;
     ctx.setLineDash(dash);
     return this;
   }
@@ -115,23 +129,6 @@ class Wrapping extends Base {
 
 class Extends extends Wrapping {
 
-  attr(options) {
-    // eslint-disable-next-line guard-for-in,no-restricted-syntax
-    for (const key in options) {
-      // eslint-disable-next-line no-prototype-builtins
-      if (options.hasOwnProperty(key)) {
-        let value = options[key];
-        if (typeof value === 'string' || value instanceof String) {
-          value = value.trim();
-        }
-        if (this.ctx[key] !== value) {
-          this.ctx[key] = value;
-        }
-      }
-    }
-    return this;
-  }
-
   fullRect() {
     const { canvas } = this;
     const { width, height } = canvas;
@@ -142,6 +139,20 @@ class Extends extends Wrapping {
   rotate(angle) {
     super.rotate(Base.radian(angle));
     return this;
+  }
+
+  polyline(interpolation = xys => xys, ...xys) {
+    const { ctx } = this;
+    if (xys.length > 1) {
+      this.beginPath();
+      const [x, y] = interpolation(xys[0]);
+      ctx.moveTo(x, y);
+      for (let i = 1, len = xys.length; i < len; i += 1) {
+        const [x, y] = interpolation(xys[i]);
+        ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
   }
 
 }
@@ -169,136 +180,119 @@ class Position extends Extends {
 
 }
 
-class Line extends Position {
-
-  lpx(px) {
-    return px - 0.5;
-  }
+class BaseLine extends Position {
 
   line(...xys) {
-    const { ctx } = this;
-    if (xys.length > 1) {
-      this.beginPath();
-      let [x, y] = xys[0];
-      x += this.getOffsetX();
-      y += this.getOffsetY();
-      ctx.moveTo(this.lpx(Base.rounding(x)), this.lpx(Base.rounding(y)));
-      for (let i = 1, len = xys.length; i < len; i += 1) {
-        let [x, y] = xys[i];
-        x += this.getOffsetX();
-        y += this.getOffsetY();
-        ctx.lineTo(this.lpx(Base.rounding(x)), this.lpx(Base.rounding(y)));
-      }
-      ctx.stroke();
-    }
+    super.polyline((xys) => {
+      const [x, y] = xys;
+      return [this.lpx(Base.rounding(x + this.getOffsetX())),
+        this.lpx(Base.rounding(y + this.getOffsetY()))];
+    }, ...xys);
     return this;
+  }
+
+  lpx(pixel) {
+    const { ctx } = this;
+    const { lineWidth } = ctx;
+    return lineWidth % 2 === 0 ? pixel : pixel - 0.5;
   }
 
 }
 
-const LINE_WIDTH_LEVEL1 = Math.round(DPR);
-const LINE_WIDTH_LEVEL2 = Math.round(DPR * 2);
-const LINE_WIDTH_LEVEL3 = Math.round(DPR * 3);
-class XLine extends Line {
+class CorsLine extends BaseLine {
 
   constructor(canvas) {
     super(canvas);
-    this.lineType = XLine.LINE_WIDTH_TYPE.level1;
+    this.lineWidthType = CorsLine.LINE_WIDTH_TYPE.low;
     this.lineColor = '#000000';
+  }
+
+  setLineWidthType(type) {
+    this.lineWidthType = type;
   }
 
   setLineColor(color) {
     this.lineColor = color;
   }
 
-  setLineType(type) {
-    this.lineType = type;
-  }
-
   horizonLine([sx, sy], [ex, ey]) {
     if (sy !== ey) {
-      throw new TypeError('error horizon line');
+      throw new TypeError('Error Horizon Line');
     }
     const {
-      dash, lineType, lineColor, ctx,
+      lineWidthType, lineColor,
     } = this;
-    let lineWidth = LINE_WIDTH_LEVEL1;
-    switch (lineType) {
-      case XLine.LINE_WIDTH_TYPE.level1:
-        lineWidth = LINE_WIDTH_LEVEL1;
+    let lineWidth = LINE_WIDTH_LOW;
+    switch (lineWidthType) {
+      case CorsLine.LINE_WIDTH_TYPE.low:
+        lineWidth = LINE_WIDTH_LOW;
         break;
-      case XLine.LINE_WIDTH_TYPE.level2:
-        lineWidth = LINE_WIDTH_LEVEL2;
+      case CorsLine.LINE_WIDTH_TYPE.medium:
+        lineWidth = LINE_WIDTH_MEDIUM;
         break;
-      case XLine.LINE_WIDTH_TYPE.level3:
-        lineWidth = LINE_WIDTH_LEVEL3;
+      case CorsLine.LINE_WIDTH_TYPE.high:
+        lineWidth = LINE_WIDTH_HIGH;
         break;
     }
-    sx -= lineWidth;
-    sy -= lineWidth;
-    ex -= lineWidth;
-    ey -= lineWidth;
-    if (lineWidth < 2 || dash.length > 0) {
-      this.attr({
-        strokeStyle: lineColor,
-        lineWidth,
-      });
-      super.line([sx, sy], [ex, ey]);
-    } else {
-      const width = Math.abs(ex - sx);
-      this.attr({ fillStyle: lineColor });
-      sx += this.getOffsetX();
-      sy += this.getOffsetY();
-      ctx.fillRect(Base.rounding(sx), Base.rounding(sy), width, lineWidth);
+    if (LINE_WIDTH_LOW > 1) {
+      sx -= LINE_WIDTH_LOW;
+      sy -= LINE_WIDTH_LOW;
+      ex -= LINE_WIDTH_LOW;
+      ey -= LINE_WIDTH_LOW;
     }
+    this.attr({
+      strokeStyle: lineColor,
+      lineWidth,
+    });
+    super.polyline((xys) => {
+      const [x, y] = xys;
+      return [Base.rounding(x + this.getOffsetX()), this.lpx(Base.rounding(y + this.getOffsetY()))];
+    }, [sx, sy], [ex, ey]);
   }
 
   verticalLine([sx, sy], [ex, ey]) {
     if (sx !== ex) {
-      throw new TypeError('error horizon line');
+      throw new TypeError('Error Vertical Line');
     }
     const {
-      dash, lineType, lineColor, ctx,
+      lineWidthType, lineColor,
     } = this;
-    let lineWidth = LINE_WIDTH_LEVEL1;
-    switch (lineType) {
-      case XLine.LINE_WIDTH_TYPE.level1:
-        lineWidth = LINE_WIDTH_LEVEL1;
+    let lineWidth = LINE_WIDTH_LOW;
+    switch (lineWidthType) {
+      case CorsLine.LINE_WIDTH_TYPE.low:
+        lineWidth = LINE_WIDTH_LOW;
         break;
-      case XLine.LINE_WIDTH_TYPE.level2:
-        lineWidth = LINE_WIDTH_LEVEL2;
+      case CorsLine.LINE_WIDTH_TYPE.medium:
+        lineWidth = LINE_WIDTH_MEDIUM;
         break;
-      case XLine.LINE_WIDTH_TYPE.level3:
-        lineWidth = LINE_WIDTH_LEVEL3;
+      case CorsLine.LINE_WIDTH_TYPE.high:
+        lineWidth = LINE_WIDTH_HIGH;
         break;
     }
-    sx -= lineWidth;
-    sy -= lineWidth;
-    ex -= lineWidth;
-    ey -= lineWidth;
-    if (lineWidth < 2 || dash.length > 0) {
-      this.attr({
-        strokeStyle: lineColor,
-        lineWidth,
-      });
-      super.line([sx, sy], [ex, ey]);
-    } else {
-      const height = Math.abs(ey - sy);
-      this.attr({ fillStyle: lineColor });
-      sx += this.getOffsetX();
-      sy += this.getOffsetY();
-      ctx.fillRect(Base.rounding(sx), Base.rounding(sy), lineWidth, height);
+    if (LINE_WIDTH_LOW > 1) {
+      sx -= LINE_WIDTH_LOW;
+      sy -= LINE_WIDTH_LOW;
+      ex -= LINE_WIDTH_LOW;
+      ey -= LINE_WIDTH_LOW;
     }
+    this.attr({
+      strokeStyle: lineColor,
+      lineWidth,
+    });
+    super.polyline((xys) => {
+      const [x, y] = xys;
+      return [this.lpx(Base.rounding(x + this.getOffsetX())), Base.rounding(y + this.getOffsetY())];
+    }, [sx, sy], [ex, ey]);
   }
 
 }
-XLine.LINE_WIDTH_TYPE = {
-  level1: 'level1',
-  level2: 'level2',
-  level3: 'level3',
+CorsLine.LINE_WIDTH_TYPE = {
+  low: 'low',
+  medium: 'medium',
+  high: 'high',
 };
 
-class XDraw extends XLine {
+class XDraw extends CorsLine {
 
   fillText(text, x, y) {
     x += this.getOffsetX();
