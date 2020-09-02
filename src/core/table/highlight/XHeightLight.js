@@ -6,6 +6,7 @@ import {
 } from '../../../const/Constant';
 import { EventBind } from '../../../utils/EventBind';
 import { XSelectItem } from '../xscreenitems/xselect/XSelectItem';
+import { XDraw } from '../../../canvas/XDraw';
 
 class XHeightLight extends Widget {
 
@@ -92,10 +93,10 @@ class XHeightLight extends Widget {
       case RANGE_OVER_GO.LTL:
       case RANGE_OVER_GO.BRL:
       case RANGE_OVER_GO.ALL:
-        return cols.sectionSumWidth(selectRange.sci, fxLeft);
+        return XDraw.offsetToLineInside(cols.sectionSumWidth(selectRange.sci, fxLeft));
     }
     // 滚动位置
-    return cols.sectionSumWidth(scrollView.sci, selectRange.sci - 1);
+    return XDraw.offsetToLineInside(cols.sectionSumWidth(scrollView.sci, selectRange.sci - 1));
   }
 
   getWidth() {

@@ -643,7 +643,7 @@ class XTableContentUI extends XTableUI {
     } = table;
     const drawX = this.getDrawX();
     const drawY = this.getDrawY();
-    draw.offset(drawX, drawY);
+    draw.offset(XDraw.offsetToLineInside(drawX), XDraw.offsetToLineInside(drawY));
     // 左边区域
     const lView = scrollView.clone();
     lView.sci = 0;
@@ -752,7 +752,7 @@ class XTableContentUI extends XTableUI {
     const {
       draw, textCellsHelper, textFont,
     } = table;
-    draw.offset(drawX, drawY);
+    draw.offset(XDraw.offsetToLineInside(drawX), XDraw.offsetToLineInside(drawY));
     textCellsHelper.getCellSkipMergeCellByViewRange({
       rectRange: scrollView,
       callback: (row, col, cell, rect, overflow) => {
@@ -783,6 +783,90 @@ class XTableContentUI extends XTableUI {
         const font = builder.build();
         cell.setContentWidth(font.draw());
       },
+    });
+    draw.offset(0, 0);
+  }
+
+  /**
+   * 绘制背景颜色
+   */
+  drawColor() {
+    const scrollView = this.getScrollView();
+    const { table } = this;
+    const drawX = this.getDrawX();
+    const drawY = this.getDrawY();
+    const {
+      draw, styleCellsHelper, merges,
+    } = table;
+    draw.offset(XDraw.offsetToLineInside(drawX), XDraw.offsetToLineInside(drawY));
+    styleCellsHelper.getMergeCellByViewRange({
+      rectRange: scrollView,
+      callback: (rect, cell) => {
+        const { background } = cell;
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(background);
+      },
+    });
+    styleCellsHelper.getCellByViewRange({
+      rectRange: scrollView,
+      callback: (row, col, cell, rect) => {
+        const merge = merges.getFirstIncludes(row, col);
+        if (merge && (merge.sri !== row || merge.sci !== row)) {
+          return;
+        }
+        const { background } = cell;
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(background);
+      },
+    });
+    draw.offset(0, 0);
+  }
+
+  /**
+   * 绘制网格
+   */
+  drawGrid() {
+    const borderView = this.getLineView();
+    const borderX = this.getLineX();
+    const borderY = this.getLineY();
+    const { table } = this;
+    const {
+      draw, grid, cellHorizontalGrid, cellVerticalGrid,
+    } = table;
+    draw.offset(borderX, borderY);
+    const coincide = cellHorizontalGrid.getMergeCoincideRange({
+      viewRange: borderView,
+    });
+    const brink = cellHorizontalGrid.getCoincideRangeBrink({
+      coincide,
+    });
+    // 绘制单元格水平线段
+    // 和垂直线段
+    const horizontalLine = cellHorizontalGrid.getHorizontalLine({
+      viewRange: borderView,
+    });
+    const verticalLine = cellVerticalGrid.getVerticalLine({
+      viewRange: borderView,
+    });
+    horizontalLine.forEach((item) => {
+      grid.horizonLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    verticalLine.forEach((item) => {
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    // 绘制合并单元格水平线段
+    // 和垂直线段
+    const mergeHorizontalLine = cellHorizontalGrid.getMergeHorizontalLine({
+      brink,
+    });
+    const mergeVerticalLine = cellVerticalGrid.getMergeVerticalLine({
+      brink,
+    });
+    mergeHorizontalLine.forEach((item) => {
+      grid.horizonLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    mergeVerticalLine.forEach((item) => {
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
   }
@@ -904,90 +988,6 @@ class XTableContentUI extends XTableUI {
       line.setType(type);
       line.setColor(color);
       line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
-    });
-    draw.offset(0, 0);
-  }
-
-  /**
-   * 绘制网格
-   */
-  drawGrid() {
-    const borderView = this.getLineView();
-    const borderX = this.getLineX();
-    const borderY = this.getLineY();
-    const { table } = this;
-    const {
-      draw, grid, cellHorizontalGrid, cellVerticalGrid,
-    } = table;
-    draw.offset(borderX, borderY);
-    const coincide = cellHorizontalGrid.getMergeCoincideRange({
-      viewRange: borderView,
-    });
-    const brink = cellHorizontalGrid.getCoincideRangeBrink({
-      coincide,
-    });
-    // 绘制单元格水平线段
-    // 和垂直线段
-    const horizontalLine = cellHorizontalGrid.getHorizontalLine({
-      viewRange: borderView,
-    });
-    const verticalLine = cellVerticalGrid.getVerticalLine({
-      viewRange: borderView,
-    });
-    horizontalLine.forEach((item) => {
-      grid.horizonLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    verticalLine.forEach((item) => {
-      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    // 绘制合并单元格水平线段
-    // 和垂直线段
-    const mergeHorizontalLine = cellHorizontalGrid.getMergeHorizontalLine({
-      brink,
-    });
-    const mergeVerticalLine = cellVerticalGrid.getMergeVerticalLine({
-      brink,
-    });
-    mergeHorizontalLine.forEach((item) => {
-      grid.horizonLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    mergeVerticalLine.forEach((item) => {
-      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    draw.offset(0, 0);
-  }
-
-  /**
-   * 绘制背景颜色
-   */
-  drawColor() {
-    const scrollView = this.getScrollView();
-    const { table } = this;
-    const drawX = this.getDrawX();
-    const drawY = this.getDrawY();
-    const {
-      draw, styleCellsHelper, merges,
-    } = table;
-    draw.offset(drawX, drawY);
-    styleCellsHelper.getMergeCellByViewRange({
-      rectRange: scrollView,
-      callback: (rect, cell) => {
-        const { background } = cell;
-        const box = new Box({ draw, rect });
-        box.drawBackgroundColor(background);
-      },
-    });
-    styleCellsHelper.getCellByViewRange({
-      rectRange: scrollView,
-      callback: (row, col, cell, rect) => {
-        const merge = merges.getFirstIncludes(row, col);
-        if (merge && (merge.sri !== row || merge.sci !== row)) {
-          return;
-        }
-        const { background } = cell;
-        const box = new Box({ draw, rect });
-        box.drawBackgroundColor(background);
-      },
     });
     draw.offset(0, 0);
   }
@@ -1124,11 +1124,9 @@ class XTableLeftIndexUI extends XTableIndexUI {
     const verticalLine = leftIndexVerticalGrid.getVerticalLine({
       viewRange: borderView,
     });
-    indexGrid.setBaseLineType(XDraw.BASELINE_TYPE.default);
     horizontalLine.forEach((item) => {
       indexGrid.horizonLine(item.sx, item.sy, item.ex, item.ey);
     });
-    indexGrid.setBaseLineType(XDraw.BASELINE_TYPE.inside);
     verticalLine.forEach((item) => {
       indexGrid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
@@ -1204,11 +1202,9 @@ class XTableTopIndexUI extends XTableIndexUI {
     const verticalLine = topIndexVerticalGrid.getVerticalLine({
       viewRange: borderView,
     });
-    indexGrid.setBaseLineType(XDraw.BASELINE_TYPE.inside);
     horizontalLine.forEach((item) => {
       indexGrid.horizonLine(item.sx, item.sy, item.ex, item.ey);
     });
-    indexGrid.setBaseLineType(XDraw.BASELINE_TYPE.default);
     verticalLine.forEach((item) => {
       indexGrid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
@@ -1516,7 +1512,6 @@ class XTableFrozenFullRect {
     draw.fillRect(0, 0, index.getWidth(), indexHeight);
     draw.offset(0, 0);
     // 绘制边框
-    indexGrid.setBaseLineType(XDraw.BASELINE_TYPE.inside);
     indexGrid.horizonLine(0, indexHeight, indexWidth, indexHeight);
     indexGrid.verticalLine(indexWidth, dy, indexWidth, indexHeight);
     draw.restore();

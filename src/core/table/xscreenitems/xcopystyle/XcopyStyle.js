@@ -3,6 +3,7 @@ import { XSelectItem } from '../xselect/XSelectItem';
 import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { EventBind } from '../../../../utils/EventBind';
+import { XDraw } from '../../../../canvas/XDraw';
 
 class XcopyStyle extends XScreenSvgBorderItem {
 
@@ -54,8 +55,8 @@ class XcopyStyle extends XScreenSvgBorderItem {
     this.targetOffset.height = this.measureHeight(selectRange);
     this.targetOffset.top = this.measureTop(selectRange);
     this.targetOffset.left = this.measureLeft(selectRange);
-    this.setTop(this.targetOffset.top);
-    this.setLeft(this.targetOffset.left);
+    this.setTop(XDraw.offsetToLineInside(this.targetOffset.top));
+    this.setLeft(XDraw.offsetToLineInside(this.targetOffset.left));
     this.setHeight(this.targetOffset.height);
     this.setWidth(this.targetOffset.width);
   }

@@ -7,6 +7,7 @@ import {
 } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
 import { Widget } from '../../../../lib/Widget';
+import { XDraw } from '../../../../canvas/XDraw';
 
 const SELECT_LOCAL = {
   LT: Symbol('LT'),
@@ -193,8 +194,8 @@ class XSelectItem extends XScreenCssBorderItem {
     this.targetOffset.height = this.measureHeight(selectRange);
     this.targetOffset.top = this.measureTop(selectRange);
     this.targetOffset.left = this.measureLeft(selectRange);
-    this.setTop(this.targetOffset.top);
-    this.setLeft(this.targetOffset.left);
+    this.setTop(XDraw.offsetToLineInside(this.targetOffset.top));
+    this.setLeft(XDraw.offsetToLineInside(this.targetOffset.left));
     this.setHeight(this.targetOffset.height);
     this.setWidth(this.targetOffset.width);
   }

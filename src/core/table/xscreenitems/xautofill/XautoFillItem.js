@@ -9,6 +9,7 @@ import { Constant, cssPrefix } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
 import { Utils } from '../../../../utils/Utils';
 import { EventBind } from '../../../../utils/EventBind';
+import { XDraw } from '../../../../canvas/XDraw';
 
 class XautoFillItem extends XScreenCssBorderItem {
 
@@ -207,8 +208,8 @@ class XautoFillItem extends XScreenCssBorderItem {
     this.targetOffset.height = this.measureHeight(selectRange);
     this.targetOffset.top = this.measureTop(selectRange);
     this.targetOffset.left = this.measureLeft(selectRange);
-    this.setTop(this.targetOffset.top);
-    this.setLeft(this.targetOffset.left);
+    this.setTop(XDraw.offsetToLineInside(this.targetOffset.top));
+    this.setLeft(XDraw.offsetToLineInside(this.targetOffset.left));
     this.setHeight(this.targetOffset.height);
     this.setWidth(this.targetOffset.width);
   }
