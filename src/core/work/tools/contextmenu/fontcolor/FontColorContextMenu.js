@@ -11,6 +11,7 @@ import { Utils } from '../../../../../utils/Utils';
 import { ColorPicker } from '../../../../../component/colorpicker/ColorPicker';
 
 class FontColorContextMenu extends ELContextMenu {
+
   constructor(options = {}) {
     super(`${cssPrefix}-font-color-context-menu`, Utils.mergeDeep({
       onUpdate: () => {},
@@ -78,6 +79,7 @@ class FontColorContextMenu extends ELContextMenu {
     this.customizeColorArray.setActiveByColor(color);
     this.colorArray.setActiveByColor(color);
   }
+
 }
 
 export { FontColorContextMenu };

@@ -1,0 +1,6 @@
+class FontAngle {
+
+}
+export {
+  FontAngle,
+};

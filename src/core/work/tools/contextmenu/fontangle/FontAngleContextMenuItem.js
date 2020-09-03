@@ -2,10 +2,10 @@ import { ELContextMenuItem } from '../../../../../component/elcontextmenu/ELCont
 import { cssPrefix } from '../../../../../const/Constant';
 import { h } from '../../../../../lib/Element';
 
-class FontColorContextMenuItem extends ELContextMenuItem {
+class FontAngleContextMenuItem extends ELContextMenuItem {
 
   constructor(title, icon) {
-    super(`${cssPrefix}-font-color-context-menu-item`);
+    super(`${cssPrefix}-font-angle-context-menu-item`);
     this.title = title;
     this.icon = icon;
     if (icon) {
@@ -22,4 +22,6 @@ class FontColorContextMenuItem extends ELContextMenuItem {
 
 }
 
-export { FontColorContextMenuItem };
+export {
+  FontAngleContextMenuItem,
+};
