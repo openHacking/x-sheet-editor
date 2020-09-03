@@ -17,25 +17,34 @@ class Border {
 
   /**
    * Border
-   * @param zIndex
-   * @param time
-   * @param display
    * @param widthType
+   * @param width
    * @param color
+   * @param zIndex
+   * @param display
    * @param type
    */
   constructor({
     widthType = XDraw.LINE_WIDTH_TYPE.low,
+    width = -1,
+    color = '#000000',
     zIndex = 0,
     display = false,
-    color = '#000000',
     type = LINE_TYPE.SOLID_LINE,
   }) {
     this.$zIndex = zIndex;
     this.$display = display;
-    this.$widthType = widthType;
     this.$color = color;
     this.$type = type;
+    if (width === 1) {
+      this.$widthType = XDraw.LINE_WIDTH_TYPE.low;
+    } else if (width === 2) {
+      this.$widthType = XDraw.LINE_WIDTH_TYPE.medium;
+    } else if (width === 3) {
+      this.$widthType = XDraw.LINE_WIDTH_TYPE.high;
+    } else {
+      this.$widthType = widthType;
+    }
     if (zIndex > zIndexID) {
       zIndexID = zIndex;
     }

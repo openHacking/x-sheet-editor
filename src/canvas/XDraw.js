@@ -136,11 +136,6 @@ class Extends extends Wrapping {
     return this;
   }
 
-  rotate(angle) {
-    super.rotate(Base.radian(angle));
-    return this;
-  }
-
   polyline(interpolation = xys => xys, ...xys) {
     const { ctx } = this;
     if (xys.length > 1) {
@@ -153,6 +148,11 @@ class Extends extends Wrapping {
       }
       ctx.stroke();
     }
+  }
+
+  rotate(angle) {
+    super.rotate(Base.radian(angle));
+    return this;
   }
 
 }
@@ -202,6 +202,12 @@ class BaseLine extends Position {
 
 class CorsLine extends BaseLine {
 
+  static offsetToLineInside(val) {
+    return LINE_WIDTH_LOW > 1
+      ? val - LINE_WIDTH_LOW / 2
+      : val;
+  }
+
   constructor(canvas) {
     super(canvas);
     this.lineWidthType = CorsLine.LINE_WIDTH_TYPE.low;
@@ -235,6 +241,7 @@ class CorsLine extends BaseLine {
         lineWidth = LINE_WIDTH_HIGH;
         break;
     }
+    // 内边框
     if (LINE_WIDTH_LOW > 1) {
       sx -= LINE_WIDTH_LOW;
       sy -= LINE_WIDTH_LOW;
@@ -245,7 +252,7 @@ class CorsLine extends BaseLine {
       strokeStyle: lineColor,
       lineWidth,
     });
-    super.line([sx, sy], [ex, ey]);
+    this.line([sx, sy], [ex, ey]);
   }
 
   verticalLine([sx, sy], [ex, ey]) {
@@ -267,6 +274,7 @@ class CorsLine extends BaseLine {
         lineWidth = LINE_WIDTH_HIGH;
         break;
     }
+    // 内边框
     if (LINE_WIDTH_LOW > 1) {
       sx -= LINE_WIDTH_LOW;
       sy -= LINE_WIDTH_LOW;
@@ -277,13 +285,7 @@ class CorsLine extends BaseLine {
       strokeStyle: lineColor,
       lineWidth,
     });
-    super.line([sx, sy], [ex, ey]);
-  }
-
-  static offsetToLineInside(val) {
-    return LINE_WIDTH_LOW > 1
-      ? val - LINE_WIDTH_LOW / 2
-      : val - 0.5;
+    this.line([sx, sy], [ex, ey]);
   }
 
 }

@@ -907,8 +907,8 @@ class XTableContentUI extends XTableUI {
       const { borderAttr, row, col } = item;
       const { top } = borderAttr;
       const { color, widthType, type } = top;
-      line.setWidthType(widthType);
       line.setType(type);
+      line.setWidthType(widthType);
       line.setColor(color);
       line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
     });
@@ -916,8 +916,8 @@ class XTableContentUI extends XTableUI {
       const { borderAttr, row, col } = item;
       const { bottom } = borderAttr;
       const { color, widthType, type } = bottom;
-      line.setWidthType(widthType);
       line.setType(type);
+      line.setWidthType(widthType);
       line.setColor(color);
       line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
     });
@@ -925,8 +925,8 @@ class XTableContentUI extends XTableUI {
       const { borderAttr, row, col } = item;
       const { left } = borderAttr;
       const { color, widthType, type } = left;
-      line.setWidthType(widthType);
       line.setType(type);
+      line.setWidthType(widthType);
       line.setColor(color);
       line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
     });
@@ -934,8 +934,8 @@ class XTableContentUI extends XTableUI {
       const { borderAttr, row, col } = item;
       const { right } = borderAttr;
       const { color, widthType, type } = right;
-      line.setWidthType(widthType);
       line.setType(type);
+      line.setWidthType(widthType);
       line.setColor(color);
       line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
     });
@@ -957,8 +957,8 @@ class XTableContentUI extends XTableUI {
       const { borderAttr, row, col } = item;
       const { top } = borderAttr;
       const { color, widthType, type } = top;
-      line.setWidthType(widthType);
       line.setType(type);
+      line.setWidthType(widthType);
       line.setColor(color);
       line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
     });
@@ -966,8 +966,8 @@ class XTableContentUI extends XTableUI {
       const { borderAttr, row, col } = item;
       const { bottom } = borderAttr;
       const { color, widthType, type } = bottom;
-      line.setWidthType(widthType);
       line.setType(type);
+      line.setWidthType(widthType);
       line.setColor(color);
       line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
     });
@@ -975,8 +975,8 @@ class XTableContentUI extends XTableUI {
       const { borderAttr, row, col } = item;
       const { left } = borderAttr;
       const { color, widthType, type } = left;
-      line.setWidthType(widthType);
       line.setType(type);
+      line.setWidthType(widthType);
       line.setColor(color);
       line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
     });
@@ -984,8 +984,8 @@ class XTableContentUI extends XTableUI {
       const { borderAttr, row, col } = item;
       const { right } = borderAttr;
       const { color, widthType, type } = right;
-      line.setWidthType(widthType);
       line.setType(type);
+      line.setWidthType(widthType);
       line.setColor(color);
       line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
     });
