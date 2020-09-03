@@ -633,6 +633,52 @@ class XTableUI {
 class XTableContentUI extends XTableUI {
 
   /**
+   * 绘制单元格文本
+   */
+  drawFont() {
+    const scrollView = this.getScrollView();
+    const drawX = this.getDrawX();
+    const drawY = this.getDrawY();
+    const { table } = this;
+    const {
+      draw, textCellsHelper, textFont,
+    } = table;
+    draw.offset(XDraw.offsetToLineInside(drawX), XDraw.offsetToLineInside(drawY));
+    textCellsHelper.getCellSkipMergeCellByViewRange({
+      rectRange: scrollView,
+      callback: (row, col, cell, rect, overflow) => {
+        const {
+          format, text, fontAttr,
+        } = cell;
+        const builder = textFont.getBuilder();
+        builder.setDraw(draw);
+        builder.setText(XTableFormat(format, text));
+        builder.setAttr(fontAttr);
+        builder.setRect(rect);
+        builder.setOverFlow(overflow);
+        const font = builder.build();
+        cell.setContentWidth(font.draw());
+      },
+    });
+    textCellsHelper.getMergeCellByViewRange({
+      rectRange: scrollView,
+      callback: (rect, cell) => {
+        const {
+          format, text, fontAttr,
+        } = cell;
+        const builder = textFont.getBuilder();
+        builder.setDraw(draw);
+        builder.setText(XTableFormat(format, text));
+        builder.setAttr(fontAttr);
+        builder.setRect(rect);
+        const font = builder.build();
+        cell.setContentWidth(font.draw());
+      },
+    });
+    draw.offset(0, 0);
+  }
+
+  /**
    * 绘制越界文本
    */
   drawBoundOutFont() {
@@ -742,52 +788,6 @@ class XTableContentUI extends XTableUI {
   }
 
   /**
-   * 绘制单元格文本
-   */
-  drawFont() {
-    const scrollView = this.getScrollView();
-    const drawX = this.getDrawX();
-    const drawY = this.getDrawY();
-    const { table } = this;
-    const {
-      draw, textCellsHelper, textFont,
-    } = table;
-    draw.offset(XDraw.offsetToLineInside(drawX), XDraw.offsetToLineInside(drawY));
-    textCellsHelper.getCellSkipMergeCellByViewRange({
-      rectRange: scrollView,
-      callback: (row, col, cell, rect, overflow) => {
-        const {
-          format, text, fontAttr,
-        } = cell;
-        const builder = textFont.getBuilder();
-        builder.setDraw(draw);
-        builder.setText(XTableFormat(format, text));
-        builder.setAttr(fontAttr);
-        builder.setRect(rect);
-        builder.setOverFlow(overflow);
-        const font = builder.build();
-        cell.setContentWidth(font.draw());
-      },
-    });
-    textCellsHelper.getMergeCellByViewRange({
-      rectRange: scrollView,
-      callback: (rect, cell) => {
-        const {
-          format, text, fontAttr,
-        } = cell;
-        const builder = textFont.getBuilder();
-        builder.setDraw(draw);
-        builder.setText(XTableFormat(format, text));
-        builder.setAttr(fontAttr);
-        builder.setRect(rect);
-        const font = builder.build();
-        cell.setContentWidth(font.draw());
-      },
-    });
-    draw.offset(0, 0);
-  }
-
-  /**
    * 绘制背景颜色
    */
   drawColor() {
@@ -798,7 +798,7 @@ class XTableContentUI extends XTableUI {
     const {
       draw, styleCellsHelper, merges,
     } = table;
-    draw.offset(XDraw.offsetToLineInside(drawX), XDraw.offsetToLineInside(drawY));
+    draw.offset(drawX, drawY);
     styleCellsHelper.getMergeCellByViewRange({
       rectRange: scrollView,
       callback: (rect, cell) => {
