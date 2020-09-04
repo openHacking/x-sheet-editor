@@ -633,52 +633,6 @@ class XTableUI {
 class XTableContentUI extends XTableUI {
 
   /**
-   * 绘制单元格文本
-   */
-  drawFont() {
-    const scrollView = this.getScrollView();
-    const drawX = this.getDrawX();
-    const drawY = this.getDrawY();
-    const { table } = this;
-    const {
-      draw, textCellsHelper, textFont,
-    } = table;
-    draw.offset(XDraw.offsetToLineInside(drawX), XDraw.offsetToLineInside(drawY));
-    textCellsHelper.getCellSkipMergeCellByViewRange({
-      rectRange: scrollView,
-      callback: (row, col, cell, rect, overflow) => {
-        const {
-          format, text, fontAttr,
-        } = cell;
-        const builder = textFont.getBuilder();
-        builder.setDraw(draw);
-        builder.setText(XTableFormat(format, text));
-        builder.setAttr(fontAttr);
-        builder.setRect(rect);
-        builder.setOverFlow(overflow);
-        const font = builder.build();
-        cell.setContentWidth(font.draw());
-      },
-    });
-    textCellsHelper.getMergeCellByViewRange({
-      rectRange: scrollView,
-      callback: (rect, cell) => {
-        const {
-          format, text, fontAttr,
-        } = cell;
-        const builder = textFont.getBuilder();
-        builder.setDraw(draw);
-        builder.setText(XTableFormat(format, text));
-        builder.setAttr(fontAttr);
-        builder.setRect(rect);
-        const font = builder.build();
-        cell.setContentWidth(font.draw());
-      },
-    });
-    draw.offset(0, 0);
-  }
-
-  /**
    * 绘制越界文本
    */
   drawBoundOutFont() {
@@ -689,7 +643,7 @@ class XTableContentUI extends XTableUI {
     } = table;
     const drawX = this.getDrawX();
     const drawY = this.getDrawY();
-    draw.offset(XDraw.offsetToLineInside(drawX), XDraw.offsetToLineInside(drawY));
+    draw.offset(drawX, drawY);
     // 左边区域
     const lView = scrollView.clone();
     lView.sci = 0;
@@ -788,35 +742,46 @@ class XTableContentUI extends XTableUI {
   }
 
   /**
-   * 绘制背景颜色
+   * 绘制单元格文本
    */
-  drawColor() {
+  drawFont() {
     const scrollView = this.getScrollView();
-    const { table } = this;
     const drawX = this.getDrawX();
     const drawY = this.getDrawY();
+    const { table } = this;
     const {
-      draw, styleCellsHelper, merges,
+      draw, textCellsHelper, textFont,
     } = table;
     draw.offset(drawX, drawY);
-    styleCellsHelper.getMergeCellByViewRange({
+    textCellsHelper.getCellSkipMergeCellByViewRange({
       rectRange: scrollView,
-      callback: (rect, cell) => {
-        const { background } = cell;
-        const box = new Box({ draw, rect });
-        box.drawBackgroundColor(background);
+      callback: (row, col, cell, rect, overflow) => {
+        const {
+          format, text, fontAttr,
+        } = cell;
+        const builder = textFont.getBuilder();
+        builder.setDraw(draw);
+        builder.setText(XTableFormat(format, text));
+        builder.setAttr(fontAttr);
+        builder.setRect(rect);
+        builder.setOverFlow(overflow);
+        const font = builder.build();
+        cell.setContentWidth(font.draw());
       },
     });
-    styleCellsHelper.getCellByViewRange({
+    textCellsHelper.getMergeCellByViewRange({
       rectRange: scrollView,
-      callback: (row, col, cell, rect) => {
-        const merge = merges.getFirstIncludes(row, col);
-        if (merge && (merge.sri !== row || merge.sci !== row)) {
-          return;
-        }
-        const { background } = cell;
-        const box = new Box({ draw, rect });
-        box.drawBackgroundColor(background);
+      callback: (rect, cell) => {
+        const {
+          format, text, fontAttr,
+        } = cell;
+        const builder = textFont.getBuilder();
+        builder.setDraw(draw);
+        builder.setText(XTableFormat(format, text));
+        builder.setAttr(fontAttr);
+        builder.setRect(rect);
+        const font = builder.build();
+        cell.setContentWidth(font.draw());
       },
     });
     draw.offset(0, 0);
@@ -988,6 +953,41 @@ class XTableContentUI extends XTableUI {
       line.setWidthType(widthType);
       line.setColor(color);
       line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+    });
+    draw.offset(0, 0);
+  }
+
+  /**
+   * 绘制背景颜色
+   */
+  drawColor() {
+    const scrollView = this.getScrollView();
+    const { table } = this;
+    const drawX = this.getDrawX();
+    const drawY = this.getDrawY();
+    const {
+      draw, styleCellsHelper, merges,
+    } = table;
+    draw.offset(drawX, drawY);
+    styleCellsHelper.getMergeCellByViewRange({
+      rectRange: scrollView,
+      callback: (rect, cell) => {
+        const { background } = cell;
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(background);
+      },
+    });
+    styleCellsHelper.getCellByViewRange({
+      rectRange: scrollView,
+      callback: (row, col, cell, rect) => {
+        const merge = merges.getFirstIncludes(row, col);
+        if (merge && (merge.sri !== row || merge.sci !== row)) {
+          return;
+        }
+        const { background } = cell;
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(background);
+      },
     });
     draw.offset(0, 0);
   }
