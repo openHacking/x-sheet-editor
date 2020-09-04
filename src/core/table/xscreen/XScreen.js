@@ -5,6 +5,7 @@ import { XScreenLTZone } from './zone/XScreenLTZone';
 import { XScreenLZone } from './zone/XScreenLZone';
 import { XScreenTZone } from './zone/XScreenTZone';
 import { EventBind } from '../../../utils/EventBind';
+import { XDraw } from '../../../canvas/XDraw';
 
 const DISPLAY_AREA = {
   BRT: Symbol('BRT'),
@@ -32,19 +33,19 @@ class XScreen extends Widget {
 
   onAttach() {
     this.bind();
-    this.sizeHandle();
+    this.setZone();
   }
 
   bind() {
     const { table } = this;
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, () => {
-      this.sizeHandle();
+      this.setZone();
     });
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      this.sizeHandle();
+      this.setZone();
     });
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
-      this.sizeHandle();
+      this.setZone();
     });
   }
 
@@ -58,59 +59,59 @@ class XScreen extends Widget {
     item.onAdd(this);
   }
 
-  sizeHandle() {
+  setZone() {
     const { table } = this;
     const { index } = table;
-    const fixedWidth = table.getFixedWidth();
     const fixedHeight = table.getFixedHeight();
-    const brLeft = index.getWidth() + fixedWidth;
+    const fixedWidth = table.getFixedWidth();
     const brTop = index.getHeight() + fixedHeight;
+    const brLeft = index.getWidth() + fixedWidth;
     this.brZone.offset({ left: brLeft, top: brTop });
     const ltDisplay = fixedWidth > 0 && fixedHeight > 0;
     const tDisplay = fixedHeight > 0;
-    const lDisplay = fixedHeight > 0;
+    const lDisplay = fixedWidth > 0;
     this.ltZone.hide();
     this.lZone.hide();
     this.tZone.hide();
+    const width = XDraw.dpr() * 1.5;
     if (ltDisplay) {
       this.displayArea = DISPLAY_AREA.ALL;
-      // lt
       this.ltZone.offset({
         left: index.getWidth(), top: index.getHeight(), width: fixedWidth, height: fixedHeight,
       }).show();
-      this.ltZone.css('border-width', '1px');
-      // l
+      this.ltZone.css('border-width', `${width}px`);
       this.lZone.offset({
         left: index.getWidth(),
         top: brTop,
         width: fixedWidth,
+        height: table.visualHeight() - index.getHeight() - fixedHeight,
       }).show();
-      this.lZone.css('border-width', '1px');
-      // t
+      this.lZone.css('border-width', `${width}px`);
       this.tZone.offset({
         left: brLeft,
         top: index.getHeight(),
+        width: table.visualWidth() - index.getWidth() - fixedWidth,
         height: fixedHeight,
       }).show();
-      this.tZone.css('border-width', '1px');
+      this.tZone.css('border-width', `${width}px`);
     } else if (lDisplay) {
       this.displayArea = DISPLAY_AREA.BRL;
-      // l
       this.lZone.offset({
         left: index.getWidth(),
         top: brTop,
         width: fixedWidth,
+        height: table.visualHeight() - index.getHeight() - fixedHeight,
       }).show();
-      this.lZone.css('border-width', '1px');
+      this.lZone.css('border-width', `${width}px`);
     } else if (tDisplay) {
       this.displayArea = DISPLAY_AREA.BRL;
-      // t
       this.tZone.offset({
         left: brLeft,
         top: index.getHeight(),
+        width: table.visualWidth() - index.getWidth() - fixedWidth,
         height: fixedHeight,
       }).show();
-      this.tZone.css('border-width', '1px');
+      this.tZone.css('border-width', `${width}px`);
     } else {
       this.displayArea = DISPLAY_AREA.BR;
     }

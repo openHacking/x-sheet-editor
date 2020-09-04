@@ -21,7 +21,7 @@ class XautoFillItem extends XScreenCssBorderItem {
       onAfterAutoFill: () => {},
     }, options);
     this.targetOffset = { top: 0, left: 0, width: 0, height: 0 };
-    this.selectRange = null;
+    this.selectRange = RectRange.EMPTY;
     this.overGo = null;
     this.moveDir = null;
     this.ltElem = new Widget(`${cssPrefix}-x-autofill-area`);

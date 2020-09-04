@@ -697,7 +697,7 @@ class XTableDimensions extends Widget {
     const { fixed } = this;
     const { cols } = this;
     let width;
-    if (fixed.fxTop > -1) {
+    if (fixed.fxLeft > -1) {
       width = cols.sectionSumWidth(fixed.fxLeft, cols.len - 1);
     } else {
       width = cols.sectionSumWidth(0, cols.len - 1);
@@ -1034,7 +1034,7 @@ class XTableDimensions extends Widget {
     } = this;
     this.reset();
     scale.setValue(val);
-    xScreen.sizeHandle();
+    xScreen.setZone();
     xHeightLight.offsetHandle();
     yHeightLight.offsetHandle();
     xTableStyle.setScale(val);
