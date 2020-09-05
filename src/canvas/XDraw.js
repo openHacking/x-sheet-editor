@@ -66,6 +66,11 @@ class Base {
 
 class Wrapping extends Base {
 
+  constructor(canvas) {
+    super(canvas);
+    this.dash = [];
+  }
+
   beginPath() {
     const { ctx } = this;
     ctx.beginPath();
@@ -101,8 +106,9 @@ class Wrapping extends Base {
     return this;
   }
 
-  setLineDash(dash) {
+  setLineDash(dash = []) {
     const { ctx } = this;
+    this.dash = dash;
     ctx.setLineDash(dash);
     return this;
   }
@@ -178,12 +184,28 @@ class Position extends Extends {
     return this.offsetY;
   }
 
+  fillText() {
+    throw TypeError('child impl');
+  }
+
+  fillRect() {
+    throw TypeError('child impl');
+  }
+
+  rect() {
+    throw TypeError('child impl');
+  }
+
+  drawImage() {
+    throw TypeError('child impl');
+  }
+
 }
 
 class BaseLine extends Position {
 
   line(...xys) {
-    super.polyline((xys) => {
+    this.polyline((xys) => {
       const [x, y] = xys;
       return [this.lpx(Base.rounding(x + this.getOffsetX())),
         this.lpx(Base.rounding(y + this.getOffsetY()))];
@@ -193,7 +215,9 @@ class BaseLine extends Position {
 
   lpx(pixel) {
     const { ctx } = this;
-    const { lineWidth } = ctx;
+    const {
+      lineWidth,
+    } = ctx;
     return lineWidth % 2 === 0
       ? pixel : pixel - 0.5;
   }
@@ -227,7 +251,7 @@ class CorsLine extends BaseLine {
       throw new TypeError('Error Horizon Line');
     }
     const {
-      lineWidthType, lineColor,
+      lineWidthType, lineColor, dash,
     } = this;
     let lineWidth = LINE_WIDTH_LOW;
     switch (lineWidthType) {
@@ -241,18 +265,35 @@ class CorsLine extends BaseLine {
         lineWidth = LINE_WIDTH_HIGH;
         break;
     }
-    // 内边框
     if (LINE_WIDTH_LOW > 1) {
-      sx -= LINE_WIDTH_LOW;
-      sy -= LINE_WIDTH_LOW;
-      ex -= LINE_WIDTH_LOW;
-      ey -= LINE_WIDTH_LOW;
+      if (dash.length === 0) {
+        sy -= LINE_WIDTH_LOW;
+        if (LINE_WIDTH_LOW < lineWidth) {
+          sy -= lineWidth / 2 - LINE_WIDTH_LOW / 2;
+        }
+        this.attr({
+          fillStyle: lineColor,
+        });
+        this.fillRect(sx, sy, ex - sx, lineWidth);
+      } else {
+        sy -= LINE_WIDTH_LOW / 2;
+        ey -= LINE_WIDTH_LOW / 2;
+        this.attr({
+          strokeStyle: lineColor,
+          lineWidth,
+        });
+        this.polyline((xys) => {
+          const [x, y] = xys;
+          return [Base.rounding(x + this.getOffsetX()), Base.rounding(y + this.getOffsetY())];
+        }, [sx, sy], [ex, ey]);
+      }
+    } else {
+      this.attr({
+        strokeStyle: lineColor,
+        lineWidth,
+      });
+      this.line([sx, sy], [ex, ey]);
     }
-    this.attr({
-      strokeStyle: lineColor,
-      lineWidth,
-    });
-    this.line([sx, sy], [ex, ey]);
   }
 
   verticalLine([sx, sy], [ex, ey]) {
@@ -260,7 +301,7 @@ class CorsLine extends BaseLine {
       throw new TypeError('Error Vertical Line');
     }
     const {
-      lineWidthType, lineColor,
+      lineWidthType, lineColor, dash,
     } = this;
     let lineWidth = LINE_WIDTH_LOW;
     switch (lineWidthType) {
@@ -274,18 +315,35 @@ class CorsLine extends BaseLine {
         lineWidth = LINE_WIDTH_HIGH;
         break;
     }
-    // 内边框
     if (LINE_WIDTH_LOW > 1) {
-      sx -= LINE_WIDTH_LOW;
-      sy -= LINE_WIDTH_LOW;
-      ex -= LINE_WIDTH_LOW;
-      ey -= LINE_WIDTH_LOW;
+      if (dash.length === 0) {
+        sx -= LINE_WIDTH_LOW;
+        if (LINE_WIDTH_LOW < lineWidth) {
+          sx -= lineWidth / 2 - LINE_WIDTH_LOW / 2;
+        }
+        this.attr({
+          fillStyle: lineColor,
+        });
+        this.fillRect(sx, sy, lineWidth, ey - sy);
+      } else {
+        sx -= LINE_WIDTH_LOW / 2;
+        ex -= LINE_WIDTH_LOW / 2;
+        this.attr({
+          strokeStyle: lineColor,
+          lineWidth,
+        });
+        this.polyline((xys) => {
+          const [x, y] = xys;
+          return [Base.rounding(x + this.getOffsetX()), Base.rounding(y + this.getOffsetY())];
+        }, [sx, sy], [ex, ey]);
+      }
+    } else {
+      this.attr({
+        strokeStyle: lineColor,
+        lineWidth,
+      });
+      this.line([sx, sy], [ex, ey]);
     }
-    this.attr({
-      strokeStyle: lineColor,
-      lineWidth,
-    });
-    this.line([sx, sy], [ex, ey]);
   }
 
 }
@@ -304,18 +362,18 @@ class XDraw extends CorsLine {
     return this;
   }
 
-  rect(x, y, w, h) {
-    x += this.getOffsetX();
-    y += this.getOffsetY();
-    this.ctx.rect(XDraw.rounding(x), XDraw.rounding(y),
-      XDraw.rounding(w), XDraw.rounding(h));
-    return this;
-  }
-
   fillRect(x, y, w, h) {
     x += this.getOffsetX();
     y += this.getOffsetY();
     this.ctx.fillRect(XDraw.rounding(x), XDraw.rounding(y),
+      XDraw.rounding(w), XDraw.rounding(h));
+    return this;
+  }
+
+  rect(x, y, w, h) {
+    x += this.getOffsetX();
+    y += this.getOffsetY();
+    this.ctx.rect(XDraw.rounding(x), XDraw.rounding(y),
       XDraw.rounding(w), XDraw.rounding(h));
     return this;
   }
