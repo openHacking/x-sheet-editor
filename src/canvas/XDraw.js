@@ -2,8 +2,9 @@
 
 const DPR = window.devicePixelRatio || 1;
 const LINE_WIDTH_LOW = Math.round(DPR);
-const LINE_WIDTH_MEDIUM = Math.round(DPR * 2);
-const LINE_WIDTH_HIGH = Math.round(DPR * 3);
+const LINE_WIDTH_MEDIUM = LINE_WIDTH_LOW + 2;
+const LINE_WIDTH_HIGH = LINE_WIDTH_MEDIUM + 2;
+const LINE_PIXEL_OFFSET = LINE_WIDTH_LOW / 2;
 
 class Base {
 
@@ -238,112 +239,56 @@ class CorsLine extends BaseLine {
     this.lineColor = '#000000';
   }
 
-  setLineWidthType(type) {
-    this.lineWidthType = type;
+  corsLine([sx, sy], [ex, ey]) {
+    const {
+      lineWidthType, lineColor,
+    } = this;
+    let lineWidth = LINE_WIDTH_LOW;
+    sx -= LINE_PIXEL_OFFSET;
+    ex -= LINE_PIXEL_OFFSET;
+    sy -= LINE_PIXEL_OFFSET;
+    ey -= LINE_PIXEL_OFFSET;
+    switch (lineWidthType) {
+      case CorsLine.LINE_WIDTH_TYPE.medium:
+        lineWidth = LINE_WIDTH_MEDIUM;
+        break;
+      case CorsLine.LINE_WIDTH_TYPE.low:
+        lineWidth = LINE_WIDTH_LOW;
+        break;
+      case CorsLine.LINE_WIDTH_TYPE.high:
+        lineWidth = LINE_WIDTH_HIGH;
+        break;
+    }
+    this.attr({
+      strokeStyle: lineColor,
+      lineWidth,
+    });
+    this.polyline((xys) => {
+      const [x, y] = xys;
+      return [Base.rounding(x + this.getOffsetX()), Base.rounding(y + this.getOffsetY())];
+    }, [sx, sy], [ex, ey]);
   }
 
   setLineColor(color) {
     this.lineColor = color;
   }
 
+  setLineWidthType(type) {
+    this.lineWidthType = type;
+  }
+
   horizonLine([sx, sy], [ex, ey]) {
     if (sy !== ey) {
       throw new TypeError('Error Horizon Line');
     }
-    const {
-      lineWidthType, lineColor, dash,
-    } = this;
-    let lineWidth = LINE_WIDTH_LOW;
-    switch (lineWidthType) {
-      case CorsLine.LINE_WIDTH_TYPE.low:
-        lineWidth = LINE_WIDTH_LOW;
-        break;
-      case CorsLine.LINE_WIDTH_TYPE.medium:
-        lineWidth = LINE_WIDTH_MEDIUM;
-        break;
-      case CorsLine.LINE_WIDTH_TYPE.high:
-        lineWidth = LINE_WIDTH_HIGH;
-        break;
-    }
-    if (LINE_WIDTH_LOW > 1) {
-      if (dash.length === 0) {
-        sy -= LINE_WIDTH_LOW;
-        if (LINE_WIDTH_LOW < lineWidth) {
-          sy -= lineWidth / 2 - LINE_WIDTH_LOW / 2;
-        }
-        this.attr({
-          fillStyle: lineColor,
-        });
-        this.fillRect(sx, sy, ex - sx, lineWidth);
-      } else {
-        sy -= LINE_WIDTH_LOW / 2;
-        ey -= LINE_WIDTH_LOW / 2;
-        this.attr({
-          strokeStyle: lineColor,
-          lineWidth,
-        });
-        this.polyline((xys) => {
-          const [x, y] = xys;
-          return [Base.rounding(x + this.getOffsetX()), Base.rounding(y + this.getOffsetY())];
-        }, [sx, sy], [ex, ey]);
-      }
-    } else {
-      this.attr({
-        strokeStyle: lineColor,
-        lineWidth,
-      });
-      this.line([sx, sy], [ex, ey]);
-    }
+    this.corsLine([sx, sy], [ex, ey]);
   }
 
   verticalLine([sx, sy], [ex, ey]) {
     if (sx !== ex) {
       throw new TypeError('Error Vertical Line');
     }
-    const {
-      lineWidthType, lineColor, dash,
-    } = this;
-    let lineWidth = LINE_WIDTH_LOW;
-    switch (lineWidthType) {
-      case CorsLine.LINE_WIDTH_TYPE.low:
-        lineWidth = LINE_WIDTH_LOW;
-        break;
-      case CorsLine.LINE_WIDTH_TYPE.medium:
-        lineWidth = LINE_WIDTH_MEDIUM;
-        break;
-      case CorsLine.LINE_WIDTH_TYPE.high:
-        lineWidth = LINE_WIDTH_HIGH;
-        break;
-    }
-    if (LINE_WIDTH_LOW > 1) {
-      if (dash.length === 0) {
-        sx -= LINE_WIDTH_LOW;
-        if (LINE_WIDTH_LOW < lineWidth) {
-          sx -= lineWidth / 2 - LINE_WIDTH_LOW / 2;
-        }
-        this.attr({
-          fillStyle: lineColor,
-        });
-        this.fillRect(sx, sy, lineWidth, ey - sy);
-      } else {
-        sx -= LINE_WIDTH_LOW / 2;
-        ex -= LINE_WIDTH_LOW / 2;
-        this.attr({
-          strokeStyle: lineColor,
-          lineWidth,
-        });
-        this.polyline((xys) => {
-          const [x, y] = xys;
-          return [Base.rounding(x + this.getOffsetX()), Base.rounding(y + this.getOffsetY())];
-        }, [sx, sy], [ex, ey]);
-      }
-    } else {
-      this.attr({
-        strokeStyle: lineColor,
-        lineWidth,
-      });
-      this.line([sx, sy], [ex, ey]);
-    }
+    this.corsLine([sx, sy], [ex, ey]);
   }
 
 }
