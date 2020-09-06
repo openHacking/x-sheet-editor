@@ -42,6 +42,10 @@ Constant.MOUSE_POINTER_TYPE = {
     key: Symbol('选择单元格'),
     type: 'cell',
   },
+  FIXED_GRAB: {
+    key: Symbol('调整固定位置'),
+    type: 'grab',
+  },
   AUTO_FILL: {
     key: Symbol('单元格内容自动填充'),
     type: 'crosshair',
@@ -53,6 +57,10 @@ Constant.MOUSE_POINTER_TYPE = {
   ROW_RESIZE: {
     key: Symbol('调整行高'),
     type: 'row-resize',
+  },
+  DEFAULT: {
+    key: Symbol('默认'),
+    type: 'default',
   },
 };
 

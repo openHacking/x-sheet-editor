@@ -208,10 +208,10 @@ class XautoFillItem extends XScreenCssBorderItem {
     this.targetOffset.height = this.measureHeight(selectRange);
     this.targetOffset.top = this.measureTop(selectRange);
     this.targetOffset.left = this.measureLeft(selectRange);
-    this.setTop(XDraw.offsetToLineInside(this.targetOffset.top));
-    this.setLeft(XDraw.offsetToLineInside(this.targetOffset.left));
-    this.setHeight(this.targetOffset.height);
-    this.setWidth(this.targetOffset.width);
+    this.setTop(this.targetOffset.top);
+    this.setLeft(this.targetOffset.left);
+    this.setHeight(XDraw.offsetToLineInside(this.targetOffset.height));
+    this.setWidth(XDraw.offsetToLineInside(this.targetOffset.width));
   }
 
   selectBorderHandle() {

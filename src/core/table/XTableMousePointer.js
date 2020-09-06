@@ -20,14 +20,17 @@ class XTableMousePointer {
     }
     const { table } = this;
     switch (type) {
-      case 'cell':
-        table.css('cursor', `url(${cell}) 7.5 7.5,auto`);
-        break;
       case 's-resize':
         table.css('cursor', `url(${sResize}) 2.5 7.5,auto`);
         break;
+      case 'cell':
+        table.css('cursor', `url(${cell}) 7.5 7.5,auto`);
+        break;
       case 'e-resize':
         table.css('cursor', `url(${eResize}) 7.5 2.5,auto`);
+        break;
+      case 'grab':
+        table.css('cursor', '-webkit-grab');
         break;
       default:
         table.css('cursor', type);

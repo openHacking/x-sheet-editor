@@ -25,6 +25,10 @@ import { XScreen } from './xscreen/XScreen';
 import { XSelectItem } from './xscreenitems/xselect/XSelectItem';
 import { XautoFillItem } from './xscreenitems/xautofill/XautoFillItem';
 import { XcopyStyle } from './xscreenitems/xcopystyle/XcopyStyle';
+import { RowFixed } from './tablefixed/RowFixed';
+import { ColFixed } from './tablefixed/ColFixed';
+import { DropRowFixed } from './tablefixed/drop/DropRowFixed';
+import { DropColFixed } from './tablefixed/drop/DropColFixed';
 
 class Dimensions {
 
@@ -638,6 +642,10 @@ class XTableDimensions extends Widget {
     this.xHeightLight = new XHeightLight(this);
     this.yHeightLight = new YHeightLight(this);
     this.edit = new XTableEdit(this);
+    this.rowFixed = new RowFixed(this);
+    this.colsFixed = new ColFixed(this);
+    this.dropRowFixed = new DropRowFixed(this);
+    this.dropColFixed = new DropColFixed(this);
   }
 
   /**
@@ -874,6 +882,10 @@ class XTableDimensions extends Widget {
     this.attach(this.xHeightLight);
     this.attach(this.yHeightLight);
     this.attach(this.edit);
+    this.attach(this.rowFixed);
+    this.attach(this.colsFixed);
+    this.attach(this.dropRowFixed);
+    this.attach(this.dropColFixed);
     // 注册快捷键
     this.keyBoardTab = new KeyBoardTab(this);
   }
@@ -892,6 +904,11 @@ class XTableDimensions extends Widget {
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       const { x, y } = this.computeEventXy(e);
       const { ri, ci } = this.getRiCiByXy(x, y);
+      if (ri === -1 && ci === -1) {
+        const { type, key } = Constant.MOUSE_POINTER_TYPE.DEFAULT;
+        mousePointer.set(type, key);
+        return;
+      }
       if (ri === -1) {
         const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_ONE_COLUMN;
         mousePointer.set(type, key);

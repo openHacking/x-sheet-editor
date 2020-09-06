@@ -73,7 +73,7 @@ class XScreen extends Widget {
     this.ltZone.hide();
     this.lZone.hide();
     this.tZone.hide();
-    const width = XDraw.dpr() * 1.5;
+    const width = XDraw.dpr();
     if (ltDisplay) {
       this.displayArea = DISPLAY_AREA.ALL;
       this.ltZone.offset({
