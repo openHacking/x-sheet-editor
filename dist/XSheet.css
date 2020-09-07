@@ -328,7 +328,7 @@
   position: absolute;
   right: 50px;
   bottom: 50px;
-  z-index: 1;
+  z-index: 999;
   border-radius: 10px;
   padding: 20px;
   font-weight: bold;
@@ -1362,7 +1362,7 @@
 .x-sheet-table-drop-row-fixed-block {
   background: #62af71;
 }
-.x-sheet-table-drop-row-fixed-block {
+.x-sheet-table-drop-col-fixed-block {
   background: #62af71;
 }
 
