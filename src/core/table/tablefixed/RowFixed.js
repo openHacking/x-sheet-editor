@@ -62,7 +62,7 @@ class RowFixed extends Widget {
     const { fixed } = table;
     const { fxTop } = fixed;
     const { rows } = table;
-    const height = 5;
+    const height = 6;
     const width = fxTop > -1 ? table.visualWidth() : table.getIndexWidth();
     const offset = fxTop > -1 ? height / 2 : height;
     const top = rows.sectionSumHeight(0, fxTop) + table.getIndexHeight() - offset;

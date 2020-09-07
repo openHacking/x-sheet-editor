@@ -62,7 +62,7 @@ class ColFixed extends Widget {
     const { fixed } = table;
     const { fxLeft } = fixed;
     const { cols } = table;
-    const width = 5;
+    const width = 6;
     const height = fxLeft > -1 ? table.visualHeight() : table.getIndexHeight();
     const offset = fxLeft > -1 ? width / 2 : width;
     const left = cols.sectionSumWidth(0, fxLeft) + table.getIndexWidth() - offset;
