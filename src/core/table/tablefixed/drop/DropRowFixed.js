@@ -4,14 +4,28 @@ import { h } from '../../../../lib/Element';
 
 class DropRowFixed extends Widget {
 
-  constructor() {
+  constructor(table) {
     super(`${cssPrefix}-table-drop-row-fixed-bar`);
     this.block = h('div', `${cssPrefix}-table-drop-row-fixed-block`);
     this.children(this.block);
+    this.table = table;
   }
 
-  setTop(px) {
+  onAttach() {
+    this.setSize();
+    this.hide();
+  }
 
+  setSize() {
+    const { table, block } = this;
+    const width = table.visualWidth();
+    const height = 6;
+    block.offset({
+      width: table.getIndexWidth(), height,
+    });
+    this.offset({
+      height, width, left: 0,
+    });
   }
 
 }

@@ -1,36 +1,25 @@
 import { Constant } from '../const/Constant';
 
 class EventBind {
-  static bind(target, name, fn) {
+
+  static unbind(target, name, fn, option) {
     if (Array.isArray(target)) {
-      // eslint-disable-next-line no-restricted-syntax
-      for (const item of target) {
-        (item.el || item).addEventListener(name, fn);
-      }
+      target.forEach((item) => {
+        (item.el || item).removeEventListener(name, fn, option);
+      });
     } else {
-      (target.el || target).addEventListener(name, fn);
+      (target.el || target).removeEventListener(name, fn, option);
     }
   }
 
-  static unbind(target, name, fn) {
+  static bind(target, name, fn, option) {
     if (Array.isArray(target)) {
-      // eslint-disable-next-line no-restricted-syntax
-      for (const item of target) {
-        (item.el || item).addEventListener(name, fn);
-      }
+      target.forEach((item) => {
+        (item.el || item).addEventListener(name, fn, option);
+      });
     } else {
-      (target.el || target).removeEventListener(name, fn);
+      (target.el || target).addEventListener(name, fn, option);
     }
-  }
-
-  static mouseMoveUp(target, moveFunc = () => {}, upFunc = () => {}) {
-    const xEvtUp = (evt) => {
-      EventBind.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, moveFunc);
-      EventBind.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp);
-      upFunc(evt);
-    };
-    EventBind.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, moveFunc);
-    EventBind.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp);
   }
 
   static dbClick(target, func = () => {}) {
@@ -45,6 +34,22 @@ class EventBind {
       }
     });
   }
+
+  static mouseMoveUp(target, moveFunc = () => {}, upFunc = () => {}) {
+    const xEvtMove = (evt) => {
+      moveFunc(evt);
+      evt.stopPropagation();
+    };
+    const xEvtUp = (evt) => {
+      EventBind.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, xEvtMove, true);
+      EventBind.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);
+      upFunc(evt);
+      evt.stopPropagation();
+    };
+    EventBind.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, xEvtMove, true);
+    EventBind.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);
+  }
+
 }
 
 export { EventBind };

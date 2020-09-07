@@ -54,21 +54,10 @@ class XReSizer extends Widget {
     const tableDataSnapshot = table.getTableDataSnapshot();
     const { colsDataProxy } = tableDataSnapshot;
     const { index } = table;
-    const { key, type } = Constant.MOUSE_POINTER_TYPE.COL_RESIZE;
     let moveOff = false;
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
-      if (moveOff) return;
-      mousePointer.on(key);
-      mousePointer.set(type, key);
-    });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
-      if (moveOff) return;
-      mousePointer.off(key);
-    });
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      mousePointer.set('col-resize');
       moveOff = true;
-      mousePointer.on(key);
-      mousePointer.set(type, key);
       const { left, ci } = this.getEventLeft(e);
       const min = left - cols.getWidth(ci) + cols.min;
       let { x: mx } = table.computeEventXy(e);
@@ -80,9 +69,8 @@ class XReSizer extends Widget {
         this.lineEl.css('height', `${table.visualHeight()}px`);
         this.lineEl.show();
       }, (e) => {
-        moveOff = false;
-        mousePointer.off(key);
         this.lineEl.hide();
+        moveOff = false;
         this.css('left', `${mx}px`);
         const { y } = table.computeEventXy(e);
         if (y <= 0) {
@@ -95,8 +83,15 @@ class XReSizer extends Widget {
         table.resize();
       });
     });
-    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
+      mousePointer.set('col-resize');
+      e.stopPropagation();
+    });
+    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       if (moveOff) return;
+      this.hide();
+    });
+    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       // eslint-disable-next-line prefer-const
       let { left, ci } = this.getEventLeft(e);
       const min = left - cols.getWidth(ci) + cols.min;
@@ -112,10 +107,6 @@ class XReSizer extends Widget {
         this.hoverEl.css('width', `${this.width}px`);
         this.hoverEl.css('height', `${index.getHeight()}px`);
       }
-    });
-    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
-      if (moveOff) return;
-      this.hide();
     });
   }
 }

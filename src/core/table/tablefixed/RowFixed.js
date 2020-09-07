@@ -16,9 +16,8 @@ class RowFixed extends Widget {
   bind() {
     const { table } = this;
     const {
-      mousePointer,
+      mousePointer, dropRowFixed,
     } = table;
-    const { key, type } = Constant.MOUSE_POINTER_TYPE.FIXED_GRAB;
     let moveOff = true;
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.setSize();
@@ -26,27 +25,33 @@ class RowFixed extends Widget {
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.setSize();
     });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       this.setActive(true);
-      mousePointer.on(key);
-      mousePointer.set(type, key);
+      mousePointer.set('-webkit-grab');
+      e.stopPropagation();
     });
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       if (moveOff === false) {
         return;
       }
       this.setActive(false);
-      mousePointer.off(key);
     });
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      moveOff = false;
+      dropRowFixed.show();
       this.setActive(true);
+      mousePointer.set('-webkit-grab');
+      moveOff = false;
+      const { y } = table.computeEventXy(e, table);
+      dropRowFixed.offset({ top: y });
       EventBind.mouseMoveUp(document, (e) => {
         const { x, y } = table.computeEventXy(e, table);
         const { ri, ci } = table.getRiCiByXy(x, y);
+        dropRowFixed.offset({ top: y });
+        e.stopPropagation()
       }, () => {
-        moveOff = true;
         this.setActive(false);
+        dropRowFixed.hide();
+        moveOff = true;
       });
       e.stopPropagation();
     });

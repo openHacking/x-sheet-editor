@@ -16,9 +16,8 @@ class ColFixed extends Widget {
   bind() {
     const { table } = this;
     const {
-      mousePointer,
+      mousePointer, dropColFixed,
     } = table;
-    const { key, type } = Constant.MOUSE_POINTER_TYPE.FIXED_GRAB;
     let moveOff = true;
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.setSize();
@@ -26,25 +25,30 @@ class ColFixed extends Widget {
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.setSize();
     });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       this.setActive(true);
-      mousePointer.on(key);
-      mousePointer.set(type, key);
+      mousePointer.set('-webkit-grab');
+      e.stopPropagation();
     });
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       if (moveOff === false) {
         return;
       }
       this.setActive(false);
-      mousePointer.off(key);
     });
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      moveOff = false;
+      dropColFixed.show();
       this.setActive(true);
+      mousePointer.set('-webkit-grab');
+      moveOff = false;
+      const { x } = table.computeEventXy(e, table);
+      dropColFixed.offset({ left: x });
       EventBind.mouseMoveUp(document, (e) => {
         const { x, y } = table.computeEventXy(e, table);
         const { ri, ci } = table.getRiCiByXy(x, y);
+        dropColFixed.offset({ left: x });
       }, () => {
+        dropColFixed.hide();
         moveOff = true;
         this.setActive(false);
       });

@@ -905,22 +905,18 @@ class XTableDimensions extends Widget {
       const { x, y } = this.computeEventXy(e);
       const { ri, ci } = this.getRiCiByXy(x, y);
       if (ri === -1 && ci === -1) {
-        const { type, key } = Constant.MOUSE_POINTER_TYPE.DEFAULT;
-        mousePointer.set(type, key);
+        mousePointer.set('default');
         return;
       }
       if (ri === -1) {
-        const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_ONE_COLUMN;
-        mousePointer.set(type, key);
+        mousePointer.set('s-resize');
         return;
       }
       if (ci === -1) {
-        const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_ONE_ROW;
-        mousePointer.set(type, key);
+        mousePointer.set('e-resize');
         return;
       }
-      const { type, key } = Constant.MOUSE_POINTER_TYPE.SELECT_CELL;
-      mousePointer.set(type, key);
+      mousePointer.set('cell');
     });
   }
 

@@ -53,7 +53,9 @@ class XSelectItem extends XScreenCssBorderItem {
 
   bind() {
     const { table } = this;
-    const { mousePointer, focus } = table;
+    const {
+      mousePointer, focus,
+    } = table;
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.selectOffsetHandle();
       this.selectBorderHandle();
@@ -80,16 +82,16 @@ class XSelectItem extends XScreenCssBorderItem {
       this.selectBorderHandle();
       this.selectCornerHandle();
       const { selectLocal } = this;
-      let key = Constant.MOUSE_POINTER_TYPE.SELECT_CELL;
+      let type = 'cell';
       switch (selectLocal) {
         case SELECT_LOCAL.L:
-          key = Constant.MOUSE_POINTER_TYPE.SELECT_ONE_ROW;
+          type = 'row';
           break;
         case SELECT_LOCAL.T:
-          key = Constant.MOUSE_POINTER_TYPE.SELECT_ONE_COLUMN;
+          type = 's-resize';
           break;
       }
-      mousePointer.on(key);
+      mousePointer.set(type);
       table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN);
       table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
       EventBind.mouseMoveUp(document, (e2) => {
@@ -101,8 +103,8 @@ class XSelectItem extends XScreenCssBorderItem {
         table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
       }, () => {
         table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_OVER);
-        mousePointer.off(key);
       });
+      e1.stopPropagation();
     });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       this.selectOffsetHandle();

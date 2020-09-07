@@ -43,7 +43,6 @@ class XautoFillItem extends XScreenCssBorderItem {
   bind() {
     const { table, xScreen } = this;
     const { mousePointer } = table;
-    const { key, type } = Constant.MOUSE_POINTER_TYPE.AUTO_FILL;
     const xSelect = xScreen.findType(XSelectItem);
     EventBind.bind([
       xSelect.ltCorner,
@@ -51,16 +50,14 @@ class XautoFillItem extends XScreenCssBorderItem {
       xSelect.lCorner,
       xSelect.brCorner,
     ], Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      mousePointer.on(key);
-      mousePointer.set(type, key);
       this.show();
+      mousePointer.set('crosshair');
       EventBind.mouseMoveUp(document, (e2) => {
         const { x, y } = table.computeEventXy(e2);
         this.selectRangeHandle(x, y);
         this.selectOffsetHandle();
         this.selectBorderHandle();
       }, () => {
-        mousePointer.off(key);
         this.autoFillTo();
         this.hide();
       });
@@ -71,17 +68,9 @@ class XautoFillItem extends XScreenCssBorderItem {
       xSelect.tCorner,
       xSelect.lCorner,
       xSelect.brCorner,
-    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
-      mousePointer.on(key);
-      mousePointer.set(type, key);
-    });
-    EventBind.bind([
-      xSelect.ltCorner,
-      xSelect.tCorner,
-      xSelect.lCorner,
-      xSelect.brCorner,
-    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
-      mousePointer.off(key);
+    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
+      mousePointer.set('crosshair');
+      e.stopPropagation();
     });
   }
 
