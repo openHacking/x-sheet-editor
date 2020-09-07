@@ -1,7 +1,6 @@
 /* global document */
 import { Widget } from '../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../const/Constant';
-import { XDraw } from '../../../canvas/XDraw';
 import { h } from '../../../lib/Element';
 import { EventBind } from '../../../utils/EventBind';
 
@@ -63,7 +62,7 @@ class RowFixed extends Widget {
     const { fixed } = table;
     const { fxTop } = fixed;
     const { rows } = table;
-    const height = XDraw.dpr() * 2.5;
+    const height = 5;
     const width = fxTop > -1 ? table.visualWidth() : table.getIndexWidth();
     const offset = fxTop > -1 ? height / 2 : height;
     const top = rows.sectionSumHeight(0, fxTop) + table.getIndexHeight() - offset;

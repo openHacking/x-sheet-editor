@@ -230,7 +230,7 @@ class CorsLine extends BaseLine {
   static offsetToLineInside(val) {
     return LINE_WIDTH_LOW > 1
       ? val - LINE_WIDTH_LOW / 2
-      : val;
+      : val - 1;
   }
 
   constructor(canvas) {
@@ -244,10 +244,6 @@ class CorsLine extends BaseLine {
       lineWidthType, lineColor,
     } = this;
     let lineWidth = LINE_WIDTH_LOW;
-    sx -= LINE_PIXEL_OFFSET;
-    ex -= LINE_PIXEL_OFFSET;
-    sy -= LINE_PIXEL_OFFSET;
-    ey -= LINE_PIXEL_OFFSET;
     switch (lineWidthType) {
       case CorsLine.LINE_WIDTH_TYPE.medium:
         lineWidth = LINE_WIDTH_MEDIUM;
@@ -265,7 +261,10 @@ class CorsLine extends BaseLine {
     });
     this.polyline((xys) => {
       const [x, y] = xys;
-      return [Base.rounding(x + this.getOffsetX()), Base.rounding(y + this.getOffsetY())];
+      return [
+        Base.rounding(x + this.getOffsetX()) - LINE_PIXEL_OFFSET,
+        Base.rounding(y + this.getOffsetY()) - LINE_PIXEL_OFFSET,
+      ];
     }, [sx, sy], [ex, ey]);
   }
 
