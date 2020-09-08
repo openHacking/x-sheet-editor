@@ -983,9 +983,11 @@ class XTableDimensions extends Widget {
    * @returns {*}
    */
   getTop() {
-    const { rows } = this;
+    const {
+      rows, fixed,
+    } = this;
     const view = this.getScrollView();
-    return rows.sectionSumHeight(0, view.sri - 1);
+    return rows.sectionSumHeight(fixed.fxTop + 1, view.sri - 1);
   }
 
   /**
@@ -993,9 +995,11 @@ class XTableDimensions extends Widget {
    * @returns {*}
    */
   getLeft() {
-    const { cols } = this;
+    const {
+      cols, fixed,
+    } = this;
     const view = this.getScrollView();
-    return cols.sectionSumWidth(0, view.sci - 1);
+    return cols.sectionSumWidth(fixed.fxLeft + 1, view.sci - 1);
   }
 
   /**

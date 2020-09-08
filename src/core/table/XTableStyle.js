@@ -833,6 +833,55 @@ class XTableContentUI extends XTableUI {
   }
 
   /**
+   * 绘制网格
+   */
+  drawGrid() {
+    const borderView = this.getLineView();
+    const borderX = this.getLineX();
+    const borderY = this.getLineY();
+    const { table } = this;
+    const {
+      draw, grid, cellHorizontalGrid, cellVerticalGrid,
+    } = table;
+    draw.offset(borderX, borderY);
+    const coincide = cellHorizontalGrid.getMergeCoincideRange({
+      viewRange: borderView,
+    });
+    const brink = cellHorizontalGrid.getCoincideRangeBrink({
+      coincide,
+    });
+    // 绘制单元格水平线段
+    // 和垂直线段
+    const horizontalLine = cellHorizontalGrid.getHorizontalLine({
+      viewRange: borderView,
+    });
+    const verticalLine = cellVerticalGrid.getVerticalLine({
+      viewRange: borderView,
+    });
+    horizontalLine.forEach((item) => {
+      grid.horizonLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    verticalLine.forEach((item) => {
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    // 绘制合并单元格水平线段
+    // 和垂直线段
+    const mergeHorizontalLine = cellHorizontalGrid.getMergeHorizontalLine({
+      brink,
+    });
+    const mergeVerticalLine = cellVerticalGrid.getMergeVerticalLine({
+      brink,
+    });
+    mergeHorizontalLine.forEach((item) => {
+      grid.horizonLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    mergeVerticalLine.forEach((item) => {
+      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+    });
+    draw.offset(0, 0);
+  }
+
+  /**
    * 绘制边框
    */
   drawBorder() {
@@ -949,55 +998,6 @@ class XTableContentUI extends XTableUI {
       line.setWidthType(widthType);
       line.setColor(color);
       line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
-    });
-    draw.offset(0, 0);
-  }
-
-  /**
-   * 绘制网格
-   */
-  drawGrid() {
-    const borderView = this.getLineView();
-    const borderX = this.getLineX();
-    const borderY = this.getLineY();
-    const { table } = this;
-    const {
-      draw, grid, cellHorizontalGrid, cellVerticalGrid,
-    } = table;
-    draw.offset(borderX, borderY);
-    const coincide = cellHorizontalGrid.getMergeCoincideRange({
-      viewRange: borderView,
-    });
-    const brink = cellHorizontalGrid.getCoincideRangeBrink({
-      coincide,
-    });
-    // 绘制单元格水平线段
-    // 和垂直线段
-    const horizontalLine = cellHorizontalGrid.getHorizontalLine({
-      viewRange: borderView,
-    });
-    const verticalLine = cellVerticalGrid.getVerticalLine({
-      viewRange: borderView,
-    });
-    horizontalLine.forEach((item) => {
-      grid.horizonLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    verticalLine.forEach((item) => {
-      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    // 绘制合并单元格水平线段
-    // 和垂直线段
-    const mergeHorizontalLine = cellHorizontalGrid.getMergeHorizontalLine({
-      brink,
-    });
-    const mergeVerticalLine = cellVerticalGrid.getMergeVerticalLine({
-      brink,
-    });
-    mergeHorizontalLine.forEach((item) => {
-      grid.horizonLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    mergeVerticalLine.forEach((item) => {
-      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
   }
@@ -1937,7 +1937,7 @@ class XTableTop extends XTableContentUI {
     }
     view.sri = 0;
     view.eri = fixed.fxTop;
-    view.h = rows.sectionSumHeight(view.sci, view.eci);
+    view.h = rows.sectionSumHeight(view.sri, view.eri);
     this.scrollView = view;
     return view.clone();
   }
@@ -1953,8 +1953,8 @@ class XTableTop extends XTableContentUI {
     const scrollView = xTableAreaView.getScrollView();
     scrollView.sri = 0;
     scrollView.eri = fixed.fxTop;
-    scrollView.h = rows.sectionSumHeight(scrollView.sci, scrollView.eci);
-    this.scrollView = scrollView;
+    scrollView.h = rows.sectionSumHeight(scrollView.sri, scrollView.eri);
+    this.fullScrollView = scrollView;
     return scrollView.clone();
   }
 

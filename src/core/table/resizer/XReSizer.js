@@ -29,7 +29,7 @@ class XReSizer extends Widget {
   bind() {
     const { table } = this;
     const {
-      cols, mousePointer,
+      cols, mousePointer, focus,
     } = table;
     const tableDataSnapshot = table.getTableDataSnapshot();
     const { colsDataProxy } = tableDataSnapshot;
@@ -88,6 +88,13 @@ class XReSizer extends Widget {
     });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       this.hide();
+    });
+    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const { activate } = focus;
+      const { el } = activate;
+      if (el !== table) {
+        this.hide();
+      }
     });
   }
 

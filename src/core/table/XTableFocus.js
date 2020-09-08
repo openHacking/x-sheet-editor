@@ -18,7 +18,7 @@ class XTableFocus {
   }
 
   register({
-    el, attr = {}, stop = true, focus = false,
+    el, attr = {}, stop = false, focus = false,
   }) {
     const find = this.findByEl(el);
     if (find) {
@@ -30,8 +30,13 @@ class XTableFocus {
         this.activate = item;
       }
       EventBind.bind(el, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-        this.activate = item;
-        if (stop) e.stopPropagation();
+        const target = el.el || el;
+        if (e.currentTarget === target) {
+          this.activate = item;
+        }
+        if (stop) {
+          e.stopPropagation();
+        }
       });
     }
   }
