@@ -11,6 +11,15 @@ class SheetView extends Widget {
     this.activeIndex = -1;
   }
 
+  setActiveSheet(index) {
+    const { sheetList } = this;
+    if (sheetList[index]) {
+      this.activeIndex = index;
+      return this.setActive(sheetList[index]);
+    }
+    return null;
+  }
+
   attach(sheet) {
     this.sheetList.push(sheet);
     super.attach(sheet);
@@ -30,15 +39,13 @@ class SheetView extends Widget {
     EventBind.bind(sheet, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, () => {
       this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN, this);
     });
+    EventBind.bind(sheet, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
+    });
   }
 
-  setActiveSheet(index) {
-    const { sheetList } = this;
-    if (sheetList[index]) {
-      this.activeIndex = index;
-      return this.setActive(sheetList[index]);
-    }
-    return null;
+  getActiveSheet() {
+    return this.sheetList[this.activeIndex];
   }
 
   setActive(sheet) {
@@ -47,10 +54,6 @@ class SheetView extends Widget {
       item.hide();
     });
     return sheet;
-  }
-
-  getActiveSheet() {
-    return this.sheetList[this.activeIndex];
   }
 
   getLastIndex() {

@@ -10,6 +10,7 @@ import { RectRange } from '../../tablebase/RectRange';
 import { Utils } from '../../../../utils/Utils';
 import { EventBind } from '../../../../utils/EventBind';
 import { XDraw } from '../../../../canvas/XDraw';
+import { XTableMousePointer } from '../../XTableMousePointer';
 
 class XautoFillItem extends XScreenCssBorderItem {
 
@@ -49,28 +50,37 @@ class XautoFillItem extends XScreenCssBorderItem {
       xSelect.tCorner,
       xSelect.lCorner,
       xSelect.brCorner,
-    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      this.show();
-      mousePointer.set('crosshair');
-      EventBind.mouseMoveUp(document, (e2) => {
-        const { x, y } = table.computeEventXy(e2);
-        this.selectRangeHandle(x, y);
-        this.selectOffsetHandle();
-        this.selectBorderHandle();
-      }, () => {
-        this.autoFillTo();
-        this.hide();
-      });
-      e.stopPropagation();
+    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
+      mousePointer.free(XautoFillItem);
     });
     EventBind.bind([
       xSelect.ltCorner,
       xSelect.tCorner,
       xSelect.lCorner,
       xSelect.brCorner,
-    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
-      mousePointer.set('crosshair');
-      e.stopPropagation();
+    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
+      mousePointer.lock(XautoFillItem);
+      mousePointer.set(XTableMousePointer.KEYS.crosshair, XautoFillItem);
+    });
+    EventBind.bind([
+      xSelect.ltCorner,
+      xSelect.tCorner,
+      xSelect.lCorner,
+      xSelect.brCorner,
+    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      this.show();
+      mousePointer.lock(XautoFillItem);
+      mousePointer.set(XTableMousePointer.KEYS.crosshair, XautoFillItem);
+      EventBind.mouseMoveUp(document, (e2) => {
+        const { x, y } = table.computeEventXy(e2);
+        this.selectRangeHandle(x, y);
+        this.selectOffsetHandle();
+        this.selectBorderHandle();
+      }, () => {
+        mousePointer.free(XautoFillItem);
+        this.autoFillTo();
+        this.hide();
+      });
     });
   }
 

@@ -2,7 +2,7 @@ import { Constant } from '../const/Constant';
 
 class EventBind {
 
-  static unbind(target, name, fn, option) {
+  static unbind(target, name, fn, option = false) {
     if (Array.isArray(target)) {
       target.forEach((item) => {
         (item.el || item).removeEventListener(name, fn, option);
@@ -12,7 +12,7 @@ class EventBind {
     }
   }
 
-  static bind(target, name, fn, option) {
+  static bind(target, name, fn, option = false) {
     if (Array.isArray(target)) {
       target.forEach((item) => {
         (item.el || item).addEventListener(name, fn, option);

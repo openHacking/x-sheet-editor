@@ -458,13 +458,12 @@ class XTableLeft extends Dimensions {
 
 // ================================= 快捷键 =================================
 
-class KeyBoardTab {
+class KeyBoardTabCode {
 
-  constructor(table) {
-    const { keyboard, cols, rows, edit, screenSelector } = table;
+  static register(table) {
+    const { keyboard, cols, rows, xScreen } = table;
+    const xSelect = xScreen.findType(XSelectItem);
     const merges = table.getTableMerges();
-    let tabId = 0;
-    let tabNext = null;
     keyboard.register({
       el: table,
       focus: true,
@@ -472,21 +471,14 @@ class KeyBoardTab {
       attr: {
         code: 9,
         callback: () => {
-          edit.hideEdit();
-          const { selectorAttr } = screenSelector;
-          if (!selectorAttr) {
+          const { selectRange } = xSelect;
+          if (!selectRange) {
             return;
           }
-          const id = selectorAttr;
-          const rect = selectorAttr.rect.clone();
-          if (tabId !== id) {
-            const { sri, sci } = rect;
-            tabId = id;
-            tabNext = { sri, sci };
-          }
+          const rect = selectRange.clone();
           const cLen = cols.len - 1;
           const rLen = rows.len - 1;
-          let { sri, sci } = tabNext;
+          let { sri, sci } = selectRange;
           const srcMerges = merges.getFirstIncludes(sri, sci);
           if (srcMerges) {
             sci = srcMerges.eci;
@@ -500,8 +492,6 @@ class KeyBoardTab {
           } else {
             sci += 1;
           }
-          tabNext.sri = sri;
-          tabNext.sci = sci;
           let eri = sri;
           let eci = sci;
           const targetMerges = merges.getFirstIncludes(sri, sci);
@@ -515,11 +505,8 @@ class KeyBoardTab {
           rect.sci = sci;
           rect.eri = eri;
           rect.eci = eci;
-          screenSelector.selectorAttr.rect = rect;
-          screenSelector.setOffset(screenSelector.selectorAttr);
-          screenSelector.onChangeStack.forEach(cb => cb());
-          screenSelector.onSelectChangeStack.forEach(cb => cb());
-          edit.showEdit();
+          // TODO ...
+          // ...
         },
       },
     });
@@ -698,22 +685,6 @@ class XTableDimensions extends Widget {
   }
 
   /**
-   * 滚动视图的宽度
-   * @returns {*}
-   */
-  getScrollTotalWidth() {
-    const { fixed } = this;
-    const { cols } = this;
-    let width;
-    if (fixed.fxLeft > -1) {
-      width = cols.sectionSumWidth(fixed.fxLeft, cols.len - 1);
-    } else {
-      width = cols.sectionSumWidth(0, cols.len - 1);
-    }
-    return width;
-  }
-
-  /**
    * 滚动视图的高度
    * @returns {*}
    */
@@ -730,12 +701,19 @@ class XTableDimensions extends Widget {
   }
 
   /**
-   * 索引栏宽度
+   * 滚动视图的宽度
    * @returns {*}
    */
-  getIndexWidth() {
-    const { index } = this;
-    return index.getWidth();
+  getScrollTotalWidth() {
+    const { fixed } = this;
+    const { cols } = this;
+    let width;
+    if (fixed.fxLeft > -1) {
+      width = cols.sectionSumWidth(fixed.fxLeft, cols.len - 1);
+    } else {
+      width = cols.sectionSumWidth(0, cols.len - 1);
+    }
+    return width;
   }
 
   /**
@@ -748,11 +726,12 @@ class XTableDimensions extends Widget {
   }
 
   /**
-   * 获取内容区域宽度
+   * 索引栏宽度
+   * @returns {*}
    */
-  getContentWidth() {
-    const { xContent } = this;
-    return xContent.getWidth();
+  getIndexWidth() {
+    const { index } = this;
+    return index.getWidth();
   }
 
   /**
@@ -761,6 +740,14 @@ class XTableDimensions extends Widget {
   getContentHeight() {
     const { xContent } = this;
     return xContent.getHeight();
+  }
+
+  /**
+   * 获取内容区域宽度
+   */
+  getContentWidth() {
+    const { xContent } = this;
+    return xContent.getWidth();
   }
 
   /**
@@ -870,24 +857,30 @@ class XTableDimensions extends Widget {
    * onAttach
    */
   onAttach() {
+    // 注册焦点元素
+    this.focus.register({ el: this });
+    // 表格渲染组件
     const { xTableStyle } = this;
     this.attach(xTableStyle);
-    this.bind();
+    // 添加屏幕组件
     this.attach(this.xScreen);
     this.xScreen.addItem(new XSelectItem(this));
     this.xScreen.addItem(new XautoFillItem(this));
     this.xScreen.addItem(new XcopyStyle(this));
-    this.attach(this.xReSizer);
-    this.attach(this.yReSizer);
+    // 添加表格组件
     this.attach(this.xHeightLight);
     this.attach(this.yHeightLight);
     this.attach(this.edit);
+    this.attach(this.xReSizer);
+    this.attach(this.yReSizer);
     this.attach(this.rowFixed);
     this.attach(this.colsFixed);
     this.attach(this.dropRowFixed);
     this.attach(this.dropColFixed);
+    // 绑定表格事件
+    this.bind();
     // 注册快捷键
-    this.keyBoardTab = new KeyBoardTab(this);
+    KeyBoardTabCode.register(this);
   }
 
   /**
@@ -905,18 +898,18 @@ class XTableDimensions extends Widget {
       const { x, y } = this.computeEventXy(e);
       const { ri, ci } = this.getRiCiByXy(x, y);
       if (ri === -1 && ci === -1) {
-        mousePointer.set('default');
+        mousePointer.set(XTableMousePointer.KEYS.default);
         return;
       }
       if (ri === -1) {
-        mousePointer.set('s-resize');
+        mousePointer.set(XTableMousePointer.KEYS.sResize);
         return;
       }
       if (ci === -1) {
-        mousePointer.set('e-resize');
+        mousePointer.set(XTableMousePointer.KEYS.eResize);
         return;
       }
-      mousePointer.set('cell');
+      mousePointer.set(XTableMousePointer.KEYS.cell);
     });
   }
 
@@ -1010,11 +1003,12 @@ class XTableDimensions extends Widget {
    */
   resize() {
     const {
-      xTableStyle,
+      xTableStyle, xScreen,
     } = this;
     this.visualHeightCache = null;
     this.visualWidthCache = null;
     this.reset();
+    xScreen.setZone();
     xTableStyle.resize();
   }
 
@@ -1041,7 +1035,7 @@ class XTableDimensions extends Widget {
   /**
    * 设置缩放比
    */
-  setScale(val) {
+  setScale(val = 1) {
     const {
       xTableStyle, scale, xScreen, xHeightLight, yHeightLight,
     } = this;

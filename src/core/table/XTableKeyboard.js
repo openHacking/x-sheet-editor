@@ -10,11 +10,6 @@ class XTableKeyboard {
     this.bind();
   }
 
-  register({ el, attr = {}, stop = true, focus = false }) {
-    const { table } = this;
-    table.focus.register({ el, attr, stop, focus });
-  }
-
   bind() {
     const { table } = this;
     const { focus } = table;
@@ -37,6 +32,11 @@ class XTableKeyboard {
       }
     });
   }
+
+  register({}) {
+
+  }
+
 }
 
 export { XTableKeyboard };

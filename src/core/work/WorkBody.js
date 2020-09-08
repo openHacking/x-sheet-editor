@@ -145,6 +145,30 @@ ${XSheetVersion}
     }
   }
 
+  onAttach() {
+    const {
+      sheetViewLayer, scrollBarYLayer, sheetSwitchTabLayer, scrollBarXLayer,
+    } = this;
+    scrollBarYLayer.attach(this.scrollBarY);
+    scrollBarXLayer.attach(this.scrollBarX);
+    sheetSwitchTabLayer.attach(this.tabView);
+    sheetViewLayer.attach(this.sheetView);
+    this.bind();
+    this.createSheet();
+    this.updateScroll();
+  }
+
+  addTabSheet({ tab, sheet }) {
+    const {
+      tabSheet, sheetView, tabView,
+    } = this;
+    sheetView.attach(sheet);
+    tabView.attach(tab);
+    tabSheet.push({
+      tab, sheet,
+    });
+  }
+
   bind() {
     this.on(Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (evt) => {
       const sheet = this.sheetView.getActiveSheet();
@@ -179,6 +203,9 @@ ${XSheetVersion}
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
       this.updateScroll();
     });
+    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
+      this.updateScroll();
+    });
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, (e) => {
       this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
       e.stopPropagation();
@@ -193,27 +220,11 @@ ${XSheetVersion}
     });
   }
 
-  onAttach() {
-    const {
-      sheetViewLayer, scrollBarYLayer, sheetSwitchTabLayer, scrollBarXLayer,
-    } = this;
-    scrollBarYLayer.attach(this.scrollBarY);
-    scrollBarXLayer.attach(this.scrollBarX);
-    sheetSwitchTabLayer.attach(this.tabView);
-    sheetViewLayer.attach(this.sheetView);
-    this.bind();
-    this.createSheet();
-    this.updateScroll();
-  }
-
-  addTabSheet({ tab, sheet }) {
-    const {
-      tabSheet, sheetView, tabView,
-    } = this;
-    sheetView.attach(sheet);
-    tabView.attach(tab);
-    tabSheet.push({
-      tab, sheet,
+  setActiveTab(tab) {
+    this.tabSheet.forEach((item, index) => {
+      if (item.tab === tab) {
+        this.setActiveIndex(index);
+      }
     });
   }
 
@@ -226,14 +237,6 @@ ${XSheetVersion}
       this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
       this.activeIndex = index;
     }
-  }
-
-  setActiveTab(tab) {
-    this.tabSheet.forEach((item, index) => {
-      if (item.tab === tab) {
-        this.setActiveIndex(index);
-      }
-    });
   }
 
   toTemplate() {
@@ -282,6 +285,7 @@ ${XSheetVersion}
     table.setScale(value);
     this.updateScroll();
   }
+
 }
 
 export { WorkBody };

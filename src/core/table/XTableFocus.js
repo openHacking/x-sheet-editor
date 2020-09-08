@@ -17,7 +17,9 @@ class XTableFocus {
     return null;
   }
 
-  register({ el, attr = {}, stop = true, focus = false }) {
+  register({
+    el, attr = {}, stop = true, focus = false,
+  }) {
     const find = this.findByEl(el);
     if (find) {
       Object.assign(find.attr, attr);

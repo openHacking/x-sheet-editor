@@ -3,6 +3,7 @@ import { Widget } from '../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../const/Constant';
 import { h } from '../../../lib/Element';
 import { EventBind } from '../../../utils/EventBind';
+import { XTableMousePointer } from '../XTableMousePointer';
 
 class RowFixed extends Widget {
 
@@ -25,41 +26,50 @@ class RowFixed extends Widget {
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.setSize();
     });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
+    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
       this.setActive(true);
-      mousePointer.set('-webkit-grab');
-      e.stopPropagation();
+      mousePointer.lock(RowFixed);
+      mousePointer.set(XTableMousePointer.KEYS.grab, RowFixed);
     });
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
-      if (moveOff === false) {
+      if (!moveOff) {
         return;
       }
       this.setActive(false);
+      mousePointer.free(RowFixed);
     });
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       dropRowFixed.show();
       this.setActive(true);
-      mousePointer.set('-webkit-grab');
-      moveOff = false;
+      mousePointer.lock(RowFixed);
+      mousePointer.set(XTableMousePointer.KEYS.grab, RowFixed);
       const { y } = table.computeEventXy(e, table);
       dropRowFixed.offset({ top: y });
+      moveOff = false;
       EventBind.mouseMoveUp(document, (e) => {
         const { x, y } = table.computeEventXy(e, table);
-        const { ri, ci } = table.getRiCiByXy(x, y);
+        const { ri } = table.getRiCiByXy(x, y);
+        table.fixed.fxTop = ri;
         dropRowFixed.offset({ top: y });
-        e.stopPropagation()
+        this.setSize();
       }, () => {
         this.setActive(false);
+        mousePointer.free(RowFixed);
         dropRowFixed.hide();
+        table.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
         moveOff = true;
       });
-      e.stopPropagation();
     });
   }
 
   onAttach() {
+    const { table } = this;
+    // 初始化固定条大小
     this.setSize();
+    // 绑定处理函数
     this.bind();
+    // 注册焦点元素
+    table.focus.register({ el: this });
   }
 
   setSize() {

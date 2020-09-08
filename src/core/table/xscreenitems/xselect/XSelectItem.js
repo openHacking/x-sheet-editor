@@ -8,6 +8,7 @@ import {
 import { RectRange } from '../../tablebase/RectRange';
 import { Widget } from '../../../../lib/Widget';
 import { XDraw } from '../../../../canvas/XDraw';
+import { XTableMousePointer } from '../../XTableMousePointer';
 
 const SELECT_LOCAL = {
   LT: Symbol('LT'),
@@ -82,16 +83,16 @@ class XSelectItem extends XScreenCssBorderItem {
       this.selectBorderHandle();
       this.selectCornerHandle();
       const { selectLocal } = this;
-      let type = 'cell';
       switch (selectLocal) {
         case SELECT_LOCAL.L:
-          type = 'row';
+          mousePointer.lock(XSelectItem);
+          mousePointer.set(XTableMousePointer.KEYS.eResize, XSelectItem);
           break;
         case SELECT_LOCAL.T:
-          type = 's-resize';
+          mousePointer.lock(XSelectItem);
+          mousePointer.set(XTableMousePointer.KEYS.sResize, XSelectItem);
           break;
       }
-      mousePointer.set(type);
       table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN);
       table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
       EventBind.mouseMoveUp(document, (e2) => {
@@ -102,9 +103,14 @@ class XSelectItem extends XScreenCssBorderItem {
         this.selectCornerHandle();
         table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
       }, () => {
+        switch (selectLocal) {
+          case SELECT_LOCAL.L:
+          case SELECT_LOCAL.T:
+            mousePointer.free(XSelectItem);
+            break;
+        }
         table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_OVER);
       });
-      e1.stopPropagation();
     });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       this.selectOffsetHandle();
