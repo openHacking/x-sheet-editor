@@ -9,8 +9,10 @@ class ColFixed extends Widget {
 
   constructor(table) {
     super(`${cssPrefix}-table-col-fixed-bar`);
+    const { fixed } = table;
     this.table = table;
     this.width = 6;
+    this.fxLeft = fixed.fxLeft;
     this.block = h('div', `${cssPrefix}-table-col-fixed-block`);
     this.children(this.block);
   }
@@ -50,13 +52,14 @@ class ColFixed extends Widget {
       EventBind.mouseMoveUp(document, (e) => {
         const { x, y } = table.computeEventXy(e, table);
         const { ci } = table.getRiCiByXy(x, y);
-        table.fixed.fxLeft = ci;
         dropColFixed.offset({ left: x });
+        this.fxLeft = ci;
         this.setSize();
       }, () => {
-        dropColFixed.hide();
-        mousePointer.free(ColFixed);
         this.setActive(false);
+        mousePointer.free(ColFixed);
+        dropColFixed.hide();
+        table.fixed.fxLeft = this.fxLeft;
         table.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
         moveOff = true;
       });
@@ -75,8 +78,7 @@ class ColFixed extends Widget {
 
   setSize() {
     const { table, block, width } = this;
-    const { fixed } = table;
-    const { fxLeft } = fixed;
+    const { fxLeft } = this;
     const { cols } = table;
     const height = fxLeft > -1 ? table.visualHeight() : table.getIndexHeight();
     const offset = fxLeft > -1 ? width / 2 : width;

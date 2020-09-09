@@ -9,8 +9,10 @@ class RowFixed extends Widget {
 
   constructor(table) {
     super(`${cssPrefix}-table-row-fixed-bar`);
+    const { fixed } = table;
     this.table = table;
     this.height = 6;
+    this.fxTop = fixed.fxTop;
     this.block = h('div', `${cssPrefix}-table-row-fixed-block`);
     this.children(this.block);
   }
@@ -50,13 +52,14 @@ class RowFixed extends Widget {
       EventBind.mouseMoveUp(document, (e) => {
         const { x, y } = table.computeEventXy(e, table);
         const { ri } = table.getRiCiByXy(x, y);
-        table.fixed.fxTop = ri;
         dropRowFixed.offset({ top: y });
+        this.fxTop = ri;
         this.setSize();
       }, () => {
         this.setActive(false);
         mousePointer.free(RowFixed);
         dropRowFixed.hide();
+        table.fixed.fxTop = this.fxTop;
         table.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
         moveOff = true;
       });
@@ -75,8 +78,7 @@ class RowFixed extends Widget {
 
   setSize() {
     const { table, block, height } = this;
-    const { fixed } = table;
-    const { fxTop } = fixed;
+    const { fxTop } = this;
     const { rows } = table;
     const width = fxTop > -1 ? table.visualWidth() : table.getIndexWidth();
     const offset = fxTop > -1 ? height / 2 : height;
