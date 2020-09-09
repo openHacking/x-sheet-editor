@@ -24,7 +24,7 @@ class YReSizer extends Widget {
 
   onAttach() {
     this.bind();
-    this.table.focus.register({ el: this });
+    this.table.focus.register({ target: this });
   }
 
   bind() {
@@ -92,8 +92,8 @@ class YReSizer extends Widget {
     });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const { activate } = focus;
-      const { el } = activate;
-      if (el !== table) {
+      const { target } = activate;
+      if (target !== table && target !== this) {
         this.hide();
       }
     });

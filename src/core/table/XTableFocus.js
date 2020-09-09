@@ -9,38 +9,60 @@ class XTableFocus {
     this.pool = [];
   }
 
-  findByEl(el) {
+  bind(item) {
+    const { stop, target } = item;
+    EventBind.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const alike = this.findByChild(e.target);
+      if (alike) {
+        this.activate = alike;
+      }
+      if (stop) {
+        e.stopPropagation();
+      }
+    });
+  }
+
+  register({
+    target, attr = {}, stop = false, focus = false,
+  }) {
+    let item = this.findByNode(target);
+    if (item) {
+      Object.assign(item.attr, attr);
+      item.focus = focus;
+      item.stop = stop;
+    } else {
+      item = {
+        target, attr, stop, focus,
+      };
+      this.pool.push(item);
+    }
+    if (focus) {
+      this.activate = item;
+    }
+    this.bind(item);
+  }
+
+  findByNode(el) {
     for (let i = 0; i < this.pool.length; i += 1) {
       const item = this.pool[i];
-      if (item.el === el) return item;
+      if (item.target.el === el) {
+        return item;
+      }
     }
     return null;
   }
 
-  register({
-    el, attr = {}, stop = false, focus = false,
-  }) {
-    const find = this.findByEl(el);
-    if (find) {
-      Object.assign(find.attr, attr);
-    } else {
-      const item = {
-        el, attr,
-      };
-      this.pool.push(item);
-      if (focus) {
-        this.activate = item;
+  findByChild(el) {
+    const { table } = this;
+    const root = table.el;
+    while (el !== root) {
+      const find = this.findByNode(el);
+      if (find) {
+        return find;
       }
-      EventBind.bind(el, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-        const same = e.target === el.el;
-        if (same) {
-          this.activate = item;
-        }
-        if (stop) {
-          e.stopPropagation();
-        }
-      });
+      el = el.parentNode;
     }
+    return null;
   }
 
 }

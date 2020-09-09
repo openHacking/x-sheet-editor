@@ -69,7 +69,7 @@ class RowFixed extends Widget {
     // 绑定处理函数
     this.bind();
     // 注册焦点元素
-    table.focus.register({ el: this });
+    table.focus.register({ target: this });
   }
 
   setSize() {

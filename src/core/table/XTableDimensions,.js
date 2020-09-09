@@ -465,7 +465,7 @@ class KeyBoardTabCode {
     const xSelect = xScreen.findType(XSelectItem);
     const merges = table.getTableMerges();
     keyboard.register({
-      el: table,
+      target: table,
       focus: true,
       stop: false,
       attr: {
@@ -858,7 +858,7 @@ class XTableDimensions extends Widget {
    */
   onAttach() {
     // 注册焦点元素
-    this.focus.register({ el: this });
+    this.focus.register({ target: this });
     // 表格渲染组件
     const { xTableStyle } = this;
     this.attach(xTableStyle);

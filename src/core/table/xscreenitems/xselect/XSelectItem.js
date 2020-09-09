@@ -73,10 +73,14 @@ class XSelectItem extends XScreenCssBorderItem {
       this.selectCornerHandle();
     });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
-      if (e1.button !== 0) return;
+      if (e1.button !== 0) {
+        return;
+      }
       const { activate } = focus;
-      const { el } = activate;
-      if (el !== table) return;
+      const { target } = activate;
+      if (target !== table) {
+        return;
+      }
       const { x, y } = table.computeEventXy(e1);
       this.downSelectRange(x, y);
       this.selectOffsetHandle();
