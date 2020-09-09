@@ -1253,9 +1253,8 @@ class XTableFrozenTopIndex extends XTableTopIndexUI {
       return this.width;
     }
     const { table } = this;
-    const { fixed } = table;
-    const { rows } = table;
-    const width = rows.sectionSumHeight(0, fixed.fxLeft);
+    const { xFixed } = table;
+    const width = xFixed.getWidth();
     this.width = width;
     return width;
   }
@@ -1296,9 +1295,11 @@ class XTableFrozenTopIndex extends XTableTopIndexUI {
       return this.scrollView.clone();
     }
     const { table } = this;
-    const { rows, cols } = table;
-    const { fixed } = table;
-    const view = new RectRange(0, 0, 0, fixed.fxLeft);
+    const {
+      rows, cols, xFixed,
+    } = table;
+    const fixedView = xFixed.getFixedView();
+    const view = new RectRange(0, fixedView.sci, 0, fixedView.eci);
     view.w = cols.rectRangeSumWidth(view);
     view.h = rows.rectRangeSumHeight(view);
     this.scrollView = view;
@@ -1347,9 +1348,8 @@ class XTableFrozenLeftIndex extends XTableLeftIndexUI {
       return this.height;
     }
     const { table } = this;
-    const { fixed } = table;
-    const { rows } = table;
-    const height = rows.sectionSumHeight(0, fixed.fxTop);
+    const { xFixed } = table;
+    const height = xFixed.getHeight();
     this.height = height;
     return height;
   }
@@ -1379,9 +1379,11 @@ class XTableFrozenLeftIndex extends XTableLeftIndexUI {
       return this.scrollView.clone();
     }
     const { table } = this;
-    const { rows, cols } = table;
-    const { fixed } = table;
-    const view = new RectRange(0, 0, fixed.fxTop, 0);
+    const {
+      rows, cols, xFixed,
+    } = table;
+    const fixedView = xFixed.getFixedView();
+    const view = new RectRange(fixedView.sri, 0, fixedView.eri, 0);
     view.w = cols.rectRangeSumWidth(view);
     view.h = rows.rectRangeSumHeight(view);
     this.scrollView = view;
@@ -1419,9 +1421,8 @@ class XTableFrozenContent extends XTableContentUI {
       return this.width;
     }
     const { table } = this;
-    const { fixed } = table;
-    const { rows } = table;
-    const width = rows.sectionSumHeight(0, fixed.fxLeft);
+    const { xFixed } = table;
+    const width = xFixed.getWidth();
     this.width = width;
     return width;
   }
@@ -1431,9 +1432,8 @@ class XTableFrozenContent extends XTableContentUI {
       return this.height;
     }
     const { table } = this;
-    const { fixed } = table;
-    const { rows } = table;
-    const height = rows.sectionSumHeight(0, fixed.fxTop);
+    const { xFixed } = table;
+    const height = xFixed.getHeight();
     this.height = height;
     return height;
   }
@@ -1465,9 +1465,10 @@ class XTableFrozenContent extends XTableContentUI {
       return this.scrollView.clone();
     }
     const { table } = this;
-    const { rows, cols } = table;
-    const { fixed } = table;
-    const view = new RectRange(0, 0, fixed.fxTop, fixed.fxLeft);
+    const {
+      rows, cols, xFixed,
+    } = table;
+    const view = xFixed.getFixedView();
     view.w = cols.rectRangeSumWidth(view);
     view.h = rows.rectRangeSumHeight(view);
     this.scrollView = view;
@@ -1762,9 +1763,8 @@ class XTableLeft extends XTableContentUI {
       return this.width;
     }
     const { table } = this;
-    const { cols } = table;
-    const { fixed } = table;
-    const width = cols.sectionSumWidth(0, fixed.fxLeft);
+    const { xFixed } = table;
+    const width = xFixed.getWidth();
     this.width = width;
     return width;
   }
@@ -1809,10 +1809,11 @@ class XTableLeft extends XTableContentUI {
       return this.scrollView.clone();
     }
     const { table } = this;
-    const { fixed } = table;
+    const { xFixed } = table;
     const { cols } = table;
     const { xTableAreaView } = table;
     const renderMode = table.getRenderMode();
+    const fixedView = xFixed.getFixedView();
     const scrollView = xTableAreaView.getScrollView();
     const enterView = xTableAreaView.getScrollEnterView();
     let view;
@@ -1821,8 +1822,8 @@ class XTableLeft extends XTableContentUI {
     } else {
       view = scrollView;
     }
-    view.sci = 0;
-    view.eci = fixed.fxLeft;
+    view.sci = fixedView.sci;
+    view.eci = fixedView.eci;
     view.w = cols.sectionSumWidth(view.sci, view.eci);
     this.scrollView = view;
     return view.clone();
@@ -1833,12 +1834,13 @@ class XTableLeft extends XTableContentUI {
       return this.fullScrollView.clone();
     }
     const { table } = this;
-    const { fixed } = table;
+    const { xFixed } = table;
     const { cols } = table;
     const { xTableAreaView } = table;
+    const fixedView = xFixed.getFixedView();
     const scrollView = xTableAreaView.getScrollView();
-    scrollView.sci = 0;
-    scrollView.eci = fixed.fxLeft;
+    scrollView.sci = fixedView.sci;
+    scrollView.eci = fixedView.eci;
     scrollView.w = cols.sectionSumWidth(scrollView.sci, scrollView.eci);
     this.fullScrollView = scrollView;
     return scrollView.clone();
@@ -1851,16 +1853,17 @@ class XTableLeft extends XTableContentUI {
     const { table } = this;
     const { xTableAreaView } = table;
     const { cols } = table;
-    const { fixed } = table;
+    const { xFixed } = table;
+    const fixedView = xFixed.getFixedView();
     const lastScrollView = xTableAreaView.getLastScrollView();
     const scrollView = xTableAreaView.getScrollView();
     if (Utils.isNotUnDef(lastScrollView)) {
-      lastScrollView.sci = 0;
-      lastScrollView.eci = fixed.fxLeft;
+      lastScrollView.sci = fixedView.sci;
+      lastScrollView.eci = fixedView.eci;
       lastScrollView.w = cols.sectionSumWidth(lastScrollView.sci, lastScrollView.eci);
     }
-    scrollView.sci = 0;
-    scrollView.eci = fixed.fxLeft;
+    scrollView.sci = fixedView.sci;
+    scrollView.eci = fixedView.eci;
     scrollView.w = cols.sectionSumWidth(scrollView.sci, scrollView.eci);
     const viewMode = XTableScrollView.viewMode(lastScrollView, scrollView);
     this.viewMode = viewMode;
@@ -1888,9 +1891,8 @@ class XTableTop extends XTableContentUI {
       return this.height;
     }
     const { table } = this;
-    const { fixed } = table;
-    const { rows } = table;
-    const height = rows.sectionSumHeight(0, fixed.fxTop);
+    const { xFixed } = table;
+    const height = xFixed.getHeight();
     this.height = height;
     return height;
   }
@@ -1923,10 +1925,11 @@ class XTableTop extends XTableContentUI {
       return this.scrollView.clone();
     }
     const { table } = this;
-    const { fixed } = table;
+    const { xFixed } = table;
     const { rows } = table;
     const { xTableAreaView } = table;
     const renderMode = table.getRenderMode();
+    const fixedView = xFixed.getFixedView();
     const scrollView = xTableAreaView.getScrollView();
     const enterView = xTableAreaView.getScrollEnterView();
     let view;
@@ -1935,8 +1938,8 @@ class XTableTop extends XTableContentUI {
     } else {
       view = scrollView;
     }
-    view.sri = 0;
-    view.eri = fixed.fxTop;
+    view.sri = fixedView.sri;
+    view.eri = fixedView.eri;
     view.h = rows.sectionSumHeight(view.sri, view.eri);
     this.scrollView = view;
     return view.clone();
@@ -1947,12 +1950,13 @@ class XTableTop extends XTableContentUI {
       return this.fullScrollView.clone();
     }
     const { table } = this;
-    const { fixed } = table;
+    const { xFixed } = table;
     const { rows } = table;
     const { xTableAreaView } = table;
+    const fixedView = xFixed.getFixedView();
     const scrollView = xTableAreaView.getScrollView();
-    scrollView.sri = 0;
-    scrollView.eri = fixed.fxTop;
+    scrollView.sri = fixedView.sri;
+    scrollView.eri = fixedView.eri;
     scrollView.h = rows.sectionSumHeight(scrollView.sri, scrollView.eri);
     this.fullScrollView = scrollView;
     return scrollView.clone();
@@ -1965,16 +1969,17 @@ class XTableTop extends XTableContentUI {
     const { table } = this;
     const { xTableAreaView } = table;
     const { rows } = table;
-    const { fixed } = table;
+    const { xFixed } = table;
+    const fixedView = xFixed.getFixedView();
     const lastScrollView = xTableAreaView.getLastScrollView();
     const scrollView = xTableAreaView.getScrollView();
     if (Utils.isNotUnDef(lastScrollView)) {
-      lastScrollView.sri = 0;
-      lastScrollView.eri = fixed.fxTop;
+      lastScrollView.sri = fixedView.sri;
+      lastScrollView.eri = fixedView.eri;
       lastScrollView.h = rows.sectionSumHeight(lastScrollView.sci, lastScrollView.eci);
     }
-    scrollView.sri = 0;
-    scrollView.eri = fixed.fxTop;
+    scrollView.sri = fixedView.sri;
+    scrollView.eri = fixedView.eri;
     scrollView.h = rows.sectionSumHeight(scrollView.sci, scrollView.eci);
     const viewMode = XTableScrollView.viewMode(lastScrollView, scrollView);
     this.viewMode = viewMode;
@@ -2086,20 +2091,20 @@ class XTableStyle extends Widget {
    * xTableScrollView
    * @param xTableScrollView
    * @param settings
-   * @param fixed
+   * @param xFixed
    * @param scroll
    */
   constructor({
     xTableScrollView,
     settings,
-    fixed,
+    xFixed,
     scroll,
   }) {
     super(`${cssPrefix}-table-canvas`, 'canvas');
     // 表格设置
     this.settings = settings;
     // 冻结的视图 & 滚动的坐标
-    this.fixed = fixed;
+    this.xFixed = xFixed;
     this.scroll = scroll;
     // 渲染模式
     this.renderMode = RENDER_MODE.RENDER;
@@ -2437,7 +2442,7 @@ class XTableStyle extends Widget {
    * 渲染静态界面
    */
   render() {
-    const { fixed } = this;
+    const { xFixed } = this;
     const { xTableFrozenFullRect } = this;
     const { xLeftFrozenIndex } = this;
     const { xTopFrozenIndex } = this;
@@ -2449,14 +2454,14 @@ class XTableStyle extends Widget {
     const { xContent } = this;
     this.drawBorderOptimize();
     xTableFrozenFullRect.render();
-    if (fixed.fxLeft > -1 && fixed.fxTop > -1) {
+    if (xFixed.hasFixedLeft() && xFixed.hasFixedTop()) {
       xTableFrozenContent.render();
     }
-    if (fixed.fxTop > -1) {
+    if (xFixed.hasFixedTop()) {
       xLeftFrozenIndex.render();
       xTop.render();
     }
-    if (fixed.fxLeft > -1) {
+    if (xFixed.hasFixedLeft()) {
       xTopFrozenIndex.render();
       xLeft.render();
     }
