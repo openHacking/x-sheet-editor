@@ -86,7 +86,6 @@ class XReSizer extends Widget {
         } else {
           this.css('left', `${left - this.width}px`);
         }
-        this.css('left', `${left - this.width}px`);
         this.hoverEl.css('width', `${this.width}px`);
         this.hoverEl.css('height', `${index.getHeight()}px`);
       }

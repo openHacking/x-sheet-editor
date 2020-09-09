@@ -630,7 +630,7 @@ class XTableDimensions extends Widget {
     this.yHeightLight = new YHeightLight(this);
     this.edit = new XTableEdit(this);
     this.rowFixed = new RowFixed(this);
-    this.colsFixed = new ColFixed(this);
+    this.colFixed = new ColFixed(this);
     this.dropRowFixed = new DropRowFixed(this);
     this.dropColFixed = new DropColFixed(this);
   }
@@ -872,7 +872,7 @@ class XTableDimensions extends Widget {
     this.attach(this.yHeightLight);
     this.attach(this.edit);
     this.attach(this.rowFixed);
-    this.attach(this.colsFixed);
+    this.attach(this.colFixed);
     this.attach(this.xReSizer);
     this.attach(this.yReSizer);
     this.attach(this.dropRowFixed);
