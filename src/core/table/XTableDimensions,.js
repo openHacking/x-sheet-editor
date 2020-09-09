@@ -259,6 +259,73 @@ class XTableLeftIndex extends Dimensions {
 
 }
 
+class XTableLeft extends Dimensions {
+
+  getWidth() {
+    if (Utils.isNumber(this.width)) {
+      return this.width;
+    }
+    const { table } = this;
+    const { cols } = table;
+    const { fixed } = table;
+    const width = cols.sectionSumWidth(0, fixed.fxLeft);
+    this.width = width;
+    return width;
+  }
+
+  getHeight() {
+    if (Utils.isNumber(this.height)) {
+      return this.height;
+    }
+    const { table } = this;
+    const { xTop } = table;
+    const { index } = table;
+    const height = table.visualHeight() - (index.getHeight() + xTop.getHeight());
+    this.height = height;
+    return height;
+  }
+
+  getX() {
+    if (Utils.isNumber(this.x)) {
+      return this.x;
+    }
+    const { table } = this;
+    const { index } = table;
+    const x = index.getWidth();
+    this.x = x;
+    return x;
+  }
+
+  getY() {
+    if (Utils.isNumber(this.y)) {
+      return this.y;
+    }
+    const { table } = this;
+    const { xTop } = table;
+    const { index } = table;
+    const y = index.getHeight() + xTop.getHeight();
+    this.y = y;
+    return y;
+  }
+
+  getScrollView() {
+    if (Utils.isNotUnDef(this.scrollView)) {
+      return this.scrollView.clone();
+    }
+    const { table } = this;
+    const { fixed } = table;
+    const { cols } = table;
+    const { xTableAreaView } = table;
+    const scrollView = xTableAreaView.getScrollView();
+    scrollView.sci = 0;
+    scrollView.eci = fixed.fxLeft;
+    scrollView.w = cols.sectionSumWidth(scrollView.sci, scrollView.eci);
+    this.scrollView = scrollView;
+    return scrollView.clone();
+  }
+
+}
+
 class XTableTop extends Dimensions {
 
   getWidth() {
@@ -383,73 +450,6 @@ class XTableContent extends Dimensions {
     const { table } = this;
     const { xTableAreaView } = table;
     const scrollView = xTableAreaView.getScrollView();
-    this.scrollView = scrollView;
-    return scrollView.clone();
-  }
-
-}
-
-class XTableLeft extends Dimensions {
-
-  getWidth() {
-    if (Utils.isNumber(this.width)) {
-      return this.width;
-    }
-    const { table } = this;
-    const { cols } = table;
-    const { fixed } = table;
-    const width = cols.sectionSumWidth(0, fixed.fxLeft);
-    this.width = width;
-    return width;
-  }
-
-  getHeight() {
-    if (Utils.isNumber(this.height)) {
-      return this.height;
-    }
-    const { table } = this;
-    const { xTop } = table;
-    const { index } = table;
-    const height = table.visualHeight() - (index.getHeight() + xTop.getHeight());
-    this.height = height;
-    return height;
-  }
-
-  getX() {
-    if (Utils.isNumber(this.x)) {
-      return this.x;
-    }
-    const { table } = this;
-    const { index } = table;
-    const x = index.getWidth();
-    this.x = x;
-    return x;
-  }
-
-  getY() {
-    if (Utils.isNumber(this.y)) {
-      return this.y;
-    }
-    const { table } = this;
-    const { xTop } = table;
-    const { index } = table;
-    const y = index.getHeight() + xTop.getHeight();
-    this.y = y;
-    return y;
-  }
-
-  getScrollView() {
-    if (Utils.isNotUnDef(this.scrollView)) {
-      return this.scrollView.clone();
-    }
-    const { table } = this;
-    const { fixed } = table;
-    const { cols } = table;
-    const { xTableAreaView } = table;
-    const scrollView = xTableAreaView.getScrollView();
-    scrollView.sci = 0;
-    scrollView.eci = fixed.fxLeft;
-    scrollView.w = cols.sectionSumWidth(scrollView.sci, scrollView.eci);
     this.scrollView = scrollView;
     return scrollView.clone();
   }
@@ -646,6 +646,16 @@ class XTableDimensions extends Widget {
   }
 
   /**
+   * 单元辅助实例
+   * @returns {OperateCellsHelper}
+   */
+  getOperateCellsHelper() {
+    const { xTableStyle } = this;
+    const { operateCellsHelper } = xTableStyle;
+    return operateCellsHelper;
+  }
+
+  /**
    * 读取合并单元格
    */
   getTableMerges() {
@@ -662,16 +672,6 @@ class XTableDimensions extends Widget {
     const { xTableStyle } = this;
     const { styleCellsHelper } = xTableStyle;
     return styleCellsHelper;
-  }
-
-  /**
-   * 单元辅助实例
-   * @returns {OperateCellsHelper}
-   */
-  getOperateCellsHelper() {
-    const { xTableStyle } = this;
-    const { operateCellsHelper } = xTableStyle;
-    return operateCellsHelper;
   }
 
   /**
@@ -870,11 +870,11 @@ class XTableDimensions extends Widget {
     // 添加表格组件
     this.attach(this.xHeightLight);
     this.attach(this.yHeightLight);
+    this.attach(this.rowFixed);
+    this.attach(this.colsFixed);
     this.attach(this.edit);
     this.attach(this.xReSizer);
     this.attach(this.yReSizer);
-    this.attach(this.rowFixed);
-    this.attach(this.colsFixed);
     this.attach(this.dropRowFixed);
     this.attach(this.dropColFixed);
     // 绑定表格事件
