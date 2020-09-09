@@ -29,7 +29,7 @@ class XReSizer extends Widget {
   bind() {
     const { table } = this;
     const {
-      cols, mousePointer, focus,
+      cols, mousePointer, focus, fixed, colFixed,
     } = table;
     const tableDataSnapshot = table.getTableDataSnapshot();
     const { colsDataProxy } = tableDataSnapshot;
@@ -81,6 +81,11 @@ class XReSizer extends Widget {
         this.hide();
       } else {
         this.show();
+        if (ci === fixed.fxLeft) {
+          this.css('left', `${left - this.width - colFixed.width / 2}px`);
+        } else {
+          this.css('left', `${left - this.width}px`);
+        }
         this.css('left', `${left - this.width}px`);
         this.hoverEl.css('width', `${this.width}px`);
         this.hoverEl.css('height', `${index.getHeight()}px`);

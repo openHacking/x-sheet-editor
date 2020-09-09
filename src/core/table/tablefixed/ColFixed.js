@@ -10,6 +10,7 @@ class ColFixed extends Widget {
   constructor(table) {
     super(`${cssPrefix}-table-col-fixed-bar`);
     this.table = table;
+    this.width = 6;
     this.block = h('div', `${cssPrefix}-table-col-fixed-block`);
     this.children(this.block);
   }
@@ -73,11 +74,10 @@ class ColFixed extends Widget {
   }
 
   setSize() {
-    const { table, block } = this;
+    const { table, block, width } = this;
     const { fixed } = table;
     const { fxLeft } = fixed;
     const { cols } = table;
-    const width = 6;
     const height = fxLeft > -1 ? table.visualHeight() : table.getIndexHeight();
     const offset = fxLeft > -1 ? width / 2 : width;
     const left = cols.sectionSumWidth(0, fxLeft) + table.getIndexWidth() - offset;

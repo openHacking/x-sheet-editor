@@ -10,6 +10,7 @@ class RowFixed extends Widget {
   constructor(table) {
     super(`${cssPrefix}-table-row-fixed-bar`);
     this.table = table;
+    this.height = 6;
     this.block = h('div', `${cssPrefix}-table-row-fixed-block`);
     this.children(this.block);
   }
@@ -73,11 +74,10 @@ class RowFixed extends Widget {
   }
 
   setSize() {
-    const { table, block } = this;
+    const { table, block, height } = this;
     const { fixed } = table;
     const { fxTop } = fixed;
     const { rows } = table;
-    const height = 6;
     const width = fxTop > -1 ? table.visualWidth() : table.getIndexWidth();
     const offset = fxTop > -1 ? height / 2 : height;
     const top = rows.sectionSumHeight(0, fxTop) + table.getIndexHeight() - offset;

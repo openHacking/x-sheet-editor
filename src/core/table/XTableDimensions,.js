@@ -870,9 +870,9 @@ class XTableDimensions extends Widget {
     // 添加表格组件
     this.attach(this.xHeightLight);
     this.attach(this.yHeightLight);
+    this.attach(this.edit);
     this.attach(this.rowFixed);
     this.attach(this.colsFixed);
-    this.attach(this.edit);
     this.attach(this.xReSizer);
     this.attach(this.yReSizer);
     this.attach(this.dropRowFixed);

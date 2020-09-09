@@ -30,7 +30,7 @@ class YReSizer extends Widget {
   bind() {
     const { table } = this;
     const {
-      rows, mousePointer, focus,
+      rows, mousePointer, focus, fixed, rowFixed,
     } = table;
     const tableDataSnapshot = table.getTableDataSnapshot();
     const { rowsDataProxy } = tableDataSnapshot;
@@ -82,7 +82,11 @@ class YReSizer extends Widget {
         this.hide();
       } else {
         this.show();
-        this.css('top', `${top - this.height}px`);
+        if (ri === fixed.fxTop) {
+          this.css('top', `${top - this.height - rowFixed.height / 2}px`);
+        } else {
+          this.css('top', `${top - this.height}px`);
+        }
         this.hoverEl.css('width', `${index.getWidth()}px`);
         this.hoverEl.css('height', `${this.height}px`);
       }
