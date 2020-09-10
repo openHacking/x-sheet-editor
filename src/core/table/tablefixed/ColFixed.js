@@ -54,6 +54,9 @@ class ColFixed extends Widget {
       const { x } = table.computeEventXy(e, table);
       dropColFixed.offset({ left: x });
       moveOff = false;
+      if (xFixedView.hasFixedLeft()) {
+        table.scrollX(0);
+      }
       EventBind.mouseMoveUp(document, (e) => {
         const { x, y } = table.computeEventXy(e, table);
         const { ci } = table.getRiCiByXy(x, y);

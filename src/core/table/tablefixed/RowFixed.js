@@ -54,6 +54,9 @@ class RowFixed extends Widget {
       const { y } = table.computeEventXy(e, table);
       dropRowFixed.offset({ top: y });
       moveOff = false;
+      if (xFixedView.hasFixedTop()) {
+        table.scrollY(0);
+      }
       EventBind.mouseMoveUp(document, (e) => {
         const { x, y } = table.computeEventXy(e, table);
         const { ri } = table.getRiCiByXy(x, y);
