@@ -46,30 +46,40 @@ class ColFixed extends Widget {
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       dropColFixed.show();
       this.setActive(true);
+      // 获取固定区域
       const fixedView = xFixedView.getFixedView();
       this.fxSci = fixedView.sci;
       this.fxEci = fixedView.eci;
+      // 锁定鼠标指针
       mousePointer.lock(ColFixed);
       mousePointer.set(XTableMousePointer.KEYS.grab, ColFixed);
+      // 推拽条移动位置
       const { x } = table.computeEventXy(e, table);
       dropColFixed.offset({ left: x });
       moveOff = false;
+      // 如果存在固定位置
+      // 定位到起始处
       if (xFixedView.hasFixedLeft()) {
         table.scrollX(0);
       }
       EventBind.mouseMoveUp(document, (e) => {
+        // 推拽条移动位置
         const { x, y } = table.computeEventXy(e, table);
-        const { ci } = table.getRiCiByXy(x, y);
         dropColFixed.offset({ left: x });
+        // 更新行号
+        const { ci } = table.getRiCiByXy(x, y);
         this.fxEci = ci;
         this.setSize();
       }, () => {
         this.setActive(false);
+        // 释放指针
         mousePointer.free(ColFixed);
         dropColFixed.hide();
+        // 更新固定区域
         fixedView.eci = this.fxEci;
         xFixedView.setFixedView(fixedView);
-        table.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
+        // 刷新界面
+        table.resize();
         moveOff = true;
       });
     });
@@ -85,12 +95,23 @@ class ColFixed extends Widget {
     table.focus.register({ target: this });
   }
 
+  setActive(status) {
+    if (status) {
+      this.block.addClass('active');
+      this.addClass('active');
+    } else {
+      this.block.removeClass('active');
+      this.removeClass('active');
+    }
+  }
+
   setSize() {
     const {
-      table, block, width,
+      table, block,
     } = this;
     const { fxSci, fxEci } = this;
     const { cols } = table;
+    const width = ColFixed.WIDTH;
     const height = fxEci > -1 ? table.visualHeight() : table.getIndexHeight();
     const offset = fxEci > -1 ? width / 2 : width;
     const left = cols.sectionSumWidth(fxSci, fxEci) + table.getIndexWidth() - offset;
@@ -102,17 +123,8 @@ class ColFixed extends Widget {
     });
   }
 
-  setActive(status) {
-    if (status) {
-      this.block.addClass('active');
-      this.addClass('active');
-    } else {
-      this.block.removeClass('active');
-      this.removeClass('active');
-    }
-  }
-
 }
+ColFixed.WIDTH = 6;
 
 export {
   ColFixed,

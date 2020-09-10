@@ -39,9 +39,6 @@ class SheetView extends Widget {
     EventBind.bind(sheet, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, () => {
       this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN, this);
     });
-    EventBind.bind(sheet, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
-    });
   }
 
   getActiveSheet() {

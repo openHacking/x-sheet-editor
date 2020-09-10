@@ -1,6 +1,6 @@
 /* global document */
-import { Widget } from '../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../const/Constant';
+import { Widget } from '../../../lib/Widget';
 import { h } from '../../../lib/Element';
 import { EventBind } from '../../../utils/EventBind';
 import { XTableMousePointer } from '../XTableMousePointer';
@@ -12,7 +12,6 @@ class RowFixed extends Widget {
     const { xFixedView } = table;
     const fixedView = xFixedView.getFixedView();
     this.table = table;
-    this.height = 6;
     this.fxSri = fixedView.sri;
     this.fxEri = fixedView.eri;
     this.block = h('div', `${cssPrefix}-table-row-fixed-block`);
@@ -46,30 +45,40 @@ class RowFixed extends Widget {
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       dropRowFixed.show();
       this.setActive(true);
+      // 获取固定区域
       const fixedView = xFixedView.getFixedView();
       this.fxSri = fixedView.sri;
       this.fxEri = fixedView.eri;
+      // 锁定鼠标指针
       mousePointer.lock(RowFixed);
       mousePointer.set(XTableMousePointer.KEYS.grab, RowFixed);
+      // 推拽条移动位置
       const { y } = table.computeEventXy(e, table);
       dropRowFixed.offset({ top: y });
       moveOff = false;
+      // 如果存在固定位置
+      // 定位到起始处
       if (xFixedView.hasFixedTop()) {
         table.scrollY(0);
       }
       EventBind.mouseMoveUp(document, (e) => {
+        // 推拽条移动位置 + 行号
         const { x, y } = table.computeEventXy(e, table);
-        const { ri } = table.getRiCiByXy(x, y);
         dropRowFixed.offset({ top: y });
+        // 更新行号
+        const { ri } = table.getRiCiByXy(x, y);
         this.fxEri = ri;
         this.setSize();
       }, () => {
         this.setActive(false);
+        // 释放指针
         mousePointer.free(RowFixed);
         dropRowFixed.hide();
+        // 更新固定区域
         fixedView.eri = this.fxEri;
         xFixedView.setFixedView(fixedView);
-        table.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
+        // 刷新界面
+        table.resize();
         moveOff = true;
       });
     });
@@ -85,21 +94,6 @@ class RowFixed extends Widget {
     table.focus.register({ target: this });
   }
 
-  setSize() {
-    const { table, block, height } = this;
-    const { fxSri, fxEri } = this;
-    const { rows } = table;
-    const width = fxEri > -1 ? table.visualWidth() : table.getIndexWidth();
-    const offset = fxEri > -1 ? height / 2 : height;
-    const top = rows.sectionSumHeight(fxSri, fxEri) + table.getIndexHeight() - offset;
-    block.offset({
-      width: table.getIndexWidth(), height,
-    });
-    this.offset({
-      height, width, left: 0, top,
-    });
-  }
-
   setActive(status) {
     if (status) {
       this.addClass('active');
@@ -110,7 +104,24 @@ class RowFixed extends Widget {
     }
   }
 
+  setSize() {
+    const { table, block } = this;
+    const { fxSri, fxEri } = this;
+    const { rows } = table;
+    const height = RowFixed.HEIGHT;
+    const width = fxEri > -1 ? table.visualWidth() : table.getIndexWidth();
+    const outer = fxEri > -1 ? height / 2 : height;
+    const top = rows.sectionSumHeight(fxSri, fxEri) + table.getIndexHeight() - outer;
+    block.offset({
+      width: table.getIndexWidth(), height,
+    });
+    this.offset({
+      height, width, left: 0, top,
+    });
+  }
+
 }
+RowFixed.HEIGHT = 6;
 
 export {
   RowFixed,
