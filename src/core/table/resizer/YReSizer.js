@@ -10,7 +10,6 @@ class YReSizer extends Widget {
 
   constructor(table, options = { height: 5 }) {
     super(`${cssPrefix}-re-sizer-vertical`);
-
     this.table = table;
     this.options = options;
     this.height = options.height;
@@ -30,7 +29,7 @@ class YReSizer extends Widget {
   bind() {
     const { table } = this;
     const {
-      rows, mousePointer, focus, fixed, rowFixed,
+      rows, mousePointer, focus, xFixedView, rowFixed,
     } = table;
     const tableDataSnapshot = table.getTableDataSnapshot();
     const { rowsDataProxy } = tableDataSnapshot;
@@ -75,6 +74,7 @@ class YReSizer extends Widget {
       let { top, ri } = this.getEventTop(e);
       const min = top - rows.getHeight(ri) + rows.min;
       const visualHeight = table.visualHeight();
+      const fixedView = xFixedView.getFixedView();
       if (top > visualHeight) {
         top = visualHeight;
       }
@@ -82,7 +82,7 @@ class YReSizer extends Widget {
         this.hide();
       } else {
         this.show();
-        if (ri === fixed.fxTop) {
+        if (ri === fixedView.eri) {
           this.css('top', `${top - this.height - rowFixed.height / 2}px`);
         } else {
           this.css('top', `${top - this.height}px`);
@@ -106,23 +106,33 @@ class YReSizer extends Widget {
   getEventTop(event) {
     const { table } = this;
     const {
-      rows, fixed, scroll,
+      rows, xFixedView, xFixedMeasure,
     } = table;
     const { index } = table;
     const { x, y } = table.computeEventXy(event);
     const { ri, ci } = table.getRiCiByXy(x, y);
-    if (ci !== -1) {
-      return {
-        top: -1, x, y, ri, ci,
-      };
-    }
-    let top = index.getHeight() + rows.sectionSumHeight(0, ri);
-    if (ri > fixed.fxTop) {
-      top -= scroll.y;
-    }
-    return {
-      top, x, y, ri, ci,
+    const result = {
+      ri, top: -1,
     };
+    // 无效区域
+    if (ci !== -1) {
+      return result;
+    }
+    const fixedHeight = xFixedMeasure.getHeight();
+    const indexHeight = index.getHeight();
+    const fixedView = xFixedView.getFixedView();
+    const scrollView = table.getScrollView();
+    // 冻结区域
+    if (xFixedView.hasFixedTop()) {
+      if (ri > fixedView.eri) {
+        result.top = indexHeight + fixedHeight + rows.sectionSumHeight(scrollView.sri, ri);
+      } else {
+        result.top = indexHeight + rows.sectionSumHeight(fixedView.sri, ri);
+      }
+    } else {
+      result.top = indexHeight + rows.sectionSumHeight(scrollView.sri, ri);
+    }
+    return result;
   }
 
 }

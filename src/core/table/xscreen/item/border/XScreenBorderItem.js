@@ -100,15 +100,17 @@ class XScreenBorderItem extends XScreenMeasureItem {
   rangeOverGo(range) {
     const { table } = this;
     const { cols, rows } = table;
-    const { fixed } = table;
-    const { fxTop, fxLeft } = fixed;
+    const {
+      xFixedView,
+    } = table;
     const rowsLen = rows.len - 1;
     const colsLen = cols.len - 1;
-    if (fxTop > -1 && fxLeft > -1) {
-      const lt = new RectRange(0, 0, fxTop, fxLeft);
-      const t = new RectRange(0, fxLeft, fxTop, colsLen);
-      const br = new RectRange(fxTop, fxLeft, rowsLen, colsLen);
-      const l = new RectRange(fxTop, 0, rowsLen, fxLeft);
+    const fixedView = xFixedView.getFixedView();
+    if (xFixedView.hasFixedTop() && xFixedView.hasFixedLeft()) {
+      const lt = fixedView;
+      const t = new RectRange(fixedView.sri, fixedView.eci, fixedView.eri, colsLen);
+      const br = new RectRange(fixedView.eri, fixedView.eci, rowsLen, colsLen);
+      const l = new RectRange(fixedView.eri, fixedView.sci, rowsLen, fixedView.eci);
       if (lt.contains(range)) {
         return RANGE_OVER_GO.LT;
       }
@@ -121,10 +123,10 @@ class XScreenBorderItem extends XScreenMeasureItem {
       if (l.contains(range)) {
         return RANGE_OVER_GO.L;
       }
-      const ltt = new RectRange(0, 0, fxTop, colsLen);
-      const ltl = new RectRange(0, 0, rowsLen, fxLeft);
-      const brt = new RectRange(0, fxLeft, rowsLen, colsLen);
-      const brl = new RectRange(fxTop, 0, rowsLen, colsLen);
+      const ltt = new RectRange(0, 0, fixedView.eri, colsLen);
+      const ltl = new RectRange(0, 0, rowsLen, fixedView.eci);
+      const brt = new RectRange(0, fixedView.eci, rowsLen, colsLen);
+      const brl = new RectRange(fixedView.eri, 0, rowsLen, colsLen);
       if (ltt.contains(range)) {
         return RANGE_OVER_GO.LTT;
       }
@@ -138,9 +140,9 @@ class XScreenBorderItem extends XScreenMeasureItem {
         return RANGE_OVER_GO.BRL;
       }
       return RANGE_OVER_GO.ALL;
-    } if (fxTop > -1) {
-      const t = new RectRange(0, 0, fxTop, colsLen);
-      const br = new RectRange(fxTop, 0, rowsLen, colsLen);
+    } if (xFixedView.hasFixedTop()) {
+      const t = new RectRange(0, 0, fixedView.eri, colsLen);
+      const br = new RectRange(fixedView.eri, 0, rowsLen, colsLen);
       if (t.contains(range)) {
         return RANGE_OVER_GO.T;
       }
@@ -148,9 +150,9 @@ class XScreenBorderItem extends XScreenMeasureItem {
         return RANGE_OVER_GO.BR;
       }
       return RANGE_OVER_GO.ALL;
-    } if (fxLeft > -1) {
-      const br = new RectRange(0, fxLeft, rowsLen, colsLen);
-      const l = new RectRange(0, 0, rowsLen, fxLeft);
+    } if (xFixedView.hasFixedLeft()) {
+      const br = new RectRange(0, fixedView.eci, rowsLen, colsLen);
+      const l = new RectRange(0, 0, rowsLen, fixedView.eci);
       if (br.contains(range)) {
         return RANGE_OVER_GO.BR;
       }

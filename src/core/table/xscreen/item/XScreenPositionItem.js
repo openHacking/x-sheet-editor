@@ -18,9 +18,8 @@ class XScreenPositionItem extends XScreenItem {
 
   setLeft(left) {
     const { table } = this;
-    const { fixed } = table;
-    const { cols } = table;
-    const offsetLeft = cols.sectionSumWidth(0, fixed.fxLeft);
+    const { xFixedMeasure } = table;
+    const offsetLeft = xFixedMeasure.getWidth();
     this.lt.offset({ left });
     this.l.offset({ left });
     this.t.offset({ left: left - offsetLeft });
@@ -29,9 +28,8 @@ class XScreenPositionItem extends XScreenItem {
 
   setTop(top) {
     const { table } = this;
-    const { fixed } = table;
-    const { rows } = table;
-    const offsetTop = rows.sectionSumHeight(0, fixed.fxTop);
+    const { xFixedMeasure } = table;
+    const offsetTop = xFixedMeasure.getHeight();
     this.lt.offset({ top });
     this.l.offset({ top });
     this.t.offset({ top: top - offsetTop });

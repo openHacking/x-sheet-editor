@@ -29,7 +29,7 @@ class XReSizer extends Widget {
   bind() {
     const { table } = this;
     const {
-      cols, mousePointer, focus, fixed, colFixed,
+      cols, mousePointer, focus, xFixedView, colFixed,
     } = table;
     const tableDataSnapshot = table.getTableDataSnapshot();
     const { colsDataProxy } = tableDataSnapshot;
@@ -74,6 +74,7 @@ class XReSizer extends Widget {
       let { left, ci } = this.getEventLeft(e);
       const min = left - cols.getWidth(ci) + cols.min;
       const visualWidth = table.visualWidth();
+      const fixedView = xFixedView.getFixedView();
       if (left > visualWidth) {
         left = visualWidth;
       }
@@ -81,7 +82,7 @@ class XReSizer extends Widget {
         this.hide();
       } else {
         this.show();
-        if (ci === fixed.fxLeft) {
+        if (ci === fixedView.eci) {
           this.css('left', `${left - this.width - colFixed.width / 2}px`);
         } else {
           this.css('left', `${left - this.width}px`);
@@ -105,23 +106,34 @@ class XReSizer extends Widget {
   getEventLeft(event) {
     const { table } = this;
     const {
-      cols, fixed, scroll,
+      cols, xFixedView, xFixedMeasure,
     } = table;
     const { index } = table;
     const { x, y } = table.computeEventXy(event);
     const { ri, ci } = table.getRiCiByXy(x, y);
-    if (ri !== -1) {
-      return { left: -1, x, y, ri, ci };
-    }
-    let left = index.getWidth() + cols.sectionSumWidth(0, ci);
-    if (ci > fixed.fxLeft) {
-      left -= scroll.x;
-    }
-    return {
-      left, x, y, ri, ci,
+    const result = {
+      ci, left: -1,
     };
+    // 无效区域
+    if (ri !== -1) {
+      return result;
+    }
+    const fixedWidth = xFixedMeasure.getWidth();
+    const indexWidth = index.getWidth();
+    const fixedView = xFixedView.getFixedView();
+    const scrollView = table.getScrollView();
+    // 冻结区域
+    if (xFixedView.hasFixedLeft()) {
+      if (ci > fixedView.eci) {
+        result.left = indexWidth + fixedWidth + cols.sectionSumWidth(scrollView.sci, ci);
+      } else {
+        result.left = indexWidth + cols.sectionSumWidth(fixedView.sci, ci);
+      }
+    } else {
+      result.left = indexWidth + cols.sectionSumWidth(scrollView.sci, ci);
+    }
+    return result;
   }
-
 }
 
 export { XReSizer };

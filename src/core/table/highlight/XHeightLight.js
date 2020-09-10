@@ -74,7 +74,7 @@ class XHeightLight extends Widget {
   getLeft() {
     const { table } = this;
     const {
-      xScreen, cols, fixed,
+      xScreen, cols, xFixedView,
     } = table;
     const xSelect = xScreen.findType(XSelectItem);
     const scrollView = table.getScrollView();
@@ -85,7 +85,7 @@ class XHeightLight extends Widget {
       return 0;
     }
     // 固定位置
-    const { fxLeft } = fixed;
+    const fixedView = xFixedView.getFixedView();
     switch (overGo) {
       case RANGE_OVER_GO.LT:
       case RANGE_OVER_GO.L:
@@ -93,7 +93,7 @@ class XHeightLight extends Widget {
       case RANGE_OVER_GO.LTL:
       case RANGE_OVER_GO.BRL:
       case RANGE_OVER_GO.ALL:
-        return XDraw.offsetToLineInside(cols.sectionSumWidth(selectRange.sci, fxLeft));
+        return XDraw.offsetToLineInside(cols.sectionSumWidth(selectRange.sci, fixedView.eci));
     }
     // 滚动位置
     return XDraw.offsetToLineInside(cols.sectionSumWidth(scrollView.sci, selectRange.sci - 1));
@@ -102,7 +102,7 @@ class XHeightLight extends Widget {
   getWidth() {
     const { table } = this;
     const {
-      xScreen, cols, fixed,
+      xScreen, cols, xFixedView,
     } = table;
     const xSelect = xScreen.findType(XSelectItem);
     const scrollView = table.getScrollView();
@@ -110,7 +110,7 @@ class XHeightLight extends Widget {
       selectRange, overGo,
     } = xSelect;
     // 固定宽度
-    const { fxLeft } = fixed;
+    const fixedView = xFixedView.getFixedView();
     let fixWidth = 0;
     switch (overGo) {
       case RANGE_OVER_GO.LT:
@@ -119,7 +119,7 @@ class XHeightLight extends Widget {
       case RANGE_OVER_GO.LTL:
       case RANGE_OVER_GO.BRL:
       case RANGE_OVER_GO.ALL:
-        fixWidth = cols.sectionSumWidth(selectRange.sci, fxLeft);
+        fixWidth = cols.sectionSumWidth(selectRange.sci, fixedView.eci);
         break;
     }
     // 滚动宽度

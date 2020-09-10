@@ -11,13 +11,11 @@ class XFixedMeasure {
   }
 
   getHeight() {
-    const { rows } = this;
-    return rows.rectRangeSumHeight(this.fixedView.getFixedView());
+    return this.rows.rectRangeSumHeight(this.fixedView.getFixedView());
   }
 
   getWidth() {
-    const { cols } = this;
-    return cols.rectRangeSumWidth(this.fixedView.getFixedView());
+    return this.cols.rectRangeSumWidth(this.fixedView.getFixedView());
   }
 
 }

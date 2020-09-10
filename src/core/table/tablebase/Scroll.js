@@ -10,9 +10,9 @@ const SCROLL_TYPE = {
 class Scroll {
 
   constructor({
-    xFixed,
+    xFixedView,
   }) {
-    const fixedView = xFixed.getFixedView();
+    const fixedView = xFixedView.getFixedView();
     this.ri = fixedView.eri + 1;
     this.ci = fixedView.eci + 1;
     this.x = 0;

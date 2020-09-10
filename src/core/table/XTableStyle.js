@@ -44,6 +44,7 @@ import { BaseFont } from '../../canvas/font/BaseFont';
 import {
   VIEW_MODE, XTableScrollView,
 } from './XTableScrollView';
+import { XFixedMeasure } from './tablebase/XFixedMeasure';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -1253,8 +1254,8 @@ class XTableFrozenTopIndex extends XTableTopIndexUI {
       return this.width;
     }
     const { table } = this;
-    const { xFixed } = table;
-    const width = xFixed.getWidth();
+    const { xFixedMeasure } = table;
+    const width = xFixedMeasure.getWidth();
     this.width = width;
     return width;
   }
@@ -1296,9 +1297,9 @@ class XTableFrozenTopIndex extends XTableTopIndexUI {
     }
     const { table } = this;
     const {
-      rows, cols, xFixed,
+      rows, cols, xFixedView,
     } = table;
-    const fixedView = xFixed.getFixedView();
+    const fixedView = xFixedView.getFixedView();
     const view = new RectRange(0, fixedView.sci, 0, fixedView.eci);
     view.w = cols.rectRangeSumWidth(view);
     view.h = rows.rectRangeSumHeight(view);
@@ -1348,8 +1349,8 @@ class XTableFrozenLeftIndex extends XTableLeftIndexUI {
       return this.height;
     }
     const { table } = this;
-    const { xFixed } = table;
-    const height = xFixed.getHeight();
+    const { xFixedMeasure } = table;
+    const height = xFixedMeasure.getHeight();
     this.height = height;
     return height;
   }
@@ -1380,9 +1381,9 @@ class XTableFrozenLeftIndex extends XTableLeftIndexUI {
     }
     const { table } = this;
     const {
-      rows, cols, xFixed,
+      rows, cols, xFixedView,
     } = table;
-    const fixedView = xFixed.getFixedView();
+    const fixedView = xFixedView.getFixedView();
     const view = new RectRange(fixedView.sri, 0, fixedView.eri, 0);
     view.w = cols.rectRangeSumWidth(view);
     view.h = rows.rectRangeSumHeight(view);
@@ -1421,8 +1422,8 @@ class XTableFrozenContent extends XTableContentUI {
       return this.width;
     }
     const { table } = this;
-    const { xFixed } = table;
-    const width = xFixed.getWidth();
+    const { xFixedMeasure } = table;
+    const width = xFixedMeasure.getWidth();
     this.width = width;
     return width;
   }
@@ -1432,8 +1433,8 @@ class XTableFrozenContent extends XTableContentUI {
       return this.height;
     }
     const { table } = this;
-    const { xFixed } = table;
-    const height = xFixed.getHeight();
+    const { xFixedMeasure } = table;
+    const height = xFixedMeasure.getHeight();
     this.height = height;
     return height;
   }
@@ -1466,9 +1467,9 @@ class XTableFrozenContent extends XTableContentUI {
     }
     const { table } = this;
     const {
-      rows, cols, xFixed,
+      rows, cols, xFixedView,
     } = table;
-    const view = xFixed.getFixedView();
+    const view = xFixedView.getFixedView();
     view.w = cols.rectRangeSumWidth(view);
     view.h = rows.rectRangeSumHeight(view);
     this.scrollView = view;
@@ -1596,12 +1597,9 @@ class XTableTopIndex extends XTableTopIndexUI {
     const renderMode = table.getRenderMode();
     const scrollView = xTableAreaView.getScrollView();
     const enterView = xTableAreaView.getScrollEnterView();
-    let view;
-    if (Utils.isNotUnDef(enterView) && renderMode === RENDER_MODE.SCROLL) {
-      view = enterView;
-    } else {
-      view = scrollView;
-    }
+    const view = Utils.isNotUnDef(enterView) && renderMode === RENDER_MODE.SCROLL
+      ? enterView
+      : scrollView;
     view.sri = 0;
     view.eri = 0;
     view.h = index.getHeight();
@@ -1704,12 +1702,9 @@ class XTableLeftIndex extends XTableLeftIndexUI {
     const renderMode = table.getRenderMode();
     const scrollView = xTableAreaView.getScrollView();
     const enterView = xTableAreaView.getScrollEnterView();
-    let view;
-    if (Utils.isNotUnDef(enterView) && renderMode === RENDER_MODE.SCROLL) {
-      view = enterView;
-    } else {
-      view = scrollView;
-    }
+    const view = Utils.isNotUnDef(enterView) && renderMode === RENDER_MODE.SCROLL
+      ? enterView
+      : scrollView;
     view.sci = 0;
     view.eci = 0;
     view.w = index.getWidth();
@@ -1763,8 +1758,8 @@ class XTableLeft extends XTableContentUI {
       return this.width;
     }
     const { table } = this;
-    const { xFixed } = table;
-    const width = xFixed.getWidth();
+    const { xFixedMeasure } = table;
+    const width = xFixedMeasure.getWidth();
     this.width = width;
     return width;
   }
@@ -1809,19 +1804,16 @@ class XTableLeft extends XTableContentUI {
       return this.scrollView.clone();
     }
     const { table } = this;
-    const { xFixed } = table;
+    const { xFixedView } = table;
     const { cols } = table;
     const { xTableAreaView } = table;
     const renderMode = table.getRenderMode();
-    const fixedView = xFixed.getFixedView();
+    const fixedView = xFixedView.getFixedView();
     const scrollView = xTableAreaView.getScrollView();
     const enterView = xTableAreaView.getScrollEnterView();
-    let view;
-    if (Utils.isNotUnDef(enterView) && renderMode === RENDER_MODE.SCROLL) {
-      view = enterView;
-    } else {
-      view = scrollView;
-    }
+    const view = Utils.isNotUnDef(enterView) && renderMode === RENDER_MODE.SCROLL
+      ? enterView
+      : scrollView;
     view.sci = fixedView.sci;
     view.eci = fixedView.eci;
     view.w = cols.sectionSumWidth(view.sci, view.eci);
@@ -1834,10 +1826,10 @@ class XTableLeft extends XTableContentUI {
       return this.fullScrollView.clone();
     }
     const { table } = this;
-    const { xFixed } = table;
+    const { xFixedView } = table;
     const { cols } = table;
     const { xTableAreaView } = table;
-    const fixedView = xFixed.getFixedView();
+    const fixedView = xFixedView.getFixedView();
     const scrollView = xTableAreaView.getScrollView();
     scrollView.sci = fixedView.sci;
     scrollView.eci = fixedView.eci;
@@ -1853,8 +1845,8 @@ class XTableLeft extends XTableContentUI {
     const { table } = this;
     const { xTableAreaView } = table;
     const { cols } = table;
-    const { xFixed } = table;
-    const fixedView = xFixed.getFixedView();
+    const { xFixedView } = table;
+    const fixedView = xFixedView.getFixedView();
     const lastScrollView = xTableAreaView.getLastScrollView();
     const scrollView = xTableAreaView.getScrollView();
     if (Utils.isNotUnDef(lastScrollView)) {
@@ -1891,8 +1883,8 @@ class XTableTop extends XTableContentUI {
       return this.height;
     }
     const { table } = this;
-    const { xFixed } = table;
-    const height = xFixed.getHeight();
+    const { xFixedMeasure } = table;
+    const height = xFixedMeasure.getHeight();
     this.height = height;
     return height;
   }
@@ -1925,19 +1917,16 @@ class XTableTop extends XTableContentUI {
       return this.scrollView.clone();
     }
     const { table } = this;
-    const { xFixed } = table;
+    const { xFixedView } = table;
     const { rows } = table;
     const { xTableAreaView } = table;
     const renderMode = table.getRenderMode();
-    const fixedView = xFixed.getFixedView();
+    const fixedView = xFixedView.getFixedView();
     const scrollView = xTableAreaView.getScrollView();
     const enterView = xTableAreaView.getScrollEnterView();
-    let view;
-    if (Utils.isNotUnDef(enterView) && renderMode === RENDER_MODE.SCROLL) {
-      view = enterView;
-    } else {
-      view = scrollView;
-    }
+    const view = Utils.isNotUnDef(enterView) && renderMode === RENDER_MODE.SCROLL
+      ? enterView
+      : scrollView;
     view.sri = fixedView.sri;
     view.eri = fixedView.eri;
     view.h = rows.sectionSumHeight(view.sri, view.eri);
@@ -1950,10 +1939,10 @@ class XTableTop extends XTableContentUI {
       return this.fullScrollView.clone();
     }
     const { table } = this;
-    const { xFixed } = table;
+    const { xFixedView } = table;
     const { rows } = table;
     const { xTableAreaView } = table;
-    const fixedView = xFixed.getFixedView();
+    const fixedView = xFixedView.getFixedView();
     const scrollView = xTableAreaView.getScrollView();
     scrollView.sri = fixedView.sri;
     scrollView.eri = fixedView.eri;
@@ -1969,8 +1958,8 @@ class XTableTop extends XTableContentUI {
     const { table } = this;
     const { xTableAreaView } = table;
     const { rows } = table;
-    const { xFixed } = table;
-    const fixedView = xFixed.getFixedView();
+    const { xFixedView } = table;
+    const fixedView = xFixedView.getFixedView();
     const lastScrollView = xTableAreaView.getLastScrollView();
     const scrollView = xTableAreaView.getScrollView();
     if (Utils.isNotUnDef(lastScrollView)) {
@@ -2047,12 +2036,9 @@ class XTableContent extends XTableContentUI {
     const renderMode = table.getRenderMode();
     const scrollView = xTableAreaView.getScrollView();
     const enterView = xTableAreaView.getScrollEnterView();
-    let view;
-    if (Utils.isNotUnDef(enterView) && renderMode === RENDER_MODE.SCROLL) {
-      view = enterView;
-    } else {
-      view = scrollView;
-    }
+    const view = Utils.isNotUnDef(enterView) && renderMode === RENDER_MODE.SCROLL
+      ? enterView
+      : scrollView;
     this.scrollView = view;
     return view.clone();
   }
@@ -2091,21 +2077,21 @@ class XTableStyle extends Widget {
    * xTableScrollView
    * @param xTableScrollView
    * @param settings
-   * @param xFixed
+   * @param xFixedView
    * @param scroll
    */
   constructor({
     xTableScrollView,
     settings,
-    xFixed,
+    xFixedView,
     scroll,
   }) {
     super(`${cssPrefix}-table-canvas`, 'canvas');
     // 表格设置
     this.settings = settings;
     // 冻结的视图 & 滚动的坐标
-    this.xFixed = xFixed;
     this.scroll = scroll;
+    this.xFixedView = xFixedView;
     // 渲染模式
     this.renderMode = RENDER_MODE.RENDER;
     // 表格数据配置
@@ -2139,6 +2125,11 @@ class XTableStyle extends Widget {
       cols: this.cols,
       data: this.settings.data,
       merges: this.merges,
+    });
+    this.xFixedMeasure = new XFixedMeasure({
+      fixedView: this.xFixedView,
+      cols: this.cols,
+      rows: this.rows,
     });
     // 表格视图区域
     this.xTableAreaView = new XTableHistoryAreaView({
@@ -2442,7 +2433,7 @@ class XTableStyle extends Widget {
    * 渲染静态界面
    */
   render() {
-    const { xFixed } = this;
+    const { xFixedView } = this;
     const { xTableFrozenFullRect } = this;
     const { xLeftFrozenIndex } = this;
     const { xTopFrozenIndex } = this;
@@ -2454,14 +2445,14 @@ class XTableStyle extends Widget {
     const { xContent } = this;
     this.drawBorderOptimize();
     xTableFrozenFullRect.render();
-    if (xFixed.hasFixedLeft() && xFixed.hasFixedTop()) {
+    if (xFixedView.hasFixedLeft() && xFixedView.hasFixedTop()) {
       xTableFrozenContent.render();
     }
-    if (xFixed.hasFixedTop()) {
+    if (xFixedView.hasFixedTop()) {
       xLeftFrozenIndex.render();
       xTop.render();
     }
-    if (xFixed.hasFixedLeft()) {
+    if (xFixedView.hasFixedLeft()) {
       xTopFrozenIndex.render();
       xLeft.render();
     }

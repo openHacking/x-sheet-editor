@@ -6,34 +6,34 @@ class MeasureFixed extends XScreenPositionItem {
   measureFixedHeight(range) {
     const { table } = this;
     const {
-      fixed, rows,
+      xFixedView, rows,
     } = table;
-    const { fxTop } = fixed;
-    if (range.sri >= fxTop) {
+    const fixedView = xFixedView.getFixedView();
+    if (range.sri >= fixedView.eri) {
       return 0;
     }
-    return rows.sectionSumHeight(range.sri, fxTop);
+    return rows.sectionSumHeight(range.sri, fixedView.eri);
   }
 
   measureFixedWidth(range) {
     const { table } = this;
     const {
-      fixed, cols,
+      xFixedView, cols,
     } = table;
-    const { fxLeft } = fixed;
-    if (range.sci >= fxLeft) {
+    const fixedView = xFixedView.getFixedView();
+    if (range.sci >= fixedView.eci) {
       return 0;
     }
-    return cols.sectionSumWidth(range.sci, fxLeft);
+    return cols.sectionSumWidth(range.sci, fixedView.eci);
   }
 
   measureFixedLeft(range) {
     const { table } = this;
     const {
-      fixed, cols,
+      xFixedView, cols,
     } = table;
-    const { fxLeft } = fixed;
-    if (range.sci >= fxLeft) {
+    const fixedView = xFixedView.getFixedView();
+    if (range.sci >= fixedView.eci) {
       return 0;
     }
     return cols.sectionSumWidth(0, range.sci - 1);
@@ -42,10 +42,10 @@ class MeasureFixed extends XScreenPositionItem {
   measureFixedTop(range) {
     const { table } = this;
     const {
-      fixed, rows,
+      xFixedView, rows,
     } = table;
-    const { fxTop } = fixed;
-    if (range.sri >= fxTop) {
+    const fixedView = xFixedView.getFixedView();
+    if (range.sri >= fixedView.eri) {
       return 0;
     }
     return rows.sectionSumHeight(0, range.sri - 1);
@@ -124,15 +124,13 @@ class XScreenMeasureItem extends MeasureScrollView {
       return true;
     }
     const { table } = this;
-    const { fixed } = table;
-    const {
-      fxLeft, fxTop,
-    } = fixed;
+    const { xFixedView } = table;
+    const fixedView = xFixedView.getFixedView();
     const scrollView = table.getScrollView();
-    if (fxLeft > -1 && fxTop > -1) {
-      const lt = new RectRange(0, 0, fxTop, fxLeft);
-      const l = new RectRange(scrollView.sri, 0, scrollView.eri, fxLeft);
-      const t = new RectRange(0, scrollView.sci, fxTop, scrollView.eci);
+    if (fixedView.hasFixedLeft() && fixedView.hasFixedTop()) {
+      const lt = fixedView.clone();
+      const l = new RectRange(scrollView.sri, fixedView.sci, scrollView.eri, fixedView.eci);
+      const t = new RectRange(fixedView.sri, scrollView.sci, fixedView.eri, scrollView.eci);
       if (!lt.coincide(range).equals(RectRange.EMPTY)) {
         return false;
       }
@@ -142,19 +140,18 @@ class XScreenMeasureItem extends MeasureScrollView {
       if (!t.coincide(range).equals(RectRange.EMPTY)) {
         return false;
       }
-    } if (fxLeft > -1) {
-      const l = new RectRange(scrollView.sri, 0, scrollView.eri, fxLeft);
+    } if (fixedView.hasFixedLeft()) {
+      const l = new RectRange(scrollView.sri, fixedView.sci, scrollView.eri, fixedView.eci);
       if (!l.coincide(range).equals(RectRange.EMPTY)) {
         return false;
       }
-    } else if (fxTop > -1) {
-      const t = new RectRange(0, scrollView.sci, fxTop, scrollView.eci);
+    } else if (fixedView.hasFixedTop()) {
+      const t = new RectRange(fixedView.sri, scrollView.sci, fixedView.eri, scrollView.eci);
       if (!t.coincide(range).equals(RectRange.EMPTY)) {
         return false;
       }
     }
-    return scrollView.coincide(range)
-      .equals(RectRange.EMPTY);
+    return scrollView.coincide(range).equals(RectRange.EMPTY);
   }
 
 }

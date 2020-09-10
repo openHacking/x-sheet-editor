@@ -9,10 +9,12 @@ class RowFixed extends Widget {
 
   constructor(table) {
     super(`${cssPrefix}-table-row-fixed-bar`);
-    const { fixed } = table;
+    const { xFixedView } = table;
+    const fixedView = xFixedView.getFixedView();
     this.table = table;
     this.height = 6;
-    this.fxTop = fixed.fxTop;
+    this.fxSri = fixedView.sri;
+    this.fxEri = fixedView.eri;
     this.block = h('div', `${cssPrefix}-table-row-fixed-block`);
     this.children(this.block);
   }
@@ -20,7 +22,7 @@ class RowFixed extends Widget {
   bind() {
     const { table } = this;
     const {
-      mousePointer, dropRowFixed,
+      mousePointer, dropRowFixed, xFixedView,
     } = table;
     let moveOff = true;
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
@@ -44,6 +46,9 @@ class RowFixed extends Widget {
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       dropRowFixed.show();
       this.setActive(true);
+      const fixedView = xFixedView.getFixedView();
+      this.fxSri = fixedView.sri;
+      this.fxEri = fixedView.eri;
       mousePointer.lock(RowFixed);
       mousePointer.set(XTableMousePointer.KEYS.grab, RowFixed);
       const { y } = table.computeEventXy(e, table);
@@ -53,13 +58,14 @@ class RowFixed extends Widget {
         const { x, y } = table.computeEventXy(e, table);
         const { ri } = table.getRiCiByXy(x, y);
         dropRowFixed.offset({ top: y });
-        this.fxTop = ri;
+        this.fxEri = ri;
         this.setSize();
       }, () => {
         this.setActive(false);
         mousePointer.free(RowFixed);
         dropRowFixed.hide();
-        table.fixed.fxTop = this.fxTop;
+        fixedView.eri = this.fxEri;
+        xFixedView.setFixedView(fixedView);
         table.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
         moveOff = true;
       });
@@ -78,11 +84,11 @@ class RowFixed extends Widget {
 
   setSize() {
     const { table, block, height } = this;
-    const { fxTop } = this;
+    const { fxSri, fxEri } = this;
     const { rows } = table;
-    const width = fxTop > -1 ? table.visualWidth() : table.getIndexWidth();
-    const offset = fxTop > -1 ? height / 2 : height;
-    const top = rows.sectionSumHeight(0, fxTop) + table.getIndexHeight() - offset;
+    const width = fxEri > -1 ? table.visualWidth() : table.getIndexWidth();
+    const offset = fxEri > -1 ? height / 2 : height;
+    const top = rows.sectionSumHeight(fxSri, fxEri) + table.getIndexHeight() - offset;
     block.offset({
       width: table.getIndexWidth(), height,
     });
