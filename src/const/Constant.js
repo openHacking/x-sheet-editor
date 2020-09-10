@@ -17,17 +17,18 @@ Constant.SYSTEM_EVENT_TYPE = {
   INPUT: 'input'.toLocaleLowerCase(),
   VISIBILITY_CHANGE: 'visibilityChange'.toLocaleLowerCase(),
 };
-Constant.TABLE_EVENT_TYPE = {
-  CHANGE_HEIGHT: 'tableChangeHeight'.toLocaleLowerCase(),
-  CHANGE_WIDTH: 'tableChangeWidth'.toLocaleLowerCase(),
-  DATA_CHANGE: 'tableDataChange'.toLocaleLowerCase(),
-  SELECT_CHANGE: 'tableSelectChange'.toLocaleLowerCase(),
-  SELECT_DOWN: 'tableSelectDown'.toLocaleLowerCase(),
-  SELECT_OVER: 'tableSelectOver'.toLocaleLowerCase(),
-  SCALE_CHANGE: 'scaleChange'.toLocaleLowerCase(),
-};
 Constant.WORK_BODY_EVENT_TYPE = {
   CHANGE_ACTIVE: 'workBodyChangeActive'.toLocaleLowerCase(),
+};
+Constant.TABLE_EVENT_TYPE = {
+  CHANGE_HEIGHT: 'tableChangeHeight'.toLocaleLowerCase(),
+  DATA_CHANGE: 'tableDataChange'.toLocaleLowerCase(),
+  CHANGE_WIDTH: 'tableChangeWidth'.toLocaleLowerCase(),
+  SELECT_DOWN: 'tableSelectDown'.toLocaleLowerCase(),
+  SCALE_CHANGE: 'scaleChange'.toLocaleLowerCase(),
+  SELECT_OVER: 'tableSelectOver'.toLocaleLowerCase(),
+  SELECT_CHANGE: 'tableSelectChange'.toLocaleLowerCase(),
+  FIXED_CHANGE: 'fixedChange'.toLocaleLowerCase(),
 };
 
 const cssPrefix = 'x-sheet';

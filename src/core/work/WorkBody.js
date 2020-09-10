@@ -109,42 +109,6 @@ ${XSheetVersion}
     });
   }
 
-  updateScroll() {
-    const sheet = this.sheetView.getActiveSheet();
-    if (Utils.isUnDef(sheet)) return;
-    const { scrollBarXHorizontalLayer } = this;
-    const { table } = sheet;
-    // 更新表格大小
-    table.resize();
-    // 获取表格大小
-    const totalHeight = table.getScrollTotalHeight();
-    const totalWidth = table.getScrollTotalWidth();
-    // 是否显示水平滚动条
-    scrollBarXHorizontalLayer.display(totalWidth > table.getContentWidth());
-    // 调整滚动条尺寸
-    this.scrollBarY.setSize(table.getContentHeight(), totalHeight);
-    this.scrollBarX.setSize(table.getContentWidth(), totalWidth);
-    // 滚动到指定距离
-    this.scrollBarY.scrollMove(table.getTop());
-    this.scrollBarX.scrollMove(table.getLeft());
-    // 更新表格大小
-    table.resize();
-  }
-
-  createSheet() {
-    // eslint-disable-next-line no-restricted-syntax
-    for (const item of this.sheets) {
-      // eslint-disable-next-line no-restricted-syntax
-      const { name } = item;
-      const sheet = new Sheet(item);
-      const tab = new Tab(name);
-      this.addTabSheet({ tab, sheet });
-    }
-    if (this.tabSheet.length) {
-      this.setActiveIndex(0);
-    }
-  }
-
   onAttach() {
     const {
       sheetViewLayer, scrollBarYLayer, sheetSwitchTabLayer, scrollBarXLayer,
@@ -155,22 +119,28 @@ ${XSheetVersion}
     sheetViewLayer.attach(this.sheetView);
     this.bind();
     this.createSheet();
-    this.updateScroll();
-  }
-
-  addTabSheet({ tab, sheet }) {
-    const {
-      tabSheet, sheetView, tabView,
-    } = this;
-    sheetView.attach(sheet);
-    tabView.attach(tab);
-    tabSheet.push({
-      tab, sheet,
-    });
   }
 
   bind() {
-    this.on(Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (evt) => {
+    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+      this.updateScroll();
+    });
+    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+      this.updateScroll();
+    });
+    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, (e) => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+      e.stopPropagation();
+    });
+    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, (e) => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
+      e.stopPropagation();
+    });
+    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, (e) => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN, this);
+      e.stopPropagation();
+    });
+    EventBind.bind(this.sheetView, Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (evt) => {
       const sheet = this.sheetView.getActiveSheet();
       if (Utils.isUnDef(sheet)) return;
       const { table } = sheet;
@@ -194,27 +164,56 @@ ${XSheetVersion}
     });
     EventBind.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
       Utils.throttle(() => {
-        this.updateScroll();
+        const table = this.getActiveTable();
+        if (table) {
+          table.resize();
+          this.updateScroll();
+        }
       });
     });
-    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      this.updateScroll();
+  }
+
+  addTabSheet({ tab, sheet }) {
+    const {
+      tabSheet, sheetView, tabView,
+    } = this;
+    sheetView.attach(sheet);
+    tabView.attach(tab);
+    tabSheet.push({
+      tab, sheet,
     });
-    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
-      this.updateScroll();
-    });
-    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, (e) => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-      e.stopPropagation();
-    });
-    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, (e) => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
-      e.stopPropagation();
-    });
-    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, (e) => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN, this);
-      e.stopPropagation();
-    });
+  }
+
+  createSheet() {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const item of this.sheets) {
+      // eslint-disable-next-line no-restricted-syntax
+      const { name } = item;
+      const sheet = new Sheet(item);
+      const tab = new Tab(name);
+      this.addTabSheet({ tab, sheet });
+    }
+    if (this.tabSheet.length) {
+      this.setActiveIndex(0);
+    }
+  }
+
+  updateScroll() {
+    const table = this.getActiveTable();
+    const {
+      scrollBarXHorizontalLayer,
+    } = this;
+    // 获取表格大小
+    const totalHeight = table.getScrollTotalHeight();
+    const totalWidth = table.getScrollTotalWidth();
+    // 是否显示水平滚动条
+    scrollBarXHorizontalLayer.display(totalWidth > table.getContentWidth());
+    // 调整滚动条尺寸
+    this.scrollBarY.setSize(table.getContentHeight(), totalHeight);
+    this.scrollBarX.setSize(table.getContentWidth(), totalWidth);
+    // 滚动到指定距离
+    this.scrollBarY.scrollMove(table.getTop());
+    this.scrollBarX.scrollMove(table.getLeft());
   }
 
   setActiveTab(tab) {
@@ -225,18 +224,42 @@ ${XSheetVersion}
     });
   }
 
-  setActiveIndex(index) {
-    const { sheetView, tabView } = this;
-    const sheet = sheetView.setActiveSheet(index);
-    const tab = tabView.setActiveTab(index);
-    if (sheet && tab) {
-      this.updateScroll();
-      this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
-      this.activeIndex = index;
-    }
+  setScale(value) {
+    const { sheetView } = this;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    table.setScale(value);
+    this.updateScroll();
   }
 
-  toTemplate() {
+  setActiveIndex(index) {
+    const {
+      sheetView, tabView,
+    } = this;
+    sheetView.setActiveSheet(index);
+    tabView.setActiveTab(index);
+    const table = this.getActiveTable();
+    if (table) {
+      table.resize();
+      this.updateScroll();
+    }
+    this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
+    this.activeIndex = index;
+  }
+
+  getActiveSheet() {
+    return this.sheetView.getActiveSheet();
+  }
+
+  getActiveTable() {
+    const sheet = this.getActiveSheet();
+    if (sheet) {
+      return sheet.table;
+    }
+    return null;
+  }
+
+  toJSONTemplate() {
     const { activeIndex, sheetView, tabView } = this;
     const sheet = sheetView.sheetList[activeIndex];
     const tab = tabView.tabList[activeIndex];
@@ -273,14 +296,6 @@ ${XSheetVersion}
       const text = `window['${tab.name}'] = ${JSON.stringify(data)}`;
       download(text, `${tab.name}.js`, 'application/x-javascript');
     }
-  }
-
-  setScale(value) {
-    const { sheetView } = this;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    table.setScale(value);
-    this.updateScroll();
   }
 
 }

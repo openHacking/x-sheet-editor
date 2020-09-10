@@ -79,7 +79,7 @@ class ColFixed extends Widget {
         fixedView.eci = this.fxEci;
         xFixedView.setFixedView(fixedView);
         // 刷新界面
-        table.resize();
+        // TODO ...
         moveOff = true;
       });
     });
@@ -124,6 +124,7 @@ class ColFixed extends Widget {
   }
 
 }
+
 ColFixed.WIDTH = 6;
 
 export {

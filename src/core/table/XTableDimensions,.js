@@ -1015,20 +1015,6 @@ class XTableDimensions extends Widget {
   }
 
   /**
-   * 重置界面大小
-   */
-  resize() {
-    const {
-      xTableStyle, xScreen,
-    } = this;
-    this.visualHeightCache = null;
-    this.visualWidthCache = null;
-    this.reset();
-    xScreen.setZone();
-    xTableStyle.resize();
-  }
-
-  /**
    * 重置变量区
    */
   reset() {
@@ -1039,6 +1025,8 @@ class XTableDimensions extends Widget {
     const { xLeft } = this;
     const { xTop } = this;
     const { xContent } = this;
+    this.visualHeightCache = null;
+    this.visualWidthCache = null;
     xTableAreaView.reset();
     xTableFrozenContent.reset();
     xLeftIndex.reset();
@@ -1062,6 +1050,18 @@ class XTableDimensions extends Widget {
     yHeightLight.offsetHandle();
     xTableStyle.setScale(val);
     this.trigger(Constant.TABLE_EVENT_TYPE.SCALE_CHANGE);
+  }
+
+  /**
+   * 重置界面大小
+   */
+  resize() {
+    const {
+      xTableStyle, xScreen,
+    } = this;
+    this.reset();
+    xScreen.setZone();
+    xTableStyle.resize();
   }
 
   /**

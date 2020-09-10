@@ -2374,20 +2374,6 @@ class XTableStyle extends Widget {
   }
 
   /**
-   * 重置界面大小
-   */
-  resize() {
-    const {
-      draw, xTableAreaView,
-    } = this;
-    const box = this.parent().box();
-    draw.resize(box.width, box.height);
-    xTableAreaView.undo();
-    this.reset();
-    this.render();
-  }
-
-  /**
    * 重置变量区
    */
   reset() {
@@ -2415,7 +2401,7 @@ class XTableStyle extends Widget {
    * 界面缩放
    * @param val
    */
-  setScale(val) {
+  setScale(val = 1) {
     // 清空画布
     this.draw.attr({
       fillStyle: this.settings.table.background,
@@ -2427,6 +2413,20 @@ class XTableStyle extends Widget {
     this.renderMode = RENDER_MODE.SCALE;
     this.resize();
     this.renderMode = RENDER_MODE.RENDER;
+  }
+
+  /**
+   * 重置界面大小
+   */
+  resize() {
+    const {
+      draw, xTableAreaView,
+    } = this;
+    const box = this.parent().box();
+    draw.resize(box.width, box.height);
+    xTableAreaView.undo();
+    this.reset();
+    this.render();
   }
 
   /**

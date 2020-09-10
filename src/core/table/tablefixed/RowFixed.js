@@ -78,7 +78,7 @@ class RowFixed extends Widget {
         fixedView.eri = this.fxEri;
         xFixedView.setFixedView(fixedView);
         // 刷新界面
-        table.resize();
+        // TODO ...
         moveOff = true;
       });
     });
@@ -121,6 +121,7 @@ class RowFixed extends Widget {
   }
 
 }
+
 RowFixed.HEIGHT = 6;
 
 export {

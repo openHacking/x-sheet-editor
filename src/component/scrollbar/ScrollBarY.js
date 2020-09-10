@@ -33,7 +33,6 @@ class ScrollBarY extends Widget {
     this.viewPortHeight = 0;
     this.isHide = true;
     this.css(this.option.style);
-    this.hide();
   }
 
   onAttach() {
