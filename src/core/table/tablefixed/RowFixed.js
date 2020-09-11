@@ -59,7 +59,9 @@ class RowFixed extends Widget {
       // 如果存在固定位置
       // 定位到起始处
       if (xFixedView.hasFixedTop()) {
-        table.scrollY(0);
+        table.scroll.y = 0;
+        table.scroll.ri = this.fxEri + 1;
+        table.resize();
       }
       EventBind.mouseMoveUp(document, (e) => {
         // 推拽条移动位置 + 行号
@@ -79,10 +81,13 @@ class RowFixed extends Widget {
         xFixedView.setFixedView(fixedView);
         // 更新滚动距离
         if (xFixedView.hasFixedTop()) {
-          table.scrollY(0);
+          table.scroll.y = 0;
+          table.scroll.ri = this.fxEri + 1;
+          table.resize();
         } else {
-          const dis = rows.sectionSumHeight(0, this.fxSri - 1);
-          table.scrollY(dis);
+          table.scroll.y = rows.sectionSumHeight(0, this.fxSri - 1);
+          table.scroll.ri = this.fxSri;
+          table.resize();
         }
         // 发送通知
         table.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);

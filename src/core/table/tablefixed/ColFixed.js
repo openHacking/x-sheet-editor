@@ -60,7 +60,9 @@ class ColFixed extends Widget {
       // 如果存在固定位置
       // 定位到起始处
       if (xFixedView.hasFixedLeft()) {
-        table.scrollX(0);
+        table.scroll.x = 0;
+        table.scroll.ci = this.fxEci + 1;
+        table.resize();
       }
       EventBind.mouseMoveUp(document, (e) => {
         // 推拽条移动位置
@@ -80,10 +82,13 @@ class ColFixed extends Widget {
         xFixedView.setFixedView(fixedView);
         // 更新滚动距离
         if (xFixedView.hasFixedLeft()) {
-          table.scrollX(0);
+          table.scroll.x = 0;
+          table.scroll.ci = this.fxEci + 1;
+          table.resize();
         } else {
-          const dis = cols.sectionSumWidth(0, this.fxSci - 1);
-          table.scrollX(dis);
+          table.scroll.x = cols.sectionSumWidth(0, this.fxSci - 1);
+          table.scroll.ci = this.fxSci;
+          table.resize();
         }
         // 发送通知
         table.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);

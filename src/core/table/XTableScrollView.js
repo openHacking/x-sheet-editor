@@ -20,10 +20,10 @@ class XTableScrollView {
    * @return {symbol}
    */
   static viewMode(lastView, view) {
-    // 视图无变化
     if (Utils.isUnDef(lastView)) {
       return VIEW_MODE.CHANGE_NOT;
     }
+    // 视图无变化
     if (view.equals(lastView)) {
       return VIEW_MODE.STATIC;
     }

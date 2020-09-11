@@ -123,15 +123,16 @@ ${XSheetVersion}
 
   bind() {
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      this.updateScrollSize();
+      this.scrollBarSize();
     });
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
-      this.updateScrollSize();
+      this.scrollBarSize();
     });
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
       const table = this.getActiveTable();
       if (table) {
-        this.updateScrollSize();
+        this.scrollBarSize();
+        this.scrollBarLocal();
       }
     });
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, (e) => {
@@ -173,7 +174,7 @@ ${XSheetVersion}
         const table = this.getActiveTable();
         if (table) {
           table.reset();
-          this.updateScrollSize();
+          this.scrollBarSize();
           table.resize();
         }
       });
@@ -191,7 +192,7 @@ ${XSheetVersion}
     });
   }
 
-  updateScrollSize() {
+  scrollBarSize() {
     const table = this.getActiveTable();
     const {
       scrollBarXHorizontalLayer, scrollBarY, scrollBarX,
@@ -206,10 +207,10 @@ ${XSheetVersion}
     scrollBarX.setSize(table.getContentWidth(), totalWidth);
   }
 
-  updateScrollPos() {
+  scrollBarLocal() {
     const table = this.getActiveTable();
-    this.scrollBarY.scrollMove(table.getTop());
-    this.scrollBarX.scrollMove(table.getLeft());
+    this.scrollBarY.setLocal(table.getTop());
+    this.scrollBarX.setLocal(table.getLeft());
   }
 
   createSheet() {
@@ -235,7 +236,7 @@ ${XSheetVersion}
     const table = this.getActiveTable();
     if (table) {
       table.reset();
-      this.updateScrollSize();
+      this.scrollBarSize();
       table.resize();
     }
     this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
@@ -247,8 +248,8 @@ ${XSheetVersion}
     const sheet = sheetView.getActiveSheet();
     const { table } = sheet;
     table.setScale(value);
-    this.updateScrollSize();
-    this.updateScrollPos();
+    this.scrollBarSize();
+    this.scrollBarLocal();
   }
 
   setActiveTab(tab) {

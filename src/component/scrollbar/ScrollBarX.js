@@ -86,7 +86,7 @@ class ScrollBarX extends Widget {
     }
   }
 
-  scrollMove(move) {
+  setLocal(move) {
     let to = move;
     const maxTo = this.contentWidth - this.viewPortWidth;
     if (to > maxTo) to = maxTo; else if (to < 0) to = 0;
@@ -95,8 +95,12 @@ class ScrollBarX extends Widget {
     if (this.isHide === false) {
       this.scrollTo = to;
       this.block.css('left', `${this.blockLeft}px`);
-      this.option.scroll(this.scrollTo);
     }
+  }
+
+  scrollMove(move) {
+    this.setLocal(move);
+    this.option.scroll(this.scrollTo);
   }
 
   computeScrollTo(move) {
