@@ -5,6 +5,7 @@ import { h } from '../../../lib/Element';
 import { EventBind } from '../../../utils/EventBind';
 import { Utils } from '../../../utils/Utils';
 import { XTableMousePointer } from '../XTableMousePointer';
+import { ColFixed } from '../tablefixed/ColFixed';
 
 class XReSizer extends Widget {
 
@@ -83,7 +84,7 @@ class XReSizer extends Widget {
       } else {
         this.show();
         if (ci === fixedView.eci) {
-          this.css('left', `${left - this.width - colFixed.width / 2}px`);
+          this.css('left', `${left - this.width - ColFixed.WIDTH / 2}px`);
         } else {
           this.css('left', `${left - this.width}px`);
         }

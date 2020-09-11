@@ -5,6 +5,7 @@ import { h } from '../../../lib/Element';
 import { EventBind } from '../../../utils/EventBind';
 import { Utils } from '../../../utils/Utils';
 import { XTableMousePointer } from '../XTableMousePointer';
+import { RowFixed } from '../tablefixed/RowFixed';
 
 class YReSizer extends Widget {
 
@@ -29,7 +30,7 @@ class YReSizer extends Widget {
   bind() {
     const { table } = this;
     const {
-      rows, mousePointer, focus, xFixedView, rowFixed,
+      rows, mousePointer, focus, xFixedView,
     } = table;
     const tableDataSnapshot = table.getTableDataSnapshot();
     const { rowsDataProxy } = tableDataSnapshot;
@@ -83,7 +84,7 @@ class YReSizer extends Widget {
       } else {
         this.show();
         if (ri === fixedView.eri) {
-          this.css('top', `${top - this.height - rowFixed.height / 2}px`);
+          this.css('top', `${top - this.height - RowFixed.HEIGHT / 2}px`);
         } else {
           this.css('top', `${top - this.height}px`);
         }

@@ -12,7 +12,6 @@ class ColFixed extends Widget {
     const { xFixedView } = table;
     const fixedView = xFixedView.getFixedView();
     this.table = table;
-    this.width = 6;
     this.fxSci = fixedView.sci;
     this.fxEci = fixedView.eci;
     this.block = h('div', `${cssPrefix}-table-col-fixed-block`);
