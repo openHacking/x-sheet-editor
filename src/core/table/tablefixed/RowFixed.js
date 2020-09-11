@@ -21,7 +21,7 @@ class RowFixed extends Widget {
   bind() {
     const { table } = this;
     const {
-      mousePointer, dropRowFixed, xFixedView,
+      mousePointer, dropRowFixed, xFixedView, rows,
     } = table;
     let moveOff = true;
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
@@ -77,8 +77,15 @@ class RowFixed extends Widget {
         // 更新固定区域
         fixedView.eri = this.fxEri;
         xFixedView.setFixedView(fixedView);
-        // 刷新界面
-        // TODO ...
+        // 更新滚动距离
+        if (xFixedView.hasFixedTop()) {
+          table.scrollY(0);
+        } else {
+          const dis = rows.sectionSumHeight(0, this.fxSri - 1);
+          table.scrollY(dis);
+        }
+        // 发送通知
+        table.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
         moveOff = true;
       });
     });

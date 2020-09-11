@@ -123,10 +123,16 @@ ${XSheetVersion}
 
   bind() {
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      this.updateScroll();
+      this.updateScrollSize();
     });
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
-      this.updateScroll();
+      this.updateScrollSize();
+    });
+    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
+      const table = this.getActiveTable();
+      if (table) {
+        this.updateScrollSize();
+      }
     });
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, (e) => {
       this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
@@ -140,15 +146,15 @@ ${XSheetVersion}
       this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN, this);
       e.stopPropagation();
     });
-    EventBind.bind(this.sheetView, Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (evt) => {
+    EventBind.bind(this.sheetView, Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (e) => {
       const sheet = this.sheetView.getActiveSheet();
       if (Utils.isUnDef(sheet)) return;
       const { table } = sheet;
       const { scroll } = table;
       const { scrollTo } = this.scrollBarY;
-      let { deltaY } = evt;
-      if (evt.detail) {
-        deltaY = evt.detail * 40;
+      let { deltaY } = e;
+      if (e.detail) {
+        deltaY = e.detail * 40;
       }
       if (deltaY > 0) {
         // down
@@ -158,16 +164,17 @@ ${XSheetVersion}
         this.scrollBarY.scrollMove(scrollTo - Math.abs(deltaY));
       }
       if (scroll.blockTop < scroll.maxBlockTop && scroll.blockTop > 0) {
-        evt.preventDefault();
-        evt.stopPropagation();
+        e.preventDefault();
+        e.stopPropagation();
       }
     });
     EventBind.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
       Utils.throttle(() => {
         const table = this.getActiveTable();
         if (table) {
+          table.reset();
+          this.updateScrollSize();
           table.resize();
-          this.updateScroll();
         }
       });
     });
@@ -184,6 +191,27 @@ ${XSheetVersion}
     });
   }
 
+  updateScrollSize() {
+    const table = this.getActiveTable();
+    const {
+      scrollBarXHorizontalLayer, scrollBarY, scrollBarX,
+    } = this;
+    // 获取表格大小
+    const totalHeight = table.getScrollTotalHeight();
+    const totalWidth = table.getScrollTotalWidth();
+    // 是否显示水平滚动条
+    scrollBarXHorizontalLayer.display(totalWidth > table.getContentWidth());
+    // 调整滚动条尺寸
+    scrollBarY.setSize(table.getContentHeight(), totalHeight);
+    scrollBarX.setSize(table.getContentWidth(), totalWidth);
+  }
+
+  updateScrollPos() {
+    const table = this.getActiveTable();
+    this.scrollBarY.scrollMove(table.getTop());
+    this.scrollBarX.scrollMove(table.getLeft());
+  }
+
   createSheet() {
     // eslint-disable-next-line no-restricted-syntax
     for (const item of this.sheets) {
@@ -198,40 +226,6 @@ ${XSheetVersion}
     }
   }
 
-  updateScroll() {
-    const table = this.getActiveTable();
-    const {
-      scrollBarXHorizontalLayer,
-    } = this;
-    // 获取表格大小
-    const totalHeight = table.getScrollTotalHeight();
-    const totalWidth = table.getScrollTotalWidth();
-    // 是否显示水平滚动条
-    scrollBarXHorizontalLayer.display(totalWidth > table.getContentWidth());
-    // 调整滚动条尺寸
-    this.scrollBarY.setSize(table.getContentHeight(), totalHeight);
-    this.scrollBarX.setSize(table.getContentWidth(), totalWidth);
-    // 滚动到指定距离
-    this.scrollBarY.scrollMove(table.getTop());
-    this.scrollBarX.scrollMove(table.getLeft());
-  }
-
-  setActiveTab(tab) {
-    this.tabSheet.forEach((item, index) => {
-      if (item.tab === tab) {
-        this.setActiveIndex(index);
-      }
-    });
-  }
-
-  setScale(value) {
-    const { sheetView } = this;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    table.setScale(value);
-    this.updateScroll();
-  }
-
   setActiveIndex(index) {
     const {
       sheetView, tabView,
@@ -240,11 +234,29 @@ ${XSheetVersion}
     tabView.setActiveTab(index);
     const table = this.getActiveTable();
     if (table) {
+      table.reset();
+      this.updateScrollSize();
       table.resize();
-      this.updateScroll();
     }
     this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
     this.activeIndex = index;
+  }
+
+  setScale(value) {
+    const { sheetView } = this;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    table.setScale(value);
+    this.updateScrollSize();
+    this.updateScrollPos();
+  }
+
+  setActiveTab(tab) {
+    this.tabSheet.forEach((item, index) => {
+      if (item.tab === tab) {
+        this.setActiveIndex(index);
+      }
+    });
   }
 
   getActiveSheet() {

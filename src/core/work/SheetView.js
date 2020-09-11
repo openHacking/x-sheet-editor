@@ -1,7 +1,5 @@
 import { Widget } from '../../lib/Widget';
-import { cssPrefix, Constant } from '../../const/Constant';
-import { EventBind } from '../../utils/EventBind';
-
+import { cssPrefix } from '../../const/Constant';
 
 class SheetView extends Widget {
 
@@ -24,21 +22,6 @@ class SheetView extends Widget {
     this.sheetList.push(sheet);
     super.attach(sheet);
     sheet.hide();
-    EventBind.bind(sheet, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH);
-    });
-    EventBind.bind(sheet, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT);
-    });
-    EventBind.bind(sheet, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-    });
-    EventBind.bind(sheet, Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
-    });
-    EventBind.bind(sheet, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN, this);
-    });
   }
 
   getActiveSheet() {

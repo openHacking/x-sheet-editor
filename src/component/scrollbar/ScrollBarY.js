@@ -90,7 +90,7 @@ class ScrollBarY extends Widget {
     if (to > maxTo) to = maxTo; else if (to < 0) to = 0;
     const blockTop = (to / (this.contentHeight - this.viewPortHeight)) * this.maxBlockTop;
     this.blockTop = blockTop > this.maxBlockTop ? this.maxBlockTop : blockTop;
-    if (this.scrollTo !== to && this.isHide === false) {
+    if (this.isHide === false) {
       this.scrollTo = to;
       this.block.css('top', `${this.blockTop}px`);
       this.option.scroll(this.scrollTo);
