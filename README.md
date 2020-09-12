@@ -1,7 +1,4 @@
- **
-
-### x-sheet for pc browser
-** 
+ **x-sheet for pc browser** 
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/0710/212501_7fdc3522_1908036.png "screencapture-file-Users-jerry-Desktop-JavaScript-x-sheet-dist-calendar-2019-html-2020-07-10-21_20_41.png")
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/0710/212512_f08f4d45_1908036.png "screencapture-file-Users-jerry-Desktop-JavaScript-x-sheet-dist-calendar-2020-html-2020-07-10-21_21_33.png")
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/0710/212523_e06dde68_1908036.png "screencapture-file-Users-jerry-Desktop-JavaScript-x-sheet-dist-projecttimetable-html-2020-07-10-21_22_08.png")
