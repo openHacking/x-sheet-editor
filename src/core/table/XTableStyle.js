@@ -52,6 +52,120 @@ const RENDER_MODE = {
   SCALE: Symbol('scale'),
 };
 
+//  ============================== 表格细节元素绘制 =============================
+
+class XTableFrozenFullRect {
+
+  constructor(table) {
+    this.table = table;
+  }
+
+  draw() {
+    const dx = 0;
+    const dy = 0;
+    const { table } = this;
+    const { draw } = table;
+    const { indexGrid } = table;
+    const { index } = table;
+    const indexHeight = index.getHeight();
+    const indexWidth = index.getWidth();
+    draw.save();
+    draw.offset(dx, dy);
+    // 绘制背景
+    draw.attr({
+      fillStyle: '#f4f5f8',
+    });
+    draw.fillRect(0, 0, index.getWidth(), indexHeight);
+    draw.offset(0, 0);
+    // 绘制边框
+    indexGrid.horizonLine(0, indexHeight, indexWidth, indexHeight);
+    indexGrid.verticalLine(indexWidth, dy, indexWidth, indexHeight);
+    draw.restore();
+  }
+
+  render() {
+    const { table } = this;
+    const renderMode = table.getRenderMode();
+    if (renderMode === RENDER_MODE.RENDER || renderMode === RENDER_MODE.SCALE) {
+      this.draw();
+    }
+  }
+
+}
+
+class XTableFixedBar {
+
+  constructor(table, {
+    width, height, background, buttonColor,
+  }) {
+    this.table = table;
+    this.height = height;
+    this.width = width;
+    this.background = background;
+    this.buttonColor = buttonColor;
+  }
+
+  drawBar() {
+    const {
+      table, height, width, background,
+    } = this;
+    const {
+      xFixedView, draw, index, xFixedMeasure,
+    } = table;
+    if (xFixedView.hasFixedTop()) {
+      const rpxHeight = XDraw.rpx(height);
+      const width = table.visualWidth();
+      const x = index.getWidth();
+      const y = xFixedMeasure.getHeight() + index.getHeight() - rpxHeight / 2;
+      draw.attr({ fillStyle: background });
+      draw.fillRect(x, y, width, rpxHeight);
+    }
+    if (xFixedView.hasFixedLeft()) {
+      const height = table.visualHeight();
+      const rpxWidth = XDraw.rpx(width);
+      const x = xFixedMeasure.getWidth() + index.getWidth() - rpxWidth / 2;
+      const y = index.getHeight();
+      draw.attr({ fillStyle: background });
+      draw.fillRect(x, y, rpxWidth, height);
+    }
+  }
+
+  drawButton() {
+    const {
+      table, height, width, buttonColor,
+    } = this;
+    const {
+      xFixedView, draw, index, xFixedMeasure,
+    } = table;
+    if (xFixedView.hasFixedTop()) {
+      const rpxHeight = XDraw.rpx(height);
+      const width = index.getWidth();
+      const x = 0;
+      const y = xFixedMeasure.getHeight() + index.getHeight() - rpxHeight / 2;
+      draw.attr({ fillStyle: buttonColor });
+      draw.fillRect(x, y, width, rpxHeight);
+    }
+    if (xFixedView.hasFixedLeft()) {
+      const height = index.getHeight();
+      const rpxWidth = XDraw.rpx(width);
+      const x = xFixedMeasure.getWidth() + index.getWidth() - rpxWidth / 2;
+      const y = 0;
+      draw.attr({ fillStyle: buttonColor });
+      draw.fillRect(x, y, rpxWidth, height);
+    }
+  }
+
+  render() {
+    const { table } = this;
+    const renderMode = table.getRenderMode();
+    if (renderMode === RENDER_MODE.RENDER || renderMode === RENDER_MODE.SCALE) {
+      this.drawBar();
+      this.drawButton();
+    }
+  }
+
+}
+
 // =============================== 表格绘制抽象类 ==============================
 
 class XTableUI {
@@ -1500,45 +1614,6 @@ class XTableFrozenContent extends XTableContentUI {
 
 }
 
-class XTableFrozenFullRect {
-
-  constructor(table) {
-    this.table = table;
-  }
-
-  draw() {
-    const dx = 0;
-    const dy = 0;
-    const { table } = this;
-    const { draw } = table;
-    const { indexGrid } = table;
-    const { index } = table;
-    const indexHeight = index.getHeight();
-    const indexWidth = index.getWidth();
-    draw.save();
-    draw.offset(dx, dy);
-    // 绘制背景
-    draw.attr({
-      fillStyle: '#f4f5f8',
-    });
-    draw.fillRect(0, 0, index.getWidth(), indexHeight);
-    draw.offset(0, 0);
-    // 绘制边框
-    indexGrid.horizonLine(0, indexHeight, indexWidth, indexHeight);
-    indexGrid.verticalLine(indexWidth, dy, indexWidth, indexHeight);
-    draw.restore();
-  }
-
-  render() {
-    const { table } = this;
-    const renderMode = table.getRenderMode();
-    if (renderMode === RENDER_MODE.RENDER || renderMode === RENDER_MODE.SCALE) {
-      this.draw();
-    }
-  }
-
-}
-
 // ============================ 表格动态区域内容绘制 =============================
 
 class XTableTopIndex extends XTableTopIndexUI {
@@ -2290,10 +2365,12 @@ class XTableStyle extends Widget {
       drawOptimization: true,
     });
     // 冻结内容
-    this.xTableFrozenFullRect = new XTableFrozenFullRect(this);
     this.xLeftFrozenIndex = new XTableFrozenLeftIndex(this);
     this.xTopFrozenIndex = new XTableFrozenTopIndex(this);
     this.xTableFrozenContent = new XTableFrozenContent(this);
+    // 细节内容
+    this.xTableFrozenFullRect = new XTableFrozenFullRect(this);
+    this.xTableFixedBar = new XTableFixedBar(this, settings.xFixedBar);
     // 动态内容
     this.xLeftIndex = new XTableLeftIndex(this);
     this.xTopIndex = new XTableTopIndex(this);
@@ -2435,6 +2512,7 @@ class XTableStyle extends Widget {
   render() {
     const { xFixedView } = this;
     const { xTableFrozenFullRect } = this;
+    const { xTableFixedBar } = this;
     const { xLeftFrozenIndex } = this;
     const { xTopFrozenIndex } = this;
     const { xTableFrozenContent } = this;
@@ -2459,6 +2537,7 @@ class XTableStyle extends Widget {
     xContent.render();
     xLeftIndex.render();
     xTopIndex.render();
+    xTableFixedBar.render();
   }
 
   /**

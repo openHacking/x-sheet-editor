@@ -11,10 +11,11 @@ class RowFixed extends Widget {
     super(`${cssPrefix}-table-row-fixed-bar`);
     const { xFixedView } = table;
     const fixedView = xFixedView.getFixedView();
+    const block = h('div', `${cssPrefix}-table-row-fixed-block`);
     this.table = table;
     this.fxSri = fixedView.sri;
     this.fxEri = fixedView.eri;
-    this.block = h('div', `${cssPrefix}-table-row-fixed-block`);
+    this.block = block;
     this.children(this.block);
   }
 
@@ -133,7 +134,6 @@ class RowFixed extends Widget {
   }
 
 }
-
 RowFixed.HEIGHT = 6;
 
 export {

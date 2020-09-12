@@ -464,6 +464,36 @@ class Utils {
     }
     return data;
   }
+
+  static getExplorerInfo() {
+    const explorer = window.navigator.userAgent.toLowerCase();
+    // ie
+    if (explorer.indexOf('msie') >= 0) {
+      const ver = explorer.match(/msie ([\d.]+)/)[1];
+      return { type: 'IE', version: ver };
+    }
+    // firefox
+    if (explorer.indexOf('firefox') >= 0) {
+      const ver = explorer.match(/firefox\/([\d.]+)/)[1];
+      return { type: 'Firefox', version: ver };
+    }
+    // Chrome
+    if (explorer.indexOf('chrome') >= 0) {
+      const ver = explorer.match(/chrome\/([\d.]+)/)[1];
+      return { type: 'Chrome', version: ver };
+    }
+    // Opera
+    if (explorer.indexOf('opera') >= 0) {
+      const ver = explorer.match(/opera.([\d.]+)/)[1];
+      return { type: 'Opera', version: ver };
+    }
+    // Safari
+    if (explorer.indexOf('Safari') >= 0) {
+      const ver = explorer.match(/version\/([\d.]+)/)[1];
+      return { type: 'Safari', version: ver };
+    }
+  }
+
 }
 
 Utils.EMPTY = '';

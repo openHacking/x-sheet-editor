@@ -5,7 +5,7 @@ Constant.SYSTEM_EVENT_TYPE = {
   MOUSE_UP: 'mouseUp'.toLocaleLowerCase(),
   MOUSE_OVER: 'mouseOver'.toLocaleLowerCase(),
   MOUSE_LEAVE: 'mouseLeave'.toLocaleLowerCase(),
-  MOUSE_WHEEL: 'mouseWheel'.toLocaleLowerCase(),
+  MOUSE_WHEEL: 'wheel'.toLocaleLowerCase(),
   MOUSE_ENTER: 'mouseEnter'.toLocaleLowerCase(),
   CLICK: 'click'.toLocaleLowerCase(),
   KEY_DOWN: 'keyDown'.toLocaleLowerCase(),

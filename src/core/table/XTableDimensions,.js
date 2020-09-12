@@ -558,6 +558,12 @@ class XTableDimensions extends Widget {
         fxLeft: -1,
         fxTop: -1,
       },
+      xFixedBar: {
+        height: RowFixed.HEIGHT,
+        width: ColFixed.WIDTH,
+        background: '#eaeaea',
+        buttonColor: '#c1c1c1',
+      },
       data: [],
       merge: {},
     }, settings);
@@ -1041,13 +1047,21 @@ class XTableDimensions extends Widget {
    */
   setScale(val = 1) {
     const {
-      xTableStyle, scale, xScreen, xHeightLight, yHeightLight,
+      yHeightLight,
+      xHeightLight,
+      xTableStyle,
+      xScreen,
+      scale,
+      rowFixed,
+      colFixed,
     } = this;
     this.reset();
     scale.setValue(val);
     xScreen.setZone();
     xHeightLight.offsetHandle();
     yHeightLight.offsetHandle();
+    rowFixed.setSize();
+    colFixed.setSize();
     xTableStyle.setScale(val);
     this.trigger(Constant.TABLE_EVENT_TYPE.SCALE_CHANGE);
   }
@@ -1057,10 +1071,12 @@ class XTableDimensions extends Widget {
    */
   resize() {
     const {
-      xTableStyle, xScreen,
+      xTableStyle, xScreen, rowFixed, colFixed,
     } = this;
     this.reset();
     xScreen.setZone();
+    rowFixed.setSize();
+    colFixed.setSize();
     xTableStyle.resize();
   }
 

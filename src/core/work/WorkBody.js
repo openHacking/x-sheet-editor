@@ -122,17 +122,20 @@ ${XSheetVersion}
   }
 
   bind() {
+    const exploreInfo = Utils.getExplorerInfo();
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+      this.scrollBarLocal();
       this.scrollBarSize();
     });
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+      this.scrollBarLocal();
       this.scrollBarSize();
     });
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
       const table = this.getActiveTable();
       if (table) {
-        this.scrollBarSize();
         this.scrollBarLocal();
+        this.scrollBarSize();
       }
     });
     EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, (e) => {
@@ -151,18 +154,31 @@ ${XSheetVersion}
       const sheet = this.sheetView.getActiveSheet();
       if (Utils.isUnDef(sheet)) return;
       const { table } = sheet;
-      const { scroll } = table;
+      const {
+        scroll, rows,
+      } = table;
+      const scrollView = table.getScrollView();
       const { scrollTo } = this.scrollBarY;
-      let { deltaY } = e;
-      if (e.detail) {
-        deltaY = e.detail * 40;
-      }
-      if (deltaY > 0) {
-        // down
-        this.scrollBarY.scrollMove(scrollTo + Math.abs(deltaY));
-      } else {
-        // up
-        this.scrollBarY.scrollMove(scrollTo - Math.abs(deltaY));
+      const { deltaY } = e;
+      switch (exploreInfo.type) {
+        case 'Chrome': {
+          if (deltaY > 0) {
+            this.scrollBarY.scrollMove(scrollTo + Math.abs(deltaY));
+          } else {
+            this.scrollBarY.scrollMove(scrollTo - Math.abs(deltaY));
+          }
+          break;
+        }
+        case 'Firefox': {
+          if (deltaY > 0) {
+            const dis = rows.getHeight(scrollView.sri + 1);
+            this.scrollBarY.scrollMove(scrollTo + dis);
+          } else {
+            const dis = rows.getHeight(scrollView.sri - 1);
+            this.scrollBarY.scrollMove(scrollTo - dis);
+          }
+          break;
+        }
       }
       if (scroll.blockTop < scroll.maxBlockTop && scroll.blockTop > 0) {
         e.preventDefault();
@@ -174,6 +190,7 @@ ${XSheetVersion}
         const table = this.getActiveTable();
         if (table) {
           table.reset();
+          this.scrollBarLocal();
           this.scrollBarSize();
           table.resize();
         }
@@ -236,6 +253,7 @@ ${XSheetVersion}
     const table = this.getActiveTable();
     if (table) {
       table.reset();
+      this.scrollBarLocal();
       this.scrollBarSize();
       table.resize();
     }
@@ -248,8 +266,8 @@ ${XSheetVersion}
     const sheet = sheetView.getActiveSheet();
     const { table } = sheet;
     table.setScale(value);
-    this.scrollBarSize();
     this.scrollBarLocal();
+    this.scrollBarSize();
   }
 
   setActiveTab(tab) {

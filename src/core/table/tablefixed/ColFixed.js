@@ -11,11 +11,12 @@ class ColFixed extends Widget {
     super(`${cssPrefix}-table-col-fixed-bar`);
     const { xFixedView } = table;
     const fixedView = xFixedView.getFixedView();
+    const block = h('div', `${cssPrefix}-table-col-fixed-block`);
     this.table = table;
     this.fxSci = fixedView.sci;
     this.fxEci = fixedView.eci;
-    this.block = h('div', `${cssPrefix}-table-col-fixed-block`);
-    this.children(this.block);
+    this.block = block;
+    this.children(block);
   }
 
   bind() {
@@ -135,7 +136,6 @@ class ColFixed extends Widget {
   }
 
 }
-
 ColFixed.WIDTH = 6;
 
 export {
