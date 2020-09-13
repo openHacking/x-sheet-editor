@@ -1,5 +1,5 @@
 /* global document */
-import { XScreenCssBorderItem } from '../../xscreen/item/border/XScreenCssBorderItem';
+import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBorderItem';
 import { EventBind } from '../../../../utils/EventBind';
 import {
   Constant,
@@ -7,8 +7,8 @@ import {
 } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
 import { Widget } from '../../../../lib/Widget';
-import { XDraw } from '../../../../canvas/XDraw';
 import { XTableMousePointer } from '../../XTableMousePointer';
+import { RANGE_OVER_GO } from '../../xscreen/item/viewborder/XScreenStyleBorderItem';
 
 const SELECT_LOCAL = {
   LT: Symbol('LT'),
@@ -27,7 +27,6 @@ class XSelectItem extends XScreenCssBorderItem {
     this.selectBoundOut = false;
     this.downRange = null;
     this.moveRange = null;
-    this.overGo = null;
     this.ltElem = new Widget(`${cssPrefix}-x-select-area`);
     this.brElem = new Widget(`${cssPrefix}-x-select-area`);
     this.lElem = new Widget(`${cssPrefix}-x-select-area`);
@@ -48,8 +47,13 @@ class XSelectItem extends XScreenCssBorderItem {
   }
 
   onAdd() {
+    const { table } = this;
     this.bind();
     this.hide();
+    table.focus.register({ target: this.ltCorner });
+    table.focus.register({ target: this.lCorner });
+    table.focus.register({ target: this.tCorner });
+    table.focus.register({ target: this.brCorner });
   }
 
   bind() {
@@ -68,6 +72,11 @@ class XSelectItem extends XScreenCssBorderItem {
       this.selectCornerHandle();
     });
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, () => {
+      this.selectOffsetHandle();
+      this.selectBorderHandle();
+      this.selectCornerHandle();
+    });
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
       this.selectOffsetHandle();
       this.selectBorderHandle();
       this.selectCornerHandle();
@@ -196,65 +205,44 @@ class XSelectItem extends XScreenCssBorderItem {
 
   selectOffsetHandle() {
     const { selectRange } = this;
-    this.selectBoundOut = this.measureBoundOut(selectRange);
-    if (this.selectBoundOut) {
-      this.hide();
-      return;
+    if (selectRange) {
+      this.setDisplay(selectRange);
+      this.setSizer(selectRange);
+      this.setLocal(selectRange);
     }
-    this.show();
-    this.targetOffset.width = this.measureWidth(selectRange);
-    this.targetOffset.height = this.measureHeight(selectRange);
-    this.targetOffset.top = this.measureTop(selectRange);
-    this.targetOffset.left = this.measureLeft(selectRange);
-    this.setTop(this.targetOffset.top);
-    this.setLeft(this.targetOffset.left);
-    this.setHeight(XDraw.offsetToLineInside(this.targetOffset.height));
-    this.setWidth(XDraw.offsetToLineInside(this.targetOffset.width));
   }
 
   selectBorderHandle() {
-    const { selectBoundOut } = this;
-    if (selectBoundOut) {
-      return;
-    }
     const { selectRange } = this;
-    const overGo = this.rangeOverGo(selectRange);
-    const {
-      top, bottom, left, right,
-    } = this.borderDisplay(selectRange, overGo);
-    this.hideAllBorder();
-    this.overGo = overGo;
-    if (top) {
-      this.showTBorder(overGo);
-    }
-    if (bottom) {
-      this.showBBorder(overGo);
-    }
-    if (left) {
-      this.showLBorder(overGo);
-    }
-    if (right) {
-      this.showRBorder(overGo);
+    if (selectRange) {
+      this.hideBorder();
+      this.showBorder(selectRange);
     }
   }
 
   selectCornerHandle() {
-    const { selectBoundOut } = this;
+    const {
+      selectBoundOut,
+    } = this;
     if (selectBoundOut) {
       return;
     }
-    const { selectLocal } = this;
-    // remove br
+    const {
+      selectLocal, selectRange,
+    } = this;
+    const overGo = this.getOverGo(selectRange);
+    this.ltCorner.hide();
+    this.tCorner.hide();
+    this.lCorner.hide();
+    this.brCorner.hide();
     this.brCorner.removeClass('br-pos');
     this.lCorner.removeClass('br-pos');
     this.tCorner.removeClass('br-pos');
     this.ltCorner.removeClass('br-pos');
-    // remove tr
     this.brCorner.removeClass('tr-pos');
     this.lCorner.removeClass('tr-pos');
     this.tCorner.removeClass('tr-pos');
     this.ltCorner.removeClass('tr-pos');
-    // remove bl
     this.brCorner.removeClass('bl-pos');
     this.lCorner.removeClass('bl-pos');
     this.tCorner.removeClass('bl-pos');
@@ -266,6 +254,12 @@ class XSelectItem extends XScreenCssBorderItem {
         this.tCorner.addClass('bl-pos');
         this.ltCorner.addClass('bl-pos');
         break;
+      case SELECT_LOCAL.T:
+        this.brCorner.addClass('tr-pos');
+        this.lCorner.addClass('tr-pos');
+        this.tCorner.addClass('tr-pos');
+        this.ltCorner.addClass('tr-pos');
+        break;
       case SELECT_LOCAL.LT:
       case SELECT_LOCAL.BR:
         this.brCorner.addClass('br-pos');
@@ -273,11 +267,36 @@ class XSelectItem extends XScreenCssBorderItem {
         this.tCorner.addClass('br-pos');
         this.ltCorner.addClass('br-pos');
         break;
-      case SELECT_LOCAL.T:
-        this.brCorner.addClass('tr-pos');
-        this.lCorner.addClass('tr-pos');
-        this.tCorner.addClass('tr-pos');
-        this.ltCorner.addClass('tr-pos');
+    }
+    switch (overGo) {
+      case RANGE_OVER_GO.LT:
+        this.ltCorner.show();
+        this.tCorner.hide();
+        this.brCorner.hide();
+        this.lCorner.hide();
+        break;
+      case RANGE_OVER_GO.LTT:
+      case RANGE_OVER_GO.T:
+        this.ltCorner.hide();
+        this.tCorner.show();
+        this.brCorner.hide();
+        this.lCorner.hide();
+        break;
+      case RANGE_OVER_GO.ALL:
+      case RANGE_OVER_GO.BRL:
+      case RANGE_OVER_GO.BRT:
+      case RANGE_OVER_GO.BR:
+        this.ltCorner.hide();
+        this.tCorner.hide();
+        this.brCorner.show();
+        this.lCorner.hide();
+        break;
+      case RANGE_OVER_GO.LTL:
+      case RANGE_OVER_GO.L:
+        this.ltCorner.hide();
+        this.tCorner.hide();
+        this.brCorner.hide();
+        this.lCorner.show();
         break;
     }
   }

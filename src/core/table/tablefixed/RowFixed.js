@@ -97,16 +97,6 @@ class RowFixed extends Widget {
     });
   }
 
-  onAttach() {
-    const { table } = this;
-    // 初始化固定条大小
-    this.setSize();
-    // 绑定处理函数
-    this.bind();
-    // 注册焦点元素
-    table.focus.register({ target: this });
-  }
-
   setActive(status) {
     if (status) {
       this.addClass('active');
@@ -115,6 +105,16 @@ class RowFixed extends Widget {
       this.removeClass('active');
       this.block.removeClass('active');
     }
+  }
+
+  onAttach() {
+    const { table } = this;
+    // 初始化固定条大小
+    this.setSize();
+    // 绑定处理函数
+    this.bind();
+    // 注册焦点元素
+    table.focus.register({ target: this, stop: false });
   }
 
   setSize() {

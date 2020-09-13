@@ -1,10 +1,9 @@
 import { RectRange } from '../../../tablebase/RectRange';
-import { DISPLAY_AREA } from '../../XScreen';
 import { XScreenLTPart } from '../../part/XScreenLTPart';
 import { XScreenTPart } from '../../part/XScreenTPart';
 import { XScreenLPart } from '../../part/XScreenLPart';
 import { XScreenBRPart } from '../../part/XScreenBRPart';
-import { XScreenMeasureItem } from '../XScreenMeasureItem';
+import { XScreenViewSizer } from '../viewdisplay/XScreenViewSizer';
 
 const RANGE_OVER_GO = {
   LT: Symbol('lt'),
@@ -18,23 +17,12 @@ const RANGE_OVER_GO = {
   ALL: Symbol('all'),
 };
 
-class XScreenBorderItem extends XScreenMeasureItem {
+class XScreenStyleBorderHandle extends XScreenViewSizer {
 
-  constructor({ table }, className = '') {
-    super({ table });
-    this.blt = new XScreenLTPart(className);
-    this.bt = new XScreenTPart(className);
-    this.bl = new XScreenLPart(className);
-    this.bbr = new XScreenBRPart(className);
-    this.lt.child(this.blt);
-    this.t.child(this.bt);
-    this.l.child(this.bl);
-    this.br.child(this.bbr);
-  }
-
-  borderDisplay(range, overGo) {
+  getDisplay(range) {
     const { table } = this;
     const scrollView = table.getScrollView();
+    const overGo = this.getOverGo(range);
     const display = {
       bottom: false, left: false, top: false, right: false,
     };
@@ -97,7 +85,7 @@ class XScreenBorderItem extends XScreenMeasureItem {
     return display;
   }
 
-  rangeOverGo(range) {
+  getOverGo(range) {
     const { table } = this;
     const { cols, rows } = table;
     const {
@@ -108,9 +96,9 @@ class XScreenBorderItem extends XScreenMeasureItem {
     const fixedView = xFixedView.getFixedView();
     if (xFixedView.hasFixedTop() && xFixedView.hasFixedLeft()) {
       const lt = fixedView;
-      const t = new RectRange(fixedView.sri, fixedView.eci, fixedView.eri, colsLen);
-      const br = new RectRange(fixedView.eri, fixedView.eci, rowsLen, colsLen);
-      const l = new RectRange(fixedView.eri, fixedView.sci, rowsLen, fixedView.eci);
+      const t = new RectRange(fixedView.sri, fixedView.eci + 1, fixedView.eri, colsLen);
+      const l = new RectRange(fixedView.eri + 1, fixedView.sci, rowsLen, fixedView.eci);
+      const br = new RectRange(fixedView.eri + 1, fixedView.eci + 1, rowsLen, colsLen);
       if (lt.contains(range)) {
         return RANGE_OVER_GO.LT;
       }
@@ -123,10 +111,10 @@ class XScreenBorderItem extends XScreenMeasureItem {
       if (l.contains(range)) {
         return RANGE_OVER_GO.L;
       }
-      const ltt = new RectRange(0, 0, fixedView.eri, colsLen);
-      const ltl = new RectRange(0, 0, rowsLen, fixedView.eci);
-      const brt = new RectRange(0, fixedView.eci, rowsLen, colsLen);
-      const brl = new RectRange(fixedView.eri, 0, rowsLen, colsLen);
+      const ltt = new RectRange(fixedView.sri, fixedView.sci, fixedView.eri, colsLen);
+      const ltl = new RectRange(fixedView.sri, fixedView.sci, rowsLen, fixedView.eci);
+      const brt = new RectRange(fixedView.sri, fixedView.eci + 1, rowsLen, colsLen);
+      const brl = new RectRange(fixedView.eri + 1, fixedView.sci, rowsLen, colsLen);
       if (ltt.contains(range)) {
         return RANGE_OVER_GO.LTT;
       }
@@ -141,52 +129,194 @@ class XScreenBorderItem extends XScreenMeasureItem {
       }
       return RANGE_OVER_GO.ALL;
     } if (xFixedView.hasFixedTop()) {
-      const t = new RectRange(0, 0, fixedView.eri, colsLen);
-      const br = new RectRange(fixedView.eri, 0, rowsLen, colsLen);
+      const t = new RectRange(fixedView.sri, fixedView.eci, fixedView.eri, colsLen);
+      const br = new RectRange(fixedView.eri + 1, fixedView.eci + 1, rowsLen, colsLen);
       if (t.contains(range)) {
         return RANGE_OVER_GO.T;
       }
       if (br.contains(range)) {
         return RANGE_OVER_GO.BR;
       }
-      return RANGE_OVER_GO.ALL;
+      return RANGE_OVER_GO.BRT;
     } if (xFixedView.hasFixedLeft()) {
-      const br = new RectRange(0, fixedView.eci, rowsLen, colsLen);
-      const l = new RectRange(0, 0, rowsLen, fixedView.eci);
-      if (br.contains(range)) {
-        return RANGE_OVER_GO.BR;
-      }
+      const l = new RectRange(fixedView.eri, fixedView.sci, rowsLen, fixedView.eci);
+      const br = new RectRange(fixedView.eri + 1, fixedView.eci + 1, rowsLen, colsLen);
       if (l.contains(range)) {
         return RANGE_OVER_GO.L;
       }
-      return RANGE_OVER_GO.ALL;
+      if (br.contains(range)) {
+        return RANGE_OVER_GO.BR;
+      }
+      return RANGE_OVER_GO.BRL;
     }
     return RANGE_OVER_GO.BR;
   }
 
-  hideAllBorder() {
-    const { xScreen } = this;
-    const update = [];
-    switch (xScreen.displayArea) {
-      case DISPLAY_AREA.ALL:
-        update.push(this.bbr);
-        update.push(this.bt);
-        update.push(this.bl);
-        update.push(this.blt);
+  showBBorder(overGo, display) {
+    switch (overGo) {
+      case RANGE_OVER_GO.LT:
+        this.blt.addClass('show-bottom-border');
         break;
-      case DISPLAY_AREA.BR:
-        update.push(this.bbr);
+      case RANGE_OVER_GO.L:
+        this.bl.addClass('show-bottom-border');
         break;
-      case DISPLAY_AREA.BRL:
-        update.push(this.bbr);
-        update.push(this.bl);
+      case RANGE_OVER_GO.T:
+        this.bt.addClass('show-bottom-border');
         break;
-      case DISPLAY_AREA.BRT:
-        update.push(this.bbr);
-        update.push(this.bt);
+      case RANGE_OVER_GO.BR:
+        if (display.bottom) this.bbr.addClass('show-bottom-border');
+        break;
+      case RANGE_OVER_GO.LTT:
+        this.blt.addClass('show-bottom-border');
+        this.bt.addClass('show-bottom-border');
+        break;
+      case RANGE_OVER_GO.LTL:
+        if (display.bottom) this.bl.addClass('show-bottom-border');
+        break;
+      case RANGE_OVER_GO.BRT:
+        if (display.bottom) this.bbr.addClass('show-bottom-border');
+        break;
+      case RANGE_OVER_GO.ALL:
+      case RANGE_OVER_GO.BRL:
+        if (display.bottom) {
+          this.bl.addClass('show-bottom-border');
+          this.bbr.addClass('show-bottom-border');
+        }
         break;
     }
-    update.forEach((item) => {
+  }
+
+  showTBorder(overGo, display) {
+    switch (overGo) {
+      case RANGE_OVER_GO.LT:
+        this.blt.addClass('show-top-border');
+        break;
+      case RANGE_OVER_GO.L:
+        this.bl.addClass('show-top-border');
+        break;
+      case RANGE_OVER_GO.T:
+        this.bt.addClass('show-top-border');
+        break;
+      case RANGE_OVER_GO.BR:
+        if (display.top) this.bbr.addClass('show-top-border');
+        break;
+      case RANGE_OVER_GO.LTT:
+        this.blt.addClass('show-top-border');
+        this.bt.addClass('show-top-border');
+        break;
+      case RANGE_OVER_GO.LTL:
+        this.blt.addClass('show-top-border');
+        break;
+      case RANGE_OVER_GO.BRT:
+        this.bt.addClass('show-top-border');
+        break;
+      case RANGE_OVER_GO.BRL:
+        if (display.top) {
+          this.bl.addClass('show-top-border');
+          this.bbr.addClass('show-top-border');
+        }
+        break;
+      case RANGE_OVER_GO.ALL:
+        this.blt.addClass('show-top-border');
+        this.bt.addClass('show-top-border');
+        break;
+    }
+  }
+
+  showLBorder(overGo, display) {
+    switch (overGo) {
+      case RANGE_OVER_GO.LT:
+        this.blt.addClass('show-left-border');
+        break;
+      case RANGE_OVER_GO.L:
+        this.bl.addClass('show-left-border');
+        break;
+      case RANGE_OVER_GO.T:
+        if (display.left) this.bt.addClass('show-left-border');
+        break;
+      case RANGE_OVER_GO.BR:
+        if (display.left) this.bbr.addClass('show-left-border');
+        break;
+      case RANGE_OVER_GO.LTT:
+        this.blt.addClass('show-left-border');
+        break;
+      case RANGE_OVER_GO.LTL:
+        this.blt.addClass('show-left-border');
+        this.bl.addClass('show-left-border');
+        break;
+      case RANGE_OVER_GO.BRT:
+        if (display.left) {
+          this.bt.addClass('show-left-border');
+          this.bbr.addClass('show-left-border');
+        }
+        break;
+      case RANGE_OVER_GO.BRL:
+        this.bl.addClass('show-left-border');
+        break;
+      case RANGE_OVER_GO.ALL:
+        this.blt.addClass('show-left-border');
+        this.bl.addClass('show-left-border');
+        break;
+    }
+  }
+
+  showRBorder(overGo, display) {
+    switch (overGo) {
+      case RANGE_OVER_GO.LT:
+        this.blt.addClass('show-right-border');
+        break;
+      case RANGE_OVER_GO.L:
+        this.bl.addClass('show-right-border');
+        break;
+      case RANGE_OVER_GO.T:
+        if (display.right) this.bt.addClass('show-right-border');
+        break;
+      case RANGE_OVER_GO.BR:
+        if (display.right) this.bbr.addClass('show-right-border');
+        break;
+      case RANGE_OVER_GO.LTT:
+        if (display.right) this.bt.addClass('show-right-border');
+        break;
+      case RANGE_OVER_GO.LTL:
+        this.blt.addClass('show-right-border');
+        this.bl.addClass('show-right-border');
+        break;
+      case RANGE_OVER_GO.BRT:
+        if (display.right) {
+          this.bt.addClass('show-right-border');
+          this.bbr.addClass('show-right-border');
+        }
+        break;
+      case RANGE_OVER_GO.BRL:
+        if (display.right) this.bbr.addClass('show-right-border');
+        break;
+      case RANGE_OVER_GO.ALL:
+        if (display.right) {
+          this.bt.addClass('show-right-border');
+          this.bbr.addClass('show-right-border');
+        }
+        break;
+    }
+  }
+
+}
+
+class XScreenStyleBorderItem extends XScreenStyleBorderHandle {
+
+  constructor({ table }, className = '') {
+    super({ table });
+    this.blt = new XScreenLTPart(className);
+    this.bt = new XScreenTPart(className);
+    this.bl = new XScreenLPart(className);
+    this.bbr = new XScreenBRPart(className);
+    this.lt.child(this.blt);
+    this.t.child(this.bt);
+    this.l.child(this.bl);
+    this.br.child(this.bbr);
+  }
+
+  hideBorder() {
+    [this.bbr, this.bt, this.bl, this.blt].forEach((item) => {
       item.removeClass('show-bottom-border');
       item.removeClass('show-top-border');
       item.removeClass('show-right-border');
@@ -194,148 +324,17 @@ class XScreenBorderItem extends XScreenMeasureItem {
     });
   }
 
-  showBBorder(overGo) {
-    switch (overGo) {
-      case RANGE_OVER_GO.LT:
-        this.blt.addClass('show-bottom-border');
-        break;
-      case RANGE_OVER_GO.L:
-        this.bl.addClass('show-bottom-border');
-        break;
-      case RANGE_OVER_GO.T:
-        this.bt.addClass('show-bottom-border');
-        break;
-      case RANGE_OVER_GO.BR:
-        this.bbr.addClass('show-bottom-border');
-        break;
-      case RANGE_OVER_GO.LTT:
-        this.blt.addClass('show-bottom-border');
-        this.bt.addClass('show-bottom-border');
-        break;
-      case RANGE_OVER_GO.LTL:
-        this.bl.addClass('show-bottom-border');
-        break;
-      case RANGE_OVER_GO.BRT:
-        this.bbr.addClass('show-bottom-border');
-        break;
-      case RANGE_OVER_GO.BRL:
-        this.bl.addClass('show-bottom-border');
-        this.bbr.addClass('show-bottom-border');
-        break;
-      case RANGE_OVER_GO.ALL:
-        this.bl.addClass('show-bottom-border');
-        this.bbr.addClass('show-bottom-border');
-        break;
-    }
-  }
-
-  showTBorder(overGo) {
-    switch (overGo) {
-      case RANGE_OVER_GO.LT:
-        this.blt.addClass('show-top-border');
-        break;
-      case RANGE_OVER_GO.L:
-        this.bl.addClass('show-top-border');
-        break;
-      case RANGE_OVER_GO.T:
-        this.bt.addClass('show-top-border');
-        break;
-      case RANGE_OVER_GO.BR:
-        this.bbr.addClass('show-top-border');
-        break;
-      case RANGE_OVER_GO.LTT:
-        this.blt.addClass('show-top-border');
-        this.bt.addClass('show-top-border');
-        break;
-      case RANGE_OVER_GO.LTL:
-        this.blt.addClass('show-top-border');
-        break;
-      case RANGE_OVER_GO.BRT:
-        this.bt.addClass('show-top-border');
-        break;
-      case RANGE_OVER_GO.BRL:
-        this.bl.addClass('show-top-border');
-        this.bbr.addClass('show-top-border');
-        break;
-      case RANGE_OVER_GO.ALL:
-        this.blt.addClass('show-top-border');
-        this.bt.addClass('show-top-border');
-        break;
-    }
-  }
-
-  showLBorder(overGo) {
-    switch (overGo) {
-      case RANGE_OVER_GO.LT:
-        this.blt.addClass('show-left-border');
-        break;
-      case RANGE_OVER_GO.L:
-        this.bl.addClass('show-left-border');
-        break;
-      case RANGE_OVER_GO.T:
-        this.bt.addClass('show-left-border');
-        break;
-      case RANGE_OVER_GO.BR:
-        this.bbr.addClass('show-left-border');
-        break;
-      case RANGE_OVER_GO.LTT:
-        this.blt.addClass('show-left-border');
-        break;
-      case RANGE_OVER_GO.LTL:
-        this.blt.addClass('show-left-border');
-        this.bl.addClass('show-left-border');
-        break;
-      case RANGE_OVER_GO.BRT:
-        this.bt.addClass('show-left-border');
-        this.bbr.addClass('show-left-border');
-        break;
-      case RANGE_OVER_GO.BRL:
-        this.bl.addClass('show-left-border');
-        break;
-      case RANGE_OVER_GO.ALL:
-        this.blt.addClass('show-left-border');
-        this.bl.addClass('show-left-border');
-        break;
-    }
-  }
-
-  showRBorder(overGo) {
-    switch (overGo) {
-      case RANGE_OVER_GO.LT:
-        this.blt.addClass('show-right-border');
-        break;
-      case RANGE_OVER_GO.L:
-        this.bl.addClass('show-right-border');
-        break;
-      case RANGE_OVER_GO.T:
-        this.bt.addClass('show-right-border');
-        break;
-      case RANGE_OVER_GO.BR:
-        this.bbr.addClass('show-right-border');
-        break;
-      case RANGE_OVER_GO.LTT:
-        this.bt.addClass('show-right-border');
-        break;
-      case RANGE_OVER_GO.LTL:
-        this.blt.addClass('show-right-border');
-        this.bl.addClass('show-right-border');
-        break;
-      case RANGE_OVER_GO.BRT:
-        this.bt.addClass('show-right-border');
-        this.bbr.addClass('show-right-border');
-        break;
-      case RANGE_OVER_GO.BRL:
-        this.br.addClass('show-right-border');
-        break;
-      case RANGE_OVER_GO.ALL:
-        this.bt.addClass('show-right-border');
-        this.bbr.addClass('show-right-border');
-        break;
-    }
+  showBorder(range) {
+    const overGo = this.getOverGo(range);
+    const display = this.getDisplay(range);
+    this.showBBorder(overGo, display);
+    this.showTBorder(overGo, display);
+    this.showLBorder(overGo, display);
+    this.showRBorder(overGo, display);
   }
 
 }
 
 export {
-  XScreenBorderItem, RANGE_OVER_GO,
+  XScreenStyleBorderItem, RANGE_OVER_GO,
 };

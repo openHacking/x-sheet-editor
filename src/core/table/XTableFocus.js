@@ -15,15 +15,15 @@ class XTableFocus {
       const alike = this.findByChild(e.target);
       if (alike) {
         this.activate = alike;
-      }
-      if (stop) {
-        e.stopPropagation();
+        if (stop) {
+          e.stopPropagation();
+        }
       }
     });
   }
 
   register({
-    target, attr = {}, stop = false, focus = false,
+    target, attr = {}, stop = true, focus = false,
   }) {
     let item = this.findByNode(target);
     if (item) {
@@ -54,7 +54,7 @@ class XTableFocus {
 
   findByChild(el) {
     const { table } = this;
-    const root = table.el;
+    const root = table.el.parentNode;
     while (el !== root) {
       const find = this.findByNode(el);
       if (find) {

@@ -1,9 +1,8 @@
-import { XScreenSvgBorderItem } from '../../xscreen/item/border/XScreenSvgBorderItem';
+import { XScreenSvgBorderItem } from '../../xscreen/item/viewborder/XScreenSvgBorderItem';
 import { XSelectItem } from '../xselect/XSelectItem';
 import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { EventBind } from '../../../../utils/EventBind';
-import { XDraw } from '../../../../canvas/XDraw';
 
 class XcopyStyle extends XScreenSvgBorderItem {
 
@@ -43,45 +42,9 @@ class XcopyStyle extends XScreenSvgBorderItem {
     });
   }
 
-  selectOffsetHandle() {
-    const { selectRange } = this;
-    this.selectBoundOut = this.measureBoundOut(selectRange);
-    if (this.selectBoundOut) {
-      this.hide();
-      return;
-    }
-    this.show();
-    this.targetOffset.width = this.measureWidth(selectRange);
-    this.targetOffset.height = this.measureHeight(selectRange);
-    this.targetOffset.top = this.measureTop(selectRange);
-    this.targetOffset.left = this.measureLeft(selectRange);
-    this.setTop(this.targetOffset.top);
-    this.setLeft(this.targetOffset.left);
-    this.setHeight(XDraw.offsetToLineInside(this.targetOffset.height));
-    this.setWidth(XDraw.offsetToLineInside(this.targetOffset.width));
-  }
+  selectOffsetHandle() {}
 
-  selectBorderHandle() {
-    const {
-      overGo, selectRange,
-    } = this;
-    const {
-      top, bottom, left, right,
-    } = this.borderDisplay(selectRange, overGo);
-    this.hideAllBorder();
-    if (top) {
-      this.showTBorder(overGo);
-    }
-    if (bottom) {
-      this.showBBorder(overGo);
-    }
-    if (left) {
-      this.showLBorder(overGo);
-    }
-    if (right) {
-      this.showRBorder(overGo);
-    }
-  }
+  selectBorderHandle() {}
 
   hideCopyStyle() {
     this.hide();

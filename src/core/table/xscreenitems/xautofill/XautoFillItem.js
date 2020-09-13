@@ -1,5 +1,5 @@
 /* global document */
-import { XScreenCssBorderItem } from '../../xscreen/item/border/XScreenCssBorderItem';
+import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBorderItem';
 import {
   SELECT_LOCAL,
   XSelectItem,

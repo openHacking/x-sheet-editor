@@ -16,10 +16,6 @@ class XScreenItem {
     this.xScreen = null;
   }
 
-  setXScreen(xScreen) {
-    this.xScreen = xScreen;
-  }
-
   onAdd() {}
 
   hide() {
@@ -36,18 +32,8 @@ class XScreenItem {
     this.l.show();
   }
 
-  setHeight(height) {
-    this.lt.offset({ height });
-    this.t.offset({ height });
-    this.br.offset({ height });
-    this.l.offset({ height });
-  }
-
-  setWidth(width) {
-    this.lt.offset({ width });
-    this.t.offset({ width });
-    this.br.offset({ width });
-    this.l.offset({ width });
+  setXScreen(xScreen) {
+    this.xScreen = xScreen;
   }
 
 }

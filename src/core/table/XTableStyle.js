@@ -2238,16 +2238,26 @@ class XTableStyle extends Widget {
     // 数据快照
     this.tableDataSnapshot = new TableDataSnapshot(this);
     // 绘制资源
-    const leftOutRangeFilter = new LeftOutRangeFilter({
-      merges: this.merges,
-      cols: this.cols,
-      cells: this.cells,
-    });
     const rightOutRangeFilter = new RightOutRangeFilter({
       merges: this.merges,
       cols: this.cols,
       cells: this.cells,
     });
+    const leftOutRangeFilter = new LeftOutRangeFilter({
+      merges: this.merges,
+      cols: this.cols,
+      cells: this.cells,
+    });
+    const rightShowFilter = new FilterChain(ChainLogic.AND, [
+      new LineFilter((ri, ci) => {
+        const cell = this.cells.getCell(ri, ci);
+        if (Utils.isUnDef(cell)) {
+          return false;
+        }
+        return cell.borderAttr.right.display;
+      }),
+      new LineFilter((ri, ci) => rightOutRangeFilter.execute(ri, ci)),
+    ]);
     const leftShowFilter = new FilterChain(ChainLogic.AND, [
       new LineFilter((ri, ci) => {
         const cell = this.cells.getCell(ri, ci);
@@ -2265,16 +2275,6 @@ class XTableStyle extends Widget {
       }
       return cell.borderAttr.top.display;
     });
-    const rightShowFilter = new FilterChain(ChainLogic.AND, [
-      new LineFilter((ri, ci) => {
-        const cell = this.cells.getCell(ri, ci);
-        if (Utils.isUnDef(cell)) {
-          return false;
-        }
-        return cell.borderAttr.right.display;
-      }),
-      new LineFilter((ri, ci) => rightOutRangeFilter.execute(ri, ci)),
-    ]);
     const bottomShowFilter = new LineFilter((ri, ci) => {
       const cell = this.cells.getCell(ri, ci);
       if (Utils.isUnDef(cell)) {
@@ -2368,15 +2368,15 @@ class XTableStyle extends Widget {
     this.xLeftFrozenIndex = new XTableFrozenLeftIndex(this);
     this.xTopFrozenIndex = new XTableFrozenTopIndex(this);
     this.xTableFrozenContent = new XTableFrozenContent(this);
-    // 细节内容
-    this.xTableFrozenFullRect = new XTableFrozenFullRect(this);
-    this.xTableFixedBar = new XTableFixedBar(this, settings.xFixedBar);
     // 动态内容
     this.xLeftIndex = new XTableLeftIndex(this);
     this.xTopIndex = new XTableTopIndex(this);
     this.xLeft = new XTableLeft(this);
     this.xTop = new XTableTop(this);
     this.xContent = new XTableContent(this);
+    // 细节内容
+    this.xTableFrozenFullRect = new XTableFrozenFullRect(this);
+    this.xTableFixedBar = new XTableFixedBar(this, settings.xFixedBar);
     // 同步合并单元格
     this.merges.sync();
   }
