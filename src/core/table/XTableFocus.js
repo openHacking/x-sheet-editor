@@ -23,7 +23,7 @@ class XTableFocus {
   }
 
   register({
-    target, attr = {}, stop = true, focus = false,
+    target, attr = {}, stop = false, focus = false,
   }) {
     let item = this.findByNode(target);
     if (item) {

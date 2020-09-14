@@ -1,9 +1,11 @@
 import { Widget } from '../../../lib/Widget';
-import { cssPrefix, Constant } from '../../../const/Constant';
+import {
+  Constant, cssPrefix,
+} from '../../../const/Constant';
 import { EventBind } from '../../../utils/EventBind';
-import { XSelectItem } from '../xscreenitems/xselect/XSelectItem';
-import { XDraw } from '../../../canvas/XDraw';
 import { RANGE_OVER_GO } from '../xscreen/item/viewborder/XScreenStyleBorderItem';
+import { XSelectItem } from '../xscreenitems/xselect/XSelectItem';
+import { RectRange } from '../tablebase/RectRange';
 
 class YHeightLight extends Widget {
 
@@ -16,20 +18,6 @@ class YHeightLight extends Widget {
   onAttach() {
     this.bind();
     this.hide();
-  }
-
-  checkOut() {
-    const { table } = this;
-    const { xScreen } = table;
-    const xSelect = xScreen.findType(XSelectItem);
-    const {
-      selectRange,
-    } = xSelect;
-    if (!selectRange) {
-      return true;
-    }
-    const scrollView = table.getScrollView();
-    return selectRange.eri < scrollView.sri || selectRange.sri > scrollView.eri;
   }
 
   bind() {
@@ -49,10 +37,6 @@ class YHeightLight extends Widget {
   }
 
   offsetHandle() {
-    if (this.checkOut()) {
-      this.hide();
-      return;
-    }
     this.show();
     const { table } = this;
     this.offset({
@@ -74,57 +58,104 @@ class YHeightLight extends Widget {
       xScreen, rows, xFixedView,
     } = table;
     const xSelect = xScreen.findType(XSelectItem);
-    const scrollView = table.getScrollView();
     const {
-      selectRange, overGo,
+      selectRange,
     } = xSelect;
-    if (!selectRange) {
-      return 0;
-    }
-    // 固定位置
+    const overGo = xSelect.getOverGo(selectRange);
     const fixedView = xFixedView.getFixedView();
-    switch (overGo) {
-      case RANGE_OVER_GO.LT:
-      case RANGE_OVER_GO.T:
-      case RANGE_OVER_GO.LTT:
-      case RANGE_OVER_GO.LTL:
-      case RANGE_OVER_GO.BRL:
-      case RANGE_OVER_GO.ALL:
-        return XDraw.offsetToLineInside(rows.sectionSumHeight(selectRange.sri, fixedView.eri));
+    const scrollView = table.getScrollView();
+    if (xFixedView.hasFixedTop() && xFixedView.hasFixedLeft()) {
+      switch (overGo) {
+        case RANGE_OVER_GO.LT:
+        case RANGE_OVER_GO.T:
+        case RANGE_OVER_GO.LTT: {
+          return rows.sectionSumHeight(fixedView.sri, selectRange.sri - 1);
+        }
+        case RANGE_OVER_GO.BR:
+        case RANGE_OVER_GO.L:
+        case RANGE_OVER_GO.BRL: {
+          scrollView.sci = fixedView.sci;
+          const coincideView = scrollView.coincide(selectRange);
+          const fixed = rows.sectionSumHeight(fixedView.sri, selectRange.sri - 1);
+          const scroll = rows.sectionSumHeight(scrollView.sri, coincideView.sri - 1);
+          return fixed + scroll;
+        }
+        case RANGE_OVER_GO.BRT:
+        case RANGE_OVER_GO.LTL:
+        case RANGE_OVER_GO.ALL: {
+          return rows.sectionSumHeight(fixedView.sri, selectRange.sri - 1);
+        }
+      }
+    } else if (xFixedView.hasFixedTop()) {
+
+    } else if (xFixedView.hasFixedLeft()) {
+
     }
-    // 滚动位置
-    return XDraw.offsetToLineInside(rows.sectionSumHeight(scrollView.sri, selectRange.sri - 1));
   }
 
   getHeight() {
     const { table } = this;
     const {
-      xScreen, rows, xFixedView,
+      xScreen, rows, xFixedView, cols,
     } = table;
     const xSelect = xScreen.findType(XSelectItem);
-    const scrollView = table.getScrollView();
     const {
-      selectRange, overGo,
+      selectRange,
     } = xSelect;
-    // 固定宽度
     const fixedView = xFixedView.getFixedView();
-    let fixHeight = 0;
-    switch (overGo) {
-      case RANGE_OVER_GO.LT:
-      case RANGE_OVER_GO.T:
-      case RANGE_OVER_GO.LTT:
-      case RANGE_OVER_GO.LTL:
-      case RANGE_OVER_GO.BRL:
-      case RANGE_OVER_GO.ALL:
-        fixHeight = rows.sectionSumHeight(selectRange.sri, fixedView.eri);
-        break;
+    const scrollView = table.getScrollView();
+    const overGo = xSelect.getOverGo(selectRange);
+    const colLen = cols.length - 1;
+    if (xFixedView.hasFixedTop() && xFixedView.hasFixedLeft()) {
+      switch (overGo) {
+        case RANGE_OVER_GO.LT:
+        case RANGE_OVER_GO.T:
+        case RANGE_OVER_GO.LTT: {
+          return rows.rectRangeSumHeight(selectRange);
+        }
+        case RANGE_OVER_GO.BR:
+        case RANGE_OVER_GO.L:
+        case RANGE_OVER_GO.BRL: {
+          scrollView.sci = fixedView.sci;
+          return rows.rectRangeSumHeight(scrollView.coincide(selectRange));
+        }
+        case RANGE_OVER_GO.BRT:
+        case RANGE_OVER_GO.LTL:
+        case RANGE_OVER_GO.ALL: {
+          scrollView.sci = fixedView.sci;
+          const scroll = rows.rectRangeSumHeight(scrollView.coincide(selectRange));
+          const range = new RectRange(fixedView.sri, 0, fixedView.eri, colLen);
+          const fixed = rows.rectRangeSumHeight(range.coincide(selectRange));
+          return scroll + fixed;
+        }
+      }
+    } else if (xFixedView.hasFixedTop()) {
+      switch (overGo) {
+        case RANGE_OVER_GO.BRT:
+        case RANGE_OVER_GO.T: {
+          return rows.rectRangeSumHeight(selectRange);
+        }
+        case RANGE_OVER_GO.BR: {
+          scrollView.sci = fixedView.sci;
+          const range = new RectRange(fixedView.sri, 0, fixedView.eri, colLen);
+          const scroll = rows.rectRangeSumHeight(scrollView.coincide(selectRange));
+          const fixed = rows.rectRangeSumHeight(range.coincide(selectRange));
+          return fixed + scroll;
+        }
+      }
+    } else if (xFixedView.hasFixedLeft()) {
+      switch (overGo) {
+        case RANGE_OVER_GO.BR:
+        case RANGE_OVER_GO.L:
+        case RANGE_OVER_GO.BRL: {
+          scrollView.sci = fixedView.sci;
+          return rows.rectRangeSumHeight(scrollView.coincide(selectRange));
+        }
+      }
     }
-    // 滚动宽度
-    const range = selectRange.clone();
-    range.sci = scrollView.sci;
-    range.eci = scrollView.sci;
-    return fixHeight + rows.rectRangeSumHeight(scrollView.coincide(range));
+    return 0;
   }
+
 }
 
 export { YHeightLight };

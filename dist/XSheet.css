@@ -352,7 +352,6 @@
   position: relative;
 }
 .x-sheet-table-canvas {
-  display: block;
   position: absolute;
   /** flex bug chrome 79.0.3945.88 **/
   left: 0;
@@ -369,13 +368,6 @@
   overflow: hidden;
   box-sizing: border-box;
 }
-.x-sheet-x-screen-lt-zone {
-  border-right: 1px solid #42a642;
-  border-bottom: 1px solid #42a642;
-}
-.x-sheet-x-screen-t-zone {
-  border-bottom: 1px solid #42a642;
-}
 .x-sheet-x-screen-br-zone {
   display: block;
   width: 100%;
@@ -384,9 +376,6 @@
   left: 0;
   top: 0;
   overflow: hidden;
-}
-.x-sheet-x-screen-l-zone {
-  border-right: 1px solid #42a642;
 }
 .x-sheet-x-screen-part {
   position: absolute;

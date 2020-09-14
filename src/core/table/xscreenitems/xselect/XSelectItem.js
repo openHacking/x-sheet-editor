@@ -222,14 +222,11 @@ class XSelectItem extends XScreenCssBorderItem {
 
   selectCornerHandle() {
     const {
-      selectBoundOut,
+      selectRange, selectLocal,
     } = this;
-    if (selectBoundOut) {
+    if (!selectRange) {
       return;
     }
-    const {
-      selectLocal, selectRange,
-    } = this;
     const overGo = this.getOverGo(selectRange);
     this.ltCorner.hide();
     this.tCorner.hide();
