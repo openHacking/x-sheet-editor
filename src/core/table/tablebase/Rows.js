@@ -1,5 +1,6 @@
 import { Utils } from '../../../utils/Utils';
 import { ScaleAdapter } from './Scale';
+import { RectRange } from './RectRange';
 
 class Rows {
 
@@ -50,7 +51,10 @@ class Rows {
   }
 
   rectRangeSumHeight(rectRange) {
-    return this.sectionSumHeight(rectRange.sri, rectRange.eri);
+    if (!rectRange.equals(RectRange.EMPTY)) {
+      return this.sectionSumHeight(rectRange.sri, rectRange.eri);
+    }
+    return 0;
   }
 
   sectionSumHeight(sri, eri) {

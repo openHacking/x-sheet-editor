@@ -1,5 +1,6 @@
 import { Utils } from '../../../utils/Utils';
 import { ScaleAdapter } from './Scale';
+import { RectRange } from './RectRange';
 
 class Cols {
 
@@ -50,7 +51,10 @@ class Cols {
   }
 
   rectRangeSumWidth(rectRange) {
-    return this.sectionSumWidth(rectRange.sci, rectRange.eci);
+    if (!rectRange.equals(RectRange.EMPTY)) {
+      return this.sectionSumWidth(rectRange.sci, rectRange.eci);
+    }
+    return 0;
   }
 
   sectionSumWidth(sci, eci) {

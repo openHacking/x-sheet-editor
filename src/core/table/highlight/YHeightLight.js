@@ -5,7 +5,6 @@ import {
 import { EventBind } from '../../../utils/EventBind';
 import { RANGE_OVER_GO } from '../xscreen/item/viewborder/XScreenStyleBorderItem';
 import { XSelectItem } from '../xscreenitems/xselect/XSelectItem';
-import { RectRange } from '../tablebase/RectRange';
 
 class YHeightLight extends Widget {
 
@@ -37,14 +36,23 @@ class YHeightLight extends Widget {
   }
 
   offsetHandle() {
-    this.show();
     const { table } = this;
-    this.offset({
-      left: 0,
-      top: this.getTop() + table.getIndexHeight(),
-      width: table.getIndexWidth(),
-      height: this.getHeight(),
-    });
+    const {
+      xScreen,
+    } = table;
+    const xSelect = xScreen.findType(XSelectItem);
+    const {
+      selectRange,
+    } = xSelect;
+    if (selectRange) {
+      this.show();
+      this.offset({
+        left: 0,
+        top: this.getTop() + table.getIndexHeight(),
+        width: table.getIndexWidth(),
+        height: this.getHeight(),
+      });
+    }
   }
 
   setSize() {
@@ -55,7 +63,7 @@ class YHeightLight extends Widget {
   getTop() {
     const { table } = this;
     const {
-      xScreen, rows, xFixedView,
+      xScreen, rows, xFixedView, cols,
     } = table;
     const xSelect = xScreen.findType(XSelectItem);
     const {
@@ -64,33 +72,29 @@ class YHeightLight extends Widget {
     const overGo = xSelect.getOverGo(selectRange);
     const fixedView = xFixedView.getFixedView();
     const scrollView = table.getScrollView();
-    if (xFixedView.hasFixedTop() && xFixedView.hasFixedLeft()) {
-      switch (overGo) {
-        case RANGE_OVER_GO.LT:
-        case RANGE_OVER_GO.T:
-        case RANGE_OVER_GO.LTT: {
-          return rows.sectionSumHeight(fixedView.sri, selectRange.sri - 1);
-        }
-        case RANGE_OVER_GO.BR:
-        case RANGE_OVER_GO.L:
-        case RANGE_OVER_GO.BRL: {
-          scrollView.sci = fixedView.sci;
-          const coincideView = scrollView.coincide(selectRange);
-          const fixed = rows.sectionSumHeight(fixedView.sri, selectRange.sri - 1);
-          const scroll = rows.sectionSumHeight(scrollView.sri, coincideView.sri - 1);
-          return fixed + scroll;
-        }
-        case RANGE_OVER_GO.BRT:
-        case RANGE_OVER_GO.LTL:
-        case RANGE_OVER_GO.ALL: {
-          return rows.sectionSumHeight(fixedView.sri, selectRange.sri - 1);
-        }
+    scrollView.sci = 0;
+    scrollView.eci = cols.length - 1;
+    fixedView.sci = 0;
+    fixedView.eci = cols.length - 1;
+    switch (overGo) {
+      case RANGE_OVER_GO.BRT:
+      case RANGE_OVER_GO.LTL:
+      case RANGE_OVER_GO.ALL:
+      case RANGE_OVER_GO.LT:
+      case RANGE_OVER_GO.T:
+      case RANGE_OVER_GO.LTT: {
+        return rows.sectionSumHeight(fixedView.sri, selectRange.sri - 1);
       }
-    } else if (xFixedView.hasFixedTop()) {
-
-    } else if (xFixedView.hasFixedLeft()) {
-
+      case RANGE_OVER_GO.BR:
+      case RANGE_OVER_GO.L:
+      case RANGE_OVER_GO.BRL: {
+        const coincide = scrollView.coincide(selectRange);
+        const scroll = rows.sectionSumHeight(scrollView.sri, coincide.sri - 1);
+        const fixed = rows.sectionSumHeight(fixedView.sri, fixedView.eri);
+        return fixed + scroll;
+      }
     }
+    return 0;
   }
 
   getHeight() {
@@ -105,52 +109,27 @@ class YHeightLight extends Widget {
     const fixedView = xFixedView.getFixedView();
     const scrollView = table.getScrollView();
     const overGo = xSelect.getOverGo(selectRange);
-    const colLen = cols.length - 1;
-    if (xFixedView.hasFixedTop() && xFixedView.hasFixedLeft()) {
-      switch (overGo) {
-        case RANGE_OVER_GO.LT:
-        case RANGE_OVER_GO.T:
-        case RANGE_OVER_GO.LTT: {
-          return rows.rectRangeSumHeight(selectRange);
-        }
-        case RANGE_OVER_GO.BR:
-        case RANGE_OVER_GO.L:
-        case RANGE_OVER_GO.BRL: {
-          scrollView.sci = fixedView.sci;
-          return rows.rectRangeSumHeight(scrollView.coincide(selectRange));
-        }
-        case RANGE_OVER_GO.BRT:
-        case RANGE_OVER_GO.LTL:
-        case RANGE_OVER_GO.ALL: {
-          scrollView.sci = fixedView.sci;
-          const scroll = rows.rectRangeSumHeight(scrollView.coincide(selectRange));
-          const range = new RectRange(fixedView.sri, 0, fixedView.eri, colLen);
-          const fixed = rows.rectRangeSumHeight(range.coincide(selectRange));
-          return scroll + fixed;
-        }
+    scrollView.sci = 0;
+    scrollView.eci = cols.length - 1;
+    fixedView.sci = 0;
+    fixedView.eci = cols.length - 1;
+    switch (overGo) {
+      case RANGE_OVER_GO.LT:
+      case RANGE_OVER_GO.T:
+      case RANGE_OVER_GO.LTT: {
+        return rows.rectRangeSumHeight(selectRange);
       }
-    } else if (xFixedView.hasFixedTop()) {
-      switch (overGo) {
-        case RANGE_OVER_GO.BRT:
-        case RANGE_OVER_GO.T: {
-          return rows.rectRangeSumHeight(selectRange);
-        }
-        case RANGE_OVER_GO.BR: {
-          scrollView.sci = fixedView.sci;
-          const range = new RectRange(fixedView.sri, 0, fixedView.eri, colLen);
-          const scroll = rows.rectRangeSumHeight(scrollView.coincide(selectRange));
-          const fixed = rows.rectRangeSumHeight(range.coincide(selectRange));
-          return fixed + scroll;
-        }
+      case RANGE_OVER_GO.BR:
+      case RANGE_OVER_GO.L:
+      case RANGE_OVER_GO.BRL: {
+        return rows.rectRangeSumHeight(scrollView.coincide(selectRange));
       }
-    } else if (xFixedView.hasFixedLeft()) {
-      switch (overGo) {
-        case RANGE_OVER_GO.BR:
-        case RANGE_OVER_GO.L:
-        case RANGE_OVER_GO.BRL: {
-          scrollView.sci = fixedView.sci;
-          return rows.rectRangeSumHeight(scrollView.coincide(selectRange));
-        }
+      case RANGE_OVER_GO.BRT:
+      case RANGE_OVER_GO.LTL:
+      case RANGE_OVER_GO.ALL: {
+        const scroll = rows.rectRangeSumHeight(scrollView.coincide(selectRange));
+        const fixed = rows.rectRangeSumHeight(fixedView.coincide(selectRange));
+        return scroll + fixed;
       }
     }
     return 0;
