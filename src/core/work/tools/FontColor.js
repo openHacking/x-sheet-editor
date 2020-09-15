@@ -6,6 +6,7 @@ import { EL_POPUP_POSITION } from '../../../component/elpopup/ElPopUp';
 import { FontColorContextMenu } from './contextmenu/fontcolor/FontColorContextMenu';
 
 class FontColor extends DropDownItem {
+
   constructor(options) {
     super(`${cssPrefix}-tools-font-color`);
     this.options = Utils.mergeDeep({ contextMenu: {} }, options);
@@ -22,6 +23,7 @@ class FontColor extends DropDownItem {
   setColor(color) {
     this.icon.css('border-bottom', `3px solid ${color}`);
   }
+
 }
 
 export { FontColor };

@@ -9,7 +9,6 @@ class ScaleContextMenuItem extends ELContextMenuItem {
     this.scale = scale;
     this.titleElement = h('div', `${cssPrefix}-scale-context-menu-item-title`);
     this.titleElement.text(`${scale}%`);
-    this.titleElement.css('text-align', 'center');
     this.children(this.titleElement);
   }
 

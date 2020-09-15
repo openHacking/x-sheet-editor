@@ -1007,7 +1007,7 @@
   float: left;
   line-height: 20px;
   margin-right: 40px;
-  font-size: 14px;
+  font-size: 15px;
 }
 .x-sheet-format-context-menu-item-desc {
   float: right;
@@ -1271,6 +1271,27 @@
 }
 .x-sheet-text-wrapping-context-menu-type-icon-line {
   display: flex;
+}
+.x-sheet-fixed-context-menu {
+  background: #ffffff;
+}
+.x-sheet-fixed-context-menu-item {
+  overflow: hidden;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  font-size: 13px;
+  padding: 5px;
+}
+.x-sheet-fixed-context-menu-item-title {
+  float: left;
+  line-height: 20px;
+  margin-right: 20px;
+  font-size: 15px;
+}
+.x-sheet-fixed-context-menu-item-desc {
+  float: right;
+  color: #4f4f4f;
+  line-height: 20px;
 }
 .x-sheet-option {
   overflow: hidden;

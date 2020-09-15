@@ -5,6 +5,7 @@ import { FontContextMenuItem } from './FontContextMenuItem';
 
 
 class FontContextMenu extends ELContextMenu {
+
   constructor(options = {}) {
     super(`${cssPrefix}-font-context-menu`, Utils.mergeDeep({
       onUpdate: () => {},
@@ -41,6 +42,7 @@ class FontContextMenu extends ELContextMenu {
       }
     });
   }
+
 }
 
 export { FontContextMenu };

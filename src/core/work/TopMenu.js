@@ -1003,6 +1003,19 @@ class TopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
+    EventBind.bind(this.fixed, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const { fixed } = this;
+      const { fixedContextMenu } = fixed;
+      const { elPopUp } = fixedContextMenu;
+      ElPopUp.closeAll([elPopUp]);
+      if (fixedContextMenu.isOpen()) {
+        fixedContextMenu.open();
+      } else {
+        fixedContextMenu.close();
+      }
+      e.stopPropagation();
+      e.preventDefault();
+    });
   }
 
   setHorizontalAlignStatus() {

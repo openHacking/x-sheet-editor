@@ -13,7 +13,7 @@ class Rows {
     this.scaleAdapter = scaleAdapter;
     this.len = len;
     this.data = data;
-    this.min = 10;
+    this.min = 5;
     this.height = Utils.minIf(height, this.min);
   }
 

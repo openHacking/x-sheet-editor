@@ -6,6 +6,7 @@ import { Icon } from '../../Icon';
 const pool = [];
 
 class FontContextMenuItem extends ELContextMenuItem {
+
   constructor(title) {
     super(`${cssPrefix}-font-context-menu-item`);
     this.title = title;
@@ -20,17 +21,18 @@ class FontContextMenuItem extends ELContextMenuItem {
     pool.push(this);
   }
 
-  setTitle(title) {
-    this.title = title;
-    this.titleElement.text(title);
-  }
-
   setActive() {
     pool.forEach((item) => {
       item.removeClass('active');
     });
     this.addClass('active');
   }
+
+  setTitle(title) {
+    this.title = title;
+    this.titleElement.text(title);
+  }
+
 }
 
 export { FontContextMenuItem };
