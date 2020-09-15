@@ -1,15 +1,11 @@
 /* global document */
+import { SELECT_LOCAL, XSelectItem } from '../xselect/XSelectItem';
 import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBorderItem';
-import {
-  SELECT_LOCAL,
-  XSelectItem,
-} from '../xselect/XSelectItem';
 import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
 import { Utils } from '../../../../utils/Utils';
 import { EventBind } from '../../../../utils/EventBind';
-import { XDraw } from '../../../../canvas/XDraw';
 import { XTableMousePointer } from '../../XTableMousePointer';
 
 class XautoFillItem extends XScreenCssBorderItem {
@@ -21,9 +17,7 @@ class XautoFillItem extends XScreenCssBorderItem {
       onBeforeAutoFill: () => {},
       onAfterAutoFill: () => {},
     }, options);
-    this.targetOffset = { top: 0, left: 0, width: 0, height: 0 };
     this.selectRange = RectRange.EMPTY;
-    this.overGo = null;
     this.moveDir = null;
     this.ltElem = new Widget(`${cssPrefix}-x-autofill-area`);
     this.brElem = new Widget(`${cssPrefix}-x-autofill-area`);
@@ -203,14 +197,9 @@ class XautoFillItem extends XScreenCssBorderItem {
       return;
     }
     this.show();
-    this.targetOffset.width = this.measureWidth(selectRange);
-    this.targetOffset.height = this.measureHeight(selectRange);
-    this.targetOffset.top = this.measureTop(selectRange);
-    this.targetOffset.left = this.measureLeft(selectRange);
-    this.setTop(this.targetOffset.top);
-    this.setLeft(this.targetOffset.left);
-    this.setHeight(XDraw.offsetToLineInside(this.targetOffset.height));
-    this.setWidth(XDraw.offsetToLineInside(this.targetOffset.width));
+    this.setDisplay(selectRange);
+    this.setSizer(selectRange);
+    this.setLocal(selectRange);
   }
 
   selectBorderHandle() {
@@ -218,24 +207,8 @@ class XautoFillItem extends XScreenCssBorderItem {
     if (selectRange.equals(RectRange.EMPTY)) {
       return;
     }
-    const overGo = this.rangeOverGo(selectRange);
-    const {
-      top, bottom, left, right,
-    } = this.borderDisplay(selectRange, overGo);
-    this.hideAllBorder();
-    this.overGo = overGo;
-    if (top) {
-      this.showTBorder(overGo);
-    }
-    if (bottom) {
-      this.showBBorder(overGo);
-    }
-    if (left) {
-      this.showLBorder(overGo);
-    }
-    if (right) {
-      this.showRBorder(overGo);
-    }
+    this.hideBorder();
+    this.showBorder(selectRange);
   }
 
   autoFillTo() {
@@ -250,55 +223,6 @@ class XautoFillItem extends XScreenCssBorderItem {
     this.copyMerge();
     options.onAfterAutoFill();
     table.render();
-  }
-
-  copyContent() {
-    const {
-      table, xScreen,
-    } = this;
-    const cells = table.getTableCells();
-    const tableDataSnapshot = table.getTableDataSnapshot();
-    const { cellDataProxy } = tableDataSnapshot;
-    const xSelect = xScreen.findType(XSelectItem);
-    const { selectRange: xSelectRange } = xSelect;
-    const { selectRange } = this;
-    let sIndexRi = xSelectRange.sri;
-    let tIndexRi = selectRange.sri;
-    while (tIndexRi <= selectRange.eri) {
-      let sIndexCi = xSelectRange.sci;
-      let tIndexCi = selectRange.sci;
-      while (tIndexCi <= selectRange.eci) {
-        const src = cells.getCell(sIndexRi, sIndexCi);
-        if (src) {
-          const target = src.clone();
-          cellDataProxy.setCell(tIndexRi, tIndexCi, target);
-        }
-        sIndexCi += 1;
-        tIndexCi += 1;
-        if (sIndexCi > xSelectRange.eci) {
-          sIndexCi = xSelectRange.sci;
-        }
-      }
-      sIndexRi += 1;
-      tIndexRi += 1;
-      if (sIndexRi > xSelectRange.eri) {
-        sIndexRi = xSelectRange.sri;
-      }
-    }
-  }
-
-  splitMerge() {
-    const { table } = this;
-    const merges = table.getTableMerges();
-    const tableDataSnapshot = table.getTableDataSnapshot();
-    const { mergeDataProxy } = tableDataSnapshot;
-    const { selectRange } = this;
-    selectRange.each((ri, ci) => {
-      const merge = merges.getFirstIncludes(ri, ci);
-      if (merge) {
-        mergeDataProxy.deleteMerge(merge);
-      }
-    });
   }
 
   copyMerge() {
@@ -335,6 +259,55 @@ class XautoFillItem extends XScreenCssBorderItem {
             const newMerge = new RectRange(tIndexRi, tIndexCi, tIndexRi + rSize, tIndexCi + cSize);
             mergeDataProxy.addMerge(newMerge);
           }
+        }
+        sIndexCi += 1;
+        tIndexCi += 1;
+        if (sIndexCi > xSelectRange.eci) {
+          sIndexCi = xSelectRange.sci;
+        }
+      }
+      sIndexRi += 1;
+      tIndexRi += 1;
+      if (sIndexRi > xSelectRange.eri) {
+        sIndexRi = xSelectRange.sri;
+      }
+    }
+  }
+
+  splitMerge() {
+    const { table } = this;
+    const merges = table.getTableMerges();
+    const tableDataSnapshot = table.getTableDataSnapshot();
+    const { mergeDataProxy } = tableDataSnapshot;
+    const { selectRange } = this;
+    selectRange.each((ri, ci) => {
+      const merge = merges.getFirstIncludes(ri, ci);
+      if (merge) {
+        mergeDataProxy.deleteMerge(merge);
+      }
+    });
+  }
+
+  copyContent() {
+    const {
+      table, xScreen,
+    } = this;
+    const cells = table.getTableCells();
+    const tableDataSnapshot = table.getTableDataSnapshot();
+    const { cellDataProxy } = tableDataSnapshot;
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange: xSelectRange } = xSelect;
+    const { selectRange } = this;
+    let sIndexRi = xSelectRange.sri;
+    let tIndexRi = selectRange.sri;
+    while (tIndexRi <= selectRange.eri) {
+      let sIndexCi = xSelectRange.sci;
+      let tIndexCi = selectRange.sci;
+      while (tIndexCi <= selectRange.eci) {
+        const src = cells.getCell(sIndexRi, sIndexCi);
+        if (src) {
+          const target = src.clone();
+          cellDataProxy.setCell(tIndexRi, tIndexCi, target);
         }
         sIndexCi += 1;
         tIndexCi += 1;

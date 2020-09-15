@@ -3,14 +3,13 @@ import { XSelectItem } from '../xselect/XSelectItem';
 import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { EventBind } from '../../../../utils/EventBind';
+import { RectRange } from '../../tablebase/RectRange';
 
 class XcopyStyle extends XScreenSvgBorderItem {
 
   constructor(table) {
     super({ table });
-    this.targetOffset = { top: 0, left: 0, width: 0, height: 0 };
-    this.selectRange = null;
-    this.overGo = null;
+    this.selectRange = RectRange.EMPTY;
     this.ltElem = new Widget(`${cssPrefix}-x-copy-style-area`);
     this.brElem = new Widget(`${cssPrefix}-x-copy-style-area`);
     this.lElem = new Widget(`${cssPrefix}-x-copy-style-area`);
@@ -42,9 +41,26 @@ class XcopyStyle extends XScreenSvgBorderItem {
     });
   }
 
-  selectOffsetHandle() {}
+  selectOffsetHandle() {
+    const { selectRange } = this;
+    if (selectRange.equals(RectRange.EMPTY)) {
+      this.hide();
+      return;
+    }
+    this.show();
+    this.setDisplay(selectRange);
+    this.setSizer(selectRange);
+    this.setLocal(selectRange);
+  }
 
-  selectBorderHandle() {}
+  selectBorderHandle() {
+    const { selectRange } = this;
+    if (selectRange.equals(RectRange.EMPTY)) {
+      return;
+    }
+    this.hideBorder();
+    this.showBorder(selectRange);
+  }
 
   hideCopyStyle() {
     this.hide();
@@ -55,10 +71,9 @@ class XcopyStyle extends XScreenSvgBorderItem {
     const { xScreen } = this;
     const xSelect = xScreen.findType(XSelectItem);
     const {
-      selectRange, overGo,
+      selectRange,
     } = xSelect;
     this.selectRange = selectRange;
-    this.overGo = overGo;
     this.selectOffsetHandle();
     this.selectBorderHandle();
   }

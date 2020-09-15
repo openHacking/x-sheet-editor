@@ -1,10 +1,7 @@
 /* global document */
 import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBorderItem';
 import { EventBind } from '../../../../utils/EventBind';
-import {
-  Constant,
-  cssPrefix,
-} from '../../../../const/Constant';
+import { Constant, cssPrefix } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
 import { Widget } from '../../../../lib/Widget';
 import { XTableMousePointer } from '../../XTableMousePointer';
@@ -21,10 +18,8 @@ class XSelectItem extends XScreenCssBorderItem {
 
   constructor(table) {
     super({ table });
-    this.targetOffset = { top: 0, left: 0, width: 0, height: 0 };
     this.selectLocal = SELECT_LOCAL.BR;
     this.selectRange = null;
-    this.selectBoundOut = false;
     this.downRange = null;
     this.moveRange = null;
     this.ltElem = new Widget(`${cssPrefix}-x-select-area`);

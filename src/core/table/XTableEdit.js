@@ -99,19 +99,14 @@ class XTableEdit extends Widget {
 
   editOffset() {
     const { table } = this;
-    const { xScreen } = table;
-    const xSelect = xScreen.findType(XSelectItem);
     const {
-      selectBoundOut, targetOffset,
-    } = xSelect;
-    if (selectBoundOut) {
-      return;
-    }
+      xHeightLight, yHeightLight,
+    } = table;
     this.offset({
-      left: targetOffset.left + table.getIndexWidth() + 3,
-      top: targetOffset.top + table.getIndexHeight() + 3,
-      width: targetOffset.width - 7,
-      height: targetOffset.height - 7,
+      top: yHeightLight.getTop() + table.getIndexHeight() + 3,
+      left: xHeightLight.getLeft() + table.getIndexWidth() + 3,
+      height: yHeightLight.getHeight() - 7,
+      width: xHeightLight.getWidth() - 7,
     });
   }
 }

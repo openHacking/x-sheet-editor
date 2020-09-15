@@ -526,7 +526,7 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  z-index: 1;
+  z-index: 3;
   cursor: default;
   width: 100px;
   height: 100px;

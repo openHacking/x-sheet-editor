@@ -1,9 +1,8 @@
 import { Widget } from '../../../lib/Widget';
+import { RANGE_OVER_GO } from '../xscreen/item/viewborder/XScreenStyleBorderItem';
 import { cssPrefix, Constant } from '../../../const/Constant';
 import { EventBind } from '../../../utils/EventBind';
 import { XSelectItem } from '../xscreenitems/xselect/XSelectItem';
-import { XDraw } from '../../../canvas/XDraw';
-import { RANGE_OVER_GO } from '../xscreen/item/viewborder/XScreenStyleBorderItem';
 
 class XHeightLight extends Widget {
 
@@ -16,20 +15,6 @@ class XHeightLight extends Widget {
   onAttach() {
     this.bind();
     this.hide();
-  }
-
-  checkOut() {
-    const { table } = this;
-    const { xScreen } = table;
-    const xSelect = xScreen.findType(XSelectItem);
-    const {
-      selectRange,
-    } = xSelect;
-    if (!selectRange) {
-      return true;
-    }
-    const scrollView = table.getScrollView();
-    return selectRange.eci < scrollView.sci || selectRange.sci > scrollView.eci;
   }
 
   bind() {
@@ -49,18 +34,23 @@ class XHeightLight extends Widget {
   }
 
   offsetHandle() {
-    if (this.checkOut()) {
-      this.hide();
-      return;
-    }
-    this.show();
     const { table } = this;
-    this.offset({
-      left: this.getLeft() + table.getIndexWidth(),
-      top: 0,
-      width: this.getWidth(),
-      height: table.getIndexHeight(),
-    });
+    const {
+      xScreen,
+    } = table;
+    const xSelect = xScreen.findType(XSelectItem);
+    const {
+      selectRange,
+    } = xSelect;
+    if (selectRange) {
+      this.show();
+      this.offset({
+        left: this.getLeft() + table.getIndexWidth(),
+        top: 0,
+        width: this.getWidth(),
+        height: table.getIndexHeight(),
+      });
+    }
   }
 
   setSize() {
@@ -71,59 +61,76 @@ class XHeightLight extends Widget {
   getLeft() {
     const { table } = this;
     const {
-      xScreen, cols, xFixedView,
+      xScreen, rows, xFixedView, cols,
     } = table;
     const xSelect = xScreen.findType(XSelectItem);
-    const scrollView = table.getScrollView();
     const {
-      selectRange, overGo,
+      selectRange,
     } = xSelect;
-    if (!selectRange) {
-      return 0;
-    }
-    // 固定位置
+    const overGo = xSelect.getOverGo(selectRange);
     const fixedView = xFixedView.getFixedView();
+    const scrollView = table.getScrollView();
+    scrollView.sri = 0;
+    scrollView.eri = rows.length - 1;
+    fixedView.sri = 0;
+    fixedView.eri = rows.length - 1;
     switch (overGo) {
-      case RANGE_OVER_GO.LT:
-      case RANGE_OVER_GO.L:
-      case RANGE_OVER_GO.LTT:
-      case RANGE_OVER_GO.LTL:
       case RANGE_OVER_GO.BRL:
+      case RANGE_OVER_GO.LTL:
       case RANGE_OVER_GO.ALL:
-        return XDraw.offsetToLineInside(cols.sectionSumWidth(selectRange.sci, fixedView.eci));
+      case RANGE_OVER_GO.LT:
+      case RANGE_OVER_GO.LTT:
+      case RANGE_OVER_GO.L: {
+        return cols.sectionSumWidth(fixedView.sci, selectRange.sci - 1);
+      }
+      case RANGE_OVER_GO.BR:
+      case RANGE_OVER_GO.T:
+      case RANGE_OVER_GO.BRT: {
+        const coincide = scrollView.coincide(selectRange);
+        const scroll = cols.sectionSumWidth(scrollView.sci, coincide.sci - 1);
+        const fixed = cols.sectionSumWidth(fixedView.sci, fixedView.eci);
+        return fixed + scroll;
+      }
     }
-    // 滚动位置
-    return XDraw.offsetToLineInside(cols.sectionSumWidth(scrollView.sci, selectRange.sci - 1));
+    return 0;
   }
 
   getWidth() {
     const { table } = this;
     const {
-      xScreen, cols, xFixedView,
+      xScreen, rows, xFixedView, cols,
     } = table;
     const xSelect = xScreen.findType(XSelectItem);
-    const scrollView = table.getScrollView();
     const {
-      selectRange, overGo,
+      selectRange,
     } = xSelect;
-    // 固定宽度
     const fixedView = xFixedView.getFixedView();
-    let fixWidth = 0;
+    const scrollView = table.getScrollView();
+    const overGo = xSelect.getOverGo(selectRange);
+    scrollView.sri = 0;
+    scrollView.eri = rows.length - 1;
+    fixedView.sri = 0;
+    fixedView.eri = rows.length - 1;
     switch (overGo) {
       case RANGE_OVER_GO.LT:
       case RANGE_OVER_GO.L:
-      case RANGE_OVER_GO.LTT:
-      case RANGE_OVER_GO.LTL:
+      case RANGE_OVER_GO.LTL: {
+        return cols.rectRangeSumWidth(selectRange);
+      }
+      case RANGE_OVER_GO.BR:
+      case RANGE_OVER_GO.T:
+      case RANGE_OVER_GO.BRT: {
+        return cols.rectRangeSumWidth(scrollView.coincide(selectRange));
+      }
       case RANGE_OVER_GO.BRL:
-      case RANGE_OVER_GO.ALL:
-        fixWidth = cols.sectionSumWidth(selectRange.sci, fixedView.eci);
-        break;
+      case RANGE_OVER_GO.LTT:
+      case RANGE_OVER_GO.ALL: {
+        const scroll = cols.rectRangeSumWidth(scrollView.coincide(selectRange));
+        const fixed = cols.rectRangeSumWidth(fixedView.coincide(selectRange));
+        return scroll + fixed;
+      }
     }
-    // 滚动宽度
-    const range = selectRange.clone();
-    range.sri = scrollView.sri;
-    range.eri = scrollView.sri;
-    return fixWidth + cols.rectRangeSumWidth(scrollView.coincide(range));
+    return 0;
   }
 }
 
