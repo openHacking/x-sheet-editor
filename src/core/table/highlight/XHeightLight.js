@@ -31,6 +31,9 @@ class XHeightLight extends Widget {
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       this.offsetHandle();
     });
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
+      this.offsetHandle();
+    });
   }
 
   offsetHandle() {

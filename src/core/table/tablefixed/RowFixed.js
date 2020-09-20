@@ -22,7 +22,7 @@ class RowFixed extends Widget {
   bind() {
     const { table } = this;
     const {
-      mousePointer, dropRowFixed, xFixedView, rows,
+      mousePointer, dropRowFixed, xFixedView,
     } = table;
     let moveOff = true;
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
@@ -57,8 +57,7 @@ class RowFixed extends Widget {
       const { y } = table.computeEventXy(e, table);
       dropRowFixed.offset({ top: y });
       moveOff = false;
-      // 如果存在固定位置
-      // 定位到起始处
+      // 如果存在固定位置 定位到起始处
       if (xFixedView.hasFixedTop()) {
         table.scroll.y = 0;
         table.scroll.ri = this.fxEri + 1;
@@ -78,20 +77,7 @@ class RowFixed extends Widget {
         mousePointer.free(RowFixed);
         dropRowFixed.hide();
         // 更新固定区域
-        fixedView.eri = this.fxEri;
-        xFixedView.setFixedView(fixedView);
-        // 更新滚动距离
-        if (xFixedView.hasFixedTop()) {
-          table.scroll.y = 0;
-          table.scroll.ri = this.fxEri + 1;
-          table.resize();
-        } else {
-          table.scroll.y = rows.sectionSumHeight(0, this.fxSri - 1);
-          table.scroll.ri = this.fxSri;
-          table.resize();
-        }
-        // 发送通知
-        table.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
+        table.setFixedRow(this.fxEri);
         moveOff = true;
       });
     });

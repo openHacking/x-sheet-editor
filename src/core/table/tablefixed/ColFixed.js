@@ -57,8 +57,7 @@ class ColFixed extends Widget {
       const { x } = table.computeEventXy(e, table);
       dropColFixed.offset({ left: x });
       moveOff = false;
-      // 如果存在固定位置
-      // 定位到起始处
+      // 如果存在固定位置 定位到起始处
       if (xFixedView.hasFixedLeft()) {
         table.scroll.x = 0;
         table.scroll.ci = this.fxEci + 1;
@@ -78,20 +77,7 @@ class ColFixed extends Widget {
         mousePointer.free(ColFixed);
         dropColFixed.hide();
         // 更新固定区域
-        fixedView.eci = this.fxEci;
-        xFixedView.setFixedView(fixedView);
-        // 更新滚动距离
-        if (xFixedView.hasFixedLeft()) {
-          table.scroll.x = 0;
-          table.scroll.ci = this.fxEci + 1;
-          table.resize();
-        } else {
-          table.scroll.x = cols.sectionSumWidth(0, this.fxSci - 1);
-          table.scroll.ci = this.fxSci;
-          table.resize();
-        }
-        // 发送通知
-        table.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
+        table.setFixedCol(this.fxEci);
         moveOff = true;
       });
     });

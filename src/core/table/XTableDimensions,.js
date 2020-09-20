@@ -1021,25 +1021,77 @@ class XTableDimensions extends Widget {
   }
 
   /**
-   * 重置变量区
+   * 设置固定行视图
+   * @param end
+   * @param start
    */
-  reset() {
-    const { xTableAreaView } = this;
-    const { xTableFrozenContent } = this;
-    const { xLeftIndex } = this;
-    const { xTopIndex } = this;
-    const { xLeft } = this;
-    const { xTop } = this;
-    const { xContent } = this;
-    this.visualHeightCache = null;
-    this.visualWidthCache = null;
-    xTableAreaView.reset();
-    xTableFrozenContent.reset();
-    xLeftIndex.reset();
-    xTopIndex.reset();
-    xLeft.reset();
-    xTop.reset();
-    xContent.reset();
+  setFixedRow(end, start = -1) {
+    const {
+      xFixedView,
+      rows,
+      scroll,
+      rowFixed,
+    } = this;
+    // 更新视图
+    const fixedView = xFixedView.getFixedView();
+    fixedView.eri = end;
+    if (start > -1) {
+      fixedView.sri = start;
+    }
+    xFixedView.setFixedView(fixedView);
+    // 更新滚动距离
+    const { sri, eri } = fixedView;
+    if (xFixedView.hasFixedTop()) {
+      scroll.y = 0;
+      scroll.ri = eri + 1;
+    } else {
+      scroll.y = rows.sectionSumHeight(0, sri - 1);
+      scroll.ri = sri;
+    }
+    // 跟新固定条
+    rowFixed.fxSri = fixedView.sri;
+    rowFixed.fxEri = fixedView.eri;
+    // 更新视图
+    this.resize();
+    // 发送更新通知
+    this.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
+  }
+
+  /**
+   * 设置固定列视图
+   * @param end
+   * @param start
+   */
+  setFixedCol(end, start = -1) {
+    const {
+      xFixedView,
+      rows,
+      scroll,
+      colFixed,
+    } = this;
+    // 更新视图
+    const fixedView = xFixedView.getFixedView();
+    fixedView.eci = end;
+    if (start > -1) {
+      fixedView.sci = start;
+    }
+    xFixedView.setFixedView(fixedView);
+    // 更新滚动距离
+    const { sci, eci } = fixedView;
+    if (xFixedView.hasFixedLeft()) {
+      scroll.x = 0;
+      scroll.ci = eci + 1;
+    } else {
+      scroll.x = rows.sectionSumHeight(0, sci - 1);
+      scroll.ci = sci;
+    }
+    // 跟新固定条
+    colFixed.fxSci = fixedView.sci;
+    colFixed.fxEci = fixedView.eci;
+    // 更新视图
+    this.resize();
+    // 发送更新通知
+    this.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
   }
 
   /**
@@ -1064,6 +1116,28 @@ class XTableDimensions extends Widget {
     colFixed.setSize();
     xTableStyle.setScale(val);
     this.trigger(Constant.TABLE_EVENT_TYPE.SCALE_CHANGE);
+  }
+
+  /**
+   * 重置变量区
+   */
+  reset() {
+    const { xTableAreaView } = this;
+    const { xTableFrozenContent } = this;
+    const { xLeftIndex } = this;
+    const { xTopIndex } = this;
+    const { xLeft } = this;
+    const { xTop } = this;
+    const { xContent } = this;
+    this.visualHeightCache = null;
+    this.visualWidthCache = null;
+    xTableAreaView.reset();
+    xTableFrozenContent.reset();
+    xLeftIndex.reset();
+    xTopIndex.reset();
+    xLeft.reset();
+    xTop.reset();
+    xContent.reset();
   }
 
   /**

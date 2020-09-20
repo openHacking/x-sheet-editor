@@ -588,7 +588,52 @@ class TopMenu extends Widget {
         },
       },
     });
-    this.fixed = new Fixed();
+    this.fixed = new Fixed({
+      contextMenu: {
+        onUpdate: (type) => {
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          const { xScreen } = table;
+          const xSelect = xScreen.findType(XSelectItem);
+          const { selectRange } = xSelect;
+          switch (type) {
+            case 'ROW': {
+              if (this.fixed.rowStatus) {
+                table.setFixedRow(-1);
+              } else if (selectRange) {
+                const { sri } = selectRange;
+                table.setFixedRow(sri - 1);
+              }
+              break;
+            }
+            case 'COL': {
+              if (this.fixed.colStatus) {
+                table.setFixedCol(-1);
+              } else if (selectRange) {
+                const { sci } = selectRange;
+                table.setFixedCol(sci - 1);
+              }
+              break;
+            }
+            case 'ROW1': {
+              table.setFixedRow(0, 0);
+              break;
+            }
+            case 'ROW2': {
+              table.setFixedRow(1, 0);
+              break;
+            }
+            case 'COL1': {
+              table.setFixedCol(0, 0);
+              break;
+            }
+            case 'COL2': {
+              table.setFixedCol(1, 0);
+            }
+          }
+        },
+      },
+    });
     this.filter = new Filter();
     this.functions = new Functions();
     this.children(this.undo);
@@ -646,6 +691,9 @@ class TopMenu extends Widget {
       this.setHorizontalAlignStatus();
       this.setVerticalAlignStatus();
       this.setTextWrappingStatus();
+    });
+    EventBind.bind(body, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
+      this.setFixedStatus();
     });
     EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
@@ -1232,6 +1280,7 @@ class TopMenu extends Widget {
     this.setHorizontalAlignStatus();
     this.setVerticalAlignStatus();
     this.setTextWrappingStatus();
+    this.setFixedStatus();
   }
 
   setUnderLineStatus() {
@@ -1362,6 +1411,16 @@ class TopMenu extends Widget {
     }
     this.fillColor.setColor(color);
     this.fillColor.fillColorContextMenu.setActiveByColor(color);
+  }
+
+  setFixedStatus() {
+    const { body } = this.workTop.work;
+    const { fixed } = this;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    fixed.setFixedRowStatus(table.xFixedView.hasFixedTop());
+    fixed.setFixedColStatus(table.xFixedView.hasFixedLeft());
   }
 }
 

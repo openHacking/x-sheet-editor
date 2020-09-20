@@ -1,8 +1,9 @@
 import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
-import { cssPrefix } from '../../../../../const/Constant';
-import { Utils } from '../../../../../utils/Utils';
 import { ELContextMenuDivider } from '../../../../../component/elcontextmenu/ELContextMenuDivider';
 import { FixedContextMenuItem } from './FixedContextMenuItem';
+import { Constant, cssPrefix } from '../../../../../const/Constant';
+import { Utils } from '../../../../../utils/Utils';
+import { EventBind } from '../../../../../utils/EventBind';
 
 class FixedContextMenu extends ELContextMenu {
 
@@ -23,6 +24,36 @@ class FixedContextMenu extends ELContextMenu {
     this.addItem(this.col);
     this.addItem(this.col1);
     this.addItem(this.col2);
+    EventBind.bind(this.row, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      const { options } = this;
+      options.onUpdate('ROW');
+      this.close();
+    });
+    EventBind.bind(this.row1, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      const { options } = this;
+      options.onUpdate('ROW1');
+      this.close();
+    });
+    EventBind.bind(this.row2, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      const { options } = this;
+      options.onUpdate('ROW2');
+      this.close();
+    });
+    EventBind.bind(this.col, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      const { options } = this;
+      options.onUpdate('COL');
+      this.close();
+    });
+    EventBind.bind(this.col1, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      const { options } = this;
+      options.onUpdate('COL1');
+      this.close();
+    });
+    EventBind.bind(this.col2, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      const { options } = this;
+      options.onUpdate('COL2');
+      this.close();
+    });
   }
 
 }
