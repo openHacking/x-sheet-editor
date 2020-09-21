@@ -225,6 +225,20 @@ class XautoFillItem extends XScreenCssBorderItem {
     table.render();
   }
 
+  splitMerge() {
+    const { table } = this;
+    const merges = table.getTableMerges();
+    const tableDataSnapshot = table.getTableDataSnapshot();
+    const { mergeDataProxy } = tableDataSnapshot;
+    const { selectRange } = this;
+    selectRange.each((ri, ci) => {
+      const merge = merges.getFirstIncludes(ri, ci);
+      if (merge) {
+        mergeDataProxy.deleteMerge(merge);
+      }
+    });
+  }
+
   copyMerge() {
     const {
       table, xScreen,
@@ -274,28 +288,14 @@ class XautoFillItem extends XScreenCssBorderItem {
     }
   }
 
-  splitMerge() {
-    const { table } = this;
-    const merges = table.getTableMerges();
-    const tableDataSnapshot = table.getTableDataSnapshot();
-    const { mergeDataProxy } = tableDataSnapshot;
-    const { selectRange } = this;
-    selectRange.each((ri, ci) => {
-      const merge = merges.getFirstIncludes(ri, ci);
-      if (merge) {
-        mergeDataProxy.deleteMerge(merge);
-      }
-    });
-  }
-
   copyContent() {
     const {
       table, xScreen,
     } = this;
     const cells = table.getTableCells();
     const tableDataSnapshot = table.getTableDataSnapshot();
-    const { cellDataProxy } = tableDataSnapshot;
     const xSelect = xScreen.findType(XSelectItem);
+    const { cellDataProxy } = tableDataSnapshot;
     const { selectRange: xSelectRange } = xSelect;
     const { selectRange } = this;
     let sIndexRi = xSelectRange.sri;
