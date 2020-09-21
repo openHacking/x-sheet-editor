@@ -74,6 +74,7 @@ class DragPanel extends Widget {
         break;
       default: break;
     }
+    return this;
   }
 
   open() {
@@ -84,6 +85,7 @@ class DragPanel extends Widget {
       this.position();
       this.off = false;
     }
+    return this;
   }
 
   close() {
@@ -93,10 +95,12 @@ class DragPanel extends Widget {
       root.remove(mask);
       this.off = true;
     }
+    return this;
   }
 
   children(...args) {
     this.content.children(...args);
+    return this;
   }
 
   static closeAll(filter = []) {

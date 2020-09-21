@@ -32,6 +32,8 @@ import { BaseFont } from '../../canvas/font/BaseFont';
 import { XSelectItem } from '../table/xscreenitems/xselect/XSelectItem';
 import { XcopyStyle } from '../table/xscreenitems/xcopystyle/XcopyStyle';
 import { XDraw } from '../../canvas/XDraw';
+import { Alert } from '../../component/alert/Alert';
+import { CopyFormatHelper } from './helper/CopyFormatHelper';
 
 class Divider extends Widget {
   constructor() {
@@ -601,8 +603,13 @@ class TopMenu extends Widget {
               if (this.fixed.rowStatus) {
                 table.setFixedRow(-1);
               } else if (selectRange) {
+                const scrollView = table.getScrollView();
                 const { sri } = selectRange;
-                table.setFixedRow(sri - 1);
+                if (sri < scrollView.eri - 2 && sri >= scrollView.sri) {
+                  table.setFixedRow(sri);
+                } else {
+                  new Alert({ message: '无法在当前区域内冻结单元格, 请重新选择冻结区域' }).open();
+                }
               }
               break;
             }
@@ -610,8 +617,13 @@ class TopMenu extends Widget {
               if (this.fixed.colStatus) {
                 table.setFixedCol(-1);
               } else if (selectRange) {
+                const scrollView = table.getScrollView();
                 const { sci } = selectRange;
-                table.setFixedCol(sci - 1);
+                if (sci < scrollView.eci - 2 && sci >= scrollView.sci) {
+                  table.setFixedCol(sci);
+                } else {
+                  new Alert({ message: '无法在当前区域内冻结单元格, 请重新选择冻结区域' }).open();
+                }
               }
               break;
             }
@@ -723,54 +735,67 @@ class TopMenu extends Widget {
     EventBind.bind(this.paintFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      const {
-        xScreen,
-      } = table;
-      const merges = table.getTableMerges();
-      const cells = table.getTableCells();
-      const tableDataSnapshot = table.getTableDataSnapshot();
-      const xCopyStyle = xScreen.findType(XcopyStyle);
+      const { xScreen } = table;
       const xSelect = xScreen.findType(XSelectItem);
       const { selectRange } = xSelect;
-      if (selectRange) {
-        xCopyStyle.showCopyStyle();
-        this.paintFormat.active(true);
-        this.paintFormat.addSheet(sheet);
-        table.on(Constant.TABLE_EVENT_TYPE.SELECT_OVER, () => {
-          xCopyStyle.hideCopyStyle();
-          // 清除复制
-          this.paintFormat.active(false);
-          this.paintFormat.removeSheet(sheet);
-          // 目标区域 复制区域
-          const targetRect = xCopyStyle.selectRange;
-          const srcRect = xSelect.selectRange;
-          // 开始复制
-          tableDataSnapshot.begin();
-          const { cellDataProxy } = tableDataSnapshot;
-          for (let i = srcRect.sri, j = targetRect.sri; i <= srcRect.eri; i += 1, j += 1) {
-            for (let k = srcRect.sci, v = targetRect.sci; k <= srcRect.eci; k += 1, v += 1) {
-              const merge = merges.getFirstIncludes(i, k);
-              let src = null;
-              if (merge) {
-                // 是master单元格?
-                if (merge.sri === i && merge.sci === k) {
-                  src = cells.getCell(i, k);
-                }
-              } else {
-                src = cells.getCell(i, k);
-              }
-              if (src) {
-                const target = cells.getCellOrNew(j, v);
-                const cell = src.clone();
-                cell.text = target.text;
-                cellDataProxy.setCell(j, v, cell);
-              }
-            }
-          }
-          tableDataSnapshot.end();
-          table.render();
-        });
+      if (Utils.isUnDef(selectRange)) {
+        return;
       }
+      const tableDataSnapshot = table.getTableDataSnapshot();
+      const cells = table.getTableCells();
+      const merges = table.getTableMerges();
+      const xCopyStyle = xScreen.findType(XcopyStyle);
+      xCopyStyle.showCopyStyle();
+      this.paintFormat.active(true);
+      this.paintFormat.addSheet(sheet);
+      const callback = () => {
+        xCopyStyle.hideCopyStyle();
+        // 清除复制
+        this.paintFormat.active(false);
+        this.paintFormat.removeSheet(sheet);
+        // 原始&目标
+        const originView = xCopyStyle.selectRange;
+        const targetView = xSelect.selectRange;
+        // 开始复制
+        tableDataSnapshot.begin();
+        const {
+          cellDataProxy, mergeDataProxy,
+        } = tableDataSnapshot;
+        CopyFormatHelper.copy({
+          originView,
+          targetView,
+          mergeCheck: (ri, ci) => merges.getFirstIncludes(ri, ci),
+          masterCheck: (ri, ci) => {
+            const merge = merges.getFirstIncludes(ri, ci);
+            if (merge) {
+              return merge.sri === ri && merge.sci === ci;
+            }
+            return true;
+          },
+          cellOrMaster: (ri, ci) => {
+            const merge = merges.getFirstIncludes(ri, ci);
+            return merge
+              ? cells.getCellOrNew(merge.sri, merge.sci)
+              : cells.getCellOrNew(ri, ci);
+          },
+          copyExecute: (o, t, ri, ci) => {
+            const cell = o.clone();
+            cell.text = t.text;
+            cellDataProxy.setCell(ri, ci, cell);
+          },
+          mergeExecute: (m) => {
+            mergeDataProxy.addMerge(m);
+          },
+          mergeRemove: (m) => {
+            mergeDataProxy.deleteMerge(m);
+          },
+        });
+        tableDataSnapshot.end();
+        table.render();
+        // 删除事件监听
+        EventBind.unbind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, callback);
+      };
+      EventBind.bind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, callback);
     });
     EventBind.bind(this.clearFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
@@ -1422,6 +1447,7 @@ class TopMenu extends Widget {
     fixed.setFixedRowStatus(table.xFixedView.hasFixedTop());
     fixed.setFixedColStatus(table.xFixedView.hasFixedLeft());
   }
+
 }
 
 export { TopMenu };

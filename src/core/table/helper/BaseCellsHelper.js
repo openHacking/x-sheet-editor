@@ -5,7 +5,11 @@ import { BaseFont } from '../../../canvas/font/BaseFont';
 class BaseCellsHelper {
 
   constructor({
-    cells, merges, rows, cols, xTableAreaView,
+    cells,
+    merges,
+    rows,
+    cols,
+    xTableAreaView,
   }) {
     this.xTableAreaView = xTableAreaView;
     this.cells = cells;

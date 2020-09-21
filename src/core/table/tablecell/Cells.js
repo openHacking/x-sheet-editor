@@ -92,6 +92,7 @@ class Cells {
     this.data = data;
     return this;
   }
+
 }
 
 export {

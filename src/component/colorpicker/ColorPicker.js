@@ -4,7 +4,6 @@ import { cssPrefix, Constant } from '../../const/Constant';
 import { Widget } from '../../lib/Widget';
 import { DragPanel } from '../dragpanel/DragPanel';
 import { EventBind } from '../../utils/EventBind';
-
 import { Utils } from '../../utils/Utils';
 
 class ColorPicker extends Widget {
@@ -65,9 +64,32 @@ class ColorPicker extends Widget {
   bind() {
     const { selectColorPoint, center } = this;
     const { colorBarPoint, colorBar } = this;
-    const { colorInput, cancelButton, selectButton } = this;
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      e.stopPropagation();
+    const {
+      colorInput, cancelButton, selectButton,
+    } = this;
+    EventBind.bind(colorInput, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
+      e1.stopPropagation();
+    });
+    EventBind.bind(colorInput, Constant.SYSTEM_EVENT_TYPE.CHANGE, () => {
+      const value = colorInput.val();
+      if (value) {
+        this.hexColor(value);
+      }
+    });
+    EventBind.bind(colorBarPoint, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
+      const xy = this.computeEventXy(e1, colorBar);
+      const colorBarBox = colorBar.box();
+      if (xy.x < 0) xy.x = 0;
+      if (xy.x > colorBarBox.width) xy.x = colorBarBox.width;
+      this.downHue(xy.x, colorBarBox.width);
+      EventBind.mouseMoveUp(h(document), (e2) => {
+        const xy = this.computeEventXy(e2, colorBar);
+        const colorBarBox = colorBar.box();
+        if (xy.x < 0) xy.x = 0;
+        if (xy.x > colorBarBox.width) xy.x = colorBarBox.width;
+        this.moveHue(xy.x, colorBarBox.width);
+      });
+      e1.stopPropagation();
     });
     EventBind.bind(selectColorPoint, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
       const xy = this.computeEventXy(e1, center);
@@ -85,26 +107,7 @@ class ColorPicker extends Widget {
         if (xy.y > centerBox.height) xy.y = centerBox.height;
         this.moveSelect(xy.x, xy.y, centerBox.width, centerBox.height);
       });
-    });
-    EventBind.bind(colorBarPoint, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
-      const xy = this.computeEventXy(e1, colorBar);
-      const colorBarBox = colorBar.box();
-      if (xy.x < 0) xy.x = 0;
-      if (xy.x > colorBarBox.width) xy.x = colorBarBox.width;
-      this.downHue(xy.x, colorBarBox.width);
-      EventBind.mouseMoveUp(h(document), (e2) => {
-        const xy = this.computeEventXy(e2, colorBar);
-        const colorBarBox = colorBar.box();
-        if (xy.x < 0) xy.x = 0;
-        if (xy.x > colorBarBox.width) xy.x = colorBarBox.width;
-        this.moveHue(xy.x, colorBarBox.width);
-      });
-    });
-    EventBind.bind(colorInput, Constant.SYSTEM_EVENT_TYPE.CHANGE, () => {
-      const value = colorInput.val();
-      if (value) {
-        this.hexColor(value);
-      }
+      e1.stopPropagation();
     });
     EventBind.bind(cancelButton, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
       this.close();
@@ -195,7 +198,9 @@ class ColorPicker extends Widget {
       s: parseInt(color[1], 10),
       x: parseInt(color[2], 10),
     });
-    const { preViewColorPoint, selectColorPoint, colorInput } = this;
+    const {
+      preViewColorPoint, selectColorPoint, colorInput,
+    } = this;
     const colorValue = ColorPicker.hsbToHex(hsb);
     selectColorPoint.css('backgroundColor', `#${colorValue}`);
     preViewColorPoint.css('backgroundColor', `#${colorValue}`);
@@ -390,6 +395,7 @@ class ColorPicker extends Widget {
     const result = ColorPicker.parseRgb(rgb);
     return result.r * 0.299 + result.g * 0.578 + result.b * 0.114 >= 192;
   }
+
 }
 
 export { ColorPicker };

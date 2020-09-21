@@ -9,6 +9,7 @@ class XcopyStyle extends XScreenSvgBorderItem {
 
   constructor(table) {
     super({ table });
+    this.status = false;
     this.selectRange = RectRange.EMPTY;
     this.ltElem = new Widget(`${cssPrefix}-x-copy-style-area`);
     this.brElem = new Widget(`${cssPrefix}-x-copy-style-area`);
@@ -36,8 +37,10 @@ class XcopyStyle extends XScreenSvgBorderItem {
       this.selectBorderHandle();
     });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      this.selectOffsetHandle();
-      this.selectBorderHandle();
+      if (this.status) {
+        this.selectOffsetHandle();
+        this.selectBorderHandle();
+      }
     });
   }
 
@@ -63,10 +66,12 @@ class XcopyStyle extends XScreenSvgBorderItem {
   }
 
   hideCopyStyle() {
+    this.status = false;
     this.hide();
   }
 
   showCopyStyle() {
+    this.status = true;
     this.show();
     const { xScreen } = this;
     const xSelect = xScreen.findType(XSelectItem);

@@ -46,6 +46,8 @@ class RowFixed extends Widget {
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       dropRowFixed.show();
       this.setActive(true);
+      // 滚动视图
+      const scrollView = table.getScrollView();
       // 获取固定区域
       const fixedView = xFixedView.getFixedView();
       this.fxSri = fixedView.sri;
@@ -69,8 +71,11 @@ class RowFixed extends Widget {
         dropRowFixed.offset({ top: y });
         // 更新行号
         const { ri } = table.getRiCiByXy(x, y);
-        this.fxEri = ri;
-        this.setSize();
+        // 是否越界最大行数
+        if (ri < scrollView.eri - 2) {
+          this.fxEri = ri;
+          this.setSize();
+        }
       }, () => {
         this.setActive(false);
         // 释放指针

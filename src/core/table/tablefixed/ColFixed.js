@@ -46,6 +46,8 @@ class ColFixed extends Widget {
     EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       dropColFixed.show();
       this.setActive(true);
+      // 滚动视图
+      const scrollView = table.getScrollView();
       // 获取固定区域
       const fixedView = xFixedView.getFixedView();
       this.fxSci = fixedView.sci;
@@ -69,8 +71,11 @@ class ColFixed extends Widget {
         dropColFixed.offset({ left: x });
         // 更新行号
         const { ci } = table.getRiCiByXy(x, y);
-        this.fxEci = ci;
-        this.setSize();
+        // 是否越界最大列数
+        if (ci < scrollView.eci - 2) {
+          this.fxEci = ci;
+          this.setSize();
+        }
       }, () => {
         this.setActive(false);
         // 释放指针

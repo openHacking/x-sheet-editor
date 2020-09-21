@@ -160,6 +160,7 @@ class StyleCellsHelper extends BaseCellsHelper {
       startY,
     });
   }
+
 }
 
 export {
