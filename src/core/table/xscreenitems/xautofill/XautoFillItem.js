@@ -10,7 +10,9 @@ import { XTableMousePointer } from '../../XTableMousePointer';
 
 class XautoFillItem extends XScreenCssBorderItem {
 
-  constructor(table, options = {}) {
+  constructor(table, options = {
+
+  }) {
     super({ table });
     this.options = Utils.mergeDeep({
       mergeForceSplit: false,
@@ -18,6 +20,7 @@ class XautoFillItem extends XScreenCssBorderItem {
       onAfterAutoFill: () => {},
     }, options);
     this.selectRange = RectRange.EMPTY;
+    this.status = false;
     this.moveDir = null;
     this.ltElem = new Widget(`${cssPrefix}-x-autofill-area`);
     this.brElem = new Widget(`${cssPrefix}-x-autofill-area`);
@@ -62,7 +65,7 @@ class XautoFillItem extends XScreenCssBorderItem {
       xSelect.lCorner,
       xSelect.brCorner,
     ], Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      this.show();
+      this.status = true;
       mousePointer.lock(XautoFillItem);
       mousePointer.set(XTableMousePointer.KEYS.crosshair, XautoFillItem);
       EventBind.mouseMoveUp(document, (e2) => {
@@ -71,6 +74,7 @@ class XautoFillItem extends XScreenCssBorderItem {
         this.selectOffsetHandle();
         this.selectBorderHandle();
       }, () => {
+        this.status = false;
         mousePointer.free(XautoFillItem);
         this.autoFillTo();
         this.hide();
@@ -191,7 +195,10 @@ class XautoFillItem extends XScreenCssBorderItem {
   }
 
   selectOffsetHandle() {
-    const { selectRange } = this;
+    const { selectRange, status } = this;
+    if (status === false) {
+      return;
+    }
     if (selectRange.equals(RectRange.EMPTY)) {
       this.hide();
       return;
@@ -203,7 +210,10 @@ class XautoFillItem extends XScreenCssBorderItem {
   }
 
   selectBorderHandle() {
-    const { selectRange } = this;
+    const { selectRange, status } = this;
+    if (status === false) {
+      return;
+    }
     if (selectRange.equals(RectRange.EMPTY)) {
       return;
     }
@@ -217,10 +227,13 @@ class XautoFillItem extends XScreenCssBorderItem {
       return;
     }
     const { table, options } = this;
+    const tableDataSnapshot = table.getTableDataSnapshot();
     options.onBeforeAutoFill();
+    tableDataSnapshot.begin();
     this.splitMerge();
     this.copyContent();
     this.copyMerge();
+    tableDataSnapshot.end();
     options.onAfterAutoFill();
     table.render();
   }
