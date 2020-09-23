@@ -1,12 +1,12 @@
+/* global document */
 import { EventBind } from '../../utils/EventBind';
 import { Constant } from '../../const/Constant';
-
-/* global document */
 
 class XTableKeyboard {
 
   constructor(table) {
     this.table = table;
+    this.pool = [];
     this.bind();
   }
 
@@ -17,14 +17,10 @@ class XTableKeyboard {
       const { activate } = focus;
       const { keyCode } = e;
       if (activate) {
-        const { attr } = activate;
-        const { key, code, callback } = attr;
-        if (key) {
-          if (e[key] && keyCode === code) {
-            callback(e);
-          }
-        } else if (keyCode === code) {
-          callback(e);
+        const { target } = activate;
+        const find = this.find(target);
+        if (find && find.keyCode === keyCode) {
+          find.callback();
         }
       }
       if (keyCode === 9) {
@@ -33,10 +29,26 @@ class XTableKeyboard {
     });
   }
 
-  register({}) {
+  find(el) {
+    const { pool } = this;
+    for (let i = 0; i < pool.length; i += 1) {
+      const item = pool[i];
+      const { target } = item;
+      if (target === el) {
+        return item;
+      }
+    }
+    return null;
+  }
 
+  register({
+    target, keyCode, callback,
+  }) {
+    this.pool.push({ target, keyCode, callback });
   }
 
 }
 
-export { XTableKeyboard };
+export {
+  XTableKeyboard,
+};

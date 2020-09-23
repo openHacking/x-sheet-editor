@@ -76,6 +76,11 @@ class XSelectItem extends XScreenCssBorderItem {
       this.selectBorderHandle();
       this.selectCornerHandle();
     });
+    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
+      this.selectOffsetHandle();
+      this.selectBorderHandle();
+      this.selectCornerHandle();
+    });
     EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
       if (e1.button !== 0) {
         return;
@@ -196,6 +201,14 @@ class XSelectItem extends XScreenCssBorderItem {
       || new RectRange(ri, ci, ri, ci);
     this.selectRange = this.downRange;
     this.selectLocal = SELECT_LOCAL.BR;
+  }
+
+  updateSelectRange(selectRange) {
+    this.selectRange = selectRange;
+    this.selectLocal = SELECT_LOCAL.BR;
+    this.selectOffsetHandle();
+    this.selectBorderHandle();
+    this.selectCornerHandle();
   }
 
   selectOffsetHandle() {

@@ -460,53 +460,58 @@ class XTableContent extends Dimensions {
 class KeyBoardTabCode {
 
   static register(table) {
-    const { keyboard, cols, rows, xScreen } = table;
+    const {
+      keyboard, cols, rows, xScreen, edit,
+    } = table;
     const xSelect = xScreen.findType(XSelectItem);
     const merges = table.getTableMerges();
+    let $tabNext = null;
     keyboard.register({
       target: table,
-      focus: true,
-      stop: false,
-      attr: {
-        code: 9,
-        callback: () => {
-          const { selectRange } = xSelect;
-          if (!selectRange) {
-            return;
-          }
-          const rect = selectRange.clone();
-          const cLen = cols.len - 1;
-          const rLen = rows.len - 1;
-          let { sri, sci } = selectRange;
-          const srcMerges = merges.getFirstIncludes(sri, sci);
-          if (srcMerges) {
-            sci = srcMerges.eci;
-          }
-          if (sci >= cLen && sri >= rLen) {
-            return;
-          }
-          if (sci >= cLen) {
-            sri += 1;
-            sci = 0;
-          } else {
-            sci += 1;
-          }
-          let eri = sri;
-          let eci = sci;
-          const targetMerges = merges.getFirstIncludes(sri, sci);
-          if (targetMerges) {
-            sri = targetMerges.sri;
-            sci = targetMerges.sci;
-            eri = targetMerges.eri;
-            eci = targetMerges.eci;
-          }
-          rect.sri = sri;
-          rect.sci = sci;
-          rect.eri = eri;
-          rect.eci = eci;
-          // TODO ...
-          // ...
-        },
+      keyCode: 9,
+      callback: () => {
+        edit.hideEdit();
+        const { selectRange } = xSelect;
+        const { tabNext } = selectRange;
+        const rect = selectRange.clone();
+        if (!tabNext) {
+          const { sri, sci } = rect;
+          $tabNext = { sri, sci };
+        }
+        const cLen = cols.len - 1;
+        const rLen = rows.len - 1;
+        let { sri, sci } = $tabNext;
+        const srcMerges = merges.getFirstIncludes(sri, sci);
+        if (srcMerges) {
+          sci = srcMerges.eci;
+        }
+        if (sci >= cLen && sri >= rLen) {
+          return;
+        }
+        if (sci >= cLen) {
+          sri += 1;
+          sci = 0;
+        } else {
+          sci += 1;
+        }
+        $tabNext.sri = sri;
+        $tabNext.sci = sci;
+        let eri = sri;
+        let eci = sci;
+        const targetMerges = merges.getFirstIncludes(sri, sci);
+        if (targetMerges) {
+          sri = targetMerges.sri;
+          sci = targetMerges.sci;
+          eri = targetMerges.eri;
+          eci = targetMerges.eci;
+        }
+        rect.tabNext = true;
+        rect.sri = sri;
+        rect.sci = sci;
+        rect.eri = eri;
+        rect.eci = eci;
+        xSelect.updateSelectRange(rect);
+        edit.showEdit();
       },
     });
   }
@@ -1152,6 +1157,7 @@ class XTableDimensions extends Widget {
     rowFixed.setSize();
     colFixed.setSize();
     xTableStyle.resize();
+    this.trigger(Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE);
   }
 
   /**

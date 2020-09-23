@@ -28,6 +28,10 @@ let throttleHandle = null;
 
 class Utils {
 
+  static toLowCase(str) {
+    return str.toLowerCase();
+  }
+
   static type(arg) {
     const type = Object.prototype.toString.call(arg);
     switch (type) {
@@ -467,11 +471,6 @@ class Utils {
 
   static getExplorerInfo() {
     const explorer = window.navigator.userAgent.toLowerCase();
-    // ie
-    if (explorer.indexOf('msie') >= 0) {
-      const ver = explorer.match(/msie ([\d.]+)/)[1];
-      return { type: 'IE', version: ver };
-    }
     // firefox
     if (explorer.indexOf('firefox') >= 0) {
       const ver = explorer.match(/firefox\/([\d.]+)/)[1];
@@ -492,6 +491,13 @@ class Utils {
       const ver = explorer.match(/version\/([\d.]+)/)[1];
       return { type: 'Safari', version: ver };
     }
+    // ie
+    if (explorer.indexOf('msie') >= 0) {
+      const ver = explorer.match(/msie ([\d.]+)/)[1];
+      return { type: 'IE', version: ver };
+    }
+    // undefined
+    return undefined;
   }
 
 }
