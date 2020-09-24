@@ -22,7 +22,7 @@ class ColFixed extends Widget {
   bind() {
     const { table } = this;
     const {
-      mousePointer, dropColFixed, xFixedView, cols,
+      mousePointer, dropColFixed, xFixedView,
     } = table;
     let moveOff = true;
     EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {

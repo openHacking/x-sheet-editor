@@ -52,9 +52,9 @@ class XScreen extends Widget {
   addItem(item) {
     this.pool.push(item);
     this.ltZone.attach(item.lt);
+    this.tZone.attach(item.t);
     this.lZone.attach(item.l);
     this.brZone.attach(item.br);
-    this.tZone.attach(item.t);
     item.setXScreen(this);
     item.onAdd(this);
   }
