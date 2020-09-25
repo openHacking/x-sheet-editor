@@ -34,6 +34,7 @@ class XFilter extends XScreenViewSizer {
     }
   }
 
+
 }
 
 export {
