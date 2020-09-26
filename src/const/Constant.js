@@ -33,6 +33,7 @@ Constant.TABLE_EVENT_TYPE = {
   DATA_CHANGE: 'datachange',
   CHANGE_WIDTH: 'changewidth',
   RESIZE_CHANGE: 'resizechange',
+  RENDER: 'render',
 };
 
 export {

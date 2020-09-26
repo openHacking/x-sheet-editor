@@ -30,6 +30,7 @@ import { DropRowFixed } from './tablefixed/drop/DropRowFixed';
 import { DropColFixed } from './tablefixed/drop/DropColFixed';
 import { XFixedMeasure } from './tablebase/XFixedMeasure';
 import { XFixedView } from './tablebase/XFixedView';
+import { XFilter } from './xscreenitems/xfilter/XFilter';
 
 class Dimensions {
 
@@ -887,9 +888,10 @@ class XTableDimensions extends Widget {
     this.attach(xTableStyle);
     // 添加屏幕组件
     this.attach(this.xScreen);
+    this.xScreen.addItem(new XFilter(this));
     this.xScreen.addItem(new XSelectItem(this));
-    this.xScreen.addItem(new XautoFillItem(this));
     this.xScreen.addItem(new XcopyStyle(this));
+    this.xScreen.addItem(new XautoFillItem(this));
     // 添加表格组件
     this.attach(this.xHeightLight);
     this.attach(this.yHeightLight);
@@ -1166,6 +1168,7 @@ class XTableDimensions extends Widget {
   render() {
     const { xTableStyle } = this;
     xTableStyle.render();
+    this.trigger(Constant.TABLE_EVENT_TYPE.RENDER);
   }
 
   /**

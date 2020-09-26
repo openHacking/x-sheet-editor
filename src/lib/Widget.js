@@ -7,14 +7,6 @@ class Widget extends Element {
     super(nodeType, `${cssPrefix}-widget ${className}`);
   }
 
-  computeEventXy(event, element = this) {
-    const { top, left } = element.box();
-    return {
-      x: event.pageX - left,
-      y: event.pageY - top,
-    };
-  }
-
   computeWidgetXy(element) {
     if (!element) {
       return {
@@ -27,6 +19,14 @@ class Widget extends Element {
     return {
       x: eleLeft - left,
       y: eleTop - top,
+    };
+  }
+
+  computeEventXy(event, element = this) {
+    const { top, left } = element.box();
+    return {
+      x: event.pageX - left,
+      y: event.pageY - top,
     };
   }
 

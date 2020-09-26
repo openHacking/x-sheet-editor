@@ -54,6 +54,7 @@ XTableMousePointer.KEYS = {
   default: 'default',
   rowResize: 'row-resize',
   colResize: 'col-resize',
+  pointer: 'pointer',
 };
 
 export { XTableMousePointer };

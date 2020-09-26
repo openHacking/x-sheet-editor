@@ -1,24 +1,83 @@
 import { Constant } from '../const/Constant';
+import { Element } from '../lib/Element';
+
+class BindPool {
+
+  constructor() {
+    this.pool = [];
+  }
+
+  unbind(ele, type, callback, option) {
+    if (ele instanceof Element) {
+      ele = ele.el;
+    }
+    const result = this.remove(ele, type);
+    if (result.length) {
+      result.forEach((item) => {
+        ele.removeEventListener(item.type, item.callback, item.option);
+      });
+    } else {
+      ele.removeEventListener(type, callback, option);
+    }
+  }
+
+  bind(ele, type, callback, option) {
+    if (ele instanceof Element) {
+      ele = ele.el;
+    }
+    this.pool.push({
+      ele, type, callback, option,
+    });
+    ele.addEventListener(type, callback, option);
+  }
+
+  remove(ele, type = '*') {
+    const pool = [];
+    const rem = [];
+    this.pool.forEach((item) => {
+      if (ele === item.ele) {
+        if (type === '*' || type === item.type) {
+          rem.push(item);
+        }
+      } else {
+        pool.push(item);
+      }
+    });
+    this.pool = pool;
+    return rem;
+  }
+
+  multipleUnbind(eles, type, callback, option) {
+    eles.forEach((item) => {
+      this.unbind(item, type, callback, option);
+    });
+  }
+
+  multipleBind(eles, type, callback, option) {
+    eles.forEach((item) => {
+      this.bind(item, type, callback, option);
+    });
+  }
+
+}
+
+const pool = new BindPool();
 
 class EventBind {
 
   static unbind(target, name, fn, option = false) {
     if (Array.isArray(target)) {
-      target.forEach((item) => {
-        (item.el || item).removeEventListener(name, fn, option);
-      });
+      pool.multipleUnbind(target, name, fn, option);
     } else {
-      (target.el || target).removeEventListener(name, fn, option);
+      pool.unbind(target, name, fn, option);
     }
   }
 
   static bind(target, name, fn, option = false) {
     if (Array.isArray(target)) {
-      target.forEach((item) => {
-        (item.el || item).addEventListener(name, fn, option);
-      });
+      pool.multipleBind(target, name, fn, option);
     } else {
-      (target.el || target).addEventListener(name, fn, option);
+      pool.bind(target, name, fn, option);
     }
   }
 

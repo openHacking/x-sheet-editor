@@ -389,11 +389,13 @@ class ColorPicker extends Widget {
     }
     if (this.isHex(rgb)) {
       const v = ColorPicker.hexToRgb(rgb);
-      // eslint-disable-next-line no-param-reassign
       rgb = `rgb(${v.r}, ${v.g}, ${v.b})`;
     }
     const result = ColorPicker.parseRgb(rgb);
-    return result.r * 0.299 + result.g * 0.578 + result.b * 0.114 >= 192;
+    const r = parseInt(result.r, 10);
+    const g = parseInt(result.g, 10);
+    const b = parseInt(result.b, 10);
+    return (r * 0.299) + (g * 0.578) + (b * 0.114) >= 192;
   }
 
 }

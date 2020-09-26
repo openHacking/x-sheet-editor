@@ -233,12 +233,6 @@ class Element {
     return this;
   }
 
-  /**
-   * set or get style attr
-   * @param name
-   * @param value
-   * @returns {String|Element}
-   */
   css(name, value) {
     if (value === undefined && typeof name !== 'string') {
       Object.keys(name).forEach((k) => {
@@ -362,6 +356,7 @@ class Element {
     }
     return false;
   }
+
 }
 
 const h = (tag, className = '') => new Element(tag, className);

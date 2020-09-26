@@ -34,6 +34,8 @@ import { XcopyStyle } from '../table/xscreenitems/xcopystyle/XcopyStyle';
 import { XDraw } from '../../canvas/XDraw';
 import { Alert } from '../../component/alert/Alert';
 import { CopyFormatHelper } from './helper/CopyFormatHelper';
+import { XFilter } from '../table/xscreenitems/xfilter/XFilter';
+import { XScreen as xScreen } from '../table/xscreen/XScreen';
 
 class Divider extends Widget {
   constructor() {
@@ -1088,6 +1090,19 @@ class TopMenu extends Widget {
       }
       e.stopPropagation();
       e.preventDefault();
+    });
+    EventBind.bind(this.filter, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      const { xScreen } = table;
+      const filter = xScreen.findType(XFilter);
+      if (filter.status) {
+        this.filter.active(false);
+        filter.hideFilterButton();
+      } else {
+        this.filter.active(true);
+        filter.openFilterButton();
+      }
     });
   }
 

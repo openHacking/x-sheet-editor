@@ -1,5 +1,7 @@
 @css-prefix:x-sheet;
 @icon-size: 18px;
+@z-index-level-last: 1;
+@z-index-level-1: 2;
 
 // 工作界面
 .@{css-prefix}-work {
@@ -16,7 +18,6 @@
   position: absolute;
   right: 50px;
   bottom: 50px;
-  z-index: 999;
   border-radius: 10px;
   padding: 20px;
   font-weight: bold;
@@ -156,7 +157,6 @@
 }
 .@{css-prefix}-copy-style-svg {
   position: relative;
-  z-index: 2;
 }
 .@{css-prefix}-copy-style-stroked {}
 .@{css-prefix}-part-border-svg.show-top-border .@{css-prefix}-copy-style-stroked-top {
@@ -229,7 +229,6 @@
   left: 0;
   height: 100%;
   width: 100%;
-  z-index: 1;
 }
 
 // 表格编辑框
@@ -237,12 +236,12 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  z-index: 3;
   cursor: default;
   width: 100px;
   height: 100px;
   box-sizing: border-box;
   background: #ffffff;
+  z-index: @z-index-level-1;
 }
 .@{css-prefix}-table-edit-input {
   width: max-content;
@@ -265,7 +264,6 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1;
   border-right: 1px solid #42a642;
   box-sizing: border-box;
 }
@@ -276,7 +274,6 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1;
   border-bottom: 1px solid #42a642;
   box-sizing: border-box;
 }
@@ -287,7 +284,6 @@
   left: 0;
   top: 0;
   display: block;
-  z-index: 2;
 }
 .@{css-prefix}-re-sizer-vertical .@{css-prefix}-re-sizer-hover {
   background: rgba(111, 255, 75, 0.25);
@@ -306,7 +302,6 @@
   left: 0;
   top: 0;
   display: block;
-  z-index: 2;
 }
 .@{css-prefix}-re-sizer-horizontal .@{css-prefix}-re-sizer-hover {
   background: rgba(111, 255, 75, 0.25);
@@ -661,6 +656,10 @@
 }
 .@{css-prefix}-tools-font-strike {}
 .@{css-prefix}-tools-font-strike.active {
+  background: #e1e1e1;
+}
+.@{css-prefix}-tools-filter {}
+.@{css-prefix}-tools-filter.active {
   background: #e1e1e1;
 }
 
@@ -1096,19 +1095,13 @@
 .@{css-prefix}-table-row-fixed-bar {
   position: absolute;
   background: #eaeaea;
-  z-index: 1;
 }
 .@{css-prefix}-table-col-fixed-bar {
   position: absolute;
   background: #eaeaea;
-  z-index: 1;
 }
-.@{css-prefix}-table-row-fixed-bar.active {
-  z-index: 2;
-}
-.@{css-prefix}-table-row-fixed-bar.active {
-  z-index: 2;
-}
+.@{css-prefix}-table-row-fixed-bar.active {}
+.@{css-prefix}-table-row-fixed-bar.active {}
 .@{css-prefix}-table-row-fixed-block {
   background: #c1c1c1;
 }
@@ -1126,13 +1119,11 @@
 .@{css-prefix}-table-drop-row-fixed-bar {
   position: absolute;
   background: #eaeaea;
-  z-index: 3;
   opacity: 0.6;
 }
 .@{css-prefix}-table-drop-col-fixed-bar {
   position: absolute;
   background: #eaeaea;
-  z-index: 3;
   opacity: 0.6;
 }
 .@{css-prefix}-table-drop-row-fixed-block {
@@ -1140,4 +1131,33 @@
 }
 .@{css-prefix}-table-drop-col-fixed-block{
   background: #62af71;
+}
+
+// 表格过滤按钮
+.@{css-prefix}-x-filter {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.@{css-prefix}-x-filter-button-light {
+  background-image: url("../../assets/svg/filter-light.svg");
+  background-size: 100% 100%;
+}
+.@{css-prefix}-x-filter-button-dark {
+  background-image: url("../../assets/svg/filter-dark.svg");
+  background-size: 100% 100%;
+}
+.@{css-prefix}-x-filter-button-box {
+  position: absolute;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+.@{css-prefix}-x-filter-button {
+  border: 1px solid #cdcdcd;
+  border-radius: 2px;
+  width: 18px;
+  height: 18px;
+  position: relative;
+  z-index: @z-index-level-last;
 }
