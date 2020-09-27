@@ -35,7 +35,6 @@ import { XDraw } from '../../canvas/XDraw';
 import { Alert } from '../../component/alert/Alert';
 import { CopyFormatHelper } from './helper/CopyFormatHelper';
 import { XFilter } from '../table/xscreenitems/xfilter/XFilter';
-import { XScreen as xScreen } from '../table/xscreen/XScreen';
 
 class Divider extends Widget {
   constructor() {
@@ -1097,11 +1096,11 @@ class TopMenu extends Widget {
       const { xScreen } = table;
       const filter = xScreen.findType(XFilter);
       if (filter.status) {
-        this.filter.active(false);
         filter.hideFilterButton();
+        this.filter.active(filter.status);
       } else {
-        this.filter.active(true);
         filter.openFilterButton();
+        this.filter.active(filter.status);
       }
     });
   }
@@ -1321,6 +1320,7 @@ class TopMenu extends Widget {
     this.setVerticalAlignStatus();
     this.setTextWrappingStatus();
     this.setFixedStatus();
+    this.setFilterStatus();
   }
 
   setUnderLineStatus() {
@@ -1461,6 +1461,16 @@ class TopMenu extends Widget {
     const { table } = sheet;
     fixed.setFixedRowStatus(table.xFixedView.hasFixedTop());
     fixed.setFixedColStatus(table.xFixedView.hasFixedLeft());
+  }
+
+  setFilterStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const filter = xScreen.findType(XFilter);
+    this.filter.active(filter.status);
   }
 
 }

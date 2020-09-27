@@ -31,12 +31,13 @@ class XFilterButton extends Widget {
     const {
       mousePointer,
     } = table;
-    EventBind.bind(button, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    EventBind.bind(button, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (ev) => {
       mousePointer.lock(XFilterButton);
       mousePointer.set(XTableMousePointer.KEYS.pointer, XFilterButton);
       EventBind.mouseMoveUp(document, () => {}, () => {
         mousePointer.free(XFilterButton);
       });
+      ev.stopPropagation();
     });
     EventBind.bind(button, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       mousePointer.free(XFilterButton);

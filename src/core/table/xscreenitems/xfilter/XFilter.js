@@ -46,6 +46,151 @@ class XFilter extends XScreenViewSizer {
     });
   }
 
+  selectOffsetHandle() {
+    const { selectRange } = this;
+    if (selectRange) {
+      this.setDisplay(selectRange);
+      this.setSizer(selectRange);
+      this.setLocal(selectRange);
+    }
+  }
+
+  filterRangeHandle() {
+    const { table } = this;
+    const {
+      xScreen, cols, rows,
+    } = table;
+
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    const cells = table.getTableCells();
+    const merges = table.getTableMerges();
+
+    if (selectRange) {
+
+      let targetRange = selectRange.clone();
+
+      const { sri, sci, eri, eci } = targetRange;
+      const rowLen = rows.len - 1;
+      const colLen = cols.len - 1;
+      const merge = merges.getFirstIncludes(sri, sci) || RectRange.EMPTY;
+
+      // 排除多选单元格
+      if (targetRange.multiple() && !merge.equals(targetRange)) {
+        const { top } = targetRange.brink();
+        this.selectRange = top;
+        return;
+      }
+
+      // 向右走
+      for (let i = eci + 1; i <= colLen; i += 1) {
+        const cell = cells.getCellOrMergeCell(sri, i);
+        if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+          break;
+        }
+        targetRange = targetRange.union(new RectRange(sri, i, sri, i));
+      }
+      // 向左走
+      for (let i = sci - 1; i >= 0; i -= 1) {
+        const cell = cells.getCellOrMergeCell(sri, i);
+        if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+          break;
+        }
+        targetRange = targetRange.union(new RectRange(sri, i, sri, i));
+      }
+      // 向下走
+      for (let i = eri + 1; i <= rowLen; i += 1) {
+        const cell = cells.getCellOrMergeCell(i, sci);
+        if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+          break;
+        }
+        targetRange = targetRange.union(new RectRange(i, sci, i, sci));
+      }
+      // 向上走
+      for (let i = sri - 1; i >= 0; i -= 1) {
+        const cell = cells.getCellOrMergeCell(i, sci);
+        if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+          break;
+        }
+        targetRange = targetRange.union(new RectRange(i, sci, i, sci));
+      }
+
+      // 向右扫描
+      for (let i = targetRange.eci + 1; i <= colLen; i += 1) {
+        const { sri, eri } = targetRange;
+        let emptyCol = true;
+        for (let j = sri; j <= eri; j += 1) {
+          const cell = cells.getCellOrMergeCell(j, i);
+          if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
+            targetRange = targetRange.union(new RectRange(j, i, j, i));
+            emptyCol = false;
+          }
+        }
+        if (emptyCol) {
+          break;
+        }
+      }
+      // 向左扫描
+      for (let i = targetRange.sci - 1; i >= 0; i -= 1) {
+        const { sri, eri } = targetRange;
+        let emptyCol = true;
+        for (let j = sri; j <= eri; j += 1) {
+          const cell = cells.getCellOrMergeCell(j, i);
+          if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
+            targetRange = targetRange.union(new RectRange(j, i, j, i));
+            emptyCol = false;
+          }
+        }
+        if (emptyCol) {
+          break;
+        }
+      }
+      // 向下扫描
+      for (let i = targetRange.eri + 1; i <= rowLen; i += 1) {
+        const { sci, eci } = targetRange;
+        let emptyRow = true;
+        for (let j = sci; j <= eci; j += 1) {
+          const cell = cells.getCellOrMergeCell(i, j);
+          if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
+            targetRange = targetRange.union(new RectRange(i, j, i, j));
+            emptyRow = false;
+          }
+        }
+        if (emptyRow) {
+          break;
+        }
+      }
+      // 向上扫描
+      for (let i = targetRange.sri - 1; i >= 0; i -= 1) {
+        const { sci, eci } = targetRange;
+        let emptyRow = true;
+        for (let j = sci; j <= eci; j += 1) {
+          const cell = cells.getCellOrMergeCell(i, j);
+          if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
+            targetRange = targetRange.union(new RectRange(i, j, i, j));
+            emptyRow = false;
+          }
+        }
+        if (emptyRow) {
+          break;
+        }
+      }
+
+      const { top } = targetRange.brink();
+      this.selectRange = top;
+
+    } else {
+
+      this.selectRange = null;
+
+    }
+  }
+
+  updateFilterButton() {
+    this.selectOffsetHandle();
+    this.filterButtonHandle();
+  }
+
   filterButtonHandle() {
     const {
       table, selectRange,
@@ -239,142 +384,18 @@ class XFilter extends XScreenViewSizer {
     }
   }
 
-  selectOffsetHandle() {
-    const { selectRange } = this;
-    if (selectRange) {
-      this.setDisplay(selectRange);
-      this.setSizer(selectRange);
-      this.setLocal(selectRange);
-    }
-  }
-
-  getFilterView() {
-    const { table } = this;
-    const {
-      xScreen, cols, rows,
-    } = table;
-    const cells = table.getTableCells();
-    const xSelect = xScreen.findType(XSelectItem);
-    const {
-      selectRange,
-    } = xSelect;
-    if (selectRange.multiple()) {
-      return selectRange.clone();
-    }
-    const rowLen = rows.len - 1;
-    const colLen = cols.len - 1;
-    let targetRange = selectRange.clone();
-    const { sri, sci } = targetRange;
-    // 向右走
-    for (let i = sci; i <= colLen; i += 1) {
-      const cell = cells.getCell(sri, i);
-      if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
-        break;
-      }
-      targetRange = targetRange.union(new RectRange(sri, i, sri, i));
-    }
-    // 向左走
-    for (let i = sci; i >= 0; i -= 1) {
-      const cell = cells.getCell(sri, i);
-      if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
-        break;
-      }
-      targetRange = targetRange.union(new RectRange(sri, i, sri, i));
-    }
-    // 向下走
-    for (let i = sri; i <= rowLen; i += 1) {
-      const cell = cells.getCell(i, sci);
-      if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
-        break;
-      }
-      targetRange = targetRange.union(new RectRange(i, sci, i, sci));
-    }
-    // 向上走
-    for (let i = sri; i >= 0; i -= 1) {
-      const cell = cells.getCell(i, sci);
-      if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
-        break;
-      }
-      targetRange = targetRange.union(new RectRange(i, sci, i, sci));
-    }
-    // 向右扫描
-    for (let i = targetRange.eci + 1; i <= colLen; i += 1) {
-      const { sri, eri } = targetRange;
-      let emptyCol = true;
-      for (let j = sri; j <= eri; j += 1) {
-        const cell = cells.getCell(j, i);
-        if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
-          targetRange = targetRange.union(new RectRange(j, i, j, i));
-          emptyCol = false;
-        }
-      }
-      if (emptyCol) {
-        break;
-      }
-    }
-    // 向左扫描
-    for (let i = targetRange.sci - 1; i >= 0; i -= 1) {
-      const { sri, eri } = targetRange;
-      let emptyCol = true;
-      for (let j = sri; j <= eri; j += 1) {
-        const cell = cells.getCell(j, i);
-        if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
-          targetRange = targetRange.union(new RectRange(j, i, j, i));
-          emptyCol = false;
-        }
-      }
-      if (emptyCol) {
-        break;
-      }
-    }
-    // 向下扫描
-    for (let i = targetRange.eri + 1; i <= rowLen; i += 1) {
-      const { sci, eci } = targetRange;
-      let emptyRow = true;
-      for (let j = sci; j <= eci; j += 1) {
-        const cell = cells.getCell(i, j);
-        if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
-          targetRange = targetRange.union(new RectRange(i, j, i, j));
-          emptyRow = false;
-        }
-      }
-      if (emptyRow) {
-        break;
-      }
-    }
-    // 向上扫描
-    for (let i = targetRange.sri - 1; i >= 0; i -= 1) {
-      const { sci, eci } = targetRange;
-      let emptyRow = true;
-      for (let j = sci; j <= eci; j += 1) {
-        const cell = cells.getCell(i, j);
-        if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
-          targetRange = targetRange.union(new RectRange(i, j, i, j));
-          emptyRow = false;
-        }
-      }
-      if (emptyRow) {
-        break;
-      }
-    }
-    // 返回目标视图
-    return targetRange;
-  }
-
-  updateFilterButton() {
-    this.selectOffsetHandle();
-    this.filterButtonHandle();
-  }
-
   openFilterButton() {
-    this.status = true;
-    this.selectRange = this.getFilterView();
-    this.show();
-    this.updateFilterButton();
+    this.filterRangeHandle();
+    if (this.selectRange) {
+      this.status = true;
+      this.show();
+      this.updateFilterButton();
+    }
   }
 
   hideFilterButton() {
     this.status = false;
+    this.selectRange = null;
     this.hide();
   }
 

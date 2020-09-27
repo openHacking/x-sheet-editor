@@ -46,6 +46,15 @@ class Cells {
     return this.getCell(ri, ci);
   }
 
+  getCellOrMergeCell(ri, ci) {
+    const { merges } = this;
+    const merge = merges.getFirstIncludes(ri, ci);
+    if (merge) {
+      return this.getCell(merge.sri, merge.sci);
+    }
+    return this.getCell(ri, ci);
+  }
+
   getCell(ri, ci) {
     const row = this.data[ri];
     if (row && row[ci]) {

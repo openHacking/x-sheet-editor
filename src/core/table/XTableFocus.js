@@ -1,5 +1,6 @@
 import { Constant } from '../../const/Constant';
 import { EventBind } from '../../utils/EventBind';
+import { Element } from '../../lib/Element';
 
 class XTableFocus {
 
@@ -22,9 +23,26 @@ class XTableFocus {
     });
   }
 
+  remove(target) {
+    if (!(target instanceof Element)) {
+      throw new TypeError(' error type not Element ');
+    }
+    const pool = [];
+    for (let i = 0; i < this.pool.length; i += 1) {
+      const item = this.pool[i];
+      if (item.target.el !== target.el) {
+        pool.push(item);
+      }
+    }
+    this.pool = pool;
+  }
+
   register({
     target, attr = {}, stop = false, focus = false,
   }) {
+    if (!(target instanceof Element)) {
+      throw new TypeError(' error type not Element ');
+    }
     let item = this.findByNode(target);
     if (item) {
       Object.assign(item.attr, attr);
