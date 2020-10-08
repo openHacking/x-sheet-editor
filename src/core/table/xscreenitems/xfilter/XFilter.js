@@ -8,6 +8,8 @@ import { Constant, cssPrefix } from '../../../../const/Constant';
 import { EventBind } from '../../../../utils/EventBind';
 import { RANGE_OVER_GO } from '../../xscreen/item/viewborder/XScreenStyleBorderItem';
 import { XDraw } from '../../../../canvas/XDraw';
+import { ColsIterator } from '../../iterator/ColsIterator';
+import { RowsIterator } from '../../iterator/RowsIterator';
 
 class XFilter extends XScreenViewSizer {
 
@@ -44,6 +46,21 @@ class XFilter extends XScreenViewSizer {
         this.updateFilterButton();
       }
     });
+  }
+
+  openFilterButton() {
+    this.filterRangeHandle();
+    if (this.selectRange) {
+      this.status = true;
+      this.show();
+      this.updateFilterButton();
+    }
+  }
+
+  hideFilterButton() {
+    this.status = false;
+    this.selectRange = null;
+    this.hide();
   }
 
   selectOffsetHandle() {
@@ -83,98 +100,142 @@ class XFilter extends XScreenViewSizer {
       }
 
       // 向右走
-      for (let i = eci + 1; i <= colLen; i += 1) {
-        const cell = cells.getCellOrMergeCell(sri, i);
-        if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
-          break;
-        }
-        targetRange = targetRange.union(new RectRange(sri, i, sri, i));
-      }
+      ColsIterator.getInstance()
+        .setBegin(eci + 1)
+        .setEnd(colLen)
+        .setLoop((i) => {
+          const cell = cells.getCellOrMergeCell(sri, i);
+          if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+            return false;
+          }
+          targetRange = targetRange.union(new RectRange(sri, i, sri, i));
+          return true;
+        })
+        .execute();
       // 向左走
-      for (let i = sci - 1; i >= 0; i -= 1) {
-        const cell = cells.getCellOrMergeCell(sri, i);
-        if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
-          break;
-        }
-        targetRange = targetRange.union(new RectRange(sri, i, sri, i));
-      }
+      ColsIterator.getInstance()
+        .setBegin(sci - 1)
+        .setEnd(0)
+        .setLoop((i) => {
+          const cell = cells.getCellOrMergeCell(sri, i);
+          if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+            return false;
+          }
+          targetRange = targetRange.union(new RectRange(sri, i, sri, i));
+          return true;
+        })
+        .execute();
       // 向下走
-      for (let i = eri + 1; i <= rowLen; i += 1) {
-        const cell = cells.getCellOrMergeCell(i, sci);
-        if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
-          break;
-        }
-        targetRange = targetRange.union(new RectRange(i, sci, i, sci));
-      }
+      RowsIterator.getInstance()
+        .setBegin(eri + 1)
+        .setEnd(rowLen)
+        .setLoop((i) => {
+          const cell = cells.getCellOrMergeCell(i, sci);
+          if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+            return false;
+          }
+          targetRange = targetRange.union(new RectRange(i, sci, i, sci));
+          return true;
+        })
+        .execute();
       // 向上走
-      for (let i = sri - 1; i >= 0; i -= 1) {
-        const cell = cells.getCellOrMergeCell(i, sci);
-        if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
-          break;
-        }
-        targetRange = targetRange.union(new RectRange(i, sci, i, sci));
-      }
+      RowsIterator.getInstance()
+        .setBegin(sri - 1)
+        .setEnd(0)
+        .setLoop((i) => {
+          const cell = cells.getCellOrMergeCell(i, sci);
+          if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+            return false;
+          }
+          targetRange = targetRange.union(new RectRange(i, sci, i, sci));
+          return true;
+        })
+        .execute();
 
       // 向右扫描
-      for (let i = targetRange.eci + 1; i <= colLen; i += 1) {
-        const { sri, eri } = targetRange;
-        let emptyCol = true;
-        for (let j = sri; j <= eri; j += 1) {
-          const cell = cells.getCellOrMergeCell(j, i);
-          if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
-            targetRange = targetRange.union(new RectRange(j, i, j, i));
-            emptyCol = false;
-          }
-        }
-        if (emptyCol) {
-          break;
-        }
-      }
+      ColsIterator.getInstance()
+        .setBegin(targetRange.eci + 1)
+        .setEnd(colLen)
+        .setLoop((i) => {
+          const { sri, eri } = targetRange;
+          let emptyCol = true;
+          RowsIterator.getInstance()
+            .setBegin(sri)
+            .setEnd(eri)
+            .setLoop((j) => {
+              const cell = cells.getCellOrMergeCell(j, i);
+              if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
+                targetRange = targetRange.union(new RectRange(j, i, j, i));
+                emptyCol = false;
+              }
+            })
+            .execute();
+          return !emptyCol;
+        })
+        .execute();
       // 向左扫描
-      for (let i = targetRange.sci - 1; i >= 0; i -= 1) {
-        const { sri, eri } = targetRange;
-        let emptyCol = true;
-        for (let j = sri; j <= eri; j += 1) {
-          const cell = cells.getCellOrMergeCell(j, i);
-          if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
-            targetRange = targetRange.union(new RectRange(j, i, j, i));
-            emptyCol = false;
-          }
-        }
-        if (emptyCol) {
-          break;
-        }
-      }
+      ColsIterator.getInstance()
+        .setBegin(targetRange.sci - 1)
+        .setEnd(0)
+        .setLoop((i) => {
+          const { sri, eri } = targetRange;
+          let emptyCol = true;
+          RowsIterator.getInstance()
+            .setBegin(sri)
+            .setEnd(eri)
+            .setLoop((j) => {
+              const cell = cells.getCellOrMergeCell(j, i);
+              if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
+                targetRange = targetRange.union(new RectRange(j, i, j, i));
+                emptyCol = false;
+              }
+            })
+            .execute();
+          return !emptyCol;
+        })
+        .execute();
       // 向下扫描
-      for (let i = targetRange.eri + 1; i <= rowLen; i += 1) {
-        const { sci, eci } = targetRange;
-        let emptyRow = true;
-        for (let j = sci; j <= eci; j += 1) {
-          const cell = cells.getCellOrMergeCell(i, j);
-          if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
-            targetRange = targetRange.union(new RectRange(i, j, i, j));
-            emptyRow = false;
-          }
-        }
-        if (emptyRow) {
-          break;
-        }
-      }
+      RowsIterator.getInstance()
+        .setBegin(targetRange.eri + 1)
+        .setEnd(rowLen)
+        .setLoop((i) => {
+          const { sci, eci } = targetRange;
+          let emptyRow = true;
+          ColsIterator.getInstance()
+            .setBegin(sci)
+            .setEnd(eci)
+            .setLoop((j) => {
+              const cell = cells.getCellOrMergeCell(i, j);
+              if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
+                targetRange = targetRange.union(new RectRange(i, j, i, j));
+                emptyRow = false;
+              }
+            })
+            .execute();
+          return !emptyRow;
+        })
+        .execute();
       // 向上扫描
-      for (let i = targetRange.sri - 1; i >= 0; i -= 1) {
-        const { sci, eci } = targetRange;
-        let emptyRow = true;
-        for (let j = sci; j <= eci; j += 1) {
-          const cell = cells.getCellOrMergeCell(i, j);
-          if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
-            targetRange = targetRange.union(new RectRange(i, j, i, j));
-            emptyRow = false;
-          }
-        }
-        if (emptyRow) {
-          break;
-        }
-      }
+      RowsIterator.getInstance()
+        .setBegin(targetRange.sri - 1)
+        .setEnd(0)
+        .setLoop((i) => {
+          const { sci, eci } = targetRange;
+          let emptyRow = true;
+          ColsIterator.getInstance()
+            .setBegin(sci)
+            .setEnd(eci)
+            .setLoop((j) => {
+              const cell = cells.getCellOrMergeCell(i, j);
+              if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
+                targetRange = targetRange.union(new RectRange(i, j, i, j));
+                emptyRow = false;
+              }
+            })
+            .execute();
+          return !emptyRow;
+        })
+        .execute();
 
       const { top } = targetRange.brink();
       this.selectRange = top;
@@ -235,39 +296,43 @@ class XFilter extends XScreenViewSizer {
               const { top } = lt.brink();
               const height = rows.getHeight(top.sri);
               let left = 0;
-              for (let i = top.sci; i <= top.eci; i += 1) {
-                const width = cols.getWidth(i);
-                const button = new XFilterButton({
-                  ri: top.sri, ci: i, xFilter: this, area: flt,
-                });
-                button.offset({
-                  left,
-                  width,
-                  height,
-                });
-                flt.children(button);
-                buttons.push(button);
-                left += width;
-              }
+              ColsIterator.getInstance()
+                .setBegin(top.sci)
+                .setEnd(top.eci)
+                .setLoop((i) => {
+                  const width = cols.getWidth(i);
+                  const button = new XFilterButton({
+                    ri: top.sri, ci: i, xFilter: this, area: flt,
+                  });
+                  button.offset({
+                    left, width, height,
+                  });
+                  flt.children(button);
+                  buttons.push(button);
+                  left += width;
+                })
+                .execute();
             }
             if (!t.equals(RectRange.EMPTY)) {
               const { top } = t.brink();
               const height = rows.getHeight(top.sri);
               let left = 0;
-              for (let i = top.sci; i <= top.eci; i += 1) {
-                const width = cols.getWidth(i);
-                const button = new XFilterButton({
-                  ri: top.sri, ci: i, xFilter: this, area: ft,
-                });
-                button.offset({
-                  left,
-                  width,
-                  height,
-                });
-                ft.children(button);
-                buttons.push(button);
-                left += width;
-              }
+              ColsIterator.getInstance()
+                .setBegin(top.sci)
+                .setEnd(top.eci)
+                .setLoop((i) => {
+                  const width = cols.getWidth(i);
+                  const button = new XFilterButton({
+                    ri: top.sri, ci: i, xFilter: this, area: ft,
+                  });
+                  button.offset({
+                    left, width, height,
+                  });
+                  ft.children(button);
+                  buttons.push(button);
+                  left += width;
+                })
+                .execute();
             }
             break;
           case RANGE_OVER_GO.L:
@@ -277,31 +342,39 @@ class XFilter extends XScreenViewSizer {
               const { top } = l.brink();
               const height = rows.getHeight(top.sri);
               let left = 0;
-              for (let i = top.sci; i <= top.eci; i += 1) {
-                const width = cols.getWidth(i);
-                const button = new XFilterButton({
-                  ri: top.sri, ci: i, xFilter: this, area: fl,
-                });
-                button.offset({ left, width, height });
-                fl.children(button);
-                buttons.push(button);
-                left += width;
-              }
+              ColsIterator.getInstance()
+                .setBegin(top.sci)
+                .setEnd(top.eci)
+                .setLoop((i) => {
+                  const width = cols.getWidth(i);
+                  const button = new XFilterButton({
+                    ri: top.sri, ci: i, xFilter: this, area: fl,
+                  });
+                  button.offset({ left, width, height });
+                  fl.children(button);
+                  buttons.push(button);
+                  left += width;
+                })
+                .execute();
             }
             if (!br.equals(RectRange.EMPTY)) {
               const { top } = br.brink();
               const height = rows.getHeight(top.sri);
               let left = 0;
-              for (let i = top.sci; i <= top.eci; i += 1) {
-                const width = cols.getWidth(i);
-                const button = new XFilterButton({
-                  ri: top.sri, ci: i, xFilter: this, area: fbr,
-                });
-                button.offset({ left, width, height });
-                fbr.children(button);
-                buttons.push(button);
-                left += width;
-              }
+              ColsIterator.getInstance()
+                .setBegin(top.sci)
+                .setEnd(top.eci)
+                .setLoop((i) => {
+                  const width = cols.getWidth(i);
+                  const button = new XFilterButton({
+                    ri: top.sri, ci: i, xFilter: this, area: fbr,
+                  });
+                  button.offset({ left, width, height });
+                  fbr.children(button);
+                  buttons.push(button);
+                  left += width;
+                })
+                .execute();
             }
         }
         this.buttons = buttons;
@@ -313,16 +386,20 @@ class XFilter extends XScreenViewSizer {
           const { top } = t.brink();
           const height = rows.getHeight(top.sri);
           let left = 0;
-          for (let i = top.sci; i <= top.eci; i += 1) {
-            const width = cols.getWidth(i);
-            const button = new XFilterButton({
-              ri: top.sri, ci: i, xFilter: this, area: ft,
-            });
-            button.offset({ left, width, height });
-            ft.children(button);
-            buttons.push(button);
-            left += width;
-          }
+          ColsIterator.getInstance()
+            .setBegin(top.sci)
+            .setEnd(top.eci)
+            .setLoop((i) => {
+              const width = cols.getWidth(i);
+              const button = new XFilterButton({
+                ri: top.sri, ci: i, xFilter: this, area: ft,
+              });
+              button.offset({ left, width, height });
+              ft.children(button);
+              buttons.push(button);
+              left += width;
+            })
+            .execute();
         }
         this.buttons = buttons;
         return;
@@ -333,30 +410,38 @@ class XFilter extends XScreenViewSizer {
           const { top } = l.brink();
           const height = rows.getHeight(top.sri);
           let left = 0;
-          for (let i = top.sci; i <= top.eci; i += 1) {
-            const width = cols.getWidth(i);
-            const button = new XFilterButton({
-              ri: top.sri, ci: i, xFilter: this, area: fl,
-            });
-            button.offset({ left, width, height });
-            fl.children(button);
-            buttons.push(button);
-            left += width;
-          }
+          ColsIterator.getInstance()
+            .setBegin(top.sci)
+            .setEnd(top.eci)
+            .setLoop((i) => {
+              const width = cols.getWidth(i);
+              const button = new XFilterButton({
+                ri: top.sri, ci: i, xFilter: this, area: fl,
+              });
+              button.offset({ left, width, height });
+              fl.children(button);
+              buttons.push(button);
+              left += width;
+            })
+            .execute();
         }
         if (!br.equals(RectRange.EMPTY)) {
           const { top } = br.brink();
           const height = rows.getHeight(top.sri);
           let left = 0;
-          for (let i = top.sci; i <= top.eci; i += 1) {
-            const width = cols.getWidth(i);
-            const button = new XFilterButton({
-              ri: top.sri, ci: i, xFilter: this, area: fbr,
-            });
-            button.offset({ left, width, height });
-            fbr.children(button);
-            left += width;
-          }
+          ColsIterator.getInstance()
+            .setBegin(top.sci)
+            .setEnd(top.eci)
+            .setLoop((i) => {
+              const width = cols.getWidth(i);
+              const button = new XFilterButton({
+                ri: top.sri, ci: i, xFilter: this, area: fbr,
+              });
+              button.offset({ left, width, height });
+              fbr.children(button);
+              left += width;
+            })
+            .execute();
         }
         this.buttons = buttons;
         return;
@@ -365,38 +450,27 @@ class XFilter extends XScreenViewSizer {
         const { top } = br.brink();
         const height = rows.getHeight(top.sri);
         let left = 0;
-        for (let i = top.sci; i <= top.eci; i += 1) {
-          const width = cols.getWidth(i);
-          const button = new XFilterButton({
-            ri: top.sri, ci: i, xFilter: this, area: fbr,
-          });
-          button.offset({
-            left,
-            width: XDraw.offsetToLineInside(width),
-            height: XDraw.offsetToLineInside(height),
-          });
-          fbr.children(button);
-          buttons.push(button);
-          left += width;
-        }
+        ColsIterator.getInstance()
+          .setBegin(top.sci)
+          .setEnd(top.eci)
+          .setLoop((i) => {
+            const width = cols.getWidth(i);
+            const button = new XFilterButton({
+              ri: top.sri, ci: i, xFilter: this, area: fbr,
+            });
+            button.offset({
+              left,
+              width: XDraw.offsetToLineInside(width),
+              height: XDraw.offsetToLineInside(height),
+            });
+            fbr.children(button);
+            buttons.push(button);
+            left += width;
+          })
+          .execute();
       }
       this.buttons = buttons;
     }
-  }
-
-  openFilterButton() {
-    this.filterRangeHandle();
-    if (this.selectRange) {
-      this.status = true;
-      this.show();
-      this.updateFilterButton();
-    }
-  }
-
-  hideFilterButton() {
-    this.status = false;
-    this.selectRange = null;
-    this.hide();
   }
 
 }

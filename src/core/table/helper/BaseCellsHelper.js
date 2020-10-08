@@ -1,6 +1,7 @@
 import { Utils } from '../../../utils/Utils';
 import { Rect } from '../../../canvas/Rect';
 import { BaseFont } from '../../../canvas/font/BaseFont';
+import { ColsIterator } from '../iterator/ColsIterator';
 
 class BaseCellsHelper {
 
@@ -58,60 +59,88 @@ class BaseCellsHelper {
     if (align === BaseFont.ALIGN.left) {
       // 计算当前单元格右边
       // 空白的单元格的总宽度
-      for (let i = ci, { len } = cols; i <= len; i += 1) {
-        const cell = cells.getCell(ri, i);
-        const merge = merges.getFirstIncludes(ri, i);
-        if (i === ci) {
-          width += cols.getWidth(i);
-        } else if ((Utils.isUnDef(cell) || Utils.isBlank(cell.text)) && Utils.isUnDef(merge)) {
-          width += cols.getWidth(i);
-        } else {
-          break;
-        }
-      }
+      ColsIterator.getInstance()
+        .setBegin(ci)
+        .setEnd(cols.len)
+        .setLoop((i) => {
+          const merge = merges.getFirstIncludes(ri, i);
+          const cell = cells.getCell(ri, i);
+          const blank = Utils.isUnDef(cell) || Utils.isBlank(cell.text);
+          if (i === ci) {
+            width += cols.getWidth(i);
+            return true;
+          }
+          if (blank && Utils.isUnDef(merge)) {
+            width += cols.getWidth(i);
+            return true;
+          }
+          return false;
+        })
+        .execute();
     } else if (align === BaseFont.ALIGN.center) {
       let rightWidth = 0;
       let leftWidth = 0;
-      for (let i = ci + 1, { len } = cols; i <= len; i += 1) {
-        const cell = cells.getCell(ri, i);
-        const merge = merges.getFirstIncludes(ri, i);
-        if ((Utils.isUnDef(cell) || Utils.isBlank(cell.text)) && Utils.isUnDef(merge)) {
-          rightWidth += cols.getWidth(i);
-        } else {
-          break;
-        }
-      }
-      for (let i = ci - 1; i >= 0; i -= 1) {
-        const cell = cells.getCell(ri, i);
-        const merge = merges.getFirstIncludes(ri, i);
-        if ((Utils.isUnDef(cell) || Utils.isBlank(cell.text)) && Utils.isUnDef(merge)) {
-          const tmp = cols.getWidth(i);
-          leftWidth += tmp;
-          offset -= tmp;
-        } else {
-          break;
-        }
-      }
+      // 右边
+      ColsIterator.getInstance()
+        .setBegin(ci + 1)
+        .setEnd(cols.len)
+        .setLoop((i) => {
+          const merge = merges.getFirstIncludes(ri, i);
+          const cell = cells.getCell(ri, i);
+          const blank = Utils.isUnDef(cell) || Utils.isBlank(cell.text);
+          if (blank && Utils.isUnDef(merge)) {
+            rightWidth += cols.getWidth(i);
+            return true;
+          }
+          return false;
+        })
+        .execute();
+      // 左边
+      ColsIterator.getInstance()
+        .setBegin(ci - 1)
+        .setEnd(0)
+        .setLoop((i) => {
+          const merge = merges.getFirstIncludes(ri, i);
+          const cell = cells.getCell(ri, i);
+          const blank = Utils.isUnDef(cell) || Utils.isBlank(cell.text);
+          if (blank && Utils.isUnDef(merge)) {
+            const tmp = cols.getWidth(i);
+            leftWidth += tmp;
+            offset -= tmp;
+            return true;
+          }
+          return false;
+        })
+        .execute();
+      // 统计
       width = cols.getWidth(ci) + leftWidth + rightWidth;
     } else if (align === BaseFont.ALIGN.right) {
       // 计算当前单元格左边
       // 空白的单元格的总宽度
-      for (let i = ci; i >= 0; i -= 1) {
-        const cell = cells.getCell(ri, i);
-        const merge = merges.getFirstIncludes(ri, i);
-        if (i === ci) {
-          width += cols.getWidth(i);
-        } else if ((Utils.isUnDef(cell) || Utils.isBlank(cell.text)) && Utils.isUnDef(merge)) {
-          const tmp = cols.getWidth(i);
-          width += tmp;
-          offset -= tmp;
-        } else {
-          break;
-        }
-      }
+      ColsIterator.getInstance()
+        .setBegin(ci)
+        .setEnd(0)
+        .setLoop((i) => {
+          const merge = merges.getFirstIncludes(ri, i);
+          const cell = cells.getCell(ri, i);
+          const blank = Utils.isUnDef(cell) || Utils.isBlank(cell.text);
+          if (i === ci) {
+            width += cols.getWidth(i);
+            return true;
+          }
+          if (blank && Utils.isUnDef(merge)) {
+            const tmp = cols.getWidth(i);
+            width += tmp;
+            offset -= tmp;
+            return true;
+          }
+          return false;
+        })
+        .execute();
     }
     return { width, offset };
   }
+
 }
 
 export {

@@ -30,7 +30,7 @@ class XReSizer extends Widget {
   bind() {
     const { table } = this;
     const {
-      cols, mousePointer, focus, xFixedView, colFixed,
+      cols, mousePointer, focus, xFixedView,
     } = table;
     const tableDataSnapshot = table.getTableDataSnapshot();
     const { colsDataProxy } = tableDataSnapshot;

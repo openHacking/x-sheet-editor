@@ -1,6 +1,8 @@
 import { BaseCellsHelper } from './BaseCellsHelper';
 import { Rect } from '../../../canvas/Rect';
 import { Utils } from '../../../utils/Utils';
+import { ColsIterator } from '../iterator/ColsIterator';
+import { RowsIterator } from '../iterator/RowsIterator';
 
 /**
  * StyleCellsHelper
@@ -26,23 +28,31 @@ class StyleCellsHelper extends BaseCellsHelper {
       sri, eri, sci, eci,
     } = rectRange;
     let y = startY;
-    for (let i = sri; i <= eri; i += 1) {
-      const height = rows.getHeight(i);
-      let x = startX;
-      for (let j = sci; j <= eci; j += 1) {
-        const width = cols.getWidth(j);
-        const cell = cells.getCell(i, j);
-        if (cell) {
-          const rect = new Rect({ x, y, width, height });
-          const result = callback(i, j, cell, rect);
-          if (result === false) {
-            return;
-          }
-        }
-        x += width;
-      }
-      y += height;
-    }
+    RowsIterator.getInstance()
+      .setBegin(sri)
+      .setEnd(eri)
+      .setLoop((i) => {
+        const height = rows.getHeight(i);
+        let x = startX;
+        ColsIterator.getInstance()
+          .setBegin(sci)
+          .setEnd(eci)
+          .setLoop((j) => {
+            const cell = cells.getCell(i, j);
+            const width = cols.getWidth(j);
+            if (cell) {
+              const rect = new Rect({ x, y, width, height });
+              const result = callback(i, j, cell, rect);
+              if (result === false) {
+                return;
+              }
+            }
+            x += width;
+          })
+          .execute();
+        y += height;
+      })
+      .execute();
   }
 
   /**
@@ -64,23 +74,31 @@ class StyleCellsHelper extends BaseCellsHelper {
       sri, eri, sci, eci,
     } = rectRange;
     let y = startY;
-    for (let i = sri; i <= eri; i += 1) {
-      const height = rows.getHeight(i);
-      let x = startX;
-      for (let j = sci; j <= eci; j += 1) {
-        const width = cols.getWidth(j);
-        const cell = cells.getCellOrNew(i, j);
-        if (cell) {
-          const rect = new Rect({ x, y, width, height });
-          const result = callback(i, j, cell, rect);
-          if (result === false) {
-            return;
-          }
-        }
-        x += width;
-      }
-      y += height;
-    }
+    RowsIterator.getInstance()
+      .setBegin(sri)
+      .setEnd(eri)
+      .setLoop((i) => {
+        const height = rows.getHeight(i);
+        let x = startX;
+        ColsIterator.getInstance()
+          .setBegin(sci)
+          .setEnd(eci)
+          .setLoop((j) => {
+            const cell = cells.getCellOrNew(i, j);
+            const width = cols.getWidth(j);
+            if (cell) {
+              const rect = new Rect({ x, y, width, height });
+              const result = callback(i, j, cell, rect);
+              if (result === false) {
+                return;
+              }
+            }
+            x += width;
+          })
+          .execute();
+        y += height;
+      })
+      .execute();
   }
 
   /**
@@ -103,34 +121,42 @@ class StyleCellsHelper extends BaseCellsHelper {
       sri, eri, sci, eci,
     } = rectRange;
     const filter = [];
-    for (let i = sri; i <= eri; i += 1) {
-      for (let j = sci; j <= eci; j += 1) {
-        const merge = merges.getFirstIncludes(i, j);
-        if (Utils.isUnDef(merge) || filter.find(item => item === merge)) {
-          continue;
-        }
-        // 计算坐标
-        const minSri = Math.min(rectRange.sri, merge.sri);
-        const minSci = Math.min(rectRange.sci, merge.sci);
-        let maxSri = Math.max(rectRange.sri, merge.sri);
-        let maxSci = Math.max(rectRange.sci, merge.sci);
-        maxSri -= 1;
-        maxSci -= 1;
-        let x = cols.sectionSumWidth(minSci, maxSci);
-        let y = rows.sectionSumHeight(minSri, maxSri);
-        x = rectRange.sci > merge.sci ? x * -1 : x;
-        y = rectRange.sri > merge.sri ? y * -1 : y;
-        x += startX;
-        y += startY;
-        // 计算尺寸
-        const height = rows.sectionSumHeight(merge.sri, merge.eri);
-        const width = cols.sectionSumWidth(merge.sci, merge.eci);
-        const cell = cells.getCellOrNew(merge.sri, merge.sci);
-        const rect = new Rect({ x, y, width, height });
-        callback(rect, cell, merge);
-        filter.push(merge);
-      }
-    }
+    RowsIterator.getInstance()
+      .setBegin(sri)
+      .setEnd(eri)
+      .setLoop((i) => {
+        ColsIterator.getInstance()
+          .setBegin(sci)
+          .setEnd(eci)
+          .setLoop((j) => {
+            const merge = merges.getFirstIncludes(i, j);
+            if (Utils.isUnDef(merge) || filter.find(item => item === merge)) {
+              return;
+            }
+            // 计算坐标
+            const minSri = Math.min(rectRange.sri, merge.sri);
+            const minSci = Math.min(rectRange.sci, merge.sci);
+            let maxSri = Math.max(rectRange.sri, merge.sri);
+            let maxSci = Math.max(rectRange.sci, merge.sci);
+            maxSri -= 1;
+            maxSci -= 1;
+            let x = cols.sectionSumWidth(minSci, maxSci);
+            let y = rows.sectionSumHeight(minSri, maxSri);
+            x = rectRange.sci > merge.sci ? x * -1 : x;
+            y = rectRange.sri > merge.sri ? y * -1 : y;
+            x += startX;
+            y += startY;
+            // 计算尺寸
+            const height = rows.sectionSumHeight(merge.sri, merge.eri);
+            const width = cols.sectionSumWidth(merge.sci, merge.eci);
+            const cell = cells.getCellOrNew(merge.sri, merge.sci);
+            const rect = new Rect({ x, y, width, height });
+            callback(rect, cell, merge);
+            filter.push(merge);
+          })
+          .execute();
+      })
+      .execute();
   }
 
   /**

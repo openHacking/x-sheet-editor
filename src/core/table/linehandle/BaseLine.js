@@ -4,6 +4,8 @@ import { LeftOutRangeFilter } from './filter/outrange/LeftOutRangeFilter';
 import { RightOutRangeFilter } from './filter/outrange/RightOutRangeFilter';
 import { LineFilter } from './filter/LineFilter';
 import { Utils } from '../../../utils/Utils';
+import { ColsIterator } from '../iterator/ColsIterator';
+import { RowsIterator } from '../iterator/RowsIterator';
 
 class BaseLine {
 
@@ -108,23 +110,31 @@ class BaseLine {
       sri, eri, sci, eci,
     } = viewRange;
     let y = by;
-    for (let i = sri; i <= eri; i += 1) {
-      const height = rows.getHeight(i);
-      let x = bx;
-      newRow(i, y);
-      for (let j = sci; j <= eci; j += 1) {
-        const width = cols.getWidth(j);
-        const result = filter.execute(i, j, x, y);
-        if (result) {
-          handle(i, j, x, y);
-        } else {
-          jump(i, j, x, y);
-        }
-        x += width;
-      }
-      endRow();
-      y += height;
-    }
+    RowsIterator.getInstance()
+      .setBegin(sri)
+      .setEnd(eri)
+      .setLoop((i) => {
+        const height = rows.getHeight(i);
+        let x = bx;
+        newRow(i, y);
+        ColsIterator.getInstance()
+          .setBegin(sci)
+          .setEnd(eci)
+          .setLoop((j) => {
+            const result = filter.execute(i, j, x, y);
+            const width = cols.getWidth(j);
+            if (result) {
+              handle(i, j, x, y);
+            } else {
+              jump(i, j, x, y);
+            }
+            x += width;
+          })
+          .execute();
+        endRow();
+        y += height;
+      })
+      .execute();
   }
 
   verticalIterate({
@@ -142,23 +152,31 @@ class BaseLine {
       sri, eri, sci, eci,
     } = viewRange;
     let x = bx;
-    for (let i = sci; i <= eci; i += 1) {
-      const width = cols.getWidth(i);
-      let y = by;
-      newCol(i, x);
-      for (let j = sri; j <= eri; j += 1) {
-        const height = rows.getHeight(j);
-        const result = filter.execute(i, j, x, y);
-        if (result) {
-          handle(i, j, x, y);
-        } else {
-          jump(i, j, x, y);
-        }
-        y += height;
-      }
-      endCol();
-      x += width;
-    }
+    ColsIterator.getInstance()
+      .setBegin(sci)
+      .setEnd(eci)
+      .setLoop((i) => {
+        const width = cols.getWidth(i);
+        let y = by;
+        newCol(i, x);
+        RowsIterator.getInstance()
+          .setBegin(sri)
+          .setEnd(eri)
+          .setLoop((j) => {
+            const height = rows.getHeight(j);
+            const result = filter.execute(i, j, x, y);
+            if (result) {
+              handle(i, j, x, y);
+            } else {
+              jump(i, j, x, y);
+            }
+            y += height;
+          })
+          .execute();
+        endCol();
+        x += width;
+      })
+      .execute();
   }
 
 }

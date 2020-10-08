@@ -1,6 +1,7 @@
 import { Utils } from '../../../utils/Utils';
 import { ScaleAdapter } from './Scale';
 import { RectRange } from './RectRange';
+import { RowsIterator } from '../iterator/RowsIterator';
 
 class Rows {
 
@@ -8,13 +9,35 @@ class Rows {
     scaleAdapter = new ScaleAdapter(),
     len = 10,
     data = [],
-    height,
+    height = 30,
   }) {
     this.scaleAdapter = scaleAdapter;
     this.len = len;
     this.data = data;
     this.min = 5;
     this.height = Utils.minIf(height, this.min);
+  }
+
+  rectRangeSumHeight(rectRange) {
+    if (!rectRange.equals(RectRange.EMPTY)) {
+      return this.sectionSumHeight(rectRange.sri, rectRange.eri);
+    }
+    return 0;
+  }
+
+  sectionSumHeight(sri, eri) {
+    let total = 0;
+    if (sri > eri) {
+      return total;
+    }
+    RowsIterator.getInstance()
+      .setBegin(sri)
+      .setEnd(eri)
+      .setLoop((i) => {
+        total += this.getHeight(i);
+      })
+      .execute();
+    return total;
   }
 
   getOrNew(ri) {
@@ -37,28 +60,21 @@ class Rows {
 
   eachHeight(ri, ei, cb, sy = 0) {
     let y = sy;
-    for (let i = ri; i <= ei; i += 1) {
-      const rowHeight = this.getHeight(i);
-      cb(i, rowHeight, y);
-      y += rowHeight;
-    }
+    RowsIterator.getInstance()
+      .setBegin(ri)
+      .setEnd(ei)
+      .setLoop((i) => {
+        const rowHeight = this.getHeight(i);
+        cb(i, rowHeight, y);
+        y += rowHeight;
+      })
+      .execute();
   }
 
   setHeight(ri, height) {
     const row = this.getOrNew(ri);
     const { scaleAdapter } = this;
     row.height = scaleAdapter.back(Utils.minIf(height, this.min));
-  }
-
-  rectRangeSumHeight(rectRange) {
-    if (!rectRange.equals(RectRange.EMPTY)) {
-      return this.sectionSumHeight(rectRange.sri, rectRange.eri);
-    }
-    return 0;
-  }
-
-  sectionSumHeight(sri, eri) {
-    return Utils.rangeSum(sri, eri + 1, i => this.getHeight(i));
   }
 
   getData() {

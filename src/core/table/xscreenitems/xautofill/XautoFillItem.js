@@ -1,5 +1,5 @@
 /* global document */
-import { SELECT_LOCAL, XSelectItem } from '../xselect/XSelectItem';
+import { XSelectItem } from '../xselect/XSelectItem';
 import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBorderItem';
 import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
@@ -10,9 +10,7 @@ import { XTableMousePointer } from '../../XTableMousePointer';
 
 class XautoFillItem extends XScreenCssBorderItem {
 
-  constructor(table, options = {
-
-  }) {
+  constructor(table, options = {}) {
     super({ table });
     this.options = Utils.mergeDeep({
       mergeForceSplit: false,
@@ -32,6 +30,13 @@ class XautoFillItem extends XScreenCssBorderItem {
     this.bbr.child(this.brElem);
     this.setBorderType('dashed');
   }
+
+  // eslint-disable-next-line no-unused-vars
+  selectRangeHandle(x, y) {}
+
+  selectOffsetHandle() {}
+
+  selectBorderHandle() {}
 
   onAdd() {
     this.bind();
@@ -82,259 +87,13 @@ class XautoFillItem extends XScreenCssBorderItem {
     });
   }
 
-  selectRangeHandle(x, y) {
-    const { table } = this;
-    const { xScreen } = table;
-    const xSelect = xScreen.findType(XSelectItem);
-    const {
-      selectRange: xSelectRange, selectLocal,
-    } = xSelect;
-    const {
-      cols, rows,
-    } = table;
-    const merges = table.getTableMerges();
-    const hasEdgeCheck = SELECT_LOCAL.BR !== selectLocal
-      || merges.getFirstIncludes(xSelectRange.sri, xSelectRange.sci) != null;
-    const [rSize, cSize] = xSelectRange.size();
-    let { ri, ci } = table.getRiCiByXy(x, y);
-    if (ri < 0) {
-      ri = 0;
-    } else if (ri > rows.len) {
-      ri = rows.len - 1;
-    }
-    if (ci < 0) {
-      ci = 0;
-    } else if (ci > cols.len) {
-      ci = cols.len - 1;
-    }
-    const {
-      sri: selectorSri, sci: selectorSci,
-    } = xSelectRange;
-    let {
-      eri: selectorEri, eci: selectorEci,
-    } = xSelectRange;
-    if (selectLocal === SELECT_LOCAL.L) {
-      selectorEci = cols.len - 1;
-    }
-    if (selectLocal === SELECT_LOCAL.T) {
-      selectorEri = rows.len - 1;
-    }
-    let selectRange = RectRange.EMPTY;
-    let moveDir = null;
-    if (ri < selectorSri || ri > selectorEri) {
-      if (ri < selectorSri) {
-        moveDir = 'top';
-        if (hasEdgeCheck) {
-          let minRi = selectorSri - rSize;
-          if (minRi >= 0) {
-            const diff = (selectorSri - 1) - ri;
-            for (let i = 1; i <= diff; i += 1) {
-              if (i % rSize === 0 && minRi - rSize >= 0) minRi -= rSize;
-            }
-            selectRange = new RectRange(minRi, selectorSci, selectorSri - 1, selectorEci);
-          }
-        } else {
-          selectRange = new RectRange(ri, selectorSci, selectorSri - 1, selectorEci);
-        }
-      }
-      if (ri > selectorEri) {
-        moveDir = 'bottom';
-        if (hasEdgeCheck) {
-          let maxRi = selectorEri + rSize;
-          if (maxRi <= rows.len - 1) {
-            const diff = ri - (selectorEri + 1);
-            for (let i = 1; i <= diff; i += 1) {
-              if (i % rSize === 0 && maxRi + rSize <= rows.len - 1) maxRi += rSize;
-            }
-            selectRange = new RectRange(selectorEri + 1, selectorSci, maxRi, selectorEci);
-          }
-        } else {
-          selectRange = new RectRange(selectorEri + 1, selectorSci, ri, selectorEci);
-        }
-      }
-    } else if (ci < selectorSci || ci > selectorEci) {
-      if (ci < selectorSci) {
-        moveDir = 'left';
-        if (hasEdgeCheck) {
-          let minCi = selectorSci - cSize;
-          if (minCi >= 0) {
-            const diff = (selectorSci - 1) - ci;
-            for (let i = 1; i <= diff; i += 1) {
-              if (i % cSize === 0 && minCi - cSize >= 0) minCi -= cSize;
-            }
-            selectRange = new RectRange(selectorSri, minCi, selectorEri, selectorSci - 1);
-          }
-        } else {
-          selectRange = new RectRange(selectorSri, ci, selectorEri, selectorSci - 1);
-        }
-      }
-      if (ci > selectorEci) {
-        moveDir = 'right';
-        if (hasEdgeCheck) {
-          let maxCi = selectorEci + cSize;
-          if (maxCi <= cols.len - 1) {
-            const diff = ci - (selectorEci + 1);
-            for (let i = 1; i <= diff; i += 1) {
-              if (i % cSize === 0 && maxCi + cSize <= cols.len - 1) maxCi += cSize;
-            }
-            selectRange = new RectRange(selectorSri, selectorEci + 1, selectorEri, maxCi);
-          }
-        } else {
-          selectRange = new RectRange(selectorSri, selectorEci + 1, selectorEri, ci);
-        }
-      }
-    }
-    if (selectRange) {
-      const width = cols.sectionSumWidth(selectRange.sci, selectRange.eci);
-      const height = rows.sectionSumHeight(selectRange.sri, selectRange.eri);
-      selectRange.w = width;
-      selectRange.h = height;
-    }
-    this.selectRange = selectRange;
-    this.moveDir = moveDir;
-  }
+  copyContent() {}
 
-  selectOffsetHandle() {
-    const { selectRange, status } = this;
-    if (status === false) {
-      return;
-    }
-    if (selectRange.equals(RectRange.EMPTY)) {
-      this.hide();
-      return;
-    }
-    this.show();
-    this.setDisplay(selectRange);
-    this.setSizer(selectRange);
-    this.setLocal(selectRange);
-  }
+  autoFillTo() {}
 
-  selectBorderHandle() {
-    const { selectRange, status } = this;
-    if (status === false) {
-      return;
-    }
-    if (selectRange.equals(RectRange.EMPTY)) {
-      return;
-    }
-    this.hideBorder();
-    this.showBorder(selectRange);
-  }
+  splitMerge() {}
 
-  autoFillTo() {
-    const { selectRange } = this;
-    if (selectRange.equals(RectRange.EMPTY)) {
-      return;
-    }
-    const { table, options } = this;
-    const tableDataSnapshot = table.getTableDataSnapshot();
-    options.onBeforeAutoFill();
-    tableDataSnapshot.begin();
-    this.splitMerge();
-    this.copyContent();
-    this.copyMerge();
-    tableDataSnapshot.end();
-    options.onAfterAutoFill();
-    table.render();
-  }
-
-  splitMerge() {
-    const { table } = this;
-    const merges = table.getTableMerges();
-    const tableDataSnapshot = table.getTableDataSnapshot();
-    const { mergeDataProxy } = tableDataSnapshot;
-    const { selectRange } = this;
-    selectRange.each((ri, ci) => {
-      const merge = merges.getFirstIncludes(ri, ci);
-      if (merge) {
-        mergeDataProxy.deleteMerge(merge);
-      }
-    });
-  }
-
-  copyMerge() {
-    const {
-      table, xScreen,
-    } = this;
-    const merges = table.getTableMerges();
-    const tableDataSnapshot = table.getTableDataSnapshot();
-    const { mergeDataProxy } = tableDataSnapshot;
-    const xSelect = xScreen.findType(XSelectItem);
-    const {
-      selectRange: xSelectRange, selectLocal,
-    } = xSelect;
-    const {
-      selectRange, moveDir,
-    } = this;
-    let sIndexRi = xSelectRange.sri;
-    let tIndexRi = selectRange.sri;
-    if (selectLocal !== SELECT_LOCAL.BR
-      && (moveDir === 'top' || moveDir === 'left')) {
-      return;
-    }
-    while (tIndexRi <= selectRange.eri) {
-      let sIndexCi = xSelectRange.sci;
-      let tIndexCi = selectRange.sci;
-      while (tIndexCi <= selectRange.eci) {
-        const mergeRect = merges.getFirstIncludes(sIndexRi, sIndexCi);
-        if (mergeRect) {
-          const isOrigin = mergeRect.sri === sIndexRi && mergeRect.sci === sIndexCi;
-          if (isOrigin) {
-            let [rSize, cSize] = mergeRect.size();
-            rSize -= 1;
-            cSize -= 1;
-            const newMerge = new RectRange(tIndexRi, tIndexCi, tIndexRi + rSize, tIndexCi + cSize);
-            mergeDataProxy.addMerge(newMerge);
-          }
-        }
-        sIndexCi += 1;
-        tIndexCi += 1;
-        if (sIndexCi > xSelectRange.eci) {
-          sIndexCi = xSelectRange.sci;
-        }
-      }
-      sIndexRi += 1;
-      tIndexRi += 1;
-      if (sIndexRi > xSelectRange.eri) {
-        sIndexRi = xSelectRange.sri;
-      }
-    }
-  }
-
-  copyContent() {
-    const {
-      table, xScreen,
-    } = this;
-    const cells = table.getTableCells();
-    const tableDataSnapshot = table.getTableDataSnapshot();
-    const xSelect = xScreen.findType(XSelectItem);
-    const { cellDataProxy } = tableDataSnapshot;
-    const { selectRange: xSelectRange } = xSelect;
-    const { selectRange } = this;
-    let sIndexRi = xSelectRange.sri;
-    let tIndexRi = selectRange.sri;
-    while (tIndexRi <= selectRange.eri) {
-      let sIndexCi = xSelectRange.sci;
-      let tIndexCi = selectRange.sci;
-      while (tIndexCi <= selectRange.eci) {
-        const src = cells.getCell(sIndexRi, sIndexCi);
-        if (src) {
-          const target = src.clone();
-          cellDataProxy.setCell(tIndexRi, tIndexCi, target);
-        }
-        sIndexCi += 1;
-        tIndexCi += 1;
-        if (sIndexCi > xSelectRange.eci) {
-          sIndexCi = xSelectRange.sci;
-        }
-      }
-      sIndexRi += 1;
-      tIndexRi += 1;
-      if (sIndexRi > xSelectRange.eri) {
-        sIndexRi = xSelectRange.sri;
-      }
-    }
-  }
+  copyMerge() {}
 
 }
 

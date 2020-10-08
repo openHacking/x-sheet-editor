@@ -1,6 +1,7 @@
 import { LineFilter } from '../LineFilter';
 import { Utils } from '../../../../../utils/Utils';
 import { BaseFont } from '../../../../../canvas/font/BaseFont';
+import { ColsIterator } from '../../../iterator/ColsIterator';
 
 class LeftOutRangeFilter extends LineFilter {
 
@@ -23,9 +24,7 @@ class LeftOutRangeFilter extends LineFilter {
 
   master(ri, ci) {
 
-    const {
-      cells, cols,
-    } = this;
+    const { cells, cols } = this;
 
     const last = cells.getCell(ri, ci - 1);
     const master = cells.getCell(ri, ci);
@@ -85,161 +84,169 @@ class LeftOutRangeFilter extends LineFilter {
     return true;
   }
 
-  right(ri, ci) {
-
-    const {
-      cells, cols, merges,
-    } = this;
-
-    const { len } = cols;
-    const last = cells.getCell(ri, ci - 1);
-    const master = cells.getCell(ri, ci);
-
-    let rightWidth = cols.getWidth(ci + 1) + cols.getWidth(ci);
-
-    // 检查右边是否越界
-    for (let j = ci + 1; j <= len; j += 1, rightWidth += cols.getWidth(j)) {
-
-      // 过滤掉空单元格&合并单元格
-      const cell = cells.getCell(ri, j);
-      if (Utils.isUnDef(cell)) {
-        continue;
-      }
-      const merge = merges.getFirstIncludes(ri, j);
-      if (Utils.isNotUnDef(merge)) {
-        continue;
-      }
-      const { text } = cell;
-      if (Utils.isBlank(text)) {
-        continue;
-      }
-
-      // 检查文本的绘制方向
-      // 区别对待旋转文本
-      const { fontAttr } = cell;
-      const { direction } = fontAttr;
-      if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
-        const { angle, textWrap } = fontAttr;
-        if (angle === 90 || angle === -90) {
-          break;
-        }
-        if (textWrap === BaseFont.TEXT_WRAP.TRUNCATE) {
-          break;
-        }
-        // 跳过对齐方式不是right和center
-        // 类型的单元格
-        const { align } = fontAttr;
-        if (align !== BaseFont.ALIGN.right && align !== BaseFont.ALIGN.center) {
-          break;
-        }
-      } else {
-        // 跳过裁剪类型不是overflow
-        // 类型的单元格
-        const { textWrap } = fontAttr;
-        if (textWrap !== BaseFont.TEXT_WRAP.OVER_FLOW) {
-          break;
-        }
-        // 跳过对齐方式不是right和center
-        // 类型的单元格
-        const { align } = fontAttr;
-        if (align !== BaseFont.ALIGN.right && align !== BaseFont.ALIGN.center) {
-          break;
-        }
-      }
-
-      // 检查当前单元格的内容
-      // 宽度是否越界
-      const width = cells.getCellBoundOutSize(ri, j);
-      if (width > rightWidth) {
-        // 只有master单元格和
-        // last单元格都是空时
-        // 才允许不绘制边框
-        const masterBlank = Utils.isUnDef(master) || Utils.isBlank(master.text);
-        const nextBlank = Utils.isUnDef(last) || Utils.isBlank(last.text);
-        if (masterBlank && nextBlank) {
-          return false;
-        }
-      }
-      break;
-    }
-
-    return true;
-  }
-
   left(ri, ci) {
 
     const {
       cells, cols, merges,
     } = this;
-
     const master = cells.getCell(ri, ci);
-
+    let find = false;
     let leftWidth = cols.getWidth(ci - 1);
 
-    // 检查左边是否越界
-    for (let i = ci - 1; i >= 0; i -= 1, leftWidth += cols.getWidth(i)) {
+    ColsIterator.getInstance()
+      .setBegin(ci - 1)
+      .setEnd(0)
+      .setLoop((i) => {
+        // 过滤掉空单元格
+        // 合并单元格
+        const cell = cells.getCell(ri, i);
+        if (Utils.isUnDef(cell)) {
+          return true;
+        }
+        const merge = merges.getFirstIncludes(ri, i);
+        if (Utils.isNotUnDef(merge)) {
+          return true;
+        }
+        const { text } = cell;
+        if (Utils.isBlank(text)) {
+          return true;
+        }
 
-      // 过滤掉空单元格&合并单元格
-      const cell = cells.getCell(ri, i);
-      if (Utils.isUnDef(cell)) {
-        continue;
-      }
-      const merge = merges.getFirstIncludes(ri, i);
-      if (Utils.isNotUnDef(merge)) {
-        continue;
-      }
-      const { text } = cell;
-      if (Utils.isBlank(text)) {
-        continue;
-      }
+        // 检查文本的绘制方向
+        // 区别对待旋转文本
+        const { fontAttr } = cell;
+        const { direction } = fontAttr;
+        if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
+          const { angle, textWrap } = fontAttr;
+          if (angle === 90 || angle === -90) {
+            return false;
+          }
+          if (textWrap === BaseFont.TEXT_WRAP.TRUNCATE) {
+            return false;
+          }
+          // 跳过对齐方式不是left和center
+          // 类型的单元格
+          const { align } = fontAttr;
+          if (align !== BaseFont.ALIGN.left && align !== BaseFont.ALIGN.center) {
+            return false;
+          }
+        } else {
+          // 跳过裁剪类型不是overflow
+          // 类型的单元格
+          const { textWrap } = fontAttr;
+          if (textWrap !== BaseFont.TEXT_WRAP.OVER_FLOW) {
+            return false;
+          }
+          // 跳过对齐方式不是left和center
+          // 类型的单元格
+          const { align } = fontAttr;
+          if (align !== BaseFont.ALIGN.left && align !== BaseFont.ALIGN.center) {
+            return false;
+          }
+        }
 
-      // 检查文本的绘制方向
-      // 区别对待旋转文本
-      const { fontAttr } = cell;
-      const { direction } = fontAttr;
-      if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
-        const { angle, textWrap } = fontAttr;
-        if (angle === 90 || angle === -90) {
-          break;
+        // 检查当前单元格的内容
+        // 宽度是否越界
+        const width = cells.getCellBoundOutSize(ri, i);
+        if (width > leftWidth) {
+          // 只有master单元格为
+          // 空时才允许不绘制边框
+          if (Utils.isUnDef(master) || Utils.isBlank(master.text)) {
+            find = false;
+          }
         }
-        if (textWrap === BaseFont.TEXT_WRAP.TRUNCATE) {
-          break;
-        }
-        // 跳过对齐方式不是left和center
-        // 类型的单元格
-        const { align } = fontAttr;
-        if (align !== BaseFont.ALIGN.left && align !== BaseFont.ALIGN.center) {
-          break;
-        }
-      } else {
-        // 跳过裁剪类型不是overflow
-        // 类型的单元格
-        const { textWrap } = fontAttr;
-        if (textWrap !== BaseFont.TEXT_WRAP.OVER_FLOW) {
-          break;
-        }
-        // 跳过对齐方式不是left和center
-        // 类型的单元格
-        const { align } = fontAttr;
-        if (align !== BaseFont.ALIGN.left && align !== BaseFont.ALIGN.center) {
-          break;
-        }
-      }
+        return false;
+      })
+      .setNext((i) => {
+        leftWidth += cols.getWidth(i);
+      })
+      .execute();
+    return find;
+  }
 
-      // 检查当前单元格的内容
-      // 宽度是否越界
-      const width = cells.getCellBoundOutSize(ri, i);
-      if (width > leftWidth) {
-        // 只有master单元格为
-        // 空时才允许不绘制边框
-        if (Utils.isUnDef(master) || Utils.isBlank(master.text)) {
-          return false;
-        }
-      }
-      break;
-    }
+  right(ri, ci) {
 
-    return true;
+    const {
+      cells, cols, merges,
+    } = this;
+    const last = cells.getCell(ri, ci - 1);
+    const master = cells.getCell(ri, ci);
+    const { len } = cols;
+    let find = true;
+    let rightWidth = cols.getWidth(ci + 1) + cols.getWidth(ci);
+
+    ColsIterator.getInstance()
+      .setBegin(ci + 1)
+      .setEnd(len)
+      .setLoop((j) => {
+        // 过滤掉空单元格
+        // 合并单元格
+        const cell = cells.getCell(ri, j);
+        if (Utils.isUnDef(cell)) {
+          return true;
+        }
+        const merge = merges.getFirstIncludes(ri, j);
+        if (Utils.isNotUnDef(merge)) {
+          return true;
+        }
+        const { text } = cell;
+        if (Utils.isBlank(text)) {
+          return true;
+        }
+
+        // 检查文本的绘制方向
+        // 区别对待旋转文本
+        const { fontAttr } = cell;
+        const { direction } = fontAttr;
+        if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
+          const { angle, textWrap } = fontAttr;
+          if (angle === 90 || angle === -90) {
+            return false;
+          }
+          if (textWrap === BaseFont.TEXT_WRAP.TRUNCATE) {
+            return false;
+          }
+          // 跳过对齐方式不是right和center
+          // 类型的单元格
+          const { align } = fontAttr;
+          if (align !== BaseFont.ALIGN.right && align !== BaseFont.ALIGN.center) {
+            return false;
+          }
+        } else {
+          // 跳过裁剪类型不是overflow
+          // 类型的单元格
+          const { textWrap } = fontAttr;
+          if (textWrap !== BaseFont.TEXT_WRAP.OVER_FLOW) {
+            return false;
+          }
+          // 跳过对齐方式不是right和center
+          // 类型的单元格
+          const { align } = fontAttr;
+          if (align !== BaseFont.ALIGN.right && align !== BaseFont.ALIGN.center) {
+            return false;
+          }
+        }
+
+        // 检查当前单元格的内容
+        // 宽度是否越界
+        const width = cells.getCellBoundOutSize(ri, j);
+        if (width > rightWidth) {
+          // 只有master单元格和
+          // last单元格都是空时
+          // 才允许不绘制边框
+          const masterBlank = Utils.isUnDef(master) || Utils.isBlank(master.text);
+          const nextBlank = Utils.isUnDef(last) || Utils.isBlank(last.text);
+          if (masterBlank && nextBlank) {
+            find = false;
+          }
+        }
+        return false;
+      })
+      .setNext((j) => {
+        rightWidth += cols.getWidth(j);
+      })
+      .execute();
+    return find;
   }
 
 }

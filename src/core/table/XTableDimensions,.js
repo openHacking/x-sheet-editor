@@ -31,6 +31,8 @@ import { DropColFixed } from './tablefixed/drop/DropColFixed';
 import { XFixedMeasure } from './tablebase/XFixedMeasure';
 import { XFixedView } from './tablebase/XFixedView';
 import { XFilter } from './xscreenitems/xfilter/XFilter';
+import { ColsIterator } from './iterator/ColsIterator';
+import { RowsIterator } from './iterator/RowsIterator';
 
 class Dimensions {
 
@@ -527,12 +529,74 @@ class KeyBoardTabCode {
 class XTableDimensions extends Widget {
 
   /**
+   * 滚动行区间
+   * @param min
+   * @param max
+   * @param initS
+   * @param initV
+   * @param ifv
+   * @param getV
+   * @return {(*|number)[]}
+   */
+  static rowsReduceIf(min, max, initS, initV, ifv, getV) {
+    let s = initS;
+    let v = initV;
+    let ri = min;
+    RowsIterator.getInstance()
+      .setBegin(ri)
+      .setEnd(max - 1)
+      .setLoop((i) => {
+        if (s >= ifv) {
+          return false;
+        }
+        v = getV(i);
+        s += v;
+        return true;
+      })
+      .setFinish((i) => {
+        ri = i;
+      })
+      .execute();
+    return [ri, s - v, v];
+  }
+
+  /**
+   * 滚动列区间
+   * @param min
+   * @param max
+   * @param initS
+   * @param initV
+   * @param ifv
+   * @param getV
+   * @return {(*|number)[]}
+   */
+  static colsReduceIf(min, max, initS, initV, ifv, getV) {
+    let s = initS;
+    let v = initV;
+    let ri = min;
+    ColsIterator.getInstance()
+      .setBegin(ri)
+      .setEnd(max - 1)
+      .setLoop((i) => {
+        if (s >= ifv) {
+          return false;
+        }
+        v = getV(i);
+        s += v;
+        return true;
+      })
+      .setFinish((i) => {
+        ri = i;
+      })
+      .execute();
+    return [ri, s - v, v];
+  }
+
+  /**
    * XTable
    * @param settings
    */
-  constructor({
-    settings,
-  }) {
+  constructor({ settings }) {
     super(`${cssPrefix}-table`);
     // 表格设置
     this.settings = Utils.mergeDeep({
@@ -837,41 +901,58 @@ class XTableDimensions extends Widget {
     // left
     if (left <= fixedWidth && x > index.getWidth()) {
       let total = 0;
-      for (let i = fixedView.sci; i <= fixedView.eci; i += 1) {
-        const width = cols.getWidth(i);
-        total += width;
-        ci = i;
-        if (total >= left) break;
-      }
+      ColsIterator.getInstance()
+        .setBegin(fixedView.sci)
+        .setEnd(fixedView.eci)
+        .setLoop((i) => {
+          const width = cols.getWidth(i);
+          total += width;
+          ci = i;
+          return total < left;
+        })
+        .execute();
     } else if (x > index.getWidth()) {
       let total = fixedWidth;
       const viewRange = this.getScrollView();
-      for (let i = viewRange.sci; i <= viewRange.eci; i += 1) {
-        const width = cols.getWidth(i);
-        total += width;
-        ci = i;
-        if (total >= left) break;
-      }
+      ColsIterator.getInstance()
+        .setBegin(viewRange.sci)
+        .setEnd(viewRange.eci)
+        .setLoop((i) => {
+          const width = cols.getWidth(i);
+          total += width;
+          ci = i;
+          return total < left;
+        })
+        .execute();
     }
     // top
     if (top < fixedHeight && y > index.getHeight()) {
       let total = 0;
-      for (let i = fixedView.sri; i <= fixedView.eri; i += 1) {
-        const height = rows.getHeight(i);
-        total += height;
-        ri = i;
-        if (total > top) break;
-      }
+      RowsIterator.getInstance()
+        .setBegin(fixedView.sri)
+        .setEnd(fixedView.eri)
+        .setLoop((i) => {
+          const height = rows.getHeight(i);
+          total += height;
+          ri = i;
+          return total <= top;
+        })
+        .execute();
     } else if (y > index.getHeight()) {
       let total = fixedHeight;
       const viewRange = this.getScrollView();
-      for (let i = viewRange.sri; i <= viewRange.eri; i += 1) {
-        const height = rows.getHeight(i);
-        total += height;
-        ri = i;
-        if (total > top) break;
-      }
+      RowsIterator.getInstance()
+        .setBegin(viewRange.sri)
+        .setEnd(viewRange.eri)
+        .setLoop((i) => {
+          const height = rows.getHeight(i);
+          total += height;
+          ri = i;
+          return total <= top;
+        })
+        .execute();
     }
+    // result
     return {
       ri, ci,
     };
@@ -958,7 +1039,7 @@ class XTableDimensions extends Widget {
     const fixedView = xFixedView.getFixedView();
     const [
       ci, left, width,
-    ] = Utils.rangeReduceIf(fixedView.eci + 1, cols.len, 0, 0, x, i => cols.getWidth(i));
+    ] = XTableDimensions.colsReduceIf(fixedView.eci + 1, cols.len, 0, 0, x, i => cols.getWidth(i));
     let x1 = left;
     if (x > 0) x1 += width;
     let type;
@@ -985,7 +1066,7 @@ class XTableDimensions extends Widget {
     const fixedView = xFixedView.getFixedView();
     const [
       ri, top, height,
-    ] = Utils.rangeReduceIf(fixedView.eri + 1, rows.len, 0, 0, y, i => rows.getHeight(i));
+    ] = XTableDimensions.rowsReduceIf(fixedView.eri + 1, rows.len, 0, 0, y, i => rows.getHeight(i));
     let y1 = top;
     if (y > 0) y1 += height;
     let type;

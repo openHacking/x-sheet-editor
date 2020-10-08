@@ -128,10 +128,6 @@ class Utils {
     return !this.isUnDef(e);
   }
 
-  static isNotZero(e) {
-    return e !== 0;
-  }
-
   static isNumber(e) {
     return /^(-?\d+.\d+)$|^(-?\d+)$/.test(e);
   }
@@ -175,14 +171,6 @@ class Utils {
       size += 1;
     });
     return [total, size];
-  }
-
-  static rangeSum(min, max, cb) {
-    let s = 0;
-    for (let i = min; i < max; i += 1) {
-      s += cb(i);
-    }
-    return s;
   }
 
   static parseFloat(val) {
@@ -241,18 +229,6 @@ class Utils {
     return Utils.xy2expr(x + xn, y + yn);
   }
 
-  static rangeReduceIf(min, max, initS, initV, ifv, getV) {
-    let s = initS;
-    let v = initV;
-    let i = min;
-    for (; i < max; i += 1) {
-      if (s >= ifv) break;
-      v = getV(i);
-      s += v;
-    }
-    return [i, s - v, v];
-  }
-
   static throttle(cb = () => {}, time = 500) {
     if (throttleHandle) clearTimeout(throttleHandle);
     throttleHandle = setTimeout(cb, time);
@@ -279,11 +255,6 @@ class Utils {
 
   static minIf(v, min) {
     if (v < min) return min;
-    return v;
-  }
-
-  static maxIf(v, max) {
-    if (v > max) return max;
     return v;
   }
 
@@ -374,19 +345,6 @@ class Utils {
       if (!compare2Objects(arguments[0], arguments[i])) {
         return false;
       }
-    }
-    return true;
-  }
-
-  static arrayIncludeArray(a1, a2) {
-    if (Utils.isUnDef(a1) || Utils.isUnDef(a2)) {
-      return false;
-    }
-    if (a1.length !== a2.length) {
-      return false;
-    }
-    for (let i = 0; i < a1.length; i += 1) {
-      if (a2.indexOf(a1[i]) === -1) return false;
     }
     return true;
   }

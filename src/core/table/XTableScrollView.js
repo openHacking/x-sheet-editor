@@ -1,5 +1,7 @@
 import { Utils } from '../../utils/Utils';
 import { RectRange } from './tablebase/RectRange';
+import { RowsIterator } from './iterator/RowsIterator';
+import { ColsIterator } from './iterator/ColsIterator';
 
 const VIEW_MODE = {
   CHANGE_ADD: Symbol('change_add'),
@@ -72,16 +74,27 @@ class XTableScrollView {
     const { ri, ci } = scroll;
     let [width, height] = [0, 0];
     let [eri, eci] = [rows.len, cols.len];
-    for (let i = ri; i < rows.len; i += 1) {
-      height += rows.getHeight(i);
-      eri = i;
-      if (height >= getHeight()) break;
-    }
-    for (let j = ci; j < cols.len; j += 1) {
-      width += cols.getWidth(j);
-      eci = j;
-      if (width >= getWidth()) break;
-    }
+    // 行
+    RowsIterator.getInstance()
+      .setBegin(ri)
+      .setEnd(rows.len - 1)
+      .setLoop((i) => {
+        height += rows.getHeight(i);
+        eri = i;
+        return height < getHeight();
+      })
+      .execute();
+    // 列
+    ColsIterator.getInstance()
+      .setBegin(ci)
+      .setEnd(cols.len - 1)
+      .setLoop((j) => {
+        width += cols.getWidth(j);
+        eci = j;
+        return width < getWidth();
+      })
+      .execute();
+    // 滚动视图
     return new RectRange(ri, ci, eri, eci);
   }
 

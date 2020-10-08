@@ -1,4 +1,6 @@
 import { Utils } from '../../../utils/Utils';
+import { RowsIterator } from '../iterator/RowsIterator';
+import { ColsIterator } from '../iterator/ColsIterator';
 
 class RectRange {
 
@@ -70,13 +72,21 @@ class RectRange {
     const {
       sri, sci, eri, eci,
     } = this;
-    for (let i = sri; i <= eri; i += 1) {
-      if (rowFilter(i)) {
-        for (let j = sci; j <= eci; j += 1) {
-          cb(i, j);
+    RowsIterator.getInstance()
+      .setBegin(sri)
+      .setEnd(eri)
+      .setLoop((i) => {
+        if (rowFilter(i)) {
+          ColsIterator.getInstance()
+            .setBegin(sci)
+            .setEnd(eci)
+            .setLoop((j) => {
+              cb(i, j);
+            })
+            .execute();
         }
-      }
-    }
+      })
+      .execute();
   }
 
   /**

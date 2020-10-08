@@ -1,6 +1,7 @@
 import { Utils } from '../../../utils/Utils';
 import { ScaleAdapter } from './Scale';
 import { RectRange } from './RectRange';
+import { ColsIterator } from '../iterator/ColsIterator';
 
 class Cols {
 
@@ -15,6 +16,28 @@ class Cols {
     this.data = data;
     this.min = 5;
     this.width = Utils.minIf(width, this.min);
+  }
+
+  rectRangeSumWidth(rectRange) {
+    if (!rectRange.equals(RectRange.EMPTY)) {
+      return this.sectionSumWidth(rectRange.sci, rectRange.eci);
+    }
+    return 0;
+  }
+
+  sectionSumWidth(sci, eci) {
+    let total = 0;
+    if (sci > eci) {
+      return total;
+    }
+    ColsIterator.getInstance()
+      .setBegin(sci)
+      .setEnd(eci)
+      .setLoop((i) => {
+        total += this.getWidth(i);
+      })
+      .execute();
+    return total;
   }
 
   getOrNew(ci) {
@@ -37,28 +60,21 @@ class Cols {
 
   eachWidth(ci, ei, cb, sx = 0) {
     let x = sx;
-    for (let i = ci; i <= ei; i += 1) {
-      const colWidth = this.getWidth(i);
-      cb(i, colWidth, x);
-      x += colWidth;
-    }
+    ColsIterator.getInstance()
+      .setBegin(ci)
+      .setEnd(ei)
+      .setLoop((i) => {
+        const colWidth = this.getWidth(i);
+        cb(i, colWidth, x);
+        x += colWidth;
+      })
+      .execute();
   }
 
   setWidth(i, width) {
     const col = this.getOrNew(i);
     const { scaleAdapter } = this;
     col.width = scaleAdapter.back(Utils.minIf(width, this.min));
-  }
-
-  rectRangeSumWidth(rectRange) {
-    if (!rectRange.equals(RectRange.EMPTY)) {
-      return this.sectionSumWidth(rectRange.sci, rectRange.eci);
-    }
-    return 0;
-  }
-
-  sectionSumWidth(sci, eci) {
-    return Utils.rangeSum(sci, eci + 1, i => this.getWidth(i));
   }
 
   getData() {
