@@ -1,6 +1,6 @@
 import { BaseIterator } from './BaseIterator';
 
-let fold = [];
+let fold = [false, false, false, false, true, true];
 
 class RowsIterator extends BaseIterator {
 
@@ -51,6 +51,19 @@ class RowsIterator extends BaseIterator {
     }
     this.finishCallback(i);
     return this;
+  }
+
+  nextRow() {
+    const { begin } = this;
+    let ri = -1;
+    this.setLoop((i) => {
+      if (i !== begin) {
+        ri = i;
+        return false;
+      }
+      return true;
+    }).execute();
+    return ri;
   }
 
   static getInstance() {
