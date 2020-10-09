@@ -134,6 +134,7 @@ class BaseLine {
         endRow();
         y += height;
       })
+      .disableFold()
       .execute();
   }
 
@@ -172,6 +173,7 @@ class BaseLine {
             }
             y += height;
           })
+          .disableFold()
           .execute();
         endCol();
         x += width;

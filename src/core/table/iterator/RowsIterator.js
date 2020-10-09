@@ -4,8 +4,23 @@ let fold = [];
 
 class RowsIterator extends BaseIterator {
 
-  setFold(value) {
+  static setFold(value) {
     fold = value;
+  }
+
+  constructor() {
+    super();
+    this.useFold = true;
+  }
+
+  enableFold() {
+    this.useFold = true;
+    return this;
+  }
+
+  disableFold() {
+    this.useFold = false;
+    return this;
   }
 
   execute() {
@@ -13,13 +28,13 @@ class RowsIterator extends BaseIterator {
       loopCallback, nextCallback,
     } = this;
     const {
-      begin, end,
+      begin, end, useFold,
     } = this;
     let i;
     if (begin > end) {
       i = end;
       for (; i >= begin; i -= 1, nextCallback(i)) {
-        if (fold[i]) {
+        if (useFold && fold[i]) {
           continue;
         }
         const res = loopCallback(i);
@@ -30,7 +45,7 @@ class RowsIterator extends BaseIterator {
     } else {
       i = begin;
       for (; i <= end; i += 1, nextCallback(i)) {
-        if (fold[i]) {
+        if (useFold && fold[i]) {
           continue;
         }
         const res = loopCallback(i);
