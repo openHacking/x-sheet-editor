@@ -1,4 +1,4 @@
-import { Utils } from '../../../utils/Utils';
+import { PlainUtils } from '../../../utils/PlainUtils';
 import { ScaleAdapter } from './Scale';
 import { RectRange } from './RectRange';
 import { ColsIterator } from '../iterator/ColsIterator';
@@ -15,7 +15,7 @@ class Cols {
     this.len = len;
     this.data = data;
     this.min = 5;
-    this.width = Utils.minIf(width, this.min);
+    this.width = PlainUtils.minIf(width, this.min);
   }
 
   rectRangeSumWidth(rectRange) {
@@ -74,7 +74,7 @@ class Cols {
   setWidth(i, width) {
     const col = this.getOrNew(i);
     const { scaleAdapter } = this;
-    col.width = scaleAdapter.back(Utils.minIf(width, this.min));
+    col.width = scaleAdapter.back(PlainUtils.minIf(width, this.min));
   }
 
   getData() {

@@ -12,13 +12,14 @@ import { VerticalCenter } from '../../lib/layer/center/VerticalCenter';
 
 import { SheetView } from './SheetView';
 import { TabView } from './TabView';
-import { Utils } from '../../utils/Utils';
-import { EventBind } from '../../utils/EventBind';
+import { PlainUtils } from '../../utils/PlainUtils';
+import { Event } from '../../lib/Event';
 import { h } from '../../lib/Element';
 import { Tab } from './Tab';
 import { Sheet } from './Sheet';
 
 import download from '../../lib/donwload/download';
+import { Throttle } from '../../lib/Throttle';
 
 class WorkBody extends Widget {
 
@@ -120,37 +121,38 @@ class WorkBody extends Widget {
   }
 
   bind() {
-    const exploreInfo = Utils.getExplorerInfo();
-    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+    const exploreInfo = PlainUtils.getExplorerInfo();
+    const throttle = new Throttle();
+    Event.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.scrollBarLocal();
       this.scrollBarSize();
     });
-    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+    Event.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
       this.scrollBarLocal();
       this.scrollBarSize();
     });
-    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
+    Event.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
       const table = this.getActiveTable();
       if (table) {
         this.scrollBarLocal();
         this.scrollBarSize();
       }
     });
-    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, (e) => {
+    Event.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, (e) => {
       this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
       e.stopPropagation();
     });
-    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, (e) => {
+    Event.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, (e) => {
       this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
       e.stopPropagation();
     });
-    EventBind.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, (e) => {
+    Event.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, (e) => {
       this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN, this);
       e.stopPropagation();
     });
-    EventBind.bind(this.sheetView, Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (e) => {
+    Event.bind(this.sheetView, Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (e) => {
       const sheet = this.sheetView.getActiveSheet();
-      if (Utils.isUnDef(sheet)) return;
+      if (PlainUtils.isUnDef(sheet)) return;
       const { table } = sheet;
       const {
         scroll, rows,
@@ -183,8 +185,8 @@ class WorkBody extends Widget {
         e.stopPropagation();
       }
     });
-    EventBind.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
-      Utils.throttle(() => {
+    Event.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
+      throttle.action(() => {
         const table = this.getActiveTable();
         if (table) {
           table.reset();

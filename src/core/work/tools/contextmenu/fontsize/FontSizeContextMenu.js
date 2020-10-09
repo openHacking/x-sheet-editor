@@ -1,5 +1,5 @@
 import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
-import { Utils } from '../../../../../utils/Utils';
+import { PlainUtils } from '../../../../../utils/PlainUtils';
 import { cssPrefix, Constant } from '../../../../../const/Constant';
 import { FontSizeContextMenuItem } from './FontSizeContextMenuItem';
 
@@ -7,7 +7,7 @@ import { FontSizeContextMenuItem } from './FontSizeContextMenuItem';
 class FontSizeContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-font-size-context-menu`, Utils.mergeDeep({
+    super(`${cssPrefix}-font-size-context-menu`, PlainUtils.mergeDeep({
       onUpdate: () => {},
     }, options));
 

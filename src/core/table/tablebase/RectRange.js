@@ -1,4 +1,4 @@
-import { Utils } from '../../../utils/Utils';
+import { PlainUtils } from '../../../utils/PlainUtils';
 import { RowsIterator } from '../iterator/RowsIterator';
 import { ColsIterator } from '../iterator/ColsIterator';
 
@@ -53,7 +53,7 @@ class RectRange {
   includes(...args) {
     let [ri, ci] = [0, 0];
     if (args.length === 1) {
-      [ci, ri] = Utils.expr2xy(args[0]);
+      [ci, ri] = PlainUtils.expr2xy(args[0]);
     } else if (args.length === 2) {
       [ri, ci] = args;
     }
@@ -312,9 +312,9 @@ class RectRange {
     const {
       sri, sci, eri, eci,
     } = this;
-    let ref = Utils.xy2expr(sci, sri);
+    let ref = PlainUtils.xy2expr(sci, sri);
     if (this.multiple()) {
-      ref = `${ref}:${Utils.xy2expr(eci, eri)}`;
+      ref = `${ref}:${PlainUtils.xy2expr(eci, eri)}`;
     }
     return ref;
   }
@@ -326,10 +326,10 @@ class RectRange {
    */
   static valueOf(ref) {
     const refs = ref.split(':');
-    const [sci, sri] = Utils.expr2xy(refs[0]);
+    const [sci, sri] = PlainUtils.expr2xy(refs[0]);
     let [eri, eci] = [sri, sci];
     if (refs.length > 1) {
-      [eci, eri] = Utils.expr2xy(refs[1]);
+      [eci, eri] = PlainUtils.expr2xy(refs[1]);
     }
     return new RectRange(sri, sci, eri, eci);
   }

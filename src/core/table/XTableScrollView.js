@@ -1,4 +1,4 @@
-import { Utils } from '../../utils/Utils';
+import { PlainUtils } from '../../utils/PlainUtils';
 import { RectRange } from './tablebase/RectRange';
 import { RowsIterator } from './iterator/RowsIterator';
 import { ColsIterator } from './iterator/ColsIterator';
@@ -22,7 +22,7 @@ class XTableScrollView {
    * @return {symbol}
    */
   static viewMode(lastView, view) {
-    if (Utils.isUnDef(lastView)) {
+    if (PlainUtils.isUnDef(lastView)) {
       return VIEW_MODE.CHANGE_NOT;
     }
     // 视图无变化

@@ -1,4 +1,4 @@
-import { Utils } from '../../../utils/Utils';
+import { PlainUtils } from '../../../utils/PlainUtils';
 import { ScaleAdapter } from './Scale';
 import { RectRange } from './RectRange';
 import { RowsIterator } from '../iterator/RowsIterator';
@@ -15,7 +15,7 @@ class Rows {
     this.len = len;
     this.data = data;
     this.min = 5;
-    this.height = Utils.minIf(height, this.min);
+    this.height = PlainUtils.minIf(height, this.min);
   }
 
   rectRangeSumHeight(rectRange) {
@@ -74,7 +74,7 @@ class Rows {
   setHeight(ri, height) {
     const row = this.getOrNew(ri);
     const { scaleAdapter } = this;
-    row.height = scaleAdapter.back(Utils.minIf(height, this.min));
+    row.height = scaleAdapter.back(PlainUtils.minIf(height, this.min));
   }
 
   getData() {

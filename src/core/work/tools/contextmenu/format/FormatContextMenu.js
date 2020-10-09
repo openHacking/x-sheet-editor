@@ -3,11 +3,11 @@ import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextM
 import { FormatContextMenuItem } from './FormatContextMenuItem';
 import { ELContextMenuDivider } from '../../../../../component/elcontextmenu/ELContextMenuDivider';
 
-import { Utils } from '../../../../../utils/Utils';
+import { PlainUtils } from '../../../../../utils/PlainUtils';
 
 class FormatContextMenu extends ELContextMenu {
   constructor(options = {}) {
-    super(`${cssPrefix}-format-context-menu`, Utils.mergeDeep({
+    super(`${cssPrefix}-format-context-menu`, PlainUtils.mergeDeep({
       onUpdate: () => {},
     }, options));
     this.items = [

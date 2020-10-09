@@ -1,12 +1,12 @@
 import { cssPrefix } from '../../const/Constant';
-import { Utils } from '../../utils/Utils';
+import { PlainUtils } from '../../utils/PlainUtils';
 import { Layer } from '../Layer';
 
 class HorizontalLayerElement extends Layer {
 
   constructor(options) {
     super(`${cssPrefix}-horizontal-layer-element`);
-    this.options = Utils.mergeDeep({
+    this.options = PlainUtils.mergeDeep({
       style: {
         flexGrow: '0',
       },

@@ -1,5 +1,5 @@
 import { BaseFont } from './BaseFont';
-import { Utils } from '../../utils/Utils';
+import { PlainUtils } from '../../utils/PlainUtils';
 import { Crop } from '../Crop';
 import { DisplayFont } from './DisplayFont';
 
@@ -19,7 +19,7 @@ class HorizontalFont extends DisplayFont {
       dw,
       attr,
     });
-    this.attr = Utils.mergeDeep({
+    this.attr = PlainUtils.mergeDeep({
       lineHeight: 4,
     }, this.attr);
   }

@@ -1,6 +1,6 @@
 import { ELContextMenu } from '../../../../../../component/elcontextmenu/ELContextMenu';
 import { cssPrefix, Constant } from '../../../../../../const/Constant';
-import { Utils } from '../../../../../../utils/Utils';
+import { PlainUtils } from '../../../../../../utils/PlainUtils';
 import { BorderTypeContextMenuItem } from './BorderTypeContextMenuItem';
 import { ELContextMenuDivider } from '../../../../../../component/elcontextmenu/ELContextMenuDivider';
 import { h } from '../../../../../../lib/Element';
@@ -16,7 +16,7 @@ import { BorderIcon9 } from '../../icon/border/BorderIcon9';
 import { BorderIcon10 } from '../../icon/border/BorderIcon10';
 import { BorderColor } from '../../icon/border/BorderColor';
 import { BorderType } from '../../icon/border/BorderType';
-import { EventBind } from '../../../../../../utils/EventBind';
+import { Event } from '../../../../../../lib/Event';
 import { EL_POPUP_POSITION, ElPopUp } from '../../../../../../component/elpopup/ElPopUp';
 import { BorderColorContextMenu } from '../bordercolor/BorderColorContextMenu';
 import { LineTypeContextMenu } from '../linetype/LineTypeContextMenu';
@@ -24,7 +24,7 @@ import { LINE_TYPE } from '../../../../../../canvas/Line';
 
 class BorderTypeContextMenu extends ELContextMenu {
   constructor(options = {}) {
-    super(`${cssPrefix}-border-type-context-menu`, Utils.mergeDeep({
+    super(`${cssPrefix}-border-type-context-menu`, PlainUtils.mergeDeep({
       onUpdate: () => {},
     }, options));
     this.type = LINE_TYPE.SOLID_LINE;
@@ -70,7 +70,7 @@ class BorderTypeContextMenu extends ELContextMenu {
     this.addItem(new ELContextMenuDivider());
     this.addItem(this.borderColorAndType);
     // 边框颜色菜单
-    this.borderColorContextMenu = new BorderColorContextMenu(Utils.copyProp({
+    this.borderColorContextMenu = new BorderColorContextMenu(PlainUtils.copyProp({
       el: this.borderColor,
       position: EL_POPUP_POSITION.BOTTOM,
     }, {
@@ -80,7 +80,7 @@ class BorderTypeContextMenu extends ELContextMenu {
       },
     }));
     // 边框类型
-    this.lineTypeContextMenu = new LineTypeContextMenu(Utils.copyProp({
+    this.lineTypeContextMenu = new LineTypeContextMenu(PlainUtils.copyProp({
       el: this.borderType,
       position: EL_POPUP_POSITION.BOTTOM,
     }, {
@@ -89,7 +89,7 @@ class BorderTypeContextMenu extends ELContextMenu {
       },
     }));
     // 添加事件
-    EventBind.bind(this.borderColor, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.borderColor, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { borderColorContextMenu } = this;
       const { elPopUp } = borderColorContextMenu;
       ElPopUp.closeAll([elPopUp, this.elPopUp]);
@@ -101,7 +101,7 @@ class BorderTypeContextMenu extends ELContextMenu {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.borderType, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.borderType, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { lineTypeContextMenu } = this;
       const { elPopUp } = lineTypeContextMenu;
       ElPopUp.closeAll([elPopUp, this.elPopUp]);
@@ -113,52 +113,52 @@ class BorderTypeContextMenu extends ELContextMenu {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.borderIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.borderIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border1', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.borderIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.borderIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border2', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.borderIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.borderIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border3', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.borderIcon4, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.borderIcon4, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border4', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.borderIcon5, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.borderIcon5, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border5', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.borderIcon6, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.borderIcon6, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border6', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.borderIcon7, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.borderIcon7, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border7', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.borderIcon8, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.borderIcon8, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border8', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.borderIcon9, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.borderIcon9, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border9', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.borderIcon10, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.borderIcon10, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border10', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();

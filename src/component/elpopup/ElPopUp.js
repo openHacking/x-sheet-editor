@@ -4,12 +4,12 @@ import { cssPrefix, Constant } from '../../const/Constant';
 import { h } from '../../lib/Element';
 import { ScrollBarX } from '../scrollbar/ScrollBarX';
 import { ScrollBarY } from '../scrollbar/ScrollBarY';
-import { Utils } from '../../utils/Utils';
+import { PlainUtils } from '../../utils/PlainUtils';
 import { HorizontalLayerElement } from '../../lib/layer/HorizontalLayerElement';
 import { HorizontalLayer } from '../../lib/layer/HorizontalLayer';
 import { VerticalLayer } from '../../lib/layer/VerticalLayer';
 import { VerticalLayerElement } from '../../lib/layer/VerticalLayerElement';
-import { EventBind } from '../../utils/EventBind';
+import { Event } from '../../lib/Event';
 
 const EL_POPUP_POSITION = {
   TOP: 1,
@@ -27,7 +27,7 @@ class ElPopUp extends Widget {
   constructor(options) {
     super(`${cssPrefix}-el-pop-up`);
     POOL.push(this);
-    this.options = Utils.mergeDeep({
+    this.options = PlainUtils.mergeDeep({
       position: EL_POPUP_POSITION.BOTTOM,
       el: null,
     }, options);
@@ -74,7 +74,7 @@ class ElPopUp extends Widget {
   }
 
   bind() {
-    EventBind.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
+    Event.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
       this.position();
       this.scrollbar();
     });

@@ -1,4 +1,4 @@
-import { Utils } from '../../utils/Utils';
+import { PlainUtils } from '../../utils/PlainUtils';
 
 /**
  * TableAreaView
@@ -37,7 +37,7 @@ class XTableAreaView {
    * @returns {RectRange}
    */
   getScrollView() {
-    if (Utils.isNotUnDef(this.scrollView)) {
+    if (PlainUtils.isNotUnDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { xTableScrollView } = this;

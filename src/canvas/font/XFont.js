@@ -1,4 +1,4 @@
-import { Utils } from '../../utils/Utils';
+import { PlainUtils } from '../../utils/PlainUtils';
 import { VerticalFont } from './VerticalFont';
 import { AngleFont } from './AngleFont';
 import { HorizontalFont } from './HorizontalFont';
@@ -9,7 +9,7 @@ class XFont {
   constructor({
     overflow, text, dw, rect, attr,
   }) {
-    this.attr = Utils.mergeDeep({}, {
+    this.attr = PlainUtils.mergeDeep({}, {
       verticalAlign: BaseFont.VERTICAL_ALIGN.center,
       direction: BaseFont.TEXT_DIRECTION.HORIZONTAL,
       name: 'Arial',

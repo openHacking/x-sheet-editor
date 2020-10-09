@@ -1,12 +1,12 @@
 import { ELContextMenu } from '../../../../../../component/elcontextmenu/ELContextMenu';
-import { Utils } from '../../../../../../utils/Utils';
+import { PlainUtils } from '../../../../../../utils/PlainUtils';
 import { cssPrefix, Constant } from '../../../../../../const/Constant';
 import { LineTypeContextMenuItem } from './LineTypeContextMenuItem';
 
 
 class LineTypeContextMenu extends ELContextMenu {
   constructor(options = {}) {
-    super(`${cssPrefix}-line-type-context-menu`, Utils.mergeDeep({
+    super(`${cssPrefix}-line-type-context-menu`, PlainUtils.mergeDeep({
       onUpdate: () => {},
     }, options));
     this.items = [

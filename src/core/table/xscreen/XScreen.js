@@ -4,7 +4,7 @@ import { XScreenBRZone } from './zone/XScreenBRZone';
 import { XScreenLTZone } from './zone/XScreenLTZone';
 import { XScreenLZone } from './zone/XScreenLZone';
 import { XScreenTZone } from './zone/XScreenTZone';
-import { EventBind } from '../../../utils/EventBind';
+import { Event } from '../../../lib/Event';
 import { XDraw } from '../../../canvas/XDraw';
 
 const DISPLAY_AREA = {
@@ -38,13 +38,13 @@ class XScreen extends Widget {
 
   bind() {
     const { table } = this;
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, () => {
       this.setZone();
     });
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.setZone();
     });
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
       this.setZone();
     });
   }

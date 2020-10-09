@@ -1,7 +1,7 @@
 import { Widget } from '../../../lib/Widget';
 import { RANGE_OVER_GO } from '../xscreen/item/viewborder/XScreenStyleBorderItem';
 import { cssPrefix, Constant } from '../../../const/Constant';
-import { EventBind } from '../../../utils/EventBind';
+import { Event } from '../../../lib/Event';
 import { XSelectItem } from '../xscreenitems/xselect/XSelectItem';
 
 class XHeightLight extends Widget {
@@ -19,19 +19,19 @@ class XHeightLight extends Widget {
 
   bind() {
     const { table } = this;
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, () => {
       this.offsetHandle();
     });
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.offsetHandle();
     });
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
       this.offsetHandle();
     });
-    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+    Event.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       this.offsetHandle();
     });
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
       this.offsetHandle();
     });
   }

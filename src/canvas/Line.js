@@ -1,4 +1,4 @@
-import { Utils } from '../utils/Utils';
+import { PlainUtils } from '../utils/PlainUtils';
 import { XDraw } from './XDraw';
 
 const LINE_TYPE = {
@@ -12,7 +12,7 @@ class SolidLine {
 
   constructor(draw, attr) {
     this.draw = draw;
-    Utils.mergeDeep(this, {
+    PlainUtils.mergeDeep(this, {
       color: '#000000',
       widthType: XDraw.LINE_WIDTH_TYPE.low,
     }, attr);
@@ -54,7 +54,7 @@ class DottedLine {
 
   constructor(draw, attr) {
     this.draw = draw;
-    Utils.mergeDeep(this, {
+    PlainUtils.mergeDeep(this, {
       color: '#000000',
       widthType: XDraw.LINE_WIDTH_TYPE.low,
       dash: [5],
@@ -97,7 +97,7 @@ class DoubleLine {
 
   constructor(draw, attr) {
     this.draw = draw;
-    Utils.mergeDeep(this, {
+    PlainUtils.mergeDeep(this, {
       color: '#000000',
       widthType: XDraw.LINE_WIDTH_TYPE.low,
       padding: 1,
@@ -132,10 +132,10 @@ class DoubleLine {
     draw.setLineDash([]);
     const external = this.handleExternal(sx, sy, ex, ey, row, col, pos);
     const internal = this.handleInternal(sx, sy, ex, ey, row, col, pos);
-    if (!Utils.isEmptyObject(internal)) {
+    if (!PlainUtils.isEmptyObject(internal)) {
       draw.horizonLine([internal.sx, internal.sy], [internal.ex, internal.ey]);
     }
-    if (!Utils.isEmptyObject(external)) {
+    if (!PlainUtils.isEmptyObject(external)) {
       draw.horizonLine([external.sx, external.sy], [external.ex, external.ey]);
     }
   }
@@ -150,10 +150,10 @@ class DoubleLine {
     draw.setLineDash([]);
     const external = this.handleExternal(sx, sy, ex, ey, row, col, pos);
     const internal = this.handleInternal(sx, sy, ex, ey, row, col, pos);
-    if (!Utils.isEmptyObject(internal)) {
+    if (!PlainUtils.isEmptyObject(internal)) {
       draw.verticalLine([internal.sx, internal.sy], [internal.ex, internal.ey]);
     }
-    if (!Utils.isEmptyObject(external)) {
+    if (!PlainUtils.isEmptyObject(external)) {
       draw.verticalLine([external.sx, external.sy], [external.ex, external.ey]);
     }
   }
@@ -554,14 +554,14 @@ class Line {
   constructor(draw, attr = {}) {
     this.widthType = XDraw.LINE_WIDTH_TYPE.low;
     this.type = LINE_TYPE.SOLID_LINE;
-    this.solidLine = new SolidLine(draw, Utils.mergeDeep({}, attr));
-    this.dottedLine = new DottedLine(draw, Utils.mergeDeep({
+    this.solidLine = new SolidLine(draw, PlainUtils.mergeDeep({}, attr));
+    this.dottedLine = new DottedLine(draw, PlainUtils.mergeDeep({
       dash: [5],
     }, attr));
-    this.pointLine = new DottedLine(draw, Utils.mergeDeep({
+    this.pointLine = new DottedLine(draw, PlainUtils.mergeDeep({
       dash: [2, 2],
     }, attr));
-    this.doubleLine = new DoubleLine(draw, Utils.mergeDeep({}, attr));
+    this.doubleLine = new DoubleLine(draw, PlainUtils.mergeDeep({}, attr));
   }
 
   setWidthType(widthType) {

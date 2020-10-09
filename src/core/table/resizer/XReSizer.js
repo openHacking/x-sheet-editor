@@ -2,8 +2,8 @@
 import { Widget } from '../../../lib/Widget';
 import { cssPrefix, Constant } from '../../../const/Constant';
 import { h } from '../../../lib/Element';
-import { EventBind } from '../../../utils/EventBind';
-import { Utils } from '../../../utils/Utils';
+import { Event } from '../../../lib/Event';
+import { PlainUtils } from '../../../utils/PlainUtils';
 import { XTableMousePointer } from '../XTableMousePointer';
 import { ColFixed } from '../tablefixed/ColFixed';
 
@@ -35,16 +35,16 @@ class XReSizer extends Widget {
     const tableDataSnapshot = table.getTableDataSnapshot();
     const { colsDataProxy } = tableDataSnapshot;
     const { index } = table;
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       mousePointer.lock(XReSizer);
       mousePointer.set(XTableMousePointer.KEYS.colResize, XReSizer);
       const { left, ci } = this.getEventLeft(e);
       const min = left - cols.getWidth(ci) + cols.min;
       let { x: mx } = table.computeEventXy(e);
-      EventBind.mouseMoveUp(document, (e) => {
+      Event.mouseMoveUp(document, (e) => {
         ({ x: mx } = table.computeEventXy(e));
         mx -= this.width / 2;
-        mx = Math.ceil(Utils.minIf(mx, min));
+        mx = Math.ceil(PlainUtils.minIf(mx, min));
         this.css('left', `${mx}px`);
         this.lineEl.css('height', `${table.visualHeight()}px`);
         this.lineEl.show();
@@ -63,14 +63,14 @@ class XReSizer extends Widget {
         table.resize();
       });
     });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
+    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       mousePointer.free(XReSizer);
     });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
+    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
       mousePointer.lock(XReSizer);
       mousePointer.set(XTableMousePointer.KEYS.colResize, XReSizer);
     });
-    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
+    Event.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       // eslint-disable-next-line prefer-const
       let { left, ci } = this.getEventLeft(e);
       const min = left - cols.getWidth(ci) + cols.min;
@@ -92,10 +92,10 @@ class XReSizer extends Widget {
         this.hoverEl.css('height', `${index.getHeight()}px`);
       }
     });
-    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
+    Event.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       this.hide();
     });
-    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    Event.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const { activate } = focus;
       const { target } = activate;
       if (target !== table && target !== this) {

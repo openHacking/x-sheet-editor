@@ -3,8 +3,8 @@ import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { h } from '../../../../lib/Element';
 import { ColorPicker } from '../../../../component/colorpicker/ColorPicker';
-import { Utils } from '../../../../utils/Utils';
-import { EventBind } from '../../../../utils/EventBind';
+import { PlainUtils } from '../../../../utils/PlainUtils';
+import { Event } from '../../../../lib/Event';
 import { XTableMousePointer } from '../../XTableMousePointer';
 
 class XFilterButton extends Widget {
@@ -31,18 +31,18 @@ class XFilterButton extends Widget {
     const {
       mousePointer,
     } = table;
-    EventBind.bind(button, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (ev) => {
+    Event.bind(button, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (ev) => {
       mousePointer.lock(XFilterButton);
       mousePointer.set(XTableMousePointer.KEYS.pointer, XFilterButton);
-      EventBind.mouseMoveUp(document, () => {}, () => {
+      Event.mouseMoveUp(document, () => {}, () => {
         mousePointer.free(XFilterButton);
       });
       ev.stopPropagation();
     });
-    EventBind.bind(button, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
+    Event.bind(button, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       mousePointer.free(XFilterButton);
     });
-    EventBind.bind(button, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
+    Event.bind(button, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
       mousePointer.lock(XFilterButton);
       mousePointer.set(XTableMousePointer.KEYS.pointer, XFilterButton);
     });
@@ -55,7 +55,7 @@ class XFilterButton extends Widget {
     const { table } = xFilter;
     const cells = table.getTableCells();
     const cell = cells.getCell(ri, ci);
-    if (Utils.isUnDef(cell) || Utils.isBlank(cell.background)) {
+    if (PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.background)) {
       button.css('background-color', '#ffffff');
       button.addClass(`${cssPrefix}-x-filter-button-dark`);
     } else {
@@ -70,7 +70,7 @@ class XFilterButton extends Widget {
 
   destroy() {
     const { area, button } = this;
-    EventBind.unbind(button);
+    Event.unbind(button);
     area.remove(this);
   }
 

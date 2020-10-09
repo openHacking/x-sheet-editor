@@ -1,36 +1,4 @@
 class DateUtils {
-  static dateFormat(fmt, date) {
-    const o = {
-      'M+': date.getMonth() + 1,
-      'd+': date.getDate(),
-      'h+': date.getHours(),
-      'm+': date.getMinutes(),
-      's+': date.getSeconds(),
-      'q+': Math.floor((date.getMonth() + 3) / 3),
-      S: date.getMilliseconds(),
-    };
-    const reYear = /(y+)/;
-    const resultYear = reYear.exec(fmt);
-    if (resultYear) {
-      const yearFormatPart = resultYear[0];
-      const yearVal = (date.getFullYear().toString()).substr(4 - yearFormatPart.length);
-      // eslint-disable-next-line no-param-reassign
-      fmt = fmt.replace(yearFormatPart, yearVal);
-    }
-    // eslint-disable-next-line guard-for-in,no-restricted-syntax
-    for (const k in o) {
-      const re = new RegExp(`(${k})`);
-      const res = re.exec(fmt);
-      if (res) {
-        const Val = o[k].toString();
-        const formatPart = res[0];
-        const replaceVal = (formatPart.length === 1) ? (Val) : ((`00${Val}`).substr(Val.length));
-        // eslint-disable-next-line no-param-reassign
-        fmt = fmt.replace(formatPart, replaceVal);
-      }
-    }
-    return fmt;
-  }
 
   static parserToDate(dateText, format) {
     if (!dateText) {
@@ -126,6 +94,40 @@ class DateUtils {
     }
     return new Date(year, month - 1, day, hours, minutes, seconds, milliseconds);
   }
+
+  static dateFormat(fmt, date) {
+    const o = {
+      'M+': date.getMonth() + 1,
+      'd+': date.getDate(),
+      'h+': date.getHours(),
+      'm+': date.getMinutes(),
+      's+': date.getSeconds(),
+      'q+': Math.floor((date.getMonth() + 3) / 3),
+      S: date.getMilliseconds(),
+    };
+    const reYear = /(y+)/;
+    const resultYear = reYear.exec(fmt);
+    if (resultYear) {
+      const yearFormatPart = resultYear[0];
+      const yearVal = (date.getFullYear().toString()).substr(4 - yearFormatPart.length);
+      // eslint-disable-next-line no-param-reassign
+      fmt = fmt.replace(yearFormatPart, yearVal);
+    }
+    // eslint-disable-next-line guard-for-in,no-restricted-syntax
+    for (const k in o) {
+      const re = new RegExp(`(${k})`);
+      const res = re.exec(fmt);
+      if (res) {
+        const Val = o[k].toString();
+        const formatPart = res[0];
+        const replaceVal = (formatPart.length === 1) ? (Val) : ((`00${Val}`).substr(Val.length));
+        // eslint-disable-next-line no-param-reassign
+        fmt = fmt.replace(formatPart, replaceVal);
+      }
+    }
+    return fmt;
+  }
+
 }
 
 export { DateUtils };

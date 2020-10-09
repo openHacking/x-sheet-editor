@@ -1,7 +1,7 @@
 import { DropDownItem } from './base/DropDownItem';
 import { cssPrefix } from '../../../const/Constant';
 import { Icon } from './Icon';
-import { Utils } from '../../../utils/Utils';
+import { PlainUtils } from '../../../utils/PlainUtils';
 import { EL_POPUP_POSITION } from '../../../component/elpopup/ElPopUp';
 import { FontColorContextMenu } from './contextmenu/fontcolor/FontColorContextMenu';
 
@@ -9,9 +9,9 @@ class FontColor extends DropDownItem {
 
   constructor(options) {
     super(`${cssPrefix}-tools-font-color`);
-    this.options = Utils.mergeDeep({ contextMenu: {} }, options);
+    this.options = PlainUtils.mergeDeep({ contextMenu: {} }, options);
     this.icon = new Icon('color');
-    this.fontColorContextMenu = new FontColorContextMenu(Utils.copyProp({
+    this.fontColorContextMenu = new FontColorContextMenu(PlainUtils.copyProp({
       el: this,
       position: EL_POPUP_POSITION.BOTTOM,
     }, this.options.contextMenu));

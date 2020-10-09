@@ -1,5 +1,5 @@
 import { LineFilter } from '../LineFilter';
-import { Utils } from '../../../../../utils/Utils';
+import { PlainUtils } from '../../../../../utils/PlainUtils';
 
 class TopBorderDiffFilter extends LineFilter {
 
@@ -10,12 +10,12 @@ class TopBorderDiffFilter extends LineFilter {
       const next = cells.getCell(ri - 1, ci);
       const cell = cells.getCell(ri, ci);
       // 当前单元格不存在
-      if (Utils.isUnDef(cell)) {
+      if (PlainUtils.isUnDef(cell)) {
         return false;
       }
       const { top } = cell.borderAttr;
       // 对面的单元格不存在
-      if (Utils.isUnDef(next)) {
+      if (PlainUtils.isUnDef(next)) {
         return top.display;
       }
       // 对面的单元格不需要显示

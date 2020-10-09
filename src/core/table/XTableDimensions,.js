@@ -1,11 +1,11 @@
-import { Utils } from '../../utils/Utils';
+import { PlainUtils } from '../../utils/PlainUtils';
 import { Code } from './tablebase/Code';
 import { Rows } from './tablebase/Rows';
 import { Cols } from './tablebase/Cols';
 import { Scroll, SCROLL_TYPE } from './tablebase/Scroll';
 import { Widget } from '../../lib/Widget';
 import { Constant, cssPrefix } from '../../const/Constant';
-import { EventBind } from '../../utils/EventBind';
+import { Event } from '../../lib/Event';
 import { Scale, ScaleAdapter } from './tablebase/Scale';
 import { XTableMousePointer } from './XTableMousePointer';
 import { XTableKeyboard } from './XTableKeyboard';
@@ -76,7 +76,7 @@ class Dimensions {
 class XTableFrozenContent extends Dimensions {
 
   getWidth() {
-    if (Utils.isNumber(this.width)) {
+    if (PlainUtils.isNumber(this.width)) {
       return this.width;
     }
     const { table } = this;
@@ -87,7 +87,7 @@ class XTableFrozenContent extends Dimensions {
   }
 
   getHeight() {
-    if (Utils.isNumber(this.height)) {
+    if (PlainUtils.isNumber(this.height)) {
       return this.height;
     }
     const { table } = this;
@@ -98,7 +98,7 @@ class XTableFrozenContent extends Dimensions {
   }
 
   getX() {
-    if (Utils.isNumber(this.x)) {
+    if (PlainUtils.isNumber(this.x)) {
       return this.x;
     }
     const { table } = this;
@@ -109,7 +109,7 @@ class XTableFrozenContent extends Dimensions {
   }
 
   getY() {
-    if (Utils.isNumber(this.y)) {
+    if (PlainUtils.isNumber(this.y)) {
       return this.y;
     }
     const { table } = this;
@@ -120,7 +120,7 @@ class XTableFrozenContent extends Dimensions {
   }
 
   getScrollView() {
-    if (Utils.isNotUnDef(this.scrollView)) {
+    if (PlainUtils.isNotUnDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -138,7 +138,7 @@ class XTableFrozenContent extends Dimensions {
 class XTableTopIndex extends Dimensions {
 
   getWidth() {
-    if (Utils.isNumber(this.width)) {
+    if (PlainUtils.isNumber(this.width)) {
       return this.width;
     }
     const { table } = this;
@@ -150,7 +150,7 @@ class XTableTopIndex extends Dimensions {
   }
 
   getHeight() {
-    if (Utils.isNumber(this.height)) {
+    if (PlainUtils.isNumber(this.height)) {
       return this.height;
     }
     const { table } = this;
@@ -161,7 +161,7 @@ class XTableTopIndex extends Dimensions {
   }
 
   getX() {
-    if (Utils.isNumber(this.x)) {
+    if (PlainUtils.isNumber(this.x)) {
       return this.x;
     }
     const { table } = this;
@@ -173,7 +173,7 @@ class XTableTopIndex extends Dimensions {
   }
 
   getY() {
-    if (Utils.isNumber(this.y)) {
+    if (PlainUtils.isNumber(this.y)) {
       return this.y;
     }
     const y = 0;
@@ -182,7 +182,7 @@ class XTableTopIndex extends Dimensions {
   }
 
   getScrollView() {
-    if (Utils.isNotUnDef(this.scrollView)) {
+    if (PlainUtils.isNotUnDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -201,7 +201,7 @@ class XTableTopIndex extends Dimensions {
 class XTableLeftIndex extends Dimensions {
 
   getWidth() {
-    if (Utils.isNumber(this.width)) {
+    if (PlainUtils.isNumber(this.width)) {
       return this.width;
     }
     const { table } = this;
@@ -212,7 +212,7 @@ class XTableLeftIndex extends Dimensions {
   }
 
   getHeight() {
-    if (Utils.isNumber(this.height)) {
+    if (PlainUtils.isNumber(this.height)) {
       return this.height;
     }
     const { table } = this;
@@ -224,7 +224,7 @@ class XTableLeftIndex extends Dimensions {
   }
 
   getX() {
-    if (Utils.isNumber(this.x)) {
+    if (PlainUtils.isNumber(this.x)) {
       return this.x;
     }
     const x = 0;
@@ -233,7 +233,7 @@ class XTableLeftIndex extends Dimensions {
   }
 
   getY() {
-    if (Utils.isNumber(this.y)) {
+    if (PlainUtils.isNumber(this.y)) {
       return this.y;
     }
     const { table } = this;
@@ -245,7 +245,7 @@ class XTableLeftIndex extends Dimensions {
   }
 
   getScrollView() {
-    if (Utils.isNotUnDef(this.scrollView)) {
+    if (PlainUtils.isNotUnDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -264,7 +264,7 @@ class XTableLeftIndex extends Dimensions {
 class XTableLeft extends Dimensions {
 
   getWidth() {
-    if (Utils.isNumber(this.width)) {
+    if (PlainUtils.isNumber(this.width)) {
       return this.width;
     }
     const { table } = this;
@@ -275,7 +275,7 @@ class XTableLeft extends Dimensions {
   }
 
   getHeight() {
-    if (Utils.isNumber(this.height)) {
+    if (PlainUtils.isNumber(this.height)) {
       return this.height;
     }
     const { table } = this;
@@ -287,7 +287,7 @@ class XTableLeft extends Dimensions {
   }
 
   getX() {
-    if (Utils.isNumber(this.x)) {
+    if (PlainUtils.isNumber(this.x)) {
       return this.x;
     }
     const { table } = this;
@@ -298,7 +298,7 @@ class XTableLeft extends Dimensions {
   }
 
   getY() {
-    if (Utils.isNumber(this.y)) {
+    if (PlainUtils.isNumber(this.y)) {
       return this.y;
     }
     const { table } = this;
@@ -310,7 +310,7 @@ class XTableLeft extends Dimensions {
   }
 
   getScrollView() {
-    if (Utils.isNotUnDef(this.scrollView)) {
+    if (PlainUtils.isNotUnDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -331,7 +331,7 @@ class XTableLeft extends Dimensions {
 class XTableTop extends Dimensions {
 
   getWidth() {
-    if (Utils.isNumber(this.width)) {
+    if (PlainUtils.isNumber(this.width)) {
       return this.width;
     }
     const { table } = this;
@@ -343,7 +343,7 @@ class XTableTop extends Dimensions {
   }
 
   getHeight() {
-    if (Utils.isNumber(this.height)) {
+    if (PlainUtils.isNumber(this.height)) {
       return this.height;
     }
     const { table } = this;
@@ -354,7 +354,7 @@ class XTableTop extends Dimensions {
   }
 
   getX() {
-    if (Utils.isNumber(this.x)) {
+    if (PlainUtils.isNumber(this.x)) {
       return this.x;
     }
     const { table } = this;
@@ -366,7 +366,7 @@ class XTableTop extends Dimensions {
   }
 
   getY() {
-    if (Utils.isNumber(this.y)) {
+    if (PlainUtils.isNumber(this.y)) {
       return this.y;
     }
     const { table } = this;
@@ -377,7 +377,7 @@ class XTableTop extends Dimensions {
   }
 
   getScrollView() {
-    if (Utils.isNotUnDef(this.scrollView)) {
+    if (PlainUtils.isNotUnDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -398,7 +398,7 @@ class XTableTop extends Dimensions {
 class XTableContent extends Dimensions {
 
   getWidth() {
-    if (Utils.isNumber(this.width)) {
+    if (PlainUtils.isNumber(this.width)) {
       return this.width;
     }
     const { table } = this;
@@ -410,7 +410,7 @@ class XTableContent extends Dimensions {
   }
 
   getHeight() {
-    if (Utils.isNumber(this.height)) {
+    if (PlainUtils.isNumber(this.height)) {
       return this.height;
     }
     const { table } = this;
@@ -422,7 +422,7 @@ class XTableContent extends Dimensions {
   }
 
   getX() {
-    if (Utils.isNumber(this.x)) {
+    if (PlainUtils.isNumber(this.x)) {
       return this.x;
     }
     const { table } = this;
@@ -434,7 +434,7 @@ class XTableContent extends Dimensions {
   }
 
   getY() {
-    if (Utils.isNumber(this.y)) {
+    if (PlainUtils.isNumber(this.y)) {
       return this.y;
     }
     const { table } = this;
@@ -446,7 +446,7 @@ class XTableContent extends Dimensions {
   }
 
   getScrollView() {
-    if (Utils.isNotUnDef(this.scrollView)) {
+    if (PlainUtils.isNotUnDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -599,7 +599,7 @@ class XTableDimensions extends Widget {
   constructor({ settings }) {
     super(`${cssPrefix}-table`);
     // 表格设置
-    this.settings = Utils.mergeDeep({
+    this.settings = PlainUtils.mergeDeep({
       index: {
         height: 30,
         width: 50,
@@ -859,7 +859,7 @@ class XTableDimensions extends Widget {
    * @return {*}
    */
   visualWidth() {
-    if (Utils.isNumber(this.visualWidthCache)) {
+    if (PlainUtils.isNumber(this.visualWidthCache)) {
       return this.visualWidthCache;
     }
     const width = this.box().width;
@@ -872,7 +872,7 @@ class XTableDimensions extends Widget {
    * @return {*}
    */
   visualHeight() {
-    if (Utils.isNumber(this.visualHeightCache)) {
+    if (PlainUtils.isNumber(this.visualHeightCache)) {
       return this.visualHeightCache;
     }
     const height = this.box().height;
@@ -994,13 +994,13 @@ class XTableDimensions extends Widget {
    */
   bind() {
     const { mousePointer } = this;
-    EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+    Event.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
       this.resize();
     });
-    EventBind.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+    Event.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.resize();
     });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
+    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       const { x, y } = this.computeEventXy(e);
       const { ri, ci } = this.getRiCiByXy(x, y);
       if (ri === -1 && ci === -1) {

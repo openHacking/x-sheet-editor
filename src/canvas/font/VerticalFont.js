@@ -1,5 +1,5 @@
 import { BaseFont } from './BaseFont';
-import { Utils } from '../../utils/Utils';
+import { PlainUtils } from '../../utils/PlainUtils';
 import { Crop } from '../Crop';
 
 class VerticalFont extends BaseFont {
@@ -18,7 +18,7 @@ class VerticalFont extends BaseFont {
       dw,
       attr,
     });
-    this.attr = Utils.mergeDeep({
+    this.attr = PlainUtils.mergeDeep({
       lineHeight: 4,
       spacing: 2,
     }, this.attr);

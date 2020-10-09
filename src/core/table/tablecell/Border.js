@@ -1,5 +1,5 @@
 import { LINE_TYPE } from '../../../canvas/Line';
-import { Utils } from '../../../utils/Utils';
+import { PlainUtils } from '../../../utils/PlainUtils';
 import { XDraw } from '../../../canvas/XDraw';
 
 let zIndexID = 0;
@@ -107,7 +107,7 @@ class Border {
   }
 
   priority(border) {
-    if (Utils.isUnDef(border)) {
+    if (PlainUtils.isUnDef(border)) {
       return -2;
     }
     const origin = this.zIndex;

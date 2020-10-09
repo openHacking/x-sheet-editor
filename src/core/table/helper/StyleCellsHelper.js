@@ -1,6 +1,6 @@
 import { BaseCellsHelper } from './BaseCellsHelper';
 import { Rect } from '../../../canvas/Rect';
-import { Utils } from '../../../utils/Utils';
+import { PlainUtils } from '../../../utils/PlainUtils';
 import { ColsIterator } from '../iterator/ColsIterator';
 import { RowsIterator } from '../iterator/RowsIterator';
 
@@ -130,7 +130,7 @@ class StyleCellsHelper extends BaseCellsHelper {
           .setEnd(eci)
           .setLoop((j) => {
             const merge = merges.getFirstIncludes(i, j);
-            if (Utils.isUnDef(merge) || filter.find(item => item === merge)) {
+            if (PlainUtils.isUnDef(merge) || filter.find(item => item === merge)) {
               return;
             }
             // 计算坐标

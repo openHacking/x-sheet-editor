@@ -2,7 +2,7 @@
 import { Constant, cssPrefix } from '../../../const/Constant';
 import { Widget } from '../../../lib/Widget';
 import { h } from '../../../lib/Element';
-import { EventBind } from '../../../utils/EventBind';
+import { Event } from '../../../lib/Event';
 import { XTableMousePointer } from '../XTableMousePointer';
 
 class ColFixed extends Widget {
@@ -25,25 +25,25 @@ class ColFixed extends Widget {
       mousePointer, dropColFixed, xFixedView,
     } = table;
     let moveOff = true;
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.setSize();
     });
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.setSize();
     });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
+    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
       this.setActive(true);
       mousePointer.lock(ColFixed);
       mousePointer.set(XTableMousePointer.KEYS.grab, ColFixed);
     });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
+    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       if (!moveOff) {
         return;
       }
       this.setActive(false);
       mousePointer.free(ColFixed);
     });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       dropColFixed.show();
       this.setActive(true);
       // 滚动视图
@@ -65,7 +65,7 @@ class ColFixed extends Widget {
         table.scroll.ci = this.fxEci + 1;
         table.resize();
       }
-      EventBind.mouseMoveUp(document, (e) => {
+      Event.mouseMoveUp(document, (e) => {
         // 推拽条移动位置
         const { x, y } = table.computeEventXy(e, table);
         dropColFixed.offset({ left: x });

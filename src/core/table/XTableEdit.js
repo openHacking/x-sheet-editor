@@ -1,8 +1,8 @@
 import { Widget } from '../../lib/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
 import { h } from '../../lib/Element';
-import { EventBind } from '../../utils/EventBind';
-import { Utils } from '../../utils/Utils';
+import { Event } from '../../lib/Event';
+import { PlainUtils } from '../../utils/PlainUtils';
 import { XSelectItem } from './xscreenitems/xselect/XSelectItem';
 
 class XTableEdit extends Widget {
@@ -36,12 +36,12 @@ class XTableEdit extends Widget {
       this.editOffset();
       this.text = cell.text;
       this.input.attr('style', cell.toCssStyle());
-      if (Utils.isBlank(this.text)) {
+      if (PlainUtils.isBlank(this.text)) {
         input.html('<p>&nbsp;</p>');
       } else {
         input.text(this.text);
       }
-      Utils.keepLastIndex(this.input.el);
+      PlainUtils.keepLastIndex(this.input.el);
     }
   }
 
@@ -55,7 +55,7 @@ class XTableEdit extends Widget {
     if (select) {
       const origin = cells.getCellOrNew(select.sri, select.sci);
       const cell = origin.clone();
-      const text = Utils.trim(this.text);
+      const text = PlainUtils.trim(this.text);
       if (cell.text !== text) {
         tableDataSnapshot.begin();
         cell.text = text;
@@ -71,23 +71,23 @@ class XTableEdit extends Widget {
     const { table } = this;
     const { xScreen } = table;
     const xSelect = xScreen.findType(XSelectItem);
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       e.stopPropagation();
     });
-    EventBind.bind(this.input, Constant.SYSTEM_EVENT_TYPE.INPUT, () => {
+    Event.bind(this.input, Constant.SYSTEM_EVENT_TYPE.INPUT, () => {
       const { input } = this;
-      if (Utils.isBlank(this.input.text())) {
+      if (PlainUtils.isBlank(this.input.text())) {
         input.html('<p>&nbsp;</p>');
       }
       this.text = input.text();
     });
-    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+    Event.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       this.hideEdit();
     });
-    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    Event.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       this.hideEdit();
     });
-    EventBind.dbClick([
+    Event.dbClick([
       xSelect.lt,
       xSelect.t,
       xSelect.l,

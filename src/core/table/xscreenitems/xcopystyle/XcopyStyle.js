@@ -2,7 +2,7 @@ import { XScreenSvgBorderItem } from '../../xscreen/item/viewborder/XScreenSvgBo
 import { XSelectItem } from '../xselect/XSelectItem';
 import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
-import { EventBind } from '../../../../utils/EventBind';
+import { Event } from '../../../../lib/Event';
 import { RectRange } from '../../tablebase/RectRange';
 
 class XcopyStyle extends XScreenSvgBorderItem {
@@ -28,27 +28,27 @@ class XcopyStyle extends XScreenSvgBorderItem {
 
   bind() {
     const { table } = this;
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.selectOffsetHandle();
       this.selectBorderHandle();
     });
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
       this.selectOffsetHandle();
       this.selectBorderHandle();
     });
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, () => {
       this.selectOffsetHandle();
       this.selectBorderHandle();
     });
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
       this.selectOffsetHandle();
       this.selectBorderHandle();
     });
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
       this.selectOffsetHandle();
       this.selectBorderHandle();
     });
-    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+    Event.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       if (this.status) {
         this.selectOffsetHandle();
         this.selectBorderHandle();

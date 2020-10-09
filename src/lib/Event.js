@@ -1,5 +1,5 @@
 import { Constant } from '../const/Constant';
-import { Element } from '../lib/Element';
+import { Element } from './Element';
 
 class BindPool {
 
@@ -63,7 +63,7 @@ class BindPool {
 
 const pool = new BindPool();
 
-class EventBind {
+class Event {
 
   static unbind(target, name, fn, option = false) {
     if (Array.isArray(target)) {
@@ -83,7 +83,7 @@ class EventBind {
 
   static dbClick(target, func = () => {}) {
     let t = 0;
-    EventBind.bind(target, Constant.SYSTEM_EVENT_TYPE.CLICK, (e) => {
+    Event.bind(target, Constant.SYSTEM_EVENT_TYPE.CLICK, (e) => {
       const n = Date.now();
       if (n - t <= 300) {
         func(e);
@@ -100,15 +100,17 @@ class EventBind {
       evt.stopPropagation();
     };
     const xEvtUp = (evt) => {
-      EventBind.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, xEvtMove, true);
-      EventBind.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);
+      Event.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, xEvtMove, true);
+      Event.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);
       upFunc(evt);
       evt.stopPropagation();
     };
-    EventBind.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, xEvtMove, true);
-    EventBind.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);
+    Event.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, xEvtMove, true);
+    Event.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);
   }
 
 }
 
-export { EventBind };
+export {
+  Event
+};

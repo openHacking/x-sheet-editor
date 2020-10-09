@@ -1,5 +1,5 @@
 import { RectRange } from './RectRange';
-import { Utils } from '../../../utils/Utils';
+import { PlainUtils } from '../../../utils/PlainUtils';
 
 /**
  * Merges Class
@@ -33,7 +33,7 @@ class Merges {
     rectRange.each((ri, ci) => {
       const offset = this.getOffset(ri, ci);
       const no = index[offset];
-      if (Utils.isNotUnDef(no)) {
+      if (PlainUtils.isNotUnDef(no)) {
         cb(data[no]);
       }
     });
@@ -61,11 +61,11 @@ class Merges {
     const { index, data } = this;
     const offset = this.getOffset(ri, ci);
     const no = index[offset];
-    if (Utils.isUnDef(no)) {
+    if (PlainUtils.isUnDef(no)) {
       return null;
     }
     const item = data[no];
-    if (Utils.isUnDef(item)) {
+    if (PlainUtils.isUnDef(item)) {
       return null;
     }
     return item;
@@ -102,7 +102,7 @@ class Merges {
     const { sri, sci } = rectRange;
     const offset = this.getOffset(sri, sci);
     const no = index[offset];
-    if (Utils.isUnDef(no)) {
+    if (PlainUtils.isUnDef(no)) {
       return;
     }
     data.splice(no, 1);

@@ -1,13 +1,13 @@
 import { Widget } from '../../../lib/Widget';
 import { cssPrefix, Constant } from '../../../const/Constant';
 import { ColorItem } from './ColorItem';
-import { Utils } from '../../../utils/Utils';
+import { PlainUtils } from '../../../utils/PlainUtils';
 
 
 class ColorArray extends Widget {
   constructor(options) {
     super(`${cssPrefix}-color-array`);
-    this.options = Utils.mergeDeep({
+    this.options = PlainUtils.mergeDeep({
       colors: [
         new ColorItem({ color: 'rgb(0,0,0)' }),
         new ColorItem({ color: 'rgb(67, 67, 67)' }),

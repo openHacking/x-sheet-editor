@@ -1,8 +1,8 @@
 import { Widget } from '../../lib/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
 import { h } from '../../lib/Element';
-import { Utils } from '../../utils/Utils';
-import { EventBind } from '../../utils/EventBind';
+import { PlainUtils } from '../../utils/PlainUtils';
+import { Event } from '../../lib/Event';
 
 
 class TabView extends Widget {
@@ -21,7 +21,7 @@ class TabView extends Widget {
       this.content,
       this.plus,
     ]);
-    this.optiions = Utils.mergeDeep({
+    this.optiions = PlainUtils.mergeDeep({
       onAdd(tab) { return tab; },
       onSwitch(tab) { return tab; },
     }, options);
@@ -44,7 +44,7 @@ class TabView extends Widget {
 
   bind() {
     const { next, last, plus } = this;
-    EventBind.bind(next, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    Event.bind(next, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
       const maxWidth = this.content.offset().width;
       const current = this.tabs.offset().width;
       const min = -(current - maxWidth);
@@ -54,14 +54,14 @@ class TabView extends Widget {
       this.left = left;
       this.tabs.css('marginLeft', `${this.left}px`);
     });
-    EventBind.bind(last, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    Event.bind(last, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
       let left = this.left || 0;
       left += 30;
       if (left > 0) left = 0;
       this.left = left;
       this.tabs.css('marginLeft', `${this.left}px`);
     });
-    EventBind.bind(plus, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    Event.bind(plus, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
       this.optiions.onAdd();
       this.offsetSizeLeft();
     });
@@ -71,7 +71,7 @@ class TabView extends Widget {
     this.tabList.push(tab);
     this.tabs.children(tab);
     tab.onAttach();
-    EventBind.bind(tab, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    Event.bind(tab, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
       this.setActive(tab);
       this.optiions.onSwitch(tab);
     });

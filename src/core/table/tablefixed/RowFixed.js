@@ -2,7 +2,7 @@
 import { Constant, cssPrefix } from '../../../const/Constant';
 import { Widget } from '../../../lib/Widget';
 import { h } from '../../../lib/Element';
-import { EventBind } from '../../../utils/EventBind';
+import { Event } from '../../../lib/Event';
 import { XTableMousePointer } from '../XTableMousePointer';
 
 class RowFixed extends Widget {
@@ -25,25 +25,25 @@ class RowFixed extends Widget {
       mousePointer, dropRowFixed, xFixedView,
     } = table;
     let moveOff = true;
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.setSize();
     });
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.setSize();
     });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
+    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
       this.setActive(true);
       mousePointer.lock(RowFixed);
       mousePointer.set(XTableMousePointer.KEYS.grab, RowFixed);
     });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
+    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       if (!moveOff) {
         return;
       }
       this.setActive(false);
       mousePointer.free(RowFixed);
     });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       dropRowFixed.show();
       this.setActive(true);
       // 滚动视图
@@ -65,7 +65,7 @@ class RowFixed extends Widget {
         table.scroll.ri = this.fxEri + 1;
         table.resize();
       }
-      EventBind.mouseMoveUp(document, (e) => {
+      Event.mouseMoveUp(document, (e) => {
         // 推拽条移动位置 + 行号
         const { x, y } = table.computeEventXy(e, table);
         dropRowFixed.offset({ top: y });

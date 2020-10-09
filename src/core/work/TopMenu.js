@@ -21,12 +21,12 @@ import { TextWrapping } from './tools/TextWrapping';
 import { Fixed } from './tools/Fixed';
 import { Filter } from './tools/Filter';
 import { Functions } from './tools/Functions';
-import { EventBind } from '../../utils/EventBind';
+import { Event } from '../../lib/Event';
 import { ElPopUp } from '../../component/elpopup/ElPopUp';
 import { LINE_TYPE } from '../../canvas/Line';
 import { Icon } from './tools/Icon';
 import { Cell } from '../table/tablecell/Cell';
-import { Utils } from '../../utils/Utils';
+import { PlainUtils } from '../../utils/PlainUtils';
 import { Scale } from './tools/Scale';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { XSelectItem } from '../table/xscreenitems/xselect/XSelectItem';
@@ -684,13 +684,13 @@ class TopMenu extends Widget {
   bind() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
-    EventBind.bind(body, Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE, () => {
+    Event.bind(body, Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE, () => {
       this.setStatus();
     });
-    EventBind.bind(body, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
+    Event.bind(body, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
       this.setStatus();
     });
-    EventBind.bind(body, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, () => {
+    Event.bind(body, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, () => {
       // console.log('TABLE_EVENT_TYPE.SELECT_DOWN');
       this.setFormatStatus();
       this.setFontStatus();
@@ -705,22 +705,22 @@ class TopMenu extends Widget {
       this.setVerticalAlignStatus();
       this.setTextWrappingStatus();
     });
-    EventBind.bind(body, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
+    Event.bind(body, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
       this.setFixedStatus();
     });
-    EventBind.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    Event.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const tableDataSnapshot = table.getTableDataSnapshot();
       if (tableDataSnapshot.canBack()) tableDataSnapshot.back();
     });
-    EventBind.bind(this.redo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    Event.bind(this.redo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const tableDataSnapshot = table.getTableDataSnapshot();
       if (tableDataSnapshot.canGo()) tableDataSnapshot.go();
     });
-    EventBind.bind(this.scale, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.scale, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { scale } = this;
       const { scaleContextMenu } = scale;
       const { elPopUp } = scaleContextMenu;
@@ -733,13 +733,13 @@ class TopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.paintFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    Event.bind(this.paintFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const { xScreen } = table;
       const xSelect = xScreen.findType(XSelectItem);
       const { selectRange } = xSelect;
-      if (Utils.isUnDef(selectRange)) {
+      if (PlainUtils.isUnDef(selectRange)) {
         return;
       }
       const tableDataSnapshot = table.getTableDataSnapshot();
@@ -794,11 +794,11 @@ class TopMenu extends Widget {
         tableDataSnapshot.end();
         table.render();
         // 删除事件监听
-        EventBind.unbind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, callback);
+        Event.unbind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, callback);
       };
-      EventBind.bind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, callback);
+      Event.bind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, callback);
     });
-    EventBind.bind(this.clearFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    Event.bind(this.clearFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const {
@@ -822,7 +822,7 @@ class TopMenu extends Widget {
         table.render();
       }
     });
-    EventBind.bind(this.format, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.format, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { format } = this;
       const { formatContextMenu } = format;
       const { elPopUp } = formatContextMenu;
@@ -835,7 +835,7 @@ class TopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.font, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.font, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { font } = this;
       const { fontContextMenu } = font;
       const { elPopUp } = fontContextMenu;
@@ -848,7 +848,7 @@ class TopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.dprFontSize, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.dprFontSize, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { dprFontSize } = this;
       const { fontSizeContextMenu } = dprFontSize;
       const { elPopUp } = fontSizeContextMenu;
@@ -861,7 +861,7 @@ class TopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.fontBold, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    Event.bind(this.fontBold, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const {
@@ -889,7 +889,7 @@ class TopMenu extends Widget {
         table.render();
       }
     });
-    EventBind.bind(this.fontItalic, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    Event.bind(this.fontItalic, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const {
@@ -917,7 +917,7 @@ class TopMenu extends Widget {
         table.render();
       }
     });
-    EventBind.bind(this.underLine, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    Event.bind(this.underLine, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const {
@@ -945,7 +945,7 @@ class TopMenu extends Widget {
         table.render();
       }
     });
-    EventBind.bind(this.fontStrike, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    Event.bind(this.fontStrike, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const {
@@ -973,7 +973,7 @@ class TopMenu extends Widget {
         table.render();
       }
     });
-    EventBind.bind(this.fontColor, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.fontColor, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { fontColor } = this;
       const { fontColorContextMenu } = fontColor;
       const { elPopUp } = fontColorContextMenu;
@@ -986,7 +986,7 @@ class TopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.fillColor, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.fillColor, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { fillColor } = this;
       const { fillColorContextMenu } = fillColor;
       const { elPopUp } = fillColorContextMenu;
@@ -999,7 +999,7 @@ class TopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.border, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.border, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { border } = this;
       const { borderTypeContextMenu } = border;
       const { elPopUp } = borderTypeContextMenu;
@@ -1012,7 +1012,7 @@ class TopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.merge, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.merge, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const {
@@ -1027,7 +1027,7 @@ class TopMenu extends Widget {
         const find = merges.getFirstIncludes(merge.sri, merge.sci);
         tableDataSnapshot.begin();
         const { mergeDataProxy } = tableDataSnapshot;
-        if (Utils.isNotUnDef(find) && merge.equals(find)) {
+        if (PlainUtils.isNotUnDef(find) && merge.equals(find)) {
           mergeDataProxy.deleteMerge(find);
         } else {
           mergeDataProxy.addMerge(merge);
@@ -1038,7 +1038,7 @@ class TopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.horizontalAlign, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.horizontalAlign, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { horizontalAlign } = this;
       const { horizontalContextMenu } = horizontalAlign;
       const { elPopUp } = horizontalContextMenu;
@@ -1051,7 +1051,7 @@ class TopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.verticalAlign, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.verticalAlign, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { verticalAlign } = this;
       const { verticalContextMenu } = verticalAlign;
       const { elPopUp } = verticalContextMenu;
@@ -1064,7 +1064,7 @@ class TopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.textWrapping, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.textWrapping, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { textWrapping } = this;
       const { textWrappingContextMenu } = textWrapping;
       const { elPopUp } = textWrappingContextMenu;
@@ -1077,7 +1077,7 @@ class TopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.fixed, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.fixed, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { fixed } = this;
       const { fixedContextMenu } = fixed;
       const { elPopUp } = fixedContextMenu;
@@ -1090,7 +1090,7 @@ class TopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.filter, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    Event.bind(this.filter, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const { xScreen } = table;

@@ -1,7 +1,6 @@
 const Constant = {};
-const cssPrefix = 'x-sheet';
 const XSheetVersion = 'X-Sheet 1.0.0-develop';
-
+const cssPrefix = 'x-sheet';
 Constant.SYSTEM_EVENT_TYPE = {
   MOUSE_MOVE: 'mousemove',
   MOUSE_DOWN: 'mousedown',
@@ -35,7 +34,6 @@ Constant.TABLE_EVENT_TYPE = {
   RESIZE_CHANGE: 'resizechange',
   RENDER: 'render',
 };
-
 export {
   XSheetVersion,
   cssPrefix,

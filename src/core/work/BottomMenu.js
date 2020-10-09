@@ -1,8 +1,8 @@
 import { Widget } from '../../lib/Widget';
 import { Constant, cssPrefix } from '../../const/Constant';
 import { h } from '../../lib/Element';
-import { EventBind } from '../../utils/EventBind';
-import { Utils } from '../../utils/Utils';
+import { Event } from '../../lib/Event';
+import { PlainUtils } from '../../utils/PlainUtils';
 
 /* global  document */
 
@@ -31,17 +31,17 @@ class BottomMenu extends Widget {
     const { work } = workBottom;
     const { body } = work;
     const { sheetView } = body;
-    EventBind.bind(this.grid, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    Event.bind(this.grid, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       table.settings.table.showGrid = !table.settings.table.showGrid;
       table.render();
     });
-    EventBind.bind(this.fullScreen, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-      if (Utils.isFull()) {
-        Utils.exitFullscreen();
+    Event.bind(this.fullScreen, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      if (PlainUtils.isFull()) {
+        PlainUtils.exitFullscreen();
       } else {
-        Utils.fullScreen(work.root);
+        PlainUtils.fullScreen(work.root);
       }
     });
   }

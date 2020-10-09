@@ -1,10 +1,10 @@
 /* global document */
 import { Widget } from '../../lib/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
-import { EventBind } from '../../utils/EventBind';
+import { Event } from '../../lib/Event';
 
 import { h } from '../../lib/Element';
-import { Utils } from '../../utils/Utils';
+import { PlainUtils } from '../../utils/PlainUtils';
 
 const POOL = [];
 
@@ -21,7 +21,7 @@ class DragPanel extends Widget {
 
   constructor(options) {
     super(`${cssPrefix}-drag-panel`);
-    this.options = Utils.mergeDeep({
+    this.options = PlainUtils.mergeDeep({
       position: DRAG_PANEL_POSITION.CENTER,
     }, options);
     this.off = true;
@@ -34,14 +34,14 @@ class DragPanel extends Widget {
 
   bind() {
     const { mask } = this;
-    EventBind.bind(mask, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(mask, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.close();
       e.stopPropagation();
     });
-    EventBind.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
+    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
       if (evt1.button !== 0) return;
       const downEventXy = this.computeEventXy(evt1, this);
-      EventBind.mouseMoveUp(h(document), (evt2) => {
+      Event.mouseMoveUp(h(document), (evt2) => {
         // 计算移动的距离
         const top = evt2.pageY - downEventXy.y;
         const left = evt2.pageX - downEventXy.x;
@@ -57,7 +57,7 @@ class DragPanel extends Widget {
   position() {
     const { options } = this;
     const { position } = options;
-    const { width, height } = Utils.viewPort();
+    const { width, height } = PlainUtils.viewPort();
     const box = this.box();
     switch (position) {
       case DRAG_PANEL_POSITION.LEFT:

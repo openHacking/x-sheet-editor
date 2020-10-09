@@ -6,14 +6,14 @@ import { h } from '../../../../../lib/Element';
 import { ColorItem } from '../../../../../component/colorpicker/colorarray/ColorItem';
 import { ELContextMenuDivider } from '../../../../../component/elcontextmenu/ELContextMenuDivider';
 import { Icon } from '../../Icon';
-import { Utils } from '../../../../../utils/Utils';
+import { PlainUtils } from '../../../../../utils/PlainUtils';
 
 import { ColorPicker } from '../../../../../component/colorpicker/ColorPicker';
 
 class FontColorContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-font-color-context-menu`, Utils.mergeDeep({
+    super(`${cssPrefix}-font-color-context-menu`, PlainUtils.mergeDeep({
       onUpdate: () => {},
     }, options));
     this.colorPicker = new ColorPicker({

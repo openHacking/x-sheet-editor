@@ -1,5 +1,5 @@
 import { Cell } from './Cell';
-import { Utils } from '../../../utils/Utils';
+import { PlainUtils } from '../../../utils/PlainUtils';
 import { BaseFont } from '../../../canvas/font/BaseFont';
 
 /**
@@ -21,7 +21,7 @@ class Cells {
   }
 
   setCellOrNew(ri, ci, cell) {
-    if (Utils.isUnDef(this.data[ri])) {
+    if (PlainUtils.isUnDef(this.data[ri])) {
       this.data[ri] = [];
     }
     this.data[ri][ci] = cell;
@@ -35,10 +35,10 @@ class Cells {
   }
 
   getCellOrNew(ri, ci) {
-    if (Utils.isUnDef(this.data[ri])) {
+    if (PlainUtils.isUnDef(this.data[ri])) {
       this.data[ri] = [];
     }
-    if (Utils.isUnDef(this.data[ri][ci])) {
+    if (PlainUtils.isUnDef(this.data[ri][ci])) {
       this.data[ri][ci] = {
         text: '',
       };
@@ -62,7 +62,7 @@ class Cells {
       if (item instanceof Cell) {
         return row[ci];
       }
-      if (Utils.isString(item)) {
+      if (PlainUtils.isString(item)) {
         item = {
           text: item,
         };

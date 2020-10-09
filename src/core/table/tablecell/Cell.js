@@ -1,4 +1,4 @@
-import { Utils } from '../../../utils/Utils';
+import { PlainUtils } from '../../../utils/PlainUtils';
 import { CellFont } from './CellFont';
 import { CellBorder } from './CellBorder';
 
@@ -18,8 +18,8 @@ class Cell {
    * @param contentWidth
    */
   constructor({
-    text = Utils.EMPTY,
-    background = Utils.Nul,
+    text = PlainUtils.EMPTY,
+    background = PlainUtils.Nul,
     format = 'default',
     fontAttr = {},
     borderAttr = {},

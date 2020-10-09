@@ -4,15 +4,15 @@ import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBo
 import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
-import { Utils } from '../../../../utils/Utils';
-import { EventBind } from '../../../../utils/EventBind';
+import { PlainUtils } from '../../../../utils/PlainUtils';
+import { Event } from '../../../../lib/Event';
 import { XTableMousePointer } from '../../XTableMousePointer';
 
 class XautoFillItem extends XScreenCssBorderItem {
 
   constructor(table, options = {}) {
     super({ table });
-    this.options = Utils.mergeDeep({
+    this.options = PlainUtils.mergeDeep({
       mergeForceSplit: false,
       onBeforeAutoFill: () => {},
       onAfterAutoFill: () => {},
@@ -47,7 +47,7 @@ class XautoFillItem extends XScreenCssBorderItem {
     const { table, xScreen } = this;
     const { mousePointer } = table;
     const xSelect = xScreen.findType(XSelectItem);
-    EventBind.bind([
+    Event.bind([
       xSelect.ltCorner,
       xSelect.tCorner,
       xSelect.lCorner,
@@ -55,7 +55,7 @@ class XautoFillItem extends XScreenCssBorderItem {
     ], Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       mousePointer.free(XautoFillItem);
     });
-    EventBind.bind([
+    Event.bind([
       xSelect.ltCorner,
       xSelect.tCorner,
       xSelect.lCorner,
@@ -64,7 +64,7 @@ class XautoFillItem extends XScreenCssBorderItem {
       mousePointer.lock(XautoFillItem);
       mousePointer.set(XTableMousePointer.KEYS.crosshair, XautoFillItem);
     });
-    EventBind.bind([
+    Event.bind([
       xSelect.ltCorner,
       xSelect.tCorner,
       xSelect.lCorner,
@@ -73,7 +73,7 @@ class XautoFillItem extends XScreenCssBorderItem {
       this.status = true;
       mousePointer.lock(XautoFillItem);
       mousePointer.set(XTableMousePointer.KEYS.crosshair, XautoFillItem);
-      EventBind.mouseMoveUp(document, (e2) => {
+      Event.mouseMoveUp(document, (e2) => {
         const { x, y } = table.computeEventXy(e2);
         this.selectRangeHandle(x, y);
         this.selectOffsetHandle();

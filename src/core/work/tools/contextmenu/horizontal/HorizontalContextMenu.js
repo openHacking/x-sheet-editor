@@ -1,17 +1,17 @@
 import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
 import { cssPrefix, Constant } from '../../../../../const/Constant';
-import { Utils } from '../../../../../utils/Utils';
+import { PlainUtils } from '../../../../../utils/PlainUtils';
 import { h } from '../../../../../lib/Element';
 import { HorizontalIcon1 } from '../icon/horizontal/HorizontalIcon1';
 import { HorizontalIcon2 } from '../icon/horizontal/HorizontalIcon2';
 import { HorizontalIcon3 } from '../icon/horizontal/HorizontalIcon3';
 import { HorizontalContextMenuItem } from './HorizontalContextMenuItem';
-import { EventBind } from '../../../../../utils/EventBind';
+import { Event } from '../../../../../lib/Event';
 import { BaseFont } from '../../../../../canvas/font/BaseFont';
 
 class HorizontalContextMenu extends ELContextMenu {
   constructor(options = {}) {
-    super(`${cssPrefix}-horizontal-type-context-menu`, Utils.mergeDeep({
+    super(`${cssPrefix}-horizontal-type-context-menu`, PlainUtils.mergeDeep({
       onUpdate: () => {},
     }, options));
     this.horizontalIcon1 = new HorizontalIcon1();
@@ -26,17 +26,17 @@ class HorizontalContextMenu extends ELContextMenu {
     this.horizontalIcons.children(div2);
     this.addItem(this.horizontalIcons);
     // 添加事件
-    EventBind.bind(this.horizontalIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.horizontalIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate(BaseFont.ALIGN.left);
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.horizontalIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.horizontalIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate(BaseFont.ALIGN.center);
       e.stopPropagation();
       e.preventDefault();
     });
-    EventBind.bind(this.horizontalIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    Event.bind(this.horizontalIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate(BaseFont.ALIGN.right);
       e.stopPropagation();
       e.preventDefault();

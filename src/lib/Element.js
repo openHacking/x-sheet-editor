@@ -1,6 +1,6 @@
 /* global document CustomEvent window */
 
-import { Utils } from '../utils/Utils';
+import { PlainUtils } from '../utils/PlainUtils';
 
 class Element {
 
@@ -313,10 +313,10 @@ class Element {
       }
     }
     return {
-      top: Utils.parseFloat(top),
-      left: Utils.parseFloat(left),
-      right: Utils.parseFloat(right),
-      bottom: Utils.parseFloat(bottom),
+      top: PlainUtils.parseFloat(top),
+      left: PlainUtils.parseFloat(left),
+      right: PlainUtils.parseFloat(right),
+      bottom: PlainUtils.parseFloat(bottom),
     };
   }
 

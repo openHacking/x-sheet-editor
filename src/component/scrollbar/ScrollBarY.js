@@ -3,14 +3,14 @@ import { Widget } from '../../lib/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
 import { h } from '../../lib/Element';
 
-import { Utils } from '../../utils/Utils';
-import { EventBind } from '../../utils/EventBind';
+import { PlainUtils } from '../../utils/PlainUtils';
+import { Event } from '../../lib/Event';
 
 class ScrollBarY extends Widget {
 
   constructor(option) {
     super(`${cssPrefix}-scroll-bar-y`);
-    this.option = Utils.mergeDeep({
+    this.option = PlainUtils.mergeDeep({
       style: {},
       scroll: to => to,
     }, option);
@@ -40,10 +40,10 @@ class ScrollBarY extends Widget {
   }
 
   bind() {
-    EventBind.bind(this.block, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
+    Event.bind(this.block, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
       if (evt1.button !== 0) return;
       const downEventXy = this.computeEventXy(evt1, this.block);
-      EventBind.mouseMoveUp(h(document), (evt2) => {
+      Event.mouseMoveUp(h(document), (evt2) => {
         // 计算移动的距离
         const moveEventXy = this.computeEventXy(evt2, this.content);
         let top = moveEventXy.y - downEventXy.y;

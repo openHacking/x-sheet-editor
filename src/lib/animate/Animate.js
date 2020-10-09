@@ -2,7 +2,7 @@
 // eslint-disable-next-line max-len
 /* global requestAnimationFrame webkitRequestAnimationFrame cancelAnimationFrame webkitCancelAnimationFrame */
 
-import { Utils } from '../../utils/Utils';
+import { PlainUtils } from '../../utils/PlainUtils';
 
 const REQUEST = requestAnimationFrame || webkitRequestAnimationFrame;
 const CANCEL = cancelAnimationFrame || webkitCancelAnimationFrame;
@@ -23,7 +23,7 @@ const TWEEN = {
 
 class Animate {
   constructor(option) {
-    this.option = Utils.mergeDeep({
+    this.option = PlainUtils.mergeDeep({
       loop: false,
       begin: 0,
       end: 0,

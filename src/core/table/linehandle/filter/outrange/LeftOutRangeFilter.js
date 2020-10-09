@@ -1,5 +1,5 @@
 import { LineFilter } from '../LineFilter';
-import { Utils } from '../../../../../utils/Utils';
+import { PlainUtils } from '../../../../../utils/PlainUtils';
 import { BaseFont } from '../../../../../canvas/font/BaseFont';
 import { ColsIterator } from '../../../iterator/ColsIterator';
 
@@ -29,7 +29,7 @@ class LeftOutRangeFilter extends LineFilter {
     const last = cells.getCell(ri, ci - 1);
     const master = cells.getCell(ri, ci);
 
-    if (Utils.isUnDef(master) || Utils.isBlank(master.text)) {
+    if (PlainUtils.isUnDef(master) || PlainUtils.isBlank(master.text)) {
       return true;
     }
 
@@ -76,7 +76,7 @@ class LeftOutRangeFilter extends LineFilter {
     if (width > maxWidth) {
       // 只有next单元格是空时
       // 才允许不绘制边框
-      if (Utils.isUnDef(last) || Utils.isBlank(last.text)) {
+      if (PlainUtils.isUnDef(last) || PlainUtils.isBlank(last.text)) {
         return false;
       }
     }
@@ -100,15 +100,15 @@ class LeftOutRangeFilter extends LineFilter {
         // 过滤掉空单元格
         // 合并单元格
         const cell = cells.getCell(ri, i);
-        if (Utils.isUnDef(cell)) {
+        if (PlainUtils.isUnDef(cell)) {
           return true;
         }
         const merge = merges.getFirstIncludes(ri, i);
-        if (Utils.isNotUnDef(merge)) {
+        if (PlainUtils.isNotUnDef(merge)) {
           return true;
         }
         const { text } = cell;
-        if (Utils.isBlank(text)) {
+        if (PlainUtils.isBlank(text)) {
           return true;
         }
 
@@ -151,7 +151,7 @@ class LeftOutRangeFilter extends LineFilter {
         if (width > leftWidth) {
           // 只有master单元格为
           // 空时才允许不绘制边框
-          if (Utils.isUnDef(master) || Utils.isBlank(master.text)) {
+          if (PlainUtils.isUnDef(master) || PlainUtils.isBlank(master.text)) {
             find = false;
           }
         }
@@ -182,15 +182,15 @@ class LeftOutRangeFilter extends LineFilter {
         // 过滤掉空单元格
         // 合并单元格
         const cell = cells.getCell(ri, j);
-        if (Utils.isUnDef(cell)) {
+        if (PlainUtils.isUnDef(cell)) {
           return true;
         }
         const merge = merges.getFirstIncludes(ri, j);
-        if (Utils.isNotUnDef(merge)) {
+        if (PlainUtils.isNotUnDef(merge)) {
           return true;
         }
         const { text } = cell;
-        if (Utils.isBlank(text)) {
+        if (PlainUtils.isBlank(text)) {
           return true;
         }
 
@@ -234,8 +234,8 @@ class LeftOutRangeFilter extends LineFilter {
           // 只有master单元格和
           // last单元格都是空时
           // 才允许不绘制边框
-          const masterBlank = Utils.isUnDef(master) || Utils.isBlank(master.text);
-          const nextBlank = Utils.isUnDef(last) || Utils.isBlank(last.text);
+          const masterBlank = PlainUtils.isUnDef(master) || PlainUtils.isBlank(master.text);
+          const nextBlank = PlainUtils.isUnDef(last) || PlainUtils.isBlank(last.text);
           if (masterBlank && nextBlank) {
             find = false;
           }

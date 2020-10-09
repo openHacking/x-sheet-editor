@@ -1,12 +1,12 @@
 import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
 import { Constant, cssPrefix } from '../../../../../const/Constant';
-import { Utils } from '../../../../../utils/Utils';
+import { PlainUtils } from '../../../../../utils/PlainUtils';
 import { ScaleContextMenuItem } from './ScaleContextMenuItem';
 
 class ScaleContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-scale-context-menu`, Utils.mergeDeep({
+    super(`${cssPrefix}-scale-context-menu`, PlainUtils.mergeDeep({
       onUpdate: () => {},
     }, options));
     this.items = [

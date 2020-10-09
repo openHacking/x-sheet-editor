@@ -1,4 +1,4 @@
-import { Utils } from '../../../utils/Utils';
+import { PlainUtils } from '../../../utils/PlainUtils';
 import { Rect } from '../../../canvas/Rect';
 import { BaseFont } from '../../../canvas/font/BaseFont';
 import { ColsIterator } from '../iterator/ColsIterator';
@@ -65,12 +65,12 @@ class BaseCellsHelper {
         .setLoop((i) => {
           const merge = merges.getFirstIncludes(ri, i);
           const cell = cells.getCell(ri, i);
-          const blank = Utils.isUnDef(cell) || Utils.isBlank(cell.text);
+          const blank = PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text);
           if (i === ci) {
             width += cols.getWidth(i);
             return true;
           }
-          if (blank && Utils.isUnDef(merge)) {
+          if (blank && PlainUtils.isUnDef(merge)) {
             width += cols.getWidth(i);
             return true;
           }
@@ -87,8 +87,8 @@ class BaseCellsHelper {
         .setLoop((i) => {
           const merge = merges.getFirstIncludes(ri, i);
           const cell = cells.getCell(ri, i);
-          const blank = Utils.isUnDef(cell) || Utils.isBlank(cell.text);
-          if (blank && Utils.isUnDef(merge)) {
+          const blank = PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text);
+          if (blank && PlainUtils.isUnDef(merge)) {
             rightWidth += cols.getWidth(i);
             return true;
           }
@@ -102,8 +102,8 @@ class BaseCellsHelper {
         .setLoop((i) => {
           const merge = merges.getFirstIncludes(ri, i);
           const cell = cells.getCell(ri, i);
-          const blank = Utils.isUnDef(cell) || Utils.isBlank(cell.text);
-          if (blank && Utils.isUnDef(merge)) {
+          const blank = PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text);
+          if (blank && PlainUtils.isUnDef(merge)) {
             const tmp = cols.getWidth(i);
             leftWidth += tmp;
             offset -= tmp;
@@ -123,12 +123,12 @@ class BaseCellsHelper {
         .setLoop((i) => {
           const merge = merges.getFirstIncludes(ri, i);
           const cell = cells.getCell(ri, i);
-          const blank = Utils.isUnDef(cell) || Utils.isBlank(cell.text);
+          const blank = PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text);
           if (i === ci) {
             width += cols.getWidth(i);
             return true;
           }
-          if (blank && Utils.isUnDef(merge)) {
+          if (blank && PlainUtils.isUnDef(merge)) {
             const tmp = cols.getWidth(i);
             width += tmp;
             offset -= tmp;

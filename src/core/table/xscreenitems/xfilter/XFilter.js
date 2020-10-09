@@ -1,11 +1,11 @@
 import { XScreenViewSizer } from '../../xscreen/item/viewdisplay/XScreenViewSizer';
 import { XSelectItem } from '../xselect/XSelectItem';
-import { Utils } from '../../../../utils/Utils';
+import { PlainUtils } from '../../../../utils/PlainUtils';
 import { RectRange } from '../../tablebase/RectRange';
 import { XFilterButton } from './XFilterButton';
 import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
-import { EventBind } from '../../../../utils/EventBind';
+import { Event } from '../../../../lib/Event';
 import { RANGE_OVER_GO } from '../../xscreen/item/viewborder/XScreenStyleBorderItem';
 import { XDraw } from '../../../../canvas/XDraw';
 import { ColsIterator } from '../../iterator/ColsIterator';
@@ -31,17 +31,17 @@ class XFilter extends XScreenViewSizer {
 
   bind() {
     const { table } = this;
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
       if (this.status) {
         this.updateFilterButton();
       }
     });
-    EventBind.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+    Event.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       if (this.status) {
         this.updateFilterButton();
       }
     });
-    EventBind.bind(table, Constant.TABLE_EVENT_TYPE.RENDER, () => {
+    Event.bind(table, Constant.TABLE_EVENT_TYPE.RENDER, () => {
       if (this.status) {
         this.updateFilterButton();
       }
@@ -105,7 +105,7 @@ class XFilter extends XScreenViewSizer {
         .setEnd(colLen)
         .setLoop((i) => {
           const cell = cells.getCellOrMergeCell(sri, i);
-          if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+          if (PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text)) {
             return false;
           }
           targetRange = targetRange.union(new RectRange(sri, i, sri, i));
@@ -118,7 +118,7 @@ class XFilter extends XScreenViewSizer {
         .setEnd(0)
         .setLoop((i) => {
           const cell = cells.getCellOrMergeCell(sri, i);
-          if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+          if (PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text)) {
             return false;
           }
           targetRange = targetRange.union(new RectRange(sri, i, sri, i));
@@ -131,7 +131,7 @@ class XFilter extends XScreenViewSizer {
         .setEnd(rowLen)
         .setLoop((i) => {
           const cell = cells.getCellOrMergeCell(i, sci);
-          if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+          if (PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text)) {
             return false;
           }
           targetRange = targetRange.union(new RectRange(i, sci, i, sci));
@@ -144,7 +144,7 @@ class XFilter extends XScreenViewSizer {
         .setEnd(0)
         .setLoop((i) => {
           const cell = cells.getCellOrMergeCell(i, sci);
-          if (Utils.isUnDef(cell) || Utils.isBlank(cell.text)) {
+          if (PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text)) {
             return false;
           }
           targetRange = targetRange.union(new RectRange(i, sci, i, sci));
@@ -164,7 +164,7 @@ class XFilter extends XScreenViewSizer {
             .setEnd(eri)
             .setLoop((j) => {
               const cell = cells.getCellOrMergeCell(j, i);
-              if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
+              if (!PlainUtils.isUnDef(cell) && !PlainUtils.isBlank(cell.text)) {
                 targetRange = targetRange.union(new RectRange(j, i, j, i));
                 emptyCol = false;
               }
@@ -185,7 +185,7 @@ class XFilter extends XScreenViewSizer {
             .setEnd(eri)
             .setLoop((j) => {
               const cell = cells.getCellOrMergeCell(j, i);
-              if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
+              if (!PlainUtils.isUnDef(cell) && !PlainUtils.isBlank(cell.text)) {
                 targetRange = targetRange.union(new RectRange(j, i, j, i));
                 emptyCol = false;
               }
@@ -206,7 +206,7 @@ class XFilter extends XScreenViewSizer {
             .setEnd(eci)
             .setLoop((j) => {
               const cell = cells.getCellOrMergeCell(i, j);
-              if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
+              if (!PlainUtils.isUnDef(cell) && !PlainUtils.isBlank(cell.text)) {
                 targetRange = targetRange.union(new RectRange(i, j, i, j));
                 emptyRow = false;
               }
@@ -227,7 +227,7 @@ class XFilter extends XScreenViewSizer {
             .setEnd(eci)
             .setLoop((j) => {
               const cell = cells.getCellOrMergeCell(i, j);
-              if (!Utils.isUnDef(cell) && !Utils.isBlank(cell.text)) {
+              if (!PlainUtils.isUnDef(cell) && !PlainUtils.isBlank(cell.text)) {
                 targetRange = targetRange.union(new RectRange(i, j, i, j));
                 emptyRow = false;
               }

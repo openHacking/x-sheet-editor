@@ -3,7 +3,7 @@ import { Rect } from '../../../canvas/Rect';
 import { LeftOutRangeFilter } from './filter/outrange/LeftOutRangeFilter';
 import { RightOutRangeFilter } from './filter/outrange/RightOutRangeFilter';
 import { LineFilter } from './filter/LineFilter';
-import { Utils } from '../../../utils/Utils';
+import { PlainUtils } from '../../../utils/PlainUtils';
 import { ColsIterator } from '../iterator/ColsIterator';
 import { RowsIterator } from '../iterator/RowsIterator';
 
@@ -33,7 +33,7 @@ class BaseLine {
       viewRange,
       filter: new LineFilter((row, col) => {
         const merge = merges.getFirstIncludes(row, col);
-        return Utils.isNotUnDef(merge)
+        return PlainUtils.isNotUnDef(merge)
           && filter.indexOf(merge) === -1;
       }),
       handle: (row, col, x, y) => {

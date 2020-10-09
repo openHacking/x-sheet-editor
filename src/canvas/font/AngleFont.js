@@ -1,5 +1,5 @@
 import { BaseFont } from './BaseFont';
-import { Utils } from '../../utils/Utils';
+import { PlainUtils } from '../../utils/PlainUtils';
 import { RTCosKit, RTSinKit } from '../RTFunction';
 import { Angle } from '../Angle';
 import { Rect } from '../Rect';
@@ -21,7 +21,7 @@ class AngleFont extends BaseFont {
       dw,
       attr,
     });
-    this.attr = Utils.mergeDeep({
+    this.attr = PlainUtils.mergeDeep({
       lineHeight: 4,
     }, this.attr);
 

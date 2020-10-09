@@ -1,4 +1,4 @@
-import { Utils } from '../../utils/Utils';
+import { PlainUtils } from '../../utils/PlainUtils';
 import { DateUtils } from '../../utils/DateUtils';
 
 function parserToDate(text) {
@@ -28,7 +28,7 @@ class Format {
   }
 
   number(value) {
-    if (Utils.isNumber(value)) {
+    if (PlainUtils.isNumber(value)) {
       if (value.toString().indexOf('.') !== -1) {
         const lastIndex = value.toString().lastIndexOf('.') + 1;
         return value.toString().substring(0, lastIndex + 2);
@@ -39,45 +39,45 @@ class Format {
   }
 
   percentage(value) {
-    if (Utils.isNumber(value)) {
+    if (PlainUtils.isNumber(value)) {
       return `${value}%`;
     }
     return value;
   }
 
   fraction(value) {
-    if (Utils.isFraction(value)) {
+    if (PlainUtils.isFraction(value)) {
       const left = value.split('/')[0];
       const right = value.split('/')[1];
-      return Utils.parseInt(left) / Utils.parseInt(right);
+      return PlainUtils.parseInt(left) / PlainUtils.parseInt(right);
     }
     return value;
   }
 
   ENotation(value) {
-    if (Utils.isNumber(value)) {
-      const number = Utils.parseFloat(value);
+    if (PlainUtils.isNumber(value)) {
+      const number = PlainUtils.parseFloat(value);
       return number.toExponential(2);
     }
     return value;
   }
 
   rmb(value) {
-    if (Utils.isNumber(value)) {
+    if (PlainUtils.isNumber(value)) {
       return `￥${value}`;
     }
     return value;
   }
 
   hk(value) {
-    if (Utils.isNumber(value)) {
+    if (PlainUtils.isNumber(value)) {
       return `HK${value}`;
     }
     return value;
   }
 
   dollar(value) {
-    if (Utils.isNumber(value)) {
+    if (PlainUtils.isNumber(value)) {
       return `$${value}`;
     }
     return value;

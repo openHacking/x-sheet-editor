@@ -2,7 +2,7 @@ import { Widget } from '../../lib/Widget';
 import { Constant, cssPrefix } from '../../const/Constant';
 import { h } from '../../lib/Element';
 import { DragPanel } from '../dragpanel/DragPanel';
-import { EventBind } from '../../utils/EventBind';
+import { Event } from '../../lib/Event';
 
 class Alert extends Widget {
 
@@ -34,7 +34,7 @@ class Alert extends Widget {
   }
 
   bind() {
-    EventBind.bind(this.okEle, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    Event.bind(this.okEle, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
       this.close();
     });
   }

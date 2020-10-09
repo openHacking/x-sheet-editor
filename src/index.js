@@ -7,7 +7,7 @@ import './styles/base.less';
 import './styles/index.less';
 import { ElPopUp } from './component/elpopup/ElPopUp';
 import { DragPanel } from './component/dragpanel/DragPanel';
-import { Utils } from './utils/Utils';
+import { PlainUtils } from './utils/PlainUtils';
 
 class XSheet extends Widget {
 
@@ -37,7 +37,7 @@ class XSheet extends Widget {
 
 XSheet.version = XSheetVersion;
 
-XSheet.Utils = Utils;
+XSheet.PlainUtils = PlainUtils;
 
 if (window) {
   window.XSheet = XSheet;

@@ -1,11 +1,11 @@
 import { cssPrefix } from '../../../const/Constant';
-import { Utils } from '../../../utils/Utils';
+import { PlainUtils } from '../../../utils/PlainUtils';
 import { Layer } from '../../Layer';
 
 class VerticalCenter extends Layer {
   constructor(options) {
     super(`${cssPrefix}-vertical-center`);
-    this.options = Utils.mergeDeep({
+    this.options = PlainUtils.mergeDeep({
       style: {},
     }, options);
     this.css(this.options.style);

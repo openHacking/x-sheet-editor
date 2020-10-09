@@ -3,14 +3,14 @@ import { h } from '../../lib/Element';
 import { cssPrefix, Constant } from '../../const/Constant';
 import { Widget } from '../../lib/Widget';
 import { DragPanel } from '../dragpanel/DragPanel';
-import { EventBind } from '../../utils/EventBind';
-import { Utils } from '../../utils/Utils';
+import { Event } from '../../lib/Event';
+import { PlainUtils } from '../../utils/PlainUtils';
 
 class ColorPicker extends Widget {
 
   constructor(options) {
     super(`${cssPrefix}-color-picker`);
-    this.options = Utils.mergeDeep({
+    this.options = PlainUtils.mergeDeep({
       selectCb: () => {},
     }, options);
     // 拖拽组件
@@ -67,22 +67,22 @@ class ColorPicker extends Widget {
     const {
       colorInput, cancelButton, selectButton,
     } = this;
-    EventBind.bind(colorInput, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
+    Event.bind(colorInput, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
       e1.stopPropagation();
     });
-    EventBind.bind(colorInput, Constant.SYSTEM_EVENT_TYPE.CHANGE, () => {
+    Event.bind(colorInput, Constant.SYSTEM_EVENT_TYPE.CHANGE, () => {
       const value = colorInput.val();
       if (value) {
         this.hexColor(value);
       }
     });
-    EventBind.bind(colorBarPoint, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
+    Event.bind(colorBarPoint, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
       const xy = this.computeEventXy(e1, colorBar);
       const colorBarBox = colorBar.box();
       if (xy.x < 0) xy.x = 0;
       if (xy.x > colorBarBox.width) xy.x = colorBarBox.width;
       this.downHue(xy.x, colorBarBox.width);
-      EventBind.mouseMoveUp(h(document), (e2) => {
+      Event.mouseMoveUp(h(document), (e2) => {
         const xy = this.computeEventXy(e2, colorBar);
         const colorBarBox = colorBar.box();
         if (xy.x < 0) xy.x = 0;
@@ -91,7 +91,7 @@ class ColorPicker extends Widget {
       });
       e1.stopPropagation();
     });
-    EventBind.bind(selectColorPoint, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
+    Event.bind(selectColorPoint, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
       const xy = this.computeEventXy(e1, center);
       const centerBox = center.box();
       if (xy.x < 0) xy.x = 0;
@@ -99,7 +99,7 @@ class ColorPicker extends Widget {
       if (xy.y < 0) xy.y = 0;
       if (xy.y > centerBox.height) xy.y = centerBox.height;
       this.downSelect(xy.x, xy.y, centerBox.width, centerBox.height);
-      EventBind.mouseMoveUp(h(document), (e2) => {
+      Event.mouseMoveUp(h(document), (e2) => {
         const xy = this.computeEventXy(e2, center);
         if (xy.x < 0) xy.x = 0;
         if (xy.x > centerBox.width) xy.x = centerBox.width;
@@ -109,10 +109,10 @@ class ColorPicker extends Widget {
       });
       e1.stopPropagation();
     });
-    EventBind.bind(cancelButton, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    Event.bind(cancelButton, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
       this.close();
     });
-    EventBind.bind(selectButton, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    Event.bind(selectButton, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
       const { color } = this;
       const hsb = ColorPicker.fixHsx({
         h: parseInt(color[0], 10),
@@ -384,7 +384,7 @@ class ColorPicker extends Widget {
   }
 
   static isDark(rgb) {
-    if (Utils.isBlank(rgb)) {
+    if (PlainUtils.isBlank(rgb)) {
       return false;
     }
     if (this.isHex(rgb)) {
