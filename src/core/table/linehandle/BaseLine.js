@@ -14,11 +14,13 @@ class BaseLine {
     rows,
     cols,
     cells,
+    foldOnOff = true,
   }) {
     this.merges = merges;
     this.cells = cells;
     this.rows = rows;
     this.cols = cols;
+    this.foldOnOff = foldOnOff;
     this.rightOutRangeFilter = new RightOutRangeFilter({ cells, cols, merges });
     this.leftOutRangeFilter = new LeftOutRangeFilter({ cells, cols, merges });
   }
@@ -105,12 +107,13 @@ class BaseLine {
     bx = 0,
     by = 0,
   }) {
-    const { cols, rows } = this;
+    const { cols, rows, foldOnOff } = this;
     const {
       sri, eri, sci, eci,
     } = viewRange;
     let y = by;
     RowsIterator.getInstance()
+      .foldOnOff(foldOnOff)
       .setBegin(sri)
       .setEnd(eri)
       .setLoop((i) => {
@@ -134,7 +137,6 @@ class BaseLine {
         endRow();
         y += height;
       })
-      .disableFold()
       .execute();
   }
 
@@ -148,7 +150,7 @@ class BaseLine {
     bx = 0,
     by = 0,
   }) {
-    const { cols, rows } = this;
+    const { cols, rows, foldOnOff } = this;
     const {
       sri, eri, sci, eci,
     } = viewRange;
@@ -161,6 +163,7 @@ class BaseLine {
         let y = by;
         newCol(i, x);
         RowsIterator.getInstance()
+          .foldOnOff(foldOnOff)
           .setBegin(sri)
           .setEnd(eri)
           .setLoop((j) => {
@@ -173,7 +176,6 @@ class BaseLine {
             }
             y += height;
           })
-          .disableFold()
           .execute();
         endCol();
         x += width;

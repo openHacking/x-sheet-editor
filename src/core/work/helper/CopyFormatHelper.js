@@ -1,4 +1,6 @@
 import { RectRange } from '../../table/tablebase/RectRange';
+import { RowsIterator } from '../../table/iterator/RowsIterator';
+import { ColsIterator } from '../../table/iterator/ColsIterator';
 
 class CopyFormatHelper {
 
@@ -19,11 +21,31 @@ class CopyFormatHelper {
     const {
       sri: oSri, sci: oSci, eri: oEri, eci: oEci,
     } = originView;
-    for (let oi = oSri, ti = tSri; oi <= oEri; oi += 1, ti += 1) {
-      for (let oj = oSci, tj = tSci; oj <= oEci; oj += 1, tj += 1) {
-        callback(ti, tj, oi, oj);
-      }
-    }
+    let oi = oSri;
+    let oj = oSci;
+    let ti = tSri;
+    let tj = tSci;
+    RowsIterator.getInstance()
+      .setBegin(oSri)
+      .setEnd(oEri)
+      .setLoop((i) => {
+        oi = i;
+        ColsIterator.getInstance()
+          .setBegin(oSci)
+          .setEnd(oEci)
+          .setLoop((j) => {
+            oj = j;
+            callback(ti, tj, oi, oj);
+          })
+          .setNext((j) => {
+            tj = j;
+          })
+          .execute();
+      })
+      .setNext((i) => {
+        ti = i;
+      })
+      .execute();
   }
 
   /**

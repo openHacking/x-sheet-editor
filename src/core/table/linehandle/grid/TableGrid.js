@@ -12,6 +12,7 @@ class TableGrid extends BaseLine {
     cols,
     cells,
     drawCheck = false,
+    foldOnOff = true,
     getHeight = ri => rows.getHeight(ri),
     getWidth = ci => cols.getWidth(ci),
   }) {
@@ -20,6 +21,7 @@ class TableGrid extends BaseLine {
       rows,
       cols,
       cells,
+      foldOnOff,
     });
     this.drawCheck = drawCheck;
     this.getHeight = getHeight;

@@ -13,13 +13,8 @@ class RowsIterator extends BaseIterator {
     this.useFold = true;
   }
 
-  enableFold() {
-    this.useFold = true;
-    return this;
-  }
-
-  disableFold() {
-    this.useFold = false;
+  foldOnOff(onOff) {
+    this.useFold = onOff;
     return this;
   }
 

@@ -14,12 +14,14 @@ class TableBorder extends BaseLine {
     rows,
     cols,
     cells,
+    foldOnOff = true,
   }) {
     super({
       merges,
       rows,
       cols,
       cells,
+      foldOnOff,
     });
     this.drawOptimization = drawOptimization;
     this.horizontalMergeFilter = new HorizontalMergeFilter({ merges });

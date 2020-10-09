@@ -2326,6 +2326,7 @@ class XTableStyle extends Widget {
       rows: this.rows,
       cols: this.cols,
       cells: this.cells,
+      foldOnOff: false,
       getHeight: () => this.index.getHeight(),
     });
     this.topIndexVerticalGrid = new TableVerticalGrid({
@@ -2333,6 +2334,7 @@ class XTableStyle extends Widget {
       rows: this.rows,
       cols: this.cols,
       cells: this.cells,
+      foldOnOff: false,
       getHeight: () => this.index.getHeight(),
     });
     this.leftIndexHorizontalGrid = new TableHorizontalGrid({
@@ -2340,6 +2342,7 @@ class XTableStyle extends Widget {
       rows: this.rows,
       cols: this.cols,
       cells: this.cells,
+      foldOnOff: false,
       getWidth: () => this.index.getWidth(),
     });
     this.leftIndexVerticalGrid = new TableVerticalGrid({
@@ -2347,6 +2350,7 @@ class XTableStyle extends Widget {
       rows: this.rows,
       cols: this.cols,
       cells: this.cells,
+      foldOnOff: false,
       getWidth: () => this.index.getWidth(),
     });
     // 单元格边框处理

@@ -35,6 +35,7 @@ import { XDraw } from '../../canvas/XDraw';
 import { Alert } from '../../component/alert/Alert';
 import { CopyFormatHelper } from './helper/CopyFormatHelper';
 import { XFilter } from '../table/xscreenitems/xfilter/XFilter';
+import { RectRange } from '../table/tablebase/RectRange';
 
 class Divider extends Widget {
   constructor() {
