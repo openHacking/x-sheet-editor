@@ -60,7 +60,6 @@ class BindPool {
   }
 
 }
-
 const pool = new BindPool();
 
 class Event {
