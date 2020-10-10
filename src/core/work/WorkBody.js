@@ -31,9 +31,9 @@ class WorkBody extends Widget {
     this.tabSheet = [];
     this.activeIndex = -1;
     // 版本标识
-    this.poweredBy = h('div', `${cssPrefix}-powered-by-tips`);
-    this.poweredBy.html(`<a target="_blank" href="https://gitee.com/eigi/x-sheet">${XSheetVersion}</a>`);
-    this.children(this.poweredBy);
+    this.version = h('div', `${cssPrefix}-version-tips`);
+    this.version.html(`<a target="_blank" href="https://gitee.com/eigi/x-sheet">${XSheetVersion}</a>`);
+    this.children(this.version);
     // sheet表
     this.sheetViewLayer = new HorizontalLayerElement({
       style: {

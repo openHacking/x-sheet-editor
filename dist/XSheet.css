@@ -363,16 +363,17 @@
   background: #e8e8e8;
   position: relative;
 }
-.x-sheet-powered-by-tips {
+.x-sheet-version-tips {
   position: absolute;
   right: 50px;
   bottom: 50px;
   border-radius: 10px;
   padding: 20px;
   font-weight: bold;
+  z-index: 1;
   background: rgba(0, 0, 0, 0.8);
 }
-.x-sheet-powered-by-tips * {
+.x-sheet-version-tips * {
   color: #ffffff;
 }
 .x-sheet-sheet-view {
