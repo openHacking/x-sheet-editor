@@ -90,7 +90,7 @@ class LeftOutRangeFilter extends LineFilter {
       cells, cols, merges,
     } = this;
     const master = cells.getCell(ri, ci);
-    let find = false;
+    let find = true;
     let leftWidth = cols.getWidth(ci - 1);
 
     ColsIterator.getInstance()

@@ -113,7 +113,6 @@ class BaseLine {
     } = viewRange;
     let y = by;
     RowsIterator.getInstance()
-      .foldOnOff(foldOnOff)
       .setBegin(sri)
       .setEnd(eri)
       .setLoop((i) => {
@@ -137,6 +136,7 @@ class BaseLine {
         endRow();
         y += height;
       })
+      .foldOnOff(foldOnOff)
       .execute();
   }
 
@@ -163,7 +163,6 @@ class BaseLine {
         let y = by;
         newCol(i, x);
         RowsIterator.getInstance()
-          .foldOnOff(foldOnOff)
           .setBegin(sri)
           .setEnd(eri)
           .setLoop((j) => {
@@ -176,6 +175,7 @@ class BaseLine {
             }
             y += height;
           })
+          .foldOnOff(foldOnOff)
           .execute();
         endCol();
         x += width;

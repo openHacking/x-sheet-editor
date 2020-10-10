@@ -2,7 +2,7 @@ class Throttle {
 
   constructor() {
     this.handle = null;
-    this.time = 3000;
+    this.time = 500;
   }
 
   action(cb) {
