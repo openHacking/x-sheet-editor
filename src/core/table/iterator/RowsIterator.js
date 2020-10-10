@@ -1,6 +1,6 @@
 import { BaseIterator } from './BaseIterator';
 
-let fold = [false, false, false, false, true, true];
+let fold = [];
 
 class RowsIterator extends BaseIterator {
 
@@ -27,8 +27,8 @@ class RowsIterator extends BaseIterator {
     } = this;
     let i;
     if (begin > end) {
-      i = end;
-      for (; i >= begin; i -= 1, nextCallback(i)) {
+      i = begin;
+      for (; i >= end; i -= 1, nextCallback(i)) {
         if (useFold && fold[i]) {
           continue;
         }
@@ -62,7 +62,8 @@ class RowsIterator extends BaseIterator {
         return false;
       }
       return true;
-    }).execute();
+    })
+      .execute();
     return ri;
   }
 

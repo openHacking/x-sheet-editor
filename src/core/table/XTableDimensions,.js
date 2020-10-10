@@ -22,8 +22,8 @@ import { XTableEdit } from './XTableEdit';
 import { XTableStyle } from './XTableStyle';
 import { XScreen } from './xscreen/XScreen';
 import { XSelectItem } from './xscreenitems/xselect/XSelectItem';
-import { XautoFillItem } from './xscreenitems/xautofill/XautoFillItem';
-import { XcopyStyle } from './xscreenitems/xcopystyle/XcopyStyle';
+import { XAutoFillItem } from './xscreenitems/xautofill/XAutoFillItem';
+import { XCopyStyle } from './xscreenitems/xcopystyle/XCopyStyle';
 import { RowFixed } from './tablefixed/RowFixed';
 import { ColFixed } from './tablefixed/ColFixed';
 import { DropRowFixed } from './tablefixed/drop/DropRowFixed';
@@ -971,8 +971,8 @@ class XTableDimensions extends Widget {
     this.attach(this.xScreen);
     this.xScreen.addItem(new XFilter(this));
     this.xScreen.addItem(new XSelectItem(this));
-    this.xScreen.addItem(new XcopyStyle(this));
-    this.xScreen.addItem(new XautoFillItem(this));
+    this.xScreen.addItem(new XCopyStyle(this));
+    this.xScreen.addItem(new XAutoFillItem(this));
     // 添加表格组件
     this.attach(this.xHeightLight);
     this.attach(this.yHeightLight);

@@ -5,7 +5,7 @@ import { Constant, cssPrefix } from '../../../../const/Constant';
 import { Event } from '../../../../lib/Event';
 import { RectRange } from '../../tablebase/RectRange';
 
-class XcopyStyle extends XScreenSvgBorderItem {
+class XCopyStyle extends XScreenSvgBorderItem {
 
   constructor(table) {
     super({ table });
@@ -98,5 +98,5 @@ class XcopyStyle extends XScreenSvgBorderItem {
 }
 
 export {
-  XcopyStyle,
+  XCopyStyle,
 };

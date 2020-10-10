@@ -30,7 +30,7 @@ import { PlainUtils } from '../../utils/PlainUtils';
 import { Scale } from './tools/Scale';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { XSelectItem } from '../table/xscreenitems/xselect/XSelectItem';
-import { XcopyStyle } from '../table/xscreenitems/xcopystyle/XcopyStyle';
+import { XCopyStyle } from '../table/xscreenitems/xcopystyle/XCopyStyle';
 import { XDraw } from '../../canvas/XDraw';
 import { Alert } from '../../component/alert/Alert';
 import { CopyFormatHelper } from './helper/CopyFormatHelper';
@@ -744,7 +744,7 @@ class TopMenu extends Widget {
       const tableDataSnapshot = table.getTableDataSnapshot();
       const cells = table.getTableCells();
       const merges = table.getTableMerges();
-      const xCopyStyle = xScreen.findType(XcopyStyle);
+      const xCopyStyle = xScreen.findType(XCopyStyle);
       xCopyStyle.showCopyStyle();
       this.paintFormat.active(true);
       this.paintFormat.addSheet(sheet);

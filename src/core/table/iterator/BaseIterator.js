@@ -17,8 +17,8 @@ class BaseIterator {
     } = this;
     let i;
     if (begin > end) {
-      i = end;
-      for (; i >= begin; i -= 1, nextCallback(i)) {
+      i = begin;
+      for (; i >= end; i -= 1, nextCallback(i)) {
         const res = loopCallback(i);
         if (res === false) {
           break;
@@ -37,16 +37,6 @@ class BaseIterator {
     return this;
   }
 
-  setBegin(begin) {
-    this.begin = begin;
-    return this;
-  }
-
-  setEnd(end) {
-    this.end = end;
-    return this;
-  }
-
   setLoop(callback) {
     this.loopCallback = callback;
     return this;
@@ -59,6 +49,16 @@ class BaseIterator {
 
   setFinish(callback) {
     this.finishCallback = callback;
+    return this;
+  }
+
+  setEnd(end) {
+    this.end = end;
+    return this;
+  }
+
+  setBegin(begin) {
+    this.begin = begin;
     return this;
   }
 
