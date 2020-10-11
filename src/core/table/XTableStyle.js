@@ -2538,9 +2538,9 @@ class XTableStyle extends Widget {
       xTopFrozenIndex.render();
       xLeft.render();
     }
-    xContent.render();
     xLeftIndex.render();
     xTopIndex.render();
+    xContent.render();
     xTableFixedBar.render();
   }
 

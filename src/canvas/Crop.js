@@ -1,4 +1,5 @@
 class Crop {
+
   constructor({
     rect, draw, offset = 0,
   }) {
@@ -8,12 +9,13 @@ class Crop {
   }
 
   open() {
-    const { rect, draw, offset } = this;
+    const {
+      rect, draw, offset,
+    } = this;
     const {
       x, y, width, height,
     } = rect;
     draw.save()
-      .beginPath()
       .rect(x, y, width + offset, height + offset)
       .clip();
     return this;
@@ -24,6 +26,7 @@ class Crop {
     draw.restore();
     return this;
   }
+
 }
 
 export { Crop };
