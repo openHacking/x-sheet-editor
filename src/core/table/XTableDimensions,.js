@@ -604,7 +604,7 @@ class XTableDimensions extends Widget {
         height: 30,
         width: 50,
         gridColor: '#c1c1c1',
-        size: 10,
+        size: 11,
         color: '#000000',
       },
       table: {

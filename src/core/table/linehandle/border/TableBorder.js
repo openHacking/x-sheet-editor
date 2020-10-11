@@ -5,6 +5,7 @@ import { BottomBorderDiffFilter } from '../filter/borderdiff/BottomBorderDiffFil
 import { LeftBorderDiffFilter } from '../filter/borderdiff/LeftBorderDiffFilter';
 import { RightBorderDiffFilter } from '../filter/borderdiff/RightBorderDiffFilter';
 import { TopBorderDiffFilter } from '../filter/borderdiff/TopBorderDiffFilter';
+import { RowsIterator } from '../../iterator/RowsIterator';
 
 class TableBorder extends BaseLine {
 
@@ -183,8 +184,12 @@ class TableBorder extends BaseLine {
       for (let i = 1; i < line.length;) {
         const item = line[i];
         const last = line[i - 1];
+        const nextRow = RowsIterator.getInstance()
+          .setBegin(last.row)
+          .setEnd(item.row)
+          .nextRow();
         const ck1 = item.borderAttr.left.equal(last.borderAttr.left);
-        const ck2 = item.row - last.row === 1;
+        const ck2 = item.row === nextRow;
         const ck3 = item.col === last.col;
         if (ck1 && ck2 && ck3) {
           last.ey = item.ey;
@@ -239,8 +244,12 @@ class TableBorder extends BaseLine {
       for (let i = 1; i < line.length;) {
         const item = line[i];
         const last = line[i - 1];
+        const nextRow = RowsIterator.getInstance()
+          .setBegin(last.row)
+          .setEnd(item.row)
+          .nextRow();
         const ck1 = item.borderAttr.right.equal(last.borderAttr.right);
-        const ck2 = item.row - last.row === 1;
+        const ck2 = item.row === nextRow;
         const ck3 = item.col === last.col;
         if (ck1 && ck2 && ck3) {
           last.ey = item.ey;

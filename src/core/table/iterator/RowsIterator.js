@@ -4,6 +4,10 @@ let fold = [];
 
 class RowsIterator extends BaseIterator {
 
+  static getInstance() {
+    return new RowsIterator();
+  }
+
   static setFold(value) {
     fold = value;
   }
@@ -11,11 +15,6 @@ class RowsIterator extends BaseIterator {
   constructor() {
     super();
     this.useFold = true;
-  }
-
-  foldOnOff(onOff) {
-    this.useFold = onOff;
-    return this;
   }
 
   execute() {
@@ -62,13 +61,25 @@ class RowsIterator extends BaseIterator {
         return false;
       }
       return true;
-    })
-      .execute();
+    }).execute();
     return ri;
   }
 
-  static getInstance() {
-    return new RowsIterator();
+  hasFold() {
+    let find = false;
+    this.setLoop((i) => {
+      if (fold[i]) {
+        find = true;
+        return false;
+      }
+      return true;
+    }).foldOnOff(false).execute();
+    return find;
+  }
+
+  foldOnOff(onOff) {
+    this.useFold = onOff;
+    return this;
   }
 
 }

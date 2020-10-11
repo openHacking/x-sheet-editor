@@ -57,29 +57,29 @@ class XSelectItem extends XScreenCssBorderItem {
       mousePointer, focus,
     } = table;
     Event.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      this.selectOffsetHandle();
-      this.selectBorderHandle();
-      this.selectCornerHandle();
+      this.offsetHandle();
+      this.borderHandle();
+      this.cornerHandle();
     });
     Event.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
-      this.selectOffsetHandle();
-      this.selectBorderHandle();
-      this.selectCornerHandle();
+      this.offsetHandle();
+      this.borderHandle();
+      this.cornerHandle();
     });
     Event.bind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, () => {
-      this.selectOffsetHandle();
-      this.selectBorderHandle();
-      this.selectCornerHandle();
+      this.offsetHandle();
+      this.borderHandle();
+      this.cornerHandle();
     });
     Event.bind(table, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
-      this.selectOffsetHandle();
-      this.selectBorderHandle();
-      this.selectCornerHandle();
+      this.offsetHandle();
+      this.borderHandle();
+      this.cornerHandle();
     });
     Event.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
-      this.selectOffsetHandle();
-      this.selectBorderHandle();
-      this.selectCornerHandle();
+      this.offsetHandle();
+      this.borderHandle();
+      this.cornerHandle();
     });
     Event.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
       if (e1.button !== 0) {
@@ -92,9 +92,9 @@ class XSelectItem extends XScreenCssBorderItem {
       }
       const { x, y } = table.computeEventXy(e1);
       this.downSelectRange(x, y);
-      this.selectOffsetHandle();
-      this.selectBorderHandle();
-      this.selectCornerHandle();
+      this.offsetHandle();
+      this.borderHandle();
+      this.cornerHandle();
       const { selectLocal } = this;
       switch (selectLocal) {
         case SELECT_LOCAL.L:
@@ -111,9 +111,9 @@ class XSelectItem extends XScreenCssBorderItem {
       Event.mouseMoveUp(document, (e2) => {
         const { x, y } = table.computeEventXy(e2);
         this.moveSelectRange(x, y);
-        this.selectOffsetHandle();
-        this.selectBorderHandle();
-        this.selectCornerHandle();
+        this.offsetHandle();
+        this.borderHandle();
+        this.cornerHandle();
         table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
       }, () => {
         switch (selectLocal) {
@@ -126,92 +126,21 @@ class XSelectItem extends XScreenCssBorderItem {
       });
     });
     Event.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      this.selectOffsetHandle();
-      this.selectBorderHandle();
-      this.selectCornerHandle();
+      this.offsetHandle();
+      this.borderHandle();
+      this.cornerHandle();
     });
   }
 
-  moveSelectRange(x, y) {
-    const { table } = this;
-    const {
-      rows, cols,
-    } = table;
-    const { downRange, selectLocal } = this;
-    const merges = table.getTableMerges();
-    const viewRange = table.getScrollView();
-    let { ri, ci } = table.getRiCiByXy(x, y);
-    if (ri === -1) {
-      ri = viewRange.sri;
+  borderHandle() {
+    const { selectRange } = this;
+    if (selectRange) {
+      this.hideBorder();
+      this.showBorder(selectRange);
     }
-    if (ci === -1) {
-      ci = viewRange.sci;
-    }
-    if (selectLocal === SELECT_LOCAL.LT) {
-      const rect = downRange.union(new RectRange(0, 0, rows.len - 1, cols.len - 1));
-      this.moveRange = downRange.union(rect);
-      this.selectRange = this.moveRange;
-      this.selectLocal = SELECT_LOCAL.LT;
-      return;
-    }
-    if (selectLocal === SELECT_LOCAL.L) {
-      const rect = downRange.union(new RectRange(ri, 0, ri, 0));
-      this.moveRange = downRange.union(rect);
-      this.selectRange = this.moveRange;
-      this.selectLocal = SELECT_LOCAL.L;
-      return;
-    }
-    if (selectLocal === SELECT_LOCAL.T) {
-      const rect = downRange.union(new RectRange(0, ci, 0, ci));
-      this.moveRange = downRange.union(rect);
-      this.selectRange = this.moveRange;
-      this.selectLocal = SELECT_LOCAL.T;
-      return;
-    }
-    const rect = downRange.union(new RectRange(ri, ci, ri, ci));
-    this.moveRange = merges.union(rect);
-    this.selectRange = this.moveRange;
-    this.selectLocal = SELECT_LOCAL.BR;
   }
 
-  downSelectRange(x, y) {
-    const { table } = this;
-    const { rows, cols } = table;
-    const merges = table.getTableMerges();
-    const { ri, ci } = table.getRiCiByXy(x, y);
-    if (ri === -1 && ci === -1) {
-      this.downRange = new RectRange(0, 0, rows.len - 1, cols.len - 1);
-      this.selectRange = this.downRange;
-      this.selectLocal = SELECT_LOCAL.LT;
-      return;
-    }
-    if (ri === -1) {
-      this.downRange = new RectRange(0, ci, rows.len - 1, ci);
-      this.selectRange = this.downRange;
-      this.selectLocal = SELECT_LOCAL.T;
-      return;
-    }
-    if (ci === -1) {
-      this.downRange = new RectRange(ri, 0, ri, cols.len - 1);
-      this.selectRange = this.downRange;
-      this.selectLocal = SELECT_LOCAL.L;
-      return;
-    }
-    this.downRange = merges.getFirstIncludes(ri, ci)
-      || new RectRange(ri, ci, ri, ci);
-    this.selectRange = this.downRange;
-    this.selectLocal = SELECT_LOCAL.BR;
-  }
-
-  updateSelectRange(selectRange) {
-    this.selectRange = selectRange;
-    this.selectLocal = SELECT_LOCAL.BR;
-    this.selectOffsetHandle();
-    this.selectBorderHandle();
-    this.selectCornerHandle();
-  }
-
-  selectOffsetHandle() {
+  offsetHandle() {
     const { selectRange } = this;
     if (selectRange) {
       this.setDisplay(selectRange);
@@ -220,15 +149,7 @@ class XSelectItem extends XScreenCssBorderItem {
     }
   }
 
-  selectBorderHandle() {
-    const { selectRange } = this;
-    if (selectRange) {
-      this.hideBorder();
-      this.showBorder(selectRange);
-    }
-  }
-
-  selectCornerHandle() {
+  cornerHandle() {
     const {
       selectRange, selectLocal,
     } = this;
@@ -304,6 +225,85 @@ class XSelectItem extends XScreenCssBorderItem {
         this.lCorner.show();
         break;
     }
+  }
+
+  moveSelectRange(x, y) {
+    const { table } = this;
+    const {
+      rows, cols,
+    } = table;
+    const { downRange, selectLocal } = this;
+    const merges = table.getTableMerges();
+    const viewRange = table.getScrollView();
+    let { ri, ci } = table.getRiCiByXy(x, y);
+    if (ri === -1) {
+      ri = viewRange.sri;
+    }
+    if (ci === -1) {
+      ci = viewRange.sci;
+    }
+    if (selectLocal === SELECT_LOCAL.LT) {
+      const rect = downRange.union(new RectRange(0, 0, rows.len - 1, cols.len - 1));
+      this.moveRange = downRange.union(rect);
+      this.selectRange = this.moveRange;
+      this.selectLocal = SELECT_LOCAL.LT;
+      return;
+    }
+    if (selectLocal === SELECT_LOCAL.L) {
+      const rect = downRange.union(new RectRange(ri, 0, ri, 0));
+      this.moveRange = downRange.union(rect);
+      this.selectRange = this.moveRange;
+      this.selectLocal = SELECT_LOCAL.L;
+      return;
+    }
+    if (selectLocal === SELECT_LOCAL.T) {
+      const rect = downRange.union(new RectRange(0, ci, 0, ci));
+      this.moveRange = downRange.union(rect);
+      this.selectRange = this.moveRange;
+      this.selectLocal = SELECT_LOCAL.T;
+      return;
+    }
+    const rect = downRange.union(new RectRange(ri, ci, ri, ci));
+    this.moveRange = merges.union(rect);
+    this.selectRange = this.moveRange;
+    this.selectLocal = SELECT_LOCAL.BR;
+  }
+
+  downSelectRange(x, y) {
+    const { table } = this;
+    const { rows, cols } = table;
+    const merges = table.getTableMerges();
+    const { ri, ci } = table.getRiCiByXy(x, y);
+    if (ri === -1 && ci === -1) {
+      this.downRange = new RectRange(0, 0, rows.len - 1, cols.len - 1);
+      this.selectRange = this.downRange;
+      this.selectLocal = SELECT_LOCAL.LT;
+      return;
+    }
+    if (ri === -1) {
+      this.downRange = new RectRange(0, ci, rows.len - 1, ci);
+      this.selectRange = this.downRange;
+      this.selectLocal = SELECT_LOCAL.T;
+      return;
+    }
+    if (ci === -1) {
+      this.downRange = new RectRange(ri, 0, ri, cols.len - 1);
+      this.selectRange = this.downRange;
+      this.selectLocal = SELECT_LOCAL.L;
+      return;
+    }
+    this.downRange = merges.getFirstIncludes(ri, ci)
+      || new RectRange(ri, ci, ri, ci);
+    this.selectRange = this.downRange;
+    this.selectLocal = SELECT_LOCAL.BR;
+  }
+
+  updateSelectRange(range) {
+    this.selectRange = range;
+    this.selectLocal = SELECT_LOCAL.BR;
+    this.offsetHandle();
+    this.borderHandle();
+    this.cornerHandle();
   }
 
 }

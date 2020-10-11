@@ -14,6 +14,7 @@ class Cell {
    * @param background
    * @param format
    * @param fontAttr
+   * @param icons
    * @param borderAttr
    * @param contentWidth
    */
@@ -21,15 +22,17 @@ class Cell {
     text = PlainUtils.EMPTY,
     background = PlainUtils.Nul,
     format = 'default',
-    fontAttr = {},
     borderAttr = {},
+    icons = [],
+    fontAttr = {},
     contentWidth = 0,
   }) {
     this.background = background;
-    this.format = format;
     this.text = text;
-    this.fontAttr = new CellFont(fontAttr);
+    this.format = format;
+    this.icons = icons;
     this.borderAttr = new CellBorder(borderAttr);
+    this.fontAttr = new CellFont(fontAttr);
     this.contentWidth = contentWidth;
   }
 
@@ -37,13 +40,16 @@ class Cell {
     this.contentWidth = contentWidth;
   }
 
-  toCssStyle() {
-    const { background, fontAttr } = this;
-    let css = `
-      background:${background};
-    `;
-    css = css.replace(/\s/g, '');
-    return fontAttr.toCssStyle() + css;
+  setIcons(icons) {
+    this.icons = icons;
+  }
+
+  setBorderAttr(borderAttr) {
+    this.borderAttr = borderAttr;
+  }
+
+  setFontAttr(fontAttr) {
+    this.fontAttr = fontAttr;
   }
 
   clone() {
@@ -63,6 +69,15 @@ class Cell {
       borderAttr,
       contentWidth,
     });
+  }
+
+  toCssStyle() {
+    const { background, fontAttr } = this;
+    let css = `
+      background:${background};
+    `;
+    css = css.replace(/\s/g, '');
+    return fontAttr.toCssStyle() + css;
   }
 
   toJSON() {

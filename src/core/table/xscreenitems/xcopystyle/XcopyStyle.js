@@ -29,34 +29,43 @@ class XCopyStyle extends XScreenSvgBorderItem {
   bind() {
     const { table } = this;
     Event.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      this.selectOffsetHandle();
-      this.selectBorderHandle();
+      this.offsetHandle();
+      this.borderHandle();
     });
     Event.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
-      this.selectOffsetHandle();
-      this.selectBorderHandle();
+      this.offsetHandle();
+      this.borderHandle();
     });
     Event.bind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, () => {
-      this.selectOffsetHandle();
-      this.selectBorderHandle();
+      this.offsetHandle();
+      this.borderHandle();
     });
     Event.bind(table, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
-      this.selectOffsetHandle();
-      this.selectBorderHandle();
+      this.offsetHandle();
+      this.borderHandle();
     });
     Event.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
-      this.selectOffsetHandle();
-      this.selectBorderHandle();
+      this.offsetHandle();
+      this.borderHandle();
     });
     Event.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       if (this.status) {
-        this.selectOffsetHandle();
-        this.selectBorderHandle();
+        this.offsetHandle();
+        this.borderHandle();
       }
     });
   }
 
-  selectOffsetHandle() {
+  borderHandle() {
+    const { selectRange } = this;
+    if (selectRange.equals(RectRange.EMPTY)) {
+      return;
+    }
+    this.hideBorder();
+    this.showBorder(selectRange);
+  }
+
+  offsetHandle() {
     const { selectRange } = this;
     if (selectRange.equals(RectRange.EMPTY)) {
       this.hide();
@@ -66,15 +75,6 @@ class XCopyStyle extends XScreenSvgBorderItem {
     this.setDisplay(selectRange);
     this.setSizer(selectRange);
     this.setLocal(selectRange);
-  }
-
-  selectBorderHandle() {
-    const { selectRange } = this;
-    if (selectRange.equals(RectRange.EMPTY)) {
-      return;
-    }
-    this.hideBorder();
-    this.showBorder(selectRange);
   }
 
   hideCopyStyle() {
@@ -91,8 +91,8 @@ class XCopyStyle extends XScreenSvgBorderItem {
       selectRange,
     } = xSelect;
     this.selectRange = selectRange;
-    this.selectOffsetHandle();
-    this.selectBorderHandle();
+    this.offsetHandle();
+    this.borderHandle();
   }
 
 }

@@ -29,6 +29,10 @@ class XFilter extends XScreenViewSizer {
     this.bind();
   }
 
+  onAdd() {
+    super.onAdd();
+  }
+
   bind() {
     const { table } = this;
     Event.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
@@ -48,6 +52,15 @@ class XFilter extends XScreenViewSizer {
     });
   }
 
+  offsetHandle() {
+    const { selectRange } = this;
+    if (selectRange) {
+      this.setDisplay(selectRange);
+      this.setSizer(selectRange);
+      this.setLocal(selectRange);
+    }
+  }
+
   openFilterButton() {
     this.filterRangeHandle();
     if (this.selectRange) {
@@ -61,15 +74,6 @@ class XFilter extends XScreenViewSizer {
     this.status = false;
     this.selectRange = null;
     this.hide();
-  }
-
-  selectOffsetHandle() {
-    const { selectRange } = this;
-    if (selectRange) {
-      this.setDisplay(selectRange);
-      this.setSizer(selectRange);
-      this.setLocal(selectRange);
-    }
   }
 
   filterRangeHandle() {
@@ -248,7 +252,7 @@ class XFilter extends XScreenViewSizer {
   }
 
   updateFilterButton() {
-    this.selectOffsetHandle();
+    this.offsetHandle();
     this.filterButtonHandle();
   }
 
