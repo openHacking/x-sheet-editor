@@ -228,7 +228,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
     }, options);
     this.autoFillRange = RectRange.EMPTY;
     this.moveDirection = null;
-    this.status = false;
+    this.display = false;
     this.ltElem = new Widget(`${cssPrefix}-x-autofill-area`);
     this.brElem = new Widget(`${cssPrefix}-x-autofill-area`);
     this.lElem = new Widget(`${cssPrefix}-x-autofill-area`);
@@ -272,7 +272,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
       xSelect.lCorner,
       xSelect.brCorner,
     ], Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      this.status = true;
+      this.display = true;
       mousePointer.lock(XAutoFillItem);
       mousePointer.set(XTableMousePointer.KEYS.crosshair, XAutoFillItem);
       Event.mouseMoveUp(document, (e2) => {
@@ -281,7 +281,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
         this.offsetHandle();
         this.borderHandle();
       }, () => {
-        this.status = false;
+        this.display = false;
         mousePointer.free(XAutoFillItem);
         this.autoFill();
         this.hide();
@@ -290,8 +290,8 @@ class XAutoFillItem extends XScreenCssBorderItem {
   }
 
   borderHandle() {
-    const { autoFillRange, status } = this;
-    if (status === false || autoFillRange.equals(RectRange.EMPTY)) {
+    const { autoFillRange, display } = this;
+    if (display === false || autoFillRange.equals(RectRange.EMPTY)) {
       this.hideBorder();
     } else {
       this.showBorder(autoFillRange);
@@ -299,8 +299,8 @@ class XAutoFillItem extends XScreenCssBorderItem {
   }
 
   offsetHandle() {
-    const { autoFillRange, status } = this;
-    if (status === false || autoFillRange.equals(RectRange.EMPTY)) {
+    const { autoFillRange, display } = this;
+    if (display === false || autoFillRange.equals(RectRange.EMPTY)) {
       this.hide();
     } else {
       this.show();

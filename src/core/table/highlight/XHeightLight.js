@@ -9,6 +9,8 @@ class XHeightLight extends Widget {
   constructor(table) {
     super(`${cssPrefix}-table-x-height-light`);
     this.table = table;
+    this.width = -1;
+    this.left = -1;
     this.setSize();
   }
 
@@ -46,13 +48,19 @@ class XHeightLight extends Widget {
       selectRange,
     } = xSelect;
     if (selectRange) {
-      this.show();
-      this.offset({
-        left: this.getLeft() + table.getIndexWidth(),
-        top: 0,
-        width: this.getWidth(),
-        height: table.getIndexHeight(),
-      });
+      const left = this.getLeft() + table.getIndexWidth();
+      const width = this.getWidth();
+      if ((this.width > 0 || this.width === -1) && (left !== this.left || width !== this.width)) {
+        this.show();
+        this.offset({
+          top: 0,
+          left,
+          width,
+          height: table.getIndexHeight(),
+        });
+      }
+      this.left = left;
+      this.width = width;
     }
   }
 

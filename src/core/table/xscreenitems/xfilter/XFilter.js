@@ -16,7 +16,7 @@ class XFilter extends XScreenViewSizer {
   constructor(table) {
     super({ table });
     this.selectRange = null;
-    this.status = false;
+    this.display = false;
     this.buttons = [];
     this.flt = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-lt`);
     this.ft = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-t`);
@@ -36,17 +36,17 @@ class XFilter extends XScreenViewSizer {
   bind() {
     const { table } = this;
     Event.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
-      if (this.status) {
+      if (this.display) {
         this.updateFilterButton();
       }
     });
     Event.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      if (this.status) {
+      if (this.display) {
         this.updateFilterButton();
       }
     });
     Event.bind(table, Constant.TABLE_EVENT_TYPE.RENDER, () => {
-      if (this.status) {
+      if (this.display) {
         this.updateFilterButton();
       }
     });
@@ -64,14 +64,14 @@ class XFilter extends XScreenViewSizer {
   openFilterButton() {
     this.filterRangeHandle();
     if (this.selectRange) {
-      this.status = true;
+      this.display = true;
       this.show();
       this.updateFilterButton();
     }
   }
 
   hideFilterButton() {
-    this.status = false;
+    this.display = false;
     this.selectRange = null;
     this.hide();
   }

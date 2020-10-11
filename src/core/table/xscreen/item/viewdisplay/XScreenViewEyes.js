@@ -13,9 +13,10 @@ class Display {
     const part = this.getPart();
     if (target !== RectRange.EMPTY) {
       part.show();
-    } else {
-      part.hide();
+      return true;
     }
+    part.hide();
+    return false;
   }
 
   getPart() {
@@ -144,10 +145,11 @@ class XScreenViewEyes extends XScreenItem {
   }
 
   setDisplay(targetViewRange) {
-    this.ltDisplay.setDisplay(targetViewRange);
-    this.tDisplay.setDisplay(targetViewRange);
-    this.brDisplay.setDisplay(targetViewRange);
-    this.lDisplay.setDisplay(targetViewRange);
+    const lt = this.ltDisplay.setDisplay(targetViewRange);
+    const t = this.tDisplay.setDisplay(targetViewRange);
+    const br = this.brDisplay.setDisplay(targetViewRange);
+    const l = this.lDisplay.setDisplay(targetViewRange);
+    return lt || t || br || l;
   }
 
   setLocal() {
