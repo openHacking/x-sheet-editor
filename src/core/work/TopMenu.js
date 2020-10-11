@@ -1094,12 +1094,12 @@ class TopMenu extends Widget {
       const { table } = sheet;
       const { xScreen } = table;
       const filter = xScreen.findType(XFilter);
-      if (filter.status) {
+      if (filter.display) {
         filter.hideFilterButton();
-        this.filter.active(filter.status);
+        this.filter.active(filter.display);
       } else {
         filter.openFilterButton();
-        this.filter.active(filter.status);
+        this.filter.active(filter.display);
       }
     });
   }
@@ -1469,7 +1469,7 @@ class TopMenu extends Widget {
     const { table } = sheet;
     const { xScreen } = table;
     const filter = xScreen.findType(XFilter);
-    this.filter.active(filter.status);
+    this.filter.active(filter.display);
   }
 
 }
