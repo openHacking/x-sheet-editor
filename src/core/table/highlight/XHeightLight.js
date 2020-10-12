@@ -50,7 +50,7 @@ class XHeightLight extends Widget {
     if (selectRange) {
       const left = this.getLeft() + table.getIndexWidth();
       const width = this.getWidth();
-      if ((this.width > 0 || this.width === -1) && (left !== this.left || width !== this.width)) {
+      if (left !== this.left || width !== this.width) {
         this.show();
         this.offset({
           top: 0,
@@ -143,6 +143,7 @@ class XHeightLight extends Widget {
     }
     return 0;
   }
+
 }
 
 export { XHeightLight };

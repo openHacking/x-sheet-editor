@@ -50,7 +50,7 @@ class YHeightLight extends Widget {
     if (selectRange) {
       const top = this.getTop() + table.getIndexHeight();
       const height = this.getHeight();
-      if ((this.height > 0 || this.height === -1) && (top !== this.top || height !== this.height)) {
+      if (top !== this.top || height !== this.height) {
         this.show();
         this.offset({
           left: 0,
