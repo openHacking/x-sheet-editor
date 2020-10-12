@@ -12,24 +12,20 @@ class Base {
     return Math.round(val);
   }
 
-  static dpr() {
-    return DPR;
-  }
-
-  static cvCssPx(px) {
-    return this.rpx(px) / this.dpr();
-  }
-
   static radian(angle) {
     return -angle * (Math.PI / 180);
   }
 
-  static rpx(px) {
-    return this.rounding(this.dpx(px));
+  static dpr() {
+    return DPR;
   }
 
-  static dpx(px) {
-    return px * this.dpr();
+  static transformStylePx(px) {
+    return this.rounding(px * this.dpr());
+  }
+
+  static transformCssPx(px) {
+    return this.transformStylePx(px) / this.dpr();
   }
 
   constructor(canvas) {
@@ -56,8 +52,8 @@ class Base {
 
   resize(width, height) {
     const { canvas } = this;
-    canvas.width = Base.rpx(width);
-    canvas.height = Base.rpx(height);
+    canvas.width = Base.transformStylePx(width);
+    canvas.height = Base.transformStylePx(height);
     canvas.style.width = `${canvas.width / Base.dpr()}px`;
     canvas.style.height = `${canvas.height / Base.dpr()}px`;
     return this;
@@ -208,13 +204,13 @@ class BaseLine extends Position {
   line(...xys) {
     this.polyline((xys) => {
       const [x, y] = xys;
-      return [this.lpx(Base.rounding(x + this.getOffsetX())),
-        this.lpx(Base.rounding(y + this.getOffsetY()))];
+      return [this.transformLinePx(Base.rounding(x + this.getOffsetX())),
+        this.transformLinePx(Base.rounding(y + this.getOffsetY()))];
     }, ...xys);
     return this;
   }
 
-  lpx(pixel) {
+  transformLinePx(pixel) {
     const { ctx } = this;
     const {
       lineWidth,

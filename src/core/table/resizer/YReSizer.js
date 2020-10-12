@@ -32,7 +32,7 @@ class YReSizer extends Widget {
     const {
       rows, mousePointer, focus, xFixedView,
     } = table;
-    const tableDataSnapshot = table.getTableDataSnapshot();
+    const { tableDataSnapshot } = table;
     const { rowsDataProxy } = tableDataSnapshot;
     const { index } = table;
     Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {

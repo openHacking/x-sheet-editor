@@ -3,28 +3,28 @@ import { Constant } from '../../../../const/Constant';
 
 class TableMergeDataProxy extends DataProxy {
 
-  constructor(table, option = {
+  constructor(snapshot, option = {
     on: {
       addMerge() {}, deleteMerge() {},
     },
   }) {
     super();
-    this.table = table;
+    this.snapshot = snapshot;
     this.option = option;
   }
 
   $addMerge(merge) {
     this.change = true;
-    const { table } = this;
-    const { merges } = table;
+    const { snapshot } = this;
+    const { merges } = snapshot;
     merges.getIncludes(merge, merge => this.deleteMerge(merge));
     merges.add(merge, false);
   }
 
   $deleteMerge(merge) {
     this.change = true;
-    const { table } = this;
-    const { merges } = table;
+    const { snapshot } = this;
+    const { merges } = snapshot;
     merges.delete(merge);
   }
 
@@ -45,7 +45,8 @@ class TableMergeDataProxy extends DataProxy {
   }
 
   endNotice() {
-    const { table } = this;
+    const { snapshot } = this;
+    const { table } = snapshot;
     if (this.change) {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
     }
@@ -53,7 +54,8 @@ class TableMergeDataProxy extends DataProxy {
   }
 
   goNotice() {
-    const { table } = this;
+    const { snapshot } = this;
+    const { table } = snapshot;
     if (this.change) {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
     }
@@ -61,7 +63,8 @@ class TableMergeDataProxy extends DataProxy {
   }
 
   backNotice() {
-    const { table } = this;
+    const { snapshot } = this;
+    const { table } = snapshot;
     if (this.change) {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
     }

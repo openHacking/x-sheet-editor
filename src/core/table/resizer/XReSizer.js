@@ -6,6 +6,7 @@ import { Event } from '../../../lib/Event';
 import { PlainUtils } from '../../../utils/PlainUtils';
 import { XTableMousePointer } from '../XTableMousePointer';
 import { ColFixed } from '../tablefixed/ColFixed';
+import { XDraw } from '../../../canvas/XDraw';
 
 class XReSizer extends Widget {
 
@@ -32,7 +33,7 @@ class XReSizer extends Widget {
     const {
       cols, mousePointer, focus, xFixedView,
     } = table;
-    const tableDataSnapshot = table.getTableDataSnapshot();
+    const { tableDataSnapshot } = table;
     const { colsDataProxy } = tableDataSnapshot;
     const { index } = table;
     Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
@@ -135,6 +136,7 @@ class XReSizer extends Widget {
     }
     return result;
   }
+
 }
 
 export { XReSizer };

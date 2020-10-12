@@ -4,7 +4,7 @@ import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBo
 import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
-import { PlainUtils as Utils, PlainUtils } from '../../../../utils/PlainUtils';
+import { PlainUtils } from '../../../../utils/PlainUtils';
 import { Event } from '../../../../lib/Event';
 import { XTableMousePointer } from '../../XTableMousePointer';
 import { RowsIterator } from '../../iterator/RowsIterator';
@@ -322,7 +322,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
 
     const merge = merges.getFirstIncludes(sri, sci);
     const zone = SELECT_LOCAL.BR !== selectLocal;
-    const hasFull = zone || Utils.isNotUnDef(merge);
+    const hasFull = zone || PlainUtils.isNotUnDef(merge);
     const [rSize, cSize] = selectRange.size();
 
     let originSRi = ri;
@@ -341,7 +341,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
     }
 
     let autoFillRange = RectRange.EMPTY;
-    let moveDirection = Utils.Undef;
+    let moveDirection = PlainUtils.Undef;
 
     // 选择区域
     if (originSRi < sri || ri > eri) {
@@ -500,7 +500,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
       return;
     }
     const { table, options } = this;
-    const tableDataSnapshot = table.getTableDataSnapshot();
+    const { tableDataSnapshot } = table;
     options.onBeforeAutoFill();
     tableDataSnapshot.begin();
     this.fillMerge();
@@ -512,7 +512,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
 
   fillMerge() {
     const { table, xScreen } = this;
-    const tableDataSnapshot = table.getTableDataSnapshot();
+    const { tableDataSnapshot } = table;
     const merges = table.getTableMerges();
     const { mergeDataProxy } = tableDataSnapshot;
     const xSelect = xScreen.findType(XSelectItem);
@@ -539,7 +539,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
             mergeDataProxy.deleteMerge(merge);
           }
         });
-        mergeDataProxy.addMerge(hasFold);
+        mergeDataProxy.addMerge(newMerge);
       },
     });
     copy.executeCopy();
@@ -547,7 +547,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
 
   fillCellIN() {
     const { table, xScreen } = this;
-    const tableDataSnapshot = table.getTableDataSnapshot();
+    const { tableDataSnapshot } = table;
     const cells = table.getTableCells();
     const xSelect = xScreen.findType(XSelectItem);
     const { cellDataProxy } = tableDataSnapshot;

@@ -10,13 +10,19 @@ import { RowsDataRecord } from './record/RowsDataRecord';
 
 class TableDataSnapshot {
 
-  constructor(table) {
+  constructor({
+    table, cells, merges, cols, rows,
+  }) {
     this.record = false;
     this.backLayerStack = [];
-    this.goLayerStack = [];
     this.recordLayer = [];
+    this.goLayerStack = [];
     this.table = table;
-    this.mergeDataProxy = new TableMergeDataProxy(table, {
+    this.cells = cells;
+    this.merges = merges;
+    this.cols = cols;
+    this.rows = rows;
+    this.mergeDataProxy = new TableMergeDataProxy(this, {
       on: {
         deleteMerge: (merge) => {
           if (this.record === false) return;
@@ -30,7 +36,7 @@ class TableDataSnapshot {
         },
       },
     });
-    this.cellDataProxy = new TableCellDataProxy(table, {
+    this.cellDataProxy = new TableCellDataProxy(this, {
       on: {
         setCell: (ri, ci, oldCell, newCell) => {
           if (this.record === false) return;
@@ -39,7 +45,7 @@ class TableDataSnapshot {
         },
       },
     });
-    this.colsDataProxy = new TableColsDataProxy(table, {
+    this.colsDataProxy = new TableColsDataProxy(this, {
       on: {
         setWidth: (ci, oldWidth, newWidth) => {
           if (this.record === false) return;
@@ -48,7 +54,7 @@ class TableDataSnapshot {
         },
       },
     });
-    this.rowsDataProxy = new TableRowsDataProxy(table, {
+    this.rowsDataProxy = new TableRowsDataProxy(this, {
       on: {
         setHeight: (ri, oldHeight, newHeight) => {
           if (this.record === false) return;
@@ -194,6 +200,7 @@ class TableDataSnapshot {
     const { goLayerStack } = this;
     return goLayerStack.length !== 0;
   }
+
 }
 
 export { TableDataSnapshot };

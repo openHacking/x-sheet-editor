@@ -49,7 +49,7 @@ class XTableEdit extends Widget {
     const { select } = this;
     const { table } = this;
     const cells = table.getTableCells();
-    const tableDataSnapshot = table.getTableDataSnapshot();
+    const { tableDataSnapshot } = table;
     const { cellDataProxy } = tableDataSnapshot;
     this.hide();
     if (select) {

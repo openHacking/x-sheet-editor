@@ -3,33 +3,34 @@ import { Constant } from '../../../../const/Constant';
 
 class TableColsDataProxy extends DataProxy {
 
-  constructor(table, option = {
+  constructor(snapshot, option = {
     on: { setWidth() {} },
   }) {
     super();
-    this.table = table;
+    this.snapshot = snapshot;
     this.option = option;
   }
 
   $setWidth(ci, width) {
     this.change = true;
-    const { table } = this;
-    const { cols } = table;
+    const { snapshot } = this;
+    const { cols } = snapshot;
     cols.setWidth(ci, width);
   }
 
   setWidth(ci, newWidth) {
-    const { option, table } = this;
+    const { option, snapshot } = this;
     const { on } = option;
     const { setWidth } = on;
-    const { cols } = table;
+    const { cols } = snapshot;
     const oldWidth = cols.getWidth(ci);
     this.$setWidth(ci, newWidth);
     setWidth(ci, oldWidth, newWidth);
   }
 
   endNotice() {
-    const { table } = this;
+    const { snapshot } = this;
+    const { table } = snapshot;
     if (this.change) {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
       table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH);
@@ -38,7 +39,8 @@ class TableColsDataProxy extends DataProxy {
   }
 
   backNotice() {
-    const { table } = this;
+    const { snapshot } = this;
+    const { table } = snapshot;
     if (this.change) {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
       table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH);
@@ -47,7 +49,8 @@ class TableColsDataProxy extends DataProxy {
   }
 
   goNotice() {
-    const { table } = this;
+    const { snapshot } = this;
+    const { table } = snapshot;
     if (this.change) {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
       table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH);

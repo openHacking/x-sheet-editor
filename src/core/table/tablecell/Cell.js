@@ -71,15 +71,6 @@ class Cell {
     });
   }
 
-  toCssStyle() {
-    const { background, fontAttr } = this;
-    let css = `
-      background:${background};
-    `;
-    css = css.replace(/\s/g, '');
-    return fontAttr.toCssStyle() + css;
-  }
-
   toJSON() {
     const {
       background,
@@ -91,6 +82,16 @@ class Cell {
     } = this;
     return { background, format, text, fontAttr, borderAttr, contentWidth };
   }
+
+  toCssStyle() {
+    const { background, fontAttr } = this;
+    let css = `
+      background:${background};
+    `;
+    css = css.replace(/\s/g, '');
+    return fontAttr.toCssStyle() + css;
+  }
+
 }
 
 export { Cell };

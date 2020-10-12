@@ -5,9 +5,7 @@ import { SCROLL_TYPE } from './tablebase/Scroll';
 import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../const/Constant';
 import { XDraw } from '../../canvas/XDraw';
-import {
-  Line, LINE_TYPE,
-} from '../../canvas/Line';
+import { Line, LINE_TYPE } from '../../canvas/Line';
 import { Grid } from '../../canvas/Grid';
 import { Crop } from '../../canvas/Crop';
 import { Rect } from '../../canvas/Rect';
@@ -15,35 +13,24 @@ import XTableFormat from './XTableFormat';
 import { Box } from '../../canvas/Box';
 import { RectRange } from './tablebase/RectRange';
 import { Cells } from './tablecell/Cells';
-import {
-  Scale, ScaleAdapter,
-} from './tablebase/Scale';
+import { Scale, ScaleAdapter } from './tablebase/Scale';
 import { Code } from './tablebase/Code';
 import { Text } from './tablebase/Text';
 import { StyleCellsHelper } from './helper/StyleCellsHelper';
-import {
-  BREAK_LOOP, TextCellsHelper,
-} from './helper/TextCellsHelper';
+import { BREAK_LOOP, TextCellsHelper } from './helper/TextCellsHelper';
 import { Merges } from './tablebase/Merges';
-import {
-  TableDataSnapshot,
-} from './datasnapshot/TableDataSnapshot';
 import { TableHorizontalGrid } from './linehandle/grid/TableHorizontalGrid';
 import { TableVerticalGrid } from './linehandle/grid/TableVerticalGrid';
 import { TableHorizontalBorder } from './linehandle/border/TableHorizontalBorder';
 import { TableVerticalBorder } from './linehandle/border/TableVerticalBorder';
-import {
-  ChainLogic, FilterChain,
-} from './linehandle/filter/FilterChain';
+import { ChainLogic, FilterChain } from './linehandle/filter/FilterChain';
 import { XTableHistoryAreaView } from './XTableHistoryAreaView';
 import { LineFilter } from './linehandle/filter/LineFilter';
 import { LeftOutRangeFilter } from './linehandle/filter/outrange/LeftOutRangeFilter';
 import { RightOutRangeFilter } from './linehandle/filter/outrange/RightOutRangeFilter';
 import { OperateCellsHelper } from './helper/OperateCellsHelper';
 import { BaseFont } from '../../canvas/font/BaseFont';
-import {
-  VIEW_MODE, XTableScrollView,
-} from './XTableScrollView';
+import { VIEW_MODE, XTableScrollView } from './XTableScrollView';
 import { XFixedMeasure } from './tablebase/XFixedMeasure';
 
 const RENDER_MODE = {
@@ -113,7 +100,7 @@ class XTableFixedBar {
       xFixedView, draw, index, xFixedMeasure,
     } = table;
     if (xFixedView.hasFixedTop()) {
-      const rpxHeight = XDraw.rpx(height);
+      const rpxHeight = XDraw.transformStylePx(height);
       const width = table.visualWidth();
       const x = index.getWidth();
       const y = xFixedMeasure.getHeight() + index.getHeight() - rpxHeight / 2;
@@ -122,7 +109,7 @@ class XTableFixedBar {
     }
     if (xFixedView.hasFixedLeft()) {
       const height = table.visualHeight();
-      const rpxWidth = XDraw.rpx(width);
+      const rpxWidth = XDraw.transformStylePx(width);
       const x = xFixedMeasure.getWidth() + index.getWidth() - rpxWidth / 2;
       const y = index.getHeight();
       draw.attr({ fillStyle: background });
@@ -138,7 +125,7 @@ class XTableFixedBar {
       xFixedView, draw, index, xFixedMeasure,
     } = table;
     if (xFixedView.hasFixedTop()) {
-      const rpxHeight = XDraw.rpx(height);
+      const rpxHeight = XDraw.transformStylePx(height);
       const width = index.getWidth();
       const x = 0;
       const y = xFixedMeasure.getHeight() + index.getHeight() - rpxHeight / 2;
@@ -147,7 +134,7 @@ class XTableFixedBar {
     }
     if (xFixedView.hasFixedLeft()) {
       const height = index.getHeight();
-      const rpxWidth = XDraw.rpx(width);
+      const rpxWidth = XDraw.transformStylePx(width);
       const x = xFixedMeasure.getWidth() + index.getWidth() - rpxWidth / 2;
       const y = 0;
       draw.attr({ fillStyle: buttonColor });
@@ -2173,19 +2160,19 @@ class XTableStyle extends Widget {
     this.scale = new Scale();
     this.index = new Code({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.rpx(this.scale.goto(v)),
+        goto: v => XDraw.transformStylePx(this.scale.goto(v)),
       }),
       ...this.settings.index,
     });
     this.rows = new Rows({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.rpx(this.scale.goto(v)),
+        goto: v => XDraw.transformStylePx(this.scale.goto(v)),
       }),
       ...this.settings.rows,
     });
     this.cols = new Cols({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.rpx(this.scale.goto(v)),
+        goto: v => XDraw.transformStylePx(this.scale.goto(v)),
         back: v => this.scale.back(v),
       }),
       ...this.settings.cols,
@@ -2235,8 +2222,6 @@ class XTableStyle extends Widget {
       rows: this.rows,
       cols: this.cols,
     });
-    // 数据快照
-    this.tableDataSnapshot = new TableDataSnapshot(this);
     // 绘制资源
     const rightOutRangeFilter = new RightOutRangeFilter({
       merges: this.merges,

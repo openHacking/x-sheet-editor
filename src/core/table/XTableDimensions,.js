@@ -33,6 +33,7 @@ import { XFixedView } from './tablebase/XFixedView';
 import { XFilter } from './xscreenitems/xfilter/XFilter';
 import { ColsIterator } from './iterator/ColsIterator';
 import { RowsIterator } from './iterator/RowsIterator';
+import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
 
 class Dimensions {
 
@@ -644,19 +645,19 @@ class XTableDimensions extends Widget {
     this.scale = new Scale();
     this.index = new Code({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.cvCssPx(this.scale.goto(v)),
+        goto: v => XDraw.transformCssPx(this.scale.goto(v)),
       }),
       ...this.settings.index,
     });
     this.rows = new Rows({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.cvCssPx(this.scale.goto(v)),
+        goto: v => XDraw.transformCssPx(this.scale.goto(v)),
       }),
       ...this.settings.rows,
     });
     this.cols = new Cols({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.cvCssPx(this.scale.goto(v)),
+        goto: v => XDraw.transformCssPx(this.scale.goto(v)),
       }),
       ...this.settings.cols,
     });
@@ -693,6 +694,14 @@ class XTableDimensions extends Widget {
       settings: this.settings,
       xFixedView: this.xFixedView,
     });
+    // 数据快照
+    this.tableDataSnapshot = new TableDataSnapshot({
+      merges: this.getTableMerges(),
+      cells: this.getTableCells(),
+      cols: this.cols,
+      rows: this.rows,
+      table: this,
+    });
     // table区域
     this.xTableFrozenContent = new XTableFrozenContent(this);
     this.xLeftIndex = new XTableLeftIndex(this);
@@ -714,16 +723,6 @@ class XTableDimensions extends Widget {
     this.colFixed = new ColFixed(this);
     this.dropRowFixed = new DropRowFixed(this);
     this.dropColFixed = new DropColFixed(this);
-  }
-
-  /**
-   * 读取快照数据
-   * @returns {TableDataSnapshot}
-   */
-  getTableDataSnapshot() {
-    const { xTableStyle } = this;
-    const { tableDataSnapshot } = xTableStyle;
-    return tableDataSnapshot;
   }
 
   /**

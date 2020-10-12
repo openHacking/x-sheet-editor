@@ -3,33 +3,34 @@ import { Constant } from '../../../../const/Constant';
 
 class TableCellDataProxy extends DataProxy {
 
-  constructor(table, option = {
+  constructor(snapshot, option = {
     on: { setCell() {} },
   }) {
     super();
-    this.table = table;
+    this.snapshot = snapshot;
     this.option = option;
   }
 
   $setCell(ri, ci, newCell) {
     this.change = true;
-    const { table } = this;
-    const { cells } = table;
+    const { snapshot } = this;
+    const { cells } = snapshot;
     cells.setCellOrNew(ri, ci, newCell);
   }
 
   setCell(ri, ci, newCell) {
-    const { option, table } = this;
+    const { option, snapshot } = this;
     const { on } = option;
     const { setCell } = on;
-    const { cells } = table;
+    const { cells } = snapshot;
     const oldCell = cells.getCell(ri, ci);
     this.$setCell(ri, ci, newCell);
     setCell(ri, ci, oldCell, newCell);
   }
 
   endNotice() {
-    const { table } = this;
+    const { snapshot } = this;
+    const { table } = snapshot;
     if (this.change) {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
     }
@@ -37,7 +38,8 @@ class TableCellDataProxy extends DataProxy {
   }
 
   goNotice() {
-    const { table } = this;
+    const { snapshot } = this;
+    const { table } = snapshot;
     if (this.change) {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
     }
@@ -45,7 +47,8 @@ class TableCellDataProxy extends DataProxy {
   }
 
   backNotice() {
-    const { table } = this;
+    const { snapshot } = this;
+    const { table } = snapshot;
     if (this.change) {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
     }
