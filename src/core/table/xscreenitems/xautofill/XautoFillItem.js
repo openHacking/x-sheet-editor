@@ -10,213 +10,6 @@ import { XTableMousePointer } from '../../XTableMousePointer';
 import { RowsIterator } from '../../iterator/RowsIterator';
 import { ColsIterator } from '../../iterator/ColsIterator';
 
-class CopyMerge {
-
-  constructor({
-    targetViewRange,
-    originViewRange,
-    merge = () => {},
-    master = () => {},
-    onCopy = () => {},
-  }) {
-    this.targetViewRange = targetViewRange;
-    this.originViewRange = originViewRange;
-    this.master = master;
-    this.merge = merge;
-    this.onCopy = onCopy;
-  }
-
-  copyStartRow() {
-    const { originViewRange } = this;
-    return originViewRange.sri;
-  }
-
-  copyEndRow() {
-    const { originViewRange } = this;
-    return originViewRange.eri;
-  }
-
-  nextCopyRow(row) {
-    const endRow = this.copyEndRow();
-    if (row >= endRow) {
-      return this.copyStartRow();
-    }
-    return row + 1;
-  }
-
-  copyStartCol() {
-    const { originViewRange } = this;
-    return originViewRange.sci;
-  }
-
-  copyEndCol() {
-    const { originViewRange } = this;
-    return originViewRange.eci;
-  }
-
-  nextCopyCol(col) {
-    const endCol = this.copyEndCol();
-    if (col >= endCol) {
-      return this.copyStartCol();
-    }
-    return col + 1;
-  }
-
-  pasteStartRow() {
-    const { targetViewRange } = this;
-    return targetViewRange.sri;
-  }
-
-  pasteEndRow() {
-    const { targetViewRange } = this;
-    return targetViewRange.eri;
-  }
-
-  pasteStartCol() {
-    const { targetViewRange } = this;
-    return targetViewRange.sci;
-  }
-
-  pasteEndCol() {
-    const { targetViewRange } = this;
-    return targetViewRange.eci;
-  }
-
-  executeCopy() {
-    let ori = this.copyStartRow();
-    RowsIterator.getInstance()
-      .setBegin(this.pasteStartRow())
-      .setEnd(this.pasteEndRow())
-      .setLoop((tri) => {
-        let oci = this.copyStartCol();
-        ColsIterator.getInstance()
-          .setBegin(this.pasteStartCol())
-          .setEnd(this.pasteEndCol())
-          .setLoop((tci) => {
-            const merge = this.merge(ori, oci);
-            if (merge && this.master(ori, oci, merge)) {
-              this.onCopy(tri, tci, merge);
-            }
-          })
-          .setNext(() => {
-            oci = this.nextCopyCol(oci);
-          })
-          .execute();
-      })
-      .setNext(() => {
-        ori = this.nextCopyRow(ori);
-      })
-      .foldOnOff(false)
-      .execute();
-  }
-
-}
-
-class CopyCellIN {
-
-  constructor({
-    targetViewRange,
-    originViewRange,
-    onCopy = () => {},
-  }) {
-    this.targetViewRange = targetViewRange;
-    this.originViewRange = originViewRange;
-    this.onCopy = onCopy;
-  }
-
-  copyStartRow() {
-    const { originViewRange } = this;
-    const { sri, eri } = originViewRange;
-    return RowsIterator.getInstance()
-      .setBegin(sri - 1)
-      .setEnd(eri)
-      .nextRow();
-  }
-
-  copyEndRow() {
-    const { originViewRange } = this;
-    const { sri, eri } = originViewRange;
-    return RowsIterator.getInstance()
-      .setBegin(eri + 1)
-      .setEnd(sri)
-      .nextRow();
-  }
-
-  nextCopyRow(row) {
-    const endRow = this.copyEndRow();
-    if (row >= endRow) {
-      return this.copyStartRow();
-    }
-    return RowsIterator.getInstance()
-      .setBegin(row)
-      .setEnd(endRow)
-      .nextRow();
-  }
-
-  copyStartCol() {
-    const { originViewRange } = this;
-    return originViewRange.sci;
-  }
-
-  copyEndCol() {
-    const { originViewRange } = this;
-    return originViewRange.eci;
-  }
-
-  nextCopyCol(col) {
-    const endCol = this.copyEndCol();
-    if (col >= endCol) {
-      return this.copyStartCol();
-    }
-    return col + 1;
-  }
-
-  pasteStartRow() {
-    const { targetViewRange } = this;
-    return targetViewRange.sri;
-  }
-
-  pasteEndRow() {
-    const { targetViewRange } = this;
-    return targetViewRange.eri;
-  }
-
-  pasteStartCol() {
-    const { targetViewRange } = this;
-    return targetViewRange.sci;
-  }
-
-  pasteEndCol() {
-    const { targetViewRange } = this;
-    return targetViewRange.eci;
-  }
-
-  executeCopy() {
-    let ori = this.copyStartRow();
-    RowsIterator.getInstance()
-      .setBegin(this.pasteStartRow())
-      .setEnd(this.pasteEndRow())
-      .setLoop((tri) => {
-        let oci = this.copyStartCol();
-        ColsIterator.getInstance()
-          .setBegin(this.pasteStartCol())
-          .setEnd(this.pasteEndCol())
-          .setLoop((tci) => {
-            this.onCopy(tri, tci, ori, oci);
-          })
-          .setNext(() => {
-            oci = this.nextCopyCol(oci);
-          })
-          .execute();
-      })
-      .setNext(() => {
-        ori = this.nextCopyRow(ori);
-      })
-      .execute();
-  }
-
-}
-
 class XAutoFillItem extends XScreenCssBorderItem {
 
   constructor(table, options = {}) {
@@ -512,57 +305,26 @@ class XAutoFillItem extends XScreenCssBorderItem {
 
   fillMerge() {
     const { table, xScreen } = this;
-    const { tableDataSnapshot } = table;
-    const merges = table.getTableMerges();
-    const { mergeDataProxy } = tableDataSnapshot;
+    const {
+      cellMergeCopyHelper,
+    } = table;
     const xSelect = xScreen.findType(XSelectItem);
-    const copy = new CopyMerge({
-      originViewRange: xSelect.selectRange,
+    cellMergeCopyHelper.copyMergeContent({
       targetViewRange: this.autoFillRange,
-      merge: (ri, ci) => merges.getFirstIncludes(ri, ci),
-      master: (ri, ci, m) => m.sri === ri && m.sci === ci,
-      onCopy: (ri, ci, m) => {
-        let [rSize, cSize] = m.size();
-        cSize -= 1;
-        rSize -= 1;
-        const newMerge = new RectRange(ri, ci, ri + rSize, ci + cSize);
-        const hasFold = RowsIterator.getInstance()
-          .setBegin(newMerge.sri)
-          .setEnd(newMerge.eri)
-          .hasFold();
-        if (hasFold) {
-          return;
-        }
-        newMerge.each((ri, ci) => {
-          const merge = merges.getFirstIncludes(ri, ci);
-          if (merge) {
-            mergeDataProxy.deleteMerge(merge);
-          }
-        });
-        mergeDataProxy.addMerge(newMerge);
-      },
+      originViewRange: xSelect.selectRange,
     });
-    copy.executeCopy();
   }
 
   fillCellIN() {
     const { table, xScreen } = this;
-    const { tableDataSnapshot } = table;
-    const cells = table.getTableCells();
+    const {
+      cellMergeCopyHelper,
+    } = table;
     const xSelect = xScreen.findType(XSelectItem);
-    const { cellDataProxy } = tableDataSnapshot;
-    const copy = new CopyCellIN({
-      originViewRange: xSelect.selectRange,
+    cellMergeCopyHelper.copyCellINContent({
       targetViewRange: this.autoFillRange,
-      onCopy: (tri, tci, ori, oci) => {
-        const src = cells.getCell(ori, oci);
-        if (src) {
-          const target = src.clone();
-          cellDataProxy.setCell(tri, tci, target);
-        }
-      },
+      originViewRange: xSelect.selectRange,
     });
-    copy.executeCopy();
   }
 
 }

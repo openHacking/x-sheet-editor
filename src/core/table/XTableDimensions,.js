@@ -34,6 +34,7 @@ import { XFilter } from './xscreenitems/xfilter/XFilter';
 import { ColsIterator } from './iterator/ColsIterator';
 import { RowsIterator } from './iterator/RowsIterator';
 import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
+import { CellMergeCopyHelper } from './helper/CellMergeCopyHelper';
 
 class Dimensions {
 
@@ -698,9 +699,17 @@ class XTableDimensions extends Widget {
     this.tableDataSnapshot = new TableDataSnapshot({
       merges: this.getTableMerges(),
       cells: this.getTableCells(),
+      table: this,
       cols: this.cols,
       rows: this.rows,
-      table: this,
+    });
+    // 单元格辅助类
+    this.cellMergeCopyHelper = new CellMergeCopyHelper({
+      merges: this.getTableMerges(),
+      cells: this.getTableCells(),
+      cols: this.cols,
+      rows: this.rows,
+      tableDataSnapshot: this.tableDataSnapshot,
     });
     // table区域
     this.xTableFrozenContent = new XTableFrozenContent(this);

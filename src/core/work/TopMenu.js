@@ -30,11 +30,10 @@ import { PlainUtils } from '../../utils/PlainUtils';
 import { Scale } from './tools/Scale';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { XSelectItem } from '../table/xscreenitems/xselect/XSelectItem';
-import { XCopyStyle } from '../table/xscreenitems/xcopystyle/XCopyStyle';
 import { XDraw } from '../../canvas/XDraw';
 import { Alert } from '../../component/alert/Alert';
-import { CopyFormatHelper } from './helper/CopyFormatHelper';
 import { XFilter } from '../table/xscreenitems/xfilter/XFilter';
+import { XCopyStyle } from '../table/xscreenitems/xcopystyle/XCopyStyle';
 
 class Divider extends Widget {
   constructor() {
@@ -742,8 +741,7 @@ class TopMenu extends Widget {
         return;
       }
       const { tableDataSnapshot } = table;
-      const cells = table.getTableCells();
-      const merges = table.getTableMerges();
+      const { cellMergeCopyHelper } = table;
       const xCopyStyle = xScreen.findType(XCopyStyle);
       xCopyStyle.showCopyStyle();
       this.paintFormat.active(true);
@@ -753,42 +751,21 @@ class TopMenu extends Widget {
         // 清除复制
         this.paintFormat.active(false);
         this.paintFormat.removeSheet(sheet);
-        // 原始&目标
-        const originView = xCopyStyle.selectRange;
-        const targetView = xSelect.selectRange;
+        // 复制区域
+        const originViewRange = xCopyStyle.selectRange.clone();
+        const targetViewRange = xSelect.selectRange.clone();
+        const [rSize, cSize] = originViewRange.size();
+        targetViewRange.eri = targetViewRange.sri + (rSize - 1);
+        targetViewRange.eci = targetViewRange.sci + (cSize - 1);
         // 开始复制
         tableDataSnapshot.begin();
-        const {
-          cellDataProxy, mergeDataProxy,
-        } = tableDataSnapshot;
-        CopyFormatHelper.copy({
-          originView,
-          targetView,
-          mergeCheck: (ri, ci) => merges.getFirstIncludes(ri, ci),
-          masterCheck: (ri, ci) => {
-            const merge = merges.getFirstIncludes(ri, ci);
-            if (merge) {
-              return merge.sri === ri && merge.sci === ci;
-            }
-            return true;
-          },
-          cellOrMaster: (ri, ci) => {
-            const merge = merges.getFirstIncludes(ri, ci);
-            return merge
-              ? cells.getCellOrNew(merge.sri, merge.sci)
-              : cells.getCellOrNew(ri, ci);
-          },
-          copyExecute: (o, t, ri, ci) => {
-            const cell = o.clone();
-            cell.text = t.text;
-            cellDataProxy.setCell(ri, ci, cell);
-          },
-          mergeExecute: (m) => {
-            mergeDataProxy.addMerge(m);
-          },
-          mergeRemove: (m) => {
-            mergeDataProxy.deleteMerge(m);
-          },
+        cellMergeCopyHelper.copyMergeContent({
+          originViewRange,
+          targetViewRange,
+        });
+        cellMergeCopyHelper.copyStylesContent({
+          originViewRange,
+          targetViewRange,
         });
         tableDataSnapshot.end();
         table.render();

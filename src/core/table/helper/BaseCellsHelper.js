@@ -10,8 +10,10 @@ class BaseCellsHelper {
     merges,
     rows,
     cols,
+    tableDataSnapshot,
     xTableAreaView,
   }) {
+    this.tableDataSnapshot = tableDataSnapshot;
     this.xTableAreaView = xTableAreaView;
     this.cells = cells;
     this.merges = merges;
