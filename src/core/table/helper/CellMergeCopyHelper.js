@@ -282,9 +282,9 @@ class CellMergeCopyHelper extends BaseCellsHelper {
       onCopy: (tri, tci, ori, oci) => {
         const src = cells.getCell(ori, oci);
         if (src) {
-          const target = cells.getCellOrNew(tri, tri);
+          const target = cells.getCellOrNew(tri, tci);
           const clone = src.clone();
-          clone.fontAttr.text = target.text;
+          clone.text = target.text;
           cellDataProxy.setCell(tri, tci, clone);
         }
       },
