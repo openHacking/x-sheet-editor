@@ -6,21 +6,8 @@ class XTableFocus {
 
   constructor(table) {
     this.table = table;
-    this.activate = {};
     this.pool = [];
-  }
-
-  bind(item) {
-    const { stop, target } = item;
-    XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      const alike = this.findByChild(e.target);
-      if (alike) {
-        this.activate = alike;
-        if (stop) {
-          e.stopPropagation();
-        }
-      }
-    });
+    this.activate = {};
   }
 
   remove(target) {
@@ -37,27 +24,45 @@ class XTableFocus {
     this.pool = pool;
   }
 
+  add(item) {
+    // 是否是Element
+    if (!(item.target instanceof Element)) {
+      return false;
+    }
+    // 是否已经注册
+    const find = this.findByNode(item.target);
+    if (find) {
+      return false;
+    }
+    // 记录注册的元素
+    this.pool.push(item);
+    if (item.focus) {
+      this.activate = this.pool[this.pool.length - 1];
+    }
+    return true;
+  }
+
   register({
-    target, attr = {}, stop = false, focus = false,
+    attr = {},
+    target,
+    focus = false,
+    stop = false,
   }) {
-    if (!(target instanceof Element)) {
-      throw new TypeError(' error type not Element ');
+    if (this.add({
+      attr, target, focus, stop,
+    })) {
+      XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+        const alike = this.findByChild(e.target);
+        if (alike) {
+          this.activate = alike;
+          if (stop) {
+            e.stopPropagation();
+          }
+        } else {
+          this.activate = null;
+        }
+      });
     }
-    let item = this.findByNode(target);
-    if (item) {
-      Object.assign(item.attr, attr);
-      item.focus = focus;
-      item.stop = stop;
-    } else {
-      item = {
-        target, attr, stop, focus,
-      };
-      this.pool.push(item);
-    }
-    if (focus) {
-      this.activate = item;
-    }
-    this.bind(item);
   }
 
   findByNode(el) {

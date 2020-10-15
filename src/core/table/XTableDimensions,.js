@@ -663,8 +663,6 @@ class XTableDimensions extends Widget {
       }),
       ...this.settings.cols,
     });
-    // 粘贴板
-    this.clipboard = new Clipboard(this);
     // 冻结视图坐标
     this.xFixedView = new XFixedView(this.settings.xFixedView);
     this.xFixedMeasure = new XFixedMeasure({
@@ -698,14 +696,6 @@ class XTableDimensions extends Widget {
       settings: this.settings,
       xFixedView: this.xFixedView,
     });
-    // 数据快照
-    this.tableDataSnapshot = new TableDataSnapshot({
-      merges: this.getTableMerges(),
-      cells: this.getTableCells(),
-      table: this,
-      cols: this.cols,
-      rows: this.rows,
-    });
     // 单元格辅助类
     this.cellMergeCopyHelper = new CellMergeCopyHelper({
       merges: this.getTableMerges(),
@@ -714,16 +704,26 @@ class XTableDimensions extends Widget {
       rows: this.rows,
       tableDataSnapshot: this.tableDataSnapshot,
     });
+    // 数据快照
+    this.tableDataSnapshot = new TableDataSnapshot({
+      merges: this.getTableMerges(),
+      cells: this.getTableCells(),
+      table: this,
+      cols: this.cols,
+      rows: this.rows,
+    });
     // table区域
-    this.xTableFrozenContent = new XTableFrozenContent(this);
     this.xLeftIndex = new XTableLeftIndex(this);
     this.xTopIndex = new XTableTopIndex(this);
     this.xLeft = new XTableLeft(this);
     this.xTop = new XTableTop(this);
     this.xContent = new XTableContent(this);
+    this.xTableFrozenContent = new XTableFrozenContent(this);
     // table组件
     this.focus = new XTableFocus(this);
-    this.mousePointer = new XTableMousePointer(this);
+    this.clipboard = new Clipboard();
+    this.dropColFixed = new DropColFixed(this);
+    this.dropRowFixed = new DropRowFixed(this);
     this.keyboard = new XTableKeyboard(this);
     this.xScreen = new XScreen(this);
     this.xReSizer = new XReSizer(this);
@@ -733,8 +733,7 @@ class XTableDimensions extends Widget {
     this.edit = new XTableEdit(this);
     this.rowFixed = new RowFixed(this);
     this.colFixed = new ColFixed(this);
-    this.dropRowFixed = new DropRowFixed(this);
-    this.dropColFixed = new DropColFixed(this);
+    this.mousePointer = new XTableMousePointer(this);
   }
 
   /**
