@@ -35,7 +35,7 @@ import { ColsIterator } from './iterator/ColsIterator';
 import { RowsIterator } from './iterator/RowsIterator';
 import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
 import { CellMergeCopyHelper } from './helper/CellMergeCopyHelper';
-import ClipboardJS from '../../lib/clipboard/Clipboard';
+import { Clipboard } from '../../lib/Clipboard';
 
 class Dimensions {
 
@@ -663,8 +663,8 @@ class XTableDimensions extends Widget {
       }),
       ...this.settings.cols,
     });
-    //
-    new ClipboardJS(this.el);
+    // 粘贴板
+    this.clipboard = new Clipboard(this);
     // 冻结视图坐标
     this.xFixedView = new XFixedView(this.settings.xFixedView);
     this.xFixedMeasure = new XFixedMeasure({
