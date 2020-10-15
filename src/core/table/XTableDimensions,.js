@@ -1002,10 +1002,10 @@ class XTableDimensions extends Widget {
    */
   bind() {
     const { mousePointer } = this;
-    Event.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+    Event.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.resize();
     });
-    Event.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+    Event.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
       this.resize();
     });
     Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
