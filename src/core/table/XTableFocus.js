@@ -1,3 +1,4 @@
+/* global document */
 import { Constant } from '../../const/Constant';
 import { XEvent } from '../../lib/XEvent';
 import { Element } from '../../lib/Element';
@@ -8,6 +9,7 @@ class XTableFocus {
     this.table = table;
     this.pool = [];
     this.activate = {};
+    this.bind();
   }
 
   remove(target) {
@@ -22,6 +24,12 @@ class XTableFocus {
       }
     }
     this.pool = pool;
+  }
+
+  bind() {
+    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      this.activate = {};
+    }, true);
   }
 
   add(item) {
@@ -45,8 +53,8 @@ class XTableFocus {
   register({
     attr = {},
     target,
-    focus = false,
     stop = false,
+    focus = false,
   }) {
     if (this.add({
       attr, target, focus, stop,

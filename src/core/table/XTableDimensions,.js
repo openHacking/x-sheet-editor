@@ -734,7 +734,15 @@ class XTableDimensions extends Widget {
     this.colFixed = new ColFixed(this);
     this.mousePointer = new XTableMousePointer(this);
     // 粘贴板
-    this.clipboard = new Clipboard();
+    this.clipboard = new Clipboard({
+      filter: () => {
+        const { focus } = this;
+        const { activate } = focus;
+        const { target } = activate;
+        return target === this;
+      },
+      paste: () => {},
+    });
   }
 
   /**
