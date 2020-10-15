@@ -62,7 +62,7 @@ class BindPool {
 }
 const pool = new BindPool();
 
-class Event {
+class XEvent {
 
   static unbind(target, name, fn, option = false) {
     if (Array.isArray(target)) {
@@ -82,7 +82,7 @@ class Event {
 
   static dbClick(target, func = () => {}) {
     let t = 0;
-    Event.bind(target, Constant.SYSTEM_EVENT_TYPE.CLICK, (e) => {
+    XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.CLICK, (e) => {
       const n = Date.now();
       if (n - t <= 300) {
         func(e);
@@ -99,17 +99,17 @@ class Event {
       evt.stopPropagation();
     };
     const xEvtUp = (evt) => {
-      Event.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, xEvtMove, true);
-      Event.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);
+      XEvent.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, xEvtMove, true);
+      XEvent.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);
       upFunc(evt);
       evt.stopPropagation();
     };
-    Event.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, xEvtMove, true);
-    Event.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);
+    XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, xEvtMove, true);
+    XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);
   }
 
 }
 
 export {
-  Event
+  XEvent
 };

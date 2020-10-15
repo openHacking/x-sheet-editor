@@ -1,5 +1,5 @@
 import { Constant } from '../../const/Constant';
-import { Event } from '../../lib/Event';
+import { XEvent } from '../../lib/XEvent';
 import { Element } from '../../lib/Element';
 
 class XTableFocus {
@@ -12,7 +12,7 @@ class XTableFocus {
 
   bind(item) {
     const { stop, target } = item;
-    Event.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const alike = this.findByChild(e.target);
       if (alike) {
         this.activate = alike;

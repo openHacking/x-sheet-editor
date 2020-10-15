@@ -1,6 +1,6 @@
 /* global document */
 import { cssPrefix, Constant } from '../../const/Constant';
-import { Event } from '../../lib/Event';
+import { XEvent } from '../../lib/XEvent';
 import { Widget } from '../../lib/Widget';
 import { ElPopUp } from '../elpopup/ElPopUp';
 import { PlainUtils } from '../../utils/PlainUtils';
@@ -18,11 +18,11 @@ class ELContextMenu extends Widget {
   }
 
   bind() {
-    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (event) => {
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (event) => {
       event.stopPropagation();
       event.preventDefault();
     });
-    Event.bind(document.body, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    XEvent.bind(document.body, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       this.close();
     });
   }

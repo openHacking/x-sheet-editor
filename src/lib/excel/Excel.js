@@ -35127,7 +35127,7 @@
     var dispatchEvent = function (name, promise, reason) {
       var event, handler;
       if (DISPATCH_EVENT) {
-        event = document.createEvent('Event');
+        event = document.createEvent('XEvent');
         event.promise = promise;
         event.reason = reason;
         event.initEvent(name, false, true);

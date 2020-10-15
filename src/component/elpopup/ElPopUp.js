@@ -9,7 +9,7 @@ import { HorizontalLayerElement } from '../../lib/layer/HorizontalLayerElement';
 import { HorizontalLayer } from '../../lib/layer/HorizontalLayer';
 import { VerticalLayer } from '../../lib/layer/VerticalLayer';
 import { VerticalLayerElement } from '../../lib/layer/VerticalLayerElement';
-import { Event } from '../../lib/Event';
+import { XEvent } from '../../lib/XEvent';
 
 const EL_POPUP_POSITION = {
   TOP: 1,
@@ -74,7 +74,7 @@ class ElPopUp extends Widget {
   }
 
   bind() {
-    Event.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
+    XEvent.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
       this.position();
       this.scrollbar();
     });

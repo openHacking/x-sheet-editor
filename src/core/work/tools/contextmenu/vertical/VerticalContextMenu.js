@@ -6,7 +6,7 @@ import { VerticalContextMenuItem } from './VerticalContextMenuItem';
 import { VerticalIcon1 } from '../icon/vertical/VerticalIcon1';
 import { VerticalIcon2 } from '../icon/vertical/VerticalIcon2';
 import { VerticalIcon3 } from '../icon/vertical/VerticalIcon3';
-import { Event } from '../../../../../lib/Event';
+import { XEvent } from '../../../../../lib/XEvent';
 import { BaseFont } from '../../../../../canvas/font/BaseFont';
 
 class VerticalContextMenu extends ELContextMenu {
@@ -26,17 +26,17 @@ class VerticalContextMenu extends ELContextMenu {
     this.verticalIcons.children(div2);
     this.addItem(this.verticalIcons);
     // 添加事件
-    Event.bind(this.verticalIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.verticalIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate(BaseFont.VERTICAL_ALIGN.top);
       e.stopPropagation();
       e.preventDefault();
     });
-    Event.bind(this.verticalIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.verticalIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate(BaseFont.VERTICAL_ALIGN.center);
       e.stopPropagation();
       e.preventDefault();
     });
-    Event.bind(this.verticalIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.verticalIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate(BaseFont.VERTICAL_ALIGN.bottom);
       e.stopPropagation();
       e.preventDefault();

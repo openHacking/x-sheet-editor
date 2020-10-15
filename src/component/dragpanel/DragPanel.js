@@ -1,7 +1,7 @@
 /* global document */
 import { Widget } from '../../lib/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
-import { Event } from '../../lib/Event';
+import { XEvent } from '../../lib/XEvent';
 
 import { h } from '../../lib/Element';
 import { PlainUtils } from '../../utils/PlainUtils';
@@ -34,14 +34,14 @@ class DragPanel extends Widget {
 
   bind() {
     const { mask } = this;
-    Event.bind(mask, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(mask, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.close();
       e.stopPropagation();
     });
-    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
       if (evt1.button !== 0) return;
       const downEventXy = this.computeEventXy(evt1, this);
-      Event.mouseMoveUp(h(document), (evt2) => {
+      XEvent.mouseMoveUp(h(document), (evt2) => {
         // 计算移动的距离
         const top = evt2.pageY - downEventXy.y;
         const left = evt2.pageX - downEventXy.x;

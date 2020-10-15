@@ -1,7 +1,7 @@
 import { Widget } from '../../lib/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
 import { h } from '../../lib/Element';
-import { Event } from '../../lib/Event';
+import { XEvent } from '../../lib/XEvent';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { XSelectItem } from './xscreenitems/xselect/XSelectItem';
 
@@ -71,23 +71,23 @@ class XTableEdit extends Widget {
     const { table } = this;
     const { xScreen } = table;
     const xSelect = xScreen.findType(XSelectItem);
-    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       e.stopPropagation();
     });
-    Event.bind(this.input, Constant.SYSTEM_EVENT_TYPE.INPUT, () => {
+    XEvent.bind(this.input, Constant.SYSTEM_EVENT_TYPE.INPUT, () => {
       const { input } = this;
       if (PlainUtils.isBlank(this.input.text())) {
         input.html('<p>&nbsp;</p>');
       }
       this.text = input.text();
     });
-    Event.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       this.hideEdit();
     });
-    Event.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       this.hideEdit();
     });
-    Event.dbClick([
+    XEvent.dbClick([
       xSelect.lt,
       xSelect.t,
       xSelect.l,

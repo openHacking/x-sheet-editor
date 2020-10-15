@@ -5,7 +5,7 @@ import { Cols } from './tablebase/Cols';
 import { Scroll, SCROLL_TYPE } from './tablebase/Scroll';
 import { Widget } from '../../lib/Widget';
 import { Constant, cssPrefix } from '../../const/Constant';
-import { Event } from '../../lib/Event';
+import { XEvent } from '../../lib/XEvent';
 import { Scale, ScaleAdapter } from './tablebase/Scale';
 import { XTableMousePointer } from './XTableMousePointer';
 import { XTableKeyboard } from './XTableKeyboard';
@@ -35,6 +35,7 @@ import { ColsIterator } from './iterator/ColsIterator';
 import { RowsIterator } from './iterator/RowsIterator';
 import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
 import { CellMergeCopyHelper } from './helper/CellMergeCopyHelper';
+import ClipboardJS from '../../lib/clipboard/Clipboard';
 
 class Dimensions {
 
@@ -662,6 +663,8 @@ class XTableDimensions extends Widget {
       }),
       ...this.settings.cols,
     });
+    //
+    new ClipboardJS(this.el);
     // 冻结视图坐标
     this.xFixedView = new XFixedView(this.settings.xFixedView);
     this.xFixedMeasure = new XFixedMeasure({
@@ -1002,13 +1005,13 @@ class XTableDimensions extends Widget {
    */
   bind() {
     const { mousePointer } = this;
-    Event.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.resize();
     });
-    Event.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
       this.resize();
     });
-    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       const { x, y } = this.computeEventXy(e);
       const { ri, ci } = this.getRiCiByXy(x, y);
       if (ri === -1 && ci === -1) {

@@ -1,6 +1,6 @@
 /* global document */
 import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBorderItem';
-import { Event } from '../../../../lib/Event';
+import { XEvent } from '../../../../lib/XEvent';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
 import { Widget } from '../../../../lib/Widget';
@@ -57,32 +57,32 @@ class XSelectItem extends XScreenCssBorderItem {
     const {
       mousePointer, focus,
     } = table;
-    Event.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.offsetHandle();
       this.borderHandle();
       this.cornerHandle();
     });
-    Event.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
       this.offsetHandle();
       this.borderHandle();
       this.cornerHandle();
     });
-    Event.bind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, () => {
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, () => {
       this.offsetHandle();
       this.borderHandle();
       this.cornerHandle();
     });
-    Event.bind(table, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
       this.offsetHandle();
       this.borderHandle();
       this.cornerHandle();
     });
-    Event.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
       this.offsetHandle();
       this.borderHandle();
       this.cornerHandle();
     });
-    Event.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
       if (e1.button !== 0) {
         return;
       }
@@ -109,7 +109,7 @@ class XSelectItem extends XScreenCssBorderItem {
       }
       table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN);
       table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
-      Event.mouseMoveUp(document, (e2) => {
+      XEvent.mouseMoveUp(document, (e2) => {
         const { x, y } = table.computeEventXy(e2);
         this.moveSelectRange(x, y);
         this.offsetHandle();
@@ -126,7 +126,7 @@ class XSelectItem extends XScreenCssBorderItem {
         table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_OVER);
       });
     });
-    Event.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       this.offsetHandle();
       this.borderHandle();
       this.cornerHandle();

@@ -5,7 +5,7 @@ import { RectRange } from '../../tablebase/RectRange';
 import { XFilterButton } from './XFilterButton';
 import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
-import { Event } from '../../../../lib/Event';
+import { XEvent } from '../../../../lib/XEvent';
 import { RANGE_OVER_GO } from '../../xscreen/item/viewborder/XScreenStyleBorderItem';
 import { XDraw } from '../../../../canvas/XDraw';
 import { ColsIterator } from '../../iterator/ColsIterator';
@@ -35,17 +35,17 @@ class XFilter extends XScreenViewSizer {
 
   bind() {
     const { table } = this;
-    Event.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
       if (this.display) {
         this.updateFilterButton();
       }
     });
-    Event.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       if (this.display) {
         this.updateFilterButton();
       }
     });
-    Event.bind(table, Constant.TABLE_EVENT_TYPE.RENDER, () => {
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RENDER, () => {
       if (this.display) {
         this.updateFilterButton();
       }

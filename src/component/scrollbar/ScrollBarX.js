@@ -4,7 +4,7 @@ import { cssPrefix, Constant } from '../../const/Constant';
 import { h } from '../../lib/Element';
 import { PlainUtils } from '../../utils/PlainUtils';
 
-import { Event } from '../../lib/Event';
+import { XEvent } from '../../lib/XEvent';
 
 class ScrollBarX extends Widget {
 
@@ -43,7 +43,7 @@ class ScrollBarX extends Widget {
     this.block.on(Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
       if (evt1.button !== 0) return;
       const downEventXy = this.computeEventXy(evt1, this.block);
-      Event.mouseMoveUp(h(document), (evt2) => {
+      XEvent.mouseMoveUp(h(document), (evt2) => {
         // 计算移动的距离
         const moveEventXy = this.computeEventXy(evt2, this.content);
         let left = moveEventXy.x - downEventXy.x;

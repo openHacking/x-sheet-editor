@@ -16,7 +16,7 @@ import { BorderIcon9 } from '../../icon/border/BorderIcon9';
 import { BorderIcon10 } from '../../icon/border/BorderIcon10';
 import { BorderColor } from '../../icon/border/BorderColor';
 import { BorderType } from '../../icon/border/BorderType';
-import { Event } from '../../../../../../lib/Event';
+import { XEvent } from '../../../../../../lib/XEvent';
 import { EL_POPUP_POSITION, ElPopUp } from '../../../../../../component/elpopup/ElPopUp';
 import { BorderColorContextMenu } from '../bordercolor/BorderColorContextMenu';
 import { LineTypeContextMenu } from '../linetype/LineTypeContextMenu';
@@ -89,7 +89,7 @@ class BorderTypeContextMenu extends ELContextMenu {
       },
     }));
     // 添加事件
-    Event.bind(this.borderColor, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.borderColor, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { borderColorContextMenu } = this;
       const { elPopUp } = borderColorContextMenu;
       ElPopUp.closeAll([elPopUp, this.elPopUp]);
@@ -101,7 +101,7 @@ class BorderTypeContextMenu extends ELContextMenu {
       e.stopPropagation();
       e.preventDefault();
     });
-    Event.bind(this.borderType, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.borderType, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { lineTypeContextMenu } = this;
       const { elPopUp } = lineTypeContextMenu;
       ElPopUp.closeAll([elPopUp, this.elPopUp]);
@@ -113,52 +113,52 @@ class BorderTypeContextMenu extends ELContextMenu {
       e.stopPropagation();
       e.preventDefault();
     });
-    Event.bind(this.borderIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.borderIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border1', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    Event.bind(this.borderIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.borderIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border2', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    Event.bind(this.borderIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.borderIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border3', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    Event.bind(this.borderIcon4, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.borderIcon4, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border4', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    Event.bind(this.borderIcon5, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.borderIcon5, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border5', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    Event.bind(this.borderIcon6, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.borderIcon6, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border6', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    Event.bind(this.borderIcon7, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.borderIcon7, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border7', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    Event.bind(this.borderIcon8, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.borderIcon8, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border8', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    Event.bind(this.borderIcon9, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.borderIcon9, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border9', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();
     });
-    Event.bind(this.borderIcon10, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.borderIcon10, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate('border10', this.color, this.type);
       e.stopPropagation();
       e.preventDefault();

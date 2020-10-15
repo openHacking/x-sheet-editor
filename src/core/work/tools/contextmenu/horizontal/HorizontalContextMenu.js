@@ -6,7 +6,7 @@ import { HorizontalIcon1 } from '../icon/horizontal/HorizontalIcon1';
 import { HorizontalIcon2 } from '../icon/horizontal/HorizontalIcon2';
 import { HorizontalIcon3 } from '../icon/horizontal/HorizontalIcon3';
 import { HorizontalContextMenuItem } from './HorizontalContextMenuItem';
-import { Event } from '../../../../../lib/Event';
+import { XEvent } from '../../../../../lib/XEvent';
 import { BaseFont } from '../../../../../canvas/font/BaseFont';
 
 class HorizontalContextMenu extends ELContextMenu {
@@ -26,17 +26,17 @@ class HorizontalContextMenu extends ELContextMenu {
     this.horizontalIcons.children(div2);
     this.addItem(this.horizontalIcons);
     // 添加事件
-    Event.bind(this.horizontalIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.horizontalIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate(BaseFont.ALIGN.left);
       e.stopPropagation();
       e.preventDefault();
     });
-    Event.bind(this.horizontalIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.horizontalIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate(BaseFont.ALIGN.center);
       e.stopPropagation();
       e.preventDefault();
     });
-    Event.bind(this.horizontalIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this.horizontalIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate(BaseFont.ALIGN.right);
       e.stopPropagation();
       e.preventDefault();

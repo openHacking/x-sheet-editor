@@ -1,5 +1,5 @@
 /* global document */
-import { Event } from '../../lib/Event';
+import { XEvent } from '../../lib/XEvent';
 import { Constant } from '../../const/Constant';
 
 class XTableKeyboard {
@@ -13,7 +13,7 @@ class XTableKeyboard {
   bind() {
     const { table } = this;
     const { focus } = table;
-    Event.bind(document, Constant.SYSTEM_EVENT_TYPE.KEY_DOWN, (e) => {
+    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.KEY_DOWN, (e) => {
       const { activate } = focus;
       const { keyCode } = e;
       if (activate) {

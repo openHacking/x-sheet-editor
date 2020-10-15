@@ -4,7 +4,7 @@ import { Constant, cssPrefix } from '../../../../const/Constant';
 import { h } from '../../../../lib/Element';
 import { ColorPicker } from '../../../../component/colorpicker/ColorPicker';
 import { PlainUtils } from '../../../../utils/PlainUtils';
-import { Event } from '../../../../lib/Event';
+import { XEvent } from '../../../../lib/XEvent';
 import { XTableMousePointer } from '../../XTableMousePointer';
 
 class XFilterButton extends Widget {
@@ -31,18 +31,18 @@ class XFilterButton extends Widget {
     const {
       mousePointer,
     } = table;
-    Event.bind(button, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (ev) => {
+    XEvent.bind(button, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (ev) => {
       mousePointer.lock(XFilterButton);
       mousePointer.set(XTableMousePointer.KEYS.pointer, XFilterButton);
-      Event.mouseMoveUp(document, () => {}, () => {
+      XEvent.mouseMoveUp(document, () => {}, () => {
         mousePointer.free(XFilterButton);
       });
       ev.stopPropagation();
     });
-    Event.bind(button, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
+    XEvent.bind(button, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       mousePointer.free(XFilterButton);
     });
-    Event.bind(button, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
+    XEvent.bind(button, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
       mousePointer.lock(XFilterButton);
       mousePointer.set(XTableMousePointer.KEYS.pointer, XFilterButton);
     });
@@ -70,7 +70,7 @@ class XFilterButton extends Widget {
 
   destroy() {
     const { area, button } = this;
-    Event.unbind(button);
+    XEvent.unbind(button);
     area.remove(this);
   }
 

@@ -5,7 +5,7 @@ import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
 import { PlainUtils } from '../../../../utils/PlainUtils';
-import { Event } from '../../../../lib/Event';
+import { XEvent } from '../../../../lib/XEvent';
 import { XTableMousePointer } from '../../XTableMousePointer';
 import { RowsIterator } from '../../iterator/RowsIterator';
 import { ColsIterator } from '../../iterator/ColsIterator';
@@ -42,7 +42,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
     const { table, xScreen } = this;
     const { mousePointer } = table;
     const xSelect = xScreen.findType(XSelectItem);
-    Event.bind([
+    XEvent.bind([
       xSelect.ltCorner,
       xSelect.tCorner,
       xSelect.lCorner,
@@ -50,7 +50,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
     ], Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       mousePointer.free(XAutoFillItem);
     });
-    Event.bind([
+    XEvent.bind([
       xSelect.ltCorner,
       xSelect.tCorner,
       xSelect.lCorner,
@@ -59,7 +59,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
       mousePointer.lock(XAutoFillItem);
       mousePointer.set(XTableMousePointer.KEYS.crosshair, XAutoFillItem);
     });
-    Event.bind([
+    XEvent.bind([
       xSelect.ltCorner,
       xSelect.tCorner,
       xSelect.lCorner,
@@ -68,7 +68,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
       this.display = true;
       mousePointer.lock(XAutoFillItem);
       mousePointer.set(XTableMousePointer.KEYS.crosshair, XAutoFillItem);
-      Event.mouseMoveUp(document, (e2) => {
+      XEvent.mouseMoveUp(document, (e2) => {
         const { x, y } = table.computeEventXy(e2);
         this.rangeHandle(x, y);
         this.offsetHandle();

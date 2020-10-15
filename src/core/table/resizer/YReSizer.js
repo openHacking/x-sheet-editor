@@ -2,7 +2,7 @@
 import { Widget } from '../../../lib/Widget';
 import { cssPrefix, Constant } from '../../../const/Constant';
 import { h } from '../../../lib/Element';
-import { Event } from '../../../lib/Event';
+import { XEvent } from '../../../lib/XEvent';
 import { PlainUtils } from '../../../utils/PlainUtils';
 import { XTableMousePointer } from '../XTableMousePointer';
 import { RowFixed } from '../tablefixed/RowFixed';
@@ -35,13 +35,13 @@ class YReSizer extends Widget {
     const { tableDataSnapshot } = table;
     const { rowsDataProxy } = tableDataSnapshot;
     const { index } = table;
-    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       mousePointer.lock(YReSizer);
       mousePointer.set(XTableMousePointer.KEYS.rowResize, YReSizer);
       const { top, ri } = this.getEventTop(e);
       const min = top - rows.getHeight(ri) + rows.min;
       let { y: my } = table.computeEventXy(e);
-      Event.mouseMoveUp(document, (e) => {
+      XEvent.mouseMoveUp(document, (e) => {
         ({ y: my } = table.computeEventXy(e));
         my -= this.height / 2;
         my = Math.ceil(PlainUtils.minIf(my, min));
@@ -63,14 +63,14 @@ class YReSizer extends Widget {
         table.resize();
       });
     });
-    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       mousePointer.free(YReSizer);
     });
-    Event.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
       mousePointer.lock(YReSizer);
       mousePointer.set(XTableMousePointer.KEYS.rowResize, YReSizer);
     });
-    Event.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       // eslint-disable-next-line prefer-const
       let { top, ri } = this.getEventTop(e);
       const min = top - rows.getHeight(ri) + rows.min;
@@ -92,10 +92,10 @@ class YReSizer extends Widget {
         this.hoverEl.css('height', `${this.height}px`);
       }
     });
-    Event.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       this.hide();
     });
-    Event.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const { activate } = focus;
       const { target } = activate;
       if (target !== table && target !== this) {
