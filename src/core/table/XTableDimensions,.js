@@ -721,7 +721,6 @@ class XTableDimensions extends Widget {
     this.xTableFrozenContent = new XTableFrozenContent(this);
     // table组件
     this.focus = new XTableFocus(this);
-    this.clipboard = new Clipboard();
     this.dropColFixed = new DropColFixed(this);
     this.dropRowFixed = new DropRowFixed(this);
     this.keyboard = new XTableKeyboard(this);
@@ -734,6 +733,8 @@ class XTableDimensions extends Widget {
     this.rowFixed = new RowFixed(this);
     this.colFixed = new ColFixed(this);
     this.mousePointer = new XTableMousePointer(this);
+    // 粘贴板
+    this.clipboard = new Clipboard();
   }
 
   /**
