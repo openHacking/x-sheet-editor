@@ -1,6 +1,9 @@
 const Constant = {};
 const XSheetVersion = 'X-Sheet 1.0.0-develop';
 const cssPrefix = 'x-sheet';
+Constant.WORK_BODY_EVENT_TYPE = {
+  CHANGE_ACTIVE: 'changeactive',
+};
 Constant.SYSTEM_EVENT_TYPE = {
   MOUSE_MOVE: 'mousemove',
   MOUSE_DOWN: 'mousedown',
@@ -18,9 +21,6 @@ Constant.SYSTEM_EVENT_TYPE = {
   DRAG_START: 'dragstart',
   CHANGE: 'change',
   VISIBILITY_CHANGE: 'visibilitychange',
-};
-Constant.WORK_BODY_EVENT_TYPE = {
-  CHANGE_ACTIVE: 'changeactive',
 };
 Constant.TABLE_EVENT_TYPE = {
   CHANGE_HEIGHT: 'changeheight',

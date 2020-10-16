@@ -687,9 +687,6 @@ class TopMenu extends Widget {
     XEvent.bind(body, Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE, () => {
       this.setStatus();
     });
-    XEvent.bind(body, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
-      this.setStatus();
-    });
     XEvent.bind(body, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, () => {
       this.setFormatStatus();
       this.setFontStatus();
@@ -704,20 +701,11 @@ class TopMenu extends Widget {
       this.setVerticalAlignStatus();
       this.setTextWrappingStatus();
     });
+    XEvent.bind(body, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
+      this.setStatus();
+    });
     XEvent.bind(body, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
       this.setFixedStatus();
-    });
-    XEvent.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      const { tableDataSnapshot } = table;
-      if (tableDataSnapshot.canBack()) tableDataSnapshot.back();
-    });
-    XEvent.bind(this.redo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      const { tableDataSnapshot } = table;
-      if (tableDataSnapshot.canGo()) tableDataSnapshot.go();
     });
     XEvent.bind(this.scale, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { scale } = this;
@@ -732,6 +720,18 @@ class TopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
+    XEvent.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      const { tableDataSnapshot } = table;
+      if (tableDataSnapshot.canBack()) tableDataSnapshot.back();
+    });
+    XEvent.bind(this.redo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      const { tableDataSnapshot } = table;
+      if (tableDataSnapshot.canGo()) tableDataSnapshot.go();
+    });
     XEvent.bind(this.paintFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
@@ -741,8 +741,8 @@ class TopMenu extends Widget {
       if (PlainUtils.isUnDef(selectRange)) {
         return;
       }
-      const { tableDataSnapshot } = table;
       const { cellMergeCopyHelper } = table;
+      const { tableDataSnapshot } = table;
       const xCopyStyle = xScreen.findType(XCopyStyle);
       xCopyStyle.showCopyStyle();
       this.paintFormat.active(true);
@@ -1325,6 +1325,26 @@ class TopMenu extends Widget {
     this.setFilterStatus();
   }
 
+  setFixedStatus() {
+    const { body } = this.workTop.work;
+    const { fixed } = this;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    fixed.setFixedRowStatus(table.xFixedView.hasFixedTop());
+    fixed.setFixedColStatus(table.xFixedView.hasFixedLeft());
+  }
+
+  setFilterStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const filter = xScreen.findType(XFilter);
+    this.filter.active(filter.display);
+  }
+
   setUnderLineStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
@@ -1416,24 +1436,6 @@ class TopMenu extends Widget {
     this.fontColor.fontColorContextMenu.setActiveByColor(color);
   }
 
-  setFontItalicStatus() {
-    const { body } = this.workTop.work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    const { xScreen } = table;
-    const cells = table.getTableCells();
-    const xSelect = xScreen.findType(XSelectItem);
-    const { selectRange } = xSelect;
-    let italic = false;
-    if (selectRange) {
-      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
-      // eslint-disable-next-line prefer-destructuring
-      italic = firstCell.fontAttr.italic;
-    }
-    this.fontItalic.active(italic);
-  }
-
   setFillColorStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
@@ -1455,24 +1457,22 @@ class TopMenu extends Widget {
     this.fillColor.fillColorContextMenu.setActiveByColor(color);
   }
 
-  setFixedStatus() {
-    const { body } = this.workTop.work;
-    const { fixed } = this;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    fixed.setFixedRowStatus(table.xFixedView.hasFixedTop());
-    fixed.setFixedColStatus(table.xFixedView.hasFixedLeft());
-  }
-
-  setFilterStatus() {
+  setFontItalicStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
     const sheet = sheetView.getActiveSheet();
     const { table } = sheet;
     const { xScreen } = table;
-    const filter = xScreen.findType(XFilter);
-    this.filter.active(filter.display);
+    const cells = table.getTableCells();
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    let italic = false;
+    if (selectRange) {
+      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+      // eslint-disable-next-line prefer-destructuring
+      italic = firstCell.fontAttr.italic;
+    }
+    this.fontItalic.active(italic);
   }
 
 }
