@@ -4,16 +4,18 @@ import { h } from '../../lib/Element';
 import { XEvent } from '../../lib/XEvent';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { XSelectItem } from './xscreenitems/xselect/XSelectItem';
+import { BaseFont } from '../../canvas/font/BaseFont';
 
 class XTableEdit extends Widget {
 
   constructor(table) {
     super(`${cssPrefix}-table-edit`);
+    this.table = table;
+    this.text = PlainUtils.EMPTY;
     this.input = h('div', `${cssPrefix}-table-edit-input`);
     this.input.attr('contenteditable', true);
-    this.input.html('<p>&nbsp;</p>');
-    this.table = table;
-    this.text = '';
+    this.input.html(XTableEdit.EMPTY);
+    this.cell = null;
     this.select = null;
     this.children(this.input);
   }
@@ -21,6 +23,36 @@ class XTableEdit extends Widget {
   onAttach() {
     this.bind();
     this.hide();
+  }
+
+  bind() {
+    const { table } = this;
+    const { xScreen } = table;
+    const xSelect = xScreen.findType(XSelectItem);
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      e.stopPropagation();
+    });
+    XEvent.bind(this.input, Constant.SYSTEM_EVENT_TYPE.INPUT, () => {
+      const { input } = this;
+      if (PlainUtils.isBlank(this.input.text())) {
+        input.html(XTableEdit.EMPTY);
+      }
+      this.text = input.text();
+    });
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+      this.hideEdit();
+    });
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      this.hideEdit();
+    });
+    XEvent.dbClick([
+      xSelect.lt,
+      xSelect.t,
+      xSelect.l,
+      xSelect.br,
+    ], () => {
+      this.showEdit();
+    });
   }
 
   showEdit() {
@@ -32,12 +64,13 @@ class XTableEdit extends Widget {
     this.show();
     if (selectRange) {
       const cell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+      this.input.attr('style', cell.toCssStyle());
+      this.cell = cell;
       this.select = selectRange;
       this.editOffset();
       this.text = cell.text;
-      this.input.attr('style', cell.toCssStyle());
       if (PlainUtils.isBlank(this.text)) {
-        input.html('<p>&nbsp;</p>');
+        input.html(XTableEdit.EMPTY);
       } else {
         input.text(this.text);
       }
@@ -67,49 +100,31 @@ class XTableEdit extends Widget {
     }
   }
 
-  bind() {
-    const { table } = this;
-    const { xScreen } = table;
-    const xSelect = xScreen.findType(XSelectItem);
-    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      e.stopPropagation();
-    });
-    XEvent.bind(this.input, Constant.SYSTEM_EVENT_TYPE.INPUT, () => {
-      const { input } = this;
-      if (PlainUtils.isBlank(this.input.text())) {
-        input.html('<p>&nbsp;</p>');
-      }
-      this.text = input.text();
-    });
-    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      this.hideEdit();
-    });
-    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      this.hideEdit();
-    });
-    XEvent.dbClick([
-      xSelect.lt,
-      xSelect.t,
-      xSelect.l,
-      xSelect.br,
-    ], () => {
-      this.showEdit();
-    });
-  }
-
   editOffset() {
-    const { table } = this;
+    const { table, cell } = this;
     const {
       xHeightLight, yHeightLight,
     } = table;
+    const { fontAttr, contentWidth } = cell;
+    const { align } = fontAttr;
+    const top = yHeightLight.getTop() + table.getIndexHeight() + 3;
+    const left = xHeightLight.getLeft() + table.getIndexWidth() + 3;
+    const width = xHeightLight.getWidth() - 7;
+    const height = yHeightLight.getHeight() - 7;
+    this.input.css('float', 'none');
+    if (align === BaseFont.ALIGN.right) {
+      if (contentWidth && contentWidth > width) {
+        this.input.css('float', 'right');
+      }
+    }
     this.offset({
-      top: yHeightLight.getTop() + table.getIndexHeight() + 3,
-      left: xHeightLight.getLeft() + table.getIndexWidth() + 3,
-      height: yHeightLight.getHeight() - 7,
-      width: xHeightLight.getWidth() - 7,
+      top, left, height, width,
     });
   }
+
 }
+
+XTableEdit.EMPTY = '<p>&nbsp;</p>';
 
 export {
   XTableEdit,
