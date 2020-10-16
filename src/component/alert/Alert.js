@@ -18,8 +18,8 @@ class Alert extends Widget {
     this.okEle = h('div', `${cssPrefix}-alert-ok`);
     this.buttonsEle = h('div', `${cssPrefix}-alert-buttons`);
     // 显示内容消息
-    this.contentEle.html(message);
     this.titleEle.html(title);
+    this.contentEle.html(message);
     this.okEle.html('确定');
     // 添加UI
     this.buttonsEle.children(this.okEle);
@@ -29,24 +29,33 @@ class Alert extends Widget {
     this.children(this.buttonsEle);
     // 拖拽组件
     this.dragPanel = new DragPanel().children(this);
-    // 绑定事件
-    this.bind();
+    this.closeHandle = () => {
+      this.close();
+    };
+  }
+
+  unbind() {
+    const { closeHandle } = this;
+    const { okEle } = this;
+    XEvent.unbind(okEle, Constant.SYSTEM_EVENT_TYPE.CLICK, closeHandle);
   }
 
   bind() {
-    XEvent.bind(this.okEle, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-      this.close();
-    });
+    const { closeHandle } = this;
+    const { okEle } = this;
+    XEvent.bind(okEle, Constant.SYSTEM_EVENT_TYPE.CLICK, closeHandle);
   }
 
   open() {
     const { dragPanel } = this;
     dragPanel.open();
+    this.bind();
   }
 
   close() {
     const { dragPanel } = this;
     dragPanel.close();
+    this.unbind();
   }
 
 }

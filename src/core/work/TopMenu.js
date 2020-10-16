@@ -34,6 +34,7 @@ import { XDraw } from '../../canvas/XDraw';
 import { Alert } from '../../component/alert/Alert';
 import { XFilter } from '../table/xscreenitems/xfilter/XFilter';
 import { XCopyStyle } from '../table/xscreenitems/xcopystyle/XCopyStyle';
+import { Confirm } from '../../component/confirm/Confirm';
 
 class Divider extends Widget {
   constructor() {
@@ -995,21 +996,46 @@ class TopMenu extends Widget {
         xScreen,
       } = table;
       const merges = table.getTableMerges();
+      const cells = table.getTableCells();
       const { tableDataSnapshot } = table;
       const xSelect = xScreen.findType(XSelectItem);
       const { selectRange } = xSelect;
       if (selectRange) {
         const merge = selectRange.clone();
         const find = merges.getFirstIncludes(merge.sri, merge.sci);
-        tableDataSnapshot.begin();
         const { mergeDataProxy } = tableDataSnapshot;
         if (PlainUtils.isNotUnDef(find) && merge.equals(find)) {
+          tableDataSnapshot.begin();
           mergeDataProxy.deleteMerge(find);
-        } else {
-          mergeDataProxy.addMerge(merge);
+          tableDataSnapshot.end();
+          table.render();
+        } else if (merge.multiple()) {
+          let empty = true;
+          merge.each((ri, ci) => {
+            const cell = cells.getCell(ri, ci);
+            if (cell && !PlainUtils.isBlank(cell.text)) {
+              empty = false;
+              return false;
+            }
+            return true;
+          });
+          if (empty) {
+            tableDataSnapshot.begin();
+            mergeDataProxy.addMerge(merge);
+            tableDataSnapshot.end();
+            table.render();
+          } else {
+            new Confirm({
+              message: '非空单元格合并将使用左上角单元格内容',
+              ok: () => {
+                tableDataSnapshot.begin();
+                mergeDataProxy.addMerge(merge);
+                tableDataSnapshot.end();
+                table.render();
+              },
+            }).open();
+          }
         }
-        tableDataSnapshot.end();
-        table.render();
       }
       e.stopPropagation();
       e.preventDefault();

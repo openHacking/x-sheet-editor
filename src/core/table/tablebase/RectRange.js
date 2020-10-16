@@ -72,6 +72,7 @@ class RectRange {
     const {
       sri, sci, eri, eci,
     } = this;
+    let ret = false;
     RowsIterator.getInstance()
       .setBegin(sri)
       .setEnd(eri)
@@ -81,10 +82,12 @@ class RectRange {
             .setBegin(sci)
             .setEnd(eci)
             .setLoop((j) => {
-              cb(i, j);
+              ret = cb(i, j);
+              return ret;
             })
             .execute();
         }
+        return ret;
       })
       .execute();
   }
