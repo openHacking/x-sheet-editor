@@ -1,9 +1,9 @@
-import { XScreenSvgBorderItem } from '../../xscreen/item/viewborder/XScreenSvgBorderItem';
 import { XSelectItem } from '../xselect/XSelectItem';
 import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { XEvent } from '../../../../lib/XEvent';
 import { RectRange } from '../../tablebase/RectRange';
+import { XScreenSvgBorderItem } from '../../xscreen/item/viewborder/XScreenSvgBorderItem';
 
 class XCopyStyle extends XScreenSvgBorderItem {
 
@@ -29,24 +29,34 @@ class XCopyStyle extends XScreenSvgBorderItem {
   bind() {
     const { table } = this;
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      this.offsetHandle();
-      this.borderHandle();
+      if (this.display) {
+        this.offsetHandle();
+        this.borderHandle();
+      }
     });
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
-      this.offsetHandle();
-      this.borderHandle();
+      if (this.display) {
+        this.offsetHandle();
+        this.borderHandle();
+      }
     });
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, () => {
-      this.offsetHandle();
-      this.borderHandle();
+      if (this.display) {
+        this.offsetHandle();
+        this.borderHandle();
+      }
     });
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
-      this.offsetHandle();
-      this.borderHandle();
+      if (this.display) {
+        this.offsetHandle();
+        this.borderHandle();
+      }
     });
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
-      this.offsetHandle();
-      this.borderHandle();
+      if (this.display) {
+        this.offsetHandle();
+        this.borderHandle();
+      }
     });
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       if (this.display) {
