@@ -35,6 +35,7 @@ import { Alert } from '../../component/alert/Alert';
 import { XFilter } from '../table/xscreenitems/xfilter/XFilter';
 import { XCopyStyle } from '../table/xscreenitems/xcopystyle/XCopyStyle';
 import { Confirm } from '../../component/confirm/Confirm';
+import { FilterData } from '../../component/filterdata/FilterData';
 
 class Divider extends Widget {
   constructor() {
@@ -675,6 +676,14 @@ class TopMenu extends Widget {
     this.children(this.fixed);
     this.children(this.filter);
     this.children(this.functions);
+
+    setTimeout(() => {
+      const filterData = new FilterData({
+        el: this.format,
+      });
+      ElPopUp.closeAll();
+      filterData.open();
+    }, 1000);
   }
 
   onAttach() {
@@ -1020,16 +1029,7 @@ class TopMenu extends Widget {
           tableDataSnapshot.end();
           table.render();
         } else if (merge.multiple()) {
-          let empty = true;
-          merge.each((ri, ci) => {
-            const cell = cells.getCell(ri, ci);
-            if (cell && !PlainUtils.isBlank(cell.text)) {
-              empty = false;
-              return false;
-            }
-            return true;
-          });
-          if (empty) {
+          if (cells.emptyRectRange(merge)) {
             tableDataSnapshot.begin();
             mergeDataProxy.addMerge(merge);
             tableDataSnapshot.end();

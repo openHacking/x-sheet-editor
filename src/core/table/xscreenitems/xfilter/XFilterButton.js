@@ -6,6 +6,8 @@ import { ColorPicker } from '../../../../component/colorpicker/ColorPicker';
 import { PlainUtils } from '../../../../utils/PlainUtils';
 import { XEvent } from '../../../../lib/XEvent';
 import { XTableMousePointer } from '../../XTableMousePointer';
+import { FilterData } from '../../../../component/filterdata/FilterData';
+import { ElPopUp } from '../../../../component/elpopup/ElPopUp';
 
 class XFilterButton extends Widget {
 
@@ -17,15 +19,38 @@ class XFilterButton extends Widget {
     this.area = area;
     this.ri = ri;
     this.ci = ci;
+    this.filterData = new FilterData({
+      el: this,
+    });
     this.button = h('div', `${cssPrefix}-x-filter-button`);
     this.children(this.button);
-    this.initStyle();
+    this.light();
     this.bind();
+  }
+
+  light() {
+    const {
+      ri, ci, xFilter, button,
+    } = this;
+    const { table } = xFilter;
+    const cells = table.getTableCells();
+    const cell = cells.getCell(ri, ci);
+    if (PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.background)) {
+      button.css('background-color', '#ffffff');
+      button.addClass(`${cssPrefix}-x-filter-button-dark`);
+    } else {
+      button.css('background-color', cell.background);
+      if (ColorPicker.isDark(cell.background)) {
+        button.addClass(`${cssPrefix}-x-filter-button-dark`);
+      } else {
+        button.addClass(`${cssPrefix}-x-filter-button-light`);
+      }
+    }
   }
 
   bind() {
     const {
-      xFilter, button,
+      xFilter, button, filterData,
     } = this;
     const { table } = xFilter;
     const {
@@ -46,30 +71,23 @@ class XFilterButton extends Widget {
       mousePointer.lock(XFilterButton);
       mousePointer.set(XTableMousePointer.KEYS.pointer, XFilterButton);
     });
+    XEvent.bind(button, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      ElPopUp.closeAll();
+      filterData.open();
+    });
   }
 
-  initStyle() {
-    const {
-      ri, ci, xFilter, button,
-    } = this;
-    const { table } = xFilter;
-    const cells = table.getTableCells();
-    const cell = cells.getCell(ri, ci);
-    if (PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.background)) {
-      button.css('background-color', '#ffffff');
-      button.addClass(`${cssPrefix}-x-filter-button-dark`);
-    } else {
-      button.css('background-color', cell.background);
-      if (ColorPicker.isDark(cell.background)) {
-        button.addClass(`${cssPrefix}-x-filter-button-dark`);
-      } else {
-        button.addClass(`${cssPrefix}-x-filter-button-light`);
-      }
-    }
+  setSize(left, width, height) {
+    this.offset({
+      left, top: 0, width, height,
+    });
   }
 
   destroy() {
-    const { area, button } = this;
+    const {
+      area, button, filterData,
+    } = this;
+    filterData.destroy();
     XEvent.unbind(button);
     area.remove(this);
   }

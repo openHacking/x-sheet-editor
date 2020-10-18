@@ -1,4 +1,4 @@
-import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
+import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMenu';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
 import { cssPrefix, Constant } from '../../../../../const/Constant';
 import { FontSizeContextMenuItem } from './FontSizeContextMenuItem';

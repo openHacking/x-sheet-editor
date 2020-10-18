@@ -1052,6 +1052,164 @@
   line-height: 20px;
 }
 
+// 数据过滤工具山下文菜单
+.@{css-prefix}-filter-data-menu {
+  background: #ffffff;
+  display: inline-block;
+}
+.@{css-prefix}-filter-data-menu-item {
+  overflow: hidden;
+  font-size: 15px;
+  min-width: 260px;
+  padding: 7px 10px 7px 10px;
+}
+// 数值选择器
+.@{css-prefix}-value-filter {
+  cursor: default;
+}
+.@{css-prefix}-value-filter-title {
+  font-size: 15px;
+  cursor: pointer;
+  display: block;
+}
+.@{css-prefix}-value-filter-title-text {
+  display: inline-block;
+  vertical-align: middle;
+}
+.@{css-prefix}-value-filter-title-icon {
+  display: inline-block;
+  background-image: url("../../assets/svg/arrow4.svg");
+  background-size: 100% 100%;
+  background-position: center;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-left: -10px;
+}
+.@{css-prefix}-value-filter-title-icon.active {
+  background-image: url("../../assets/svg/arrow2.svg");
+}
+.@{css-prefix}-value-filter-option-box {
+  display: block;
+  overflow: hidden;
+  font-size: 12px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.@{css-prefix}-value-filter-option-select {
+  float: left;
+  cursor: pointer;
+  color: #0080ff;
+  text-decoration: underline;
+}
+.@{css-prefix}-value-filter-option-flag {
+  float: left;
+}
+.@{css-prefix}-value-filter-option-clear {
+  float: left;
+  cursor: pointer;
+  color: #0080ff;
+  text-decoration: underline;
+}
+.@{css-prefix}-value-filter-input-box {
+  border: 1px solid #dddddd;
+  display: block;
+  height: 30px;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.@{css-prefix}-value-filter-items-box {
+  height: 150px;
+  overflow-y: auto;
+}
+.@{css-prefix}-value-filter-items-box::-webkit-scrollbar {
+  width: 0;
+}
+.@{css-prefix}-value-filter-item {
+  height: 30px;
+  line-height: 30px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.@{css-prefix}-value-filter-item:hover {
+  background: #f0f0f0;
+}
+.@{css-prefix}-value-filter-item-icon {
+  width: 20px;
+  height: 20px;
+  float: left;
+  background-size: 100%;
+  background-position: center;
+  background-image: url('../../assets/img/checkmark.png');
+  margin-top: 5px;
+  margin-right: 5px;
+}
+.@{css-prefix}-value-filter-item-text {
+  float: left;
+}
+// 条件选择器
+.@{css-prefix}-if-filter {
+  cursor: default;
+}
+.@{css-prefix}-if-filter-title {
+  font-size: 15px;
+  cursor: pointer;
+  display: block;
+}
+.@{css-prefix}-if-filter-title-text {
+  display: inline-block;
+  vertical-align: middle;
+}
+.@{css-prefix}-if-filter-title-icon {
+  display: inline-block;
+  background-image: url("../../assets/svg/arrow4.svg");
+  background-size: 100% 100%;
+  background-position: center;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-left: -10px;
+}
+.@{css-prefix}-if-filter-title-icon.active {
+  background-image: url("../../assets/svg/arrow2.svg");
+}
+.@{css-prefix}-if-filter-select-box {
+  height: 30px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid #dddddd;
+  margin-top: 10px;
+}
+// 操作按钮
+.@{css-prefix}-filter-data-menu-button {
+  border: 1px solid transparent!important;
+  border-radius: 4px;
+  box-sizing: border-box;
+  float: right;
+  font-family: "Google Sans",Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  height: 36px;
+  letter-spacing: 0.25px;
+  line-height: 16px;
+  padding: 9px 0 11px 0;
+  color: #fff;
+  background: #2a8947;
+  box-shadow: 0 1px 3px 1px rgba(52,168,83,0.15);
+  text-align: center;
+  width: 72px;
+  cursor: pointer;
+}
+.@{css-prefix}-filter-data-menu-ok {
+  margin-right: 10px;
+}
+.@{css-prefix}-filter-data-menu-no {
+  background: #f8fcf9;
+  border: 1px solid #c8e7d1!important;
+  color: #188038;
+}
+
 // 头部操作栏
 .@{css-prefix}-option {
   overflow: hidden;
@@ -1136,7 +1294,6 @@
 
 // 表格过滤按钮
 .@{css-prefix}-x-filter {
-  position: relative;
   width: 100%;
   height: 100%;
 }

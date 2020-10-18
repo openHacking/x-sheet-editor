@@ -1,4 +1,4 @@
-import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
+import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMenu';
 import { cssPrefix, Constant } from '../../../../../const/Constant';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
 import { TextWrappingIcon1 } from '../icon/textwrapping/TextWrappingIcon1';
@@ -10,6 +10,7 @@ import { XEvent } from '../../../../../lib/XEvent';
 import { BaseFont } from '../../../../../canvas/font/BaseFont';
 
 class TextWrappingContextMenu extends ELContextMenu {
+
   constructor(options = {}) {
     super(`${cssPrefix}-text-wrapping-context-menu`, PlainUtils.mergeDeep({
       onUpdate: () => {},
@@ -42,6 +43,7 @@ class TextWrappingContextMenu extends ELContextMenu {
       e.preventDefault();
     });
   }
+
 }
 
 export { TextWrappingContextMenu };

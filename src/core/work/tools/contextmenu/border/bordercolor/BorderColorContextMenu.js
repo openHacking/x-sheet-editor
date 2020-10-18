@@ -1,15 +1,16 @@
-import { ELContextMenu } from '../../../../../../component/elcontextmenu/ELContextMenu';
+import { ELContextMenu } from '../../../../../../component/contextmenu/ELContextMenu';
 import { cssPrefix, Constant } from '../../../../../../const/Constant';
 import { PlainUtils } from '../../../../../../utils/PlainUtils';
 import { ColorPicker } from '../../../../../../component/colorpicker/ColorPicker';
 import { ColorItem } from '../../../../../../component/colorpicker/colorarray/ColorItem';
 import { Icon } from '../../../Icon';
 import { ColorArray } from '../../../../../../component/colorpicker/colorarray/ColorArray';
-import { ELContextMenuDivider } from '../../../../../../component/elcontextmenu/ELContextMenuDivider';
+import { ELContextMenuDivider } from '../../../../../../component/contextmenu/ELContextMenuDivider';
 import { BorderColorContextMenuItem } from './BorderColorContextMenuItem';
 import { h } from '../../../../../../lib/Element';
 
 class BorderColorContextMenu extends ELContextMenu {
+
   constructor(options = {}) {
     super(`${cssPrefix}-border-color-context-menu`, PlainUtils.mergeDeep({
       onUpdate: () => {},
@@ -77,6 +78,7 @@ class BorderColorContextMenu extends ELContextMenu {
     this.customizeColorArray.setActiveByColor(color);
     this.colorArray.setActiveByColor(color);
   }
+
 }
 
 export { BorderColorContextMenu };

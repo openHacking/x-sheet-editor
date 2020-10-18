@@ -1,7 +1,7 @@
 import { cssPrefix } from '../../../../../../const/Constant';
 import { Icon } from '../../../Icon';
 import { h } from '../../../../../../lib/Element';
-import { ELContextMenuItem } from '../../../../../../component/elcontextmenu/ELContextMenuItem';
+import { ELContextMenuItem } from '../../../../../../component/contextmenu/ELContextMenuItem';
 
 const pool = [];
 

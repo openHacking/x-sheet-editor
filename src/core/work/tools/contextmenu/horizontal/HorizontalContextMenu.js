@@ -1,4 +1,4 @@
-import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
+import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMenu';
 import { cssPrefix, Constant } from '../../../../../const/Constant';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
 import { h } from '../../../../../lib/Element';
@@ -10,6 +10,7 @@ import { XEvent } from '../../../../../lib/XEvent';
 import { BaseFont } from '../../../../../canvas/font/BaseFont';
 
 class HorizontalContextMenu extends ELContextMenu {
+
   constructor(options = {}) {
     super(`${cssPrefix}-horizontal-type-context-menu`, PlainUtils.mergeDeep({
       onUpdate: () => {},
@@ -42,6 +43,7 @@ class HorizontalContextMenu extends ELContextMenu {
       e.preventDefault();
     });
   }
+
 }
 
 export { HorizontalContextMenu };

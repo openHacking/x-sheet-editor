@@ -36,8 +36,9 @@ class LTDisplay extends Display {
     const { table } = viewEyes;
     const { xFixedView } = table;
     if (xFixedView.hasFixedTop() && xFixedView.hasFixedLeft()) {
-      super.setDisplay(targetViewRange);
+      return super.setDisplay(targetViewRange);
     }
+    return false;
   }
 
   getPart() {
@@ -64,8 +65,9 @@ class TDisplay extends Display {
     const { table } = viewEyes;
     const { xFixedView } = table;
     if (xFixedView.hasFixedTop()) {
-      super.setDisplay(targetViewRange);
+      return super.setDisplay(targetViewRange);
     }
+    return false;
   }
 
   getPart() {
@@ -110,7 +112,9 @@ class LDisplay extends Display {
     const { xFixedView } = table;
     if (xFixedView.hasFixedLeft()) {
       super.setDisplay(targetViewRange);
+      return true;
     }
+    return false;
   }
 
   getPart() {

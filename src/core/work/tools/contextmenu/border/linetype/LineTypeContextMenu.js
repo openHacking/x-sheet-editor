@@ -1,10 +1,11 @@
-import { ELContextMenu } from '../../../../../../component/elcontextmenu/ELContextMenu';
+import { ELContextMenu } from '../../../../../../component/contextmenu/ELContextMenu';
 import { PlainUtils } from '../../../../../../utils/PlainUtils';
 import { cssPrefix, Constant } from '../../../../../../const/Constant';
 import { LineTypeContextMenuItem } from './LineTypeContextMenuItem';
 
 
 class LineTypeContextMenu extends ELContextMenu {
+
   constructor(options = {}) {
     super(`${cssPrefix}-line-type-context-menu`, PlainUtils.mergeDeep({
       onUpdate: () => {},
@@ -40,6 +41,7 @@ class LineTypeContextMenu extends ELContextMenu {
       }
     });
   }
+
 }
 
 export { LineTypeContextMenu };

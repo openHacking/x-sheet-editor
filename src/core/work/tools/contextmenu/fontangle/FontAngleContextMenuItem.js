@@ -1,4 +1,4 @@
-import { ELContextMenuItem } from '../../../../../component/elcontextmenu/ELContextMenuItem';
+import { ELContextMenuItem } from '../../../../../component/contextmenu/ELContextMenuItem';
 import { cssPrefix } from '../../../../../const/Constant';
 import { h } from '../../../../../lib/Element';
 

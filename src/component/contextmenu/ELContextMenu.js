@@ -11,20 +11,12 @@ class ELContextMenu extends Widget {
     super(`${cssPrefix}-el-context-menu ${className}`);
     this.options = PlainUtils.mergeDeep({}, options);
     this.menus = [];
-    // 环绕元素弹层组件
     this.elPopUp = new ElPopUp(this.options);
     this.elPopUp.children(this);
-    this.bind();
-  }
-
-  bind() {
-    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (event) => {
-      event.stopPropagation();
-      event.preventDefault();
-    });
-    XEvent.bind(document.body, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    this.globalHandle = () => {
       this.close();
-    });
+    };
+    XEvent.bind(document.body, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.globalHandle);
   }
 
   addItem(item) {
@@ -34,7 +26,12 @@ class ELContextMenu extends Widget {
     return this;
   }
 
+  isOpen() {
+    return this.elPopUp.off;
+  }
+
   open() {
+    this.monopoly();
     this.elPopUp.open();
     return this;
   }
@@ -44,9 +41,12 @@ class ELContextMenu extends Widget {
     return this;
   }
 
-  isOpen() {
-    return this.elPopUp.off;
+  destroy() {
+    const { elPopUp } = this;
+    XEvent.unbind(document.body, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.globalHandle);
+    elPopUp.destroy();
   }
+
 }
 
 export { ELContextMenu };

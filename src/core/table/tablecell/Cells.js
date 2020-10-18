@@ -20,6 +20,19 @@ class Cells {
     this.data = data;
   }
 
+  emptyRectRange(rectRange) {
+    let empty = true;
+    rectRange.each((ri, ci) => {
+      const cell = this.getCell(ri, ci);
+      if (PlainUtils.isNotEmptyObject(cell) && !PlainUtils.isBlank(cell.text)) {
+        empty = false;
+        return false;
+      }
+      return true;
+    });
+    return empty;
+  }
+
   setCellOrNew(ri, ci, cell) {
     if (PlainUtils.isUnDef(this.data[ri])) {
       this.data[ri] = [];

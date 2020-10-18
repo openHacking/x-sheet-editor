@@ -1,8 +1,8 @@
-import { ELContextMenu } from '../../../../../../component/elcontextmenu/ELContextMenu';
+import { ELContextMenu } from '../../../../../../component/contextmenu/ELContextMenu';
 import { cssPrefix, Constant } from '../../../../../../const/Constant';
 import { PlainUtils } from '../../../../../../utils/PlainUtils';
 import { BorderTypeContextMenuItem } from './BorderTypeContextMenuItem';
-import { ELContextMenuDivider } from '../../../../../../component/elcontextmenu/ELContextMenuDivider';
+import { ELContextMenuDivider } from '../../../../../../component/contextmenu/ELContextMenuDivider';
 import { h } from '../../../../../../lib/Element';
 import { BorderIcon1 } from '../../icon/border/BorderIcon1';
 import { BorderIcon2 } from '../../icon/border/BorderIcon2';
@@ -23,6 +23,7 @@ import { LineTypeContextMenu } from '../linetype/LineTypeContextMenu';
 import { LINE_TYPE } from '../../../../../../canvas/Line';
 
 class BorderTypeContextMenu extends ELContextMenu {
+
   constructor(options = {}) {
     super(`${cssPrefix}-border-type-context-menu`, PlainUtils.mergeDeep({
       onUpdate: () => {},
@@ -164,6 +165,7 @@ class BorderTypeContextMenu extends ELContextMenu {
       e.preventDefault();
     });
   }
+
 }
 
 export { BorderTypeContextMenu };

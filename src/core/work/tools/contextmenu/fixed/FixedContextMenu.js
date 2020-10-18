@@ -1,5 +1,5 @@
-import { ELContextMenu } from '../../../../../component/elcontextmenu/ELContextMenu';
-import { ELContextMenuDivider } from '../../../../../component/elcontextmenu/ELContextMenuDivider';
+import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMenu';
+import { ELContextMenuDivider } from '../../../../../component/contextmenu/ELContextMenuDivider';
 import { FixedContextMenuItem } from './FixedContextMenuItem';
 import { Constant, cssPrefix } from '../../../../../const/Constant';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
