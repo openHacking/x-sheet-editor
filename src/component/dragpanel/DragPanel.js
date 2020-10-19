@@ -6,10 +6,6 @@ import { XEvent } from '../../lib/XEvent';
 import { h } from '../../lib/Element';
 import { PlainUtils } from '../../utils/PlainUtils';
 
-const POOL = [];
-
-let root = null;
-
 const DRAG_PANEL_POSITION = {
   LEFT: 1,
   TOP: 2,
@@ -17,10 +13,14 @@ const DRAG_PANEL_POSITION = {
   CENTER: 4,
 };
 
+let instances = [];
+let root = null;
+
 class DragPanel extends Widget {
 
   constructor(options) {
     super(`${cssPrefix}-drag-panel`);
+    instances.push(this);
     this.options = PlainUtils.mergeDeep({
       position: DRAG_PANEL_POSITION.CENTER,
     }, options);
@@ -29,7 +29,11 @@ class DragPanel extends Widget {
     this.content = h('div', `${cssPrefix}-drag-panel-content`);
     super.children(this.content);
     this.bind();
-    POOL.push(this);
+  }
+
+  unbind() {
+    const { mask } = this;
+    XEvent.unbind(mask);
   }
 
   bind() {
@@ -47,11 +51,14 @@ class DragPanel extends Widget {
         const left = evt2.pageX - downEventXy.x;
         this.offset({ top, left });
         evt2.stopPropagation();
-        evt2.preventDefault();
       });
       evt1.stopPropagation();
-      evt1.preventDefault();
     });
+  }
+
+  children(...args) {
+    this.content.children(...args);
+    return this;
   }
 
   position() {
@@ -77,6 +84,16 @@ class DragPanel extends Widget {
     return this;
   }
 
+  close() {
+    if (this.off === false && root) {
+      const { mask } = this;
+      root.remove(this);
+      root.remove(mask);
+      this.off = true;
+    }
+    return this;
+  }
+
   open() {
     if (this.off && root) {
       const { mask } = this;
@@ -88,23 +105,24 @@ class DragPanel extends Widget {
     return this;
   }
 
-  close() {
-    if (this.off === false && root) {
-      const { mask } = this;
-      root.remove(this);
-      root.remove(mask);
-      this.off = true;
-    }
-    return this;
+  destroy() {
+    super.destroy();
+    this.unbind();
+    DragPanel.removeInstance(this);
   }
 
-  children(...args) {
-    this.content.children(...args);
-    return this;
+  static removeInstance(instance) {
+    const filter = [];
+    instances.forEach((item) => {
+      if (item !== instance) {
+        filter.push(item);
+      }
+    });
+    instances = filter;
   }
 
   static closeAll(filter = []) {
-    POOL.forEach((item) => {
+    instances.forEach((item) => {
       if (filter.indexOf(item) === -1) {
         item.close();
       }

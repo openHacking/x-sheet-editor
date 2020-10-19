@@ -12,14 +12,14 @@ const EL_POPUP_POSITION = {
   RIGHT: 4,
 };
 
-let instancePool = [];
+let instances = [];
 let root = null;
 
 class ElPopUp extends Widget {
 
   constructor(options) {
     super(`${cssPrefix}-el-pop-up`);
-    instancePool.push(this);
+    instances.push(this);
     this.off = true;
     this.options = PlainUtils.mergeDeep({
       el: PlainUtils.Nul,
@@ -29,10 +29,17 @@ class ElPopUp extends Widget {
       autoWidth: false,
       autoHeight: false,
     }, options);
-    this.resizeHandle = () => {
-      this.position();
-    };
     this.bind();
+  }
+
+  unbind() {
+    XEvent.unbind(window);
+  }
+
+  bind() {
+    XEvent.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
+      this.position();
+    });
   }
 
   autosize() {
@@ -128,14 +135,6 @@ class ElPopUp extends Widget {
     });
   }
 
-  bind() {
-    XEvent.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, this.resizeHandle);
-  }
-
-  unbind() {
-    XEvent.unbind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, this.resizeHandle);
-  }
-
   close() {
     if (this.off === false && root) {
       root.remove(this);
@@ -152,23 +151,34 @@ class ElPopUp extends Widget {
     }
   }
 
+  toggle() {
+    if (root) {
+      if (this.off) {
+        this.open();
+      } else {
+        this.close();
+      }
+    }
+  }
+
   destroy() {
+    super.destroy();
     this.unbind();
     ElPopUp.removeInstance(this);
   }
 
   static removeInstance(instance) {
     const filter = [];
-    instancePool.forEach((item) => {
+    instances.forEach((item) => {
       if (item !== instance) {
         filter.push(item);
       }
     });
-    instancePool = filter;
+    instances = filter;
   }
 
   static closeAll(filter = []) {
-    instancePool.forEach((item) => {
+    instances.forEach((item) => {
       if (filter.indexOf(item) === -1) {
         item.close();
       }
@@ -182,10 +192,6 @@ class ElPopUp extends Widget {
       element = h(element);
     }
     root = element;
-  }
-
-  static getRoot() {
-    return root;
   }
 
 }

@@ -61,6 +61,20 @@ class ColorPicker extends Widget {
     this.bind();
   }
 
+  unbind() {
+    const { selectColorPoint } = this;
+    const { colorBarPoint } = this;
+    const {
+      colorInput, cancelButton, selectButton,
+    } = this;
+    XEvent.unbind(colorInput);
+    XEvent.unbind(colorInput);
+    XEvent.unbind(colorBarPoint);
+    XEvent.unbind(selectColorPoint);
+    XEvent.unbind(cancelButton);
+    XEvent.unbind(selectButton);
+  }
+
   bind() {
     const { selectColorPoint, center } = this;
     const { colorBarPoint, colorBar } = this;
@@ -246,6 +260,12 @@ class ColorPicker extends Widget {
     color[1] = result.s;
     color[2] = result.x;
     this.change();
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
+    this.dragPanel.destroy();
   }
 
   static fixHex(hex) {

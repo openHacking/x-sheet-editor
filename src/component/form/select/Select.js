@@ -11,7 +11,6 @@ class Select extends Widget {
 
   constructor() {
     super(`${cssPrefix}-form-select`);
-    this.status = false;
     this.contextMenu = new SelectContextMenu({
       el: this,
       position: EL_POPUP_POSITION.BOTTOM,
@@ -23,19 +22,15 @@ class Select extends Widget {
     this.bind();
   }
 
-  bind() {
-    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-      if (this.status) {
-        this.hideMenu();
-      } else {
-        this.showMenu();
-      }
-    });
+  unbind() {
+    XEvent.unbind(this);
   }
 
-  addDivider() {
-    const item = new ELContextMenuDivider();
-    this.contextMenu.addItem(item);
+  bind() {
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      this.contextMenu.elPopUp.toggle();
+      e.stopPropagation();
+    });
   }
 
   addValue({
@@ -45,14 +40,15 @@ class Select extends Widget {
     this.contextMenu.addItem(item);
   }
 
-  showMenu() {
-    this.status = true;
-    this.contextMenu.open();
+  addDivider() {
+    const item = new ELContextMenuDivider();
+    this.contextMenu.addItem(item);
   }
 
-  hideMenu() {
-    this.status = false;
-    this.contextMenu.close();
+  destroy() {
+    super.destroy();
+    this.unbind();
+    this.contextMenu.destroy();
   }
 
 }

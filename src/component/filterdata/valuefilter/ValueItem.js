@@ -19,8 +19,12 @@ class ValueItem extends Widget {
     this.select(false);
   }
 
+  unbind() {
+    XEvent.unbind(this);
+  }
+
   bind() {
-    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.CLICK, (e) => {
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       this.select(!this.status);
     });
   }
@@ -32,6 +36,11 @@ class ValueItem extends Widget {
     } else {
       this.iconEle.css('opacity', 0);
     }
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

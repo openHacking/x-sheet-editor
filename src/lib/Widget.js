@@ -1,10 +1,19 @@
 import { Element } from './Element';
 import { cssPrefix } from '../const/Constant';
+import { XEvent } from './XEvent';
 
 class Widget extends Element {
 
   constructor(className = '', nodeType = "div") {
     super(nodeType, `${cssPrefix}-widget ${className}`);
+  }
+
+  computeEventXy(event, element = this) {
+    const { top, left } = element.box();
+    return {
+      x: event.pageX - left,
+      y: event.pageY - top,
+    };
   }
 
   computeWidgetXy(element) {
@@ -22,20 +31,17 @@ class Widget extends Element {
     };
   }
 
-  computeEventXy(event, element = this) {
-    const { top, left } = element.box();
-    return {
-      x: event.pageX - left,
-      y: event.pageY - top,
-    };
-  }
+  onAttach() {  }
 
   attach(widget) {
     this.children(widget);
     widget.onAttach(this);
   }
 
-  onAttach() {  }
+  destroy() {
+    XEvent.unbind(this);
+  }
+
 }
 
 export { Widget };

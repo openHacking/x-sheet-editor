@@ -51,9 +51,14 @@ class IFFilter extends ELContextMenuItem {
     this.hide();
   }
 
+  unbind() {
+    const { titleEle } = this;
+    XEvent.unbind(titleEle);
+  }
+
   bind() {
     const { titleEle, titleIconEle } = this;
-    XEvent.bind(titleEle, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    XEvent.bind(titleEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       if (this.status) {
         this.status = false;
         this.hide();
@@ -74,6 +79,12 @@ class IFFilter extends ELContextMenuItem {
   hide() {
     this.status = false;
     this.selectEleBox.hide();
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
+    this.selectEle.destroy();
   }
 
 }

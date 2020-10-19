@@ -29,21 +29,18 @@ class Alert extends Widget {
     this.children(this.buttonsEle);
     // 拖拽组件
     this.dragPanel = new DragPanel().children(this);
-    this.closeHandle = () => {
-      this.close();
-    };
   }
 
   unbind() {
-    const { closeHandle } = this;
     const { okEle } = this;
-    XEvent.unbind(okEle, Constant.SYSTEM_EVENT_TYPE.CLICK, closeHandle);
+    XEvent.unbind(okEle);
   }
 
   bind() {
-    const { closeHandle } = this;
     const { okEle } = this;
-    XEvent.bind(okEle, Constant.SYSTEM_EVENT_TYPE.CLICK, closeHandle);
+    XEvent.bind(okEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      this.close();
+    });
   }
 
   open() {
@@ -55,7 +52,14 @@ class Alert extends Widget {
   close() {
     const { dragPanel } = this;
     dragPanel.close();
+    dragPanel.destroy();
+    this.destroy();
+  }
+
+  destroy() {
+    super.destroy();
     this.unbind();
+    this.dragPanel.destroy();
   }
 
 }

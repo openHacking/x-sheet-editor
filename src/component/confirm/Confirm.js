@@ -36,30 +36,26 @@ class Confirm extends Widget {
     this.children(this.titleEle);
     this.children(this.contentEle);
     this.children(this.buttonsEle);
-    this.okHandle = () => {
-      ok();
-      this.close();
-    };
-    this.noHandle = () => {
-      no();
-      this.close();
-    };
     // 拖拽组件
     this.dragPanel = new DragPanel().children(this);
   }
 
   unbind() {
-    const { okHandle, noHandle } = this;
     const { okEle, noEle } = this;
-    XEvent.unbind(okEle, Constant.SYSTEM_EVENT_TYPE.CLICK, okHandle);
-    XEvent.unbind(noEle, Constant.SYSTEM_EVENT_TYPE.CLICK, noHandle);
+    XEvent.unbind(okEle);
+    XEvent.unbind(noEle);
   }
 
   bind() {
-    const { okHandle, noHandle } = this;
     const { okEle, noEle } = this;
-    XEvent.bind(okEle, Constant.SYSTEM_EVENT_TYPE.CLICK, okHandle);
-    XEvent.bind(noEle, Constant.SYSTEM_EVENT_TYPE.CLICK, noHandle);
+    XEvent.bind(okEle, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      this.ok();
+      this.close();
+    });
+    XEvent.bind(noEle, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      this.no();
+      this.close();
+    });
   }
 
   open() {
@@ -72,6 +68,12 @@ class Confirm extends Widget {
     const { dragPanel } = this;
     dragPanel.close();
     this.unbind();
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
+    this.dragPanel.destroy();
   }
 
 }

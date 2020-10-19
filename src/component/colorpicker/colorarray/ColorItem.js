@@ -5,6 +5,7 @@ import { Icon } from '../../../core/work/tools/Icon';
 import { ColorPicker } from '../ColorPicker';
 
 class ColorItem extends Widget {
+
   constructor(options) {
     super(`${cssPrefix}-color-array-item`);
     this.options = PlainUtils.mergeDeep({
@@ -38,6 +39,7 @@ class ColorItem extends Widget {
       }
     }
   }
+
 }
 
 export { ColorItem };

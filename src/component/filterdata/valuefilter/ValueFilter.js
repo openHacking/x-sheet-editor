@@ -75,17 +75,26 @@ class ValueFilter extends ELContextMenuItem {
     this.itemsBox.children(valueItem);
   }
 
+  unbind() {
+    const {
+      titleEle, selectEle, clearEle,
+    } = this;
+    XEvent.unbind(selectEle);
+    XEvent.unbind(clearEle);
+    XEvent.unbind(titleEle);
+  }
+
   bind() {
     const {
       titleEle, titleIconEle, selectEle, clearEle,
     } = this;
-    XEvent.bind(selectEle, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    XEvent.bind(selectEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       this.selectAll();
     });
-    XEvent.bind(clearEle, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    XEvent.bind(clearEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       this.clearAll();
     });
-    XEvent.bind(titleEle, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    XEvent.bind(titleEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       if (this.status) {
         this.status = false;
         this.hide();
@@ -124,6 +133,15 @@ class ValueFilter extends ELContextMenuItem {
     items.forEach((item) => {
       item.select(false);
     });
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
+    this.items.forEach((item) => {
+      item.destroy();
+    });
+    this.searchInput.destroy();
   }
 
 }

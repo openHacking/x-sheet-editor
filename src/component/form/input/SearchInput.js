@@ -1,7 +1,6 @@
 import { h } from '../../../lib/Element';
-import { Constant, cssPrefix } from '../../../const/Constant';
+import { cssPrefix } from '../../../const/Constant';
 import { Widget } from '../../../lib/Widget';
-import { XEvent } from '../../../lib/XEvent';
 
 class SearchInput extends Widget {
 
@@ -15,13 +14,6 @@ class SearchInput extends Widget {
     this.inputWrapEle.children(this.inputInnerEle);
     this.children(this.inputWrapEle);
     this.children(this.searchEle);
-    this.bind();
-  }
-
-  bind() {
-    XEvent.bind(this.inputEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      e.stopPropagation();
-    });
   }
 
 }

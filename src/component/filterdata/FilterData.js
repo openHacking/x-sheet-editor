@@ -8,6 +8,7 @@ import { h } from '../../lib/Element';
 import { ELContextMenuDivider } from '../contextmenu/ELContextMenuDivider';
 import { XEvent } from '../../lib/XEvent';
 import { PlainUtils } from '../../utils/PlainUtils';
+import { ElPopUp } from '../elpopup/ElPopUp';
 
 class FilterData extends ELContextMenu {
 
@@ -41,14 +42,21 @@ class FilterData extends ELContextMenu {
       this.options.no();
       this.close();
     };
-    XEvent.bind(this.okEle, Constant.SYSTEM_EVENT_TYPE.CLICK, this.okHandle);
-    XEvent.bind(this.noEle, Constant.SYSTEM_EVENT_TYPE.CLICK, this.noHandle);
+    this.filterDataHandle = () => {
+      ElPopUp.closeAll([this.elPopUp]);
+    };
+    XEvent.bind(this.okEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.okHandle);
+    XEvent.bind(this.noEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.noHandle);
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.filterDataHandle);
   }
 
   destroy() {
     super.destroy();
-    XEvent.unbind(this.okEle);
-    XEvent.unbind(this.noEle);
+    this.valueFilter.destroy();
+    this.ifFilter.destroy();
+    XEvent.unbind(this.okEle, Constant.SYSTEM_EVENT_TYPE.CLICK, this.okHandle);
+    XEvent.unbind(this.noEle, Constant.SYSTEM_EVENT_TYPE.CLICK, this.noHandle);
+    XEvent.unbind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.filterDataHandle);
   }
 
 }

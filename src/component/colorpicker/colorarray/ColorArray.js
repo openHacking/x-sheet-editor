@@ -5,6 +5,7 @@ import { PlainUtils } from '../../../utils/PlainUtils';
 
 
 class ColorArray extends Widget {
+
   constructor(options) {
     super(`${cssPrefix}-color-array`);
     this.options = PlainUtils.mergeDeep({
@@ -136,6 +137,7 @@ class ColorArray extends Widget {
       }
     });
   }
+
 }
 
 export { ColorArray };
