@@ -1,4 +1,5 @@
 /* global document */
+
 import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { h } from '../../../../lib/Element';
@@ -28,24 +29,9 @@ class XFilterButton extends Widget {
     this.bind();
   }
 
-  light() {
-    const {
-      ri, ci, xFilter, button,
-    } = this;
-    const { table } = xFilter;
-    const cells = table.getTableCells();
-    const cell = cells.getCell(ri, ci);
-    if (PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.background)) {
-      button.css('background-color', '#ffffff');
-      button.addClass(`${cssPrefix}-x-filter-button-dark`);
-    } else {
-      button.css('background-color', cell.background);
-      if (ColorPicker.isDark(cell.background)) {
-        button.addClass(`${cssPrefix}-x-filter-button-dark`);
-      } else {
-        button.addClass(`${cssPrefix}-x-filter-button-light`);
-      }
-    }
+  unbind() {
+    const { button } = this;
+    XEvent.unbind(button);
   }
 
   bind() {
@@ -77,6 +63,26 @@ class XFilterButton extends Widget {
     });
   }
 
+  light() {
+    const {
+      ri, ci, xFilter, button,
+    } = this;
+    const { table } = xFilter;
+    const cells = table.getTableCells();
+    const cell = cells.getCell(ri, ci);
+    if (PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.background)) {
+      button.css('background-color', '#ffffff');
+      button.addClass(`${cssPrefix}-x-filter-button-dark`);
+    } else {
+      button.css('background-color', cell.background);
+      if (ColorPicker.isDark(cell.background)) {
+        button.addClass(`${cssPrefix}-x-filter-button-dark`);
+      } else {
+        button.addClass(`${cssPrefix}-x-filter-button-light`);
+      }
+    }
+  }
+
   setSize(left, width, height) {
     this.offset({
       left, top: 0, width, height,
@@ -85,10 +91,9 @@ class XFilterButton extends Widget {
 
   destroy() {
     super.destroy();
-    const {
-      area, button, filterData,
-    } = this;
-    XEvent.unbind(button);
+    const { area, filterData } = this;
+    this.unbind();
+    filterData.close();
     filterData.destroy();
     area.remove(this);
   }
