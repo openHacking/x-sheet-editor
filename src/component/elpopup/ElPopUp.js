@@ -18,7 +18,7 @@ let root = null;
 class ElPopUp extends Widget {
 
   constructor(options) {
-    super(`${cssPrefix}-el-pop-up`);
+    super(`${cssPrefix}-el-pop-up ${cssPrefix}-no-scroll-bar`);
     instances.push(this);
     this.off = true;
     this.options = PlainUtils.mergeDeep({

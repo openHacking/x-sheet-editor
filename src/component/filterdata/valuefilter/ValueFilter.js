@@ -37,7 +37,7 @@ class ValueFilter extends ELContextMenuItem {
     this.searchBoxEle.children(this.searchInput);
     this.children(this.searchBoxEle);
 
-    this.itemsBox = h('div', `${cssPrefix}-value-filter-items-box`);
+    this.itemsBox = h('div', `${cssPrefix}-value-filter-items-box ${cssPrefix}-no-scroll-bar`);
     this.children(this.itemsBox);
 
     this.addItem(new ValueItem({ text: '121212' }));
