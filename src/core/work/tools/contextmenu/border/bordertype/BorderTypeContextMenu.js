@@ -92,7 +92,7 @@ class BorderTypeContextMenu extends ELContextMenu {
       const { borderColorContextMenu } = this;
       const { elPopUp } = borderColorContextMenu;
       ElPopUp.closeAll([elPopUp, this.elPopUp]);
-      if (borderColorContextMenu.isOpen()) {
+      if (borderColorContextMenu.isClose()) {
         borderColorContextMenu.open();
       } else {
         borderColorContextMenu.close();
@@ -104,7 +104,7 @@ class BorderTypeContextMenu extends ELContextMenu {
       const { lineTypeContextMenu } = this;
       const { elPopUp } = lineTypeContextMenu;
       ElPopUp.closeAll([elPopUp, this.elPopUp]);
-      if (lineTypeContextMenu.isOpen()) {
+      if (lineTypeContextMenu.isClose()) {
         lineTypeContextMenu.open();
       } else {
         lineTypeContextMenu.close();

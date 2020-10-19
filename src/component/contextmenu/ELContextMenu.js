@@ -37,8 +37,8 @@ class ELContextMenu extends Widget {
     return this;
   }
 
-  isOpen() {
-    return this.elPopUp.status;
+  isClose() {
+    return this.elPopUp.status === false;
   }
 
   open() {

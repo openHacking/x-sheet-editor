@@ -81,11 +81,11 @@ class ElPopUp extends Widget {
   elPopUpAutosize() {
     const { options, direction, spaces } = this;
     const { autosize } = options;
-    const box = this.box();
-    const { width, height } = box;
     if (autosize) {
       this.css('width', 'initial');
       this.css('height', 'initial');
+      const box = this.box();
+      const { width, height } = box;
       switch (direction) {
         case 'top':
         case 'bottom':
@@ -156,20 +156,28 @@ class ElPopUp extends Widget {
    * 设置显示位置
    */
   elPopUpLocation() {
-    const { direction, location } = this;
+    const { direction, location, options } = this;
+    const { el } = options;
     const box = this.box();
+    const elBox = el.box();
+    const elLeft = elBox.left;
+    const elTop = elBox.top;
     const { width, height } = box;
     switch (direction) {
       case 'left':
+        this.css('top', `${elTop}px`);
         this.css('left', `${location - width}px`);
         break;
       case 'right':
+        this.css('top', `${elTop}px`);
         this.css('left', `${location}px`);
         break;
       case 'top':
+        this.css('left', `${elLeft}px`);
         this.css('top', `${location - height}px`);
         break;
       case 'bottom':
+        this.css('left', `${elLeft}px`);
         this.css('top', `${location}px`);
         break;
     }
@@ -183,6 +191,10 @@ class ElPopUp extends Widget {
     this.unbind();
   }
 
+  /**
+   * 删除实例
+   * @param instance
+   */
   static removeInstance(instance) {
     const filter = [];
     instances.forEach((item) => {
@@ -193,6 +205,10 @@ class ElPopUp extends Widget {
     instances = filter;
   }
 
+  /**
+   * 关闭所有实例
+   * @param filter
+   */
   static closeAll(filter = []) {
     instances.forEach((item) => {
       if (filter.indexOf(item) === -1) {
@@ -201,6 +217,10 @@ class ElPopUp extends Widget {
     });
   }
 
+  /**
+   * 设置根节点
+   * @param element
+   */
   static setRoot(element) {
     if (element.el) {
       element = h(element.el);

@@ -712,7 +712,7 @@ class TopMenu extends Widget {
       const { scaleContextMenu } = scale;
       const { elPopUp } = scaleContextMenu;
       ElPopUp.closeAll([elPopUp]);
-      if (scaleContextMenu.isOpen()) {
+      if (scaleContextMenu.isClose()) {
         scaleContextMenu.open();
       } else {
         scaleContextMenu.close();
@@ -814,7 +814,7 @@ class TopMenu extends Widget {
       const { formatContextMenu } = format;
       const { elPopUp } = formatContextMenu;
       ElPopUp.closeAll([elPopUp]);
-      if (formatContextMenu.isOpen()) {
+      if (formatContextMenu.isClose()) {
         formatContextMenu.open();
       } else {
         formatContextMenu.close();
@@ -827,7 +827,7 @@ class TopMenu extends Widget {
       const { fontContextMenu } = font;
       const { elPopUp } = fontContextMenu;
       ElPopUp.closeAll([elPopUp]);
-      if (fontContextMenu.isOpen()) {
+      if (fontContextMenu.isClose()) {
         fontContextMenu.open();
       } else {
         fontContextMenu.close();
@@ -840,7 +840,7 @@ class TopMenu extends Widget {
       const { fontSizeContextMenu } = dprFontSize;
       const { elPopUp } = fontSizeContextMenu;
       ElPopUp.closeAll([elPopUp]);
-      if (fontSizeContextMenu.isOpen()) {
+      if (fontSizeContextMenu.isClose()) {
         fontSizeContextMenu.open();
       } else {
         fontSizeContextMenu.close();
@@ -965,7 +965,7 @@ class TopMenu extends Widget {
       const { fontColorContextMenu } = fontColor;
       const { elPopUp } = fontColorContextMenu;
       ElPopUp.closeAll([elPopUp]);
-      if (fontColorContextMenu.isOpen()) {
+      if (fontColorContextMenu.isClose()) {
         fontColorContextMenu.open();
       } else {
         fontColorContextMenu.close();
@@ -978,7 +978,7 @@ class TopMenu extends Widget {
       const { fillColorContextMenu } = fillColor;
       const { elPopUp } = fillColorContextMenu;
       ElPopUp.closeAll([elPopUp]);
-      if (fillColorContextMenu.isOpen()) {
+      if (fillColorContextMenu.isClose()) {
         fillColorContextMenu.open();
       } else {
         fillColorContextMenu.close();
@@ -991,7 +991,7 @@ class TopMenu extends Widget {
       const { borderTypeContextMenu } = border;
       const { elPopUp } = borderTypeContextMenu;
       ElPopUp.closeAll([elPopUp]);
-      if (borderTypeContextMenu.isOpen()) {
+      if (borderTypeContextMenu.isClose()) {
         borderTypeContextMenu.open();
       } else {
         borderTypeContextMenu.close();
@@ -1046,7 +1046,7 @@ class TopMenu extends Widget {
       const { horizontalContextMenu } = horizontalAlign;
       const { elPopUp } = horizontalContextMenu;
       ElPopUp.closeAll([elPopUp]);
-      if (horizontalContextMenu.isOpen()) {
+      if (horizontalContextMenu.isClose()) {
         horizontalContextMenu.open();
       } else {
         horizontalContextMenu.close();
@@ -1059,7 +1059,7 @@ class TopMenu extends Widget {
       const { verticalContextMenu } = verticalAlign;
       const { elPopUp } = verticalContextMenu;
       ElPopUp.closeAll([elPopUp]);
-      if (verticalContextMenu.isOpen()) {
+      if (verticalContextMenu.isClose()) {
         verticalContextMenu.open();
       } else {
         verticalContextMenu.close();
@@ -1072,7 +1072,7 @@ class TopMenu extends Widget {
       const { textWrappingContextMenu } = textWrapping;
       const { elPopUp } = textWrappingContextMenu;
       ElPopUp.closeAll([elPopUp]);
-      if (textWrappingContextMenu.isOpen()) {
+      if (textWrappingContextMenu.isClose()) {
         textWrappingContextMenu.open();
       } else {
         textWrappingContextMenu.close();
@@ -1085,7 +1085,7 @@ class TopMenu extends Widget {
       const { fixedContextMenu } = fixed;
       const { elPopUp } = fixedContextMenu;
       ElPopUp.closeAll([elPopUp]);
-      if (fixedContextMenu.isOpen()) {
+      if (fixedContextMenu.isClose()) {
         fixedContextMenu.open();
       } else {
         fixedContextMenu.close();

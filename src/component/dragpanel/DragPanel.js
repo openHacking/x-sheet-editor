@@ -37,12 +37,12 @@ class DragPanel extends Widget {
    * 显示弹框
    */
   open() {
-    if (this.status && root) {
+    if (this.status === false && root) {
       const { mask } = this;
       root.children(mask);
       root.children(this);
       this.dragPanelLocation();
-      this.status = false;
+      this.status = true;
     }
     return this;
   }
@@ -51,11 +51,11 @@ class DragPanel extends Widget {
    * 关闭弹框
    */
   close() {
-    if (this.status === false && root) {
+    if (this.status === true && root) {
       const { mask } = this;
       root.remove(this);
       root.remove(mask);
-      this.status = true;
+      this.status = false;
     }
     return this;
   }
@@ -163,7 +163,7 @@ class DragPanel extends Widget {
   }
 
   /**
-   * 设置更节点
+   * 设置根节点
    * @param element
    */
   static setRoot(element) {
