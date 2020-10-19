@@ -1,10 +1,10 @@
 import { DropDownItem } from './base/DropDownItem';
 import { cssPrefix } from '../../../const/Constant';
 import { PlainUtils } from '../../../utils/PlainUtils';
-import { EL_POPUP_POSITION } from '../../../component/elpopup/ElPopUp';
 import { FontContextMenu } from './contextmenu/font/FontContextMenu';
 
 class Font extends DropDownItem {
+
   constructor(options) {
     super(`${cssPrefix}-tools-font`);
     this.options = PlainUtils.copyProp({
@@ -15,9 +15,9 @@ class Font extends DropDownItem {
     this.setEllipsis();
     this.fontContextMenu = new FontContextMenu(PlainUtils.copyProp({
       el: this,
-      position: EL_POPUP_POSITION.BOTTOM,
     }, this.options.contextMenu));
   }
+
 }
 
 export { Font };

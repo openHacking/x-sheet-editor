@@ -138,9 +138,6 @@ class ValueFilter extends ELContextMenuItem {
   destroy() {
     super.destroy();
     this.unbind();
-    this.items.forEach((item) => {
-      item.destroy();
-    });
     this.searchInput.destroy();
   }
 

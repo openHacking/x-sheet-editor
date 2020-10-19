@@ -6,36 +6,71 @@ import { XEvent } from '../../lib/XEvent';
 import { h } from '../../lib/Element';
 import { PlainUtils } from '../../utils/PlainUtils';
 
-const DRAG_PANEL_POSITION = {
-  LEFT: 1,
-  TOP: 2,
-  RIGHT: 3,
-  CENTER: 4,
-};
-
+let root = PlainUtils.Undef;
 let instances = [];
-let root = null;
 
+/**
+ * DragPanel
+ * @author jerry
+ * @date 2020/10/19
+ */
 class DragPanel extends Widget {
 
+  /**
+   * DragPanel
+   * @param options
+   */
   constructor(options) {
     super(`${cssPrefix}-drag-panel`);
     instances.push(this);
     this.options = PlainUtils.mergeDeep({
-      position: DRAG_PANEL_POSITION.CENTER,
+      position: DragPanel.DRAG_PANEL_POSITION.CENTER,
     }, options);
-    this.off = true;
+    this.status = false;
     this.mask = h('div', `${cssPrefix}-drag-panel-mask`);
     this.content = h('div', `${cssPrefix}-drag-panel-content`);
     super.children(this.content);
     this.bind();
   }
 
+  /**
+   * 显示弹框
+   */
+  open() {
+    if (this.status && root) {
+      const { mask } = this;
+      root.children(mask);
+      root.children(this);
+      this.dragPanelLocation();
+      this.status = false;
+    }
+    return this;
+  }
+
+  /**
+   * 关闭弹框
+   */
+  close() {
+    if (this.status === false && root) {
+      const { mask } = this;
+      root.remove(this);
+      root.remove(mask);
+      this.status = true;
+    }
+    return this;
+  }
+
+  /**
+   * 卸载事件
+   */
   unbind() {
     const { mask } = this;
     XEvent.unbind(mask);
   }
 
+  /**
+   * 绑定事件
+   */
   bind() {
     const { mask } = this;
     XEvent.bind(mask, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
@@ -56,24 +91,22 @@ class DragPanel extends Widget {
     });
   }
 
-  children(...args) {
-    this.content.children(...args);
-    return this;
-  }
-
-  position() {
+  /**
+   * 设置显示位置
+   */
+  dragPanelLocation() {
     const { options } = this;
     const { position } = options;
     const { width, height } = PlainUtils.viewPort();
     const box = this.box();
     switch (position) {
-      case DRAG_PANEL_POSITION.LEFT:
+      case DragPanel.DRAG_PANEL_POSITION.LEFT:
         break;
-      case DRAG_PANEL_POSITION.RIGHT:
+      case DragPanel.DRAG_PANEL_POSITION.RIGHT:
         break;
-      case DRAG_PANEL_POSITION.TOP:
+      case DragPanel.DRAG_PANEL_POSITION.TOP:
         break;
-      case DRAG_PANEL_POSITION.CENTER:
+      case DragPanel.DRAG_PANEL_POSITION.CENTER:
         this.offset({
           left: width / 2 - box.width / 2,
           top: height / 2 - box.height / 2,
@@ -84,33 +117,29 @@ class DragPanel extends Widget {
     return this;
   }
 
-  close() {
-    if (this.off === false && root) {
-      const { mask } = this;
-      root.remove(this);
-      root.remove(mask);
-      this.off = true;
-    }
+  /**
+   * 添加子元素
+   * @param args
+   * @returns {DragPanel}
+   */
+  children(...args) {
+    this.content.children(...args);
     return this;
   }
 
-  open() {
-    if (this.off && root) {
-      const { mask } = this;
-      root.children(mask);
-      root.children(this);
-      this.position();
-      this.off = false;
-    }
-    return this;
-  }
-
+  /**
+   * 销毁组件
+   */
   destroy() {
     super.destroy();
     this.unbind();
     DragPanel.removeInstance(this);
   }
 
+  /**
+   * 删除实例
+   * @param instance
+   */
   static removeInstance(instance) {
     const filter = [];
     instances.forEach((item) => {
@@ -121,6 +150,10 @@ class DragPanel extends Widget {
     instances = filter;
   }
 
+  /**
+   * 关闭所有实例
+   * @param filter
+   */
   static closeAll(filter = []) {
     instances.forEach((item) => {
       if (filter.indexOf(item) === -1) {
@@ -129,6 +162,10 @@ class DragPanel extends Widget {
     });
   }
 
+  /**
+   * 设置更节点
+   * @param element
+   */
   static setRoot(element) {
     if (element.el) {
       element = h(element.el);
@@ -139,5 +176,11 @@ class DragPanel extends Widget {
   }
 
 }
+DragPanel.DRAG_PANEL_POSITION = {
+  LEFT: 1,
+  TOP: 2,
+  RIGHT: 3,
+  CENTER: 4,
+};
 
 export { DragPanel };

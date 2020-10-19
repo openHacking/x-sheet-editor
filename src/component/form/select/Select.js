@@ -48,6 +48,7 @@ class Select extends Widget {
   destroy() {
     super.destroy();
     this.unbind();
+    this.contextMenu.close();
     this.contextMenu.destroy();
   }
 

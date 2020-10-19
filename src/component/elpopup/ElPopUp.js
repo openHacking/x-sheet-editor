@@ -1,172 +1,186 @@
 /* global window */
 import { Widget } from '../../lib/Widget';
-import { cssPrefix, Constant } from '../../const/Constant';
+import { Constant, cssPrefix } from '../../const/Constant';
 import { h } from '../../lib/Element';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { XEvent } from '../../lib/XEvent';
 
-const EL_POPUP_POSITION = {
-  TOP: 1,
-  LEFT: 2,
-  BOTTOM: 3,
-  RIGHT: 4,
-};
-
+let root = PlainUtils.Nul;
 let instances = [];
-let root = null;
 
+/**
+ * ElPopUp
+ * @author jerry
+ * @date 2020/10/19
+ */
 class ElPopUp extends Widget {
 
+  /**
+   * ElPopUp
+   * @param options
+   */
   constructor(options) {
     super(`${cssPrefix}-el-pop-up ${cssPrefix}-no-scroll-bar`);
-    instances.push(this);
-    this.off = true;
     this.options = PlainUtils.mergeDeep({
       el: PlainUtils.Nul,
-      position: EL_POPUP_POSITION.BOTTOM,
-      overflowY: false,
-      overflowX: false,
-      autoWidth: false,
-      autoHeight: false,
+      autosize: false,
+      position: ElPopUp.POPUP_POSTION.TB,
     }, options);
-    this.globalHandle = () => {
-      this.position();
+    this.direction = PlainUtils.Undef;
+    this.status = false;
+    this.location = 0;
+    this.spaces = 0;
+    this.elPopUpResizeHandle = () => {
+      this.elPopUpPosition();
+      this.elPopUpAutosize();
+      this.elPopUpLocation();
     };
-    this.bind();
+    instances.push(this);
   }
 
-  autosize() {
-    const { options } = this;
-    this.css('height', 'auto');
-    this.css('width', 'auto');
-    this.css('overflow-y', 'none');
-    this.css('overflow-x', 'none');
-    const { top, left, width, height } = this.box();
-    const maxWidth = window.innerWidth - left;
-    const maxHeight = window.innerHeight - top;
-    if (options.autoWidth) {
-      if (width > maxWidth) {
-        this.css('width', `${maxWidth}px`);
-      } else {
-        this.css('width', 'auto');
-      }
-    }
-    if (options.autoHeight) {
-      if (height > maxHeight) {
-        this.css('height', `${maxHeight}px`);
-      } else {
-        this.css('height', 'auto');
-      }
-    }
-    if (options.overflowX) {
-      this.css('overflow-x', 'auto');
-    } else {
-      this.css('overflow-x', 'none');
-    }
-    if (options.overflowY) {
-      this.css('overflow-y', 'auto');
-    } else {
-      this.css('overflow-y', 'none');
-    }
-  }
-
-  position() {
-    const { el, position } = this.options;
-    const elBox = el.box();
-    const contentBox = this.box();
-    let { top, left } = elBox;
-    switch (position) {
-      case EL_POPUP_POSITION.TOP:
-        top = elBox.top - contentBox.height;
-        break;
-      case EL_POPUP_POSITION.LEFT:
-        left = elBox.left - contentBox.width;
-        break;
-      case EL_POPUP_POSITION.RIGHT:
-        left = elBox.left + elBox.width;
-        break;
-      case EL_POPUP_POSITION.BOTTOM:
-        top = elBox.top + elBox.height;
-        break;
-      default: break;
-    }
-    const maxWidth = window.innerWidth;
-    const maxHeight = window.innerHeight;
-    // 反向
-    if (left < 0 || left + contentBox.width > maxWidth) {
-      switch (position) {
-        case EL_POPUP_POSITION.LEFT:
-          left = elBox.left + elBox.width;
-          break;
-        case EL_POPUP_POSITION.RIGHT:
-          left = elBox.left - contentBox.width;
-          break;
-        default: break;
-      }
-    }
-    if (top < 0 || top + contentBox.height > maxHeight) {
-      switch (position) {
-        case EL_POPUP_POSITION.TOP:
-          top = elBox.top + elBox.height;
-          break;
-        case EL_POPUP_POSITION.BOTTOM:
-          top = elBox.top - contentBox.height;
-          break;
-        default: break;
-      }
-    }
-    // 正向
-    if (left < 0 || left + contentBox.width > maxWidth) {
-      top = elBox.top + elBox.height;
-      ({ left } = elBox);
-    }
-    if (top < 0 || top + contentBox.height > maxHeight) {
-      top = elBox.top + elBox.height;
-      ({ left } = elBox);
-    }
-    this.offset({
-      top, left,
-    });
-  }
-
-  unbind() {
-    XEvent.unbind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, this.globalHandle);
-  }
-
-  bind() {
-    XEvent.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, this.globalHandle);
-  }
-
-  toggle() {
-    if (root) {
-      if (this.off) {
-        this.open();
-      } else {
-        this.close();
-      }
-    }
-  }
-
-  close() {
-    if (this.off === false && root) {
-      root.remove(this);
-      this.off = true;
-    }
-  }
-
+  /**
+   * 显示弹框
+   */
   open() {
-    if (this.off && root) {
+    if (this.status === false && root) {
       root.children(this);
-      this.position();
-      this.autosize();
-      this.off = false;
+      this.elPopUpPosition();
+      this.elPopUpAutosize();
+      this.elPopUpLocation();
+      this.status = true;
     }
   }
 
+  /**
+   * 关闭弹框
+   */
+  close() {
+    if (this.status === true && root) {
+      root.remove(this);
+      this.status = false;
+    }
+  }
+
+  /**
+   * 卸载事件
+   */
+  unbind() {
+    XEvent.unbind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, this.elPopUpResizeHandle);
+  }
+
+  /**
+   * 绑定事件
+   */
+  bind() {
+    XEvent.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, this.elPopUpResizeHandle);
+  }
+
+  /**
+   * 计算显示的大小
+   */
+  elPopUpAutosize() {
+    const { options, direction, spaces } = this;
+    const { autosize } = options;
+    const box = this.box();
+    const { width, height } = box;
+    if (autosize) {
+      this.css('width', 'initial');
+      this.css('height', 'initial');
+      switch (direction) {
+        case 'top':
+        case 'bottom':
+          if (height > spaces) {
+            this.css('height', `${spaces}px`);
+          }
+          break;
+        case 'left':
+        case 'right':
+          if (width > spaces) {
+            this.css('width', `${spaces}px`);
+          }
+          break;
+      }
+    }
+  }
+
+  /**
+   * 计算显示的位置
+   */
+  elPopUpPosition() {
+    const { options } = this;
+    const { position } = options;
+    const { el } = options;
+    const elBox = el.box();
+    const winWidth = window.innerWidth;
+    const winHeight = window.innerHeight;
+    this.direction = PlainUtils.Undef;
+    this.spaces = 0;
+    this.location = 0;
+    switch (position) {
+      case ElPopUp.POPUP_POSTION.LR: {
+        const width = elBox.width;
+        const elLeft = elBox.left;
+        const leftDiff = elLeft;
+        const rightDiff = winWidth - (elLeft + width);
+        if (leftDiff > rightDiff) {
+          this.direction = 'left';
+          this.spaces = leftDiff;
+          this.location = elLeft;
+        } else {
+          this.direction = 'right';
+          this.spaces = rightDiff;
+          this.location = elLeft + width;
+        }
+        break;
+      }
+      case ElPopUp.POPUP_POSTION.TB: {
+        const height = elBox.height;
+        const elTop = elBox.top;
+        const topDiff = elTop;
+        const bottomDIff = winHeight - (elTop + height);
+        if (topDiff > bottomDIff) {
+          this.direction = 'top';
+          this.spaces = topDiff;
+          this.location = elTop;
+        } else {
+          this.direction = 'bottom';
+          this.spaces = bottomDIff;
+          this.location = elTop + height;
+        }
+        break;
+      }
+    }
+  }
+
+  /**
+   * 设置显示位置
+   */
+  elPopUpLocation() {
+    const { direction, location } = this;
+    const box = this.box();
+    const { width, height } = box;
+    switch (direction) {
+      case 'left':
+        this.css('left', `${location - width}px`);
+        break;
+      case 'right':
+        this.css('left', `${location}px`);
+        break;
+      case 'top':
+        this.css('top', `${location - height}px`);
+        break;
+      case 'bottom':
+        this.css('top', `${location}px`);
+        break;
+    }
+  }
+
+  /**
+   * 销毁组件
+   */
   destroy() {
     super.destroy();
     this.unbind();
-    ElPopUp.removeInstance(this);
   }
 
   static removeInstance(instance) {
@@ -197,5 +211,11 @@ class ElPopUp extends Widget {
   }
 
 }
+ElPopUp.POPUP_POSTION = {
+  TB: Symbol('上下位置'),
+  LR: Symbol('左右位置'),
+};
 
-export { ElPopUp, EL_POPUP_POSITION };
+export {
+  ElPopUp,
+};

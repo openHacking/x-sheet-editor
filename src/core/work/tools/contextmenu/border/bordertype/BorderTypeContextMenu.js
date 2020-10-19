@@ -17,10 +17,10 @@ import { BorderIcon10 } from '../../icon/border/BorderIcon10';
 import { BorderColor } from '../../icon/border/BorderColor';
 import { BorderType } from '../../icon/border/BorderType';
 import { XEvent } from '../../../../../../lib/XEvent';
-import { EL_POPUP_POSITION, ElPopUp } from '../../../../../../component/elpopup/ElPopUp';
 import { BorderColorContextMenu } from '../bordercolor/BorderColorContextMenu';
 import { LineTypeContextMenu } from '../linetype/LineTypeContextMenu';
 import { LINE_TYPE } from '../../../../../../canvas/Line';
+import { ElPopUp } from '../../../../../../component/elpopup/ElPopUp';
 
 class BorderTypeContextMenu extends ELContextMenu {
 
@@ -73,7 +73,6 @@ class BorderTypeContextMenu extends ELContextMenu {
     // 边框颜色菜单
     this.borderColorContextMenu = new BorderColorContextMenu(PlainUtils.copyProp({
       el: this.borderColor,
-      position: EL_POPUP_POSITION.BOTTOM,
     }, {
       onUpdate: (color) => {
         this.color = color;
@@ -83,7 +82,6 @@ class BorderTypeContextMenu extends ELContextMenu {
     // 边框类型
     this.lineTypeContextMenu = new LineTypeContextMenu(PlainUtils.copyProp({
       el: this.borderType,
-      position: EL_POPUP_POSITION.BOTTOM,
     }, {
       onUpdate: (type) => {
         this.type = type;

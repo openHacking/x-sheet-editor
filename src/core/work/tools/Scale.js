@@ -1,7 +1,6 @@
 import { DropDownItem } from './base/DropDownItem';
 import { cssPrefix } from '../../../const/Constant';
 import { PlainUtils } from '../../../utils/PlainUtils';
-import { EL_POPUP_POSITION } from '../../../component/elpopup/ElPopUp';
 import { ScaleContextMenu } from './contextmenu/scale/ScaleContextMenu';
 
 class Scale extends DropDownItem {
@@ -14,7 +13,6 @@ class Scale extends DropDownItem {
     this.setEllipsis();
     this.scaleContextMenu = new ScaleContextMenu(PlainUtils.copyProp({
       el: this,
-      position: EL_POPUP_POSITION.BOTTOM,
     }, this.options.contextMenu));
   }
 

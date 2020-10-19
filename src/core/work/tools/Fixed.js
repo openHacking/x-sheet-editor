@@ -3,7 +3,6 @@ import { Icon } from './Icon';
 import { DropDownItem } from './base/DropDownItem';
 import { FixedContextMenu } from './contextmenu/fixed/FixedContextMenu';
 import { PlainUtils } from '../../../utils/PlainUtils';
-import { EL_POPUP_POSITION } from '../../../component/elpopup/ElPopUp';
 
 class Fixed extends DropDownItem {
 
@@ -18,7 +17,6 @@ class Fixed extends DropDownItem {
     this.setIcon(this.icon);
     this.fixedContextMenu = new FixedContextMenu(PlainUtils.copyProp({
       el: this,
-      position: EL_POPUP_POSITION.BOTTOM,
     }, this.options.contextMenu));
   }
 

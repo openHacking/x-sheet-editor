@@ -1,7 +1,6 @@
 import { Widget } from '../../../lib/Widget';
-import { Constant, cssPrefix } from '../../../const/Constant';
+import { cssPrefix } from '../../../const/Constant';
 import { h } from '../../../lib/Element';
-import { XEvent } from '../../../lib/XEvent';
 
 class ValueItem extends Widget {
 
@@ -15,18 +14,7 @@ class ValueItem extends Widget {
     this.textEle.text(text);
     this.children(this.iconEle);
     this.children(this.textEle);
-    this.bind();
     this.select(false);
-  }
-
-  unbind() {
-    XEvent.unbind(this);
-  }
-
-  bind() {
-    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      this.select(!this.status);
-    });
   }
 
   select(status) {
@@ -36,11 +24,6 @@ class ValueItem extends Widget {
     } else {
       this.iconEle.css('opacity', 0);
     }
-  }
-
-  destroy() {
-    super.destroy();
-    this.unbind();
   }
 
 }

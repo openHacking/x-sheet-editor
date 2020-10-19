@@ -13,21 +13,21 @@ class ELContextMenu extends Widget {
     this.menus = [];
     this.elPopUp = new ElPopUp(this.options);
     this.elPopUp.children(this);
-    this.globalHandle = () => {
+    this.eLContextCloseHandle = () => {
       this.close();
     };
     this.bind();
   }
 
   unbind() {
-    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.globalHandle);
+    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.eLContextCloseHandle);
   }
 
   bind() {
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       e.stopPropagation();
     });
-    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.globalHandle);
+    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.eLContextCloseHandle);
   }
 
   addItem(item) {
@@ -38,7 +38,7 @@ class ELContextMenu extends Widget {
   }
 
   isOpen() {
-    return this.elPopUp.off;
+    return this.elPopUp.status;
   }
 
   open() {
