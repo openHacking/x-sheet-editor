@@ -1,6 +1,7 @@
 * {
   margin: 0;
   padding: 0;
+  font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
 }
 .x-sheet-no-scroll-bar::-webkit-scrollbar {
   width: 0;
@@ -141,8 +142,7 @@
   top: 0;
   left: 0;
   z-index: 2;
-  font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
-  overflow: hidden;
+  overflow: auto;
   box-shadow: 0 2px 6px 2px rgba(60, 64, 67, 0.15);
 }
 .x-sheet-drag-panel {
@@ -1673,11 +1673,11 @@
   height: 100%;
 }
 .x-sheet-x-filter-button-light {
-  background-image: url(2f3ffa769076c82c437e1b4534fc2e0a.svg);
+  background-image: url(f509e0e9c45714312ba6e1333dca2660.svg);
   background-size: 100% 100%;
 }
 .x-sheet-x-filter-button-dark {
-  background-image: url(51859b5219dccb48ef2a5659717d0a1b.svg);
+  background-image: url(21fc10338a02d14bbb0621a9047bc4c6.svg);
   background-size: 100% 100%;
 }
 .x-sheet-x-filter-button-box {
