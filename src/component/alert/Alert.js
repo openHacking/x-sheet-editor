@@ -52,7 +52,6 @@ class Alert extends Widget {
   close() {
     const { dragPanel } = this;
     dragPanel.close();
-    dragPanel.destroy();
     this.destroy();
   }
 

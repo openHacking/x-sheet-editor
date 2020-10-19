@@ -67,7 +67,7 @@ class Confirm extends Widget {
   close() {
     const { dragPanel } = this;
     dragPanel.close();
-    this.unbind();
+    this.destroy();
   }
 
   destroy() {

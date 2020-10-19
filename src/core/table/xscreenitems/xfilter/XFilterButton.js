@@ -84,11 +84,12 @@ class XFilterButton extends Widget {
   }
 
   destroy() {
+    super.destroy();
     const {
       area, button, filterData,
     } = this;
-    filterData.destroy();
     XEvent.unbind(button);
+    filterData.destroy();
     area.remove(this);
   }
 
