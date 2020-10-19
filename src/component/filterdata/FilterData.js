@@ -13,11 +13,10 @@ import { ElPopUp } from '../elpopup/ElPopUp';
 class FilterData extends ELContextMenu {
 
   constructor(options) {
-    super(`${cssPrefix}-filter-data-menu`, options);
-    this.options = PlainUtils.mergeDeep({
+    super(`${cssPrefix}-filter-data-menu`, PlainUtils.mergeDeep({
       ok: () => {},
       no: () => {},
-    }, options);
+    }, options));
     this.valueFilter = new ValueFilter();
     this.ifFilter = new IFFilter();
     this.orderAz = new OrderAZ();
