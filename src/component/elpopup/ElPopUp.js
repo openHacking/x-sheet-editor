@@ -46,6 +46,8 @@ class ElPopUp extends Widget {
     const { options } = this;
     this.css('height', 'auto');
     this.css('width', 'auto');
+    this.css('overflow-y', 'none');
+    this.css('overflow-x', 'none');
     const { top, left, width, height } = this.box();
     const maxWidth = window.innerWidth - left;
     const maxHeight = window.innerHeight - top;
