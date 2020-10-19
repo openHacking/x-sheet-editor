@@ -29,17 +29,10 @@ class ElPopUp extends Widget {
       autoWidth: false,
       autoHeight: false,
     }, options);
-    this.bind();
-  }
-
-  unbind() {
-    XEvent.unbind(window);
-  }
-
-  bind() {
-    XEvent.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
+    this.globalHandle = () => {
       this.position();
-    });
+    };
+    this.bind();
   }
 
   autosize() {
@@ -99,8 +92,8 @@ class ElPopUp extends Widget {
     }
     const maxWidth = window.innerWidth;
     const maxHeight = window.innerHeight;
+    // 反向
     if (left < 0 || left + contentBox.width > maxWidth) {
-      // 左右颠倒
       switch (position) {
         case EL_POPUP_POSITION.LEFT:
           left = elBox.left + elBox.width;
@@ -112,7 +105,6 @@ class ElPopUp extends Widget {
       }
     }
     if (top < 0 || top + contentBox.height > maxHeight) {
-      // 上下颠倒
       switch (position) {
         case EL_POPUP_POSITION.TOP:
           top = elBox.top + elBox.height;
@@ -123,6 +115,7 @@ class ElPopUp extends Widget {
         default: break;
       }
     }
+    // 正向
     if (left < 0 || left + contentBox.width > maxWidth) {
       top = elBox.top + elBox.height;
       ({ left } = elBox);
@@ -132,9 +125,26 @@ class ElPopUp extends Widget {
       ({ left } = elBox);
     }
     this.offset({
-      top,
-      left,
+      top, left,
     });
+  }
+
+  unbind() {
+    XEvent.unbind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, this.globalHandle);
+  }
+
+  bind() {
+    XEvent.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, this.globalHandle);
+  }
+
+  toggle() {
+    if (root) {
+      if (this.off) {
+        this.open();
+      } else {
+        this.close();
+      }
+    }
   }
 
   close() {
@@ -150,16 +160,6 @@ class ElPopUp extends Widget {
       this.position();
       this.autosize();
       this.off = false;
-    }
-  }
-
-  toggle() {
-    if (root) {
-      if (this.off) {
-        this.open();
-      } else {
-        this.close();
-      }
     }
   }
 
