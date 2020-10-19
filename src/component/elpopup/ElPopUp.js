@@ -20,7 +20,7 @@ class ElPopUp extends Widget {
    * @param options
    */
   constructor(options) {
-    super(`${cssPrefix}-el-pop-up ${cssPrefix}-no-scroll-bar`);
+    super(`${cssPrefix}-el-pop-up`);
     this.options = PlainUtils.mergeDeep({
       el: PlainUtils.Nul,
       autosize: false,
