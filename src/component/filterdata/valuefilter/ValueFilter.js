@@ -14,7 +14,7 @@ class ValueFilter extends ELContextMenuItem {
 
     this.titleEle = h('div', `${cssPrefix}-value-filter-title`);
     this.titleTextEle = h('span', `${cssPrefix}-value-filter-title-text`);
-    this.titleIconEle = h('span', `${cssPrefix}-value-filter-title-icon active`);
+    this.titleIconEle = h('span', `${cssPrefix}-value-filter-title-icon`);
     this.titleTextEle.text('按值过滤');
     this.titleEle.children(this.titleIconEle);
     this.titleEle.children(this.titleTextEle);
@@ -66,7 +66,7 @@ class ValueFilter extends ELContextMenuItem {
     this.addItem(new ValueItem({ text: '121212' }));
 
     this.removeClass('hover');
-    this.show();
+    this.hide();
     this.bind();
   }
 
