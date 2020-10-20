@@ -214,7 +214,6 @@ class XFilter extends XScreenCssBorderItem {
 
   unbind() {
     const { table } = this;
-    this.filterButtonClearHandle();
     XEvent.unbind(table);
   }
 
@@ -241,14 +240,7 @@ class XFilter extends XScreenCssBorderItem {
     super.onAdd();
   }
 
-  filterButtonClearHandle() {
-    this.buttons.forEach((item) => {
-      item.destroy();
-    });
-    this.buttons = [];
-  }
-
-  filterButtonHandle() {
+  createButtonHandle() {
     const {
       table, selectRange,
     } = this;
@@ -256,7 +248,6 @@ class XFilter extends XScreenCssBorderItem {
       const {
         xFixedView, cols, rows, xScreen,
       } = table;
-
       const targetRange = selectRange.brink().top;
       const fixedView = xFixedView.getFixedView();
       const scrollView = table.getScrollView();
@@ -266,9 +257,7 @@ class XFilter extends XScreenCssBorderItem {
       const {
         sri: sSri, sci: sSci, eri: sEri, eci: sEci,
       } = scrollView;
-
-      this.filterButtonClearHandle();
-
+      this.clearButtonHandle();
       const br = scrollView.coincide(targetRange);
       const buttons = [];
       const {
@@ -484,9 +473,15 @@ class XFilter extends XScreenCssBorderItem {
           })
           .execute();
       }
-
       this.buttons = buttons;
     }
+  }
+
+  clearButtonHandle() {
+    this.buttons.forEach((item) => {
+      item.destroy();
+    });
+    this.buttons = [];
   }
 
   openFilterButton() {
@@ -510,7 +505,7 @@ class XFilter extends XScreenCssBorderItem {
   hideFilterButton() {
     this.display = false;
     this.hide();
-    this.filterButtonClearHandle();
+    this.createButtonHandle();
   }
 
   updateFilterButton() {
@@ -521,6 +516,7 @@ class XFilter extends XScreenCssBorderItem {
 
   destroy() {
     super.destroy();
+    this.clearButtonHandle();
     this.unbind();
   }
 
