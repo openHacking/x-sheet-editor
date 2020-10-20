@@ -31,11 +31,6 @@ class ElPopUp extends Widget {
     this.status = false;
     this.location = 0;
     this.spaces = 0;
-    this.elPopUpResizeHandle = () => {
-      this.elPopUpPosition();
-      this.elPopUpAutosize();
-      this.elPopUpLocation();
-    };
     this.elPopUpDownHandle = () => {
       this.close();
     };
@@ -71,7 +66,6 @@ class ElPopUp extends Widget {
    */
   unbind() {
     XEvent.unbind(this);
-    XEvent.unbind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, this.elPopUpResizeHandle);
     XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.elPopUpDownHandle);
   }
 
@@ -82,7 +76,6 @@ class ElPopUp extends Widget {
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       e.stopPropagation();
     });
-    XEvent.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, this.elPopUpResizeHandle);
     XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.elPopUpDownHandle);
   }
 

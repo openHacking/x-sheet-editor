@@ -235,6 +235,13 @@ class XFilter extends XScreenCssBorderItem {
     super.onAdd();
   }
 
+  filterButtonClearHandle() {
+    this.buttons.forEach((item) => {
+      item.destroy();
+    });
+    this.buttons = [];
+  }
+
   filterButtonHandle() {
     const {
       table, selectRange,
@@ -254,9 +261,7 @@ class XFilter extends XScreenCssBorderItem {
         sri: sSri, sci: sSci, eri: sEri, eci: sEci,
       } = scrollView;
 
-      this.buttons.forEach((item) => {
-        item.destroy();
-      });
+      this.filterButtonClearHandle();
 
       const br = scrollView.coincide(targetRange);
       const buttons = [];
@@ -499,6 +504,7 @@ class XFilter extends XScreenCssBorderItem {
   hideFilterButton() {
     this.display = false;
     this.hide();
+    this.filterButtonClearHandle();
   }
 
   updateFilterButton() {

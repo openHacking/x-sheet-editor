@@ -11,7 +11,7 @@ class BindPool {
     if (ele instanceof Element) {
       ele = ele.el;
     }
-    const result = this.remove(ele, type);
+    const result = this.remove(ele, type, callback, option);
     if (result.length) {
       result.forEach((item) => {
         ele.removeEventListener(item.type, item.callback, item.option);
@@ -31,14 +31,16 @@ class BindPool {
     ele.addEventListener(type, callback, option);
   }
 
-  remove(ele, type = '*') {
+  remove(ele, type = '*', callback = null, option = null) {
     const pool = [];
     const rem = [];
     this.pool.forEach((item) => {
-      if (ele === item.ele) {
-        if (type === '*' || type === item.type) {
-          rem.push(item);
-        }
+      const eqElem = ele === item.ele;
+      const eqOpt = option === null || option === item.option;
+      const eqType = type === '*' || type === item.type;
+      const eqCall = callback === null || callback === item.callback;
+      if (eqElem && eqType && eqCall && eqOpt) {
+        rem.push(item);
       } else {
         pool.push(item);
       }
@@ -109,6 +111,7 @@ class XEvent {
   }
 
 }
+window.XEventPool = pool;
 
 export {
   XEvent

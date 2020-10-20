@@ -44,18 +44,25 @@ class FilterData extends ELContextMenu {
     this.filterDataHandle = () => {
       ElPopUp.closeAll([this.elPopUp]);
     };
+    this.bind();
+  }
+
+  bind() {
     XEvent.bind(this.okEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.okHandle);
     XEvent.bind(this.noEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.noHandle);
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.filterDataHandle);
   }
 
+  unbind() {
+    XEvent.unbind(this.okEle);
+    XEvent.unbind(this.noEle);
+  }
+
   destroy() {
     super.destroy();
+    this.unbind();
     this.valueFilter.destroy();
     this.ifFilter.destroy();
-    XEvent.unbind(this.okEle, Constant.SYSTEM_EVENT_TYPE.CLICK, this.okHandle);
-    XEvent.unbind(this.noEle, Constant.SYSTEM_EVENT_TYPE.CLICK, this.noHandle);
-    XEvent.unbind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.filterDataHandle);
   }
 
 }
