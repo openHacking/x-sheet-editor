@@ -32,7 +32,6 @@ import { OperateCellsHelper } from './helper/OperateCellsHelper';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { VIEW_MODE, XTableScrollView } from './XTableScrollView';
 import { XFixedMeasure } from './tablebase/XFixedMeasure';
-import { CellIcon } from './tablecell/CellIcon';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -743,7 +742,7 @@ class XTableUI {
 
 }
 
-class XTableContentUI extends XTableUI {
+class XTableContentBaseUI extends XTableUI {
 
   /**
    * 加载小图标
@@ -755,112 +754,86 @@ class XTableContentUI extends XTableUI {
     const { table } = this;
     const { draw } = table;
     const { icons } = cell;
-    for (let i = 0; i <= icons; i += 1) {
+    for (let i = 0; i < icons.length; i += 1) {
       const icon = icons[i];
       icon.loadImage({
         async: () => {
           if (scrollView.equals(this.getScrollView())) {
             const x = this.getDrawX();
             const y = this.getDrawY();
-            const width = scrollView.w;
-            const height = scrollView.h;
             const crop = new Crop({
-              rect: new Rect({ x, y, width, height }),
+              rect,
               draw,
             });
-            crop.open();
-            this.drawIcon(rect, icon);
-            crop.close();
+            // crop.open();
+            draw.offset(x, y);
+            icon.drawIcon({
+              rect, icon, draw,
+            });
+            draw.offset(0, 0);
+            // crop.close();
           }
         },
         sync: () => {
-          this.drawIcon(rect, icon);
+          const crop = new Crop({
+            rect,
+            draw,
+          });
+          crop.open();
+          icon.drawIcon({
+            rect, icon, draw,
+          });
+          crop.close();
         },
       });
     }
   }
 
+}
+
+class XTableIndexUI extends XTableUI {
+
   /**
-   * 绘制小图标
-   * @param rect
-   * @param icon
+   * 绘制文字
    */
-  drawIcon(rect, icon) {
-    const { table } = this;
-    const { draw } = table;
-    const drawX = this.getDrawX();
-    const drawY = this.getDrawY();
-    draw.offset(drawX, drawY);
-    // 图标位置
-    const iconPositionX = icon.positionX;
-    const iconPositionY = icon.positionY;
-    const iconColor = icon.color;
-    const iconSourceWidth = icon.width;
-    const iconSourceHeight = icon.height;
-    const iconX = XDraw.transformStylePx(icon.x);
-    const iconY = XDraw.transformStylePx(icon.y);
-    const iconWidth = XDraw.transformStylePx(iconSourceWidth);
-    const iconHeight = XDraw.transformStylePx(iconSourceHeight);
-    // 矩形位置
-    const rectX = rect.x;
-    const rectY = rect.y;
-    const rectWidth = rect.width;
-    const rectHeight = rect.height;
-    // 计算位置
-    let ix = 0;
-    let iy = 0;
-    switch (iconPositionX) {
-      case CellIcon.ICON_POSITION_X.CENTER:
-        ix = (rectX + rectWidth / 2) - (iconWidth / 2);
-        break;
-      case CellIcon.ICON_POSITION_X.LEFT:
-        ix = rectX;
-        break;
-      case CellIcon.ICON_POSITION_X.RIGHT:
-        ix = rectX + rectWidth - iconWidth;
-        break;
-    }
-    switch (iconPositionY) {
-      case CellIcon.ICON_POSITION_Y.CENTER:
-        iy = (rectY + rectHeight / 2) - (iconHeight / 2);
-        break;
-      case CellIcon.ICON_POSITION_Y.TOP:
-        iy = rectY;
-        break;
-      case CellIcon.ICON_POSITION_Y.BOTTOM:
-        iy = rectY + rectHeight - iconHeight;
-        break;
-    }
-    ix += iconX;
-    iy += iconY;
-    // 绘制背景和图标
-    draw.attr({ fillStyle: iconColor });
-    draw.fillRect(ix, iy, iconWidth, iconHeight);
-    draw.drawImage(icon.image, 0, 0, iconSourceWidth, iconSourceHeight,
-      ix, iy, iconWidth, iconHeight);
-    draw.offset(0, 0);
+  drawFont() {
+    throw new TypeError('drawFont child impl');
   }
 
   /**
-   * 绘制单元格图标
+   * 绘制背景颜色
    */
-  drawIcons() {
-    const scrollView = this.getScrollView();
-    const { table } = this;
-    const { styleCellsHelper } = table;
-    styleCellsHelper.getMergeCellByViewRange({
-      rectRange: scrollView,
-      callback: (rect, cell) => {
-        this.loadIcons(rect, cell, scrollView);
-      },
-    });
-    styleCellsHelper.getCellByViewRange({
-      rectRange: scrollView,
-      callback: (row, col, cell, rect) => {
-        this.loadIcons(rect, cell, scrollView);
-      },
-    });
+  drawColor() {
+    throw new TypeError('drawColor child impl');
   }
+
+  /**
+   * 绘制网格
+   */
+  drawGrid() {
+    throw new TypeError('drawGrid child impl');
+  }
+
+  /**
+   * 渲染界面
+   */
+  render() {
+    const { table } = this;
+    const renderMode = table.getRenderMode();
+    const viewMode = this.getViewMode();
+    if (viewMode === VIEW_MODE.STATIC && renderMode === RENDER_MODE.SCROLL) {
+      return;
+    }
+    this.drawMap();
+    this.drawClear();
+    this.drawColor();
+    this.drawGrid();
+    this.drawFont();
+  }
+
+}
+
+class XTableContentUI extends XTableContentBaseUI {
 
   /**
    * 绘制越界文本
@@ -1223,6 +1196,32 @@ class XTableContentUI extends XTableUI {
   }
 
   /**
+   * 绘制单元格图标
+   */
+  drawIcons() {
+    const { table } = this;
+    const { draw } = table;
+    const scrollView = this.getScrollView();
+    const { styleCellsHelper } = table;
+    const x = this.getDrawX();
+    const y = this.getDrawY();
+    draw.offset(x, y);
+    styleCellsHelper.getMergeCellByViewRange({
+      rectRange: scrollView,
+      callback: (rect, cell) => {
+        this.loadIcons(rect, cell, scrollView);
+      },
+    });
+    styleCellsHelper.getCellByViewRange({
+      rectRange: scrollView,
+      callback: (row, col, cell, rect) => {
+        this.loadIcons(rect, cell, scrollView);
+      },
+    });
+    draw.offset(0, 0);
+  }
+
+  /**
    * 渲染界面
    */
   render() {
@@ -1262,48 +1261,6 @@ class XTableContentUI extends XTableUI {
     // 绘制小图标
     this.drawIcons();
     crop.close();
-  }
-
-}
-
-class XTableIndexUI extends XTableUI {
-
-  /**
-   * 绘制文字
-   */
-  drawFont() {
-    throw new TypeError('drawFont child impl');
-  }
-
-  /**
-   * 绘制背景颜色
-   */
-  drawColor() {
-    throw new TypeError('drawColor child impl');
-  }
-
-  /**
-   * 绘制网格
-   */
-  drawGrid() {
-    throw new TypeError('drawGrid child impl');
-  }
-
-  /**
-   * 渲染界面
-   */
-  render() {
-    const { table } = this;
-    const renderMode = table.getRenderMode();
-    const viewMode = this.getViewMode();
-    if (viewMode === VIEW_MODE.STATIC && renderMode === RENDER_MODE.SCROLL) {
-      return;
-    }
-    this.drawMap();
-    this.drawClear();
-    this.drawColor();
-    this.drawGrid();
-    this.drawFont();
   }
 
 }
