@@ -32,6 +32,7 @@ import { OperateCellsHelper } from './helper/OperateCellsHelper';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { VIEW_MODE, XTableScrollView } from './XTableScrollView';
 import { XFixedMeasure } from './tablebase/XFixedMeasure';
+import { CellIcon } from './tablecell/CellIcon';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -745,6 +746,123 @@ class XTableUI {
 class XTableContentUI extends XTableUI {
 
   /**
+   * 加载小图标
+   * @param rect
+   * @param cell
+   * @param scrollView
+   */
+  loadIcons(rect, cell, scrollView) {
+    const { table } = this;
+    const { draw } = table;
+    const { icons } = cell;
+    for (let i = 0; i <= icons; i += 1) {
+      const icon = icons[i];
+      icon.loadImage({
+        async: () => {
+          if (scrollView.equals(this.getScrollView())) {
+            const x = this.getDrawX();
+            const y = this.getDrawY();
+            const width = scrollView.w;
+            const height = scrollView.h;
+            const crop = new Crop({
+              rect: new Rect({ x, y, width, height }),
+              draw,
+            });
+            crop.open();
+            this.drawIcon(rect, icon);
+            crop.close();
+          }
+        },
+        sync: () => {
+          this.drawIcon(rect, icon);
+        },
+      });
+    }
+  }
+
+  /**
+   * 绘制小图标
+   * @param rect
+   * @param icon
+   */
+  drawIcon(rect, icon) {
+    const { table } = this;
+    const { draw } = table;
+    const drawX = this.getDrawX();
+    const drawY = this.getDrawY();
+    draw.offset(drawX, drawY);
+    // 图标位置
+    const iconPositionX = icon.positionX;
+    const iconPositionY = icon.positionY;
+    const iconColor = icon.color;
+    const iconSourceWidth = icon.width;
+    const iconSourceHeight = icon.height;
+    const iconX = XDraw.transformStylePx(icon.x);
+    const iconY = XDraw.transformStylePx(icon.y);
+    const iconWidth = XDraw.transformStylePx(iconSourceWidth);
+    const iconHeight = XDraw.transformStylePx(iconSourceHeight);
+    // 矩形位置
+    const rectX = rect.x;
+    const rectY = rect.y;
+    const rectWidth = rect.width;
+    const rectHeight = rect.height;
+    // 计算位置
+    let ix = 0;
+    let iy = 0;
+    switch (iconPositionX) {
+      case CellIcon.ICON_POSITION_X.CENTER:
+        ix = (rectX + rectWidth / 2) - (iconWidth / 2);
+        break;
+      case CellIcon.ICON_POSITION_X.LEFT:
+        ix = rectX;
+        break;
+      case CellIcon.ICON_POSITION_X.RIGHT:
+        ix = rectX + rectWidth - iconWidth;
+        break;
+    }
+    switch (iconPositionY) {
+      case CellIcon.ICON_POSITION_Y.CENTER:
+        iy = (rectY + rectHeight / 2) - (iconHeight / 2);
+        break;
+      case CellIcon.ICON_POSITION_Y.TOP:
+        iy = rectY;
+        break;
+      case CellIcon.ICON_POSITION_Y.BOTTOM:
+        iy = rectY + rectHeight - iconHeight;
+        break;
+    }
+    ix += iconX;
+    iy += iconY;
+    // 绘制背景和图标
+    draw.attr({ fillStyle: iconColor });
+    draw.fillRect(ix, iy, iconWidth, iconHeight);
+    draw.drawImage(icon.image, 0, 0, iconSourceWidth, iconSourceHeight,
+      ix, iy, iconWidth, iconHeight);
+    draw.offset(0, 0);
+  }
+
+  /**
+   * 绘制单元格图标
+   */
+  drawIcons() {
+    const scrollView = this.getScrollView();
+    const { table } = this;
+    const { styleCellsHelper } = table;
+    styleCellsHelper.getMergeCellByViewRange({
+      rectRange: scrollView,
+      callback: (rect, cell) => {
+        this.loadIcons(rect, cell, scrollView);
+      },
+    });
+    styleCellsHelper.getCellByViewRange({
+      rectRange: scrollView,
+      callback: (row, col, cell, rect) => {
+        this.loadIcons(rect, cell, scrollView);
+      },
+    });
+  }
+
+  /**
    * 绘制越界文本
    */
   drawBoundOutFont() {
@@ -1124,9 +1242,7 @@ class XTableContentUI extends XTableUI {
     const y = this.getDrawY();
     const width = scrollView.w;
     const height = scrollView.h;
-    const {
-      draw,
-    } = table;
+    const { draw } = table;
     const crop = new Crop({
       rect: new Rect({ x, y, width, height }),
       draw,
@@ -1143,6 +1259,8 @@ class XTableContentUI extends XTableUI {
     }
     // 绘制边框
     this.drawBorder();
+    // 绘制小图标
+    this.drawIcons();
     crop.close();
   }
 

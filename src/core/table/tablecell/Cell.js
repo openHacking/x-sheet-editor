@@ -1,6 +1,7 @@
 import { PlainUtils } from '../../../utils/PlainUtils';
 import { CellFont } from './CellFont';
 import { CellBorder } from './CellBorder';
+import { CellIcon } from './CellIcon';
 
 /**
  * Cell
@@ -30,7 +31,7 @@ class Cell {
     this.background = background;
     this.text = text;
     this.format = format;
-    this.icons = icons;
+    this.icons = CellIcon.newInstances(icons);
     this.borderAttr = new CellBorder(borderAttr);
     this.fontAttr = new CellFont(fontAttr);
     this.contentWidth = contentWidth;

@@ -8,6 +8,20 @@
 class CellIcon {
 
   /**
+   * 多图标初始化
+   * @param icons
+   * @returns {[]}
+   */
+  static newInstances(icons = []) {
+    const instances = [];
+    for (let i = 0; i <= icons; i += 1) {
+      const icon = icons[i];
+      instances.push(new CellIcon(icon));
+    }
+    return instances;
+  }
+
+  /**
    * CellIcon
    * @param positionX
    * @param positionY
@@ -37,34 +51,23 @@ class CellIcon {
 
   /**
    * 加载图片信息
-   * @param callback
+   * @param async
+   * @param sync
    */
-  loadImage(callback) {
+  loadImage({
+    async,
+    sync,
+  }) {
     const { image } = this;
     if (image instanceof Image) {
-      callback(image);
+      sync(image);
     }
     const load = new Image();
     load.src = image;
     load.onload = () => {
       this.image = load;
-      callback(load);
+      async(load);
     };
-  }
-
-  /**
-   * 绘制图标
-   * @param cellRect
-   * @param zoneRect
-   * @param draw
-   */
-  cellIconDraw({
-    cellRect, zoneRect, draw,
-  }) {
-    this.loadImage((image) => {
-      // TODO ..
-      // ...
-    });
   }
 
 }
