@@ -2,7 +2,7 @@ import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMen
 import { PlainUtils } from '../../../../../utils/PlainUtils';
 import { cssPrefix, Constant } from '../../../../../const/Constant';
 import { FontSizeContextMenuItem } from './FontSizeContextMenuItem';
-
+import { XEvent } from '../../../../../lib/XEvent';
 
 class FontSizeContextMenu extends ELContextMenu {
 
@@ -10,7 +10,6 @@ class FontSizeContextMenu extends ELContextMenu {
     super(`${cssPrefix}-font-size-context-menu`, PlainUtils.mergeDeep({
       onUpdate: () => {},
     }, options));
-
     this.items = [
       new FontSizeContextMenuItem(6),
       new FontSizeContextMenuItem(7),
@@ -26,10 +25,22 @@ class FontSizeContextMenu extends ELContextMenu {
       new FontSizeContextMenuItem(36),
     ];
     this.items.forEach((item) => {
-      item.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      this.addItem(item);
+    });
+    this.bind();
+  }
+
+  unbind() {
+    this.items.forEach((item) => {
+      XEvent.unbind(item, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    });
+  }
+
+  bind() {
+    this.items.forEach((item) => {
+      XEvent.bind(item, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
         this.update(item.size);
       });
-      this.addItem(item);
     });
   }
 
@@ -37,6 +48,11 @@ class FontSizeContextMenu extends ELContextMenu {
     const { options } = this;
     options.onUpdate(size);
     this.close();
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

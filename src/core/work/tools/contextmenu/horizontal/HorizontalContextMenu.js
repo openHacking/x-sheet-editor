@@ -26,7 +26,16 @@ class HorizontalContextMenu extends ELContextMenu {
     this.horizontalIcons.removeClass('hover');
     this.horizontalIcons.children(div2);
     this.addItem(this.horizontalIcons);
-    // 添加事件
+    this.bind();
+  }
+
+  unbind() {
+    XEvent.unbind(this.horizontalIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    XEvent.unbind(this.horizontalIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    XEvent.unbind(this.horizontalIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+  }
+
+  bind() {
     XEvent.bind(this.horizontalIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate(BaseFont.ALIGN.left);
       e.stopPropagation();
@@ -42,6 +51,11 @@ class HorizontalContextMenu extends ELContextMenu {
       e.stopPropagation();
       e.preventDefault();
     });
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

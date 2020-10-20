@@ -88,6 +88,25 @@ class BorderTypeContextMenu extends ELContextMenu {
       },
     }));
     // 添加事件
+    this.bind();
+  }
+
+  unbind() {
+    XEvent.unbind(this.borderColor, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    XEvent.unbind(this.borderType, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    XEvent.unbind(this.borderIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    XEvent.unbind(this.borderIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    XEvent.unbind(this.borderIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    XEvent.unbind(this.borderIcon4, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    XEvent.unbind(this.borderIcon5, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    XEvent.unbind(this.borderIcon6, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    XEvent.unbind(this.borderIcon7, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    XEvent.unbind(this.borderIcon8, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    XEvent.unbind(this.borderIcon9, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    XEvent.unbind(this.borderIcon10, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+  }
+
+  bind() {
     XEvent.bind(this.borderColor, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { borderColorContextMenu } = this;
       const { elPopUp } = borderColorContextMenu;
@@ -162,6 +181,11 @@ class BorderTypeContextMenu extends ELContextMenu {
       e.stopPropagation();
       e.preventDefault();
     });
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

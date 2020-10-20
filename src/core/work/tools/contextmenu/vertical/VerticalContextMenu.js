@@ -26,7 +26,16 @@ class VerticalContextMenu extends ELContextMenu {
     this.verticalIcons.removeClass('hover');
     this.verticalIcons.children(div2);
     this.addItem(this.verticalIcons);
-    // 添加事件
+    this.bind();
+  }
+
+  unbind() {
+    XEvent.unbind(this.verticalIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    XEvent.unbind(this.verticalIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    XEvent.unbind(this.verticalIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+  }
+
+  bind() {
     XEvent.bind(this.verticalIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate(BaseFont.VERTICAL_ALIGN.top);
       e.stopPropagation();
@@ -42,6 +51,11 @@ class VerticalContextMenu extends ELContextMenu {
       e.stopPropagation();
       e.preventDefault();
     });
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

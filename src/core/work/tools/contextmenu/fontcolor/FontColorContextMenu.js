@@ -7,7 +7,6 @@ import { ColorItem } from '../../../../../component/colorpicker/colorarray/Color
 import { ELContextMenuDivider } from '../../../../../component/contextmenu/ELContextMenuDivider';
 import { Icon } from '../../Icon';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
-
 import { ColorPicker } from '../../../../../component/colorpicker/ColorPicker';
 
 class FontColorContextMenu extends ELContextMenu {

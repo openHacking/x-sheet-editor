@@ -26,7 +26,16 @@ class TextWrappingContextMenu extends ELContextMenu {
     this.textWrappingIcons.removeClass('hover');
     this.textWrappingIcons.children(div2);
     this.addItem(this.textWrappingIcons);
-    // 添加事件
+    this.bind();
+  }
+
+  unbind() {
+    XEvent.unbind(this.textWrappingIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    XEvent.unbind(this.textWrappingIcon2, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    XEvent.unbind(this.textWrappingIcon3, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+  }
+
+  bind() {
     XEvent.bind(this.textWrappingIcon1, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       this.options.onUpdate(BaseFont.TEXT_WRAP.TRUNCATE);
       e.stopPropagation();
@@ -42,6 +51,11 @@ class TextWrappingContextMenu extends ELContextMenu {
       e.stopPropagation();
       e.preventDefault();
     });
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

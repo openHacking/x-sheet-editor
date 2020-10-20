@@ -3,7 +3,6 @@ import { PlainUtils } from '../../../../../../utils/PlainUtils';
 import { cssPrefix, Constant } from '../../../../../../const/Constant';
 import { LineTypeContextMenuItem } from './LineTypeContextMenuItem';
 
-
 class LineTypeContextMenu extends ELContextMenu {
 
   constructor(options = {}) {

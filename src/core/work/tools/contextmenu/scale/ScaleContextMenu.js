@@ -2,6 +2,7 @@ import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMen
 import { Constant, cssPrefix } from '../../../../../const/Constant';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
 import { ScaleContextMenuItem } from './ScaleContextMenuItem';
+import { XEvent } from '../../../../../lib/XEvent';
 
 class ScaleContextMenu extends ELContextMenu {
 
@@ -19,10 +20,21 @@ class ScaleContextMenu extends ELContextMenu {
       new ScaleContextMenuItem(50),
     ];
     this.items.forEach((item) => {
-      item.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+      this.addItem(item);
+    });
+  }
+
+  unbind() {
+    this.items.forEach((item) => {
+      XEvent.unbind(item, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+    });
+  }
+
+  bind() {
+    this.items.forEach((item) => {
+      XEvent.bind(item, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
         this.update(item.scale);
       });
-      this.addItem(item);
     });
   }
 
@@ -30,6 +42,11 @@ class ScaleContextMenu extends ELContextMenu {
     const { options } = this;
     options.onUpdate(scale);
     this.close();
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

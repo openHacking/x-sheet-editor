@@ -1,6 +1,4 @@
-/* global document */
-import { cssPrefix, Constant } from '../../const/Constant';
-import { XEvent } from '../../lib/XEvent';
+import { cssPrefix } from '../../const/Constant';
 import { Widget } from '../../lib/Widget';
 import { ElPopUp } from '../elpopup/ElPopUp';
 import { PlainUtils } from '../../utils/PlainUtils';
@@ -13,21 +11,10 @@ class ELContextMenu extends Widget {
     this.menus = [];
     this.elPopUp = new ElPopUp(this.options);
     this.elPopUp.children(this);
-    this.eLContextCloseHandle = () => {
-      this.close();
-    };
-    this.bind();
   }
 
-  unbind() {
-    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.eLContextCloseHandle);
-  }
-
-  bind() {
-    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      e.stopPropagation();
-    });
-    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.eLContextCloseHandle);
+  isClose() {
+    return this.elPopUp.status === false;
   }
 
   addItem(item) {
@@ -35,10 +22,6 @@ class ELContextMenu extends Widget {
     menus.push(item);
     this.children(item);
     return this;
-  }
-
-  isClose() {
-    return this.elPopUp.status === false;
   }
 
   open() {
@@ -53,7 +36,6 @@ class ELContextMenu extends Widget {
 
   destroy() {
     super.destroy();
-    this.unbind();
     this.elPopUp.destroy();
   }
 

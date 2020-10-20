@@ -3,7 +3,36 @@
   padding: 0;
   font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
 }
-.x-sheet-no-scroll-bar::-webkit-scrollbar {
+::-webkit-scrollbar {
+  height: 16px;
+  width: 16px;
+  overflow: visible;
+  background: #ffffff;
+}
+::-webkit-scrollbar-track {
+  background-clip: padding-box;
+  border: solid transparent;
+  border-width: 0 0 0 4px;
+  box-shadow: none;
+  margin: 0 4px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  background-clip: padding-box;
+  min-height: 28px;
+  padding: 100px 0 0;
+  border-style: solid;
+  border-color: transparent;
+  border-width: 4px;
+  background-color: #dadce0;
+  border-radius: 8px;
+  box-shadow: none;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+::-webkit-scrollbar-button {
+  height: 0;
   width: 0;
 }
 .x-sheet {
@@ -138,11 +167,10 @@
   border: 1px solid #bbb;
 }
 .x-sheet-el-pop-up {
+  z-index: 2;
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 2;
-  overflow: auto;
   box-shadow: 0 2px 6px 2px rgba(60, 64, 67, 0.15);
 }
 .x-sheet-drag-panel {
@@ -1510,9 +1538,6 @@
   height: 150px;
   overflow-y: auto;
 }
-.x-sheet-value-filter-items-box::-webkit-scrollbar {
-  width: 0;
-}
 .x-sheet-value-filter-item {
   height: 30px;
   line-height: 30px;
@@ -1673,11 +1698,11 @@
   height: 100%;
 }
 .x-sheet-x-filter-button-light {
-  background-image: url(f509e0e9c45714312ba6e1333dca2660.svg);
+  background-image: url(2f3ffa769076c82c437e1b4534fc2e0a.svg);
   background-size: 100% 100%;
 }
 .x-sheet-x-filter-button-dark {
-  background-image: url(21fc10338a02d14bbb0621a9047bc4c6.svg);
+  background-image: url(51859b5219dccb48ef2a5659717d0a1b.svg);
   background-size: 100% 100%;
 }
 .x-sheet-x-filter-button-box {

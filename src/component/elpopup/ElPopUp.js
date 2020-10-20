@@ -1,4 +1,4 @@
-/* global window */
+/* global window document */
 import { Widget } from '../../lib/Widget';
 import { Constant, cssPrefix } from '../../const/Constant';
 import { h } from '../../lib/Element';
@@ -23,7 +23,8 @@ class ElPopUp extends Widget {
     super(`${cssPrefix}-el-pop-up`);
     this.options = PlainUtils.mergeDeep({
       el: PlainUtils.Nul,
-      autosize: false,
+      autoWidth: false,
+      autoHeight: false,
       position: ElPopUp.POPUP_POSTION.TB,
     }, options);
     this.direction = PlainUtils.Undef;
@@ -35,7 +36,11 @@ class ElPopUp extends Widget {
       this.elPopUpAutosize();
       this.elPopUpLocation();
     };
+    this.elPopUpDownHandle = () => {
+      this.close();
+    };
     instances.push(this);
+    this.bind();
   }
 
   /**
@@ -65,14 +70,20 @@ class ElPopUp extends Widget {
    * 卸载事件
    */
   unbind() {
+    XEvent.unbind(this);
     XEvent.unbind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, this.elPopUpResizeHandle);
+    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.elPopUpDownHandle);
   }
 
   /**
    * 绑定事件
    */
   bind() {
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      e.stopPropagation();
+    });
     XEvent.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, this.elPopUpResizeHandle);
+    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.elPopUpDownHandle);
   }
 
   /**
@@ -80,23 +91,33 @@ class ElPopUp extends Widget {
    */
   elPopUpAutosize() {
     const { options, direction, spaces } = this;
-    const { autosize } = options;
-    if (autosize) {
+    const { autoWidth, autoHeight } = options;
+    if (autoWidth) {
       this.css('width', 'initial');
-      this.css('height', 'initial');
+      this.css('overflow-x', 'initial');
       const box = this.box();
-      const { width, height } = box;
+      const { width } = box;
+      switch (direction) {
+        case 'left':
+        case 'right':
+          if (width > spaces) {
+            this.css('overflow-x', 'auto');
+            this.css('width', `${spaces}px`);
+          }
+          break;
+      }
+    }
+    if (autoHeight) {
+      this.css('height', 'initial');
+      this.css('overflow-y', 'initial');
+      const box = this.box();
+      const { height } = box;
       switch (direction) {
         case 'top':
         case 'bottom':
           if (height > spaces) {
+            this.css('overflow-y', 'auto');
             this.css('height', `${spaces}px`);
-          }
-          break;
-        case 'left':
-        case 'right':
-          if (width > spaces) {
-            this.css('width', `${spaces}px`);
           }
           break;
       }

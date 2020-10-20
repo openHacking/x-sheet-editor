@@ -2,8 +2,8 @@ import { cssPrefix, Constant } from '../../../../../const/Constant';
 import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMenu';
 import { FormatContextMenuItem } from './FormatContextMenuItem';
 import { ELContextMenuDivider } from '../../../../../component/contextmenu/ELContextMenuDivider';
-
 import { PlainUtils } from '../../../../../utils/PlainUtils';
+import { XEvent } from '../../../../../lib/XEvent';
 
 class FormatContextMenu extends ELContextMenu {
 
@@ -32,15 +32,10 @@ class FormatContextMenu extends ELContextMenu {
       new FormatContextMenuItem('时间', '14:30:30').data('type', 'time'),
     ];
     this.items.forEach((item) => {
-      if (item instanceof FormatContextMenuItem && item.data('type')) {
-        item.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-          this.update(item.data('type'), item.title);
-          item.setActive();
-        });
-      }
       this.addItem(item);
     });
     this.init();
+    this.bind();
   }
 
   init() {
@@ -57,12 +52,36 @@ class FormatContextMenu extends ELContextMenu {
     this.close();
   }
 
+  unbind() {
+    this.items.forEach((item) => {
+      if (item instanceof FormatContextMenuItem && item.data('type')) {
+        XEvent.unbind(item, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);
+      }
+    });
+  }
+
+  bind() {
+    this.items.forEach((item) => {
+      if (item instanceof FormatContextMenuItem && item.data('type')) {
+        XEvent.bind(item, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+          this.update(item.data('type'), item.title);
+          item.setActive();
+        });
+      }
+    });
+  }
+
   setActiveByType(type) {
     this.items.forEach((item) => {
       if (item.data('type') === type) {
         item.setActive();
       }
     });
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

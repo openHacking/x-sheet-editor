@@ -3,7 +3,6 @@ import { cssPrefix, Constant } from '../../../../../const/Constant';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
 import { FontContextMenuItem } from './FontContextMenuItem';
 
-
 class FontContextMenu extends ELContextMenu {
 
   constructor(options = {}) {

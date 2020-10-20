@@ -6,9 +6,12 @@ class SelectContextMenu extends ELContextMenu {
 
   constructor(options) {
     super(`${cssPrefix}-form-select-menu`, PlainUtils.mergeDeep({
-      autosize: true,
+      autoHeight: true,
     }, options));
     this.items = [];
+    this.elPopUp.offset({
+      width: 200,
+    });
   }
 
   addItem(item) {
