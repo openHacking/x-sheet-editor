@@ -22,6 +22,11 @@ class FontColor extends DropDownItem {
     this.icon.css('border-bottom', `3px solid ${color}`);
   }
 
+  destroy() {
+    super.destroy();
+    this.fontColorContextMenu.destroy();
+  }
+
 }
 
 export { FontColor };

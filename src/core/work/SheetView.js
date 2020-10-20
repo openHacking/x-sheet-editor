@@ -39,6 +39,7 @@ class SheetView extends Widget {
   getLastIndex() {
     return this.sheetList.length - 1;
   }
+
 }
 
 export { SheetView };

@@ -18,6 +18,11 @@ class Font extends DropDownItem {
     }, this.options.contextMenu));
   }
 
+  destroy() {
+    super.destroy();
+    this.fontContextMenu.destroy();
+  }
+
 }
 
 export { Font };

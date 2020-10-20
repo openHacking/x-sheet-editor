@@ -36,6 +36,11 @@ class XScreen extends Widget {
     this.setZone();
   }
 
+  unbind() {
+    const { table } = this;
+    XEvent.unbind(table);
+  }
+
   bind() {
     const { table } = this;
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, () => {
@@ -125,6 +130,14 @@ class XScreen extends Widget {
       }
     }
     return null;
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
+    this.pool.forEach((item) => {
+      item.destroy();
+    });
   }
 
 }

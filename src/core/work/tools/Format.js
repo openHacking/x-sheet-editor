@@ -18,6 +18,11 @@ class Format extends DropDownItem {
     }, this.options.contextMenu));
   }
 
+  destroy() {
+    super.destroy();
+    this.formatContextMenu.destroy();
+  }
+
 }
 
 export { Format };

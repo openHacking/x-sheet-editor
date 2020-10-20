@@ -27,6 +27,11 @@ class YReSizer extends Widget {
     this.table.focus.register({ target: this });
   }
 
+  unbind() {
+    const { table } = this;
+    XEvent.unbind(table);
+  }
+
   bind() {
     const { table } = this;
     const {
@@ -134,6 +139,11 @@ class YReSizer extends Widget {
       result.top = indexHeight + rows.sectionSumHeight(scrollView.sri, ri);
     }
     return result;
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

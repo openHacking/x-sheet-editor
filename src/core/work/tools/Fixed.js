@@ -42,6 +42,11 @@ class Fixed extends DropDownItem {
     }
   }
 
+  destroy() {
+    super.destroy();
+    this.fixedContextMenu.destroy();
+  }
+
 }
 
 export { Fixed };

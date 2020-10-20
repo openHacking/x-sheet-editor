@@ -8,6 +8,7 @@ import { Look } from './options/Look';
 import { Update } from './options/Update';
 
 class TopOption extends Widget {
+
   constructor(workTop) {
     super(`${cssPrefix}-option`);
 
@@ -39,6 +40,7 @@ class TopOption extends Widget {
     this.title = title;
     this.titleEle.text(title);
   }
+
 }
 
 export { TopOption };

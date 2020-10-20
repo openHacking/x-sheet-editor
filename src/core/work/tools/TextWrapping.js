@@ -16,6 +16,11 @@ class TextWrapping extends DropDownItem {
     }, this.options.contextMenu));
   }
 
+  destroy() {
+    super.destroy();
+    this.textWrappingContextMenu.destroy();
+  }
+
 }
 
 export { TextWrapping };

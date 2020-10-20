@@ -4,9 +4,8 @@ import { h } from '../../lib/Element';
 import { XEvent } from '../../lib/XEvent';
 import { PlainUtils } from '../../utils/PlainUtils';
 
-/* global  document */
-
 class BottomMenu extends Widget {
+
   constructor(workBottom) {
     super(`${cssPrefix}-bottom-menu`);
     this.workBottom = workBottom;
@@ -24,6 +23,11 @@ class BottomMenu extends Widget {
 
   onAttach() {
     this.bind();
+  }
+
+  unbind() {
+    XEvent.bind(this.grid);
+    XEvent.bind(this.fullScreen);
   }
 
   bind() {
@@ -57,6 +61,12 @@ class BottomMenu extends Widget {
   setNumber(val) {
     this.number.text(`数量: ${val}`);
   }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
+  }
+
 }
 
 export { BottomMenu };

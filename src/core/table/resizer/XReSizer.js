@@ -6,7 +6,6 @@ import { XEvent } from '../../../lib/XEvent';
 import { PlainUtils } from '../../../utils/PlainUtils';
 import { XTableMousePointer } from '../XTableMousePointer';
 import { ColFixed } from '../tablefixed/ColFixed';
-import { XDraw } from '../../../canvas/XDraw';
 
 class XReSizer extends Widget {
 
@@ -26,6 +25,11 @@ class XReSizer extends Widget {
   onAttach() {
     this.bind();
     this.table.focus.register({ target: this });
+  }
+
+  unbind() {
+    const { table } = this;
+    XEvent.unbind(table);
   }
 
   bind() {
@@ -135,6 +139,11 @@ class XReSizer extends Widget {
       result.left = indexWidth + cols.sectionSumWidth(scrollView.sci, ci);
     }
     return result;
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

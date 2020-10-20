@@ -3,6 +3,7 @@ import { cssPrefix } from '../../../const/Constant';
 import { Icon } from './Icon';
 
 class PaintFormat extends Item {
+
   constructor() {
     super(`${cssPrefix}-tools-point-format`);
     this.icon = new Icon('point-format');
@@ -31,6 +32,7 @@ class PaintFormat extends Item {
     }
     return false;
   }
+
 }
 
 export { PaintFormat };

@@ -5,15 +5,10 @@ import { Constant } from '../../const/Constant';
 class XTableKeyboard {
 
   constructor(table) {
+    const { focus } = table;
     this.table = table;
     this.pool = [];
-    this.bind();
-  }
-
-  bind() {
-    const { table } = this;
-    const { focus } = table;
-    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.KEY_DOWN, (e) => {
+    this.xTableKeyBoardDownHandle = (e) => {
       const { activate } = focus;
       const { keyCode } = e;
       if (activate) {
@@ -26,7 +21,16 @@ class XTableKeyboard {
       if (keyCode === 9) {
         e.preventDefault();
       }
-    });
+    };
+    this.bind();
+  }
+
+  unbind() {
+    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.KEY_DOWN, this.xTableKeyBoardDownHandle);
+  }
+
+  bind() {
+    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.KEY_DOWN, this.xTableKeyBoardDownHandle);
   }
 
   find(el) {

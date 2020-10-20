@@ -13,6 +13,7 @@ class WorkBottom extends Widget {
     this.bottomMenu = new BottomMenu(this);
     this.attach(this.bottomMenu);
   }
+
 }
 
 export { WorkBottom };

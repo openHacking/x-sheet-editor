@@ -212,6 +212,12 @@ class XFilter extends XScreenCssBorderItem {
     }
   }
 
+  unbind() {
+    const { table } = this;
+    this.filterButtonClearHandle();
+    XEvent.unbind(table);
+  }
+
   bind() {
     const { table } = this;
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
@@ -511,6 +517,11 @@ class XFilter extends XScreenCssBorderItem {
     this.offsetHandle();
     this.borderHandle();
     this.filterButtonHandle();
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

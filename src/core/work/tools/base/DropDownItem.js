@@ -4,6 +4,7 @@ import { h } from '../../../../lib/Element';
 import { Icon } from '../Icon';
 
 class DropDownItem extends Item {
+
   constructor(className) {
     super(`${cssPrefix}-tools-drop-down-item ${className}`);
     this.drop = h('div', `${cssPrefix}-tools-drop-down-item-mark`);
@@ -37,6 +38,7 @@ class DropDownItem extends Item {
     this.title.cssRemoveKeys('text-overflow');
     this.title.cssRemoveKeys('white-space');
   }
+
 }
 
 export { DropDownItem };

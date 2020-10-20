@@ -19,6 +19,11 @@ class YHeightLight extends Widget {
     this.hide();
   }
 
+  unbind() {
+    const { table } = this;
+    XEvent.unbind(table);
+  }
+
   bind() {
     const { table } = this;
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, () => {
@@ -142,6 +147,11 @@ class YHeightLight extends Widget {
       }
     }
     return 0;
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

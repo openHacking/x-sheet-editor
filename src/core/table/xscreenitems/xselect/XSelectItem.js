@@ -52,6 +52,11 @@ class XSelectItem extends XScreenCssBorderItem {
     table.focus.register({ target: this.brCorner });
   }
 
+  unbind() {
+    const { table } = this;
+    XEvent.unbind(table);
+  }
+
   bind() {
     const { table } = this;
     const {
@@ -306,6 +311,11 @@ class XSelectItem extends XScreenCssBorderItem {
     this.offsetHandle();
     this.borderHandle();
     this.cornerHandle();
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

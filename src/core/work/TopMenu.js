@@ -37,9 +37,11 @@ import { XCopyStyle } from '../table/xscreenitems/xcopystyle/XCopyStyle';
 import { Confirm } from '../../component/confirm/Confirm';
 
 class Divider extends Widget {
+
   constructor() {
     super(`${cssPrefix}-tools-divider`);
   }
+
 }
 
 class TopMenu extends Widget {
@@ -679,6 +681,32 @@ class TopMenu extends Widget {
 
   onAttach() {
     this.bind();
+  }
+
+  unbind() {
+    const { body } = this.workTop.work;
+    XEvent.bind(body);
+    XEvent.bind(this.scale);
+    XEvent.bind(this.undo);
+    XEvent.bind(this.redo);
+    XEvent.bind(this.paintFormat);
+    XEvent.bind(this.clearFormat);
+    XEvent.bind(this.format);
+    XEvent.bind(this.font);
+    XEvent.bind(this.dprFontSize);
+    XEvent.bind(this.fontBold);
+    XEvent.bind(this.fontItalic);
+    XEvent.bind(this.underLine);
+    XEvent.bind(this.fontStrike);
+    XEvent.bind(this.fontColor);
+    XEvent.bind(this.fillColor);
+    XEvent.bind(this.border);
+    XEvent.bind(this.merge);
+    XEvent.bind(this.horizontalAlign);
+    XEvent.bind(this.verticalAlign);
+    XEvent.bind(this.textWrapping);
+    XEvent.bind(this.fixed);
+    XEvent.bind(this.filter);
   }
 
   bind() {
@@ -1474,6 +1502,11 @@ class TopMenu extends Widget {
       italic = firstCell.fontAttr.italic;
     }
     this.fontItalic.active(italic);
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

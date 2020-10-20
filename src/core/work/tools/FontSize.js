@@ -16,6 +16,11 @@ class FontSize extends DropDownItem {
     }, this.options.contextMenu));
   }
 
+  destroy() {
+    super.destroy();
+    this.fontSizeContextMenu.destroy();
+  }
+
 }
 
 export { FontSize };

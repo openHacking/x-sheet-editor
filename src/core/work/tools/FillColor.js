@@ -22,6 +22,11 @@ class FillColor extends DropDownItem {
     this.icon.css('border-bottom', `3px solid ${color}`);
   }
 
+  destroy() {
+    super.destroy();
+    this.fillColorContextMenu.destroy();
+  }
+
 }
 
 export { FillColor };

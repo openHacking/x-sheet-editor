@@ -16,6 +16,7 @@ class WorkTop extends Widget {
     this.attach(this.option);
     this.attach(this.toolsMenu);
   }
+
 }
 
 export { WorkTop };

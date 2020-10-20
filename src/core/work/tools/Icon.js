@@ -3,6 +3,7 @@ import { cssPrefix } from '../../../const/Constant';
 import { h } from '../../../lib/Element';
 
 class Icon extends Widget {
+
   constructor(className = '') {
     super(`${cssPrefix}-icon`);
     this.iconNameEl = h('div', `${cssPrefix}-icon-img ${className}`);
@@ -16,6 +17,7 @@ class Icon extends Widget {
   setHeight(height) {
     this.iconNameEl.css('height', `${height}px`);
   }
+
 }
 
 export { Icon };

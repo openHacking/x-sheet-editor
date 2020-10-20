@@ -45,6 +45,7 @@ class Work extends Widget {
     this.bottom.bottomMenu.setAvg(0);
     this.bottom.bottomMenu.setNumber(0);
   }
+
 }
 
 export { Work };

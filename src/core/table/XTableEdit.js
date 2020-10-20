@@ -25,6 +25,19 @@ class XTableEdit extends Widget {
     this.hide();
   }
 
+  unbind() {
+    const { table } = this;
+    const { xScreen } = table;
+    const xSelect = xScreen.findType(XSelectItem);
+    XEvent.bind(table);
+    XEvent.unbind([
+      xSelect.lt,
+      xSelect.t,
+      xSelect.l,
+      xSelect.br,
+    ]);
+  }
+
   bind() {
     const { table } = this;
     const { xScreen } = table;
@@ -120,6 +133,11 @@ class XTableEdit extends Widget {
     this.offset({
       top, left, height, width,
     });
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

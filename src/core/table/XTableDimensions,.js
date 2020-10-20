@@ -1009,6 +1009,14 @@ class XTableDimensions extends Widget {
   }
 
   /**
+   * 移除事件绑定
+   */
+  unbind() {
+    this.focus.unbind();
+    this.keyboard.unbind();
+  }
+
+  /**
    * 事件绑定
    */
   bind() {
@@ -1289,6 +1297,22 @@ class XTableDimensions extends Widget {
     xFixedView.setFixedView(fixedView);
     xTableStyle.scrolling();
     this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
+  }
+
+  /**
+   * 销毁组件
+   */
+  destroy() {
+    super.destroy();
+    this.unbind();
+    this.xScreen.destroy();
+    this.xReSizer.destroy();
+    this.yReSizer.destroy();
+    this.xHeightLight.destroy();
+    this.yHeightLight.destroy();
+    this.edit.destroy();
+    this.rowFixed.destroy();
+    this.colFixed.destroy();
   }
 
 }

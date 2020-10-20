@@ -16,5 +16,10 @@ class HorizontalAlign extends DropDownItem {
     }, this.options.contextMenu));
   }
 
+  destroy() {
+    super.destroy();
+    this.horizontalContextMenu.destroy();
+  }
+
 }
 export { HorizontalAlign };

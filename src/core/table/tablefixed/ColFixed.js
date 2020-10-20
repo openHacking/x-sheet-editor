@@ -19,6 +19,11 @@ class ColFixed extends Widget {
     this.children(block);
   }
 
+  unbind() {
+    const { table } = this;
+    XEvent.unbind(table);
+  }
+
   bind() {
     const { table } = this;
     const {
@@ -124,6 +129,11 @@ class ColFixed extends Widget {
     this.offset({
       width, height, left, top: 0,
     });
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

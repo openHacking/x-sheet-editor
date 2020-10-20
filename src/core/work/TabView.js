@@ -4,7 +4,6 @@ import { h } from '../../lib/Element';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { XEvent } from '../../lib/XEvent';
 
-
 class TabView extends Widget {
 
   constructor(options) {
@@ -40,6 +39,13 @@ class TabView extends Widget {
       this.left = -(current - maxWidth);
       this.tabs.css('marginLeft', `${this.left}px`);
     }
+  }
+
+  unbind() {
+    const { next, last, plus } = this;
+    XEvent.unbind(next);
+    XEvent.unbind(last);
+    XEvent.unbind(plus);
   }
 
   bind() {
@@ -96,6 +102,12 @@ class TabView extends Widget {
   getLastIndex() {
     return this.tabList.length - 1;
   }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
+  }
+
 }
 
 export { TabView };

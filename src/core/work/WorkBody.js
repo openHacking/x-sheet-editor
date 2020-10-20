@@ -196,6 +196,11 @@ class WorkBody extends Widget {
     });
   }
 
+  unbind() {
+    XEvent.unbind(this.sheetView);
+    XEvent.unbind(window);
+  }
+
   addTabSheet({ tab, sheet }) {
     const {
       tabSheet, sheetView, tabView,
@@ -325,6 +330,11 @@ class WorkBody extends Widget {
       const text = `window['${tab.name}'] = ${JSON.stringify(data)}`;
       Download(text, `${tab.name}.js`, 'application/x-javascript');
     }
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

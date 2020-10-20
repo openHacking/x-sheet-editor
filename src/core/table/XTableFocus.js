@@ -9,6 +9,9 @@ class XTableFocus {
     this.table = table;
     this.pool = [];
     this.activate = {};
+    this.xTableFocusDownHandle = () => {
+      this.activate = {};
+    };
     this.bind();
   }
 
@@ -26,10 +29,14 @@ class XTableFocus {
     this.pool = pool;
   }
 
+  unbind() {
+    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN,
+      this.xTableFocusDownHandle, true);
+  }
+
   bind() {
-    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      this.activate = {};
-    }, true);
+    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN,
+      this.xTableFocusDownHandle, true);
   }
 
   add(item) {

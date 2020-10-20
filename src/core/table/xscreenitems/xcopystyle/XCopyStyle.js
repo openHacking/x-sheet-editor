@@ -26,6 +26,11 @@ class XCopyStyle extends XScreenSvgBorderItem {
     this.bind();
   }
 
+  unbind() {
+    const { table } = this;
+    XEvent.unbind(table);
+  }
+
   bind() {
     const { table } = this;
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
@@ -103,6 +108,11 @@ class XCopyStyle extends XScreenSvgBorderItem {
     this.selectRange = selectRange;
     this.offsetHandle();
     this.borderHandle();
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

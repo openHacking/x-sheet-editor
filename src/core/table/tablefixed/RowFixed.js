@@ -19,6 +19,11 @@ class RowFixed extends Widget {
     this.children(this.block);
   }
 
+  unbind() {
+    const { table } = this;
+    XEvent.unbind(table);
+  }
+
   bind() {
     const { table } = this;
     const {
@@ -122,6 +127,11 @@ class RowFixed extends Widget {
     this.offset({
       height, width, left: 0, top,
     });
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

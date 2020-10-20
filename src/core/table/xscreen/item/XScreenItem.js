@@ -36,6 +36,8 @@ class XScreenItem {
     this.xScreen = xScreen;
   }
 
+  destroy() {}
+
 }
 
 export {

@@ -38,6 +38,29 @@ class XAutoFillItem extends XScreenCssBorderItem {
     this.hide();
   }
 
+  unbind() {
+    const { xScreen } = this;
+    const xSelect = xScreen.findType(XSelectItem);
+    XEvent.bind([
+      xSelect.ltCorner,
+      xSelect.tCorner,
+      xSelect.lCorner,
+      xSelect.brCorner,
+    ]);
+    XEvent.bind([
+      xSelect.ltCorner,
+      xSelect.tCorner,
+      xSelect.lCorner,
+      xSelect.brCorner,
+    ]);
+    XEvent.bind([
+      xSelect.ltCorner,
+      xSelect.tCorner,
+      xSelect.lCorner,
+      xSelect.brCorner,
+    ]);
+  }
+
   bind() {
     const { table, xScreen } = this;
     const { mousePointer } = table;
@@ -325,6 +348,11 @@ class XAutoFillItem extends XScreenCssBorderItem {
       targetViewRange: this.autoFillRange,
       originViewRange: xSelect.selectRange,
     });
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

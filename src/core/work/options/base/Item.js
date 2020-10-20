@@ -2,6 +2,7 @@ import { Widget } from '../../../../lib/Widget';
 import { cssPrefix } from '../../../../const/Constant';
 
 class Item extends Widget {
+
   constructor(className) {
     super(`${cssPrefix}-option-item ${className}`);
     this.title = '';
@@ -11,6 +12,7 @@ class Item extends Widget {
     this.title = title;
     this.text(this.title);
   }
+
 }
 
 export { Item };
