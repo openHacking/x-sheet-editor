@@ -32,7 +32,6 @@ import { OperateCellsHelper } from './helper/OperateCellsHelper';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { VIEW_MODE, XTableScrollView } from './XTableScrollView';
 import { XFixedMeasure } from './tablebase/XFixedMeasure';
-import { CellMergeCopyHelper } from './helper/CellMergeCopyHelper';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
