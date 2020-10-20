@@ -511,7 +511,7 @@ class XFilter extends XScreenCssBorderItem {
   updateFilterButton() {
     this.offsetHandle();
     this.borderHandle();
-    this.filterButtonHandle();
+    this.createButtonHandle();
   }
 
   destroy() {
