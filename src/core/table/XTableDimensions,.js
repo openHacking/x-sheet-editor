@@ -36,6 +36,7 @@ import { RowsIterator } from './iterator/RowsIterator';
 import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
 import { CellMergeCopyHelper } from './helper/CellMergeCopyHelper';
 import { Clipboard } from '../../lib/Clipboard';
+import { CellIcon } from './tablecell/CellIcon';
 
 class Dimensions {
 
@@ -918,6 +919,7 @@ class XTableDimensions extends Widget {
     left -= index.getWidth();
     top -= index.getHeight();
     // left
+    let cellLeftX = 0;
     if (left <= fixedWidth && x > index.getWidth()) {
       let total = 0;
       ColsIterator.getInstance()
@@ -930,6 +932,7 @@ class XTableDimensions extends Widget {
           return total < left;
         })
         .execute();
+      cellLeftX = (total - cols.getWidth(ci) - left) * -1;
     } else if (x > index.getWidth()) {
       let total = fixedWidth;
       const viewRange = this.getScrollView();
@@ -943,8 +946,10 @@ class XTableDimensions extends Widget {
           return total < left;
         })
         .execute();
+      cellLeftX = (total - cols.getWidth(ci) - left) * -1;
     }
     // top
+    let cellTopY = 0;
     if (top < fixedHeight && y > index.getHeight()) {
       let total = 0;
       RowsIterator.getInstance()
@@ -957,6 +962,7 @@ class XTableDimensions extends Widget {
           return total <= top;
         })
         .execute();
+      cellTopY = (total - rows.getHeight(ri) - top) * -1;
     } else if (y > index.getHeight()) {
       let total = fixedHeight;
       const viewRange = this.getScrollView();
@@ -970,10 +976,11 @@ class XTableDimensions extends Widget {
           return total <= top;
         })
         .execute();
+      cellTopY = (total - rows.getHeight(ri) - top) * -1;
     }
     // result
     return {
-      ri, ci,
+      ri, ci, x: cellLeftX, y: cellTopY,
     };
   }
 
@@ -1020,6 +1027,7 @@ class XTableDimensions extends Widget {
    * 事件绑定
    */
   bind() {
+    const cells = this.getTableCells();
     const { mousePointer } = this;
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.resize();
@@ -1043,6 +1051,21 @@ class XTableDimensions extends Widget {
         return;
       }
       mousePointer.set(XTableMousePointer.KEYS.cell);
+    });
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const result = this.computeEventXy(e);
+      const info = this.getRiCiByXy(result.x, result.y);
+      const { ri, ci, x, y } = info;
+      const cell = cells.getCell(ri, ci);
+      if (cell) {
+        const { icons } = cell;
+        for (let i = 0; i < icons.length; i += 1) {
+          const icon = icons[i];
+          icon.handleEvent({
+            type: CellIcon.ICON_EVENT_TYPE.MOUSE_DOWN, x, y,
+          });
+        }
+      }
     });
   }
 

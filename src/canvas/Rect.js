@@ -1,5 +1,12 @@
 class Rect {
 
+  /**
+   * Rect
+   * @param x
+   * @param y
+   * @param width
+   * @param height
+   */
   constructor({
     x, y, width, height,
   }) {
@@ -7,17 +14,6 @@ class Rect {
     this.y = y;
     this.width = width;
     this.height = height;
-  }
-
-  /**
-   * 扩展尺寸
-   * @param size
-   * @returns {Rect}
-   */
-  expandSize(size) {
-    this.width += size;
-    this.height += size;
-    return this;
   }
 
   /**
@@ -33,6 +29,17 @@ class Rect {
   }
 
   /**
+   * 扩展尺寸
+   * @param size
+   * @returns {Rect}
+   */
+  expandSize(size) {
+    this.width += size;
+    this.height += size;
+    return this;
+  }
+
+  /**
    * 复制
    * @returns {Rect}
    */
@@ -42,6 +49,5 @@ class Rect {
   }
 
 }
-
 
 export { Rect };

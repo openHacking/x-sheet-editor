@@ -71,6 +71,7 @@ class CellIcon {
     this.draw = draw;
     this.image = image;
     this.color = color;
+    this.rect = null;
     this.offset = new CellIconOffset(offset);
   }
 
@@ -167,6 +168,7 @@ class CellIcon {
     rect, draw,
   }) {
     const { type } = this;
+    this.rect = rect;
     switch (type) {
       case CellIcon.ICON_TYPE.image:
         this.drawImage({
@@ -213,6 +215,32 @@ class CellIcon {
       0, 0, image.width, image.height, x, y, width, height);
   }
 
+  /**
+   * 图标事件处理
+   * @param type
+   * @param x
+   * @param y
+   */
+  handleEvent({
+    type, x, y,
+  }) {
+    const { rect } = this;
+    if (rect) {
+      const position = this.position(rect);
+      switch (type) {
+        case CellIcon.ICON_EVENT_TYPE.MOUSE_CLICK:
+          break;
+        case CellIcon.ICON_EVENT_TYPE.MOUSE_DOWN:
+
+          break;
+        case CellIcon.ICON_EVENT_TYPE.MOUSE_MOVE:
+          break;
+        case CellIcon.ICON_EVENT_TYPE.MOUSE_LEAVE:
+          break;
+      }
+    }
+  }
+
 }
 CellIcon.ICON_HORIZONTAL = {
   LEFT: 0,
@@ -227,6 +255,12 @@ CellIcon.ICON_VERTICAL = {
 CellIcon.ICON_TYPE = {
   image: 1,
   custom: 2,
+};
+CellIcon.ICON_EVENT_TYPE = {
+  MOUSE_DOWN: 1,
+  MOUSE_MOVE: 2,
+  MOUSE_LEAVE: 3,
+  MOUSE_CLICK: 4,
 };
 
 export {
