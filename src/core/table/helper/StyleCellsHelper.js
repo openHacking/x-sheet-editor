@@ -86,12 +86,10 @@ class StyleCellsHelper extends BaseCellsHelper {
           .setLoop((j) => {
             const cell = cells.getCellOrNew(i, j);
             const width = cols.getWidth(j);
-            if (cell) {
-              const rect = new Rect({ x, y, width, height });
-              const result = callback(i, j, cell, rect);
-              if (result === false) {
-                return;
-              }
+            const rect = new Rect({ x, y, width, height });
+            const result = callback(i, j, cell, rect);
+            if (result === false) {
+              return;
             }
             x += width;
           })

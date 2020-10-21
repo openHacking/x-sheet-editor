@@ -756,9 +756,9 @@ class XTableContentBaseUI extends XTableUI {
       const icon = icons[i];
       icon.loadImage({
         load: () => {
-          if (scrollView.equals(this.getScrollView())) {
-            const x = this.getDrawX();
-            const y = this.getDrawY();
+          if (scrollView.equals(this.getFullScrollView())) {
+            const x = this.getX();
+            const y = this.getY();
             draw.offset(x, y);
             const crop = new Crop({
               rect, draw,
@@ -1197,18 +1197,12 @@ class XTableContentUI extends XTableContentBaseUI {
   drawIcons() {
     const { table } = this;
     const { draw } = table;
-    const scrollView = this.getScrollView();
     const { styleCellsHelper } = table;
-    const x = this.getDrawX();
-    const y = this.getDrawY();
+    const scrollView = this.getFullScrollView();
+    const x = this.getX();
+    const y = this.getY();
     draw.offset(x, y);
-    styleCellsHelper.getMergeCellByViewRange({
-      rectRange: scrollView,
-      callback: (rect, cell) => {
-        this.loadDrawIcons(rect, cell, scrollView);
-      },
-    });
-    styleCellsHelper.getCellByViewRange({
+    styleCellsHelper.getCellOrNewCellByViewRange({
       rectRange: scrollView,
       callback: (row, col, cell, rect) => {
         this.loadDrawIcons(rect, cell, scrollView);

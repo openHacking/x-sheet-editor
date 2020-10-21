@@ -17,6 +17,7 @@ class XFilter extends XScreenCssBorderItem {
     super({ table });
     this.display = false;
     this.buttons = [];
+    this.icons = [];
     this.selectRange = null;
     this.flt = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-lt`);
     this.ft = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-t`);
@@ -28,6 +29,40 @@ class XFilter extends XScreenCssBorderItem {
     this.bbr.children(this.fbr);
     this.setBorderColor('#0071cf');
     this.bind();
+  }
+
+  xFilterCreateIcon() {
+    const { table, selectRange } = this;
+    if (selectRange) {
+      const { top } = selectRange.brink();
+      const cells = table.getTableCells();
+      top.each((ri, ci) => {
+        const icon = new CellIcon({
+          image: darkFilter,
+          height: 18,
+          width: 18,
+          offset: { x: -2 },
+        });
+        const cell = cells.getCellOrNew(ri, ci);
+        cell.icons.push(icon);
+        this.icons.push(icon);
+      });
+      table.render();
+    }
+  }
+
+  xFilterClearIcon() {
+    const { table, selectRange, icons } = this;
+    if (selectRange) {
+      const { top } = selectRange.brink();
+      const cells = table.getTableCells();
+      top.each((ri, ci) => {
+        const cell = cells.getCellOrNew(ri, ci);
+        cell.icons = cell.icons.filter(icon => !icons.includes(icon));
+      });
+      this.icons = [];
+      table.render();
+    }
   }
 
   offsetHandle() {
@@ -217,25 +252,6 @@ class XFilter extends XScreenCssBorderItem {
     }
   }
 
-  xFilterIcon() {
-    const { table, selectRange } = this;
-    if (selectRange) {
-      const { top } = selectRange.brink();
-      const cells = table.getTableCells();
-      top.each((ri, ci) => {
-        const cell = cells.getCellOrNew(ri, ci);
-        const icon = new CellIcon({
-          image: darkFilter,
-          offset: { x: -2 },
-          width: 18,
-          height: 18,
-        });
-        cell.icons.push(icon);
-      });
-      table.render();
-    }
-  }
-
   onAdd() {
     super.onAdd();
   }
@@ -276,7 +292,7 @@ class XFilter extends XScreenCssBorderItem {
         }).open();
       } else {
         this.display = true;
-        this.xFilterIcon();
+        this.xFilterCreateIcon();
         this.show();
         this.xFilterOffset();
       }
@@ -285,6 +301,7 @@ class XFilter extends XScreenCssBorderItem {
 
   hideFilter() {
     this.display = false;
+    this.xFilterClearIcon();
     this.hide();
   }
 
