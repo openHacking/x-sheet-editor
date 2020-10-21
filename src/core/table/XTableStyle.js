@@ -658,16 +658,14 @@ class XTableUI {
     const renderMode = table.getRenderMode();
     const viewMode = this.getViewMode();
     if (viewMode === VIEW_MODE.CHANGE_ADD && renderMode === RENDER_MODE.SCROLL) {
-      const {
-        draw, el,
-      } = table;
+      const { draw } = table;
       const mapWidth = this.getMapWidth();
       const mapHeight = this.getMapHeight();
       const ox = this.getMapOriginX();
       const oy = this.getMapOriginY();
       const tx = this.getMapTargetX();
       const ty = this.getMapTargetY();
-      draw.drawImage(el, ox, oy, mapWidth, mapHeight,
+      draw.copyImage(ox, oy, mapWidth, mapHeight,
         tx, ty, mapWidth, mapHeight);
     }
   }
@@ -745,39 +743,37 @@ class XTableUI {
 class XTableContentBaseUI extends XTableUI {
 
   /**
-   * 加载小图标
+   * 加载绘制小图标
    * @param rect
    * @param cell
    * @param scrollView
    */
-  loadIcons(rect, cell, scrollView) {
+  loadDrawIcons(rect, cell, scrollView) {
+    const { icons } = cell;
     const { table } = this;
     const { draw } = table;
-    const { icons } = cell;
     for (let i = 0; i < icons.length; i += 1) {
       const icon = icons[i];
       icon.loadImage({
-        async: () => {
+        load: () => {
           if (scrollView.equals(this.getScrollView())) {
             const x = this.getDrawX();
             const y = this.getDrawY();
-            const crop = new Crop({
-              rect,
-              draw,
-            });
-            // crop.open();
             draw.offset(x, y);
-            icon.drawIcon({
-              rect, icon, draw,
+            const crop = new Crop({
+              rect, draw,
             });
+            crop.open();
+            icon.drawIcon({
+              rect, draw,
+            });
+            crop.close();
             draw.offset(0, 0);
-            // crop.close();
           }
         },
         sync: () => {
           const crop = new Crop({
-            rect,
-            draw,
+            rect, draw,
           });
           crop.open();
           icon.drawIcon({
@@ -1209,13 +1205,13 @@ class XTableContentUI extends XTableContentBaseUI {
     styleCellsHelper.getMergeCellByViewRange({
       rectRange: scrollView,
       callback: (rect, cell) => {
-        this.loadIcons(rect, cell, scrollView);
+        this.loadDrawIcons(rect, cell, scrollView);
       },
     });
     styleCellsHelper.getCellByViewRange({
       rectRange: scrollView,
       callback: (row, col, cell, rect) => {
-        this.loadIcons(rect, cell, scrollView);
+        this.loadDrawIcons(rect, cell, scrollView);
       },
     });
     draw.offset(0, 0);

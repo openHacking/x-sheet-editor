@@ -318,10 +318,22 @@ class XDraw extends CorsLine {
     return this;
   }
 
+  copyImage(sx, sy, sw, sh, tx, ty, tw, th) {
+    const { ctx } = this;
+    tx += this.getOffsetX();
+    sx += this.getOffsetX();
+    ty += this.getOffsetY();
+    sy += this.getOffsetY();
+    ctx.drawImage(this.canvas,
+      XDraw.rounding(sx), XDraw.rounding(sy),
+      XDraw.rounding(sw), XDraw.rounding(sh),
+      XDraw.rounding(tx), XDraw.rounding(ty),
+      XDraw.rounding(tw), XDraw.rounding(th));
+    return this;
+  }
+
   drawImage(el, sx, sy, sw, sh, tx, ty, tw, th) {
     const { ctx } = this;
-    sx += this.getOffsetX();
-    sy += this.getOffsetY();
     tx += this.getOffsetX();
     ty += this.getOffsetY();
     ctx.drawImage(el,

@@ -55,20 +55,10 @@ class Cell {
 
   clone() {
     const {
-      background,
-      format,
-      text,
-      fontAttr,
-      borderAttr,
-      contentWidth,
+      background, format, text, fontAttr, borderAttr, contentWidth, icons,
     } = this;
     return new Cell({
-      background,
-      format,
-      text,
-      fontAttr,
-      borderAttr,
-      contentWidth,
+      background, format, icons, text, fontAttr, borderAttr, contentWidth,
     });
   }
 

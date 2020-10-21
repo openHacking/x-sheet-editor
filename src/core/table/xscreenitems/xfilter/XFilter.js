@@ -1,15 +1,15 @@
 import { XSelectItem } from '../xselect/XSelectItem';
 import { PlainUtils } from '../../../../utils/PlainUtils';
 import { RectRange } from '../../tablebase/RectRange';
-import { XFilterButton } from './XFilterButton';
 import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { XEvent } from '../../../../lib/XEvent';
-import { RANGE_OVER_GO } from '../../xscreen/item/viewborder/XScreenStyleBorderItem';
 import { ColsIterator } from '../../iterator/ColsIterator';
 import { RowsIterator } from '../../iterator/RowsIterator';
 import { Alert } from '../../../../component/alert/Alert';
 import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBorderItem';
+import { CellIcon } from '../../tablecell/CellIcon';
+import darkFilter from '../../../../../assets/svg/filter-dark.svg';
 
 class XFilter extends XScreenCssBorderItem {
 
@@ -30,7 +30,29 @@ class XFilter extends XScreenCssBorderItem {
     this.bind();
   }
 
-  filterRangeHandle() {
+  offsetHandle() {
+    const { selectRange } = this;
+    if (selectRange) {
+      this.setDisplay(selectRange);
+      this.setSizer(selectRange);
+      this.setLocal(selectRange);
+    }
+  }
+
+  borderHandle() {
+    const { selectRange, display } = this;
+    if (selectRange && display) {
+      this.hideBorder();
+      this.showBorder(selectRange);
+    }
+  }
+
+  xFilterOffset() {
+    this.offsetHandle();
+    this.borderHandle();
+  }
+
+  xFilterHandle() {
     const { table } = this;
     const {
       xScreen, cols, rows,
@@ -195,21 +217,27 @@ class XFilter extends XScreenCssBorderItem {
     }
   }
 
-  offsetHandle() {
-    const { selectRange } = this;
+  xFilterIcon() {
+    const { table, selectRange } = this;
     if (selectRange) {
-      this.setDisplay(selectRange);
-      this.setSizer(selectRange);
-      this.setLocal(selectRange);
+      const { top } = selectRange.brink();
+      const cells = table.getTableCells();
+      top.each((ri, ci) => {
+        const cell = cells.getCellOrNew(ri, ci);
+        const icon = new CellIcon({
+          image: darkFilter,
+          offset: { x: -2 },
+          width: 18,
+          height: 18,
+        });
+        cell.icons.push(icon);
+      });
+      table.render();
     }
   }
 
-  borderHandle() {
-    const { selectRange, display } = this;
-    if (selectRange && display) {
-      this.hideBorder();
-      this.showBorder(selectRange);
-    }
+  onAdd() {
+    super.onAdd();
   }
 
   unbind() {
@@ -221,273 +249,25 @@ class XFilter extends XScreenCssBorderItem {
     const { table } = this;
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
       if (this.display) {
-        this.updateFilterButton();
+        this.xFilterOffset();
       }
     });
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       if (this.display) {
-        this.updateFilterButton();
+        this.xFilterOffset();
       }
     });
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RENDER, () => {
       if (this.display) {
-        this.updateFilterButton();
+        this.xFilterOffset();
       }
     });
   }
 
-  onAdd() {
-    super.onAdd();
-  }
-
-  createButtonHandle() {
-    const {
-      table, selectRange,
-    } = this;
-    if (selectRange) {
-      const {
-        xFixedView, cols, rows, xScreen,
-      } = table;
-      const targetRange = selectRange.brink().top;
-      const fixedView = xFixedView.getFixedView();
-      const scrollView = table.getScrollView();
-      const {
-        sri: fSri, sci: fSci, eri: fEri, eci: fEci,
-      } = fixedView;
-      const {
-        sri: sSri, sci: sSci, eri: sEri, eci: sEci,
-      } = scrollView;
-      this.clearButtonHandle();
-      const br = scrollView.coincide(targetRange);
-      const buttons = [];
-      const {
-        flt, ft, fbr, fl,
-      } = this;
-      let lt = RectRange.EMPTY;
-      let t = RectRange.EMPTY;
-      let l = RectRange.EMPTY;
-      if (xFixedView.hasFixedTop() && xFixedView.hasFixedLeft()) {
-        const xSelect = xScreen.findType(XSelectItem);
-        const overGo = xSelect.getOverGo(targetRange);
-        lt = fixedView.coincide(targetRange);
-        t = new RectRange(fSri, sSci, fEri, sEci).coincide(targetRange);
-        l = new RectRange(sSri, fSci, sEri, fEci).coincide(targetRange);
-        switch (overGo) {
-          case RANGE_OVER_GO.ALL:
-          case RANGE_OVER_GO.LT:
-          case RANGE_OVER_GO.T:
-          case RANGE_OVER_GO.LTT:
-          case RANGE_OVER_GO.LTL:
-          case RANGE_OVER_GO.BRT:
-            if (!lt.equals(RectRange.EMPTY)) {
-              const { top } = lt.brink();
-              const height = rows.getHeight(top.sri);
-              let left = 0;
-              ColsIterator.getInstance()
-                .setBegin(top.sci)
-                .setEnd(top.eci)
-                .setLoop((i) => {
-                  const width = cols.getWidth(i);
-                  const button = new XFilterButton({
-                    ri: top.sri,
-                    ci: i,
-                    xFilter: this,
-                    area: flt,
-                  });
-                  button.setSize(left, width, height);
-                  flt.children(button);
-                  buttons.push(button);
-                  left += width;
-                })
-                .execute();
-            }
-            if (!t.equals(RectRange.EMPTY)) {
-              const { top } = t.brink();
-              const height = rows.getHeight(top.sri);
-              let left = 0;
-              ColsIterator.getInstance()
-                .setBegin(top.sci)
-                .setEnd(top.eci)
-                .setLoop((i) => {
-                  const width = cols.getWidth(i);
-                  const button = new XFilterButton({
-                    ri: top.sri,
-                    ci: i,
-                    xFilter: this,
-                    area: ft,
-                  });
-                  button.setSize(left, width, height);
-                  ft.children(button);
-                  buttons.push(button);
-                  left += width;
-                })
-                .execute();
-            }
-            break;
-          case RANGE_OVER_GO.L:
-          case RANGE_OVER_GO.BR:
-          case RANGE_OVER_GO.BRL:
-            if (!l.equals(RectRange.EMPTY)) {
-              const { top } = l.brink();
-              const height = rows.getHeight(top.sri);
-              let left = 0;
-              ColsIterator.getInstance()
-                .setBegin(top.sci)
-                .setEnd(top.eci)
-                .setLoop((i) => {
-                  const width = cols.getWidth(i);
-                  const button = new XFilterButton({
-                    ri: top.sri,
-                    ci: i,
-                    xFilter: this,
-                    area: fl,
-                  });
-                  button.setSize(left, width, height);
-                  fl.children(button);
-                  buttons.push(button);
-                  left += width;
-                })
-                .execute();
-            }
-            if (!br.equals(RectRange.EMPTY)) {
-              const { top } = br.brink();
-              const height = rows.getHeight(top.sri);
-              let left = 0;
-              ColsIterator.getInstance()
-                .setBegin(top.sci)
-                .setEnd(top.eci)
-                .setLoop((i) => {
-                  const width = cols.getWidth(i);
-                  const button = new XFilterButton({
-                    ri: top.sri,
-                    ci: i,
-                    xFilter: this,
-                    area: fbr,
-                  });
-                  button.setSize(left, width, height);
-                  fbr.children(button);
-                  buttons.push(button);
-                  left += width;
-                })
-                .execute();
-            }
-        }
-        this.buttons = buttons;
-        return;
-      }
-      if (xFixedView.hasFixedTop()) {
-        t = new RectRange(fSri, sSci, fEri, sEci).coincide(targetRange);
-        if (!t.equals(RectRange.EMPTY)) {
-          const { top } = t.brink();
-          const height = rows.getHeight(top.sri);
-          let left = 0;
-          ColsIterator.getInstance()
-            .setBegin(top.sci)
-            .setEnd(top.eci)
-            .setLoop((i) => {
-              const width = cols.getWidth(i);
-              const button = new XFilterButton({
-                ri: top.sri,
-                ci: i,
-                xFilter: this,
-                area: ft,
-              });
-              button.setSize(left, width, height);
-              ft.children(button);
-              buttons.push(button);
-              left += width;
-            })
-            .execute();
-        }
-        this.buttons = buttons;
-        return;
-      }
-      if (xFixedView.hasFixedLeft()) {
-        l = new RectRange(sSri, fSci, sEri, fEci).coincide(targetRange);
-        if (!l.equals(RectRange.EMPTY)) {
-          const { top } = l.brink();
-          const height = rows.getHeight(top.sri);
-          let left = 0;
-          ColsIterator.getInstance()
-            .setBegin(top.sci)
-            .setEnd(top.eci)
-            .setLoop((i) => {
-              const width = cols.getWidth(i);
-              const button = new XFilterButton({
-                ri: top.sri,
-                ci: i,
-                xFilter: this,
-                area: fl,
-              });
-              button.setSize(left, width, height);
-              fl.children(button);
-              buttons.push(button);
-              left += width;
-            })
-            .execute();
-        }
-        if (!br.equals(RectRange.EMPTY)) {
-          const { top } = br.brink();
-          const height = rows.getHeight(top.sri);
-          let left = 0;
-          ColsIterator.getInstance()
-            .setBegin(top.sci)
-            .setEnd(top.eci)
-            .setLoop((i) => {
-              const width = cols.getWidth(i);
-              const button = new XFilterButton({
-                ri: top.sri,
-                ci: i,
-                xFilter: this,
-                area: fbr,
-              });
-              button.setSize(left, width, height);
-              fbr.children(button);
-              buttons.push(button);
-              left += width;
-            })
-            .execute();
-        }
-        this.buttons = buttons;
-        return;
-      }
-      if (!br.equals(RectRange.EMPTY)) {
-        const { top } = br.brink();
-        const height = rows.getHeight(top.sri);
-        let left = 0;
-        ColsIterator.getInstance()
-          .setBegin(top.sci)
-          .setEnd(top.eci)
-          .setLoop((i) => {
-            const width = cols.getWidth(i);
-            const button = new XFilterButton({
-              ri: top.sri,
-              ci: i,
-              xFilter: this,
-              area: fbr,
-            });
-            button.setSize(left, width, height);
-            fbr.children(button);
-            buttons.push(button);
-            left += width;
-          })
-          .execute();
-      }
-      this.buttons = buttons;
-    }
-  }
-
-  clearButtonHandle() {
-    this.buttons.forEach((item) => {
-      item.destroy();
-    });
-    this.buttons = [];
-  }
-
-  openFilterButton() {
+  openFilter() {
     const { table } = this;
     const cells = table.getTableCells();
-    this.filterRangeHandle();
+    this.xFilterHandle();
     const { selectRange } = this;
     if (selectRange) {
       if (cells.emptyRectRange(selectRange)) {
@@ -496,27 +276,20 @@ class XFilter extends XScreenCssBorderItem {
         }).open();
       } else {
         this.display = true;
+        this.xFilterIcon();
         this.show();
-        this.updateFilterButton();
+        this.xFilterOffset();
       }
     }
   }
 
-  hideFilterButton() {
+  hideFilter() {
     this.display = false;
     this.hide();
-    this.createButtonHandle();
-  }
-
-  updateFilterButton() {
-    this.offsetHandle();
-    this.borderHandle();
-    this.createButtonHandle();
   }
 
   destroy() {
     super.destroy();
-    this.clearButtonHandle();
     this.unbind();
   }
 

@@ -1,6 +1,23 @@
-/* global Image */
-import { XDraw } from '../../../canvas/XDraw';
+/* global Image console */
 import { PlainUtils } from '../../../utils/PlainUtils';
+import { XDraw } from '../../../canvas/XDraw';
+
+/**
+ * CellIconOffset
+ */
+class CellIconOffset {
+
+  /**
+   * CellIconOffset
+   * @param x
+   * @param y
+   */
+  constructor({ x = 0, y = 0 } = {}) {
+    this.x = x;
+    this.y = y;
+  }
+
+}
 
 /**
  * CellIcon
@@ -25,8 +42,8 @@ class CellIcon {
 
   /**
    * CellIcon
-   * @param positionX
-   * @param positionY
+   * @param horizontal
+   * @param vertical
    * @param type
    * @param image
    * @param draw
@@ -36,25 +53,77 @@ class CellIcon {
    * @param offset
    */
   constructor({
-    positionX = CellIcon.ICON_POSITION_X.RIGHT,
-    positionY = CellIcon.ICON_POSITION_Y.CENTER,
+    vertical = CellIcon.ICON_VERTICAL.CENTER,
+    horizontal = CellIcon.ICON_HORIZONTAL.RIGHT,
     type = CellIcon.ICON_TYPE.image,
     image = PlainUtils.Nul,
     color = '#ffffff',
-    width = 20,
-    height = 20,
+    width = 16,
+    height = 16,
     draw = () => {},
     offset = { x: 0, y: 0 },
   }) {
-    this.positionX = positionX;
-    this.positionY = positionY;
+    this.horizontal = horizontal;
+    this.vertical = vertical;
     this.type = type;
     this.width = width;
     this.height = height;
     this.draw = draw;
     this.image = image;
     this.color = color;
-    this.offset = offset;
+    this.offset = new CellIconOffset(offset);
+  }
+
+  /**
+   * 计算绘制坐标
+   * @param rect
+   * @returns {{x: number, y: number}}
+   */
+  position(rect) {
+    // 图标信息
+    const iconSourceWidth = this.width;
+    const iconSourceHeight = this.height;
+    const iconHorizontal = this.horizontal;
+    const iconVertical = this.vertical;
+    const iconX = XDraw.transformStylePx(this.offset.x);
+    const iconY = XDraw.transformStylePx(this.offset.y);
+    const iconWidth = XDraw.transformStylePx(iconSourceWidth);
+    const iconHeight = XDraw.transformStylePx(iconSourceHeight);
+    // 矩形位置
+    const rectX = rect.x;
+    const rectY = rect.y;
+    const rectWidth = rect.width;
+    const rectHeight = rect.height;
+    // 计算位置
+    let px = 0;
+    let py = 0;
+    switch (iconHorizontal) {
+      case CellIcon.ICON_HORIZONTAL.CENTER:
+        px = (rectX + rectWidth / 2) - (iconWidth / 2);
+        break;
+      case CellIcon.ICON_HORIZONTAL.LEFT:
+        px = rectX;
+        break;
+      case CellIcon.ICON_HORIZONTAL.RIGHT:
+        px = rectX + rectWidth - iconWidth;
+        break;
+    }
+    switch (iconVertical) {
+      case CellIcon.ICON_VERTICAL.CENTER:
+        py = (rectY + rectHeight / 2) - (iconHeight / 2);
+        break;
+      case CellIcon.ICON_VERTICAL.TOP:
+        py = rectY;
+        break;
+      case CellIcon.ICON_VERTICAL.BOTTOM:
+        py = rectY + rectHeight - iconHeight;
+        break;
+    }
+    px += iconX;
+    py += iconY;
+    return {
+      x: px, y: py, width: iconWidth, height: iconHeight,
+    };
   }
 
   /**
@@ -63,7 +132,7 @@ class CellIcon {
    * @param sync
    */
   loadImage({
-    async, sync,
+    load, sync,
   }) {
     const { image, type } = this;
     switch (type) {
@@ -71,11 +140,15 @@ class CellIcon {
         if (image instanceof Image) {
           sync(image);
         } else {
-          const load = new Image();
-          load.src = image;
-          load.onload = () => {
-            this.image = load;
-            async(load);
+          const loadImg = new Image();
+          loadImg.src = image;
+          loadImg.onload = () => {
+            this.image = loadImg;
+            load(loadImg);
+          };
+          loadImg.onerror = () => {
+            // eslint-disable-next-line no-console
+            console.error(`图片加载失败${image}`);
           };
         }
         break;
@@ -88,19 +161,22 @@ class CellIcon {
   /**
    * 绘制小图标
    * @param rect
-   * @param icon
    * @param draw
    */
   drawIcon({
-    rect, icon, draw,
+    rect, draw,
   }) {
     const { type } = this;
     switch (type) {
       case CellIcon.ICON_TYPE.image:
-        this.drawImage(rect, icon, draw);
+        this.drawImage({
+          rect, draw,
+        });
         break;
       case CellIcon.ICON_TYPE.draw:
-        this.drawCustom(rect, icon, draw);
+        this.drawCustom({
+          rect, draw,
+        });
         break;
     }
   }
@@ -111,8 +187,12 @@ class CellIcon {
    * @param icon
    * @param draw
    */
-  drawCustom(rect, icon, draw) {
-    this.draw(rect, icon, draw);
+  drawCustom({
+    rect, draw,
+  }) {
+    this.draw({
+      rect, draw,
+    });
   }
 
   /**
@@ -121,64 +201,25 @@ class CellIcon {
    * @param icon
    * @param draw
    */
-  drawImage(rect, icon, draw) {
-    // 图标位置
-    const iconPositionX = icon.positionX;
-    const iconPositionY = icon.positionY;
-    const iconColor = icon.color;
-    const iconSourceWidth = icon.width;
-    const iconSourceHeight = icon.height;
-    const iconImage = icon.image;
-    const iconX = XDraw.transformStylePx(icon.offset.x);
-    const iconY = XDraw.transformStylePx(icon.offset.y);
-    const iconWidth = XDraw.transformStylePx(iconSourceWidth);
-    const iconHeight = XDraw.transformStylePx(iconSourceHeight);
-    // 矩形位置
-    const rectX = rect.x;
-    const rectY = rect.y;
-    const rectWidth = rect.width;
-    const rectHeight = rect.height;
-    // 计算位置
-    let ix = 0;
-    let iy = 0;
-    switch (iconPositionX) {
-      case CellIcon.ICON_POSITION_X.CENTER:
-        ix = (rectX + rectWidth / 2) - (iconWidth / 2);
-        break;
-      case CellIcon.ICON_POSITION_X.LEFT:
-        ix = rectX;
-        break;
-      case CellIcon.ICON_POSITION_X.RIGHT:
-        ix = rectX + rectWidth - iconWidth;
-        break;
-    }
-    switch (iconPositionY) {
-      case CellIcon.ICON_POSITION_Y.CENTER:
-        iy = (rectY + rectHeight / 2) - (iconHeight / 2);
-        break;
-      case CellIcon.ICON_POSITION_Y.TOP:
-        iy = rectY;
-        break;
-      case CellIcon.ICON_POSITION_Y.BOTTOM:
-        iy = rectY + rectHeight - iconHeight;
-        break;
-    }
-    ix += iconX;
-    iy += iconY;
-    // 绘制背景和图标
-    draw.attr({ fillStyle: iconColor });
-    draw.fillRect(ix, iy, iconWidth, iconHeight);
-    draw.drawImage(iconImage, 0, 0, iconSourceWidth, iconSourceHeight,
-      ix, iy, iconWidth, iconHeight);
+  drawImage({
+    rect, draw,
+  }) {
+    const image = this.image;
+    const color = this.color;
+    const { x, y, width, height } = this.position(rect);
+    draw.attr({ fillStyle: color });
+    draw.fillRect(x, y, width, height);
+    draw.drawImage(image,
+      0, 0, image.width, image.height, x, y, width, height);
   }
 
 }
-CellIcon.ICON_POSITION_X = {
+CellIcon.ICON_HORIZONTAL = {
   LEFT: 0,
   RIGHT: 1,
   CENTER: 2,
 };
-CellIcon.ICON_POSITION_Y = {
+CellIcon.ICON_VERTICAL = {
   TOP: 3,
   BOTTOM: 4,
   CENTER: 5,

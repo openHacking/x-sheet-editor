@@ -1127,10 +1127,10 @@ class TopMenu extends Widget {
       const { xScreen } = table;
       const filter = xScreen.findType(XFilter);
       if (filter.display) {
-        filter.hideFilterButton();
+        filter.hideFilter();
         this.filter.active(filter.display);
       } else {
-        filter.openFilterButton();
+        filter.openFilter();
         this.filter.active(filter.display);
       }
     });
