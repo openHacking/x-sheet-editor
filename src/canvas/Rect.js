@@ -29,6 +29,20 @@ class Rect {
   }
 
   /**
+   * 计算当前矩形在指定矩形内部的位置
+   * @param rect
+   * @returns {Rect}
+   */
+  inRect(rect) {
+    return new Rect({
+      x: this.x - rect.x,
+      y: this.y - rect.y,
+      width: this.width,
+      height: this.height,
+    });
+  }
+
+  /**
    * 扩展尺寸
    * @param size
    * @returns {Rect}
@@ -37,6 +51,17 @@ class Rect {
     this.width += size;
     this.height += size;
     return this;
+  }
+
+  /**
+   * 是否包含点
+   * @param x
+   * @param y
+   * @returns {boolean}
+   */
+  includePoint(x, y) {
+    return x >= this.x && x <= this.x + this.width
+      && y >= this.y && y <= this.y + this.height;
   }
 
   /**

@@ -41,7 +41,14 @@ class XFilter extends XScreenCssBorderItem {
           image: darkFilter,
           height: 18,
           width: 18,
-          offset: { x: -2 },
+          vertical: CellIcon.ICON_VERTICAL.BOTTOM,
+          onDown: () => {
+            console.log('我被点击');
+          },
+          onMove: () => {
+
+          },
+          on
         });
         const cell = cells.getCellOrNew(ri, ci);
         cell.icons.push(icon);

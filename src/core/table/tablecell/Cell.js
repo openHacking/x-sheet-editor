@@ -2,6 +2,7 @@ import { PlainUtils } from '../../../utils/PlainUtils';
 import { CellFont } from './CellFont';
 import { CellBorder } from './CellBorder';
 import { CellIcon } from './CellIcon';
+import { XDraw } from '../../../canvas/XDraw';
 
 /**
  * Cell
@@ -35,6 +36,17 @@ class Cell {
     this.borderAttr = new CellBorder(borderAttr);
     this.fontAttr = new CellFont(fontAttr);
     this.contentWidth = contentWidth;
+  }
+
+  iconsEventHandle({
+    type, x, y,
+  }) {
+    const { icons } = this;
+    icons.forEach((icon) => {
+      icon.eventHandle({
+        type, x, y,
+      });
+    });
   }
 
   setContentWidth(contentWidth) {

@@ -1,6 +1,7 @@
 /* global Image console */
 import { PlainUtils } from '../../../utils/PlainUtils';
 import { XDraw } from '../../../canvas/XDraw';
+import { Rect } from '../../../canvas/Rect';
 
 /**
  * CellIconOffset
@@ -60,18 +61,20 @@ class CellIcon {
     color = '#ffffff',
     width = 16,
     height = 16,
-    draw = () => {},
+    onDraw = () => {},
+    onDown = () => {},
     offset = { x: 0, y: 0 },
   }) {
-    this.horizontal = horizontal;
     this.vertical = vertical;
-    this.type = type;
+    this.horizontal = horizontal;
     this.width = width;
     this.height = height;
-    this.draw = draw;
+    this.type = type;
+    this.rect = null;
     this.image = image;
     this.color = color;
-    this.rect = null;
+    this.onDraw = onDraw;
+    this.onDown = onDown;
     this.offset = new CellIconOffset(offset);
   }
 
@@ -122,9 +125,9 @@ class CellIcon {
     }
     px += iconX;
     py += iconY;
-    return {
+    return new Rect({
       x: px, y: py, width: iconWidth, height: iconHeight,
-    };
+    });
   }
 
   /**
@@ -192,7 +195,7 @@ class CellIcon {
   drawCustom({
     rect, draw,
   }) {
-    this.draw({
+    this.onDraw({
       rect, draw,
     });
   }
@@ -216,22 +219,22 @@ class CellIcon {
   }
 
   /**
-   * 图标事件处理
+   * 事件处理
    * @param type
    * @param x
    * @param y
    */
-  handleEvent({
+  eventHandle({
     type, x, y,
   }) {
     const { rect } = this;
     if (rect) {
-      const position = this.position(rect);
+      const location = this.position(rect).inRect(rect);
       switch (type) {
-        case CellIcon.ICON_EVENT_TYPE.MOUSE_CLICK:
-          break;
         case CellIcon.ICON_EVENT_TYPE.MOUSE_DOWN:
-
+          if (location.includePoint(x, y)) {
+            this.onDown();
+          }
           break;
         case CellIcon.ICON_EVENT_TYPE.MOUSE_MOVE:
           break;

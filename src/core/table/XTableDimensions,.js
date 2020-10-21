@@ -1052,19 +1052,20 @@ class XTableDimensions extends Widget {
       }
       mousePointer.set(XTableMousePointer.KEYS.cell);
     });
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, (e) => {
+
+    });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      const result = this.computeEventXy(e);
-      const info = this.getRiCiByXy(result.x, result.y);
+      const even = this.computeEventXy(e);
+      const info = this.getRiCiByXy(even.x, even.y);
       const { ri, ci, x, y } = info;
       const cell = cells.getCell(ri, ci);
       if (cell) {
-        const { icons } = cell;
-        for (let i = 0; i < icons.length; i += 1) {
-          const icon = icons[i];
-          icon.handleEvent({
-            type: CellIcon.ICON_EVENT_TYPE.MOUSE_DOWN, x, y,
-          });
-        }
+        cell.iconsEventHandle({
+          type: CellIcon.ICON_EVENT_TYPE.MOUSE_DOWN,
+          x: XDraw.transformStylePx(x),
+          y: XDraw.transformStylePx(y),
+        });
       }
     });
   }
