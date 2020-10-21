@@ -760,26 +760,16 @@ class XTableContentBaseUI extends XTableUI {
             const x = this.getX();
             const y = this.getY();
             draw.offset(x, y);
-            const crop = new Crop({
-              rect, draw,
-            });
-            crop.open();
             icon.drawIcon({
               rect, draw,
             });
-            crop.close();
             draw.offset(0, 0);
           }
         },
         sync: () => {
-          const crop = new Crop({
+          icon.drawIcon({
             rect, draw,
           });
-          crop.open();
-          icon.drawIcon({
-            rect, icon, draw,
-          });
-          crop.close();
         },
       });
     }
