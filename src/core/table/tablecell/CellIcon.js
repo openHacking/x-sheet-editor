@@ -21,6 +21,24 @@ class CellIconOffset {
 }
 
 /**
+ * CellIconFocus
+ */
+class CellIconFocus {
+
+  constructor(icon = null) {
+    this.activate = icon;
+  }
+
+  setActivate(icon) {
+    this.activate = icon;
+  }
+
+}
+
+// 焦点元素保存
+const focus = new CellIconFocus();
+
+/**
  * CellIcon
  * @author jerry
  * @date 2020/10/20
@@ -39,6 +57,39 @@ class CellIcon {
       instances.push(new CellIcon(icon));
     }
     return instances;
+  }
+
+  /**
+   * 图标事件处理
+   * @param type
+   * @param x
+   * @param y
+   * @param icons
+   * @param native
+   */
+  static cellIconsEvent({
+    type, x, y, icons, native,
+  }) {
+    if (icons.length > 0) {
+      icons.forEach((icon) => {
+        icon.eventHandle({
+          type, x, y, native,
+        });
+      });
+    } else {
+      CellIcon.clearFocus();
+    }
+  }
+
+  /**
+   * 清空焦点元素
+   */
+  static clearFocus() {
+    const { activate } = focus;
+    if (activate) {
+      focus.setActivate(null);
+      activate.onLeave();
+    }
   }
 
   /**
@@ -61,21 +112,27 @@ class CellIcon {
     color = '#ffffff',
     width = 16,
     height = 16,
-    onDraw = () => {},
-    onDown = () => {},
     offset = { x: 0, y: 0 },
+    onDraw = () => {},
+    onLeave = () => {},
+    onMove = () => {},
+    onDown = () => {},
+    onEnter = () => {},
   }) {
     this.vertical = vertical;
     this.horizontal = horizontal;
     this.width = width;
     this.height = height;
     this.type = type;
-    this.rect = null;
     this.image = image;
     this.color = color;
+    this.offset = new CellIconOffset(offset);
+    this.onLeave = onLeave;
+    this.onMove = onMove;
     this.onDraw = onDraw;
     this.onDown = onDown;
-    this.offset = new CellIconOffset(offset);
+    this.onEnter = onEnter;
+    this.rect = null;
   }
 
   /**
@@ -212,8 +269,10 @@ class CellIcon {
     const image = this.image;
     const color = this.color;
     const { x, y, width, height } = this.position(rect);
-    draw.attr({ fillStyle: color });
-    draw.fillRect(x, y, width, height);
+    if (color) {
+      draw.attr({ fillStyle: color });
+      draw.fillRect(x, y, width, height);
+    }
     draw.drawImage(image,
       0, 0, image.width, image.height, x, y, width, height);
   }
@@ -223,22 +282,33 @@ class CellIcon {
    * @param type
    * @param x
    * @param y
+   * @param native
    */
   eventHandle({
-    type, x, y,
+    type, x, y, native,
   }) {
     const { rect } = this;
     if (rect) {
       const location = this.position(rect).inRect(rect);
+      const { activate } = focus;
       switch (type) {
         case CellIcon.ICON_EVENT_TYPE.MOUSE_DOWN:
           if (location.includePoint(x, y)) {
-            this.onDown();
+            focus.setActivate(this);
+            this.onDown(native);
           }
           break;
         case CellIcon.ICON_EVENT_TYPE.MOUSE_MOVE:
-          break;
-        case CellIcon.ICON_EVENT_TYPE.MOUSE_LEAVE:
+          if (location.includePoint(x, y)) {
+            if (activate !== this) {
+              this.onEnter(native);
+            }
+            focus.setActivate(this);
+            this.onMove(native);
+          } else if (activate) {
+            focus.setActivate(null);
+            this.onLeave(native);
+          }
           break;
       }
     }
@@ -262,10 +332,6 @@ CellIcon.ICON_TYPE = {
 CellIcon.ICON_EVENT_TYPE = {
   MOUSE_DOWN: 1,
   MOUSE_MOVE: 2,
-  MOUSE_LEAVE: 3,
-  MOUSE_CLICK: 4,
 };
 
-export {
-  CellIcon,
-};
+export { CellIcon };

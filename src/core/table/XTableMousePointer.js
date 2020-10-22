@@ -10,7 +10,9 @@ class XTableMousePointer {
   }
 
   lock(flag) {
-    this.flag = flag;
+    if (this.flag === null) {
+      this.flag = flag;
+    }
     return this;
   }
 

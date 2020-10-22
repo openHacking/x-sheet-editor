@@ -901,6 +901,45 @@ class XTableDimensions extends Widget {
   }
 
   /**
+   * 表格图标事件处理
+   * @param type
+   * @param info
+   * @param native
+   */
+  cellIconsEvent(type, info, native) {
+    const cells = this.getTableCells();
+    const { ri, ci, x, y } = info;
+    const cell = cells.getCellOrNew(ri, ci);
+    cell.cellIconsEvent({
+      native,
+      type,
+      x: XDraw.transformStylePx(x),
+      y: XDraw.transformStylePx(y),
+    });
+  }
+
+  /**
+   * 更新表格的指针
+   */
+  pointerEvent(info) {
+    const { mousePointer } = this;
+    const { ri, ci } = info;
+    if (ri === -1 && ci === -1) {
+      mousePointer.set(XTableMousePointer.KEYS.default);
+      return;
+    }
+    if (ri === -1) {
+      mousePointer.set(XTableMousePointer.KEYS.sResize);
+      return;
+    }
+    if (ci === -1) {
+      mousePointer.set(XTableMousePointer.KEYS.eResize);
+      return;
+    }
+    mousePointer.set(XTableMousePointer.KEYS.cell);
+  }
+
+  /**
    * 获取指定单元格下的行列
    * @param x
    * @param y
@@ -1027,8 +1066,6 @@ class XTableDimensions extends Widget {
    * 事件绑定
    */
   bind() {
-    const cells = this.getTableCells();
-    const { mousePointer } = this;
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.resize();
     });
@@ -1037,36 +1074,14 @@ class XTableDimensions extends Widget {
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       const { x, y } = this.computeEventXy(e);
-      const { ri, ci } = this.getRiCiByXy(x, y);
-      if (ri === -1 && ci === -1) {
-        mousePointer.set(XTableMousePointer.KEYS.default);
-        return;
-      }
-      if (ri === -1) {
-        mousePointer.set(XTableMousePointer.KEYS.sResize);
-        return;
-      }
-      if (ci === -1) {
-        mousePointer.set(XTableMousePointer.KEYS.eResize);
-        return;
-      }
-      mousePointer.set(XTableMousePointer.KEYS.cell);
-    });
-    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, (e) => {
-
+      const info = this.getRiCiByXy(x, y);
+      this.pointerEvent(info);
+      this.cellIconsEvent(CellIcon.ICON_EVENT_TYPE.MOUSE_MOVE, info, e);
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      const even = this.computeEventXy(e);
-      const info = this.getRiCiByXy(even.x, even.y);
-      const { ri, ci, x, y } = info;
-      const cell = cells.getCell(ri, ci);
-      if (cell) {
-        cell.iconsEventHandle({
-          type: CellIcon.ICON_EVENT_TYPE.MOUSE_DOWN,
-          x: XDraw.transformStylePx(x),
-          y: XDraw.transformStylePx(y),
-        });
-      }
+      const { x, y } = this.computeEventXy(e);
+      const info = this.getRiCiByXy(x, y);
+      this.cellIconsEvent(CellIcon.ICON_EVENT_TYPE.MOUSE_DOWN, info, e);
     });
   }
 

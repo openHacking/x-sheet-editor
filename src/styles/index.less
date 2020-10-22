@@ -1251,13 +1251,19 @@
 .@{css-prefix}-table-row-fixed-bar {
   position: absolute;
   background: #eaeaea;
+  z-index: @z-index-level-last;
 }
 .@{css-prefix}-table-col-fixed-bar {
   position: absolute;
   background: #eaeaea;
+  z-index: @z-index-level-last;
 }
-.@{css-prefix}-table-row-fixed-bar.active {}
-.@{css-prefix}-table-row-fixed-bar.active {}
+.@{css-prefix}-table-row-fixed-bar.active {
+  z-index: @z-index-level-1;
+}
+.@{css-prefix}-table-row-fixed-bar.active {
+  z-index: @z-index-level-1;
+}
 .@{css-prefix}-table-row-fixed-block {
   background: #c1c1c1;
 }

@@ -38,31 +38,29 @@ class Cell {
     this.contentWidth = contentWidth;
   }
 
-  iconsEventHandle({
-    type, x, y,
-  }) {
-    const { icons } = this;
-    icons.forEach((icon) => {
-      icon.eventHandle({
-        type, x, y,
-      });
-    });
-  }
-
   setContentWidth(contentWidth) {
     this.contentWidth = contentWidth;
-  }
-
-  setIcons(icons) {
-    this.icons = icons;
   }
 
   setBorderAttr(borderAttr) {
     this.borderAttr = borderAttr;
   }
 
+  setIcons(icons) {
+    this.icons = icons;
+  }
+
   setFontAttr(fontAttr) {
     this.fontAttr = fontAttr;
+  }
+
+  cellIconsEvent({
+    type, x, y, native,
+  }) {
+    const { icons } = this;
+    CellIcon.cellIconsEvent({
+      icons, type, x, y, native,
+    });
   }
 
   clone() {

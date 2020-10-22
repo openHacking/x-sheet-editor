@@ -10,6 +10,7 @@ import { Alert } from '../../../../component/alert/Alert';
 import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBorderItem';
 import { CellIcon } from '../../tablecell/CellIcon';
 import darkFilter from '../../../../../assets/svg/filter-dark.svg';
+import { XTableMousePointer } from '../../XTableMousePointer';
 
 class XFilter extends XScreenCssBorderItem {
 
@@ -31,44 +32,11 @@ class XFilter extends XScreenCssBorderItem {
     this.bind();
   }
 
-  xFilterCreateIcon() {
-    const { table, selectRange } = this;
-    if (selectRange) {
-      const { top } = selectRange.brink();
-      const cells = table.getTableCells();
-      top.each((ri, ci) => {
-        const icon = new CellIcon({
-          image: darkFilter,
-          height: 18,
-          width: 18,
-          vertical: CellIcon.ICON_VERTICAL.BOTTOM,
-          onDown: () => {
-            console.log('我被点击');
-          },
-          onMove: () => {
-
-          },
-          on
-        });
-        const cell = cells.getCellOrNew(ri, ci);
-        cell.icons.push(icon);
-        this.icons.push(icon);
-      });
-      table.render();
-    }
-  }
-
-  xFilterClearIcon() {
-    const { table, selectRange, icons } = this;
-    if (selectRange) {
-      const { top } = selectRange.brink();
-      const cells = table.getTableCells();
-      top.each((ri, ci) => {
-        const cell = cells.getCellOrNew(ri, ci);
-        cell.icons = cell.icons.filter(icon => !icons.includes(icon));
-      });
-      this.icons = [];
-      table.render();
+  borderHandle() {
+    const { selectRange, display } = this;
+    if (selectRange && display) {
+      this.hideBorder();
+      this.showBorder(selectRange);
     }
   }
 
@@ -79,19 +47,6 @@ class XFilter extends XScreenCssBorderItem {
       this.setSizer(selectRange);
       this.setLocal(selectRange);
     }
-  }
-
-  borderHandle() {
-    const { selectRange, display } = this;
-    if (selectRange && display) {
-      this.hideBorder();
-      this.showBorder(selectRange);
-    }
-  }
-
-  xFilterOffset() {
-    this.offsetHandle();
-    this.borderHandle();
   }
 
   xFilterHandle() {
@@ -259,6 +214,57 @@ class XFilter extends XScreenCssBorderItem {
     }
   }
 
+  xFilterOffset() {
+    this.offsetHandle();
+    this.borderHandle();
+  }
+
+  clearIcon() {
+    const { table, selectRange, icons } = this;
+    if (selectRange) {
+      const { top } = selectRange.brink();
+      const cells = table.getTableCells();
+      top.each((ri, ci) => {
+        const cell = cells.getCellOrNew(ri, ci);
+        cell.icons = cell.icons.filter(icon => !icons.includes(icon));
+      });
+      this.icons = [];
+      table.render();
+    }
+  }
+
+  createIcon() {
+    const { table, selectRange } = this;
+    if (selectRange) {
+      const { top } = selectRange.brink();
+      const cells = table.getTableCells();
+      const { mousePointer } = table;
+      top.each((ri, ci) => {
+        const icon = new CellIcon({
+          image: darkFilter,
+          offset: {
+            x: -2,
+            y: -2,
+          },
+          height: 18,
+          width: 18,
+          vertical: CellIcon.ICON_VERTICAL.BOTTOM,
+          onDown: () => {},
+          onLeave: () => {
+            mousePointer.free(XFilter);
+          },
+          onMove: () => {
+            mousePointer.set(XTableMousePointer.KEYS.pointer, XFilter);
+          },
+        });
+        const cell = cells.getCellOrNew(ri, ci);
+        cell.icons.push(icon);
+        this.icons.push(icon);
+      });
+      table.render();
+    }
+  }
+
   onAdd() {
     super.onAdd();
   }
@@ -299,7 +305,7 @@ class XFilter extends XScreenCssBorderItem {
         }).open();
       } else {
         this.display = true;
-        this.xFilterCreateIcon();
+        this.createIcon();
         this.show();
         this.xFilterOffset();
       }
@@ -308,7 +314,7 @@ class XFilter extends XScreenCssBorderItem {
 
   hideFilter() {
     this.display = false;
-    this.xFilterClearIcon();
+    this.clearIcon();
     this.hide();
   }
 

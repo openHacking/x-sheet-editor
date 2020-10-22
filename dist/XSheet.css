@@ -1660,10 +1660,18 @@
 .x-sheet-table-row-fixed-bar {
   position: absolute;
   background: #eaeaea;
+  z-index: 1;
 }
 .x-sheet-table-col-fixed-bar {
   position: absolute;
   background: #eaeaea;
+  z-index: 1;
+}
+.x-sheet-table-row-fixed-bar.active {
+  z-index: 2;
+}
+.x-sheet-table-row-fixed-bar.active {
+  z-index: 2;
 }
 .x-sheet-table-row-fixed-block {
   background: #c1c1c1;

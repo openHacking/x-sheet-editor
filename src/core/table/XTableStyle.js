@@ -143,12 +143,8 @@ class XTableFixedBar {
   }
 
   render() {
-    const { table } = this;
-    const renderMode = table.getRenderMode();
-    if (renderMode === RENDER_MODE.RENDER || renderMode === RENDER_MODE.SCALE) {
-      this.drawBar();
-      this.drawButton();
-    }
+    this.drawBar();
+    this.drawButton();
   }
 
 }
