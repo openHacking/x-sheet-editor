@@ -36,7 +36,7 @@ import { RowsIterator } from './iterator/RowsIterator';
 import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
 import { CellMergeCopyHelper } from './helper/CellMergeCopyHelper';
 import { Clipboard } from '../../lib/Clipboard';
-import { CellIcon } from './tablecell/CellIcon';
+import { XIcon } from './xicon/XIcon';
 
 class Dimensions {
 
@@ -786,6 +786,15 @@ class XTableDimensions extends Widget {
   }
 
   /**
+   * 获取表格渲染对象
+   * @returns {XTableStyle}
+   */
+  getXTableStyle() {
+    const { xTableStyle } = this;
+    return xTableStyle;
+  }
+
+  /**
    * 滚动视图的高度
    * @returns {*}
    */
@@ -906,13 +915,25 @@ class XTableDimensions extends Widget {
    * @param info
    * @param native
    */
-  cellIconsEvent(type, info, native) {
+  xIconsEvent(type, info, native) {
+    const style = this.getXTableStyle();
     const cells = this.getTableCells();
+    const { fixedCellIcon } = style;
     const { ri, ci, x, y } = info;
+    // 单元格内容小图标
     const cell = cells.getCellOrNew(ri, ci);
-    cell.cellIconsEvent({
+    cell.xIconsEvent({
       native,
       type,
+      x: XDraw.transformStylePx(x),
+      y: XDraw.transformStylePx(y),
+    });
+    // 单元格固定小图标
+    fixedCellIcon.xIconsEvent({
+      native,
+      type,
+      ri,
+      ci,
       x: XDraw.transformStylePx(x),
       y: XDraw.transformStylePx(y),
     });
@@ -1066,6 +1087,7 @@ class XTableDimensions extends Widget {
    * 事件绑定
    */
   bind() {
+    const { focus } = this;
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.resize();
     });
@@ -1076,12 +1098,16 @@ class XTableDimensions extends Widget {
       const { x, y } = this.computeEventXy(e);
       const info = this.getRiCiByXy(x, y);
       this.pointerEvent(info);
-      this.cellIconsEvent(CellIcon.ICON_EVENT_TYPE.MOUSE_MOVE, info, e);
+      this.xIconsEvent(XIcon.ICON_EVENT_TYPE.MOUSE_MOVE, info, e);
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      const { x, y } = this.computeEventXy(e);
-      const info = this.getRiCiByXy(x, y);
-      this.cellIconsEvent(CellIcon.ICON_EVENT_TYPE.MOUSE_DOWN, info, e);
+      const { activate } = focus;
+      const { target } = activate;
+      if (target === this) {
+        const { x, y } = this.computeEventXy(e);
+        const info = this.getRiCiByXy(x, y);
+        this.xIconsEvent(XIcon.ICON_EVENT_TYPE.MOUSE_DOWN, info, e);
+      }
     });
   }
 

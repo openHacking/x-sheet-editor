@@ -4,12 +4,12 @@ import { XDraw } from '../../../canvas/XDraw';
 import { Rect } from '../../../canvas/Rect';
 
 /**
- * CellIconOffset
+ * XIconOffset
  */
-class CellIconOffset {
+class XIconOffset {
 
   /**
-   * CellIconOffset
+   * XIconOffset
    * @param x
    * @param y
    */
@@ -21,9 +21,9 @@ class CellIconOffset {
 }
 
 /**
- * CellIconFocus
+ * XIconFocus
  */
-class CellIconFocus {
+class XIconFocus {
 
   constructor(icon = null) {
     this.activate = icon;
@@ -36,14 +36,14 @@ class CellIconFocus {
 }
 
 // 焦点元素保存
-const focus = new CellIconFocus();
+const focus = new XIconFocus();
 
 /**
- * CellIcon
+ * XIcon
  * @author jerry
  * @date 2020/10/20
  */
-class CellIcon {
+class XIcon {
 
   /**
    * 多图标初始化
@@ -54,7 +54,7 @@ class CellIcon {
     const instances = [];
     for (let i = 0; i < icons.length; i += 1) {
       const icon = icons[i];
-      instances.push(new CellIcon(icon));
+      instances.push(new XIcon(icon));
     }
     return instances;
   }
@@ -67,7 +67,7 @@ class CellIcon {
    * @param icons
    * @param native
    */
-  static cellIconsEvent({
+  static xIconsEvent({
     type, x, y, icons, native,
   }) {
     if (icons.length > 0) {
@@ -77,7 +77,7 @@ class CellIcon {
         });
       });
     } else {
-      CellIcon.clearFocus();
+      XIcon.clearFocus();
     }
   }
 
@@ -93,7 +93,7 @@ class CellIcon {
   }
 
   /**
-   * CellIcon
+   * XIcon
    * @param horizontal
    * @param vertical
    * @param type
@@ -105,9 +105,9 @@ class CellIcon {
    * @param offset
    */
   constructor({
-    vertical = CellIcon.ICON_VERTICAL.CENTER,
-    horizontal = CellIcon.ICON_HORIZONTAL.RIGHT,
-    type = CellIcon.ICON_TYPE.image,
+    vertical = XIcon.ICON_VERTICAL.CENTER,
+    horizontal = XIcon.ICON_HORIZONTAL.RIGHT,
+    type = XIcon.ICON_TYPE.image,
     image = PlainUtils.Nul,
     color = '#ffffff',
     width = 16,
@@ -126,7 +126,7 @@ class CellIcon {
     this.type = type;
     this.image = image;
     this.color = color;
-    this.offset = new CellIconOffset(offset);
+    this.offset = new XIconOffset(offset);
     this.onLeave = onLeave;
     this.onMove = onMove;
     this.onDraw = onDraw;
@@ -159,24 +159,24 @@ class CellIcon {
     let px = 0;
     let py = 0;
     switch (iconHorizontal) {
-      case CellIcon.ICON_HORIZONTAL.CENTER:
+      case XIcon.ICON_HORIZONTAL.CENTER:
         px = (rectX + rectWidth / 2) - (iconWidth / 2);
         break;
-      case CellIcon.ICON_HORIZONTAL.LEFT:
+      case XIcon.ICON_HORIZONTAL.LEFT:
         px = rectX;
         break;
-      case CellIcon.ICON_HORIZONTAL.RIGHT:
+      case XIcon.ICON_HORIZONTAL.RIGHT:
         px = rectX + rectWidth - iconWidth;
         break;
     }
     switch (iconVertical) {
-      case CellIcon.ICON_VERTICAL.CENTER:
+      case XIcon.ICON_VERTICAL.CENTER:
         py = (rectY + rectHeight / 2) - (iconHeight / 2);
         break;
-      case CellIcon.ICON_VERTICAL.TOP:
+      case XIcon.ICON_VERTICAL.TOP:
         py = rectY;
         break;
-      case CellIcon.ICON_VERTICAL.BOTTOM:
+      case XIcon.ICON_VERTICAL.BOTTOM:
         py = rectY + rectHeight - iconHeight;
         break;
     }
@@ -197,7 +197,7 @@ class CellIcon {
   }) {
     const { image, type } = this;
     switch (type) {
-      case CellIcon.ICON_TYPE.image:
+      case XIcon.ICON_TYPE.image:
         if (image instanceof Image) {
           sync(image);
         } else {
@@ -213,7 +213,7 @@ class CellIcon {
           };
         }
         break;
-      case CellIcon.ICON_TYPE.draw:
+      case XIcon.ICON_TYPE.draw:
         sync();
         break;
     }
@@ -230,12 +230,12 @@ class CellIcon {
     const { type } = this;
     this.rect = rect;
     switch (type) {
-      case CellIcon.ICON_TYPE.image:
+      case XIcon.ICON_TYPE.image:
         this.drawImage({
           rect, draw,
         });
         break;
-      case CellIcon.ICON_TYPE.draw:
+      case XIcon.ICON_TYPE.draw:
         this.drawCustom({
           rect, draw,
         });
@@ -292,13 +292,13 @@ class CellIcon {
       const location = this.position(rect).inRect(rect);
       const { activate } = focus;
       switch (type) {
-        case CellIcon.ICON_EVENT_TYPE.MOUSE_DOWN:
+        case XIcon.ICON_EVENT_TYPE.MOUSE_DOWN:
           if (location.includePoint(x, y)) {
             focus.setActivate(this);
             this.onDown(native);
           }
           break;
-        case CellIcon.ICON_EVENT_TYPE.MOUSE_MOVE:
+        case XIcon.ICON_EVENT_TYPE.MOUSE_MOVE:
           if (location.includePoint(x, y)) {
             if (activate !== this) {
               this.onEnter(native);
@@ -315,23 +315,23 @@ class CellIcon {
   }
 
 }
-CellIcon.ICON_HORIZONTAL = {
+XIcon.ICON_HORIZONTAL = {
   LEFT: 0,
   RIGHT: 1,
   CENTER: 2,
 };
-CellIcon.ICON_VERTICAL = {
+XIcon.ICON_VERTICAL = {
   TOP: 3,
   BOTTOM: 4,
   CENTER: 5,
 };
-CellIcon.ICON_TYPE = {
+XIcon.ICON_TYPE = {
   image: 1,
   custom: 2,
 };
-CellIcon.ICON_EVENT_TYPE = {
+XIcon.ICON_EVENT_TYPE = {
   MOUSE_DOWN: 1,
   MOUSE_MOVE: 2,
 };
 
-export { CellIcon };
+export { XIcon };

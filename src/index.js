@@ -8,8 +8,8 @@ import { ElPopUp } from './component/elpopup/ElPopUp';
 import { XDraw } from './canvas/XDraw';
 import { PlainUtils } from './utils/PlainUtils';
 import { RectRange } from './core/table/tablebase/RectRange';
-import { CellIcon } from './core/table/tablecell/CellIcon';
 import { BaseFont } from './canvas/font/BaseFont';
+import { XIcon } from './core/table/xicon/XIcon';
 import './styles/base.less';
 import './styles/index.less';
 
@@ -39,8 +39,8 @@ class XSheet extends Widget {
 XSheet.version = XSheetVersion;
 XSheet.PlainUtils = PlainUtils;
 XSheet.XDraw = XDraw;
+XSheet.XIcon = XIcon;
 XSheet.RectRange = RectRange;
-XSheet.CellIcon = CellIcon;
 XSheet.BaseFont = BaseFont;
 
 if (window) {

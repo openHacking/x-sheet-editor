@@ -1,8 +1,7 @@
 import { PlainUtils } from '../../../utils/PlainUtils';
 import { CellFont } from './CellFont';
 import { CellBorder } from './CellBorder';
-import { CellIcon } from './CellIcon';
-import { XDraw } from '../../../canvas/XDraw';
+import { XIcon } from '../xicon/XIcon';
 
 /**
  * Cell
@@ -32,7 +31,7 @@ class Cell {
     this.background = background;
     this.text = text;
     this.format = format;
-    this.icons = CellIcon.newInstances(icons);
+    this.icons = XIcon.newInstances(icons);
     this.borderAttr = new CellBorder(borderAttr);
     this.fontAttr = new CellFont(fontAttr);
     this.contentWidth = contentWidth;
@@ -42,46 +41,34 @@ class Cell {
     this.contentWidth = contentWidth;
   }
 
-  setBorderAttr(borderAttr) {
-    this.borderAttr = borderAttr;
+  setFontAttr(fontAttr) {
+    this.fontAttr = fontAttr;
   }
 
   setIcons(icons) {
     this.icons = icons;
   }
 
-  setFontAttr(fontAttr) {
-    this.fontAttr = fontAttr;
+  setBorderAttr(borderAttr) {
+    this.borderAttr = borderAttr;
   }
 
-  cellIconsEvent({
+  xIconsEvent({
     type, x, y, native,
   }) {
     const { icons } = this;
-    CellIcon.cellIconsEvent({
+    XIcon.xIconsEvent({
       icons, type, x, y, native,
-    });
-  }
-
-  clone() {
-    const {
-      background, format, text, fontAttr, borderAttr, contentWidth, icons,
-    } = this;
-    return new Cell({
-      background, format, icons, text, fontAttr, borderAttr, contentWidth,
     });
   }
 
   toJSON() {
     const {
-      background,
-      format,
-      text,
-      fontAttr,
-      borderAttr,
-      contentWidth,
+      background, format, text, fontAttr, borderAttr, contentWidth, icons,
     } = this;
-    return { background, format, text, fontAttr, borderAttr, contentWidth };
+    return {
+      background, format, text, fontAttr, borderAttr, contentWidth, icons,
+    };
   }
 
   toCssStyle() {
@@ -91,6 +78,15 @@ class Cell {
     `;
     css = css.replace(/\s/g, '');
     return fontAttr.toCssStyle() + css;
+  }
+
+  clone() {
+    const {
+      background, format, text, fontAttr, borderAttr, contentWidth, icons,
+    } = this;
+    return new Cell({
+      background, format, text, fontAttr, borderAttr, contentWidth, icons,
+    });
   }
 
 }

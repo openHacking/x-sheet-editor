@@ -1,6 +1,7 @@
 import { Cell } from './Cell';
 import { PlainUtils } from '../../../utils/PlainUtils';
 import { BaseFont } from '../../../canvas/font/BaseFont';
+import { FixedCellIcon } from './FixedCellIcon';
 
 /**
  * Cells
@@ -15,8 +16,8 @@ class Cells {
     data = [],
   }) {
     this.merges = merges;
-    this.cols = cols;
     this.rows = rows;
+    this.cols = cols;
     this.data = data;
   }
 

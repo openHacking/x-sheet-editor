@@ -8,9 +8,9 @@ import { ColsIterator } from '../../iterator/ColsIterator';
 import { RowsIterator } from '../../iterator/RowsIterator';
 import { Alert } from '../../../../component/alert/Alert';
 import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBorderItem';
-import { CellIcon } from '../../tablecell/CellIcon';
 import darkFilter from '../../../../../assets/svg/filter-dark.svg';
 import { XTableMousePointer } from '../../XTableMousePointer';
+import { XIcon } from '../../xicon/XIcon';
 
 class XFilter extends XScreenCssBorderItem {
 
@@ -220,13 +220,13 @@ class XFilter extends XScreenCssBorderItem {
   }
 
   clearIcon() {
-    const { table, selectRange, icons } = this;
+    const { table, selectRange } = this;
     if (selectRange) {
-      const { top } = selectRange.brink();
-      const cells = table.getTableCells();
-      top.each((ri, ci) => {
-        const cell = cells.getCellOrNew(ri, ci);
-        cell.icons = cell.icons.filter(icon => !icons.includes(icon));
+      const style = table.getXTableStyle();
+      const { fixedCellIcon } = style;
+      this.icons.forEach((item) => {
+        const { ri, ci, icon } = item;
+        fixedCellIcon.remove(ri, ci, icon);
       });
       this.icons = [];
       table.render();
@@ -237,10 +237,11 @@ class XFilter extends XScreenCssBorderItem {
     const { table, selectRange } = this;
     if (selectRange) {
       const { top } = selectRange.brink();
-      const cells = table.getTableCells();
+      const style = table.getXTableStyle();
       const { mousePointer } = table;
+      const { fixedCellIcon } = style;
       top.each((ri, ci) => {
-        const icon = new CellIcon({
+        const icon = new XIcon({
           image: darkFilter,
           offset: {
             x: -2,
@@ -248,7 +249,7 @@ class XFilter extends XScreenCssBorderItem {
           },
           height: 18,
           width: 18,
-          vertical: CellIcon.ICON_VERTICAL.BOTTOM,
+          vertical: XIcon.ICON_VERTICAL.BOTTOM,
           onDown: () => {},
           onLeave: () => {
             mousePointer.free(XFilter);
@@ -257,9 +258,10 @@ class XFilter extends XScreenCssBorderItem {
             mousePointer.set(XTableMousePointer.KEYS.pointer, XFilter);
           },
         });
-        const cell = cells.getCellOrNew(ri, ci);
-        cell.icons.push(icon);
-        this.icons.push(icon);
+        fixedCellIcon.add(ri, ci, icon);
+        this.icons.push({
+          ri, ci, icon,
+        });
       });
       table.render();
     }

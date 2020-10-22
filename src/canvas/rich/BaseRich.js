@@ -1,0 +1,7 @@
+class BaseRich {
+
+}
+
+export {
+  BaseRich,
+};

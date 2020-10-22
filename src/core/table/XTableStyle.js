@@ -32,6 +32,7 @@ import { OperateCellsHelper } from './helper/OperateCellsHelper';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { VIEW_MODE, XTableScrollView } from './XTableScrollView';
 import { XFixedMeasure } from './tablebase/XFixedMeasure';
+import { FixedCellIcon } from './tablecell/FixedCellIcon';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -741,12 +742,48 @@ class XTableContentBaseUI extends XTableUI {
   /**
    * 加载绘制小图标
    * @param rect
+   * @param ri
+   * @param ci
+   * @param scrollView
+   */
+  drawFixedCellXIcon(rect, ri, ci, scrollView) {
+    const { table } = this;
+    const { draw, fixedCellIcon } = table;
+    const icons = fixedCellIcon.getIcon(ri, ci);
+    if (icons) {
+      for (let i = 0; i < icons.length; i += 1) {
+        const icon = icons[i];
+        icon.loadImage({
+          load: () => {
+            if (scrollView.equals(this.getFullScrollView())) {
+              const x = this.getX();
+              const y = this.getY();
+              draw.offset(x, y);
+              icon.drawIcon({
+                rect, draw,
+              });
+              draw.offset(0, 0);
+            }
+          },
+          sync: () => {
+            icon.drawIcon({
+              rect, draw,
+            });
+          },
+        });
+      }
+    }
+  }
+
+  /**
+   * 加载绘制小图标
+   * @param rect
    * @param cell
    * @param scrollView
    */
-  loadDrawIcons(rect, cell, scrollView) {
-    const { icons } = cell;
+  drawCellXIcon(rect, cell, scrollView) {
     const { table } = this;
+    const { icons } = cell;
     const { draw } = table;
     for (let i = 0; i < icons.length; i += 1) {
       const icon = icons[i];
@@ -1180,7 +1217,7 @@ class XTableContentUI extends XTableContentBaseUI {
   /**
    * 绘制单元格图标
    */
-  drawIcons() {
+  drawXIcon() {
     const { table } = this;
     const { draw } = table;
     const { styleCellsHelper } = table;
@@ -1190,8 +1227,9 @@ class XTableContentUI extends XTableContentBaseUI {
     draw.offset(x, y);
     styleCellsHelper.getCellOrNewCellByViewRange({
       rectRange: scrollView,
-      callback: (row, col, cell, rect) => {
-        this.loadDrawIcons(rect, cell, scrollView);
+      callback: (ri, ci, cell, rect) => {
+        this.drawFixedCellXIcon(rect, ri, ci, scrollView);
+        this.drawCellXIcon(rect, cell, scrollView);
       },
     });
     draw.offset(0, 0);
@@ -1235,7 +1273,7 @@ class XTableContentUI extends XTableContentBaseUI {
     // 绘制边框
     this.drawBorder();
     // 绘制小图标
-    this.drawIcons();
+    this.drawXIcon();
     crop.close();
   }
 
@@ -2239,10 +2277,17 @@ class XTableStyle extends Widget {
       data: this.settings.data,
       merges: this.merges,
     });
+    // 固定区域测量
     this.xFixedMeasure = new XFixedMeasure({
       fixedView: this.xFixedView,
       cols: this.cols,
       rows: this.rows,
+    });
+    // 固定单元格图标
+    this.fixedCellIcon = new FixedCellIcon({
+      data: [],
+      rows: this.rows,
+      cols: this.cols,
     });
     // 表格视图区域
     this.xTableAreaView = new XTableHistoryAreaView({

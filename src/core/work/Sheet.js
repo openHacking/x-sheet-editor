@@ -1,6 +1,6 @@
 import { Widget } from '../../lib/Widget';
+import { XTableDimensions } from '../table/XTableDimensions';
 import { cssPrefix } from '../../const/Constant';
-import { XTableDimensions } from '../table/XTableDimensions,';
 
 class Sheet extends Widget {
 
