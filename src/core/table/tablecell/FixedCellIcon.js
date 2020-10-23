@@ -23,17 +23,6 @@ class FixedCellIcon {
     return data[offset];
   }
 
-  xIconsEvent({
-    type, x, y, native, ri, ci,
-  }) {
-    const icons = this.getIcon(ri, ci);
-    if (icons) {
-      XIcon.xIconsEvent({
-        icons, type, x, y, native,
-      });
-    }
-  }
-
   add(ri, ci, xIcon) {
     const { data } = this;
     const xIcons = this.getIcon(ri, ci);

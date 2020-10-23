@@ -11,6 +11,8 @@ import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBo
 import darkFilter from '../../../../../assets/svg/filter-dark.svg';
 import { XTableMousePointer } from '../../XTableMousePointer';
 import { XIcon } from '../../xicon/XIcon';
+import { Mask } from '../../../../component/mask/Mask';
+import { XDraw } from '../../../../canvas/XDraw';
 
 class XFilter extends XScreenCssBorderItem {
 
@@ -20,6 +22,7 @@ class XFilter extends XScreenCssBorderItem {
     this.buttons = [];
     this.icons = [];
     this.selectRange = null;
+    this.mask = new Mask().setRoot(table);
     this.flt = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-lt`);
     this.ft = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-t`);
     this.fbr = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-br`);
@@ -32,21 +35,9 @@ class XFilter extends XScreenCssBorderItem {
     this.bind();
   }
 
-  borderHandle() {
-    const { selectRange, display } = this;
-    if (selectRange && display) {
-      this.hideBorder();
-      this.showBorder(selectRange);
-    }
-  }
-
-  offsetHandle() {
-    const { selectRange } = this;
-    if (selectRange) {
-      this.setDisplay(selectRange);
-      this.setSizer(selectRange);
-      this.setLocal(selectRange);
-    }
+  xFilterOffset() {
+    this.offsetHandle();
+    this.borderHandle();
   }
 
   xFilterHandle() {
@@ -214,22 +205,20 @@ class XFilter extends XScreenCssBorderItem {
     }
   }
 
-  xFilterOffset() {
-    this.offsetHandle();
-    this.borderHandle();
+  borderHandle() {
+    const { selectRange, display } = this;
+    if (selectRange && display) {
+      this.hideBorder();
+      this.showBorder(selectRange);
+    }
   }
 
-  clearIcon() {
-    const { table, selectRange } = this;
+  offsetHandle() {
+    const { selectRange } = this;
     if (selectRange) {
-      const style = table.getXTableStyle();
-      const { fixedCellIcon } = style;
-      this.icons.forEach((item) => {
-        const { ri, ci, icon } = item;
-        fixedCellIcon.remove(ri, ci, icon);
-      });
-      this.icons = [];
-      table.render();
+      this.setDisplay(selectRange);
+      this.setSizer(selectRange);
+      this.setLocal(selectRange);
     }
   }
 
@@ -250,8 +239,17 @@ class XFilter extends XScreenCssBorderItem {
           height: 18,
           width: 18,
           vertical: XIcon.ICON_VERTICAL.BOTTOM,
+          onEnter: (native, pos) => {
+            const { x, y } = table.computeEventXy(native);
+            this.mask.setWidth(XDraw.transformCssPx(18));
+            this.mask.setHeight(XDraw.transformCssPx(18));
+            this.mask.setTop(y);
+            this.mask.setLeft(x);
+            this.mask.open();
+          },
           onDown: () => {},
           onLeave: () => {
+            this.mask.close();
             mousePointer.free(XFilter);
           },
           onMove: () => {
@@ -263,6 +261,20 @@ class XFilter extends XScreenCssBorderItem {
           ri, ci, icon,
         });
       });
+      table.render();
+    }
+  }
+
+  clearIcon() {
+    const { table, selectRange } = this;
+    if (selectRange) {
+      const style = table.getXTableStyle();
+      const { fixedCellIcon } = style;
+      this.icons.forEach((item) => {
+        const { ri, ci, icon } = item;
+        fixedCellIcon.remove(ri, ci, icon);
+      });
+      this.icons = [];
       table.render();
     }
   }

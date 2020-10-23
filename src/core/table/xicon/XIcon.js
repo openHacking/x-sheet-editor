@@ -289,25 +289,26 @@ class XIcon {
   }) {
     const { rect } = this;
     if (rect) {
-      const location = this.position(rect).inRect(rect);
+      const position = this.position(rect);
+      const location = position.inRect(rect);
       const { activate } = focus;
       switch (type) {
         case XIcon.ICON_EVENT_TYPE.MOUSE_DOWN:
           if (location.includePoint(x, y)) {
             focus.setActivate(this);
-            this.onDown(native);
+            this.onDown(native, position);
           }
           break;
         case XIcon.ICON_EVENT_TYPE.MOUSE_MOVE:
           if (location.includePoint(x, y)) {
             if (activate !== this) {
-              this.onEnter(native);
+              this.onEnter(native, position);
             }
             focus.setActivate(this);
-            this.onMove(native);
+            this.onMove(native, position);
           } else if (activate) {
             focus.setActivate(null);
-            this.onLeave(native);
+            this.onLeave(native, position);
           }
           break;
       }

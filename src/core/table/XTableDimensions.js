@@ -920,18 +920,22 @@ class XTableDimensions extends Widget {
     const cells = this.getTableCells();
     const { fixedCellIcon } = style;
     const { ri, ci, x, y } = info;
+    let icons = [];
     // 单元格内容小图标
-    const cell = cells.getCellOrNew(ri, ci);
-    cell.xIconsEvent({
-      native,
-      type,
-      x: XDraw.transformStylePx(x),
-      y: XDraw.transformStylePx(y),
-    });
+    const cell = cells.getCell(ri, ci);
+    if (cell) {
+      icons = icons.concat(cell.icons);
+    }
     // 单元格固定小图标
-    fixedCellIcon.xIconsEvent({
+    const fixed = fixedCellIcon.getIcon(ri, ci);
+    if (fixed) {
+      icons = icons.concat(fixed);
+    }
+    // 触发事件
+    XIcon.xIconsEvent({
       native,
       type,
+      icons,
       ri,
       ci,
       x: XDraw.transformStylePx(x),

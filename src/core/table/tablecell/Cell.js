@@ -53,15 +53,6 @@ class Cell {
     this.borderAttr = borderAttr;
   }
 
-  xIconsEvent({
-    type, x, y, native,
-  }) {
-    const { icons } = this;
-    XIcon.xIconsEvent({
-      icons, type, x, y, native,
-    });
-  }
-
   toJSON() {
     const {
       background, format, text, fontAttr, borderAttr, contentWidth, icons,

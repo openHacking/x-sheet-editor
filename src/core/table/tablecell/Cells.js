@@ -1,7 +1,6 @@
 import { Cell } from './Cell';
 import { PlainUtils } from '../../../utils/PlainUtils';
 import { BaseFont } from '../../../canvas/font/BaseFont';
-import { FixedCellIcon } from './FixedCellIcon';
 
 /**
  * Cells
