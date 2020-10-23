@@ -2,41 +2,7 @@
 import { PlainUtils } from '../../../utils/PlainUtils';
 import { XDraw } from '../../../canvas/XDraw';
 import { Rect } from '../../../canvas/Rect';
-
-/**
- * XIconOffset
- */
-class XIconOffset {
-
-  /**
-   * XIconOffset
-   * @param x
-   * @param y
-   */
-  constructor({ x = 0, y = 0 } = {}) {
-    this.x = x;
-    this.y = y;
-  }
-
-}
-
-/**
- * XIconFocus
- */
-class XIconFocus {
-
-  constructor(icon = null) {
-    this.activate = icon;
-  }
-
-  setActivate(icon) {
-    this.activate = icon;
-  }
-
-}
-
-// 焦点元素保存
-const focus = new XIconFocus();
+import { XIconOffset } from './XIconOffset';
 
 /**
  * XIcon
@@ -60,58 +26,31 @@ class XIcon {
   }
 
   /**
-   * 图标事件处理
-   * @param type
-   * @param x
-   * @param y
-   * @param icons
-   * @param native
-   */
-  static xIconsEvent({
-    type, x, y, icons, native,
-  }) {
-    if (icons.length > 0) {
-      icons.forEach((icon) => {
-        icon.eventHandle({
-          type, x, y, native,
-        });
-      });
-    } else {
-      XIcon.clearFocus();
-    }
-  }
-
-  /**
-   * 清空焦点元素
-   */
-  static clearFocus() {
-    const { activate } = focus;
-    if (activate) {
-      focus.setActivate(null);
-      activate.onLeave();
-    }
-  }
-
-  /**
    * XIcon
-   * @param horizontal
    * @param vertical
+   * @param horizontal
    * @param type
    * @param image
-   * @param draw
-   * @param color
-   * @param width
+   * @param focus
    * @param height
+   * @param width
+   * @param color
    * @param offset
+   * @param onDraw
+   * @param onLeave
+   * @param onMove
+   * @param onDown
+   * @param onEnter
    */
   constructor({
     vertical = XIcon.ICON_VERTICAL.CENTER,
     horizontal = XIcon.ICON_HORIZONTAL.RIGHT,
     type = XIcon.ICON_TYPE.image,
     image = PlainUtils.Nul,
-    color = '#ffffff',
-    width = 16,
+    focus = null,
     height = 16,
+    width = 16,
+    color = '#ffffff',
     offset = { x: 0, y: 0 },
     onDraw = () => {},
     onLeave = () => {},
@@ -126,6 +65,7 @@ class XIcon {
     this.type = type;
     this.image = image;
     this.color = color;
+    this.focus = focus;
     this.offset = new XIconOffset(offset);
     this.onLeave = onLeave;
     this.onMove = onMove;
@@ -285,7 +225,7 @@ class XIcon {
   eventHandle({
     type, x, y, native,
   }) {
-    const { rect } = this;
+    const { rect, focus } = this;
     if (rect) {
       const position = this.position(rect);
       const location = position.inRect(rect);
@@ -311,6 +251,14 @@ class XIcon {
           break;
       }
     }
+  }
+
+  /**
+   * 设置焦点元素
+   * @param focus
+   */
+  setFocus(focus) {
+    this.focus = focus;
   }
 
 }

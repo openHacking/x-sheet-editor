@@ -38,6 +38,7 @@ import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
 import { CellMergeCopyHelper } from './helper/CellMergeCopyHelper';
 import { Clipboard } from '../../lib/Clipboard';
 import { XIcon } from './xicon/XIcon';
+import { XIconBuilder } from './xicon/XIconBuilder';
 
 class Dimensions {
 
@@ -713,6 +714,8 @@ class XTableDimensions extends Widget {
     this.xLeft = new XTableLeft(this);
     this.xTop = new XTableTop(this);
     this.xContent = new XTableContent(this);
+    // 图标创建器
+    this.xIconBuilder = new XIconBuilder();
     // table组件
     this.focus = new XTableFocus(this);
     this.mousePointer = new XTableMousePointer(this);
@@ -933,6 +936,7 @@ class XTableDimensions extends Widget {
    * @param native
    */
   xIconsEvent(type, info, native) {
+    const { xIconBuilder } = this;
     const style = this.getXTableStyle();
     const cells = this.getTableCells();
     const { fixedCellIcon } = style;
@@ -949,7 +953,7 @@ class XTableDimensions extends Widget {
       icons = icons.concat(fixed);
     }
     // 触发事件
-    XIcon.xIconsEvent({
+    xIconBuilder.xIconsEvent({
       native,
       type,
       icons,

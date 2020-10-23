@@ -245,11 +245,12 @@ class XFilter extends XScreenCssBorderItem {
     const { table, selectRange } = this;
     if (selectRange) {
       const { top } = selectRange.brink();
+      const { xIconBuilder } = table;
       const style = table.getXTableStyle();
-      const { mousePointer } = table;
       const { fixedCellIcon } = style;
+      const { mousePointer } = table;
       top.each((ri, ci) => {
-        const icon = new XIcon({
+        const icon = xIconBuilder.build({
           image: darkFilter,
           offset: {
             x: -2,

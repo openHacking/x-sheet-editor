@@ -59,10 +59,10 @@ class FilterData extends ELContextMenu {
   }
 
   open() {
-    super.open();
     const { valueFilter, ifFilter } = this;
     valueFilter.hide();
     ifFilter.hide();
+    super.open();
   }
 
   destroy() {
