@@ -1,3 +1,4 @@
+/* global document */
 import { PlainUtils } from '../../utils/PlainUtils';
 import { Code } from './tablebase/Code';
 import { Rows } from './tablebase/Rows';
@@ -648,19 +649,19 @@ class XTableDimensions extends Widget {
     this.scale = new Scale();
     this.index = new Code({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.transformCssPx(this.scale.goto(v)),
+        goto: v => XDraw.srcTransformCssPx(this.scale.goto(v)),
       }),
       ...this.settings.index,
     });
     this.rows = new Rows({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.transformCssPx(this.scale.goto(v)),
+        goto: v => XDraw.srcTransformCssPx(this.scale.goto(v)),
       }),
       ...this.settings.rows,
     });
     this.cols = new Cols({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.transformCssPx(this.scale.goto(v)),
+        goto: v => XDraw.srcTransformCssPx(this.scale.goto(v)),
       }),
       ...this.settings.cols,
     });
@@ -744,6 +745,22 @@ class XTableDimensions extends Widget {
       },
       paste: () => {},
     });
+    // 全局事件处理器
+    this.xTableDimensionsMoveHandle = (e) => {
+      const { x, y } = this.computeEventXy(e);
+      const info = this.getRiCiByXy(x, y);
+      this.pointerEvent(info);
+      this.xIconsEvent(XIcon.ICON_EVENT_TYPE.MOUSE_MOVE, info, e);
+    };
+    this.xTableDimensionsDownHandle = (e) => {
+      const { activate } = this.focus;
+      const { target } = activate;
+      if (target === this) {
+        const { x, y } = this.computeEventXy(e);
+        const info = this.getRiCiByXy(x, y);
+        this.xIconsEvent(XIcon.ICON_EVENT_TYPE.MOUSE_DOWN, info, e);
+      }
+    };
   }
 
   /**
@@ -936,10 +953,8 @@ class XTableDimensions extends Widget {
       native,
       type,
       icons,
-      ri,
-      ci,
-      x: XDraw.transformStylePx(x),
-      y: XDraw.transformStylePx(y),
+      x: XDraw.srcTransformStylePx(x),
+      y: XDraw.srcTransformStylePx(y),
     });
   }
 
@@ -1083,36 +1098,26 @@ class XTableDimensions extends Widget {
    * 移除事件绑定
    */
   unbind() {
-    this.focus.unbind();
+    const { xTableDimensionsMoveHandle, xTableDimensionsDownHandle } = this;
     this.keyboard.unbind();
+    this.focus.unbind();
+    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, xTableDimensionsMoveHandle);
+    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, xTableDimensionsDownHandle);
   }
 
   /**
    * 事件绑定
    */
   bind() {
-    const { focus } = this;
+    const { xTableDimensionsMoveHandle, xTableDimensionsDownHandle } = this;
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.resize();
     });
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
       this.resize();
     });
-    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
-      const { x, y } = this.computeEventXy(e);
-      const info = this.getRiCiByXy(x, y);
-      this.pointerEvent(info);
-      this.xIconsEvent(XIcon.ICON_EVENT_TYPE.MOUSE_MOVE, info, e);
-    });
-    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      const { activate } = focus;
-      const { target } = activate;
-      if (target === this) {
-        const { x, y } = this.computeEventXy(e);
-        const info = this.getRiCiByXy(x, y);
-        this.xIconsEvent(XIcon.ICON_EVENT_TYPE.MOUSE_DOWN, info, e);
-      }
-    });
+    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, xTableDimensionsMoveHandle);
+    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, xTableDimensionsDownHandle);
   }
 
   /**

@@ -86,7 +86,7 @@ class CellFont {
     }
     let css = `
       justify-content:${justifyContent};
-      font-size: ${XDraw.transformCssPx(size)}px;color: ${color};font-weight: ${bold ? 'bold' : 'initial'};
+      font-size: ${XDraw.srcTransformCssPx(size)}px;color: ${color};font-weight: ${bold ? 'bold' : 'initial'};
       font-style: ${italic ? 'italic' : 'initial'};
       font-family: ${name};
       align-items: ${alignItems};

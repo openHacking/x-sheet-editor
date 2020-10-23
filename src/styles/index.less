@@ -208,6 +208,7 @@
   width: 5px;
   border: 2px solid #ffffff;
   background: #42a642;
+  z-index: @z-index-level-1;
 }
 .@{css-prefix}-x-select-corner.br-pos {
   right: 0;
@@ -1320,5 +1321,9 @@
   width: 18px;
   height: 18px;
   position: relative;
+  z-index: @z-index-level-last;
+}
+
+.@{css-prefix}-mask {
   z-index: @z-index-level-last;
 }

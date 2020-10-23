@@ -10,7 +10,7 @@ class Mask extends Widget {
     this.root = h(document.body);
     this.status = false;
     this.css('position', 'absolute');
-    this.css('background', 'rgba(0,0,0,0.5)');
+    this.css('background', 'rgba(0,0,0,0.3)');
   }
 
   setLeft(left) {

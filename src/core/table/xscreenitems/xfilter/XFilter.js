@@ -13,6 +13,8 @@ import { XTableMousePointer } from '../../XTableMousePointer';
 import { XIcon } from '../../xicon/XIcon';
 import { Mask } from '../../../../component/mask/Mask';
 import { XDraw } from '../../../../canvas/XDraw';
+import { FilterData } from '../../../../component/filterdata/FilterData';
+import { ElPopUp } from '../../../../component/elpopup/ElPopUp';
 
 class XFilter extends XScreenCssBorderItem {
 
@@ -23,6 +25,9 @@ class XFilter extends XScreenCssBorderItem {
     this.icons = [];
     this.selectRange = null;
     this.mask = new Mask().setRoot(table);
+    this.filter = new FilterData({
+      el: this.mask,
+    });
     this.flt = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-lt`);
     this.ft = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-t`);
     this.fbr = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-br`);
@@ -222,6 +227,20 @@ class XFilter extends XScreenCssBorderItem {
     }
   }
 
+  clearIcon() {
+    const { table, selectRange } = this;
+    if (selectRange) {
+      const style = table.getXTableStyle();
+      const { fixedCellIcon } = style;
+      this.icons.forEach((item) => {
+        const { ri, ci, icon } = item;
+        fixedCellIcon.remove(ri, ci, icon);
+      });
+      this.icons = [];
+      table.render();
+    }
+  }
+
   createIcon() {
     const { table, selectRange } = this;
     if (selectRange) {
@@ -239,15 +258,22 @@ class XFilter extends XScreenCssBorderItem {
           height: 18,
           width: 18,
           vertical: XIcon.ICON_VERTICAL.BOTTOM,
-          onEnter: (native, pos) => {
-            const { x, y } = table.computeEventXy(native);
-            this.mask.setWidth(XDraw.transformCssPx(18));
-            this.mask.setHeight(XDraw.transformCssPx(18));
-            this.mask.setTop(y);
-            this.mask.setLeft(x);
-            this.mask.open();
+          onEnter: (native, position) => {
+            const cssHeight = XDraw.styleTransformCssPx(position.height);
+            const cssWidth = XDraw.styleTransformCssPx(position.width);
+            const cssLeft = XDraw.styleTransformCssPx(position.x);
+            const cssTop = XDraw.styleTransformCssPx(position.y);
+            this.mask.setLeft(cssLeft)
+              .setTop(cssTop)
+              .setWidth(cssWidth)
+              .setHeight(cssHeight)
+              .open();
           },
-          onDown: () => {},
+          onDown: (native) => {
+            ElPopUp.closeAll();
+            this.filter.open();
+            native.stopPropagation();
+          },
           onLeave: () => {
             this.mask.close();
             mousePointer.free(XFilter);
@@ -256,31 +282,13 @@ class XFilter extends XScreenCssBorderItem {
             mousePointer.set(XTableMousePointer.KEYS.pointer, XFilter);
           },
         });
-        fixedCellIcon.add(ri, ci, icon);
+        fixedCellIcon.addOrNewCell(ri, ci, icon);
         this.icons.push({
           ri, ci, icon,
         });
       });
       table.render();
     }
-  }
-
-  clearIcon() {
-    const { table, selectRange } = this;
-    if (selectRange) {
-      const style = table.getXTableStyle();
-      const { fixedCellIcon } = style;
-      this.icons.forEach((item) => {
-        const { ri, ci, icon } = item;
-        fixedCellIcon.remove(ri, ci, icon);
-      });
-      this.icons = [];
-      table.render();
-    }
-  }
-
-  onAdd() {
-    super.onAdd();
   }
 
   unbind() {
@@ -298,6 +306,7 @@ class XFilter extends XScreenCssBorderItem {
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       if (this.display) {
         this.xFilterOffset();
+        ElPopUp.closeAll();
       }
     });
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RENDER, () => {
@@ -305,6 +314,16 @@ class XFilter extends XScreenCssBorderItem {
         this.xFilterOffset();
       }
     });
+  }
+
+  onAdd() {
+    super.onAdd();
+  }
+
+  hideFilter() {
+    this.display = false;
+    this.clearIcon();
+    this.hide();
   }
 
   openFilter() {
@@ -324,12 +343,6 @@ class XFilter extends XScreenCssBorderItem {
         this.xFilterOffset();
       }
     }
-  }
-
-  hideFilter() {
-    this.display = false;
-    this.clearIcon();
-    this.hide();
   }
 
   destroy() {

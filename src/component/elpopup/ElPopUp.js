@@ -44,11 +44,11 @@ class ElPopUp extends Widget {
   open() {
     if (this.status === false && root) {
       root.children(this);
-      this.elPopUpPosition();
-      this.elPopUpAutosize();
-      this.elPopUpLocation();
       this.status = true;
     }
+    this.elPopUpPosition();
+    this.elPopUpAutosize();
+    this.elPopUpLocation();
   }
 
   /**

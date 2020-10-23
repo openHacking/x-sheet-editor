@@ -42,8 +42,8 @@ class TextBuilder {
     const font = new XFont({
       dw, text, rect, attr, overflow,
     });
-    const size = XDraw.transformStylePx(scaleAdapter.goto(attr.size));
-    const padding = XDraw.transformStylePx(scaleAdapter.goto(attr.padding));
+    const size = XDraw.srcTransformStylePx(scaleAdapter.goto(attr.size));
+    const padding = XDraw.srcTransformStylePx(scaleAdapter.goto(attr.padding));
     font.setSize(size);
     font.setPadding(padding);
     return font;

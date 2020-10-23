@@ -101,7 +101,7 @@ class XTableFixedBar {
       xFixedView, draw, index, xFixedMeasure,
     } = table;
     if (xFixedView.hasFixedTop()) {
-      const rpxHeight = XDraw.transformStylePx(height);
+      const rpxHeight = XDraw.srcTransformStylePx(height);
       const width = table.visualWidth();
       const x = index.getWidth();
       const y = xFixedMeasure.getHeight() + index.getHeight() - rpxHeight / 2;
@@ -110,7 +110,7 @@ class XTableFixedBar {
     }
     if (xFixedView.hasFixedLeft()) {
       const height = table.visualHeight();
-      const rpxWidth = XDraw.transformStylePx(width);
+      const rpxWidth = XDraw.srcTransformStylePx(width);
       const x = xFixedMeasure.getWidth() + index.getWidth() - rpxWidth / 2;
       const y = index.getHeight();
       draw.attr({ fillStyle: background });
@@ -126,7 +126,7 @@ class XTableFixedBar {
       xFixedView, draw, index, xFixedMeasure,
     } = table;
     if (xFixedView.hasFixedTop()) {
-      const rpxHeight = XDraw.transformStylePx(height);
+      const rpxHeight = XDraw.srcTransformStylePx(height);
       const width = index.getWidth();
       const x = 0;
       const y = xFixedMeasure.getHeight() + index.getHeight() - rpxHeight / 2;
@@ -135,7 +135,7 @@ class XTableFixedBar {
     }
     if (xFixedView.hasFixedLeft()) {
       const height = index.getHeight();
-      const rpxWidth = XDraw.transformStylePx(width);
+      const rpxWidth = XDraw.srcTransformStylePx(width);
       const x = xFixedMeasure.getWidth() + index.getWidth() - rpxWidth / 2;
       const y = 0;
       draw.attr({ fillStyle: buttonColor });
@@ -751,18 +751,18 @@ class XTableContentBaseUI extends XTableUI {
     const { draw, fixedCellIcon } = table;
     const icons = fixedCellIcon.getIcon(ri, ci);
     if (icons) {
+      const x = this.getX();
+      const y = this.getY();
+      rect.x += x;
+      rect.y += y;
       for (let i = 0; i < icons.length; i += 1) {
         const icon = icons[i];
         icon.loadImage({
           load: () => {
             if (scrollView.equals(this.getFullScrollView())) {
-              const x = this.getX();
-              const y = this.getY();
-              draw.offset(x, y);
               icon.drawIcon({
                 rect, draw,
               });
-              draw.offset(0, 0);
             }
           },
           sync: () => {
@@ -785,18 +785,18 @@ class XTableContentBaseUI extends XTableUI {
     const { table } = this;
     const { icons } = cell;
     const { draw } = table;
+    const x = this.getX();
+    const y = this.getY();
+    rect.x += x;
+    rect.y += y;
     for (let i = 0; i < icons.length; i += 1) {
       const icon = icons[i];
       icon.loadImage({
         load: () => {
           if (scrollView.equals(this.getFullScrollView())) {
-            const x = this.getX();
-            const y = this.getY();
-            draw.offset(x, y);
             icon.drawIcon({
               rect, draw,
             });
-            draw.offset(0, 0);
           }
         },
         sync: () => {
@@ -1219,20 +1219,17 @@ class XTableContentUI extends XTableContentBaseUI {
    */
   drawXIcon() {
     const { table } = this;
-    const { draw } = table;
     const { styleCellsHelper } = table;
     const scrollView = this.getFullScrollView();
-    const x = this.getX();
-    const y = this.getY();
-    draw.offset(x, y);
-    styleCellsHelper.getCellOrNewCellByViewRange({
+    styleCellsHelper.getCellByViewRange({
       rectRange: scrollView,
       callback: (ri, ci, cell, rect) => {
-        this.drawFixedCellXIcon(rect, ri, ci, scrollView);
-        this.drawCellXIcon(rect, cell, scrollView);
+        const fixedRect = rect.clone();
+        const cellRect = rect.clone();
+        this.drawFixedCellXIcon(fixedRect, ri, ci, scrollView);
+        this.drawCellXIcon(cellRect, cell, scrollView);
       },
     });
-    draw.offset(0, 0);
   }
 
   /**
@@ -2249,19 +2246,19 @@ class XTableStyle extends Widget {
     this.scale = new Scale();
     this.index = new Code({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.transformStylePx(this.scale.goto(v)),
+        goto: v => XDraw.srcTransformStylePx(this.scale.goto(v)),
       }),
       ...this.settings.index,
     });
     this.rows = new Rows({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.transformStylePx(this.scale.goto(v)),
+        goto: v => XDraw.srcTransformStylePx(this.scale.goto(v)),
       }),
       ...this.settings.rows,
     });
     this.cols = new Cols({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.transformStylePx(this.scale.goto(v)),
+        goto: v => XDraw.srcTransformStylePx(this.scale.goto(v)),
         back: v => this.scale.back(v),
       }),
       ...this.settings.cols,
@@ -2288,6 +2285,7 @@ class XTableStyle extends Widget {
       data: [],
       rows: this.rows,
       cols: this.cols,
+      cells: this.cells,
     });
     // 表格视图区域
     this.xTableAreaView = new XTableHistoryAreaView({

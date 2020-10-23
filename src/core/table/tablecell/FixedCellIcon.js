@@ -1,13 +1,14 @@
 import { PlainUtils } from '../../../utils/PlainUtils';
-import { XIcon } from '../xicon/XIcon';
 
 class FixedCellIcon {
 
   constructor({
     rows,
     cols,
+    cells,
   } = {}) {
     this.cols = cols;
+    this.cells = cells;
     this.data = new Array(rows.len * cols.len);
   }
 
@@ -23,14 +24,23 @@ class FixedCellIcon {
     return data[offset];
   }
 
+  addOrNewCell(ri, ci, xIcon) {
+    const { cells } = this;
+    cells.getCellOrNew(ri, ci);
+    this.add(ri, ci, xIcon);
+  }
+
   add(ri, ci, xIcon) {
-    const { data } = this;
-    const xIcons = this.getIcon(ri, ci);
-    if (xIcons) {
-      xIcons.push(xIcon);
-    } else {
-      const offset = this.getOffset(ri, ci);
-      data[offset] = [xIcon];
+    const { data, cells } = this;
+    const cell = cells.getCell(ri, ci);
+    if (cell) {
+      const xIcons = this.getIcon(ri, ci);
+      if (xIcons) {
+        xIcons.push(xIcon);
+      } else {
+        const offset = this.getOffset(ri, ci);
+        data[offset] = [xIcon];
+      }
     }
   }
 

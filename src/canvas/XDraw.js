@@ -20,12 +20,16 @@ class Base {
     return DPR;
   }
 
-  static transformStylePx(px) {
+  static srcTransformStylePx(px) {
     return this.rounding(px * this.dpr());
   }
 
-  static transformCssPx(px) {
-    return this.transformStylePx(px) / this.dpr();
+  static srcTransformCssPx(px) {
+    return this.srcTransformStylePx(px) / this.dpr();
+  }
+
+  static styleTransformCssPx(px) {
+    return px / this.dpr();
   }
 
   constructor(canvas) {
@@ -52,8 +56,8 @@ class Base {
 
   resize(width, height) {
     const { canvas } = this;
-    canvas.width = Base.transformStylePx(width);
-    canvas.height = Base.transformStylePx(height);
+    canvas.width = Base.srcTransformStylePx(width);
+    canvas.height = Base.srcTransformStylePx(height);
     canvas.style.width = `${canvas.width / Base.dpr()}px`;
     canvas.style.height = `${canvas.height / Base.dpr()}px`;
     return this;

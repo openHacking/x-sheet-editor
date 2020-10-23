@@ -142,14 +142,12 @@ class XIcon {
    */
   position(rect) {
     // 图标信息
-    const iconSourceWidth = this.width;
-    const iconSourceHeight = this.height;
     const iconHorizontal = this.horizontal;
     const iconVertical = this.vertical;
-    const iconX = XDraw.transformStylePx(this.offset.x);
-    const iconY = XDraw.transformStylePx(this.offset.y);
-    const iconWidth = XDraw.transformStylePx(iconSourceWidth);
-    const iconHeight = XDraw.transformStylePx(iconSourceHeight);
+    const iconOffsetX = XDraw.srcTransformStylePx(this.offset.x);
+    const iconOffsetY = XDraw.srcTransformStylePx(this.offset.y);
+    const iconWidth = XDraw.srcTransformStylePx(this.width);
+    const iconHeight = XDraw.srcTransformStylePx(this.height);
     // 矩形位置
     const rectX = rect.x;
     const rectY = rect.y;
@@ -180,8 +178,8 @@ class XIcon {
         py = rectY + rectHeight - iconHeight;
         break;
     }
-    px += iconX;
-    py += iconY;
+    px += iconOffsetX;
+    py += iconOffsetY;
     return new Rect({
       x: px, y: py, width: iconWidth, height: iconHeight,
     });
