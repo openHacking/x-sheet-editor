@@ -65,7 +65,7 @@ class IFFilter extends ELContextMenuItem {
 
   bind() {
     const {
-      titleEle, titleIconEle, selectEle,
+      titleEle, selectEle,
     } = this;
     XEvent.bind(selectEle, Constant.SYSTEM_EVENT_TYPE.CHANGE, (e) => {
       const { detail } = e;
@@ -75,13 +75,9 @@ class IFFilter extends ELContextMenuItem {
     });
     XEvent.bind(titleEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       if (this.status) {
-        this.status = false;
         this.hide();
-        titleIconEle.removeClass('active');
       } else {
-        this.status = true;
         this.show();
-        titleIconEle.addClass('active');
       }
     });
   }
@@ -149,12 +145,14 @@ class IFFilter extends ELContextMenuItem {
   }
 
   show() {
+    this.titleIconEle.addClass('active');
     this.status = true;
     this.selectEleBox.show();
     this.setType(this.type);
   }
 
   hide() {
+    this.titleIconEle.removeClass('active');
     this.status = false;
     this.selectEleBox.hide();
     this.valueInputEleBox.hide();

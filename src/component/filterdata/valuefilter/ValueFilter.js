@@ -76,7 +76,7 @@ class ValueFilter extends ELContextMenuItem {
    */
   bind() {
     const {
-      titleEle, titleIconEle, selectEle, clearEle, itemsBox,
+      titleEle, selectEle, clearEle, itemsBox,
     } = this;
     const clazz = `${cssPrefix}-value-filter-item`;
     XEvent.bind(selectEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
@@ -84,13 +84,9 @@ class ValueFilter extends ELContextMenuItem {
     });
     XEvent.bind(titleEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       if (this.status) {
-        this.status = false;
         this.hide();
-        titleIconEle.removeClass('active');
       } else {
-        this.status = true;
         this.show();
-        titleIconEle.addClass('active');
       }
     });
     XEvent.bind(itemsBox, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
@@ -110,6 +106,7 @@ class ValueFilter extends ELContextMenuItem {
    * 显示控件
    */
   show() {
+    this.titleIconEle.addClass('active');
     this.status = true;
     this.optionBoxEle.show();
     this.searchBoxEle.show();
@@ -120,6 +117,7 @@ class ValueFilter extends ELContextMenuItem {
    * 隐藏控件
    */
   hide() {
+    this.titleIconEle.removeClass('active');
     this.status = false;
     this.optionBoxEle.hide();
     this.searchBoxEle.hide();

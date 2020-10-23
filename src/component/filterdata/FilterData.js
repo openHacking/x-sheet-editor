@@ -58,6 +58,13 @@ class FilterData extends ELContextMenu {
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.filterDataHandle);
   }
 
+  open() {
+    super.open();
+    const { valueFilter, ifFilter } = this;
+    valueFilter.hide();
+    ifFilter.hide();
+  }
+
   destroy() {
     super.destroy();
     this.unbind();
