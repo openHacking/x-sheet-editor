@@ -47,15 +47,15 @@ class FilterData extends ELContextMenu {
     this.bind();
   }
 
+  unbind() {
+    XEvent.unbind(this.okEle);
+    XEvent.unbind(this.noEle);
+  }
+
   bind() {
     XEvent.bind(this.okEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.okHandle);
     XEvent.bind(this.noEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.noHandle);
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.filterDataHandle);
-  }
-
-  unbind() {
-    XEvent.unbind(this.okEle);
-    XEvent.unbind(this.noEle);
   }
 
   destroy() {

@@ -480,16 +480,16 @@
   height: 100%;
   overflow: hidden;
 }
-.@{css-prefix}-form-input-wrap {
+.@{css-prefix}-form-search-input .@{css-prefix}-form-input-wrap {
   height: 100%;
   width: 90%;
   float: left;
 }
-.@{css-prefix}-form-input-inner {
+.@{css-prefix}-form-search-input .@{css-prefix}-form-input-inner {
   padding: 0 5px 0 5px;
   height: 100%;
 }
-.@{css-prefix}-form-input-source {
+.@{css-prefix}-form-search-input .@{css-prefix}-form-input-source {
   width: 100%;
   height: 100%;
   border: none;
@@ -497,7 +497,7 @@
   color: #414141;
   display: inline-block;
 }
-.@{css-prefix}-form-input-search {
+.@{css-prefix}-form-search-input .@{css-prefix}-form-input-search {
   height: 100%;
   width: 10%;
   float: left;
@@ -508,15 +508,40 @@
   background-repeat: no-repeat;
 }
 
+// 表单 PlainInput
+.@{css-prefix}-form-plain-input {
+  height: 100%;
+  overflow: hidden;
+}
+.@{css-prefix}-form-plain-input .@{css-prefix}-form-input-wrap {
+  height: 100%;
+  width: 100%;
+  float: left;
+}
+.@{css-prefix}-form-plain-input .@{css-prefix}-form-input-inner {
+  padding: 0 5px 0 5px;
+  height: 100%;
+}
+.@{css-prefix}-form-plain-input .@{css-prefix}-form-input-source {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  color: #414141;
+  display: inline-block;
+}
+
 // 表单 Select
 .@{css-prefix}-form-select {
   overflow: hidden;
   height: 100%;
 }
 .@{css-prefix}-form-select-text {
-  float: left;
   width: 90%;
   height: 100%;
+  float: left;
+  display: flex;
+  align-items: center;
 }
 .@{css-prefix}-form-select-icon {
   float: left;

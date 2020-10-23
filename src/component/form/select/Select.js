@@ -5,25 +5,45 @@ import { h } from '../../../lib/Element';
 import { ELContextMenuDivider } from '../../contextmenu/ELContextMenuDivider';
 import { SelectContextMenu } from './contextmenu/SelectContextMenu';
 import { SelectContextMenuItem } from './contextmenu/SelectContextMenuItem';
+import { PlainUtils } from '../../../utils/PlainUtils';
 
+/**
+ * Select
+ */
 class Select extends Widget {
 
+  /**
+   * Select
+   */
   constructor() {
     super(`${cssPrefix}-form-select`);
-    this.contextMenu = new SelectContextMenu({
-      el: this,
-    });
+    this.selectValue = PlainUtils.Nul;
+    // 文本和图标
     this.selectText = h('div', `${cssPrefix}-form-select-text`);
     this.selectIcon = h('div', `${cssPrefix}-form-select-icon`);
     this.children(this.selectText);
     this.children(this.selectIcon);
+    // 上下文菜单
+    this.contextMenu = new SelectContextMenu({
+      el: this,
+      onUpdate: (item) => {
+        const { value } = item;
+        this.setSelect(value);
+      },
+    });
     this.bind();
   }
 
+  /**
+   * 卸载事件
+   */
   unbind() {
     XEvent.unbind(this);
   }
 
+  /**
+   * 绑定事件
+   */
   bind() {
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       if (this.contextMenu.isClose()) {
@@ -35,6 +55,36 @@ class Select extends Widget {
     });
   }
 
+  /**
+   * 设置选择的值
+   * @param value
+   */
+  setSelect(value) {
+    const { contextMenu, selectText } = this;
+    const { items } = contextMenu;
+    const find = items.find(item => item.value === value);
+    if (find) {
+      selectText.html(`&nbsp;${find.text}`);
+      this.selectValue = value;
+      this.trigger(Constant.SYSTEM_EVENT_TYPE.CHANGE, {
+        item: find,
+      });
+    }
+  }
+
+  /**
+   * 获取当前选择的值
+   * @returns {null}
+   */
+  getValue() {
+    return this.selectValue;
+  }
+
+  /**
+   * 添加新的选项
+   * @param text
+   * @param value
+   */
   addValue({
     text, value,
   }) {
@@ -42,11 +92,17 @@ class Select extends Widget {
     this.contextMenu.addItem(item);
   }
 
+  /**
+   * 获取分隔线
+   */
   addDivider() {
     const item = new ELContextMenuDivider();
     this.contextMenu.addItem(item);
   }
 
+  /**
+   * 组件销毁
+   */
   destroy() {
     super.destroy();
     this.unbind();

@@ -435,16 +435,16 @@
   height: 100%;
   overflow: hidden;
 }
-.x-sheet-form-input-wrap {
+.x-sheet-form-search-input .x-sheet-form-input-wrap {
   height: 100%;
   width: 90%;
   float: left;
 }
-.x-sheet-form-input-inner {
+.x-sheet-form-search-input .x-sheet-form-input-inner {
   padding: 0 5px 0 5px;
   height: 100%;
 }
-.x-sheet-form-input-source {
+.x-sheet-form-search-input .x-sheet-form-input-source {
   width: 100%;
   height: 100%;
   border: none;
@@ -452,7 +452,7 @@
   color: #414141;
   display: inline-block;
 }
-.x-sheet-form-input-search {
+.x-sheet-form-search-input .x-sheet-form-input-search {
   height: 100%;
   width: 10%;
   float: left;
@@ -462,14 +462,37 @@
   background-size: 60% 60%;
   background-repeat: no-repeat;
 }
+.x-sheet-form-plain-input {
+  height: 100%;
+  overflow: hidden;
+}
+.x-sheet-form-plain-input .x-sheet-form-input-wrap {
+  height: 100%;
+  width: 100%;
+  float: left;
+}
+.x-sheet-form-plain-input .x-sheet-form-input-inner {
+  padding: 0 5px 0 5px;
+  height: 100%;
+}
+.x-sheet-form-plain-input .x-sheet-form-input-source {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  color: #414141;
+  display: inline-block;
+}
 .x-sheet-form-select {
   overflow: hidden;
   height: 100%;
 }
 .x-sheet-form-select-text {
-  float: left;
   width: 90%;
   height: 100%;
+  float: left;
+  display: flex;
+  align-items: center;
 }
 .x-sheet-form-select-icon {
   float: left;
@@ -1587,6 +1610,13 @@
   background-image: url(5c9cd65ac12221bc4211e24bd3382f5d.svg);
 }
 .x-sheet-if-filter-select-box {
+  height: 30px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid #dddddd;
+  margin-top: 10px;
+}
+.x-sheet-if-filter-value-input-box {
   height: 30px;
   cursor: pointer;
   border-radius: 5px;

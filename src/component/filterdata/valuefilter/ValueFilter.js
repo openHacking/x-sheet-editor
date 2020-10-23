@@ -2,16 +2,21 @@ import { ELContextMenuItem } from '../../contextmenu/ELContextMenuItem';
 import { Constant, cssPrefix } from '../../../const/Constant';
 import { h } from '../../../lib/Element';
 import { SearchInput } from '../../form/input/SearchInput';
-import { ValueItem } from './ValueItem';
 import { XEvent } from '../../../lib/XEvent';
 
+/**
+ * ValueFilter
+ */
 class ValueFilter extends ELContextMenuItem {
 
+  /**
+   * ValueFilter
+   */
   constructor() {
     super(`${cssPrefix}-filter-data-menu-item ${cssPrefix}-value-filter`);
-    this.status = true;
     this.items = [];
-
+    this.status = true;
+    // 标题
     this.titleEle = h('div', `${cssPrefix}-value-filter-title`);
     this.titleTextEle = h('span', `${cssPrefix}-value-filter-title-text`);
     this.titleIconEle = h('span', `${cssPrefix}-value-filter-title-icon`);
@@ -19,7 +24,7 @@ class ValueFilter extends ELContextMenuItem {
     this.titleEle.children(this.titleIconEle);
     this.titleEle.children(this.titleTextEle);
     this.children(this.titleEle);
-
+    // 操作按钮
     this.optionBoxEle = h('div', `${cssPrefix}-value-filter-option-box`);
     this.selectEle = h('div', `${cssPrefix}-value-filter-option-select`);
     this.flagEle = h('div', `${cssPrefix}-value-filter-option-flag`);
@@ -31,50 +36,32 @@ class ValueFilter extends ELContextMenuItem {
     this.optionBoxEle.children(this.flagEle);
     this.optionBoxEle.children(this.clearEle);
     this.children(this.optionBoxEle);
-
+    // 搜索框
     this.searchBoxEle = h('div', `${cssPrefix}-value-filter-input-box`);
     this.searchInput = new SearchInput();
     this.searchBoxEle.children(this.searchInput);
     this.children(this.searchBoxEle);
-
+    // 条目盒子
     this.itemsBox = h('div', `${cssPrefix}-value-filter-items-box`);
     this.children(this.itemsBox);
-
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-    this.addItem(new ValueItem({ text: '121212' }));
-
-    this.removeClass('hover');
+    // 事件处理
     this.hide();
     this.bind();
+    this.removeClass('hover');
   }
 
+  /**
+   * 添加单项
+   * @param valueItem
+   */
   addItem(valueItem) {
     this.items.push(valueItem);
     this.itemsBox.children(valueItem);
   }
 
+  /**
+   * 卸载事件
+   */
   unbind() {
     const {
       titleEle, selectEle, clearEle,
@@ -84,15 +71,16 @@ class ValueFilter extends ELContextMenuItem {
     XEvent.unbind(titleEle);
   }
 
+  /**
+   * 绑定事件
+   */
   bind() {
     const {
-      titleEle, titleIconEle, selectEle, clearEle,
+      titleEle, titleIconEle, selectEle, clearEle, itemsBox,
     } = this;
+    const clazz = `${cssPrefix}-value-filter-item`;
     XEvent.bind(selectEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       this.selectAll();
-    });
-    XEvent.bind(clearEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      this.clearAll();
     });
     XEvent.bind(titleEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       if (this.status) {
@@ -105,8 +93,22 @@ class ValueFilter extends ELContextMenuItem {
         titleIconEle.addClass('active');
       }
     });
+    XEvent.bind(itemsBox, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const { target } = e;
+      const hasClass = h(target).hasClass(clazz) || h(target).parent().hasClass(clazz);
+      if (hasClass) {
+        // TODO ...
+        // 触发事件
+      }
+    });
+    XEvent.bind(clearEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      this.clearAll();
+    });
   }
 
+  /**
+   * 显示控件
+   */
   show() {
     this.status = true;
     this.optionBoxEle.show();
@@ -114,6 +116,9 @@ class ValueFilter extends ELContextMenuItem {
     this.itemsBox.show();
   }
 
+  /**
+   * 隐藏控件
+   */
   hide() {
     this.status = false;
     this.optionBoxEle.hide();
@@ -121,6 +126,9 @@ class ValueFilter extends ELContextMenuItem {
     this.itemsBox.hide();
   }
 
+  /**
+   * 选中所有子项
+   */
   selectAll() {
     const { items } = this;
     items.forEach((item) => {
@@ -128,6 +136,9 @@ class ValueFilter extends ELContextMenuItem {
     });
   }
 
+  /**
+   * 清除所有子项
+   */
   clearAll() {
     const { items } = this;
     items.forEach((item) => {
@@ -135,6 +146,9 @@ class ValueFilter extends ELContextMenuItem {
     });
   }
 
+  /**
+   * 销毁组件
+   */
   destroy() {
     super.destroy();
     this.unbind();
