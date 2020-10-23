@@ -305,8 +305,8 @@ class XFilter extends XScreenCssBorderItem {
     });
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       if (this.display) {
-        this.xFilterOffset();
         ElPopUp.closeAll();
+        this.xFilterOffset();
       }
     });
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RENDER, () => {
