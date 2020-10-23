@@ -1,7 +1,7 @@
 /* global document */
 import { Widget } from '../../lib/Widget';
-import { cssPrefix } from '../../const/Constant';
 import { h } from '../../lib/Element';
+import { cssPrefix } from '../../const/Constant';
 
 class Mask extends Widget {
 
