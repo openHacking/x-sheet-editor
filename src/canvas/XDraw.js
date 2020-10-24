@@ -20,16 +20,16 @@ class Base {
     return DPR;
   }
 
-  static srcTransformStylePx(px) {
-    return this.rounding(px * this.dpr());
+  static styleTransformCssPx(px) {
+    return px / this.dpr();
   }
 
   static srcTransformCssPx(px) {
-    return this.srcTransformStylePx(px) / this.dpr();
+    return this.styleTransformCssPx(this.srcTransformStylePx(px));
   }
 
-  static styleTransformCssPx(px) {
-    return px / this.dpr();
+  static srcTransformStylePx(px) {
+    return this.rounding(px * this.dpr());
   }
 
   constructor(canvas) {

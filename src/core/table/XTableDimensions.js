@@ -939,26 +939,44 @@ class XTableDimensions extends Widget {
     const { xIconBuilder } = this;
     const style = this.getXTableStyle();
     const cells = this.getTableCells();
-    const { fixedCellIcon } = style;
-    const { ri, ci, x, y } = info;
-    let icons = [];
-    // 单元格内容小图标
-    const cell = cells.getCell(ri, ci);
-    if (cell) {
-      icons = icons.concat(cell.icons);
-    }
+    const {
+      fixedCellIcon, staticCellIcon,
+    } = style;
+    const {
+      ri, ci, mri, mci, fx, fy, sx, sy,
+    } = info;
+
+    let staticIconArray = [];
+    let fixedIconArray = [];
+
     // 单元格固定小图标
-    const fixed = fixedCellIcon.getIcon(ri, ci);
-    if (fixed) {
-      icons = icons.concat(fixed);
+    const fixedIcon = fixedCellIcon.getIcon(ri, ci);
+    if (fixedIcon) {
+      fixedIconArray = fixedIconArray.concat(fixedIcon);
     }
-    // 触发事件
+
+    // 单元格内容小图标
+    const cell = cells.getCell(mri, mci);
+    if (cell) {
+      staticIconArray = staticIconArray.concat(cell.icons);
+    }
+
+    // 单元格固定小图标
+    const staticIcon = staticCellIcon.getIcon(mri, mci);
+    if (staticIcon) {
+      staticIconArray = staticIconArray.concat(staticIcon);
+    }
+
+    // 触发单元格小图标事件
     xIconBuilder.xIconsEvent({
       native,
       type,
-      icons,
-      x: XDraw.srcTransformStylePx(x),
-      y: XDraw.srcTransformStylePx(y),
+      staticIcons: staticIconArray,
+      fixedIcons: fixedIconArray,
+      sx: XDraw.srcTransformStylePx(sx),
+      sy: XDraw.srcTransformStylePx(sy),
+      fx: XDraw.srcTransformStylePx(fx),
+      fy: XDraw.srcTransformStylePx(fy),
     });
   }
 
@@ -993,16 +1011,19 @@ class XTableDimensions extends Widget {
     const {
       xFixedView, rows, cols,
     } = this;
+
     const { index } = this;
     const fixedView = xFixedView.getFixedView();
-    const fixedHeight = this.getFixedHeight();
+    const merges = this.getTableMerges();
     const fixedWidth = this.getFixedWidth();
+    const fixedHeight = this.getFixedHeight();
+
     let [left, top] = [x, y];
     let [ci, ri] = [-1, -1];
     left -= index.getWidth();
     top -= index.getHeight();
-    // left
-    let cellLeftX = 0;
+
+    let fx = 0;
     if (left <= fixedWidth && x > index.getWidth()) {
       let total = 0;
       ColsIterator.getInstance()
@@ -1015,7 +1036,7 @@ class XTableDimensions extends Widget {
           return total < left;
         })
         .execute();
-      cellLeftX = (total - cols.getWidth(ci) - left) * -1;
+      fx = (total - cols.getWidth(ci) - left) * -1;
     } else if (x > index.getWidth()) {
       let total = fixedWidth;
       const viewRange = this.getScrollView();
@@ -1029,10 +1050,10 @@ class XTableDimensions extends Widget {
           return total < left;
         })
         .execute();
-      cellLeftX = (total - cols.getWidth(ci) - left) * -1;
+      fx = (total - cols.getWidth(ci) - left) * -1;
     }
-    // top
-    let cellTopY = 0;
+
+    let fy = 0;
     if (top < fixedHeight && y > index.getHeight()) {
       let total = 0;
       RowsIterator.getInstance()
@@ -1045,7 +1066,7 @@ class XTableDimensions extends Widget {
           return total <= top;
         })
         .execute();
-      cellTopY = (total - rows.getHeight(ri) - top) * -1;
+      fy = (total - rows.getHeight(ri) - top) * -1;
     } else if (y > index.getHeight()) {
       let total = fixedHeight;
       const viewRange = this.getScrollView();
@@ -1059,11 +1080,26 @@ class XTableDimensions extends Widget {
           return total <= top;
         })
         .execute();
-      cellTopY = (total - rows.getHeight(ri) - top) * -1;
+      fy = (total - rows.getHeight(ri) - top) * -1;
     }
-    // result
+
+    const merge = merges.getFirstIncludes(ri, ci);
+    let mci = ci;
+    let mri = ri;
+    let sx = fx;
+    let sy = fy;
+    if (merge) {
+      mri = merge.sri;
+      mci = merge.sci;
+      const { rows, cols } = this;
+      const height = rows.sectionSumHeight(mri, ri - 1);
+      const width = cols.sectionSumWidth(mci, ci - 1);
+      sy += height;
+      sx += width;
+    }
+
     return {
-      ri, ci, x: cellLeftX, y: cellTopY,
+      ri, ci, mri, mci, fx, fy, sx, sy,
     };
   }
 

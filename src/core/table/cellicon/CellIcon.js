@@ -1,27 +1,15 @@
 import { PlainUtils } from '../../../utils/PlainUtils';
 
-class FixedCellIcon {
+class CellIcon {
 
   constructor({
     rows,
     cols,
     cells,
   } = {}) {
-    this.cols = cols;
     this.cells = cells;
+    this.cols = cols;
     this.data = new Array(rows.len * cols.len);
-  }
-
-  getOffset(ri, ci) {
-    const { cols } = this;
-    const { len } = cols;
-    return (ri * len) + ci;
-  }
-
-  getIcon(ri, ci) {
-    const { data } = this;
-    const offset = this.getOffset(ri, ci);
-    return data[offset];
   }
 
   addOrNewCell(ri, ci, xIcon) {
@@ -44,6 +32,18 @@ class FixedCellIcon {
     }
   }
 
+  getIcon(ri, ci) {
+    const { data } = this;
+    const offset = this.getOffset(ri, ci);
+    return data[offset];
+  }
+
+  getOffset(ri, ci) {
+    const { cols } = this;
+    const { len } = cols;
+    return (ri * len) + ci;
+  }
+
   remove(ri, ci, xIcon = null) {
     const { data } = this;
     let xIcons = this.getIcon(ri, ci);
@@ -61,5 +61,5 @@ class FixedCellIcon {
 }
 
 export {
-  FixedCellIcon,
+  CellIcon,
 };

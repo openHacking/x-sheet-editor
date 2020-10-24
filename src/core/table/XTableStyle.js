@@ -32,7 +32,8 @@ import { OperateCellsHelper } from './helper/OperateCellsHelper';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { VIEW_MODE, XTableScrollView } from './XTableScrollView';
 import { XFixedMeasure } from './tablebase/XFixedMeasure';
-import { FixedCellIcon } from './tablecell/FixedCellIcon';
+import { FixedCellIcon } from './cellicon/FixedCellIcon';
+import { StaticCellIcon } from './cellicon/StaticCellIcon';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -744,9 +745,9 @@ class XTableContentBaseUI extends XTableUI {
    * @param rect
    * @param ri
    * @param ci
-   * @param scrollView
+   * @param view
    */
-  drawFixedCellXIcon(rect, ri, ci, scrollView) {
+  drawFixedCellXIcon(rect, ri, ci, view) {
     const { table } = this;
     const { draw, fixedCellIcon } = table;
     const icons = fixedCellIcon.getIcon(ri, ci);
@@ -759,7 +760,7 @@ class XTableContentBaseUI extends XTableUI {
         const icon = icons[i];
         icon.loadImage({
           load: () => {
-            if (scrollView.equals(this.getFullScrollView())) {
+            if (view.equals(this.getFullScrollView())) {
               icon.drawIcon({
                 rect, draw,
               });
@@ -779,9 +780,9 @@ class XTableContentBaseUI extends XTableUI {
    * 加载绘制小图标
    * @param rect
    * @param cell
-   * @param scrollView
+   * @param view
    */
-  drawCellXIcon(rect, cell, scrollView) {
+  drawCellXIcon(rect, cell, view) {
     const { table } = this;
     const { icons } = cell;
     const { draw } = table;
@@ -793,7 +794,7 @@ class XTableContentBaseUI extends XTableUI {
       const icon = icons[i];
       icon.loadImage({
         load: () => {
-          if (scrollView.equals(this.getFullScrollView())) {
+          if (view.equals(this.getFullScrollView())) {
             icon.drawIcon({
               rect, draw,
             });
@@ -805,6 +806,42 @@ class XTableContentBaseUI extends XTableUI {
           });
         },
       });
+    }
+  }
+
+  /**
+   * 加载绘制小图标
+   * @param rect
+   * @param ri
+   * @param ci
+   * @param view
+   */
+  drawStaticCellXIcon(rect, ri, ci, view) {
+    const { table } = this;
+    const { draw, staticCellIcon } = table;
+    const icons = staticCellIcon.getIcon(ri, ci);
+    if (icons) {
+      const x = this.getX();
+      const y = this.getY();
+      rect.x += x;
+      rect.y += y;
+      for (let i = 0; i < icons.length; i += 1) {
+        const icon = icons[i];
+        icon.loadImage({
+          load: () => {
+            if (view.equals(this.getFullScrollView())) {
+              icon.drawIcon({
+                rect, draw,
+              });
+            }
+          },
+          sync: () => {
+            icon.drawIcon({
+              rect, draw,
+            });
+          },
+        });
+      }
     }
   }
 
@@ -1219,14 +1256,29 @@ class XTableContentUI extends XTableContentBaseUI {
    */
   drawXIcon() {
     const { table } = this;
-    const { styleCellsHelper } = table;
+    const { styleCellsHelper, merges } = table;
     const scrollView = this.getFullScrollView();
+    styleCellsHelper.getMergeCellByViewRange({
+      rectRange: scrollView,
+      callback: (rect, cell, merge) => {
+        const { sri, sci } = merge;
+        const staticRect = rect.clone();
+        const cellRect = rect.clone();
+        this.drawStaticCellXIcon(staticRect, sri, sci, scrollView);
+        this.drawCellXIcon(cellRect, cell, scrollView);
+      },
+    });
     styleCellsHelper.getCellByViewRange({
       rectRange: scrollView,
       callback: (ri, ci, cell, rect) => {
         const fixedRect = rect.clone();
-        const cellRect = rect.clone();
         this.drawFixedCellXIcon(fixedRect, ri, ci, scrollView);
+        if (merges.getFirstIncludes(ri, ci)) {
+          return;
+        }
+        const staticRect = rect.clone();
+        const cellRect = rect.clone();
+        this.drawStaticCellXIcon(staticRect, ri, ci, scrollView);
         this.drawCellXIcon(cellRect, cell, scrollView);
       },
     });
@@ -2280,12 +2332,19 @@ class XTableStyle extends Widget {
       cols: this.cols,
       rows: this.rows,
     });
+    // 静态单元格图标
+    this.staticCellIcon = new StaticCellIcon({
+      data: [],
+      cells: this.cells,
+      rows: this.rows,
+      cols: this.cols,
+    });
     // 固定单元格图标
     this.fixedCellIcon = new FixedCellIcon({
       data: [],
+      cells: this.cells,
       rows: this.rows,
       cols: this.cols,
-      cells: this.cells,
     });
     // 表格视图区域
     this.xTableAreaView = new XTableHistoryAreaView({

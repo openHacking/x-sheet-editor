@@ -9,22 +9,37 @@ class XIconBuilder {
   /**
    * 图标事件处理
    * @param type
-   * @param x
-   * @param y
-   * @param icons
    * @param native
+   * @param staticIcons
+   * @param fixedIcons
+   * @param sx
+   * @param sy
+   * @param fx
+   * @param fy
    */
   xIconsEvent({
-    type, x, y, icons, native,
+    type,
+    native,
+    sx,
+    sy,
+    fx,
+    fy,
+    staticIcons = [],
+    fixedIcons = [],
   }) {
-    if (icons.length > 0) {
-      icons.forEach((icon) => {
+    if (staticIcons.length + fixedIcons.length === 0) {
+      this.clearFocus();
+    } else {
+      staticIcons.forEach((icon) => {
         icon.eventHandle({
-          type, x, y, native,
+          type, x: sx, y: sy, native,
         });
       });
-    } else {
-      this.clearFocus();
+      fixedIcons.forEach((icon) => {
+        icon.eventHandle({
+          type, x: fx, y: fy, native,
+        });
+      });
     }
   }
 
