@@ -10,6 +10,7 @@ import { XTableMousePointer } from '../../XTableMousePointer';
 import { RowsIterator } from '../../iterator/RowsIterator';
 import { ColsIterator } from '../../iterator/ColsIterator';
 import { AutoFillType } from '../../../../component/autofilltype/AutoFillType';
+import { Serialize } from '../../helper/CellMergeCopyHelper';
 
 class XAutoFillItem extends XScreenCssBorderItem {
 
@@ -32,20 +33,6 @@ class XAutoFillItem extends XScreenCssBorderItem {
     this.bt.child(this.tElem);
     this.bbr.child(this.brElem);
     this.setBorderType('dashed');
-  }
-
-  serialize() {
-    const { moveDirection } = this;
-    switch (moveDirection) {
-      case 'right':
-        break;
-      case 'top':
-        break;
-      case 'left':
-        break;
-      case 'bottom':
-        break;
-    }
   }
 
   onAdd() {
@@ -181,7 +168,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
     if (originSRi < sri || ri > eri) {
       // 上下
       if (originSRi < sri) {
-        moveDirection = 'top';
+        moveDirection = Serialize.SERIALIZE_DIRECTION.TOP;
         if (hasFull) {
           let minRi = ri;
           let number = 0;
@@ -215,7 +202,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
         }
       }
       if (originSRi > eri) {
-        moveDirection = 'bottom';
+        moveDirection = Serialize.SERIALIZE_DIRECTION.BOTTOM;
         if (hasFull) {
           let maxRi = eri;
           let number = 0;
@@ -251,7 +238,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
     } else if (ci < sci || ci > eci) {
       // 左右
       if (ci < sci) {
-        moveDirection = 'left';
+        moveDirection = Serialize.SERIALIZE_DIRECTION.LEFT;
         if (hasFull) {
           let minCi = sci;
           let number = 0;
@@ -284,7 +271,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
         }
       }
       if (ci > eci) {
-        moveDirection = 'right';
+        moveDirection = Serialize.SERIALIZE_DIRECTION.RIGHT;
         if (hasFull) {
           let maxCi = eci;
           let number = 0;
@@ -355,6 +342,20 @@ class XAutoFillItem extends XScreenCssBorderItem {
     }
   }
 
+  serialize() {
+    const { table, xScreen, autoFillRange, moveDirection } = this;
+    const { cellMergeCopyHelper } = table;
+    const { tableDataSnapshot } = table;
+    const xSelect = xScreen.findType(XSelectItem);
+    tableDataSnapshot.begin();
+    cellMergeCopyHelper.serializeContent({
+      originViewRange: autoFillRange.union(xSelect.selectRange),
+      direction: moveDirection,
+    });
+    tableDataSnapshot.end();
+    table.render();
+  }
+
   autoFill() {
     const { autoFillRange } = this;
     if (autoFillRange.equals(RectRange.EMPTY)) {
@@ -372,25 +373,21 @@ class XAutoFillItem extends XScreenCssBorderItem {
   }
 
   fillMerge() {
-    const { table, xScreen } = this;
-    const {
-      cellMergeCopyHelper,
-    } = table;
+    const { table, xScreen, autoFillRange } = this;
+    const { cellMergeCopyHelper } = table;
     const xSelect = xScreen.findType(XSelectItem);
     cellMergeCopyHelper.copyMergeContent({
-      targetViewRange: this.autoFillRange,
+      targetViewRange: autoFillRange,
       originViewRange: xSelect.selectRange,
     });
   }
 
   fillCellIN() {
-    const { table, xScreen } = this;
-    const {
-      cellMergeCopyHelper,
-    } = table;
+    const { table, xScreen, autoFillRange } = this;
+    const { cellMergeCopyHelper } = table;
     const xSelect = xScreen.findType(XSelectItem);
     cellMergeCopyHelper.copyCellINContent({
-      targetViewRange: this.autoFillRange,
+      targetViewRange: autoFillRange,
       originViewRange: xSelect.selectRange,
     });
   }

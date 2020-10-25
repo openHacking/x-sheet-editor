@@ -1,7 +1,8 @@
 import { RowsIterator } from '../iterator/RowsIterator';
 import { ColsIterator } from '../iterator/ColsIterator';
-import { BaseCellsHelper } from './BaseCellsHelper';
 import { RectRange } from '../tablebase/RectRange';
+import { BaseCellsHelper } from './BaseCellsHelper';
+import { PlainUtils } from '../../../utils/PlainUtils';
 
 class CopyMerge {
 
@@ -210,6 +211,173 @@ class CopyCellIN {
 
 }
 
+class Serialize {
+
+  constructor({
+    originViewRange,
+    direction,
+    getStartIndex,
+    onSerialize,
+  }) {
+    this.originViewRange = originViewRange;
+    this.direction = direction;
+    this.getStartIndex = getStartIndex;
+    this.onSerialize = onSerialize;
+  }
+
+  serializeRight() {
+    const { originViewRange, onSerialize, getStartIndex } = this;
+    const { sri, sci, eri, eci } = originViewRange;
+    let ret = true;
+    RowsIterator.getInstance()
+      .setBegin(sri)
+      .setEnd(eri)
+      .setLoop((ri) => {
+        let start = PlainUtils.Nul;
+        ColsIterator.getInstance()
+          .setBegin(sci)
+          .setEnd(eci)
+          .setLoop((ci) => {
+            if (start === PlainUtils.Nul) {
+              const index = getStartIndex(ri, ci);
+              if (!PlainUtils.isNumber(index)) {
+                ret = false;
+              } else {
+                start = parseInt(index, 10);
+              }
+            } else {
+              start += 1;
+              onSerialize(ri, ci, start);
+            }
+            return ret;
+          })
+          .execute();
+        return ret;
+      })
+      .execute();
+  }
+
+  serializeBottom() {
+    const { originViewRange, onSerialize, getStartIndex } = this;
+    const { sri, sci, eri, eci } = originViewRange;
+    let ret = true;
+    ColsIterator.getInstance()
+      .setBegin(sci)
+      .setEnd(eci)
+      .setLoop((ci) => {
+        let start = PlainUtils.Nul;
+        RowsIterator.getInstance()
+          .setBegin(sri)
+          .setEnd(eri)
+          .setLoop((ri) => {
+            if (start === PlainUtils.Nul) {
+              const index = getStartIndex(ri, ci);
+              if (!PlainUtils.isNumber(index)) {
+                ret = false;
+              } else {
+                start = parseInt(index, 10);
+              }
+            } else {
+              start += 1;
+              onSerialize(ri, ci, start);
+            }
+            return ret;
+          })
+          .execute();
+        return ret;
+      })
+      .execute();
+  }
+
+  serializeTop() {
+    const { originViewRange, onSerialize, getStartIndex } = this;
+    const { sri, sci, eri, eci } = originViewRange;
+    let ret = true;
+    ColsIterator.getInstance()
+      .setBegin(sci)
+      .setEnd(eci)
+      .setLoop((ci) => {
+        let start = PlainUtils.Nul;
+        RowsIterator.getInstance()
+          .setBegin(eri)
+          .setEnd(sri)
+          .setLoop((ri) => {
+            if (start === PlainUtils.Nul) {
+              const index = getStartIndex(ri, ci);
+              if (!PlainUtils.isNumber(index)) {
+                ret = false;
+              } else {
+                start = parseInt(index, 10);
+              }
+            } else {
+              start -= 1;
+              onSerialize(ri, ci, start);
+            }
+            return ret;
+          })
+          .execute();
+        return ret;
+      })
+      .execute();
+  }
+
+  serializeLeft() {
+    const { originViewRange, onSerialize, getStartIndex } = this;
+    const { sri, sci, eri, eci } = originViewRange;
+    let ret = true;
+    RowsIterator.getInstance()
+      .setBegin(sri)
+      .setEnd(eri)
+      .setLoop((ri) => {
+        let start = PlainUtils.Nul;
+        ColsIterator.getInstance()
+          .setBegin(eci)
+          .setEnd(sci)
+          .setLoop((ci) => {
+            if (start === PlainUtils.Nul) {
+              const index = getStartIndex(ri, ci);
+              if (!PlainUtils.isNumber(index)) {
+                ret = false;
+              } else {
+                start = parseInt(index, 10);
+              }
+            } else {
+              start -= 1;
+              onSerialize(ri, ci, start);
+            }
+          })
+          .execute();
+        return ret;
+      })
+      .execute();
+  }
+
+  executeSerialize() {
+    const { direction } = this;
+    switch (direction) {
+      case Serialize.SERIALIZE_DIRECTION.LEFT:
+        this.serializeLeft();
+        break;
+      case Serialize.SERIALIZE_DIRECTION.TOP:
+        this.serializeTop();
+        break;
+      case Serialize.SERIALIZE_DIRECTION.RIGHT:
+        this.serializeRight();
+        break;
+      case Serialize.SERIALIZE_DIRECTION.BOTTOM:
+        this.serializeBottom();
+        break;
+    }
+  }
+
+}
+Serialize.SERIALIZE_DIRECTION = {
+  RIGHT: 3,
+  BOTTOM: 4,
+  TOP: 1,
+  LEFT: 2,
+};
+
 class CellMergeCopyHelper extends BaseCellsHelper {
 
   copyCellINContent({
@@ -292,8 +460,36 @@ class CellMergeCopyHelper extends BaseCellsHelper {
     copy.executeCopy();
   }
 
+  serializeContent({
+    originViewRange, direction,
+  }) {
+    const { tableDataSnapshot, cells } = this;
+    const { cellDataProxy } = tableDataSnapshot;
+    const serialize = new Serialize({
+      originViewRange,
+      direction,
+      getStartIndex: (ri, ci) => {
+        const cell = cells.getCell(ri, ci);
+        if (cell) {
+          return cell.text;
+        }
+        return PlainUtils.Nul;
+      },
+      onSerialize: (ri, ci, index) => {
+        const cell = cells.getCellOrNew(ri, ci);
+        const clone = cell.clone();
+        clone.text = `${index}`;
+        cellDataProxy.setCell(ri, ci, clone);
+      },
+    });
+    serialize.executeSerialize();
+  }
+
 }
 
 export {
   CellMergeCopyHelper,
+  CopyMerge,
+  Serialize,
+  CopyCellIN,
 };
