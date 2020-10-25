@@ -1,9 +1,10 @@
 import { Widget } from '../../lib/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
-import { h } from '../../lib/Element';
 import { XEvent } from '../../lib/XEvent';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { XSelectItem } from './xscreenitems/xselect/XSelectItem';
+import { XDraw } from '../../canvas/XDraw';
+import { Throttle } from '../../lib/Throttle';
 import { BaseFont } from '../../canvas/font/BaseFont';
 
 class XTableEdit extends Widget {
@@ -11,18 +12,88 @@ class XTableEdit extends Widget {
   constructor(table) {
     super(`${cssPrefix}-table-edit`);
     this.table = table;
-    this.text = PlainUtils.EMPTY;
-    this.input = h('div', `${cssPrefix}-table-edit-input`);
-    this.input.attr('contenteditable', true);
-    this.input.html(XTableEdit.EMPTY);
     this.cell = null;
+    this.merge = null;
     this.select = null;
-    this.children(this.input);
+    this.throttle = new Throttle({ time: 100 });
+    this.attr('contenteditable', true);
+    this.html(PlainUtils.EMPTY);
   }
 
   onAttach() {
     this.bind();
     this.hide();
+  }
+
+  editOffset() {
+    const { table, cell } = this;
+    const {
+      xHeightLight, yHeightLight,
+    } = table;
+    const { fontAttr } = cell;
+    const { align } = fontAttr;
+    const left = xHeightLight.getLeft() + table.getIndexWidth();
+    const top = yHeightLight.getTop() + table.getIndexHeight();
+    const height = yHeightLight.getHeight();
+    const width = xHeightLight.getWidth();
+    this.cssRemoveKeys('right', 'top', 'left', 'max-width', 'min-width', 'min-height');
+    switch (align) {
+      case BaseFont.ALIGN.left: {
+        const maxHeight = table.visualHeight() - top;
+        const maxWidth = table.visualWidth() - left;
+        this.css({
+          left: `${left}px`,
+          top: `${top}px`,
+          'min-width': `${XDraw.offsetToLineInside(Math.min(width, maxWidth))}px`,
+          'min-height': `${XDraw.offsetToLineInside(Math.min(height, maxHeight))}px`,
+          'max-width': `${XDraw.offsetToLineInside(maxWidth)}px`,
+          'max-height': `${XDraw.offsetToLineInside(maxHeight)}px`,
+        });
+        break;
+      }
+      case BaseFont.ALIGN.center: {
+        const box = this.box();
+        const maxHeight = table.visualHeight() - top;
+        if (box.width > width) {
+          const maxWidth = (table.visualWidth() - (left + width)) * 2 + width;
+          const realWidth = Math.min(box.width, maxWidth);
+          const realLeft = left - (realWidth / 2 - width / 2);
+          this.css({
+            left: `${realLeft}px`,
+            top: `${top}px`,
+            'min-width': `${XDraw.offsetToLineInside(Math.min(width, maxWidth))}px`,
+            'min-height': `${XDraw.offsetToLineInside(Math.min(height, maxHeight))}px`,
+            'max-width': `${XDraw.offsetToLineInside(maxWidth)}px`,
+            'max-height': `${XDraw.offsetToLineInside(maxHeight)}px`,
+          });
+        } else {
+          const maxWidth = table.visualWidth() - left;
+          this.css({
+            left: `${left}px`,
+            top: `${top}px`,
+            'min-width': `${XDraw.offsetToLineInside(Math.min(width, maxWidth))}px`,
+            'min-height': `${XDraw.offsetToLineInside(Math.min(height, maxHeight))}px`,
+            'max-width': `${XDraw.offsetToLineInside(maxWidth)}px`,
+            'max-height': `${XDraw.offsetToLineInside(maxHeight)}px`,
+          });
+        }
+        break;
+      }
+      case BaseFont.ALIGN.right: {
+        const maxWidth = (left + width) - table.getIndexWidth();
+        const right = table.visualWidth() - (left + width);
+        const maxHeight = table.visualHeight() - top;
+        this.css({
+          right: `${right}px`,
+          top: `${top}px`,
+          'min-width': `${XDraw.offsetToLineInside(Math.min(width, maxWidth))}px`,
+          'min-height': `${XDraw.offsetToLineInside(Math.min(height, maxHeight))}px`,
+          'max-width': `${XDraw.offsetToLineInside(maxWidth)}px`,
+          'max-height': `${XDraw.offsetToLineInside(maxHeight)}px`,
+        });
+        break;
+      }
+    }
   }
 
   unbind() {
@@ -42,52 +113,61 @@ class XTableEdit extends Widget {
     const { table } = this;
     const { xScreen } = table;
     const xSelect = xScreen.findType(XSelectItem);
+    const merges = table.getTableMerges();
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (e) => {
+      e.stopPropagation();
+    });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       e.stopPropagation();
     });
-    XEvent.bind(this.input, Constant.SYSTEM_EVENT_TYPE.INPUT, () => {
-      const { input } = this;
-      if (PlainUtils.isBlank(this.input.text())) {
-        input.html(XTableEdit.EMPTY);
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.INPUT, () => {
+      const { cell } = this;
+      const { fontAttr } = cell;
+      const { align } = fontAttr;
+      if (align === BaseFont.ALIGN.center) {
+        this.editOffset();
       }
-      this.text = input.text();
-    });
-    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      this.hideEdit();
     });
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       this.hideEdit();
     });
-    XEvent.dbClick([
-      xSelect.lt,
-      xSelect.t,
-      xSelect.l,
-      xSelect.br,
-    ], () => {
-      this.showEdit();
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+      this.hideEdit();
+    });
+    XEvent.mouseDoubleClick(table, () => {
+      const { selectRange } = xSelect;
+      const { sri, sci } = selectRange;
+      if (!selectRange.multiple() || merges.getFirstIncludes(sri, sci)) {
+        this.showEdit();
+      }
     });
   }
 
   showEdit() {
-    const { table, input } = this;
+    const { table } = this;
+    const merges = table.getTableMerges();
     const cells = table.getTableCells();
     const { xScreen } = table;
     const xSelect = xScreen.findType(XSelectItem);
     const { selectRange } = xSelect;
-    this.show();
     if (selectRange) {
-      const cell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
-      this.input.attr('style', cell.toCssStyle());
+      const { sri, sci } = selectRange;
+      const merge = merges.getFirstIncludes(sri, sci);
+      const cell = cells.getCellOrNew(sri, sci);
+      this.merge = merge;
       this.cell = cell;
       this.select = selectRange;
-      this.editOffset();
-      this.text = cell.text;
-      if (PlainUtils.isBlank(this.text)) {
-        input.html(XTableEdit.EMPTY);
+      this.show();
+      if (PlainUtils.isBlank(cell.text)) {
+        this.html(PlainUtils.EMPTY);
       } else {
-        input.text(this.text);
+        this.html(cell.text);
       }
-      PlainUtils.keepLastIndex(this.input.el);
+      this.attr('style', cell.toCssStyle());
+      this.editOffset();
+      this.throttle.action(() => {
+        PlainUtils.keepLastIndex(this.el);
+      });
     }
   }
 
@@ -97,11 +177,11 @@ class XTableEdit extends Widget {
     const cells = table.getTableCells();
     const { tableDataSnapshot } = table;
     const { cellDataProxy } = tableDataSnapshot;
-    this.hide();
     if (select) {
       const origin = cells.getCellOrNew(select.sri, select.sci);
       const cell = origin.clone();
-      const text = PlainUtils.trim(this.text);
+      const text = PlainUtils.trim(this.text());
+      this.hide();
       if (cell.text !== text) {
         tableDataSnapshot.begin();
         cell.text = text;
@@ -113,36 +193,12 @@ class XTableEdit extends Widget {
     }
   }
 
-  editOffset() {
-    const { table, cell } = this;
-    const {
-      xHeightLight, yHeightLight,
-    } = table;
-    const { fontAttr, contentWidth } = cell;
-    const { align } = fontAttr;
-    const top = yHeightLight.getTop() + table.getIndexHeight() + 3;
-    const left = xHeightLight.getLeft() + table.getIndexWidth() + 3;
-    const width = xHeightLight.getWidth() - 7;
-    const height = yHeightLight.getHeight() - 7;
-    this.input.css('float', 'none');
-    if (align === BaseFont.ALIGN.right) {
-      if (contentWidth && contentWidth > width) {
-        this.input.css('float', 'right');
-      }
-    }
-    this.offset({
-      top, left, height, width,
-    });
-  }
-
   destroy() {
     super.destroy();
     this.unbind();
   }
 
 }
-
-XTableEdit.EMPTY = '<p>&nbsp;</p>';
 
 export {
   XTableEdit,

@@ -22,6 +22,7 @@ class ScaleContextMenu extends ELContextMenu {
     this.items.forEach((item) => {
       this.addItem(item);
     });
+    this.bind();
   }
 
   unbind() {

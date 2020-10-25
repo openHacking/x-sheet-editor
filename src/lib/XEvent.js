@@ -82,15 +82,23 @@ class XEvent {
     }
   }
 
-  static dbClick(target, func = () => {}) {
-    let t = 0;
-    XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.CLICK, (e) => {
-      const n = Date.now();
-      if (n - t <= 300) {
-        func(e);
-        t = 0;
+  static mouseDoubleClick(target, doubleFunc = () => {}) {
+    let last = 0;
+    let x = 0;
+    let y = 0;
+    XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt) => {
+      const current = Date.now();
+      const { pageX, pageY } = evt;
+      const diff = current - last <= 300
+      if (diff && pageX === x && pageY === y) {
+        doubleFunc(evt);
+        last = 0;
+        x = 0;
+        y = 0;
       } else {
-        t = n;
+        x = pageX;
+        y = pageY;
+        last = current;
       }
     });
   }

@@ -23,6 +23,7 @@ class XSelectItem extends XScreenCssBorderItem {
     this.selectRange = null;
     this.downRange = null;
     this.moveRange = null;
+    this.activeCorner = null;
     this.ltElem = new Widget(`${cssPrefix}-x-select-area`);
     this.brElem = new Widget(`${cssPrefix}-x-select-area`);
     this.lElem = new Widget(`${cssPrefix}-x-select-area`);
@@ -138,100 +139,12 @@ class XSelectItem extends XScreenCssBorderItem {
     });
   }
 
-  borderHandle() {
-    const { selectRange, display } = this;
-    if (selectRange && display) {
-      this.hideBorder();
-      this.showBorder(selectRange);
-    }
-  }
-
-  offsetHandle() {
-    const { selectRange } = this;
-    if (selectRange && this.setDisplay(selectRange)) {
-      this.display = true;
-      this.setSizer(selectRange);
-      this.setLocal(selectRange);
-    } else {
-      this.display = false;
-    }
-  }
-
-  cornerHandle() {
-    const {
-      selectRange, selectLocal, display,
-    } = this;
-    if (selectRange && display) {
-      const overGo = this.getOverGo(selectRange);
-      this.ltCorner.hide();
-      this.tCorner.hide();
-      this.lCorner.hide();
-      this.brCorner.hide();
-      this.brCorner.removeClass('br-pos');
-      this.lCorner.removeClass('br-pos');
-      this.tCorner.removeClass('br-pos');
-      this.ltCorner.removeClass('br-pos');
-      this.brCorner.removeClass('tr-pos');
-      this.lCorner.removeClass('tr-pos');
-      this.tCorner.removeClass('tr-pos');
-      this.ltCorner.removeClass('tr-pos');
-      this.brCorner.removeClass('bl-pos');
-      this.lCorner.removeClass('bl-pos');
-      this.tCorner.removeClass('bl-pos');
-      this.ltCorner.removeClass('bl-pos');
-      switch (selectLocal) {
-        case SELECT_LOCAL.L:
-          this.brCorner.addClass('bl-pos');
-          this.lCorner.addClass('bl-pos');
-          this.tCorner.addClass('bl-pos');
-          this.ltCorner.addClass('bl-pos');
-          break;
-        case SELECT_LOCAL.T:
-          this.brCorner.addClass('tr-pos');
-          this.lCorner.addClass('tr-pos');
-          this.tCorner.addClass('tr-pos');
-          this.ltCorner.addClass('tr-pos');
-          break;
-        case SELECT_LOCAL.LT:
-        case SELECT_LOCAL.BR:
-          this.brCorner.addClass('br-pos');
-          this.lCorner.addClass('br-pos');
-          this.tCorner.addClass('br-pos');
-          this.ltCorner.addClass('br-pos');
-          break;
-      }
-      switch (overGo) {
-        case RANGE_OVER_GO.LT:
-          this.ltCorner.show();
-          this.tCorner.hide();
-          this.brCorner.hide();
-          this.lCorner.hide();
-          break;
-        case RANGE_OVER_GO.LTT:
-        case RANGE_OVER_GO.T:
-          this.ltCorner.hide();
-          this.tCorner.show();
-          this.brCorner.hide();
-          this.lCorner.hide();
-          break;
-        case RANGE_OVER_GO.ALL:
-        case RANGE_OVER_GO.BRL:
-        case RANGE_OVER_GO.BRT:
-        case RANGE_OVER_GO.BR:
-          this.ltCorner.hide();
-          this.tCorner.hide();
-          this.brCorner.show();
-          this.lCorner.hide();
-          break;
-        case RANGE_OVER_GO.LTL:
-        case RANGE_OVER_GO.L:
-          this.ltCorner.hide();
-          this.tCorner.hide();
-          this.brCorner.hide();
-          this.lCorner.show();
-          break;
-      }
-    }
+  updateSelectRange(range) {
+    this.selectRange = range;
+    this.selectLocal = SELECT_LOCAL.BR;
+    this.offsetHandle();
+    this.borderHandle();
+    this.cornerHandle();
   }
 
   moveSelectRange(x, y) {
@@ -305,12 +218,104 @@ class XSelectItem extends XScreenCssBorderItem {
     this.selectLocal = SELECT_LOCAL.BR;
   }
 
-  updateSelectRange(range) {
-    this.selectRange = range;
-    this.selectLocal = SELECT_LOCAL.BR;
-    this.offsetHandle();
-    this.borderHandle();
-    this.cornerHandle();
+  borderHandle() {
+    const { selectRange, display } = this;
+    if (selectRange && display) {
+      this.hideBorder();
+      this.showBorder(selectRange);
+    }
+  }
+
+  offsetHandle() {
+    const { selectRange } = this;
+    if (selectRange && this.setDisplay(selectRange)) {
+      this.display = true;
+      this.setSizer(selectRange);
+      this.setLocal(selectRange);
+    } else {
+      this.display = false;
+    }
+  }
+
+  cornerHandle() {
+    const {
+      selectRange, selectLocal, display,
+    } = this;
+    if (selectRange && display) {
+      const overGo = this.getOverGo(selectRange);
+      this.ltCorner.hide();
+      this.tCorner.hide();
+      this.lCorner.hide();
+      this.brCorner.hide();
+      this.brCorner.removeClass('br-pos');
+      this.lCorner.removeClass('br-pos');
+      this.tCorner.removeClass('br-pos');
+      this.ltCorner.removeClass('br-pos');
+      this.brCorner.removeClass('tr-pos');
+      this.lCorner.removeClass('tr-pos');
+      this.tCorner.removeClass('tr-pos');
+      this.ltCorner.removeClass('tr-pos');
+      this.brCorner.removeClass('bl-pos');
+      this.lCorner.removeClass('bl-pos');
+      this.tCorner.removeClass('bl-pos');
+      this.ltCorner.removeClass('bl-pos');
+      switch (selectLocal) {
+        case SELECT_LOCAL.L:
+          this.brCorner.addClass('bl-pos');
+          this.lCorner.addClass('bl-pos');
+          this.tCorner.addClass('bl-pos');
+          this.ltCorner.addClass('bl-pos');
+          break;
+        case SELECT_LOCAL.T:
+          this.brCorner.addClass('tr-pos');
+          this.lCorner.addClass('tr-pos');
+          this.tCorner.addClass('tr-pos');
+          this.ltCorner.addClass('tr-pos');
+          break;
+        case SELECT_LOCAL.LT:
+        case SELECT_LOCAL.BR:
+          this.brCorner.addClass('br-pos');
+          this.lCorner.addClass('br-pos');
+          this.tCorner.addClass('br-pos');
+          this.ltCorner.addClass('br-pos');
+          break;
+      }
+      switch (overGo) {
+        case RANGE_OVER_GO.LT:
+          this.ltCorner.show();
+          this.tCorner.hide();
+          this.brCorner.hide();
+          this.lCorner.hide();
+          this.activeCorner = this.ltCorner;
+          break;
+        case RANGE_OVER_GO.LTT:
+        case RANGE_OVER_GO.T:
+          this.ltCorner.hide();
+          this.tCorner.show();
+          this.brCorner.hide();
+          this.lCorner.hide();
+          this.activeCorner = this.tCorner;
+          break;
+        case RANGE_OVER_GO.ALL:
+        case RANGE_OVER_GO.BRL:
+        case RANGE_OVER_GO.BRT:
+        case RANGE_OVER_GO.BR:
+          this.ltCorner.hide();
+          this.tCorner.hide();
+          this.brCorner.show();
+          this.lCorner.hide();
+          this.activeCorner = this.brCorner;
+          break;
+        case RANGE_OVER_GO.LTL:
+        case RANGE_OVER_GO.L:
+          this.ltCorner.hide();
+          this.tCorner.hide();
+          this.brCorner.hide();
+          this.lCorner.show();
+          this.activeCorner = this.lCorner;
+          break;
+      }
+    }
   }
 
   destroy() {

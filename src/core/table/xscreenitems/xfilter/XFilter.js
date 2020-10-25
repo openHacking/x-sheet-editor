@@ -15,6 +15,7 @@ import { Mask } from '../../../../component/mask/Mask';
 import { XDraw } from '../../../../canvas/XDraw';
 import { FilterData } from '../../../../component/filterdata/FilterData';
 import { ElPopUp } from '../../../../component/elpopup/ElPopUp';
+import { ValueItem } from '../../../../component/filterdata/valuefilter/ValueItem';
 
 class XFilter extends XScreenCssBorderItem {
 
@@ -38,6 +39,23 @@ class XFilter extends XScreenCssBorderItem {
     this.bbr.children(this.fbr);
     this.setBorderColor('#0071cf');
     this.bind();
+  }
+
+  borderHandle() {
+    const { selectRange, display } = this;
+    if (selectRange && display) {
+      this.hideBorder();
+      this.showBorder(selectRange);
+    }
+  }
+
+  offsetHandle() {
+    const { selectRange } = this;
+    if (selectRange) {
+      this.setDisplay(selectRange);
+      this.setSizer(selectRange);
+      this.setLocal(selectRange);
+    }
   }
 
   xFilterOffset() {
@@ -210,23 +228,6 @@ class XFilter extends XScreenCssBorderItem {
     }
   }
 
-  borderHandle() {
-    const { selectRange, display } = this;
-    if (selectRange && display) {
-      this.hideBorder();
-      this.showBorder(selectRange);
-    }
-  }
-
-  offsetHandle() {
-    const { selectRange } = this;
-    if (selectRange) {
-      this.setDisplay(selectRange);
-      this.setSizer(selectRange);
-      this.setLocal(selectRange);
-    }
-  }
-
   clearIcon() {
     const { table, selectRange } = this;
     if (selectRange) {
@@ -259,6 +260,10 @@ class XFilter extends XScreenCssBorderItem {
           height: 18,
           width: 18,
           vertical: XIcon.ICON_VERTICAL.BOTTOM,
+          onDown: (native) => {
+            this.filterOpen(ri, ci);
+            native.stopPropagation();
+          },
           onEnter: (native, position) => {
             const cssHeight = XDraw.styleTransformCssPx(position.height);
             const cssWidth = XDraw.styleTransformCssPx(position.width);
@@ -269,11 +274,6 @@ class XFilter extends XScreenCssBorderItem {
               .setWidth(cssWidth)
               .setHeight(cssHeight)
               .open();
-          },
-          onDown: (native) => {
-            ElPopUp.closeAll();
-            this.filter.open();
-            native.stopPropagation();
           },
           onLeave: () => {
             this.mask.close();
@@ -290,6 +290,25 @@ class XFilter extends XScreenCssBorderItem {
       });
       table.render();
     }
+  }
+
+  filterOpen(sri, sci) {
+    const { selectRange, table } = this;
+    const cells = table.getTableCells();
+    const eri = selectRange.eri;
+    const eci = sci;
+    const items = new Set();
+    new RectRange(sri, sci, eri, eci).each((ri, ci) => {
+      const cell = cells.getCell(ri, ci);
+      if (cell) {
+        items.add(cell.text);
+      }
+    });
+    ElPopUp.closeAll();
+    this.filter.open();
+    items.forEach((item) => {
+      this.filter.valueFilter.addItem(new ValueItem({ text: item }));
+    });
   }
 
   unbind() {

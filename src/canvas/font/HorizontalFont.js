@@ -107,10 +107,11 @@ class HorizontalFont extends DisplayFont {
     }
     const { dw, attr } = this;
     const { textWrap } = attr;
+    const font = `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`.trim();
     dw.attr({
       textAlign: attr.align,
       textBaseline: attr.verticalAlign,
-      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`,
+      font,
       fillStyle: attr.color,
       strokeStyle: attr.color,
     });

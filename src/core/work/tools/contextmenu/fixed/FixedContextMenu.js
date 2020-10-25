@@ -25,6 +25,7 @@ class FixedContextMenu extends ELContextMenu {
     this.addItem(this.col);
     this.addItem(this.col1);
     this.addItem(this.col2);
+    this.bind();
   }
 
   unbind() {

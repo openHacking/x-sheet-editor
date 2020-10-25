@@ -34,6 +34,10 @@ class ELContextMenu extends Widget {
     return this;
   }
 
+  setEL(el) {
+    this.elPopUp.setEL(el);
+  }
+
   destroy() {
     super.destroy();
     this.elPopUp.destroy();

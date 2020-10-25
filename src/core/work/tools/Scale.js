@@ -11,9 +11,10 @@ class Scale extends DropDownItem {
     this.setTitle('100%');
     this.setWidth(50);
     this.setEllipsis();
-    this.scaleContextMenu = new ScaleContextMenu(PlainUtils.copyProp({
+    this.scaleContextMenu = new ScaleContextMenu({
       el: this,
-    }, this.options.contextMenu));
+      ...this.options.contextMenu,
+    });
   }
 
   destroy() {

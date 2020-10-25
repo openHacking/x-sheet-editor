@@ -198,6 +198,14 @@ class ElPopUp extends Widget {
   }
 
   /**
+   * 设置环绕元素
+   * @param el
+   */
+  setEL(el) {
+    this.options.el = el;
+  }
+
+  /**
    * 销毁组件
    */
   destroy() {

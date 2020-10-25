@@ -55,41 +55,25 @@ class CellFont {
 
   toCssStyle() {
     const {
-      align, size, color, bold, italic, name, verticalAlign,
+      align, size, color, bold, italic, name,
     } = this;
-    let justifyContent = 'left';
-    let alignItems = 'center';
-    switch (verticalAlign) {
-      case BaseFont.VERTICAL_ALIGN.center: {
-        alignItems = 'center';
-        break;
-      }
-      case BaseFont.VERTICAL_ALIGN.top: {
-        alignItems = 'flex-start';
-        break;
-      }
-      case BaseFont.VERTICAL_ALIGN.bottom: {
-        alignItems = 'flex-end';
-        break;
-      }
-    }
+    let textAlign = 'left';
     switch (align) {
       case BaseFont.ALIGN.left:
-        justifyContent = 'flex-start';
+        textAlign = 'left';
         break;
       case BaseFont.ALIGN.center:
-        justifyContent = 'center';
+        textAlign = 'center';
         break;
       case BaseFont.ALIGN.right:
-        justifyContent = 'flex-end';
+        textAlign = 'right';
         break;
     }
     let css = `
-      justify-content:${justifyContent};
+      text-align:${textAlign};
       font-size: ${XDraw.srcTransformCssPx(size)}px;color: ${color};font-weight: ${bold ? 'bold' : 'initial'};
       font-style: ${italic ? 'italic' : 'initial'};
       font-family: ${name};
-      align-items: ${alignItems};
     `;
     css = css.replace(/\s/g, '');
     return css;

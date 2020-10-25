@@ -3,8 +3,8 @@ import { Constant, cssPrefix } from '../../../const/Constant';
 import { XEvent } from '../../../lib/XEvent';
 import { h } from '../../../lib/Element';
 import { ELContextMenuDivider } from '../../contextmenu/ELContextMenuDivider';
-import { SelectContextMenu } from './contextmenu/SelectContextMenu';
-import { SelectContextMenuItem } from './contextmenu/SelectContextMenuItem';
+import { SelectContextMenu } from './SelectContextMenu';
+import { SelectContextMenuItem } from './SelectContextMenuItem';
 import { PlainUtils } from '../../../utils/PlainUtils';
 
 /**

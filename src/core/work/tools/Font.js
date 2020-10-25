@@ -1,21 +1,21 @@
 import { DropDownItem } from './base/DropDownItem';
 import { cssPrefix } from '../../../const/Constant';
-import { PlainUtils } from '../../../utils/PlainUtils';
 import { FontContextMenu } from './contextmenu/font/FontContextMenu';
 
 class Font extends DropDownItem {
 
-  constructor(options) {
+  constructor(options = {
+    contextMenu: {},
+  }) {
     super(`${cssPrefix}-tools-font`);
-    this.options = PlainUtils.copyProp({
-      contextMenu: {},
-    }, options);
+    this.options = options;
     this.setTitle('Arial');
     this.setWidth(50);
     this.setEllipsis();
-    this.fontContextMenu = new FontContextMenu(PlainUtils.copyProp({
+    this.fontContextMenu = new FontContextMenu({
       el: this,
-    }, this.options.contextMenu));
+      ...this.options.contextMenu,
+    });
   }
 
   destroy() {

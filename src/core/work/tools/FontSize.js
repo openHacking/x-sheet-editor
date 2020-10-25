@@ -1,7 +1,6 @@
 import { DropDownItem } from './base/DropDownItem';
 import { cssPrefix } from '../../../const/Constant';
 import { FontSizeContextMenu } from './contextmenu/fontsize/FontSizeContextMenu';
-import { PlainUtils } from '../../../utils/PlainUtils';
 
 class FontSize extends DropDownItem {
 
@@ -11,9 +10,10 @@ class FontSize extends DropDownItem {
     this.setTitle('10');
     this.setWidth(30);
     this.setEllipsis();
-    this.fontSizeContextMenu = new FontSizeContextMenu(PlainUtils.copyProp({
+    this.fontSizeContextMenu = new FontSizeContextMenu({
       el: this,
-    }, this.options.contextMenu));
+      ...this.options.contextMenu,
+    });
   }
 
   destroy() {

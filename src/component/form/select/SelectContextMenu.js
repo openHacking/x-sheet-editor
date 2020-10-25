@@ -1,7 +1,7 @@
-import { ELContextMenu } from '../../../contextmenu/ELContextMenu';
-import { Constant, cssPrefix } from '../../../../const/Constant';
-import { PlainUtils } from '../../../../utils/PlainUtils';
-import { XEvent } from '../../../../lib/XEvent';
+import { ELContextMenu } from '../../contextmenu/ELContextMenu';
+import { Constant, cssPrefix } from '../../../const/Constant';
+import { PlainUtils } from '../../../utils/PlainUtils';
+import { XEvent } from '../../../lib/XEvent';
 
 class SelectContextMenu extends ELContextMenu {
 

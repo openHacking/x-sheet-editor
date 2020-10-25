@@ -2,22 +2,20 @@ import { cssPrefix } from '../../../const/Constant';
 import { Icon } from './Icon';
 import { DropDownItem } from './base/DropDownItem';
 import { FixedContextMenu } from './contextmenu/fixed/FixedContextMenu';
-import { PlainUtils } from '../../../utils/PlainUtils';
 
 class Fixed extends DropDownItem {
 
-  constructor(options) {
+  constructor(options = { contextMenu: {} }) {
     super(`${cssPrefix}-tools-fixed`);
-    this.options = PlainUtils.copyProp({
-      contextMenu: {},
-    }, options);
+    this.options = options;
     this.icon = new Icon('freeze');
     this.rowStatus = false;
     this.colStatus = false;
     this.setIcon(this.icon);
-    this.fixedContextMenu = new FixedContextMenu(PlainUtils.copyProp({
+    this.fixedContextMenu = new FixedContextMenu({
       el: this,
-    }, this.options.contextMenu));
+      ...this.options.contextMenu,
+    });
   }
 
   setFixedColStatus(status) {

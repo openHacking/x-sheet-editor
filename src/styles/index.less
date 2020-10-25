@@ -236,26 +236,15 @@
 // 表格编辑框
 .@{css-prefix}-table-edit {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  cursor: default;
-  width: 100px;
-  height: 100px;
-  box-sizing: border-box;
-  background: #ffffff;
   z-index: @z-index-level-1;
-}
-.@{css-prefix}-table-edit-input {
-  width: max-content;
-  min-width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: left;
-  align-items: center;
-  font-family: Arial, sans-serif;
-  outline: none;
-  font-size: 13px;
+  cursor: default;
   background: #ffffff;
+  border: 3px solid rgb(0, 113, 207);
+  box-sizing: border-box;
+  outline: none;
+  overflow-wrap: break-word;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 // 表格高光
@@ -1331,6 +1320,31 @@
   z-index: @z-index-level-last;
 }
 
+// 表格小图标遮罩
 .@{css-prefix}-mask {
   z-index: @z-index-level-last;
+}
+
+// 表格填充类型选择
+.@{css-prefix}-auto-fill-type {
+  background-image: url("../../assets/svg/auto-fill-type.svg");
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-position: center center;
+  width: 20px;
+  height: 20px;
+  padding: 1px;
+  cursor: pointer;
+}
+.@{css-prefix}-auto-fill-menu {
+  background: #ffffff;
+}
+.@{css-prefix}-auto-fill-menu-item {
+  font-size: 13px;
+  padding: 5px 10px 5px 10px;
+}
+.@{css-prefix}-auto-fill-menu-item-title {
+  line-height: 20px;
+  margin-right: 20px;
+  font-size: 15px;
 }
