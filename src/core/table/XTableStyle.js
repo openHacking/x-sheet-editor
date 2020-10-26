@@ -34,6 +34,7 @@ import { VIEW_MODE, XTableScrollView } from './XTableScrollView';
 import { XFixedMeasure } from './tablebase/XFixedMeasure';
 import { FixedCellIcon } from './cellicon/FixedCellIcon';
 import { StaticCellIcon } from './cellicon/StaticCellIcon';
+import { CellFont } from './tablecell/CellFont';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),

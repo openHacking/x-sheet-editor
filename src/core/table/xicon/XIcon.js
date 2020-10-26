@@ -142,14 +142,19 @@ class XIcon {
         } else {
           const loadImg = new Image();
           loadImg.src = image;
-          loadImg.onload = () => {
+          if (loadImg.complete) {
             this.image = loadImg;
-            load(loadImg);
-          };
-          loadImg.onerror = () => {
-            // eslint-disable-next-line no-console
-            console.error(`图片加载失败${image}`);
-          };
+            sync(this.image);
+          } else {
+            loadImg.onload = () => {
+              this.image = loadImg;
+              load(loadImg);
+            };
+            loadImg.onerror = () => {
+              // eslint-disable-next-line no-console
+              console.error(`图片加载失败${image}`);
+            };
+          }
         }
         break;
       case XIcon.ICON_TYPE.draw:

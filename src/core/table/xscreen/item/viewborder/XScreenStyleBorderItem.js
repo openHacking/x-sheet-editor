@@ -19,7 +19,7 @@ const RANGE_OVER_GO = {
 
 class XScreenStyleBorderHandle extends XScreenViewSizer {
 
-  getDisplay(range) {
+  getBorderDisplay(range) {
     const { table } = this;
     const scrollView = table.getScrollView();
     const overGo = this.getOverGo(range);
@@ -326,11 +326,12 @@ class XScreenStyleBorderItem extends XScreenStyleBorderHandle {
 
   showBorder(range) {
     const overGo = this.getOverGo(range);
-    const display = this.getDisplay(range);
+    const display = this.getBorderDisplay(range);
     this.showBBorder(overGo, display);
     this.showTBorder(overGo, display);
     this.showLBorder(overGo, display);
     this.showRBorder(overGo, display);
+    return display;
   }
 
 }

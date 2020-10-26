@@ -69,6 +69,7 @@ class FillColorContextMenu extends ELContextMenu {
     this.addItem(this.array);
     this.addItem(new ELContextMenuDivider());
     this.addItem(this.customize);
+    this.bind();
   }
 
   unbind() {

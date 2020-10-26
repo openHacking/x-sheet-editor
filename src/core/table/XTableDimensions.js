@@ -39,6 +39,7 @@ import { CellMergeCopyHelper } from './helper/CellMergeCopyHelper';
 import { Clipboard } from '../../lib/Clipboard';
 import { XIcon } from './xicon/XIcon';
 import { XIconBuilder } from './xicon/XIconBuilder';
+import { CellFont } from './tablecell/CellFont';
 
 class Dimensions {
 
@@ -764,6 +765,10 @@ class XTableDimensions extends Widget {
         this.xIconsEvent(XIcon.ICON_EVENT_TYPE.MOUSE_DOWN, info, e);
       }
     };
+    // 设置单元格缩放
+    CellFont.setScaleAdapter(new ScaleAdapter({
+      goto: v => XDraw.srcTransformCssPx(this.scale.goto(v)),
+    }));
   }
 
   /**

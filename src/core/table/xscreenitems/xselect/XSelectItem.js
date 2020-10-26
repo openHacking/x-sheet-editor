@@ -20,10 +20,11 @@ class XSelectItem extends XScreenCssBorderItem {
     super({ table });
     this.selectLocal = SELECT_LOCAL.BR;
     this.display = false;
+    this.border = {};
+    this.activeCorner = null;
     this.selectRange = null;
     this.downRange = null;
     this.moveRange = null;
-    this.activeCorner = null;
     this.ltElem = new Widget(`${cssPrefix}-x-select-area`);
     this.brElem = new Widget(`${cssPrefix}-x-select-area`);
     this.lElem = new Widget(`${cssPrefix}-x-select-area`);
@@ -139,14 +140,6 @@ class XSelectItem extends XScreenCssBorderItem {
     });
   }
 
-  updateSelectRange(range) {
-    this.selectRange = range;
-    this.selectLocal = SELECT_LOCAL.BR;
-    this.offsetHandle();
-    this.borderHandle();
-    this.cornerHandle();
-  }
-
   moveSelectRange(x, y) {
     const { table } = this;
     const {
@@ -218,11 +211,19 @@ class XSelectItem extends XScreenCssBorderItem {
     this.selectLocal = SELECT_LOCAL.BR;
   }
 
+  updateSelectRange(range) {
+    this.selectRange = range;
+    this.selectLocal = SELECT_LOCAL.BR;
+    this.offsetHandle();
+    this.borderHandle();
+    this.cornerHandle();
+  }
+
   borderHandle() {
     const { selectRange, display } = this;
     if (selectRange && display) {
       this.hideBorder();
-      this.showBorder(selectRange);
+      this.border = this.showBorder(selectRange);
     }
   }
 
@@ -239,7 +240,7 @@ class XSelectItem extends XScreenCssBorderItem {
 
   cornerHandle() {
     const {
-      selectRange, selectLocal, display,
+      selectRange, selectLocal, display, border,
     } = this;
     if (selectRange && display) {
       const overGo = this.getOverGo(selectRange);
@@ -247,6 +248,13 @@ class XSelectItem extends XScreenCssBorderItem {
       this.tCorner.hide();
       this.lCorner.hide();
       this.brCorner.hide();
+      switch (selectLocal) {
+        case SELECT_LOCAL.LT:
+        case SELECT_LOCAL.BR:
+          if (border.bottom === false) {
+            return;
+          }
+      }
       this.brCorner.removeClass('br-pos');
       this.lCorner.removeClass('br-pos');
       this.tCorner.removeClass('br-pos');
