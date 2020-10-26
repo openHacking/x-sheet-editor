@@ -250,6 +250,7 @@ class XSelectItem extends XScreenCssBorderItem {
       this.brCorner.hide();
       switch (selectLocal) {
         case SELECT_LOCAL.LT:
+        case SELECT_LOCAL.L:
         case SELECT_LOCAL.BR:
           if (border.bottom === false) {
             return;
