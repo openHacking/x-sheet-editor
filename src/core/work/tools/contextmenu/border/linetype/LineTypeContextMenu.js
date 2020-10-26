@@ -33,7 +33,7 @@ class LineTypeContextMenu extends ELContextMenu {
 
   bind() {
     this.items.forEach((item) => {
-      XEvent.unbind(item, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      XEvent.bind(item, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
         this.update(item.type);
         item.setActive();
       });
