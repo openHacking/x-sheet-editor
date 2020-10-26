@@ -32,9 +32,6 @@ class AutoFillType extends ELContextMenu {
   }
 
 }
-AutoFillType.FILL_TYPE = {
-  SERIALIZE: 1, FILLING: 2,
-};
 
 export {
   AutoFillType,

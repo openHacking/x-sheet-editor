@@ -2,7 +2,6 @@ import { ELContextMenu } from '../contextmenu/ELContextMenu';
 import { Constant, cssPrefix } from '../../const/Constant';
 import { AutoFillTypeMenuItem } from './AutoFillTypeMenuItem';
 import { XEvent } from '../../lib/XEvent';
-import { AutoFillType } from './AutoFillType';
 
 class AutoFillTypeMenu extends ELContextMenu {
 
@@ -10,8 +9,8 @@ class AutoFillTypeMenu extends ELContextMenu {
     onUpdate: () => {},
   }) {
     super(`${cssPrefix}-auto-fill-menu`, options);
-    this.addItem(new AutoFillTypeMenuItem({ text: '以序列化的方式填充', value: AutoFillType.FILL_TYPE.SERIALIZE }));
-    this.addItem(new AutoFillTypeMenuItem({ text: '填充单元格内容', value: AutoFillType.FILL_TYPE.FILLING }));
+    this.addItem(new AutoFillTypeMenuItem({ text: '以序列的方式填充', value: AutoFillTypeMenu.FILL_TYPE.SERIALIZE }));
+    this.addItem(new AutoFillTypeMenuItem({ text: '填充单元格内容', value: AutoFillTypeMenu.FILL_TYPE.FILLING }));
     this.bind();
   }
 
@@ -35,6 +34,9 @@ class AutoFillTypeMenu extends ELContextMenu {
   }
 
 }
+AutoFillTypeMenu.FILL_TYPE = {
+  SERIALIZE: 1, FILLING: 2,
+};
 
 export {
   AutoFillTypeMenu,

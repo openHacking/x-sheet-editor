@@ -11,6 +11,7 @@ import { RowsIterator } from '../../iterator/RowsIterator';
 import { ColsIterator } from '../../iterator/ColsIterator';
 import { AutoFillType } from '../../../../component/autofilltype/AutoFillType';
 import { Serialize } from '../../helper/CellMergeCopyHelper';
+import { AutoFillTypeMenu } from '../../../../component/autofilltype/AutoFillTypeMenu';
 
 class XAutoFillItem extends XScreenCssBorderItem {
 
@@ -71,10 +72,10 @@ class XAutoFillItem extends XScreenCssBorderItem {
       onUpdate: (menu) => {
         const { value } = menu;
         switch (value) {
-          case AutoFillType.FILL_TYPE.SERIALIZE:
+          case AutoFillTypeMenu.FILL_TYPE.SERIALIZE:
             this.serialize();
             break;
-          case AutoFillType.FILL_TYPE.FILLING:
+          case AutoFillTypeMenu.FILL_TYPE.FILLING:
             break;
         }
       },

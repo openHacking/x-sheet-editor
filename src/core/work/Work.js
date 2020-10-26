@@ -39,8 +39,8 @@ class Work extends Widget {
       bodyLayer, topLayer, bottomLayer,
     } = this;
     topLayer.attach(this.top);
-    bottomLayer.attach(this.bottom);
     bodyLayer.attach(this.body);
+    bottomLayer.attach(this.bottom);
     this.bottom.bottomMenu.setSum(0);
     this.bottom.bottomMenu.setAvg(0);
     this.bottom.bottomMenu.setNumber(0);

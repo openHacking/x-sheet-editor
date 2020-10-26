@@ -147,10 +147,11 @@ class XTableEdit extends Widget {
     const { table } = this;
     const merges = table.getTableMerges();
     const cells = table.getTableCells();
+    const scrollView = table.getScrollView();
     const { xScreen } = table;
     const xSelect = xScreen.findType(XSelectItem);
     const { selectRange } = xSelect;
-    if (selectRange) {
+    if (selectRange && scrollView.intersects(selectRange)) {
       const { sri, sci } = selectRange;
       const merge = merges.getFirstIncludes(sri, sci);
       const cell = cells.getCellOrNew(sri, sci);
