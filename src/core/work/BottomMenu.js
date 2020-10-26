@@ -38,6 +38,7 @@ class BottomMenu extends Widget {
     const sheet = sheetView.getActiveSheet();
     const { table } = sheet;
     const { xScreen } = table;
+    const merges = table.getTableMerges();
     const cells = table.getTableCells();
     const xSelect = xScreen.findType(XSelectItem);
     const { selectRange } = xSelect;
@@ -53,7 +54,13 @@ class BottomMenu extends Widget {
             .setBegin(sci)
             .setEnd(eci)
             .setLoop((ci) => {
+              const merge = merges.getFirstIncludes(ri, ci);
               const cell = cells.getCell(ri, ci);
+              if (merge) {
+                if (merge.sri !== ri || merge.sci !== ci) {
+                  return;
+                }
+              }
               if (cell) {
                 number += 1;
                 const { text } = cell;
