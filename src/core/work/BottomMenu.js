@@ -18,7 +18,7 @@ class BottomMenu extends Widget {
     this.number = h('div', `${cssPrefix}-bottom-number`);
     this.fullScreen = h('div', `${cssPrefix}-bottom-full-screen`);
     this.grid = h('div', `${cssPrefix}-bottom-grid`);
-    this.throttle = new Throttle();
+    this.throttle = new Throttle({ time: 800 });
     this.children(this.grid);
     this.children(this.fullScreen);
     this.children(this.sum);
@@ -77,8 +77,12 @@ class BottomMenu extends Widget {
   }
 
   unbind() {
-    XEvent.bind(this.grid);
-    XEvent.bind(this.fullScreen);
+    const { workBottom, grid, fullScreen } = this;
+    const { work } = workBottom;
+    const { body } = work;
+    XEvent.unbind(grid);
+    XEvent.unbind(fullScreen);
+    XEvent.unbind(body);
   }
 
   bind() {

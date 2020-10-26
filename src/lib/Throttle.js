@@ -12,7 +12,7 @@ class Throttle {
   }
 
   action(cb) {
-    setTimeout(this.handle);
+    clearTimeout(this.handle);
     this.handle = setTimeout(() => {
       cb();
     }, this.time);

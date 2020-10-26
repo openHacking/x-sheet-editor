@@ -36,9 +36,9 @@ class XTableEdit extends Widget {
     const top = yHeightLight.getTop() + table.getIndexHeight();
     const height = yHeightLight.getHeight();
     const width = xHeightLight.getWidth();
-    this.cssRemoveKeys('right', 'top', 'left', 'max-width', 'min-width', 'min-height');
     switch (align) {
       case BaseFont.ALIGN.left: {
+        this.cssRemoveKeys('right');
         const maxHeight = table.visualHeight() - top;
         const maxWidth = table.visualWidth() - left;
         this.css({
@@ -52,6 +52,7 @@ class XTableEdit extends Widget {
         break;
       }
       case BaseFont.ALIGN.center: {
+        this.cssRemoveKeys('right');
         const box = this.box();
         const maxHeight = table.visualHeight() - top;
         if (box.width > width) {
@@ -80,6 +81,7 @@ class XTableEdit extends Widget {
         break;
       }
       case BaseFont.ALIGN.right: {
+        this.cssRemoveKeys('left');
         const maxWidth = (left + width) - table.getIndexWidth();
         const right = table.visualWidth() - (left + width);
         const maxHeight = table.visualHeight() - top;
@@ -192,6 +194,16 @@ class XTableEdit extends Widget {
       }
       this.select = null;
     }
+  }
+
+  show() {
+    this.css({
+      'min-width': '0px',
+      'min-height': '0px',
+      'max-width': '0px',
+      'max-height': '0px',
+    });
+    return super.show();
   }
 
   destroy() {
