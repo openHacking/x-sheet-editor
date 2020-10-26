@@ -3,6 +3,7 @@ import { PlainUtils } from '../../../utils/PlainUtils';
 import { XDraw } from '../../../canvas/XDraw';
 import { Rect } from '../../../canvas/Rect';
 import { XIconOffset } from './XIconOffset';
+import { Crop } from '../../../canvas/Crop';
 
 /**
  * XIcon
@@ -206,13 +207,25 @@ class XIcon {
   }) {
     const image = this.image;
     const color = this.color;
-    const { x, y, width, height } = this.position(rect);
+    const positionRect = this.position(rect);
+    const {
+      x, y, width, height,
+    } = positionRect;
+    const include = rect.includeRect(positionRect);
+    const crop = new Crop({
+      rect, draw,
+    });
+    if (include === false) {
+      crop.open();
+    }
     if (color) {
       draw.attr({ fillStyle: color });
       draw.fillRect(x, y, width, height);
     }
-    draw.drawImage(image,
-      0, 0, image.width, image.height, x, y, width, height);
+    draw.drawImage(image, 0, 0, image.width, image.height, x, y, width, height);
+    if (include === false) {
+      crop.close();
+    }
   }
 
   /**
@@ -228,29 +241,77 @@ class XIcon {
     const { rect, focus } = this;
     if (rect) {
       const position = this.position(rect);
-      const location = position.inRect(rect);
+      const location = position.inRectPosition(rect);
       const { activate } = focus;
       switch (type) {
         case XIcon.ICON_EVENT_TYPE.MOUSE_DOWN:
           if (location.includePoint(x, y)) {
             focus.setActivate(this);
-            this.onDown(native, position);
+            this.onDown({
+              native, position,
+            });
           }
           break;
         case XIcon.ICON_EVENT_TYPE.MOUSE_MOVE:
           if (location.includePoint(x, y)) {
             if (activate !== this) {
-              this.onEnter(native, position);
+              this.onEnter({
+                native, position,
+              });
             }
             focus.setActivate(this);
-            this.onMove(native, position);
+            this.onMove({
+              native, position,
+            });
           } else if (activate) {
             focus.setActivate(null);
-            this.onLeave(native, position);
+            this.onLeave({
+              native, position,
+            });
           }
           break;
       }
     }
+  }
+
+  /**
+   * 绘制回调
+   * @param callback
+   */
+  setOnDraw(callback) {
+    this.onDraw = callback;
+  }
+
+  /**
+   * 按下回调
+   * @param callback
+   */
+  setOnDown(callback) {
+    this.onDown = callback;
+  }
+
+  /**
+   * 移动回调
+   * @param callback
+   */
+  setOnMove(callback) {
+    this.onMove = callback;
+  }
+
+  /**
+   * 进入回调
+   * @param callback
+   */
+  setOnEnter(callback) {
+    this.onEnter = callback;
+  }
+
+  /**
+   * 离开回调
+   * @param callback
+   */
+  setOnLeave(callback) {
+    this.onLeave = callback;
   }
 
   /**

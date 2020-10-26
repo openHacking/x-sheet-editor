@@ -1,9 +1,34 @@
 /* global document CustomEvent window */
-
 import { PlainUtils } from '../utils/PlainUtils';
 
+/**
+ * Element
+ */
 class Element {
 
+  /**
+   * 包装元素
+   */
+  static wrap(args) {
+    if (PlainUtils.isArray(args)) {
+      const elements = [];
+      args.forEach((item) => {
+        if (item instanceof Element) {
+          elements.push(item);
+        } else {
+          elements.push(new Element(item));
+        }
+      });
+      return elements;
+    }
+    return new Element(args);
+  }
+
+  /**
+   * Element
+   * @param tag
+   * @param className
+   */
   constructor(tag, className = '') {
     if (typeof tag === 'string') {
       this.el = document.createElement(tag);
@@ -14,6 +39,62 @@ class Element {
     this.el.data = [];
   }
 
+  /**
+   * 空参数时返回子节点, 有参数时插入子节点
+   * @param args
+   * @returns {Element|NodeListOf<ChildNode>|ActiveX.IXMLDOMNodeList}
+   */
+  children(...args) {
+    if (arguments.length === 0) {
+      return Element.wrap(this.el.childNodes);
+    }
+    args.forEach(ele => this.append(ele));
+    return this;
+  }
+
+  /**
+   * 在当前元素中插入指定节点
+   * @param ele
+   */
+  append(ele) {
+    this.el.appendChild(ele.el);
+  }
+
+  /**
+   * 删除Class名称
+   * @param name
+   * @returns {Element}
+   */
+  removeClass(name) {
+    this.el.classList.remove(name);
+    return this;
+  }
+
+  /**
+   * 添加Class名称
+   * @param name
+   * @returns {Element}
+   */
+  addClass(name) {
+    this.el.classList.add(name);
+    return this;
+  }
+
+  /**
+   * 是否具有指定Class名称
+   * @param name
+   * @returns {boolean}
+   */
+  hasClass(name) {
+    return this.el.classList.contains(name);
+  }
+
+  /**
+   * 数据绑定
+   * @param key
+   * @param value
+   * @returns {Element|*}
+   */
   data(key, value) {
     if (value !== undefined) {
       this.el.data[key] = value;
@@ -22,30 +103,11 @@ class Element {
     return this.el.data[key];
   }
 
-  on(eventNames, handler) {
-    const [fen, ...oen] = eventNames.split('.');
-    let eventName = fen;
-    if (eventName === 'mousewheel' && /Firefox/i.test(window.navigator.userAgent)) {
-      eventName = 'DOMMouseScroll';
-    }
-    this.el.addEventListener(eventName, (evt) => {
-      handler(evt);
-      for (let i = 0; i < oen.length; i += 1) {
-        const k = oen[i];
-        if (k === 'left' && evt.button !== 0) {
-          return;
-        }
-        if (k === 'right' && evt.button !== 2) {
-          return;
-        }
-        if (k === 'stop') {
-          evt.stopPropagation();
-        }
-      }
-    });
-    return this;
-  }
-
+  /**
+   * 元素定位
+   * @param value
+   * @returns {{top: *, left: *, width: *, height: *}|Element}
+   */
   offset(value) {
     if (value !== undefined) {
       Object.keys(value).forEach((k) => {
@@ -64,135 +126,135 @@ class Element {
     };
   }
 
-  scroll(v) {
-    const { el } = this;
-    if (v !== undefined) {
-      if (v.left !== undefined) {
-        el.scrollLeft = v.left;
-      }
-      if (v.top !== undefined) {
-        el.scrollTop = v.top;
-      }
-    }
-    return { left: el.scrollLeft, top: el.scrollTop };
+  /**
+   * 获取当前元素的父节点
+   * @returns {Element}
+   */
+  parent() {
+    return Element.wrap(this.el.parentNode)
   }
 
-  scrollTop() {
-    return this.el.scrollTop;
-  }
-
-  clientHeight() {
-    return this.el.clientHeight;
-  }
-
+  /**
+   * 获取元素坐标信息
+   * getBoundingClientRect
+   * @returns {DOMRect}
+   */
   box() {
     return this.el.getBoundingClientRect();
   }
 
-  parent() {
-    return new Element(this.el.parentNode);
-  }
-
-  children(...args) {
-    if (arguments.length === 0) {
-      return this.el.childNodes;
-    }
-    args.forEach(ele => this.child(ele));
-    return this;
-  }
-
+  /**
+   * 获取当前第一个子元素
+   * @returns {*}
+   */
   first() {
-    return this.el.firstChild;
+    return Element.wrap(this.el.firstChild);
   }
 
+  /**
+   * 获取最后一个子元素
+   * @returns {*}
+   */
   last() {
-    return this.el.lastChild;
+    return Element.wrap(this.el.lastChild);
   }
 
+  /**
+   * 删除当前元素下的子元素
+   * @param ele
+   * @returns {boolean|ActiveX.IXMLDOMNode|*}
+   */
   remove(ele) {
-    return this.el.removeChild(ele.el || ele);
-  }
-
-  prepend(ele) {
-    const { el } = this;
-    if (el.children.length > 0) {
-      el.insertBefore(ele, el.firstChild);
-    } else {
-      el.appendChild(ele);
-    }
+    this.el.removeChild(ele.el || ele);
     return this;
   }
 
-  prev() {
-    return this.el.previousSibling;
-  }
-
-  next() {
-    return this.el.nextSibling;
-  }
-
-  child(arg) {
-    let ele = arg;
-    if (typeof arg === 'string') {
-      ele = document.createTextNode(arg);
-    } else if (arg instanceof Element) {
-      ele = arg.el;
-    }
-    this.el.appendChild(ele);
-    return this;
-  }
-
+  /**
+   * 当前元素是否包含指定节点
+   * @param ele
+   * @returns {boolean|*}
+   */
   contains(ele) {
-    return this.el.contains(ele);
+    return this.el.contains(ele.el);
   }
 
-  className(v) {
-    if (v !== undefined) {
-      this.el.className = v;
-      return this;
-    }
-    return this.el.className;
+  /**
+   * 获取当前元素的上一个元素
+   * @returns {*}
+   */
+  prev() {
+    return Element.wrap(this.el.previousSibling);
   }
 
-  addClass(name) {
-    this.el.classList.add(name);
-    return this;
+  /**
+   * 获取当前元素的下一个元素
+   * @returns {*}
+   */
+  next() {
+    return Element.wrap(this.el.nextSibling);
   }
 
-  hasClass(name) {
-    return this.el.classList.contains(name);
-  }
-
-  removeClass(name) {
-    this.el.classList.remove(name);
-    return this;
-  }
-
-  toggle(cls = 'active') {
-    return this.toggleClass(cls);
-  }
-
-  toggleClass(name) {
-    return this.el.classList.toggle(name);
-  }
-
+  /**
+   * 设置元素的激活状态
+   * @param flag
+   * @param cls
+   * @returns {Element}
+   */
   active(flag = true, cls = 'active') {
     if (flag) this.addClass(cls);
     else this.removeClass(cls);
     return this;
   }
 
-  checked(flag = true) {
-    this.active(flag, 'checked');
+  /**
+   * 设置元素文本
+   * @param text
+   * @returns {string|Element}
+   */
+  text(text) {
+    if (text !== undefined) {
+      this.el.innerText = text;
+      return this;
+    }
+    return this.el.innerText;
+  }
+
+  /**
+   * 设置元素html内容
+   * @param html
+   * @returns {Element|*}
+   */
+  html(html) {
+    if (html !== undefined) {
+      this.el.innerHTML = html;
+      return this;
+    }
+    return this.el.innerHTML;
+  }
+
+  /**
+   * 当前元素设置焦点
+   */
+  focus() {
+    this.el.focus();
+  }
+
+  /**
+   * 删除元素属性
+   * @param key
+   * @returns {Element}
+   */
+  removeAttr(key) {
+    this.el.removeAttribute(key);
     return this;
   }
 
-  disabled(flag = true) {
-    if (flag) this.addClass('disabled');
-    else this.removeClass('disabled');
-    return this;
-  }
-
+  /**
+   * 添加元素属性
+   * @param key
+   * @param value
+   * @returns {string|Element}
+   */
   attr(key, value) {
     if (value !== undefined) {
       this.el.setAttribute(key, value);
@@ -207,19 +269,11 @@ class Element {
     return this;
   }
 
-  removeAttr(key) {
-    this.el.removeAttribute(key);
-    return this;
-  }
-
-  html(content) {
-    if (content !== undefined) {
-      this.el.innerHTML = content;
-      return this;
-    }
-    return this.el.innerHTML;
-  }
-
+  /**
+   * 设置元素Value
+   * @param v
+   * @returns {Element|*}
+   */
   val(v) {
     if (v !== undefined) {
       this.el.value = v;
@@ -228,11 +282,22 @@ class Element {
     return this.el.value;
   }
 
+  /**
+   * 删除元素style属性
+   * @param keys
+   * @returns {Element}
+   */
   cssRemoveKeys(...keys) {
     keys.forEach(k => this.el.style.removeProperty(k));
     return this;
   }
 
+  /**
+   * 设置元素属性
+   * @param name
+   * @param value
+   * @returns {Element|*}
+   */
   css(name, value) {
     if (value === undefined && typeof name !== 'string') {
       Object.keys(name).forEach((k) => {
@@ -247,10 +312,18 @@ class Element {
     return this.el.style[name];
   }
 
+  /**
+   * 获取元素计算完成的样式
+   * @returns {CSSStyleDeclaration}
+   */
   computedStyle() {
     return window.getComputedStyle(this.el, null);
   }
 
+  /**
+   * 显示
+   * @returns {Element}
+   */
   show() {
     const style = this.computedStyle();
     if (style && style.display !== 'block') {
@@ -259,6 +332,10 @@ class Element {
     return this;
   }
 
+  /**
+   * 隐藏
+   * @returns {Element}
+   */
   hide() {
     const style = this.computedStyle();
     if (style && style.display !== 'none') {
@@ -267,59 +344,11 @@ class Element {
     return this;
   }
 
-  display(on) {
-    if (on) this.show(); else this.hide();
-  }
-
-  text(val) {
-    if (val === undefined) return this.el.innerText;
-    this.el.innerText = val;
-    return val;
-  }
-
-  sibling() {
-    let sibling = this.el;
-    const result = [];
-    // eslint-disable-next-line no-cond-assign
-    while ((sibling = sibling.previousElementSibling) !== null) result.push(new Element(sibling));
-    sibling = this.el;
-    // eslint-disable-next-line no-cond-assign
-    while ((sibling = sibling.nextElementSibling) !== null) result.push(new Element(sibling));
-    return result;
-  }
-
-  position() {
-    let top = 0; let left = 0; const right = 0; const bottom = 0;
-    if (this.el.style.position) {
-      if (this.el.top) {
-        top = this.el.style.top
-          .replace('%', '')
-          .repeat('px', '');
-      }
-      if (this.el.left) {
-        left = this.el.style.left
-          .replace('%', '')
-          .repeat('px', '');
-      }
-      if (this.el.right) {
-        top = this.el.style.right
-          .replace('%', '')
-          .repeat('px', '');
-      }
-      if (this.el.bottom) {
-        top = this.el.style.bottom
-          .replace('%', '')
-          .repeat('px', '');
-      }
-    }
-    return {
-      top: PlainUtils.parseFloat(top),
-      left: PlainUtils.parseFloat(left),
-      right: PlainUtils.parseFloat(right),
-      bottom: PlainUtils.parseFloat(bottom),
-    };
-  }
-
+  /**
+   * 事件触发
+   * @param type
+   * @param message
+   */
   trigger(type, message) {
     const event = new CustomEvent(type, {
       detail: message,
@@ -329,10 +358,11 @@ class Element {
     this.el.dispatchEvent(event);
   }
 
-  focus() {
-    this.el.focus();
-  }
-
+  /**
+   * 查找子元素
+   * @param select
+   * @returns {[]|Element}
+   */
   find(select) {
     const result = this.el.querySelectorAll(select);
     if (result && result.length === 1) {
@@ -348,13 +378,19 @@ class Element {
     return eleArray;
   }
 
-  isChild(target) {
-    let targetEl = target || target.el;
-    while (targetEl !== undefined && targetEl !== null && targetEl !== document.body) {
-      if (targetEl === this.el) return true;
-      targetEl = targetEl.parentNode;
-    }
-    return false;
+  /**
+   * 获取当前元素的兄弟节点
+   * @returns {[]}
+   */
+  sibling() {
+    let sibling = this.el;
+    const result = [];
+    // eslint-disable-next-line no-cond-assign
+    while ((sibling = sibling.previousElementSibling) !== null) result.push(new Element(sibling));
+    sibling = this.el;
+    // eslint-disable-next-line no-cond-assign
+    while ((sibling = sibling.nextElementSibling) !== null) result.push(new Element(sibling));
+    return result;
   }
 
 }

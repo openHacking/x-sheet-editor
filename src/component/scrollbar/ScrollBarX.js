@@ -39,29 +39,6 @@ class ScrollBarX extends Widget {
     this.bind();
   }
 
-  bind() {
-    this.block.on(Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
-      if (evt1.button !== 0) return;
-      const downEventXy = this.computeEventXy(evt1, this.block);
-      XEvent.mouseMoveUp(h(document), (evt2) => {
-        // 计算移动的距离
-        const moveEventXy = this.computeEventXy(evt2, this.content);
-        let left = moveEventXy.x - downEventXy.x;
-        if (left < 0) left = 0;
-        if (left > this.maxBlockLeft) left = this.maxBlockLeft;
-        // 计算滑动的距离
-        this.blockLeft = left;
-        this.scrollTo = this.computeScrollTo(this.blockLeft);
-        this.block.css('left', `${left}px`);
-        this.option.scroll(this.scrollTo);
-        evt2.stopPropagation();
-        evt2.preventDefault();
-      });
-      evt1.stopPropagation();
-      evt1.preventDefault();
-    });
-  }
-
   setSize(viewPortWidth, contentWidth) {
     if (viewPortWidth < contentWidth) {
       this.isHide = false;
@@ -86,6 +63,38 @@ class ScrollBarX extends Widget {
     }
   }
 
+  unbind() {
+    XEvent.unbind(this.block);
+  }
+
+  bind() {
+    XEvent.bind(this.block, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
+      if (evt1.button !== 0) return;
+      const downEventXy = this.computeEventXy(evt1, this.block);
+      XEvent.mouseMoveUp(h(document), (evt2) => {
+        // 计算移动的距离
+        const moveEventXy = this.computeEventXy(evt2, this.content);
+        let left = moveEventXy.x - downEventXy.x;
+        if (left < 0) left = 0;
+        if (left > this.maxBlockLeft) left = this.maxBlockLeft;
+        // 计算滑动的距离
+        this.blockLeft = left;
+        this.scrollTo = this.computeScrollTo(this.blockLeft);
+        this.block.css('left', `${left}px`);
+        this.option.scroll(this.scrollTo);
+        evt2.stopPropagation();
+        evt2.preventDefault();
+      });
+      evt1.stopPropagation();
+      evt1.preventDefault();
+    });
+  }
+
+  scrollMove(move) {
+    this.setLocal(move);
+    this.option.scroll(this.scrollTo);
+  }
+
   setLocal(move) {
     let to = move;
     const maxTo = this.contentWidth - this.viewPortWidth;
@@ -98,14 +107,15 @@ class ScrollBarX extends Widget {
     }
   }
 
-  scrollMove(move) {
-    this.setLocal(move);
-    this.option.scroll(this.scrollTo);
-  }
-
   computeScrollTo(move) {
     return (move / this.maxBlockLeft) * (this.contentWidth - this.viewPortWidth);
   }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
+  }
+
 }
 
 export { ScrollBarX };

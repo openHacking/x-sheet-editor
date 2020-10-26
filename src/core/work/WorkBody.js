@@ -221,7 +221,11 @@ class WorkBody extends Widget {
     const totalHeight = table.getScrollTotalHeight();
     const totalWidth = table.getScrollTotalWidth();
     // 是否显示水平滚动条
-    scrollBarXHorizontalLayer.display(totalWidth > table.getContentWidth());
+    if (totalWidth > table.getContentWidth()) {
+      scrollBarXHorizontalLayer.show();
+    } else {
+      scrollBarXHorizontalLayer.hide();
+    }
     // 调整滚动条尺寸
     scrollBarY.setSize(table.getContentHeight(), totalHeight);
     scrollBarX.setSize(table.getContentWidth(), totalWidth);

@@ -32,14 +32,14 @@ class XSelectItem extends XScreenCssBorderItem {
     this.lCorner = new Widget(`${cssPrefix}-x-select-corner`);
     this.tCorner = new Widget(`${cssPrefix}-x-select-corner`);
     this.brCorner = new Widget(`${cssPrefix}-x-select-corner`);
-    this.ltElem.child(this.ltCorner);
-    this.lElem.child(this.lCorner);
-    this.tElem.child(this.tCorner);
-    this.brElem.child(this.brCorner);
-    this.blt.child(this.ltElem);
-    this.bl.child(this.lElem);
-    this.bt.child(this.tElem);
-    this.bbr.child(this.brElem);
+    this.ltElem.children(this.ltCorner);
+    this.lElem.children(this.lCorner);
+    this.tElem.children(this.tCorner);
+    this.brElem.children(this.brCorner);
+    this.blt.children(this.ltElem);
+    this.bl.children(this.lElem);
+    this.bt.children(this.tElem);
+    this.bbr.children(this.brElem);
     this.setBorderType('solid');
   }
 

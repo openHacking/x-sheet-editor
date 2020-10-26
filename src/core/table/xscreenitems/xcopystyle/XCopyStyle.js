@@ -15,10 +15,10 @@ class XCopyStyle extends XScreenSvgBorderItem {
     this.brElem = new Widget(`${cssPrefix}-x-copy-style-area`);
     this.lElem = new Widget(`${cssPrefix}-x-copy-style-area`);
     this.tElem = new Widget(`${cssPrefix}-x-copy-style-area`);
-    this.blt.child(this.ltElem);
-    this.bl.child(this.lElem);
-    this.bt.child(this.tElem);
-    this.bbr.child(this.brElem);
+    this.blt.children(this.ltElem);
+    this.bl.children(this.lElem);
+    this.bt.children(this.tElem);
+    this.bbr.children(this.brElem);
   }
 
   onAdd() {

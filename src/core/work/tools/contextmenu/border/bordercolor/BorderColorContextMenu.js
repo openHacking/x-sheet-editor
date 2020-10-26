@@ -8,6 +8,7 @@ import { ColorArray } from '../../../../../../component/colorpicker/colorarray/C
 import { ELContextMenuDivider } from '../../../../../../component/contextmenu/ELContextMenuDivider';
 import { BorderColorContextMenuItem } from './BorderColorContextMenuItem';
 import { h } from '../../../../../../lib/Element';
+import { XEvent } from '../../../../../../lib/XEvent';
 
 class BorderColorContextMenu extends ELContextMenu {
 
@@ -27,11 +28,6 @@ class BorderColorContextMenu extends ELContextMenu {
     });
     // 重置
     this.reset = new BorderColorContextMenuItem('重置', new Icon('clear-color'));
-    this.reset.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-      this.options.onUpdate('rgb(0,0,0)');
-      this.customizeColorArray.setActiveByColor(null);
-      this.colorArray.setActiveByColor(null);
-    });
     // 颜色筛选
     this.array = new BorderColorContextMenuItem();
     this.array.removeClass('hover');
@@ -72,11 +68,29 @@ class BorderColorContextMenu extends ELContextMenu {
     this.addItem(this.array);
     this.addItem(new ELContextMenuDivider());
     this.addItem(this.customize);
+    this.bind();
+  }
+
+  unbind() {
+    XEvent.unbind(this.reset);
+  }
+
+  bind() {
+    XEvent.bind(this.reset, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      this.options.onUpdate('rgb(0,0,0)');
+      this.customizeColorArray.setActiveByColor(null);
+      this.colorArray.setActiveByColor(null);
+    });
   }
 
   setActiveByColor(color) {
     this.customizeColorArray.setActiveByColor(color);
     this.colorArray.setActiveByColor(color);
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

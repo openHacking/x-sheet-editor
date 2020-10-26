@@ -17,14 +17,21 @@ import { FilterData } from '../../../../component/filterdata/FilterData';
 import { ElPopUp } from '../../../../component/elpopup/ElPopUp';
 import { ValueItem } from '../../../../component/filterdata/valuefilter/ValueItem';
 
+/**
+ * XFilter
+ */
 class XFilter extends XScreenCssBorderItem {
 
+  /**
+   * XFilter
+   * @param table
+   */
   constructor(table) {
     super({ table });
-    this.display = false;
-    this.buttons = [];
-    this.icons = [];
     this.selectRange = null;
+    this.display = false;
+    this.icons = [];
+    this.activeIcon = null;
     this.mask = new Mask().setRoot(table);
     this.filter = new FilterData({
       el: this.mask,
@@ -41,14 +48,120 @@ class XFilter extends XScreenCssBorderItem {
     this.bind();
   }
 
-  borderHandle() {
-    const { selectRange, display } = this;
-    if (selectRange && display) {
-      this.hideBorder();
-      this.showBorder(selectRange);
+  /**
+   * 元素添加监听
+   */
+  onAdd() {
+    super.onAdd();
+  }
+
+  /**
+   * 卸载绑定事件
+   */
+  unbind() {
+    const { table } = this;
+    XEvent.unbind(table);
+  }
+
+  /**
+   * 绑定事件监听
+   */
+  bind() {
+    const { table } = this;
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
+      if (this.display) {
+        this.xFilterOffset();
+      }
+    });
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
+      if (this.display) {
+        ElPopUp.closeAll();
+        this.xFilterOffset();
+      }
+    });
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RENDER, () => {
+      if (this.display) {
+        this.xFilterOffset();
+      }
+    });
+  }
+
+  /**
+   * 创建过滤小图标
+   */
+  createFilterIcon() {
+    const { table, selectRange, icons } = this;
+    if (selectRange) {
+      const { top } = selectRange.brink();
+      const { xIconBuilder } = table;
+      const style = table.getXTableStyle();
+      const { fixedCellIcon } = style;
+      const { mousePointer } = table;
+      top.each((ri, ci) => {
+        const icon = xIconBuilder.build({
+          image: darkFilter,
+          offset: {
+            x: -2,
+            y: -2,
+          },
+          height: 18,
+          width: 18,
+          vertical: XIcon.ICON_VERTICAL.BOTTOM,
+        });
+        const item = { ri, ci, icon };
+        icon.setOnDown((event) => {
+          const { native } = event;
+          this.activeIcon = item;
+          this.filterOpen();
+          native.stopPropagation();
+        });
+        icon.setOnEnter((event) => {
+          const { position } = event;
+          const cssHeight = XDraw.styleTransformCssPx(position.height);
+          const cssWidth = XDraw.styleTransformCssPx(position.width);
+          const cssLeft = XDraw.styleTransformCssPx(position.x);
+          const cssTop = XDraw.styleTransformCssPx(position.y);
+          this.mask.setLeft(cssLeft)
+            .setTop(cssTop)
+            .setWidth(cssWidth)
+            .setHeight(cssHeight)
+            .open();
+        });
+        icon.setOnMove(() => {
+          mousePointer.set(XTableMousePointer.KEYS.pointer, XFilter);
+        });
+        icon.setOnLeave(() => {
+          this.mask.close();
+          mousePointer.free(XFilter);
+        });
+        fixedCellIcon.addOrNewCell(ri, ci, icon);
+        icons.push(item);
+      });
+      table.render();
     }
   }
 
+  /**
+   * 清除过滤小图标
+   */
+  clearFilterIcon() {
+    const { table, selectRange } = this;
+    if (selectRange) {
+      const style = table.getXTableStyle();
+      const { fixedCellIcon } = style;
+      this.icons.forEach((item) => {
+        const { ri, ci, icon } = item;
+        fixedCellIcon.remove(ri, ci, icon);
+      });
+      this.icons = [];
+      table.render();
+    }
+  }
+
+  /**
+   * 处理元素的
+   * 显示,大小,位置
+   */
   offsetHandle() {
     const { selectRange } = this;
     if (selectRange) {
@@ -58,11 +171,22 @@ class XFilter extends XScreenCssBorderItem {
     }
   }
 
-  xFilterOffset() {
-    this.offsetHandle();
-    this.borderHandle();
+  /**
+   * 处理元素的边框
+   * 是否显示
+   */
+  borderHandle() {
+    const { selectRange, display } = this;
+    if (selectRange && display) {
+      this.hideBorder();
+      this.showBorder(selectRange);
+    }
   }
 
+  /**
+   * 处理过滤器的
+   * 视图区域
+   */
   xFilterHandle() {
     const { table } = this;
     const {
@@ -228,124 +352,55 @@ class XFilter extends XScreenCssBorderItem {
     }
   }
 
-  clearIcon() {
-    const { table, selectRange } = this;
-    if (selectRange) {
-      const style = table.getXTableStyle();
-      const { fixedCellIcon } = style;
-      this.icons.forEach((item) => {
-        const { ri, ci, icon } = item;
-        fixedCellIcon.remove(ri, ci, icon);
-      });
-      this.icons = [];
-      table.render();
-    }
+  /**
+   * 处理元素的基本属性
+   * 和边框
+   */
+  xFilterOffset() {
+    this.offsetHandle();
+    this.borderHandle();
   }
 
-  createIcon() {
-    const { table, selectRange } = this;
-    if (selectRange) {
-      const { top } = selectRange.brink();
-      const { xIconBuilder } = table;
-      const style = table.getXTableStyle();
-      const { fixedCellIcon } = style;
-      const { mousePointer } = table;
-      top.each((ri, ci) => {
-        const icon = xIconBuilder.build({
-          image: darkFilter,
-          offset: {
-            x: -2,
-            y: -2,
-          },
-          height: 18,
-          width: 18,
-          vertical: XIcon.ICON_VERTICAL.BOTTOM,
-          onDown: (native) => {
-            this.filterOpen(ri, ci);
-            native.stopPropagation();
-          },
-          onEnter: (native, position) => {
-            const cssHeight = XDraw.styleTransformCssPx(position.height);
-            const cssWidth = XDraw.styleTransformCssPx(position.width);
-            const cssLeft = XDraw.styleTransformCssPx(position.x);
-            const cssTop = XDraw.styleTransformCssPx(position.y);
-            this.mask.setLeft(cssLeft)
-              .setTop(cssTop)
-              .setWidth(cssWidth)
-              .setHeight(cssHeight)
-              .open();
-          },
-          onLeave: () => {
-            this.mask.close();
-            mousePointer.free(XFilter);
-          },
-          onMove: () => {
-            mousePointer.set(XTableMousePointer.KEYS.pointer, XFilter);
-          },
-        });
-        fixedCellIcon.addOrNewCell(ri, ci, icon);
-        this.icons.push({
-          ri, ci, icon,
-        });
-      });
-      table.render();
-    }
-  }
-
+  /**
+   * 打开过滤面板
+   * @param sri
+   * @param sci
+   */
   filterOpen(sri, sci) {
-    const { selectRange, table } = this;
+    const { selectRange, table, filter } = this;
     const cells = table.getTableCells();
     const eri = selectRange.eri;
     const eci = sci;
     const items = new Set();
     new RectRange(sri, sci, eri, eci).each((ri, ci) => {
       const cell = cells.getCell(ri, ci);
-      if (cell) {
+      if (cell && !PlainUtils.isBlank(cell.text)) {
         items.add(cell.text);
       }
     });
     ElPopUp.closeAll();
-    this.filter.open();
+    const { valueFilter, ifFilter } = filter;
+    valueFilter.emptyAll();
     items.forEach((item) => {
-      this.filter.valueFilter.addItem(new ValueItem({ text: item }));
+      valueFilter.addItem(new ValueItem({ text: item }));
     });
+    ifFilter.setValue();
+    ifFilter.setType();
+    filter.open();
   }
 
-  unbind() {
-    const { table } = this;
-    XEvent.unbind(table);
-  }
-
-  bind() {
-    const { table } = this;
-    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
-      if (this.display) {
-        this.xFilterOffset();
-      }
-    });
-    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      if (this.display) {
-        ElPopUp.closeAll();
-        this.xFilterOffset();
-      }
-    });
-    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RENDER, () => {
-      if (this.display) {
-        this.xFilterOffset();
-      }
-    });
-  }
-
-  onAdd() {
-    super.onAdd();
-  }
-
+  /**
+   * 隐藏过滤器
+   */
   hideFilter() {
     this.display = false;
-    this.clearIcon();
+    this.clearFilterIcon();
     this.hide();
   }
 
+  /**
+   * 显示过滤器
+   */
   openFilter() {
     const { table } = this;
     const cells = table.getTableCells();
@@ -358,13 +413,16 @@ class XFilter extends XScreenCssBorderItem {
         }).open();
       } else {
         this.display = true;
-        this.createIcon();
+        this.createFilterIcon();
         this.show();
         this.xFilterOffset();
       }
     }
   }
 
+  /**
+   * 销毁过滤器
+   */
   destroy() {
     super.destroy();
     this.unbind();

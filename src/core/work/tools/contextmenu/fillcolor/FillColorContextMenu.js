@@ -9,6 +9,7 @@ import { PlainUtils } from '../../../../../utils/PlainUtils';
 
 import { FillColorContextMenuItem } from './FillColorContextMenuItem';
 import { ColorPicker } from '../../../../../component/colorpicker/ColorPicker';
+import { XEvent } from '../../../../../lib/XEvent';
 
 class FillColorContextMenu extends ELContextMenu {
 
@@ -28,11 +29,6 @@ class FillColorContextMenu extends ELContextMenu {
     });
     // 重置
     this.reset = new FillColorContextMenuItem('重置', new Icon('clear-color'));
-    this.reset.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-      this.options.onUpdate(null);
-      this.customizeColorArray.setActiveByColor(null);
-      this.colorArray.setActiveByColor(null);
-    });
     // 颜色筛选
     this.array = new FillColorContextMenuItem();
     this.array.removeClass('hover');
@@ -75,9 +71,26 @@ class FillColorContextMenu extends ELContextMenu {
     this.addItem(this.customize);
   }
 
+  unbind() {
+    XEvent.bind(this.reset);
+  }
+
+  bind() {
+    XEvent.bind(this.reset, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      this.options.onUpdate(null);
+      this.customizeColorArray.setActiveByColor(null);
+      this.colorArray.setActiveByColor(null);
+    });
+  }
+
   setActiveByColor(color) {
     this.customizeColorArray.setActiveByColor(color);
     this.colorArray.setActiveByColor(color);
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

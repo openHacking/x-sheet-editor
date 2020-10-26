@@ -2,7 +2,7 @@ import { Widget } from '../../../lib/Widget';
 import { cssPrefix, Constant } from '../../../const/Constant';
 import { ColorItem } from './ColorItem';
 import { PlainUtils } from '../../../utils/PlainUtils';
-
+import { XEvent } from '../../../lib/XEvent';
 
 class ColorArray extends Widget {
 
@@ -99,16 +99,10 @@ class ColorArray extends Widget {
       ],
       selectCb: () => {},
     }, options);
-    this.colors = this.options.colors;
+    this.colors = [];
     this.activeColor = null;
-    this.colors.forEach((item) => {
-      this.children(item);
-      item.on(Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-        this.options.selectCb(item);
-        if (item.options.color) {
-          this.setActiveByColor(item.options.color);
-        }
-      });
+    this.options.colors.forEach((item) => {
+      this.add(item);
     });
     if (this.colors.length > 0) {
       this.setActiveByColor(this.colors[0].options.color);
@@ -116,14 +110,24 @@ class ColorArray extends Widget {
   }
 
   add(item) {
-    item.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    this.colors.push(item);
+    this.children(item);
+    this.bind(item);
+  }
+
+  unbind() {
+    this.colors.forEach((item) => {
+      XEvent.unbind(item);
+    });
+  }
+
+  bind(item) {
+    XEvent.bind(item, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       this.options.selectCb(item);
       if (item.options.color) {
         this.setActiveByColor(item.options.color);
       }
     });
-    this.colors.push(item);
-    this.children(item);
   }
 
   setActiveByColor(color) {
@@ -136,6 +140,11 @@ class ColorArray extends Widget {
         item.setActive(false);
       }
     });
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

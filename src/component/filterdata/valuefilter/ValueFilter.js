@@ -145,6 +145,14 @@ class ValueFilter extends ELContextMenuItem {
   }
 
   /**
+   * 清空内容
+   */
+  emptyAll() {
+    this.itemsBox.html('');
+    this.items = [];
+  }
+
+  /**
    * 销毁组件
    */
   destroy() {

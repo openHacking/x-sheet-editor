@@ -2,6 +2,7 @@ import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMen
 import { cssPrefix, Constant } from '../../../../../const/Constant';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
 import { FontContextMenuItem } from './FontContextMenuItem';
+import { XEvent } from '../../../../../lib/XEvent';
 
 class FontContextMenu extends ELContextMenu {
 
@@ -19,13 +20,10 @@ class FontContextMenu extends ELContextMenu {
       new FontContextMenuItem('Lalo'),
     ];
     this.items.forEach((item) => {
-      item.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-        this.update(item.title);
-        item.setActive();
-      });
       this.addItem(item);
     });
     this.setActiveByType(this.items[0].title);
+    this.bind();
   }
 
   update(type) {
@@ -34,12 +32,32 @@ class FontContextMenu extends ELContextMenu {
     this.close();
   }
 
+  unbind() {
+    this.items.forEach((item) => {
+      XEvent.unbind(item);
+    });
+  }
+
+  bind() {
+    this.items.forEach((item) => {
+      XEvent.bind(item, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+        this.update(item.title);
+        item.setActive();
+      });
+    });
+  }
+
   setActiveByType(type) {
     this.items.forEach((item) => {
       if (item.title === type) {
         item.setActive();
       }
     });
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

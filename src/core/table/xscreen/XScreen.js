@@ -25,10 +25,10 @@ class XScreen extends Widget {
     this.tZone = new XScreenTZone();
     this.brZone = new XScreenBRZone();
     this.lZone = new XScreenLZone();
-    this.child(this.ltZone);
-    this.child(this.tZone);
-    this.child(this.brZone);
-    this.child(this.lZone);
+    this.children(this.ltZone);
+    this.children(this.tZone);
+    this.children(this.brZone);
+    this.children(this.lZone);
   }
 
   onAttach() {

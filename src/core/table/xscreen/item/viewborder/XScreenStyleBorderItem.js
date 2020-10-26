@@ -309,10 +309,10 @@ class XScreenStyleBorderItem extends XScreenStyleBorderHandle {
     this.bt = new XScreenTPart(className);
     this.bl = new XScreenLPart(className);
     this.bbr = new XScreenBRPart(className);
-    this.lt.child(this.blt);
-    this.t.child(this.bt);
-    this.l.child(this.bl);
-    this.br.child(this.bbr);
+    this.lt.children(this.blt);
+    this.t.children(this.bt);
+    this.l.children(this.bl);
+    this.br.children(this.bbr);
   }
 
   hideBorder() {

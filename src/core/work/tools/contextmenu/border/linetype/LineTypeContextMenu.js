@@ -2,6 +2,7 @@ import { ELContextMenu } from '../../../../../../component/contextmenu/ELContext
 import { PlainUtils } from '../../../../../../utils/PlainUtils';
 import { cssPrefix, Constant } from '../../../../../../const/Constant';
 import { LineTypeContextMenuItem } from './LineTypeContextMenuItem';
+import { XEvent } from '../../../../../../lib/XEvent';
 
 class LineTypeContextMenu extends ELContextMenu {
 
@@ -18,13 +19,25 @@ class LineTypeContextMenu extends ELContextMenu {
       new LineTypeContextMenuItem('line6'),
     ];
     this.items.forEach((item) => {
-      item.on(Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-        this.update(item.type);
-        item.setActive();
-      });
       this.addItem(item);
     });
     this.setActiveByType(this.items[0].type);
+    this.bind();
+  }
+
+  unbind() {
+    this.items.forEach((item) => {
+      XEvent.unbind(item);
+    });
+  }
+
+  bind() {
+    this.items.forEach((item) => {
+      XEvent.unbind(item, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+        this.update(item.type);
+        item.setActive();
+      });
+    });
   }
 
   update(type) {
@@ -39,6 +52,11 @@ class LineTypeContextMenu extends ELContextMenu {
         item.setActive();
       }
     });
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

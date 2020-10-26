@@ -35,31 +35,6 @@ class ScrollBarY extends Widget {
     this.css(this.option.style);
   }
 
-  onAttach() {
-    this.bind();
-  }
-
-  bind() {
-    XEvent.bind(this.block, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
-      if (evt1.button !== 0) return;
-      const downEventXy = this.computeEventXy(evt1, this.block);
-      XEvent.mouseMoveUp(h(document), (evt2) => {
-        // 计算移动的距离
-        const moveEventXy = this.computeEventXy(evt2, this.content);
-        let top = moveEventXy.y - downEventXy.y;
-        if (top < 0) top = 0;
-        if (top > this.maxBlockTop) top = this.maxBlockTop;
-        // 计算滑动的距离
-        this.blockTop = top;
-        this.scrollTo = this.computeScrollTo(this.blockTop);
-        this.block.css('top', `${top}px`);
-        this.option.scroll(this.scrollTo);
-        evt2.stopPropagation();
-        evt2.preventDefault();
-      });
-    });
-  }
-
   setSize(viewPortHeight, contentHeight) {
     if (viewPortHeight < contentHeight) {
       this.isHide = false;
@@ -84,6 +59,35 @@ class ScrollBarY extends Widget {
     }
   }
 
+  onAttach() {
+    this.bind();
+  }
+
+  unbind() {
+    XEvent.unbind(this.block);
+  }
+
+  bind() {
+    XEvent.bind(this.block, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
+      if (evt1.button !== 0) return;
+      const downEventXy = this.computeEventXy(evt1, this.block);
+      XEvent.mouseMoveUp(h(document), (evt2) => {
+        // 计算移动的距离
+        const moveEventXy = this.computeEventXy(evt2, this.content);
+        let top = moveEventXy.y - downEventXy.y;
+        if (top < 0) top = 0;
+        if (top > this.maxBlockTop) top = this.maxBlockTop;
+        // 计算滑动的距离
+        this.blockTop = top;
+        this.scrollTo = this.computeScrollTo(this.blockTop);
+        this.block.css('top', `${top}px`);
+        this.option.scroll(this.scrollTo);
+        evt2.stopPropagation();
+        evt2.preventDefault();
+      });
+    });
+  }
+
   setLocal(move) {
     let to = move;
     const maxTo = this.contentHeight - this.viewPortHeight;
@@ -103,6 +107,11 @@ class ScrollBarY extends Widget {
 
   computeScrollTo(move) {
     return (move / this.maxBlockTop) * (this.contentHeight - this.viewPortHeight);
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

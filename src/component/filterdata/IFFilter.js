@@ -57,31 +57,6 @@ class IFFilter extends ELContextMenuItem {
     this.hide();
   }
 
-  unbind() {
-    const { titleEle, selectEle } = this;
-    XEvent.unbind(titleEle);
-    XEvent.unbind(selectEle);
-  }
-
-  bind() {
-    const {
-      titleEle, selectEle,
-    } = this;
-    XEvent.bind(selectEle, Constant.SYSTEM_EVENT_TYPE.CHANGE, (e) => {
-      const { detail } = e;
-      const { item } = detail;
-      const { value } = item;
-      this.setType(value);
-    });
-    XEvent.bind(titleEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      if (this.status) {
-        this.hide();
-      } else {
-        this.show();
-      }
-    });
-  }
-
   setValue(value) {
     const { type } = this;
     switch (type) {
@@ -144,11 +119,37 @@ class IFFilter extends ELContextMenuItem {
     }
   }
 
+  unbind() {
+    const { titleEle, selectEle } = this;
+    XEvent.unbind(titleEle);
+    XEvent.unbind(selectEle);
+  }
+
+  bind() {
+    const {
+      titleEle, selectEle,
+    } = this;
+    XEvent.bind(selectEle, Constant.SYSTEM_EVENT_TYPE.CHANGE, (e) => {
+      const { detail } = e;
+      const { item } = detail;
+      const { value } = item;
+      this.setType(value);
+    });
+    XEvent.bind(titleEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      if (this.status) {
+        this.hide();
+      } else {
+        this.show();
+      }
+    });
+  }
+
   show() {
     this.titleIconEle.addClass('active');
     this.status = true;
     this.selectEleBox.show();
     this.setType(this.type);
+    return this;
   }
 
   hide() {
@@ -156,6 +157,7 @@ class IFFilter extends ELContextMenuItem {
     this.status = false;
     this.selectEleBox.hide();
     this.valueInputEleBox.hide();
+    return this;
   }
 
   destroy() {
