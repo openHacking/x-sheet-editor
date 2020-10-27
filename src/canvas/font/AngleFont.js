@@ -1020,7 +1020,7 @@ class AngleFont extends BaseFont {
         }
         if (line.len > 0) {
           textArray.push({
-            text: text.substring(line.start),
+            text: line.str,
             len: line.len,
             tx: 0,
             ty: 0,
@@ -1424,7 +1424,7 @@ class AngleFont extends BaseFont {
         }
         if (line.len > 0) {
           textArray.push({
-            text: text.substring(line.start),
+            text: line.str,
             len: line.len,
             tx: 0,
             ty: 0,
@@ -1824,7 +1824,7 @@ class AngleFont extends BaseFont {
         }
         if (line.len > 0) {
           textArray.push({
-            text: text.substring(line.start),
+            text: line.str,
             len: line.len,
             tx: 0,
             ty: hOffset,
