@@ -1117,7 +1117,6 @@
 .@{css-prefix}-value-filter-item {
   height: 30px;
   line-height: 30px;
-  overflow: hidden;
   cursor: pointer;
 }
 .@{css-prefix}-value-filter-item:hover {
@@ -1135,6 +1134,10 @@
 }
 .@{css-prefix}-value-filter-item-text {
   float: left;
+  width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 // 条件选择器
 .@{css-prefix}-if-filter {

@@ -91,13 +91,13 @@ class ColorPicker extends Widget {
       }
     });
     XEvent.bind(colorBarPoint, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
-      const xy = this.computeEventXy(e1, colorBar);
+      const xy = this.eventXy(e1, colorBar);
       const colorBarBox = colorBar.box();
       if (xy.x < 0) xy.x = 0;
       if (xy.x > colorBarBox.width) xy.x = colorBarBox.width;
       this.downHue(xy.x, colorBarBox.width);
       XEvent.mouseMoveUp(h(document), (e2) => {
-        const xy = this.computeEventXy(e2, colorBar);
+        const xy = this.eventXy(e2, colorBar);
         const colorBarBox = colorBar.box();
         if (xy.x < 0) xy.x = 0;
         if (xy.x > colorBarBox.width) xy.x = colorBarBox.width;
@@ -106,7 +106,7 @@ class ColorPicker extends Widget {
       e1.stopPropagation();
     });
     XEvent.bind(selectColorPoint, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
-      const xy = this.computeEventXy(e1, center);
+      const xy = this.eventXy(e1, center);
       const centerBox = center.box();
       if (xy.x < 0) xy.x = 0;
       if (xy.x > centerBox.width) xy.x = centerBox.width;
@@ -114,7 +114,7 @@ class ColorPicker extends Widget {
       if (xy.y > centerBox.height) xy.y = centerBox.height;
       this.downSelect(xy.x, xy.y, centerBox.width, centerBox.height);
       XEvent.mouseMoveUp(h(document), (e2) => {
-        const xy = this.computeEventXy(e2, center);
+        const xy = this.eventXy(e2, center);
         if (xy.x < 0) xy.x = 0;
         if (xy.x > centerBox.width) xy.x = centerBox.width;
         if (xy.y < 0) xy.y = 0;

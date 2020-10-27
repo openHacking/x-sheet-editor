@@ -61,7 +61,7 @@ class RowFixed extends Widget {
       mousePointer.lock(RowFixed);
       mousePointer.set(XTableMousePointer.KEYS.grab, RowFixed);
       // 推拽条移动位置
-      const { y } = table.computeEventXy(e, table);
+      const { y } = table.eventXy(e, table);
       dropRowFixed.offset({ top: y });
       moveOff = false;
       // 如果存在固定位置 定位到起始处
@@ -72,7 +72,7 @@ class RowFixed extends Widget {
       }
       XEvent.mouseMoveUp(document, (e) => {
         // 推拽条移动位置 + 行号
-        const { x, y } = table.computeEventXy(e, table);
+        const { x, y } = table.eventXy(e, table);
         dropRowFixed.offset({ top: y });
         // 更新行号
         const { ri } = table.getRiCiByXy(x, y);

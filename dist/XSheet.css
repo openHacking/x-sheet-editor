@@ -1554,7 +1554,6 @@
 .x-sheet-value-filter-item {
   height: 30px;
   line-height: 30px;
-  overflow: hidden;
   cursor: pointer;
 }
 .x-sheet-value-filter-item:hover {
@@ -1572,6 +1571,10 @@
 }
 .x-sheet-value-filter-item-text {
   float: left;
+  width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .x-sheet-if-filter {
   cursor: default;

@@ -80,7 +80,7 @@ class Merges {
     const { index, data } = this;
     // 删除旧的关联关系
     if (checked) {
-      this.getIncludes(rectRange, old => this.delete(old));
+      this.deleteIntersects(rectRange);
     }
     // 添加新的单元格
     const len = data.length;
@@ -113,6 +113,15 @@ class Merges {
     });
     // 同步当前合并单元格索引
     this.sync(no);
+  }
+
+  /**
+   * 删除与指定区域重合的
+   * 合并单元格
+   * @param rectRange
+   */
+  deleteIntersects(rectRange) {
+    this.getIncludes(rectRange, old => this.delete(old));
   }
 
   /**

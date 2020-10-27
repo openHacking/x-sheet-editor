@@ -363,29 +363,36 @@ class XFilter extends XScreenCssBorderItem {
 
   /**
    * 打开过滤面板
-   * @param sri
-   * @param sci
    */
-  filterOpen(sri, sci) {
-    const { selectRange, table, filter } = this;
+  filterOpen() {
+    const { selectRange, table, filter, activeIcon } = this;
     const cells = table.getTableCells();
-    const eri = selectRange.eri;
+    // 筛选范围
+    const { ri: sri, ci: sci } = activeIcon;
+    const { eri } = selectRange;
     const eci = sci;
+    // 筛选数据
     const items = new Set();
     new RectRange(sri, sci, eri, eci).each((ri, ci) => {
-      const cell = cells.getCell(ri, ci);
+      const cell = cells.getCellOrMergeCell(ri, ci);
       if (cell && !PlainUtils.isBlank(cell.text)) {
-        items.add(cell.text);
+        items.add(cell.text.trim());
       }
     });
-    ElPopUp.closeAll();
     const { valueFilter, ifFilter } = filter;
+    // 值筛选
     valueFilter.emptyAll();
     items.forEach((item) => {
-      valueFilter.addItem(new ValueItem({ text: item }));
+      const valueItem = new ValueItem({ text: item });
+      valueItem.setStatus(true);
+      valueFilter.addItem(valueItem);
     });
+    // 条件筛选
     ifFilter.setValue();
     ifFilter.setType();
+    // 关闭其他面板
+    ElPopUp.closeAll();
+    // 打开面板
     filter.open();
   }
 

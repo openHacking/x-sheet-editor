@@ -106,12 +106,12 @@ class XAutoFillItem extends XScreenCssBorderItem {
       this.display = true;
       mousePointer.lock(XAutoFillItem);
       mousePointer.set(XTableMousePointer.KEYS.crosshair, XAutoFillItem);
-      const { x, y } = table.computeEventXy(e1);
+      const { x, y } = table.eventXy(e1);
       this.rangeHandle(x, y);
       this.offsetHandle();
       this.borderHandle();
       XEvent.mouseMoveUp(document, (e2) => {
-        const { x, y } = table.computeEventXy(e2);
+        const { x, y } = table.eventXy(e2);
         this.rangeHandle(x, y);
         this.offsetHandle();
         this.borderHandle();
@@ -366,6 +366,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
     const { tableDataSnapshot } = table;
     options.onBeforeAutoFill();
     tableDataSnapshot.begin();
+    this.splitMerge();
     this.fillMerge();
     this.fillCellIN();
     tableDataSnapshot.end();
@@ -390,6 +391,16 @@ class XAutoFillItem extends XScreenCssBorderItem {
     cellMergeCopyHelper.copyCellINContent({
       targetViewRange: autoFillRange,
       originViewRange: xSelect.selectRange,
+    });
+  }
+
+  splitMerge() {
+    const { table, autoFillRange } = this;
+    const merges = table.getTableMerges();
+    const { tableDataSnapshot } = table;
+    const { mergeDataProxy } = tableDataSnapshot;
+    merges.getIncludes(autoFillRange, (merge) => {
+      mergeDataProxy.deleteMerge(merge);
     });
   }
 

@@ -98,7 +98,7 @@ class XSelectItem extends XScreenCssBorderItem {
       if (target !== table) {
         return;
       }
-      const { x, y } = table.computeEventXy(e1);
+      const { x, y } = table.eventXy(e1);
       this.downSelectRange(x, y);
       this.offsetHandle();
       this.borderHandle();
@@ -117,7 +117,7 @@ class XSelectItem extends XScreenCssBorderItem {
       table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN);
       table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
       XEvent.mouseMoveUp(document, (e2) => {
-        const { x, y } = table.computeEventXy(e2);
+        const { x, y } = table.eventXy(e2);
         this.moveSelectRange(x, y);
         this.offsetHandle();
         this.borderHandle();

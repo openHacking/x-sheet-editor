@@ -751,7 +751,7 @@ class XTableDimensions extends Widget {
     });
     // 全局事件处理器
     this.xTableDimensionsMoveHandle = (e) => {
-      const { x, y } = this.computeEventXy(e);
+      const { x, y } = this.eventXy(e);
       const info = this.getRiCiByXy(x, y);
       this.pointerEvent(info);
       this.xIconsEvent(XIcon.ICON_EVENT_TYPE.MOUSE_MOVE, info, e);
@@ -760,7 +760,7 @@ class XTableDimensions extends Widget {
       const { activate } = this.focus;
       const { target } = activate;
       if (target === this) {
-        const { x, y } = this.computeEventXy(e);
+        const { x, y } = this.eventXy(e);
         const info = this.getRiCiByXy(x, y);
         this.xIconsEvent(XIcon.ICON_EVENT_TYPE.MOUSE_DOWN, info, e);
       }

@@ -70,10 +70,10 @@ class ScrollBarY extends Widget {
   bind() {
     XEvent.bind(this.block, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
       if (evt1.button !== 0) return;
-      const downEventXy = this.computeEventXy(evt1, this.block);
+      const downEventXy = this.eventXy(evt1, this.block);
       XEvent.mouseMoveUp(h(document), (evt2) => {
         // 计算移动的距离
-        const moveEventXy = this.computeEventXy(evt2, this.content);
+        const moveEventXy = this.eventXy(evt2, this.content);
         let top = moveEventXy.y - downEventXy.y;
         if (top < 0) top = 0;
         if (top > this.maxBlockTop) top = this.maxBlockTop;

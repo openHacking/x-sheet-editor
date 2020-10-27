@@ -61,7 +61,7 @@ class ColFixed extends Widget {
       mousePointer.lock(ColFixed);
       mousePointer.set(XTableMousePointer.KEYS.grab, ColFixed);
       // 推拽条移动位置
-      const { x } = table.computeEventXy(e, table);
+      const { x } = table.eventXy(e, table);
       dropColFixed.offset({ left: x });
       moveOff = false;
       // 如果存在固定位置 定位到起始处
@@ -72,7 +72,7 @@ class ColFixed extends Widget {
       }
       XEvent.mouseMoveUp(document, (e) => {
         // 推拽条移动位置
-        const { x, y } = table.computeEventXy(e, table);
+        const { x, y } = table.eventXy(e, table);
         dropColFixed.offset({ left: x });
         // 更新行号
         const { ci } = table.getRiCiByXy(x, y);

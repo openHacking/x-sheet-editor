@@ -393,6 +393,15 @@ class Element {
     return result;
   }
 
+  /**
+   * 比较dom是否相同
+   * @param ele
+   * @returns {boolean}
+   */
+  is(ele) {
+    return this.el === ele.el;
+  }
+
 }
 
 const h = (tag, className = '') => new Element(tag, className);

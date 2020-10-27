@@ -45,9 +45,9 @@ class XReSizer extends Widget {
       mousePointer.set(XTableMousePointer.KEYS.colResize, XReSizer);
       const { left, ci } = this.getEventLeft(e);
       const min = left - cols.getWidth(ci) + cols.min;
-      let { x: mx } = table.computeEventXy(e);
+      let { x: mx } = table.eventXy(e);
       XEvent.mouseMoveUp(document, (e) => {
-        ({ x: mx } = table.computeEventXy(e));
+        ({ x: mx } = table.eventXy(e));
         mx -= this.width / 2;
         mx = Math.ceil(PlainUtils.minIf(mx, min));
         this.css('left', `${mx}px`);
@@ -57,7 +57,7 @@ class XReSizer extends Widget {
         mousePointer.free(XReSizer);
         this.lineEl.hide();
         this.css('left', `${mx}px`);
-        const { y } = table.computeEventXy(e);
+        const { y } = table.eventXy(e);
         if (y <= 0) {
           this.hide();
         }
@@ -115,7 +115,7 @@ class XReSizer extends Widget {
       cols, xFixedView, xFixedMeasure,
     } = table;
     const { index } = table;
-    const { x, y } = table.computeEventXy(event);
+    const { x, y } = table.eventXy(event);
     const { ri, ci } = table.getRiCiByXy(x, y);
     const result = {
       ci, left: -1,

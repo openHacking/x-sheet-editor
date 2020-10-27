@@ -3,6 +3,7 @@ import { Constant, cssPrefix } from '../../../const/Constant';
 import { h } from '../../../lib/Element';
 import { SearchInput } from '../../form/input/SearchInput';
 import { XEvent } from '../../../lib/XEvent';
+import { w } from '../../../lib/Widget';
 
 /**
  * ValueFilter
@@ -55,6 +56,7 @@ class ValueFilter extends ELContextMenuItem {
    * @param valueItem
    */
   addItem(valueItem) {
+    valueItem.setIndex(this.items.length);
     this.items.push(valueItem);
     this.itemsBox.children(valueItem);
   }
@@ -75,9 +77,8 @@ class ValueFilter extends ELContextMenuItem {
    * 绑定事件
    */
   bind() {
-    const {
-      titleEle, selectEle, clearEle, itemsBox,
-    } = this;
+    const { titleEle, selectEle, clearEle } = this;
+    const { itemsBox } = this;
     const clazz = `${cssPrefix}-value-filter-item`;
     XEvent.bind(selectEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       this.selectAll();
@@ -90,11 +91,13 @@ class ValueFilter extends ELContextMenuItem {
       }
     });
     XEvent.bind(itemsBox, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const { items } = this;
       const { target } = e;
-      const hasClass = h(target).hasClass(clazz) || h(target).parent().hasClass(clazz);
-      if (hasClass) {
-        // TODO ...
-        // 触发事件
+      const ele = w(target).closestClass(clazz);
+      if (ele) {
+        const index = ele.attr(`${cssPrefix}-value-filter-item-index`);
+        const item = items[index];
+        item.setStatus(!item.status);
       }
     });
     XEvent.bind(clearEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
@@ -111,6 +114,7 @@ class ValueFilter extends ELContextMenuItem {
     this.optionBoxEle.show();
     this.searchBoxEle.show();
     this.itemsBox.show();
+    return this;
   }
 
   /**
@@ -122,6 +126,7 @@ class ValueFilter extends ELContextMenuItem {
     this.optionBoxEle.hide();
     this.searchBoxEle.hide();
     this.itemsBox.hide();
+    return this;
   }
 
   /**
@@ -130,7 +135,7 @@ class ValueFilter extends ELContextMenuItem {
   selectAll() {
     const { items } = this;
     items.forEach((item) => {
-      item.select(true);
+      item.setStatus(true);
     });
   }
 
@@ -140,7 +145,7 @@ class ValueFilter extends ELContextMenuItem {
   clearAll() {
     const { items } = this;
     items.forEach((item) => {
-      item.select(false);
+      item.setStatus(false);
     });
   }
 

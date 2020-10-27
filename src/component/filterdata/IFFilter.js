@@ -57,6 +57,31 @@ class IFFilter extends ELContextMenuItem {
     this.hide();
   }
 
+  unbind() {
+    const { titleEle, selectEle } = this;
+    XEvent.unbind(titleEle);
+    XEvent.unbind(selectEle);
+  }
+
+  bind() {
+    const {
+      titleEle, selectEle,
+    } = this;
+    XEvent.bind(selectEle, Constant.SYSTEM_EVENT_TYPE.CHANGE, (e) => {
+      const { detail } = e;
+      const { item } = detail;
+      const { value } = item;
+      this.setType(value);
+    });
+    XEvent.bind(titleEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      if (this.status) {
+        this.hide();
+      } else {
+        this.show();
+      }
+    });
+  }
+
   setValue(value) {
     const { type } = this;
     switch (type) {
@@ -117,31 +142,6 @@ class IFFilter extends ELContextMenuItem {
           break;
       }
     }
-  }
-
-  unbind() {
-    const { titleEle, selectEle } = this;
-    XEvent.unbind(titleEle);
-    XEvent.unbind(selectEle);
-  }
-
-  bind() {
-    const {
-      titleEle, selectEle,
-    } = this;
-    XEvent.bind(selectEle, Constant.SYSTEM_EVENT_TYPE.CHANGE, (e) => {
-      const { detail } = e;
-      const { item } = detail;
-      const { value } = item;
-      this.setType(value);
-    });
-    XEvent.bind(titleEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      if (this.status) {
-        this.hide();
-      } else {
-        this.show();
-      }
-    });
   }
 
   show() {
