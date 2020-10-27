@@ -5,18 +5,10 @@ import { Crop } from '../Crop';
 class VerticalFont extends BaseFont {
 
   constructor({
-    text,
-    overflow,
-    rect,
-    dw,
-    attr,
+    text, overflow, rect, dw, attr,
   }) {
     super({
-      overflow,
-      text,
-      rect,
-      dw,
-      attr,
+      overflow, text, rect, dw, attr,
     });
     this.attr = PlainUtils.mergeDeep({
       lineHeight: 4,

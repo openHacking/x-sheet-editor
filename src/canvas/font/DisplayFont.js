@@ -10,57 +10,57 @@ class DisplayFont extends BaseFont {
     switch (align) {
       case BaseFont.ALIGN.center: {
         const textWidth = this.textWidth(text);
-        let lOffset = rectWidth / 2 - textWidth / 2;
+        const lOffset = rectWidth / 2 - textWidth / 2;
         if (lOffset < 0) {
-          let display = '';
-          let bi = 0;
-          while (bi < textLen) {
-            const char = text.charAt(bi);
-            const width = this.textWidth(char);
-            lOffset += width;
-            if (lOffset > 0) {
-              display += char;
-              if (lOffset > rectWidth) {
-                return display;
-              }
+          let start = 0;
+          let hideStr = '';
+          while (start < textLen) {
+            const str = hideStr + text.charAt(start);
+            if (lOffset + this.textWidth(str) >= 0) {
+              break;
             }
-            bi += 1;
+            hideStr = str;
+            start += 1;
           }
+          let over = start;
+          let showStr = '';
+          while (over < textLen) {
+            const str = showStr + text.charAt(over);
+            if (this.textWidth(str) >= rectWidth) {
+              break;
+            }
+            showStr = str;
+            over += 1;
+          }
+          return showStr;
         }
         break;
       }
       case BaseFont.ALIGN.left: {
-        const textLen = text.length;
-        let display = '';
-        let bi = 0;
-        let total = 0;
-        while (bi < textLen) {
-          const char = text.charAt(bi);
-          const width = this.textWidth(char);
-          total += width;
-          display += char;
-          if (total > rectWidth) {
-            return display;
+        let start = 0;
+        let showStr = '';
+        while (start < textLen) {
+          const str = showStr + text.charAt(start);
+          if (this.textWidth(str) >= rectWidth) {
+            break;
           }
-          bi += 1;
+          showStr = str;
+          start += 1;
         }
-        break;
+        return showStr;
       }
       case BaseFont.ALIGN.right: {
-        let bi = text.length;
-        let display = '';
-        let total = 0;
-        while (bi > 0) {
-          const char = text.charAt(bi);
-          const width = this.textWidth(char);
-          total += width;
-          display = char + display;
-          if (total > rectWidth) {
-            return display;
+        let start = textLen - 1;
+        let showStr = '';
+        while (start >= 0) {
+          const str = text.charAt(start) + showStr;
+          if (this.textWidth(str) >= rectWidth) {
+            break;
           }
-          bi -= 1;
+          showStr = str;
+          start -= 1;
         }
-        break;
+        return showStr;
       }
     }
     return text;

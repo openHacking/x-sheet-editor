@@ -8,18 +8,10 @@ import { Crop } from '../Crop';
 class AngleFont extends BaseFont {
 
   constructor({
-    overflow,
-    text,
-    rect,
-    dw,
-    attr,
+    overflow, text, rect, dw, attr,
   }) {
     super({
-      overflow,
-      text,
-      rect,
-      dw,
-      attr,
+      overflow, text, rect, dw, attr,
     });
     this.attr = PlainUtils.mergeDeep({
       lineHeight: 4,
@@ -986,27 +978,29 @@ class AngleFont extends BaseFont {
         const text = breakArray[bi];
         const textLen = text.length;
         const line = {
+          str: '',
           len: 0,
           start: 0,
         };
         let ii = 0;
         while (ii < textLen) {
-          const textWidth = line.len + this.textWidth(text.charAt(ii));
-          if (textWidth > textHypotenuseWidth) {
+          const str = line.str + text.charAt(ii);
+          const len = this.textWidth(str);
+          if (len > textHypotenuseWidth) {
             if (line.len === 0) {
               textArray.push({
-                text: text.substring(ii, ii + 1),
-                len: textWidth,
+                text: str,
+                len,
                 tx: 0,
                 ty: 0,
               });
-              if (textWidth > maxLen) {
-                maxLen = textWidth;
+              if (len > maxLen) {
+                maxLen = len;
               }
               ii += 1;
             } else {
               textArray.push({
-                text: text.substring(line.start, ii),
+                text: line.str,
                 len: line.len,
                 tx: 0,
                 ty: 0,
@@ -1015,10 +1009,12 @@ class AngleFont extends BaseFont {
                 maxLen = line.len;
               }
             }
+            line.str = '';
             line.len = 0;
             line.start = ii;
           } else {
-            line.len = textWidth;
+            line.str = str;
+            line.len = len;
             ii += 1;
           }
         }
@@ -1386,27 +1382,29 @@ class AngleFont extends BaseFont {
         const text = breakArray[bi];
         const textLen = text.length;
         const line = {
+          str: '',
           len: 0,
           start: 0,
         };
         let ii = 0;
         while (ii < textLen) {
-          const textWidth = line.len + this.textWidth(text.charAt(ii));
-          if (textWidth > textHypotenuseWidth) {
+          const str = line.str + text.charAt(ii);
+          const len = this.textWidth(str);
+          if (len > textHypotenuseWidth) {
             if (line.len === 0) {
               textArray.push({
-                text: text.substring(ii, ii + 1),
-                len: textWidth,
+                text: str,
+                len,
                 tx: 0,
                 ty: 0,
               });
-              if (textWidth > maxLen) {
-                maxLen = textWidth;
+              if (len > maxLen) {
+                maxLen = len;
               }
               ii += 1;
             } else {
               textArray.push({
-                text: text.substring(line.start, ii),
+                text: line.str,
                 len: line.len,
                 tx: 0,
                 ty: 0,
@@ -1415,10 +1413,12 @@ class AngleFont extends BaseFont {
                 maxLen = line.len;
               }
             }
+            line.str = '';
             line.len = 0;
             line.start = ii;
           } else {
-            line.len = textWidth;
+            line.str = str;
+            line.len = len;
             ii += 1;
           }
         }
@@ -1788,33 +1788,37 @@ class AngleFont extends BaseFont {
         const textLen = text.length;
         let ii = 0;
         const line = {
+          str: '',
           len: 0,
           start: 0,
         };
         while (ii < textLen) {
-          const textWidth = line.len + this.textWidth(text.charAt(ii));
-          if (textWidth > maxWidth) {
+          const str = line.str + text.charAt(ii);
+          const len = this.textWidth(str);
+          if (len > maxWidth) {
             if (line.len === 0) {
               textArray.push({
-                text: text.substring(ii, ii + 1),
-                len: textWidth,
+                text: str,
+                len,
                 tx: 0,
                 ty: hOffset,
               });
               ii += 1;
             } else {
               textArray.push({
-                text: text.substring(line.start, ii),
+                text: line.str,
                 len: line.len,
                 tx: 0,
                 ty: hOffset,
               });
             }
             hOffset += size + lineHeight;
+            line.str = '';
             line.len = 0;
             line.start = ii;
           } else {
-            line.len = textWidth;
+            line.str = str;
+            line.len = len;
             ii += 1;
           }
         }
