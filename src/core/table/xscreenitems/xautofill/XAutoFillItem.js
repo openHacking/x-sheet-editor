@@ -123,7 +123,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
         const { autoFillRange } = this;
         if (!autoFillRange.equals(RectRange.EMPTY)) {
           const { selectRange } = xSelect;
-          xSelect.updateSelectRange(selectRange.union(autoFillRange));
+          xSelect.setRange(selectRange.union(autoFillRange));
           const { activeCorner } = xSelect;
           autoFillType.setEL(activeCorner);
           autoFillType.open();

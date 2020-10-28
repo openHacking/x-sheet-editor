@@ -520,7 +520,7 @@ class KeyBoardTabCode {
         rect.sci = sci;
         rect.eri = eri;
         rect.eci = eci;
-        xSelect.updateSelectRange(rect);
+        xSelect.setRange(rect);
         edit.showEdit();
       },
     });

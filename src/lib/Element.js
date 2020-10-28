@@ -402,6 +402,22 @@ class Element {
     return this.el === ele.el;
   }
 
+  /**
+   * 在当前元素之后插入新元素
+   * @param ele
+   */
+  after(ele) {
+    this.el.after(ele.el);
+  }
+
+  /**
+   * 在当前元素之前插入新元素
+   * @param ele
+   */
+  before(ele) {
+    this.el.before(ele.el);
+  }
+
 }
 
 const h = (tag, className = '') => new Element(tag, className);

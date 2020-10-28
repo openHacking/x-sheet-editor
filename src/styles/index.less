@@ -93,7 +93,7 @@
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  position: static;
+  position: relative;
 }
 // Css Border Type
 .@{css-prefix}-part-border-css.solid.show-top-border {
@@ -199,6 +199,9 @@
 
 // 选择框
 .@{css-prefix}-x-select-area {
+  position: absolute;
+  top: 0;
+  left: 0;
   background: rgba(166, 166, 166, 0.2);
   width: 100%;
   height: 100%;
@@ -222,6 +225,10 @@
 .@{css-prefix}-x-select-corner.bl-pos {
   left: 0;
   bottom: 0;
+}
+.@{css-prefix}-x-select-high-light {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.5);
 }
 
 // 复制样式
