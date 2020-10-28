@@ -4,13 +4,21 @@ import { h } from '../../lib/Element';
 import { Select } from '../form/select/Select';
 import { XEvent } from '../../lib/XEvent';
 import { PlainInput } from '../form/input/PlainInput';
+import { PlainUtils } from '../../utils/PlainUtils';
 
+/**
+ * IFFilter
+ */
 class IFFilter extends ELContextMenuItem {
 
+  /**
+   * IFFilter
+   */
   constructor() {
     super(`${cssPrefix}-filter-data-menu-item ${cssPrefix}-if-filter`);
     this.status = false;
     this.type = IFFilter.IF_TYPE.NOT;
+    this.value = PlainUtils.EMPTY;
     // 标题
     this.titleEle = h('div', `${cssPrefix}-if-filter-title`);
     this.titleTextEle = h('span', `${cssPrefix}-if-filter-title-text`);
@@ -53,25 +61,37 @@ class IFFilter extends ELContextMenuItem {
     this.selectEle.addValue({ text: '数字不等于', value: IFFilter.IF_TYPE.NUM_NOT_EQ });
     this.removeClass('hover');
     this.bind();
-    this.selectEle.setSelect(IFFilter.IF_TYPE.NOT);
     this.hide();
+    this.selectEle.setSelect(IFFilter.IF_TYPE.NOT);
   }
 
+  /**
+   * 卸载事件
+   * 处理程序
+   */
   unbind() {
     const { titleEle, selectEle } = this;
     XEvent.unbind(titleEle);
     XEvent.unbind(selectEle);
   }
 
+  /**
+   * 绑定事件
+   * 处理程序
+   */
   bind() {
-    const {
-      titleEle, selectEle,
-    } = this;
+    const { titleEle, selectEle, valueInput } = this;
+    XEvent.bind(valueInput, Constant.FORM_EVENT_TYPE.PLAIN_INPUT_CHANGE, (e) => {
+      const { detail } = e;
+      const { item } = detail;
+      const { value } = item;
+      this.value = value;
+    });
     XEvent.bind(selectEle, Constant.SYSTEM_EVENT_TYPE.CHANGE, (e) => {
       const { detail } = e;
       const { item } = detail;
       const { value } = item;
-      this.setType(value);
+      this.type = value;
     });
     XEvent.bind(titleEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       if (this.status) {
@@ -82,19 +102,35 @@ class IFFilter extends ELContextMenuItem {
     });
   }
 
+  /**
+   * 设置条件类型
+   * @param type
+   */
+  setType(type) {
+    this.selectEle.setSelect(type);
+  }
+
+  /**
+   * 设置筛选条件
+   * @param value
+   */
   setValue(value) {
     const { type } = this;
+    this.valueInputEleBox.hide();
+    this.valueInput.setValue('');
     switch (type) {
       case IFFilter.IF_TYPE.STR_NOT_INCLUDE:
       case IFFilter.IF_TYPE.STR_INCLUDE:
       case IFFilter.IF_TYPE.STR_EQ:
       case IFFilter.IF_TYPE.STR_START:
       case IFFilter.IF_TYPE.STR_END:
+        this.valueInputEleBox.show();
         this.valueInput.setValue(value);
         break;
       case IFFilter.IF_TYPE.DAT_EQ:
       case IFFilter.IF_TYPE.DAT_BEFORE:
       case IFFilter.IF_TYPE.DAT_AFTER:
+        this.valueInputEleBox.show();
         this.valueInput.setValue(value);
         break;
       case IFFilter.IF_TYPE.NUM_BEFORE:
@@ -103,55 +139,43 @@ class IFFilter extends ELContextMenuItem {
       case IFFilter.IF_TYPE.NUM_AFTER_EQ:
       case IFFilter.IF_TYPE.NUM_EQ:
       case IFFilter.IF_TYPE.NUM_NOT_EQ:
+        this.valueInputEleBox.show();
         this.valueInput.setValue(value);
         break;
     }
   }
 
-  setType(type) {
-    this.type = type;
-    if (type) {
-      switch (type) {
-        case IFFilter.IF_TYPE.NOT:
-        case IFFilter.IF_TYPE.CT_NOT_EMPTY:
-        case IFFilter.IF_TYPE.CT_EMPTY:
-          this.valueInputEleBox.hide();
-          break;
-        case IFFilter.IF_TYPE.STR_NOT_INCLUDE:
-        case IFFilter.IF_TYPE.STR_INCLUDE:
-        case IFFilter.IF_TYPE.STR_EQ:
-        case IFFilter.IF_TYPE.STR_START:
-        case IFFilter.IF_TYPE.STR_END:
-          this.valueInputEleBox.show();
-          break;
-        case IFFilter.IF_TYPE.DAT_EQ:
-        case IFFilter.IF_TYPE.DAT_BEFORE:
-        case IFFilter.IF_TYPE.DAT_AFTER:
-          this.valueInputEleBox.show();
-          break;
-        case IFFilter.IF_TYPE.NUM_BEFORE:
-        case IFFilter.IF_TYPE.NUM_BEFORE_EQ:
-        case IFFilter.IF_TYPE.NUM_AFTER:
-        case IFFilter.IF_TYPE.NUM_AFTER_EQ:
-        case IFFilter.IF_TYPE.NUM_EQ:
-        case IFFilter.IF_TYPE.NUM_NOT_EQ:
-          this.valueInputEleBox.show();
-          break;
-        default:
-          this.valueInputEleBox.hide();
-          break;
-      }
-    }
+  /**
+   * 获取条件类型
+   */
+  getType() {
+    return this.type;
   }
 
+  /**
+   * 获取筛选条件
+   */
+  getValue() {
+    return this.value;
+  }
+
+  /**
+   * 显示条件搜索
+   * @returns {IFFilter}
+   */
   show() {
+    const { type } = this;
     this.titleIconEle.addClass('active');
     this.status = true;
     this.selectEleBox.show();
-    this.setType(this.type);
+    this.setType(type);
     return this;
   }
 
+  /**
+   * 隐藏条件搜索
+   * @returns {IFFilter}
+   */
   hide() {
     this.titleIconEle.removeClass('active');
     this.status = false;
@@ -160,6 +184,9 @@ class IFFilter extends ELContextMenuItem {
     return this;
   }
 
+  /**
+   * 销毁组件
+   */
   destroy() {
     super.destroy();
     this.unbind();

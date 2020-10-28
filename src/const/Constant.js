@@ -36,6 +36,7 @@ Constant.TABLE_EVENT_TYPE = {
 };
 Constant.FORM_EVENT_TYPE = {
   SEARCH_INPUT_CHANGE: 'searchinputchange',
+  PLAIN_INPUT_CHANGE: 'plaininputchange',
 };
 export {
   XSheetVersion,

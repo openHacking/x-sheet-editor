@@ -29,13 +29,21 @@ class XFilter extends XScreenCssBorderItem {
   constructor(table) {
     super({ table });
     this.selectRange = null;
-    this.display = false;
-    this.icons = [];
     this.activeIcon = null;
-    this.mask = new Mask().setRoot(table);
+    this.icons = [];
+    this.display = false;
     this.filter = new FilterData({
       el: this.mask,
+      ok: ({
+        valueFilterItems, valueFilterValue, ifFilterType, ifFilterValue,
+      }) => {
+        console.log(valueFilterItems);
+        console.log(valueFilterValue);
+        console.log(ifFilterType);
+        console.log(ifFilterValue);
+      },
     });
+    this.mask = new Mask().setRoot(table);
     this.flt = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-lt`);
     this.ft = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-t`);
     this.fbr = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-br`);

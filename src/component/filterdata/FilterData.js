@@ -34,7 +34,14 @@ class FilterData extends ELContextMenu {
     this.okEle.html('确定');
     this.noEle.html('取消');
     this.okHandle = () => {
-      this.options.ok();
+      const { ifFilter, valueFilter } = this;
+      const valueFilterItems = valueFilter.getSelectItems();
+      const valueFilterValue = valueFilter.getValue();
+      const ifFilterType = ifFilter.getType();
+      const ifFilterValue = ifFilter.getValue();
+      this.options.ok({
+        valueFilterItems, valueFilterValue, ifFilterType, ifFilterValue,
+      });
       this.close();
     };
     this.noHandle = () => {
@@ -59,9 +66,6 @@ class FilterData extends ELContextMenu {
   }
 
   open() {
-    const { valueFilter, ifFilter } = this;
-    valueFilter.hide();
-    ifFilter.hide();
     super.open();
   }
 

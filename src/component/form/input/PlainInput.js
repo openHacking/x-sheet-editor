@@ -1,6 +1,7 @@
 import { Widget } from '../../../lib/Widget';
-import { cssPrefix } from '../../../const/Constant';
+import { Constant, cssPrefix } from '../../../const/Constant';
 import { h } from '../../../lib/Element';
+import { XEvent } from '../../../lib/XEvent';
 
 class PlainInput extends Widget {
 
@@ -12,10 +13,35 @@ class PlainInput extends Widget {
     this.inputInnerEle.children(this.inputEle);
     this.inputWrapEle.children(this.inputInnerEle);
     this.children(this.inputWrapEle);
+    this.bind();
+  }
+
+  unbind() {
+    const { inputEle } = this;
+    XEvent.unbind(inputEle);
+  }
+
+  bind() {
+    const { inputEle } = this;
+    XEvent.bind(inputEle, Constant.SYSTEM_EVENT_TYPE.CHANGE, () => {
+      this.setValue(inputEle.val());
+    });
   }
 
   setValue(value) {
     this.inputEle.val(value);
+    this.trigger(Constant.FORM_EVENT_TYPE.PLAIN_INPUT_CHANGE, {
+      value: this.inputEle.val(),
+    });
+  }
+
+  getValue() {
+    return this.inputEle.val();
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

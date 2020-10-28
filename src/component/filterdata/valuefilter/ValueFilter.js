@@ -154,6 +154,28 @@ class ValueFilter extends ELContextMenuItem {
   }
 
   /**
+   * 获取选中的项目
+   */
+  getSelectItems() {
+    const { items, filter } = this;
+    const selectItems = [];
+    if (filter.length > 0) {
+      filter.forEach((item) => {
+        if (item.status) {
+          selectItems.push(item);
+        }
+      });
+    } else {
+      items.forEach((item) => {
+        if (item.status) {
+          selectItems.push(item);
+        }
+      });
+    }
+    return selectItems;
+  }
+
+  /**
    * 显示控件
    */
   show() {
