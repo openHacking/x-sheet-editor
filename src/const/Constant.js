@@ -34,6 +34,9 @@ Constant.TABLE_EVENT_TYPE = {
   RESIZE_CHANGE: 'resizechange',
   RENDER: 'render',
 };
+Constant.FORM_EVENT_TYPE = {
+  SEARCH_INPUT_CHANGE: 'searchinputchange',
+};
 export {
   XSheetVersion,
   cssPrefix,

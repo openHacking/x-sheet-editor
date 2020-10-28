@@ -9,8 +9,8 @@ class AutoFillTypeMenu extends ELContextMenu {
     onUpdate: () => {},
   }) {
     super(`${cssPrefix}-auto-fill-menu`, options);
-    this.addItem(new AutoFillTypeMenuItem({ text: '以序列的方式填充', value: AutoFillTypeMenu.FILL_TYPE.SERIALIZE }));
-    this.addItem(new AutoFillTypeMenuItem({ text: '填充单元格内容', value: AutoFillTypeMenu.FILL_TYPE.FILLING }));
+    this.addItem(new AutoFillTypeMenuItem({ text: '以序列的方式填充', value: AutoFillTypeMenu.FILL_TYPE.SERIALIZE }).attr('title', '只有在起始单元格内容为数字时才生效'));
+    this.addItem(new AutoFillTypeMenuItem({ text: '填充单元格内容', value: AutoFillTypeMenu.FILL_TYPE.FILLING }).attr('title', '默认使用内容填充'));
     this.bind();
   }
 

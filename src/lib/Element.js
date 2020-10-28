@@ -418,6 +418,13 @@ class Element {
     this.el.before(ele.el);
   }
 
+  /**
+   * 清空元素中的所有内容
+   */
+  empty() {
+    this.html('');
+  }
+
 }
 
 const h = (tag, className = '') => new Element(tag, className);

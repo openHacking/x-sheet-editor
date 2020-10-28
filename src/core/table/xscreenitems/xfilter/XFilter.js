@@ -387,9 +387,10 @@ class XFilter extends XScreenCssBorderItem {
       valueItem.setStatus(true);
       valueFilter.addItem(valueItem);
     });
+    valueFilter.setValue('');
     // 条件筛选
-    ifFilter.setValue();
-    ifFilter.setType();
+    ifFilter.setValue('');
+    ifFilter.setType('');
     // 关闭其他面板
     ElPopUp.closeAll();
     // 打开面板

@@ -2,8 +2,8 @@ import { ELContextMenuItem } from '../../contextmenu/ELContextMenuItem';
 import { Constant, cssPrefix } from '../../../const/Constant';
 import { h } from '../../../lib/Element';
 import { SearchInput } from '../../form/input/SearchInput';
-import { XEvent } from '../../../lib/XEvent';
 import { w } from '../../../lib/Widget';
+import { XEvent } from '../../../lib/XEvent';
 
 /**
  * ValueFilter
@@ -15,9 +15,11 @@ class ValueFilter extends ELContextMenuItem {
    */
   constructor() {
     super(`${cssPrefix}-filter-data-menu-item ${cssPrefix}-value-filter`);
+    this.filterExp = new RegExp('.*');
     this.items = [];
+    this.filters = [];
     this.status = true;
-    // 标题
+    // 值过滤标题
     this.titleEle = h('div', `${cssPrefix}-value-filter-title`);
     this.titleTextEle = h('span', `${cssPrefix}-value-filter-title-text`);
     this.titleIconEle = h('span', `${cssPrefix}-value-filter-title-icon`);
@@ -52,33 +54,21 @@ class ValueFilter extends ELContextMenuItem {
   }
 
   /**
-   * 添加单项
-   * @param valueItem
-   */
-  addItem(valueItem) {
-    valueItem.setIndex(this.items.length);
-    this.items.push(valueItem);
-    this.itemsBox.children(valueItem);
-  }
-
-  /**
    * 卸载事件
    */
   unbind() {
-    const {
-      titleEle, selectEle, clearEle,
-    } = this;
-    XEvent.unbind(selectEle);
+    const { titleEle, selectEle, clearEle, searchInput } = this;
     XEvent.unbind(clearEle);
     XEvent.unbind(titleEle);
+    XEvent.unbind(selectEle);
+    XEvent.unbind(searchInput);
   }
 
   /**
    * 绑定事件
    */
   bind() {
-    const { titleEle, selectEle, clearEle } = this;
-    const { itemsBox } = this;
+    const { titleEle, itemsBox, selectEle, clearEle, searchInput } = this;
     const clazz = `${cssPrefix}-value-filter-item`;
     XEvent.bind(selectEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       this.selectAll();
@@ -103,6 +93,64 @@ class ValueFilter extends ELContextMenuItem {
     XEvent.bind(clearEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       this.clearAll();
     });
+    XEvent.bind(searchInput, Constant.FORM_EVENT_TYPE.SEARCH_INPUT_CHANGE, (e) => {
+      const { detail } = e;
+      const { value } = detail;
+      if (value) {
+        this.filterExp = new RegExp(`.?${value}.?`);
+      } else {
+        this.filterExp = new RegExp('.*');
+      }
+      this.filterItems();
+    });
+  }
+
+  /**
+   * 添加单项
+   * @param valueItem
+   */
+  addItem(valueItem) {
+    valueItem.setIndex(this.items.length);
+    this.items.push(valueItem);
+    this.itemsBox.children(valueItem);
+  }
+
+  /**
+   * 过滤筛选项
+   */
+  filterItems() {
+    const { filterExp, items, itemsBox } = this;
+    // 筛选符合条件的元素
+    const filters = [];
+    items.forEach((item) => {
+      const { text } = item;
+      if (filterExp.test(text)) {
+        filters.push(item);
+      }
+    });
+    // 显示筛选内容
+    itemsBox.empty();
+    filters.forEach((item) => {
+      itemsBox.children(item);
+    });
+    this.filters = filters;
+  }
+
+  /**
+   * 设置搜索值
+   * @param value
+   */
+  setValue(value) {
+    const { searchInput } = this;
+    searchInput.setValue(value);
+  }
+
+  /**
+   * 获取搜索值
+   */
+  getValue() {
+    const { searchInput } = this;
+    searchInput.getValue();
   }
 
   /**
@@ -153,7 +201,7 @@ class ValueFilter extends ELContextMenuItem {
    * 清空内容
    */
   emptyAll() {
-    this.itemsBox.html('');
+    this.itemsBox.empty();
     this.items = [];
   }
 

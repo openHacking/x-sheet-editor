@@ -8,11 +8,13 @@ class ValueItem extends Widget {
     text = '', status = false, index = -1,
   }) {
     super(`${cssPrefix}-value-filter-item`);
+    this.text = text;
     this.status = status;
     this.index = index;
     this.iconEle = h('div', `${cssPrefix}-value-filter-item-icon`);
     this.textEle = h('div', `${cssPrefix}-value-filter-item-text`);
     this.textEle.text(text);
+    this.attr('title', text);
     this.children(this.iconEle);
     this.children(this.textEle);
     this.setIndex(index);
