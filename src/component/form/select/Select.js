@@ -56,28 +56,28 @@ class Select extends Widget {
   }
 
   /**
+   * 获取当前选择的值
+   * @returns {null}
+   */
+  getValue() {
+    return this.selectValue;
+  }
+
+  /**
    * 设置选择的值
    * @param value
    */
   setSelect(value) {
     const { contextMenu, selectText } = this;
     const { items } = contextMenu;
-    const find = items.find(item => item.value === value);
+    const find = items.find(item => item.value && item.value === value);
     if (find) {
       selectText.html(`&nbsp;${find.text}`);
-      this.selectValue = value;
-      this.trigger(Constant.SYSTEM_EVENT_TYPE.CHANGE, {
+      this.selectValue = find.value;
+      this.trigger(Constant.FORM_EVENT_TYPE.FORM_SELECT_CHANGE, {
         item: find,
       });
     }
-  }
-
-  /**
-   * 获取当前选择的值
-   * @returns {null}
-   */
-  getValue() {
-    return this.selectValue;
   }
 
   /**

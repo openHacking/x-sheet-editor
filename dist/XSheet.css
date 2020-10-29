@@ -40,6 +40,7 @@
   height: 100%;
   font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
   user-select: none;
+  contain: content;
 }
 .x-sheet-layer-bar {
   width: 100%;
@@ -1562,6 +1563,8 @@
   height: 30px;
   line-height: 30px;
   cursor: pointer;
+  contain-intrinsic-size: 30px;
+  content-visibility: auto;
 }
 .x-sheet-value-filter-item:hover {
   background: #f0f0f0;

@@ -32,18 +32,21 @@ class XFilter extends XScreenCssBorderItem {
     this.activeIcon = null;
     this.icons = [];
     this.display = false;
+    this.mask = new Mask().setRoot(table);
     this.filter = new FilterData({
       el: this.mask,
       ok: ({
         valueFilterItems, valueFilterValue, ifFilterType, ifFilterValue,
       }) => {
-        console.log(valueFilterItems);
-        console.log(valueFilterValue);
-        console.log(ifFilterType);
-        console.log(ifFilterValue);
+        const { activeIcon } = this;
+        activeIcon.valueFilterItems = valueFilterItems;
+        activeIcon.valueFilterValue = valueFilterValue;
+        activeIcon.ifFilterType = ifFilterType;
+        activeIcon.ifFilterValue = ifFilterValue;
+        // 执行搜索过滤
+        // TODO ...
       },
     });
-    this.mask = new Mask().setRoot(table);
     this.flt = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-lt`);
     this.ft = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-t`);
     this.fbr = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-br`);
@@ -375,6 +378,8 @@ class XFilter extends XScreenCssBorderItem {
   filterOpen() {
     const { selectRange, table, filter, activeIcon } = this;
     const cells = table.getTableCells();
+    // 筛选条件
+    const { valueFilterValue, ifFilterType, ifFilterValue } = activeIcon;
     // 筛选范围
     const { ri: sri, ci: sci } = activeIcon;
     const { eri } = selectRange;
@@ -395,10 +400,10 @@ class XFilter extends XScreenCssBorderItem {
       valueItem.setStatus(true);
       valueFilter.addItem(valueItem);
     });
-    valueFilter.setValue('');
+    valueFilter.setValue(valueFilterValue);
     // 条件筛选
-    ifFilter.setValue('');
-    ifFilter.setType('');
+    ifFilter.setType(ifFilterType);
+    ifFilter.setValue(ifFilterValue);
     // 关闭其他面板
     ElPopUp.closeAll();
     // 打开面板

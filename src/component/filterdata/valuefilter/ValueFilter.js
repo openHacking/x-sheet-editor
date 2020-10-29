@@ -4,6 +4,7 @@ import { h } from '../../../lib/Element';
 import { SearchInput } from '../../form/input/SearchInput';
 import { w } from '../../../lib/Widget';
 import { XEvent } from '../../../lib/XEvent';
+import { PlainUtils } from '../../../utils/PlainUtils';
 
 /**
  * ValueFilter
@@ -19,6 +20,7 @@ class ValueFilter extends ELContextMenuItem {
     this.items = [];
     this.filters = [];
     this.status = true;
+    this.value = PlainUtils.EMPTY;
     // 值过滤标题
     this.titleEle = h('div', `${cssPrefix}-value-filter-title`);
     this.titleTextEle = h('span', `${cssPrefix}-value-filter-title-text`);
@@ -101,6 +103,7 @@ class ValueFilter extends ELContextMenuItem {
       } else {
         this.filterExp = new RegExp('.*');
       }
+      this.value = value;
       this.filterItems();
     });
   }
@@ -142,6 +145,9 @@ class ValueFilter extends ELContextMenuItem {
    */
   setValue(value) {
     const { searchInput } = this;
+    if (PlainUtils.isBlank(value)) {
+      value = PlainUtils.EMPTY;
+    }
     searchInput.setValue(value);
   }
 
@@ -149,18 +155,17 @@ class ValueFilter extends ELContextMenuItem {
    * 获取搜索值
    */
   getValue() {
-    const { searchInput } = this;
-    searchInput.getValue();
+    return this.value;
   }
 
   /**
    * 获取选中的项目
    */
   getSelectItems() {
-    const { items, filter } = this;
+    const { items, filters } = this;
     const selectItems = [];
-    if (filter.length > 0) {
-      filter.forEach((item) => {
+    if (filters.length > 0) {
+      filters.forEach((item) => {
         if (item.status) {
           selectItems.push(item);
         }

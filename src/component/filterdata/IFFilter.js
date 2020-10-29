@@ -81,17 +81,17 @@ class IFFilter extends ELContextMenuItem {
    */
   bind() {
     const { titleEle, selectEle, valueInput } = this;
-    XEvent.bind(valueInput, Constant.FORM_EVENT_TYPE.PLAIN_INPUT_CHANGE, (e) => {
-      const { detail } = e;
-      const { item } = detail;
-      const { value } = item;
-      this.value = value;
-    });
-    XEvent.bind(selectEle, Constant.SYSTEM_EVENT_TYPE.CHANGE, (e) => {
+    XEvent.bind(selectEle, Constant.FORM_EVENT_TYPE.FORM_SELECT_CHANGE, (e) => {
       const { detail } = e;
       const { item } = detail;
       const { value } = item;
       this.type = value;
+      this.switchInput();
+    });
+    XEvent.bind(valueInput, Constant.FORM_EVENT_TYPE.PLAIN_INPUT_CHANGE, (e) => {
+      const { detail } = e;
+      const { value } = detail;
+      this.value = value;
     });
     XEvent.bind(titleEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       if (this.status) {
@@ -103,45 +103,52 @@ class IFFilter extends ELContextMenuItem {
   }
 
   /**
-   * 设置条件类型
-   * @param type
-   */
-  setType(type) {
-    this.selectEle.setSelect(type);
-  }
-
-  /**
    * 设置筛选条件
    * @param value
    */
   setValue(value) {
-    const { type } = this;
-    this.valueInputEleBox.hide();
-    this.valueInput.setValue('');
+    if (PlainUtils.isBlank(value)) {
+      value = PlainUtils.EMPTY;
+    }
+    this.valueInput.setValue(value);
+  }
+
+  /**
+   * 设置条件类型
+   * @param type
+   */
+  setType(type) {
+    if (PlainUtils.isBlank(type)) {
+      type = IFFilter.IF_TYPE.NOT;
+    }
+    this.selectEle.setSelect(type);
+  }
+
+  /**
+   * 切换值输入
+   */
+  switchInput() {
+    const { type, valueInputEleBox } = this;
+    valueInputEleBox.hide();
     switch (type) {
       case IFFilter.IF_TYPE.STR_NOT_INCLUDE:
       case IFFilter.IF_TYPE.STR_INCLUDE:
       case IFFilter.IF_TYPE.STR_EQ:
       case IFFilter.IF_TYPE.STR_START:
       case IFFilter.IF_TYPE.STR_END:
-        this.valueInputEleBox.show();
-        this.valueInput.setValue(value);
-        break;
       case IFFilter.IF_TYPE.DAT_EQ:
       case IFFilter.IF_TYPE.DAT_BEFORE:
       case IFFilter.IF_TYPE.DAT_AFTER:
-        this.valueInputEleBox.show();
-        this.valueInput.setValue(value);
-        break;
       case IFFilter.IF_TYPE.NUM_BEFORE:
       case IFFilter.IF_TYPE.NUM_BEFORE_EQ:
       case IFFilter.IF_TYPE.NUM_AFTER:
       case IFFilter.IF_TYPE.NUM_AFTER_EQ:
       case IFFilter.IF_TYPE.NUM_EQ:
       case IFFilter.IF_TYPE.NUM_NOT_EQ:
-        this.valueInputEleBox.show();
-        this.valueInput.setValue(value);
+        valueInputEleBox.show();
         break;
+      default:
+        valueInputEleBox.hide();
     }
   }
 
