@@ -25,31 +25,34 @@
 ## **Internationalization**
     <!DOCTYPE html>
     <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>X-Sheet</title>
-        <style>
-            * {
-                padding: 0;
-                margin: 0;
-            }
-    
-            html, body {
-                height: 100%;
-                display: block;
-            }
-        </style>
-    </head>
-    <body id="dome"></body>
-    <script>
-      const dome = document.getElementById('dome');
-      const xSheet = new XSheet(dome, {
-        workConfig: {
-          body: {
-            sheets: [{}],
-          },
-        },
-      });
-    </script>
+        <head>
+            <meta charset="UTF-8">
+            <title>X-Sheet</title>
+            <link href="XSheet.css" rel="stylesheet">
+            <style>
+                * {
+                    padding: 0;
+                    margin: 0;
+                }
+        
+                html, body {
+                    height: 100%;
+                    display: block;
+                }
+            </style>
+            <script src="XSheet.js" type="text/javascript"></script>
+        </head>
+        <body id="dome">
+            <script>
+              const dome = document.getElementById('dome');
+              const xSheet = new XSheet(dome, {
+                workConfig: {
+                  body: {
+                    sheets: [{}],
+                  },
+                },
+              });
+            </script>
+        </body>
     </html>
     
