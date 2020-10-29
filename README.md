@@ -1,6 +1,6 @@
 ## **X-Sheet For Pc Browser**
 
-###### `A web-based JavaScript spreadsheet`
+###### `高性能 Web JavaScript 电子表格 `
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/0710/212501_7fdc3522_1908036.png "screencapture-file-Users-jerry-Desktop-JavaScript-x-sheet-dist-calendar-2019-html-2020-07-10-21_20_41.png")
 
@@ -22,7 +22,7 @@
 
 ------------
 
-## **Internationalization**
+## **初始化**
     <!DOCTYPE html>
     <html lang="en">
         <head>
@@ -56,3 +56,8 @@
         </body>
     </html>
     
+## **支持的浏览器**
+    Modern browsers(chrome, firefox).
+       
+## **LICENSE**
+    MOZILLA PUBLIC LICENSE
