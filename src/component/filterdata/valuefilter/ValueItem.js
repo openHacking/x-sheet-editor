@@ -1,11 +1,14 @@
 import { Widget } from '../../../lib/Widget';
 import { cssPrefix } from '../../../const/Constant';
 import { h } from '../../../lib/Element';
+import { PlainUtils } from '../../../utils/PlainUtils';
 
 class ValueItem extends Widget {
 
   constructor({
-    text = '', status = false, index = -1,
+    text = PlainUtils.EMPTY,
+    index = -1,
+    status = false,
   }) {
     super(`${cssPrefix}-value-filter-item`);
     this.text = text;
@@ -21,11 +24,6 @@ class ValueItem extends Widget {
     this.setStatus(status);
   }
 
-  setIndex(index) {
-    this.index = index;
-    this.attr(`${cssPrefix}-value-filter-item-index`, `${this.index}`);
-  }
-
   setStatus(status) {
     this.status = status;
     if (this.status) {
@@ -33,6 +31,15 @@ class ValueItem extends Widget {
     } else {
       this.iconEle.css('opacity', 0);
     }
+  }
+
+  setIndex(index) {
+    this.index = index;
+    this.attr(`${cssPrefix}-value-filter-item-index`, `${this.index}`);
+  }
+
+  equals(item) {
+    return this.text === item.text;
   }
 
 }

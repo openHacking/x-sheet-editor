@@ -4,6 +4,7 @@
 @z-index-level-1: 2;
 @z-index-level-2: 3;
 
+
 // 工作界面
 .@{css-prefix}-work {
   width: 100%;
@@ -29,11 +30,13 @@
   color: #ffffff;
 }
 
+
 // sheet view
 .@{css-prefix}-sheet-view {
   width: 100%;
   height: 100%;
 }
+
 
 // 工作表
 .@{css-prefix}-sheet {
@@ -41,6 +44,7 @@
   height: 100%;
   background: #ffffff;
 }
+
 
 // 表格
 .@{css-prefix}-table {
@@ -53,6 +57,7 @@
   left: 0;
   top: 0;
 }
+
 
 // 屏幕分割 & 区
 .@{css-prefix}-x-screen {
@@ -79,6 +84,7 @@
 }
 .@{css-prefix}-x-screen-l-zone {}
 
+
 // 屏幕分割 & 块
 .@{css-prefix}-x-screen-part {
   position: absolute;
@@ -87,6 +93,7 @@
 .@{css-prefix}-x-screen-l-part {}
 .@{css-prefix}-x-screen-t-part {}
 .@{css-prefix}-x-screen-br-part {}
+
 
 // 屏幕分割 & 块边框 Css Border
 .@{css-prefix}-part-border-css {
@@ -137,6 +144,7 @@
   border-right-width: 3px;
   border-right-color: #42a642;
 }
+
 
 // 屏幕分割 & 块边框 Svg Border
 @keyframes copy-style-stroked-dashoffset-animation-top {
@@ -190,12 +198,14 @@
   animation: copy-style-stroked-dashoffset-animation-right 0.5s forwards infinite linear;
 }
 
+
 // 自动填充
 .@{css-prefix}-x-autofill-area {
   background: rgba(166, 166, 166, 0.2);
   width: 100%;
   height: 100%;
 }
+
 
 // 选择框
 .@{css-prefix}-x-select-area {
@@ -231,6 +241,7 @@
   background: rgba(255, 255, 255, 0.5);
 }
 
+
 // 复制样式
 .@{css-prefix}-copy-style-area {
   background: rgba(166, 166, 166, 0.2);
@@ -240,6 +251,7 @@
   height: 100%;
   width: 100%;
 }
+
 
 // 表格编辑框
 .@{css-prefix}-table-edit {
@@ -254,6 +266,7 @@
   overflow-y: auto;
   overflow-x: hidden;
 }
+
 
 // 表格高光
 .@{css-prefix}-table-y-height-light {
@@ -277,6 +290,7 @@
   box-sizing: border-box;
 }
 
+
 // 行高调整
 .@{css-prefix}-re-sizer-vertical {
   position: absolute;
@@ -295,6 +309,7 @@
   bottom: 0;
 }
 
+
 // 列宽调整
 .@{css-prefix}-re-sizer-horizontal {
   position: absolute;
@@ -312,6 +327,7 @@
   width: 100%;
   right: 0;
 }
+
 
 // sheet 选项卡
 .@{css-prefix}-sheet-switch-tab {
@@ -377,6 +393,7 @@
   border-bottom: 2px solid #42a642;
 }
 
+
 // 底部菜单
 .@{css-prefix}-bottom-menu {
   height: 30px;
@@ -437,6 +454,7 @@
   font-size: 13px;
   font-weight: bold;
 }
+
 
 // icon 图标
 .@{css-prefix}-icon {
@@ -517,6 +535,9 @@
 }
 .@{css-prefix}-icon-img.functions {
   background-position: -6 * @icon-size -1 * @icon-size;
+}
+.@{css-prefix}-icon-img.angle {
+  background-position: -12 * @icon-size -3 * @icon-size;
 }
 .@{css-prefix}-icon-img.clear-color {
   background-image: url('../../assets/svg/material_common_sprite157_grey_medium.svg');
@@ -621,6 +642,25 @@
 .@{css-prefix}-icon-img.wrap {
   background-position: -10 * @icon-size -3 * @icon-size;
 }
+.@{css-prefix}-icon-img.font-angle1 {
+  background-position: -6 * @icon-size -3 * @icon-size;
+}
+.@{css-prefix}-icon-img.font-angle2 {
+  background-position: -7 * @icon-size -3 * @icon-size;
+}
+.@{css-prefix}-icon-img.font-angle3 {
+  background-position: -11 * @icon-size -3 * @icon-size;
+}
+.@{css-prefix}-icon-img.font-angle4 {
+  background-position: -12 * @icon-size -3 * @icon-size;
+}
+.@{css-prefix}-icon-img.font-angle5 {
+  background-position: -13 * @icon-size -3 * @icon-size;
+}
+.@{css-prefix}-icon-img.font-angle6 {
+  background-position: -0 * @icon-size -4 * @icon-size;
+}
+
 
 // 工具菜单激活 状态/关闭状态
 .@{css-prefix}-tools-undo {
@@ -662,6 +702,7 @@
   background: #e1e1e1;
 }
 
+
 // 工具菜单
 .@{css-prefix}-tools-menu {
   height: 45px;
@@ -686,6 +727,35 @@
 .@{css-prefix}-tools-item:hover {
   background: #e4e4e4;
 }
+//下拉输入框
+.@{css-prefix}-tools-drop-input-item {
+  position: relative;
+}
+.@{css-prefix}-tools-drop-input-item-mark {
+  display: inline-block;
+  vertical-align: middle;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  margin-top: -9px;
+}
+.@{css-prefix}-tools-drop-input-item-title {
+  display: inline-block;
+  color: #000000;
+  font-size: 14px;
+  font-family: 'Lato', 'Source Sans Pro', Roboto, Helvetica, Arial, sans-serif;
+  vertical-align: middle;
+  padding-right: 20px;
+}
+.@{css-prefix}-tools-drop-input {
+  width: 50px;
+  height: 18px;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  padding: 2px 3px 2px 3px;
+  outline-color: #0080ff;
+}
+// 下拉菜单
 .@{css-prefix}-tools-drop-down-item {
   position: relative;
 }
@@ -707,6 +777,7 @@
 }
 .@{css-prefix}-tools-toggle-item {}
 
+
 // 表格缩放工具上下文菜单
 .@{css-prefix}-scale-context-menu {
   background: #ffffff;
@@ -725,6 +796,7 @@
   font-size: 15px;
   width: 100%;
 }
+
 
 // 格式化工具上下文菜单
 .@{css-prefix}-format-context-menu {
@@ -759,6 +831,7 @@
   opacity: 1;
 }
 
+
 // 字体工具上下文菜单
 .@{css-prefix}-font-context-menu {
   background: #ffffff;
@@ -790,6 +863,7 @@
   opacity: 1;
 }
 
+
 // 字体大小工具上下文菜单
 .@{css-prefix}-font-size-context-menu {
   background: #ffffff;
@@ -808,6 +882,7 @@
   font-size: 15px;
   width: 100%;
 }
+
 
 // 字体颜色工具上下文菜单
 .@{css-prefix}-font-color-context-menu {
@@ -834,6 +909,7 @@
   font-size: 14px;
 }
 
+
 // 填充颜色工具上下文菜单
 .@{css-prefix}-fill-color-context-menu {
   background: #ffffff;
@@ -858,6 +934,7 @@
   margin-right: 40px;
   font-size: 14px;
 }
+
 
 // 边框工具上下文菜单
 .@{css-prefix}-border-type-context-menu {
@@ -887,6 +964,7 @@
   display: flex;
 }
 
+
 // 边框颜色工具上下文菜单
 .@{css-prefix}-border-color-context-menu {
   background: #ffffff;
@@ -911,6 +989,7 @@
   margin-right: 40px;
   font-size: 14px;
 }
+
 
 // 边框类型工具上下文菜单
 .@{css-prefix}-line-type-context-menu {
@@ -943,6 +1022,7 @@
   opacity: 1;
 }
 
+
 // 水平对齐类型工具上下文菜单
 .@{css-prefix}-horizontal-type-context-menu {
   background: #ffffff;
@@ -970,6 +1050,7 @@
 .@{css-prefix}-horizontal-type-context-menu-type-icon-line {
   display: flex;
 }
+
 
 // 垂直对齐类型工具上下文菜单
 .@{css-prefix}-vertical-type-context-menu {
@@ -999,6 +1080,7 @@
   display: flex;
 }
 
+
 // 自动换行工具上下文菜单
 .@{css-prefix}-text-wrapping-context-menu {
   background: #ffffff;
@@ -1027,6 +1109,7 @@
   display: flex;
 }
 
+
 // 冻结工具上下文菜单
 .@{css-prefix}-fixed-context-menu {
   background: #ffffff;
@@ -1050,7 +1133,8 @@
   line-height: 20px;
 }
 
-// 数据过滤工具山下文菜单
+
+// 数据过滤工具上下文菜单
 .@{css-prefix}-filter-data-menu {
   background: #ffffff;
   display: inline-block;
@@ -1217,6 +1301,37 @@
   color: #188038;
 }
 
+
+// 旋转文字上下文菜单
+.@{css-prefix}-font-angle-context-menu {
+  background: #ffffff;
+}
+.@{css-prefix}-font-angle-context-menu-type-icon-line {
+  display: flex;
+}
+.@{css-prefix}-font-angle-context-menu-item {}
+
+
+// 旋转角度山下文菜单
+.@{css-prefix}-font-angle-value-context-menu {
+  background: #ffffff;
+}
+.@{css-prefix}-font-angle-value-context-menu-item {
+  overflow: hidden;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  font-size: 13px;
+  padding: 5px;
+}
+.@{css-prefix}-font-angle-value-context-menu-item-title {
+  float: left;
+  line-height: 20px;
+  margin-right: 20px;
+  font-size: 15px;
+  width: 100%;
+}
+
+
 // 头部操作栏
 .@{css-prefix}-option {
   overflow: hidden;
@@ -1257,6 +1372,7 @@
   background: #e8e8e8;
 }
 
+
 // 表格固定条
 .@{css-prefix}-table-row-fixed-bar {
   position: absolute;
@@ -1287,6 +1403,7 @@
   background: #62af71;
 }
 
+
 // 表格固定的拖动条
 .@{css-prefix}-table-drop-row-fixed-bar {
   position: absolute;
@@ -1304,6 +1421,7 @@
 .@{css-prefix}-table-drop-col-fixed-block{
   background: #62af71;
 }
+
 
 // 表格过滤按钮
 .@{css-prefix}-x-filter {
@@ -1333,10 +1451,12 @@
   z-index: @z-index-level-last;
 }
 
+
 // 表格小图标遮罩
 .@{css-prefix}-mask {
   z-index: @z-index-level-last;
 }
+
 
 // 表格填充类型选择
 .@{css-prefix}-auto-fill-type {

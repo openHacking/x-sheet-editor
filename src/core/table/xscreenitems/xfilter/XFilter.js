@@ -377,9 +377,10 @@ class XFilter extends XScreenCssBorderItem {
    */
   filterOpen() {
     const { selectRange, table, filter, activeIcon } = this;
+    const { valueFilter, ifFilter } = filter;
     const cells = table.getTableCells();
     // 筛选条件
-    const { valueFilterValue, ifFilterType, ifFilterValue } = activeIcon;
+    const { valueFilterValue, ifFilterType, ifFilterValue, valueFilterItems } = activeIcon;
     // 筛选范围
     const { ri: sri, ci: sci } = activeIcon;
     const { eri } = selectRange;
@@ -392,14 +393,29 @@ class XFilter extends XScreenCssBorderItem {
         items.add(cell.text.trim());
       }
     });
-    const { valueFilter, ifFilter } = filter;
     // 值筛选
     valueFilter.emptyAll();
-    items.forEach((item) => {
-      const valueItem = new ValueItem({ text: item });
-      valueItem.setStatus(true);
-      valueFilter.addItem(valueItem);
-    });
+    if (valueFilterItems) {
+      items.forEach((item) => {
+        const valueItem = new ValueItem({
+          text: item,
+        });
+        if (valueFilterItems.find(item => valueItem.equals(item))) {
+          valueItem.setStatus(true);
+        } else {
+          valueItem.setStatus(false);
+        }
+        valueFilter.addItem(valueItem);
+      });
+    } else {
+      items.forEach((item) => {
+        const valueItem = new ValueItem({
+          text: item,
+        });
+        valueItem.setStatus(true);
+        valueFilter.addItem(valueItem);
+      });
+    }
     valueFilter.setValue(valueFilterValue);
     // 条件筛选
     ifFilter.setType(ifFilterType);

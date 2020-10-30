@@ -1,8 +1,8 @@
-import { DropDownItem } from '../../../base/DropDownItem';
-import { cssPrefix } from '../../../../../../const/Constant';
-import { Icon } from '../../../Icon';
-import { BorderTypeContextMenu } from '../../border/bordertype/BorderTypeContextMenu';
-import { PlainUtils } from '../../../../../../utils/PlainUtils';
+import { DropDownItem } from './base/DropDownItem';
+import { cssPrefix } from '../../../const/Constant';
+import { Icon } from './Icon';
+import { BorderTypeContextMenu } from './contextmenu/border/bordertype/BorderTypeContextMenu';
+import { PlainUtils } from '../../../utils/PlainUtils';
 
 class Border extends DropDownItem {
 

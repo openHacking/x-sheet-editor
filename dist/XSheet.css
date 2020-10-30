@@ -925,7 +925,7 @@
   display: inline-block;
 }
 .x-sheet-icon-img {
-  background-image: url(941d0c7eecd3fa6b295e94b16baefe51.svg);
+  background-image: url(c643fa68a00732dc0ea739e6013c9a0c.svg);
   width: 18px;
   height: 18px;
 }
@@ -994,6 +994,9 @@
 }
 .x-sheet-icon-img.functions {
   background-position: -108px -18px;
+}
+.x-sheet-icon-img.angle {
+  background-position: -216px -54px;
 }
 .x-sheet-icon-img.clear-color {
   background-image: url(21a8c011b47da73c7c0e3a2468fd4c6a.svg);
@@ -1098,6 +1101,24 @@
 .x-sheet-icon-img.wrap {
   background-position: -180px -54px;
 }
+.x-sheet-icon-img.font-angle1 {
+  background-position: -108px -54px;
+}
+.x-sheet-icon-img.font-angle2 {
+  background-position: -126px -54px;
+}
+.x-sheet-icon-img.font-angle3 {
+  background-position: -198px -54px;
+}
+.x-sheet-icon-img.font-angle4 {
+  background-position: -216px -54px;
+}
+.x-sheet-icon-img.font-angle5 {
+  background-position: -234px -54px;
+}
+.x-sheet-icon-img.font-angle6 {
+  background-position: 0px -72px;
+}
 .x-sheet-tools-undo {
   opacity: 0.5;
 }
@@ -1153,6 +1174,33 @@
 }
 .x-sheet-tools-item:hover {
   background: #e4e4e4;
+}
+.x-sheet-tools-drop-input-item {
+  position: relative;
+}
+.x-sheet-tools-drop-input-item-mark {
+  display: inline-block;
+  vertical-align: middle;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  margin-top: -9px;
+}
+.x-sheet-tools-drop-input-item-title {
+  display: inline-block;
+  color: #000000;
+  font-size: 14px;
+  font-family: 'Lato', 'Source Sans Pro', Roboto, Helvetica, Arial, sans-serif;
+  vertical-align: middle;
+  padding-right: 20px;
+}
+.x-sheet-tools-drop-input {
+  width: 50px;
+  height: 18px;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  padding: 2px 3px 2px 3px;
+  outline-color: #0080ff;
 }
 .x-sheet-tools-drop-down-item {
   position: relative;
@@ -1651,6 +1699,29 @@
   background: #f8fcf9;
   border: 1px solid #c8e7d1 !important;
   color: #188038;
+}
+.x-sheet-font-angle-context-menu {
+  background: #ffffff;
+}
+.x-sheet-font-angle-context-menu-type-icon-line {
+  display: flex;
+}
+.x-sheet-font-angle-value-context-menu {
+  background: #ffffff;
+}
+.x-sheet-font-angle-value-context-menu-item {
+  overflow: hidden;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  font-size: 13px;
+  padding: 5px;
+}
+.x-sheet-font-angle-value-context-menu-item-title {
+  float: left;
+  line-height: 20px;
+  margin-right: 20px;
+  font-size: 15px;
+  width: 100%;
 }
 .x-sheet-option {
   overflow: hidden;

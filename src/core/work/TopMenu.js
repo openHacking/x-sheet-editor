@@ -13,7 +13,7 @@ import { UnderLine } from './tools/UnderLine';
 import { FontStrike } from './tools/FontStrike';
 import { FontColor } from './tools/FontColor';
 import { FillColor } from './tools/FillColor';
-import { Border } from './tools/contextmenu/icon/border/Border';
+import { Border } from './tools/Border';
 import { Merge } from './tools/Merge';
 import { HorizontalAlign } from './tools/HorizontalAlign';
 import { VerticalAlign } from './tools/VerticalAlign';
@@ -35,14 +35,8 @@ import { Alert } from '../../component/alert/Alert';
 import { XFilter } from '../table/xscreenitems/xfilter/XFilter';
 import { XCopyStyle } from '../table/xscreenitems/xcopystyle/XCopyStyle';
 import { Confirm } from '../../component/confirm/Confirm';
-
-class Divider extends Widget {
-
-  constructor() {
-    super(`${cssPrefix}-tools-divider`);
-  }
-
-}
+import { FontAngle } from './tools/FontAngle';
+import { Divider } from './tools/base/Divider';
 
 class TopMenu extends Widget {
 
@@ -651,6 +645,7 @@ class TopMenu extends Widget {
     });
     this.filter = new Filter();
     this.functions = new Functions();
+    this.fontAngle = new FontAngle();
     this.children(this.undo);
     this.children(this.redo);
     this.children(new Divider());
@@ -671,9 +666,12 @@ class TopMenu extends Widget {
     this.children(this.fillColor);
     this.children(this.border);
     this.children(this.merge);
+    this.children(new Divider());
     this.children(this.horizontalAlign);
     this.children(this.verticalAlign);
     this.children(this.textWrapping);
+    this.children(this.fontAngle);
+    this.children(new Divider());
     this.children(this.fixed);
     this.children(this.filter);
     this.children(this.functions);
@@ -1133,6 +1131,19 @@ class TopMenu extends Widget {
         filter.openFilter();
         this.filter.active(filter.display);
       }
+    });
+    XEvent.bind(this.fontAngle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const { fontAngle } = this;
+      const { fontAngleContextMenu } = fontAngle;
+      const { elPopUp } = fontAngleContextMenu;
+      ElPopUp.closeAll([elPopUp]);
+      if (fontAngleContextMenu.isClose()) {
+        fontAngleContextMenu.open();
+      } else {
+        fontAngleContextMenu.close();
+      }
+      e.stopPropagation();
+      e.preventDefault();
     });
   }
 

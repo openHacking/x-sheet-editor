@@ -16,7 +16,7 @@ class ValueFilter extends ELContextMenuItem {
    */
   constructor() {
     super(`${cssPrefix}-filter-data-menu-item ${cssPrefix}-value-filter`);
-    this.filterExp = new RegExp('.*');
+    this.filterExp = null;
     this.items = [];
     this.filters = [];
     this.status = true;
@@ -98,10 +98,10 @@ class ValueFilter extends ELContextMenuItem {
     XEvent.bind(searchInput, Constant.FORM_EVENT_TYPE.SEARCH_INPUT_CHANGE, (e) => {
       const { detail } = e;
       const { value } = detail;
-      if (value) {
+      if (!PlainUtils.isBlank(value)) {
         this.filterExp = new RegExp(`.?${value}.?`);
       } else {
-        this.filterExp = new RegExp('.*');
+        this.filterExp = null;
       }
       this.value = value;
       this.filterItems();
@@ -123,19 +123,25 @@ class ValueFilter extends ELContextMenuItem {
    */
   filterItems() {
     const { filterExp, items, itemsBox } = this;
-    // 筛选符合条件的元素
     const filters = [];
-    items.forEach((item) => {
-      const { text } = item;
-      if (filterExp.test(text)) {
-        filters.push(item);
-      }
-    });
-    // 显示筛选内容
     itemsBox.empty();
-    filters.forEach((item) => {
-      itemsBox.children(item);
-    });
+    if (filterExp) {
+      // 筛选符合条件的元素
+      items.forEach((item) => {
+        const { text } = item;
+        if (filterExp.test(text)) {
+          filters.push(item);
+        }
+      });
+      // 显示筛选内容
+      filters.forEach((item) => {
+        itemsBox.children(item);
+      });
+    } else {
+      items.forEach((item) => {
+        itemsBox.children(item);
+      });
+    }
     this.filters = filters;
   }
 
