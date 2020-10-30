@@ -76,7 +76,7 @@ class AngleFont extends BaseFont {
   }
 
   truncateFont() {
-    this.overflowFont();
+    return this.overflowFont();
   }
 
   overflowFont() {
@@ -136,7 +136,7 @@ class AngleFont extends BaseFont {
           tilt: maxLen,
           angle,
         });
-        // 总宽度
+        // 文本总宽度
         const totalWidth = textWidth + ((textArrayLen - 1) * spacing);
         // x坐标偏移量
         let wOffset = 0;
@@ -181,9 +181,9 @@ class AngleFont extends BaseFont {
             break;
         }
         // 边界检查
-        const outbounds = totalWidth + pw > overflow.width
-          || textHeight + ph > overflow.height;
-        if (outbounds) {
+        const outboundsHeight = textHeight + ph > overflow.height;
+        const outboundsWidth = totalWidth + pw > overflow.width;
+        if (outboundsHeight || outboundsWidth) {
           // 裁剪宽度
           const crop = new Crop({
             draw: dw,
@@ -329,16 +329,43 @@ class AngleFont extends BaseFont {
             jj += 1;
           }
         }
-        // 文本占据的宽度(padding)
-        let haveWidth;
-        switch (align) {
-          case BaseFont.ALIGN.center:
+        // 计算文本占据的宽度
+        let haveWidth = 0;
+        switch (verticalAlign) {
+          case BaseFont.VERTICAL_ALIGN.top: {
             haveWidth = totalWidth;
             break;
+          }
+          case BaseFont.VERTICAL_ALIGN.center: {
+            const halfHeight = (textHeight - height) / 2;
+            const limitHeight = Math.min(height + halfHeight, textHeight);
+            const limitWidth = RTSinKit.tilt({
+              inverse: limitHeight,
+              angle,
+            });
+            haveWidth = RTCosKit.nearby({
+              tilt: limitWidth,
+              angle,
+            });
+            break;
+          }
+          case BaseFont.VERTICAL_ALIGN.bottom: {
+            const limitHeight = Math.min(height, textHeight);
+            const limitWidth = RTSinKit.tilt({
+              inverse: limitHeight,
+              angle,
+            });
+            haveWidth = RTCosKit.nearby({
+              tilt: limitWidth,
+              angle,
+            });
+            break;
+          }
+        }
+        switch (align) {
           case BaseFont.ALIGN.right:
           case BaseFont.ALIGN.left:
-            haveWidth = totalWidth + padding;
-            break;
+            haveWidth += padding;
         }
         return haveWidth;
       }
@@ -386,9 +413,9 @@ class AngleFont extends BaseFont {
           break;
       }
       // 边界检查
-      const outbounds = trigonometricWidth + pw > overflow.width
-        || trigonometricHeight + ph > overflow.height;
-      if (outbounds) {
+      const outboundsHeight = trigonometricHeight + ph > overflow.height;
+      const outboundsWidth = trigonometricWidth + pw > overflow.width;
+      if (outboundsHeight || outboundsWidth) {
         // 裁剪宽度
         const crop = new Crop({
           draw: dw,
@@ -442,16 +469,43 @@ class AngleFont extends BaseFont {
         }
         dwAngle.revert();
       }
-      // 计算文本占据的宽度(padding)
+      // 计算文本占据的宽度
       let haveWidth = 0;
-      switch (align) {
-        case BaseFont.ALIGN.center:
+      switch (verticalAlign) {
+        case BaseFont.VERTICAL_ALIGN.top: {
           haveWidth = trigonometricWidth;
           break;
+        }
+        case BaseFont.VERTICAL_ALIGN.center: {
+          const halfHeight = (trigonometricHeight - height) / 2;
+          const limitHeight = Math.min(height + halfHeight, trigonometricHeight);
+          const limitWidth = RTSinKit.tilt({
+            inverse: limitHeight,
+            angle,
+          });
+          haveWidth = RTCosKit.nearby({
+            tilt: limitWidth,
+            angle,
+          });
+          break;
+        }
+        case BaseFont.VERTICAL_ALIGN.bottom: {
+          const limitHeight = Math.min(height, trigonometricHeight);
+          const limitWidth = RTSinKit.tilt({
+            inverse: limitHeight,
+            angle,
+          });
+          haveWidth = RTCosKit.nearby({
+            tilt: limitWidth,
+            angle,
+          });
+          break;
+        }
+      }
+      switch (align) {
         case BaseFont.ALIGN.right:
         case BaseFont.ALIGN.left:
-          haveWidth = trigonometricWidth + padding;
-          break;
+          haveWidth += padding;
       }
       return haveWidth;
     }
@@ -538,9 +592,9 @@ class AngleFont extends BaseFont {
             break;
         }
         // 边界检查
-        const outbounds = totalWidth + pw > overflow.width
-          || textHeight + ph > overflow.height;
-        if (outbounds) {
+        const outboundsHeight = textHeight + ph > overflow.height;
+        const outboundsWidth = totalWidth + pw > overflow.width;
+        if (outboundsHeight || outboundsWidth) {
           // 裁剪宽度
           const crop = new Crop({
             draw: dw,
@@ -686,16 +740,43 @@ class AngleFont extends BaseFont {
             jj += 1;
           }
         }
-        // 计算文本占据的宽度(padding)
+        // 计算文本占据的宽度
         let haveWidth = 0;
-        switch (align) {
-          case BaseFont.ALIGN.center:
+        switch (verticalAlign) {
+          case BaseFont.VERTICAL_ALIGN.top: {
+            const limitHeight = Math.min(height, textHeight);
+            const limitWidth = RTSinKit.tilt({
+              inverse: limitHeight,
+              angle,
+            });
+            haveWidth = RTCosKit.nearby({
+              tilt: limitWidth,
+              angle,
+            });
+            break;
+          }
+          case BaseFont.VERTICAL_ALIGN.center: {
+            const halfHeight = (textHeight - height) / 2;
+            const limitHeight = Math.min(height + halfHeight, textHeight);
+            const limitWidth = RTSinKit.tilt({
+              inverse: limitHeight,
+              angle,
+            });
+            haveWidth = RTCosKit.nearby({
+              tilt: limitWidth,
+              angle,
+            });
+            break;
+          }
+          case BaseFont.VERTICAL_ALIGN.bottom: {
             haveWidth = totalWidth;
             break;
+          }
+        }
+        switch (align) {
           case BaseFont.ALIGN.right:
           case BaseFont.ALIGN.left:
-            haveWidth = totalWidth + padding;
-            break;
+            haveWidth += padding;
         }
         return haveWidth;
       }
@@ -743,9 +824,9 @@ class AngleFont extends BaseFont {
           break;
       }
       // 边界检查
-      const outbounds = trigonometricWidth + pw > overflow.width
-        || trigonometricHeight + ph > overflow.height;
-      if (outbounds) {
+      const outboundsHeight = trigonometricHeight + ph > overflow.height;
+      const outboundsWidth = trigonometricWidth + pw > overflow.width;
+      if (outboundsHeight || outboundsWidth) {
         // 裁剪宽度
         const crop = new Crop({
           draw: dw,
@@ -799,16 +880,43 @@ class AngleFont extends BaseFont {
         }
         dwAngle.revert();
       }
-      // 计算文本占据的宽度(padding)
-      let haveWidth;
-      switch (align) {
-        case BaseFont.ALIGN.center:
+      // 计算文本占据的宽度
+      let haveWidth = 0;
+      switch (verticalAlign) {
+        case BaseFont.VERTICAL_ALIGN.top: {
+          const limitHeight = Math.min(height, trigonometricHeight);
+          const limitWidth = RTSinKit.tilt({
+            inverse: limitHeight,
+            angle,
+          });
+          haveWidth = RTCosKit.nearby({
+            tilt: limitWidth,
+            angle,
+          });
+          break;
+        }
+        case BaseFont.VERTICAL_ALIGN.center: {
+          const halfHeight = (trigonometricHeight - height) / 2;
+          const limitHeight = Math.min(height + halfHeight, trigonometricHeight);
+          const limitWidth = RTSinKit.tilt({
+            inverse: limitHeight,
+            angle,
+          });
+          haveWidth = RTCosKit.nearby({
+            tilt: limitWidth,
+            angle,
+          });
+          break;
+        }
+        case BaseFont.VERTICAL_ALIGN.bottom: {
           haveWidth = trigonometricWidth;
           break;
+        }
+      }
+      switch (align) {
         case BaseFont.ALIGN.right:
         case BaseFont.ALIGN.left:
-          haveWidth = trigonometricWidth + padding * 2;
-          break;
+          haveWidth += padding;
       }
       return haveWidth;
     }
@@ -928,7 +1036,7 @@ class AngleFont extends BaseFont {
           ti += 1;
         }
       }
-      // 计算文本占据的宽度(padding)
+      // 计算文本占据的宽度
       let haveWidth = 0;
       switch (align) {
         case BaseFont.ALIGN.right:
@@ -1048,7 +1156,7 @@ class AngleFont extends BaseFont {
           tilt: maxLen,
           angle,
         });
-        // 总宽度
+        // 文本总宽度
         const totalWidth = textWidth + ((textArrayLen - 1) * spacing);
         // x坐标偏移量
         let wOffset = 0;
@@ -1093,9 +1201,9 @@ class AngleFont extends BaseFont {
             break;
         }
         // 边界检查
-        const outbounds = totalWidth + pw > overflow.width
-          || textHeight + ph > overflow.height;
-        if (outbounds) {
+        const outBoundsHeight = textHeight + ph > overflow.height;
+        const outboundsWidth = totalWidth + pw > overflow.width;
+        if (outBoundsHeight || outboundsWidth) {
           // 裁剪宽度
           const crop = new Crop({
             draw: dw,
@@ -1241,16 +1349,12 @@ class AngleFont extends BaseFont {
             jj += 1;
           }
         }
-        // 文本占据的宽度(padding)
-        let haveWidth;
+        // 文本占据的宽度
+        let haveWidth = totalWidth;
         switch (align) {
-          case BaseFont.ALIGN.center:
-            haveWidth = totalWidth;
-            break;
           case BaseFont.ALIGN.right:
           case BaseFont.ALIGN.left:
-            haveWidth = totalWidth + padding;
-            break;
+            haveWidth += padding;
         }
         return haveWidth;
       }
@@ -1298,9 +1402,9 @@ class AngleFont extends BaseFont {
           break;
       }
       // 边界检查
-      const outbounds = trigonometricWidth + pw > overflow.width
-        || trigonometricHeight + ph > overflow.height;
-      if (outbounds) {
+      const outboundsHeight = trigonometricHeight + ph > overflow.height;
+      const outboundsWidth = trigonometricWidth + pw > overflow.width;
+      if (outboundsHeight || outboundsWidth) {
         // 裁剪宽度
         const crop = new Crop({
           draw: dw,
@@ -1354,16 +1458,12 @@ class AngleFont extends BaseFont {
         }
         dwAngle.revert();
       }
-      // 计算文本占据的宽度(padding)
-      let haveWidth = 0;
+      // 计算文本占据的宽度
+      let haveWidth = trigonometricWidth;
       switch (align) {
-        case BaseFont.ALIGN.center:
-          haveWidth = trigonometricWidth;
-          break;
         case BaseFont.ALIGN.right:
         case BaseFont.ALIGN.left:
-          haveWidth = trigonometricWidth + padding;
-          break;
+          haveWidth += padding;
       }
       return haveWidth;
     }
@@ -1497,9 +1597,9 @@ class AngleFont extends BaseFont {
             break;
         }
         // 边界检查
-        const outbounds = totalWidth + pw > overflow.width
-          || textHeight + ph > overflow.height;
-        if (outbounds) {
+        const outboundsHeight = textHeight + ph > overflow.height;
+        const outboundsWidth = totalWidth + pw > overflow.width;
+        if (outboundsHeight || outboundsWidth) {
           // 裁剪宽度
           const crop = new Crop({
             draw: dw,
@@ -1645,16 +1745,12 @@ class AngleFont extends BaseFont {
             jj += 1;
           }
         }
-        // 计算文本占据的宽度(padding)
-        let haveWidth = 0;
+        // 计算文本占据的宽度
+        let haveWidth = totalWidth;
         switch (align) {
-          case BaseFont.ALIGN.center:
-            haveWidth = totalWidth;
-            break;
           case BaseFont.ALIGN.right:
           case BaseFont.ALIGN.left:
-            haveWidth = totalWidth + padding;
-            break;
+            haveWidth += padding;
         }
         return haveWidth;
       }
@@ -1702,9 +1798,9 @@ class AngleFont extends BaseFont {
           break;
       }
       // 边界检查
-      const outbounds = trigonometricWidth + pw > overflow.width
-        || trigonometricHeight + ph > overflow.height;
-      if (outbounds) {
+      const outboundsHeight = trigonometricHeight + ph > overflow.height;
+      const outboundsWidth = trigonometricWidth + pw > overflow.width;
+      if (outboundsHeight || outboundsWidth) {
         // 裁剪宽度
         const crop = new Crop({
           draw: dw,
@@ -1758,16 +1854,12 @@ class AngleFont extends BaseFont {
         }
         dwAngle.revert();
       }
-      // 计算文本占据的宽度(padding)
-      let haveWidth;
+      // 计算文本占据的宽度
+      let haveWidth = trigonometricWidth;
       switch (align) {
-        case BaseFont.ALIGN.center:
-          haveWidth = trigonometricWidth;
-          break;
         case BaseFont.ALIGN.right:
         case BaseFont.ALIGN.left:
-          haveWidth = trigonometricWidth + padding * 2;
-          break;
+          haveWidth += padding;
       }
       return haveWidth;
     }

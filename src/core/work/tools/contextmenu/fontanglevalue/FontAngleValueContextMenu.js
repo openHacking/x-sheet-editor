@@ -1,7 +1,8 @@
 import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMenu';
-import { cssPrefix } from '../../../../../const/Constant';
-import { PlainUtils } from '../../../../../utils/PlainUtils';
 import { FontAngleValueContextMenuItem } from './FontAngleValueContextMenuItem';
+import { Constant, cssPrefix } from '../../../../../const/Constant';
+import { XEvent } from '../../../../../lib/XEvent';
+import { PlainUtils } from '../../../../../utils/PlainUtils';
 
 class FontAngleValueContextMenu extends ELContextMenu {
 
@@ -16,7 +17,7 @@ class FontAngleValueContextMenu extends ELContextMenu {
       new FontAngleValueContextMenuItem(-45),
       new FontAngleValueContextMenuItem(-30),
       new FontAngleValueContextMenuItem(-15),
-      new FontAngleValueContextMenuItem(-0),
+      new FontAngleValueContextMenuItem(0),
       new FontAngleValueContextMenuItem(15),
       new FontAngleValueContextMenuItem(30),
       new FontAngleValueContextMenuItem(45),
@@ -27,6 +28,29 @@ class FontAngleValueContextMenu extends ELContextMenu {
     this.items.forEach((item) => {
       this.addItem(item);
     });
+    this.bind();
+  }
+
+  unbind() {
+    const { items } = this;
+    items.forEach((item) => {
+      XEvent.unbind(item);
+    });
+  }
+
+  bind() {
+    const { items } = this;
+    items.forEach((item) => {
+      XEvent.bind(item, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+        this.options.onUpdate(item);
+        this.close();
+      });
+    });
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

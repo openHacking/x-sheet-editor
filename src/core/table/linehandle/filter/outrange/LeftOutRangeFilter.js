@@ -25,10 +25,8 @@ class LeftOutRangeFilter extends LineFilter {
   master(ri, ci) {
 
     const { cells, cols } = this;
-
     const last = cells.getCell(ri, ci - 1);
     const master = cells.getCell(ri, ci);
-
     if (PlainUtils.isUnDef(master) || PlainUtils.isBlank(master.text)) {
       return true;
     }
@@ -36,42 +34,28 @@ class LeftOutRangeFilter extends LineFilter {
     const { fontAttr } = master;
     const { direction } = fontAttr;
     let checked = true;
-
-    // 检查文本的绘制方向
-    // 区别对待旋转文本
     if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
-      const { angle, textWrap } = fontAttr;
+      const { angle } = fontAttr;
       if (angle === 90 || angle === -90) {
         checked = false;
       }
-      if (textWrap === BaseFont.TEXT_WRAP.TRUNCATE) {
-        checked = false;
-      }
     } else {
-      // 跳过裁剪类型不是overflow
-      // 类型的单元格
       const { textWrap } = fontAttr;
       if (textWrap !== BaseFont.TEXT_WRAP.OVER_FLOW) {
         checked = false;
       }
     }
 
-    // 跳过对齐方式不是right和center
-    // 类型的单元格
     const { align } = fontAttr;
     const maxWidth = cols.getWidth(ci);
     if (align !== BaseFont.ALIGN.right && align !== BaseFont.ALIGN.center) {
       checked = false;
     }
 
-    // 单元格符合检查条件
-    // 则检查宽度是否越界
     if (!checked) {
       return true;
     }
 
-    // 检查当前单元格的内容
-    // 宽度是否越界
     const width = cells.getCellBoundOutSize(ri, ci);
     if (width > maxWidth) {
       // 只有next单元格是空时
@@ -97,56 +81,43 @@ class LeftOutRangeFilter extends LineFilter {
       .setBegin(ci - 1)
       .setEnd(0)
       .setLoop((i) => {
-        // 过滤掉空单元格
-        // 合并单元格
         const cell = cells.getCell(ri, i);
         if (PlainUtils.isUnDef(cell)) {
           return true;
         }
+
         const merge = merges.getFirstIncludes(ri, i);
         if (PlainUtils.isNotUnDef(merge)) {
           return true;
         }
+
         const { text } = cell;
         if (PlainUtils.isBlank(text)) {
           return true;
         }
 
-        // 检查文本的绘制方向
-        // 区别对待旋转文本
         const { fontAttr } = cell;
         const { direction } = fontAttr;
         if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
-          const { angle, textWrap } = fontAttr;
+          const { angle } = fontAttr;
           if (angle === 90 || angle === -90) {
             return false;
           }
-          if (textWrap === BaseFont.TEXT_WRAP.TRUNCATE) {
-            return false;
-          }
-          // 跳过对齐方式不是left和center
-          // 类型的单元格
           const { align } = fontAttr;
           if (align !== BaseFont.ALIGN.left && align !== BaseFont.ALIGN.center) {
             return false;
           }
         } else {
-          // 跳过裁剪类型不是overflow
-          // 类型的单元格
           const { textWrap } = fontAttr;
           if (textWrap !== BaseFont.TEXT_WRAP.OVER_FLOW) {
             return false;
           }
-          // 跳过对齐方式不是left和center
-          // 类型的单元格
           const { align } = fontAttr;
           if (align !== BaseFont.ALIGN.left && align !== BaseFont.ALIGN.center) {
             return false;
           }
         }
 
-        // 检查当前单元格的内容
-        // 宽度是否越界
         const width = cells.getCellBoundOutSize(ri, i);
         if (width > leftWidth) {
           // 只有master单元格为
@@ -155,6 +126,7 @@ class LeftOutRangeFilter extends LineFilter {
             find = false;
           }
         }
+
         return false;
       })
       .setNext((i) => {
@@ -179,56 +151,43 @@ class LeftOutRangeFilter extends LineFilter {
       .setBegin(ci + 1)
       .setEnd(len)
       .setLoop((j) => {
-        // 过滤掉空单元格
-        // 合并单元格
         const cell = cells.getCell(ri, j);
         if (PlainUtils.isUnDef(cell)) {
           return true;
         }
+
         const merge = merges.getFirstIncludes(ri, j);
         if (PlainUtils.isNotUnDef(merge)) {
           return true;
         }
+
         const { text } = cell;
         if (PlainUtils.isBlank(text)) {
           return true;
         }
 
-        // 检查文本的绘制方向
-        // 区别对待旋转文本
         const { fontAttr } = cell;
         const { direction } = fontAttr;
         if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
-          const { angle, textWrap } = fontAttr;
+          const { angle } = fontAttr;
           if (angle === 90 || angle === -90) {
             return false;
           }
-          if (textWrap === BaseFont.TEXT_WRAP.TRUNCATE) {
-            return false;
-          }
-          // 跳过对齐方式不是right和center
-          // 类型的单元格
           const { align } = fontAttr;
           if (align !== BaseFont.ALIGN.right && align !== BaseFont.ALIGN.center) {
             return false;
           }
         } else {
-          // 跳过裁剪类型不是overflow
-          // 类型的单元格
           const { textWrap } = fontAttr;
           if (textWrap !== BaseFont.TEXT_WRAP.OVER_FLOW) {
             return false;
           }
-          // 跳过对齐方式不是right和center
-          // 类型的单元格
           const { align } = fontAttr;
           if (align !== BaseFont.ALIGN.right && align !== BaseFont.ALIGN.center) {
             return false;
           }
         }
 
-        // 检查当前单元格的内容
-        // 宽度是否越界
         const width = cells.getCellBoundOutSize(ri, j);
         if (width > rightWidth) {
           // 只有master单元格和
@@ -240,6 +199,7 @@ class LeftOutRangeFilter extends LineFilter {
             find = false;
           }
         }
+
         return false;
       })
       .setNext((j) => {

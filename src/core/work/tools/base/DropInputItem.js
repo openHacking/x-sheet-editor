@@ -17,6 +17,11 @@ class DropInputItem extends Item {
     this.children(this.drop);
   }
 
+  setValue(value) {
+    this.input.val(value);
+    return this;
+  }
+
 }
 
 export { DropInputItem };

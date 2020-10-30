@@ -2,20 +2,20 @@ import { DropDownItem } from './base/DropDownItem';
 import { cssPrefix } from '../../../const/Constant';
 import { Icon } from './Icon';
 import { BorderTypeContextMenu } from './contextmenu/border/bordertype/BorderTypeContextMenu';
-import { PlainUtils } from '../../../utils/PlainUtils';
 
 class Border extends DropDownItem {
 
-  constructor(options) {
+  constructor(options = {
+    contextMenu: {},
+  }) {
     super(`${cssPrefix}-tools-border`);
-    this.options = PlainUtils.copyProp({
-      contextMenu: {},
-    }, options);
+    this.options = options;
     this.icon = new Icon('border');
     this.setIcon(this.icon);
-    this.borderTypeContextMenu = new BorderTypeContextMenu(PlainUtils.copyProp({
+    this.borderTypeContextMenu = new BorderTypeContextMenu({
       el: this,
-    }, this.options.contextMenu));
+      ...this.options.contextMenu,
+    });
   }
 
 }

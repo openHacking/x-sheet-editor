@@ -1,24 +1,34 @@
 import { DropDownItem } from './base/DropDownItem';
 import { cssPrefix } from '../../../const/Constant';
-import { PlainUtils } from '../../../utils/PlainUtils';
 import { Icon } from './Icon';
 import { FontAngleContextMenu } from './contextmenu/fontangle/FontAngleContextMenu';
 
 class FontAngle extends DropDownItem {
 
-  constructor(options) {
+  constructor(options = {
+    contextMenu: {},
+  }) {
     super(`${cssPrefix}-tools-angle`);
-    this.options = PlainUtils.copyProp({
-      contextMenu: {},
-    }, options);
+    this.options = options;
     this.icon = new Icon('angle');
     this.setIcon(this.icon);
     this.fontAngleContextMenu = new FontAngleContextMenu({
       el: this,
+      ...this.options.contextMenu,
     });
   }
 
+  setValue(value) {
+    this.fontAngleContextMenu.setValue(value);
+  }
+
+  destroy() {
+    super.destroy();
+    this.fontAngleContextMenu.destroy();
+  }
+
 }
+
 export {
   FontAngle,
 };

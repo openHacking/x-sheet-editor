@@ -126,9 +126,7 @@ class TopMenu extends Widget {
         onUpdate: (size) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          const {
-            xScreen,
-          } = table;
+          const { xScreen } = table;
           const styleCellsHelper = table.getStyleCellsHelper();
           const { tableDataSnapshot } = table;
           const xSelect = xScreen.findType(XSelectItem);
@@ -645,7 +643,58 @@ class TopMenu extends Widget {
     });
     this.filter = new Filter();
     this.functions = new Functions();
-    this.fontAngle = new FontAngle();
+    this.fontAngle = new FontAngle({
+      contextMenu: {
+        onUpdateAngle: (angle) => {
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          const { xScreen } = table;
+          const styleCellsHelper = table.getStyleCellsHelper();
+          const { tableDataSnapshot } = table;
+          const xSelect = xScreen.findType(XSelectItem);
+          const { selectRange } = xSelect;
+          if (selectRange) {
+            tableDataSnapshot.begin();
+            const { cellDataProxy } = tableDataSnapshot;
+            styleCellsHelper.getCellOrNewCellByViewRange({
+              rectRange: selectRange,
+              callback: (r, c, origin) => {
+                const cell = origin.clone();
+                cell.fontAttr.angle = angle;
+                cell.fontAttr.direction = BaseFont.TEXT_DIRECTION.ANGLE;
+                cellDataProxy.setCell(r, c, cell);
+              },
+            });
+            tableDataSnapshot.end();
+            table.render();
+          }
+        },
+        onUpdateType: (type) => {
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          const { xScreen } = table;
+          const styleCellsHelper = table.getStyleCellsHelper();
+          const { tableDataSnapshot } = table;
+          const xSelect = xScreen.findType(XSelectItem);
+          const { selectRange } = xSelect;
+          if (selectRange) {
+            tableDataSnapshot.begin();
+            const { cellDataProxy } = tableDataSnapshot;
+            styleCellsHelper.getCellOrNewCellByViewRange({
+              rectRange: selectRange,
+              callback: (r, c, origin) => {
+                const cell = origin.clone();
+                cell.fontAttr.angle = 0;
+                cell.fontAttr.direction = type;
+                cellDataProxy.setCell(r, c, cell);
+              },
+            });
+            tableDataSnapshot.end();
+            table.render();
+          }
+        },
+      },
+    });
     this.children(this.undo);
     this.children(this.redo);
     this.children(new Divider());
