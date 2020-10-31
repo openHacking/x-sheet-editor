@@ -943,6 +943,8 @@ class XTableContentUI extends XTableContentBaseUI {
               builder.setAttr(fontAttr);
               builder.setRect(rect);
               builder.setOverFlow(overflow);
+              builder.setRow(row);
+              builder.setCol(col);
               const font = builder.build();
               cell.setContentWidth(font.draw());
             }
@@ -990,6 +992,8 @@ class XTableContentUI extends XTableContentBaseUI {
               builder.setAttr(fontAttr);
               builder.setRect(rect);
               builder.setOverFlow(overflow);
+              builder.setRow(row);
+              builder.setCol(col);
               const font = builder.build();
               cell.setContentWidth(font.draw());
             }
@@ -1016,22 +1020,22 @@ class XTableContentUI extends XTableContentBaseUI {
     textCellsHelper.getCellSkipMergeCellByViewRange({
       rectRange: scrollView,
       callback: (row, col, cell, rect, overflow) => {
-        const {
-          format, text, fontAttr,
-        } = cell;
+        const { format, text, fontAttr } = cell;
         const builder = textFont.getBuilder();
         builder.setDraw(draw);
         builder.setText(XTableFormat(format, text));
         builder.setAttr(fontAttr);
         builder.setRect(rect);
         builder.setOverFlow(overflow);
+        builder.setRow(row);
+        builder.setCol(col);
         const font = builder.build();
         cell.setContentWidth(font.draw());
       },
     });
     textCellsHelper.getMergeCellByViewRange({
       rectRange: scrollView,
-      callback: (rect, cell) => {
+      callback: (rect, cell, merge) => {
         const {
           format, text, fontAttr,
         } = cell;
@@ -1040,6 +1044,8 @@ class XTableContentUI extends XTableContentBaseUI {
         builder.setText(XTableFormat(format, text));
         builder.setAttr(fontAttr);
         builder.setRect(rect);
+        builder.setOverFlow(merge);
+        builder.setMerge(merge);
         const font = builder.build();
         cell.setContentWidth(font.draw());
       },
@@ -2443,6 +2449,7 @@ class XTableStyle extends Widget {
       scaleAdapter: new ScaleAdapter({
         goto: v => this.scale.goto(v),
       }),
+      cols: this.cols,
     });
     // 单元格网格处理
     this.cellHorizontalGrid = new TableHorizontalGrid({

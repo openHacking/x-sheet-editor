@@ -2,8 +2,8 @@ import { BaseFont } from './BaseFont';
 
 class DisplayFont extends BaseFont {
 
-  displayFont(rect, text) {
-    const { attr } = this;
+  displayFont() {
+    const { attr, text, rect } = this;
     const { align } = attr;
     const { width: rectWidth } = rect;
     const textLen = text.length;

@@ -22,27 +22,12 @@ class BaseCellsHelper {
   }
 
   getCellOverFlow(ri, ci, rect, cell) {
-    const { xTableAreaView } = this;
+    const { x, y, height } = rect;
     const { fontAttr } = cell;
-    const {
-      direction, textWrap, angle,
-    } = fontAttr;
-    const {
-      x, y, height,
-    } = rect;
-    if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
-      if (angle === 0) {
-        const max = this.getCellTextMaxWidth(ri, ci);
-        return new Rect({
-          x: x + max.offset, y, width: max.width, height,
-        });
-      }
-      const scrollView = xTableAreaView.getScrollView();
-      return new Rect({
-        x: 0, y, width: scrollView.w, height,
-      });
-    }
-    if (textWrap === BaseFont.TEXT_WRAP.OVER_FLOW) {
+    const { direction, textWrap } = fontAttr;
+    const allowDirection = direction === BaseFont.TEXT_DIRECTION.HORIZONTAL;
+    const allowTextWrap = textWrap === BaseFont.TEXT_WRAP.OVER_FLOW;
+    if (allowDirection && allowTextWrap) {
       const max = this.getCellTextMaxWidth(ri, ci);
       return new Rect({
         x: x + max.offset, y, width: max.width, height,

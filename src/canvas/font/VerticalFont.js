@@ -5,13 +5,13 @@ import { Crop } from '../Crop';
 class VerticalFont extends BaseFont {
 
   constructor({
-    text, overflow, rect, dw, attr,
+    text, rect, dw, attr,
   }) {
     super({
-      overflow, text, rect, dw, attr,
+      text, rect, dw, attr,
     });
     this.attr = PlainUtils.mergeDeep({
-      lineHeight: 4,
+      lineHeight: 8,
       spacing: 2,
     }, this.attr);
   }
@@ -74,6 +74,9 @@ class VerticalFont extends BaseFont {
       fillStyle: attr.color,
       strokeStyle: attr.color,
     });
+    if (this.hasBreak(text)) {
+      return this.wrapTextFont();
+    }
     switch (textWrap) {
       case BaseFont.TEXT_WRAP.OVER_FLOW:
         return this.overflowFont();
@@ -86,86 +89,66 @@ class VerticalFont extends BaseFont {
   }
 
   truncateFont() {
-    const {
-      text, dw, attr, rect,
-    } = this;
-    const {
-      underline, strikethrough, align, verticalAlign, padding, size, lineHeight, spacing,
-    } = attr;
-    // 计算文本折行
-    const breakArray = this.textBreak(text);
-    const textArray = [];
+    const { text, dw, attr, rect } = this;
     const { width, height } = rect;
-    const breakLen = breakArray.length;
-    let bi = 0;
-    let wOffset = 0;
+    const { underline, strikethrough, align, verticalAlign } = attr;
+    const { size, spacing } = attr;
+    // 填充宽度
+    const verticalAlignPadding = this.getVerticalAlignPadding();
+    const alignPadding = this.getAlignPadding();
+    // 文本位置计算
+    const textArray = [];
+    const textLen = text.length;
     let maxLen = 0;
-    while (bi < breakLen) {
-      const text = breakArray[bi];
-      const textLen = text.length;
-      let hOffset = 0;
-      let ii = 0;
-      while (ii < textLen) {
-        const char = text.charAt(ii);
-        const width = this.textWidth(char);
-        textArray.push({
-          len: width,
-          text: char,
-          tx: wOffset + (size / 2 - width / 2),
-          ty: hOffset,
-        });
-        hOffset += size + spacing;
-        ii += 1;
-      }
-      if (hOffset > 0) {
-        hOffset -= spacing;
-      }
-      if (hOffset > maxLen) {
-        maxLen = hOffset;
-      }
-      wOffset += size + lineHeight;
-      bi += 1;
+    let hOffset = 0;
+    let ii = 0;
+    while (ii < textLen) {
+      const char = text.charAt(ii);
+      const width = this.textWidth(char);
+      textArray.push({
+        len: width,
+        text: char,
+        tx: size / 2 - width / 2,
+        ty: hOffset,
+      });
+      hOffset += size + spacing;
+      ii += 1;
     }
-    if (wOffset > 0) {
-      wOffset -= lineHeight;
+    if (hOffset > 0) {
+      hOffset -= spacing;
+    }
+    if (hOffset > maxLen) {
+      maxLen = hOffset;
     }
     // 计算文本坐标
     let bx = rect.x;
     let by = rect.y;
-    let pw = 0;
-    let ph = 0;
     switch (align) {
+      case BaseFont.ALIGN.left:
+        bx += alignPadding;
+        break;
       case BaseFont.ALIGN.center:
-        bx += width / 2 - wOffset / 2;
-        pw = 0;
+        bx += width / 2 - size / 2;
         break;
       case BaseFont.ALIGN.right:
-        bx += width - wOffset - padding;
-        pw = padding;
-        break;
-      case BaseFont.ALIGN.left:
-        bx += padding;
-        pw = padding;
+        bx += width - size - alignPadding;
         break;
     }
     switch (verticalAlign) {
+      case BaseFont.VERTICAL_ALIGN.top:
+        by += verticalAlignPadding;
+        break;
       case BaseFont.VERTICAL_ALIGN.center:
         by += height / 2 - maxLen / 2;
-        ph = 0;
         break;
       case BaseFont.VERTICAL_ALIGN.bottom:
-        by += height - maxLen - padding;
-        ph = padding;
-        break;
-      case BaseFont.VERTICAL_ALIGN.top:
-        by += padding;
-        ph = padding;
+        by += height - maxLen - verticalAlignPadding;
         break;
     }
     // 边界检查
-    const totalWidth = (textArray.length * (size + lineHeight)) - lineHeight;
-    const outbounds = maxLen + ph > height || totalWidth + pw > width;
-    if (outbounds) {
+    const outboundsHeight = maxLen + verticalAlignPadding > height;
+    const outboundsWidth = size + alignPadding > width;
+    if (outboundsHeight || outboundsWidth) {
       const crop = new Crop({
         draw: dw,
         rect,
@@ -212,21 +195,21 @@ class VerticalFont extends BaseFont {
   }
 
   wrapTextFont() {
-    const {
-      text, dw, attr, rect,
-    } = this;
-    const {
-      underline, strikethrough, align, verticalAlign, padding, size, lineHeight, spacing,
-    } = attr;
+    const { text, dw, attr, rect } = this;
+    const { width, height } = rect;
+    const { size, spacing, verticalAlign, underline } = attr;
+    const { strikethrough, align, lineHeight } = attr;
+    // 填充宽度
+    const verticalAlignPadding = this.getVerticalAlignPadding();
+    const alignPadding = this.getAlignPadding();
     // 计算文本折行
     const breakArray = this.textBreak(text);
     const textArray = [];
-    const { width, height } = rect;
-    const maxHeight = height - (padding * 2);
+    const maxHeight = height - (verticalAlignPadding * 2);
     const breakLen = breakArray.length;
-    let bi = 0;
-    let wOffset = 0;
     let maxLen = 0;
+    let wOffset = 0;
+    let bi = 0;
     while (bi < breakLen) {
       const text = breakArray[bi];
       const textLen = text.length;
@@ -241,77 +224,60 @@ class VerticalFont extends BaseFont {
           tx: wOffset + (size / 2 - width / 2),
           ty: hOffset,
         };
-        if (ii === 0) {
-          textArray.push(item);
-        } else {
-          textArray.push(item);
-          if (item.ty + size > maxHeight) {
-            if (hOffset > 0) {
-              hOffset -= spacing;
-            }
-            if (hOffset > maxLen) {
-              maxLen = hOffset;
-            }
-            hOffset = 0;
-            wOffset += size + lineHeight;
-            item.tx = wOffset;
-            item.ty = hOffset;
+        textArray.push(item);
+        if (hOffset + size > maxHeight) {
+          if (hOffset > maxLen) {
+            maxLen = hOffset - spacing;
           }
+          wOffset += size + lineHeight;
+          hOffset = 0;
+          item.tx = wOffset + (size / 2 - width / 2);
+          item.ty = hOffset;
         }
         hOffset += size + spacing;
         ii += 1;
       }
-      if (hOffset > 0) {
-        hOffset -= spacing;
-      }
       if (hOffset > maxLen) {
-        maxLen = hOffset;
+        maxLen = hOffset - spacing;
       }
-      wOffset += size + lineHeight;
+      wOffset += size;
       bi += 1;
-    }
-    if (wOffset > 0) {
-      wOffset -= lineHeight;
     }
     // 计算文本坐标
     let bx = rect.x;
     let by = rect.y;
-    let pw = 0;
     switch (align) {
+      case BaseFont.ALIGN.left:
+        bx += alignPadding;
+        break;
       case BaseFont.ALIGN.center:
         bx += width / 2 - wOffset / 2;
-        pw = 0;
         break;
       case BaseFont.ALIGN.right:
-        bx += width - wOffset - padding;
-        pw = padding;
-        break;
-      case BaseFont.ALIGN.left:
-        bx += padding;
-        pw = padding;
+        bx += width - wOffset - alignPadding;
         break;
     }
     switch (verticalAlign) {
+      case BaseFont.VERTICAL_ALIGN.top:
+        by += verticalAlignPadding;
+        break;
       case BaseFont.VERTICAL_ALIGN.center:
         by += height / 2 - maxLen / 2;
         break;
       case BaseFont.VERTICAL_ALIGN.bottom:
-        by += height - maxLen - padding;
-        break;
-      case BaseFont.VERTICAL_ALIGN.top:
-        by += padding;
+        by += height - maxLen - verticalAlignPadding;
         break;
     }
     // 边界检查
-    const totalWidth = (textArray.length * (size + lineHeight)) - lineHeight;
-    const outbounds = totalWidth + pw > width;
-    if (outbounds) {
+    const totalWidth = textArray.length * size;
+    const outboundsWidth = totalWidth + alignPadding > width;
+    if (outboundsWidth) {
+      const textLen = textArray.length;
       const crop = new Crop({
         draw: dw,
         rect,
       });
       crop.open();
-      const textLen = textArray.length;
       let ti = 0;
       while (ti < textLen) {
         const item = textArray[ti];

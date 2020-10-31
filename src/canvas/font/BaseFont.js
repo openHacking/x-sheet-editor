@@ -1,13 +1,28 @@
 class BaseFont {
 
   constructor({
-    overflow, text, rect, dw, attr,
+    text, dw, attr, rect,
   }) {
-    this.overflow = overflow;
     this.text = text;
     this.dw = dw;
-    this.rect = rect;
     this.attr = attr;
+    this.rect = rect;
+  }
+
+  truncateFont() {
+    throw new TypeError('child impl');
+  }
+
+  overflowFont() {
+    throw new TypeError('child impl');
+  }
+
+  wrapTextFont() {
+    throw new TypeError('child impl');
+  }
+
+  draw() {
+    throw new TypeError('child impl');
   }
 
   textWidth(text) {
@@ -18,6 +33,10 @@ class BaseFont {
 
   textBreak(text) {
     return text.split(/\n/);
+  }
+
+  hasBreak(text) {
+    return text.indexOf('\n') > -1;
   }
 
   isBlank(text) {
@@ -36,20 +55,18 @@ class BaseFont {
     this.attr.padding = padding;
   }
 
-  truncateFont() {
-    throw new TypeError('child impl');
+  getAlignPadding() {
+    if (this.attr.align === BaseFont.ALIGN.center) {
+      return 0;
+    }
+    return this.attr.padding;
   }
 
-  overflowFont() {
-    throw new TypeError('child impl');
-  }
-
-  wrapTextFont() {
-    throw new TypeError('child impl');
-  }
-
-  draw() {
-    throw new TypeError('child impl');
+  getVerticalAlignPadding() {
+    if (this.attr.verticalAlign === BaseFont.VERTICAL_ALIGN.center) {
+      return 0;
+    }
+    return this.attr.padding;
   }
 
 }

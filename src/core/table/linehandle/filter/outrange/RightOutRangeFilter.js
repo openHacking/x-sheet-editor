@@ -60,7 +60,8 @@ class RightOutRangeFilter extends LineFilter {
     if (width > maxWidth) {
       // 只有next单元格是空时
       // 才允许不绘制边框
-      if (PlainUtils.isUnDef(next) || PlainUtils.isBlank(next.text)) {
+      if (direction === BaseFont.TEXT_DIRECTION.ANGLE
+        || PlainUtils.isUnDef(next) || PlainUtils.isBlank(next.text)) {
         return false;
       }
     }
@@ -127,7 +128,8 @@ class RightOutRangeFilter extends LineFilter {
           // 才允许不绘制边框
           const masterBlank = PlainUtils.isUnDef(master) || PlainUtils.isBlank(master.text);
           const nextBlank = PlainUtils.isUnDef(next) || PlainUtils.isBlank(next.text);
-          if (masterBlank && nextBlank) {
+          if (direction === BaseFont.TEXT_DIRECTION.ANGLE
+            || (masterBlank && nextBlank)) {
             find = false;
           }
         }
@@ -197,7 +199,8 @@ class RightOutRangeFilter extends LineFilter {
         if (width > rightWidth) {
           // 只有master单元格为
           // 空时才允许不绘制边框
-          if (master === null || PlainUtils.isBlank(master.text)) {
+          if (direction === BaseFont.TEXT_DIRECTION.ANGLE
+            || (PlainUtils.isUnDef(master) || PlainUtils.isBlank(master.text))) {
             find = false;
           }
         }

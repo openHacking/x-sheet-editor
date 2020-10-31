@@ -1,7 +1,7 @@
-class BaseRich {
+class BaseXRich {
 
 }
 
 export {
-  BaseRich,
+  BaseXRich,
 };
