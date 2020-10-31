@@ -775,6 +775,7 @@ class TopMenu extends Widget {
       this.setHorizontalAlignStatus();
       this.setVerticalAlignStatus();
       this.setTextWrappingStatus();
+      this.setFontAngleStatus();
     });
     XEvent.bind(body, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
       this.setStatus();
@@ -1412,6 +1413,7 @@ class TopMenu extends Widget {
     this.setTextWrappingStatus();
     this.setFixedStatus();
     this.setFilterStatus();
+    this.setFontAngleStatus();
   }
 
   setFixedStatus() {
@@ -1562,6 +1564,24 @@ class TopMenu extends Widget {
       italic = firstCell.fontAttr.italic;
     }
     this.fontItalic.active(italic);
+  }
+
+  setFontAngleStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const cells = table.getTableCells();
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    let angle = 0;
+    if (selectRange) {
+      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+      // eslint-disable-next-line prefer-destructuring
+      angle = firstCell.fontAttr.angle;
+    }
+    this.fontAngle.setValue(angle);
   }
 
   destroy() {
