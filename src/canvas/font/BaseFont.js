@@ -26,9 +26,7 @@ class BaseFont {
   }
 
   textWidth(text) {
-    const { dw } = this;
-    const { width } = dw.measureText(text);
-    return width;
+    return this.dw.measureText(text).width;
   }
 
   textBreak(text) {

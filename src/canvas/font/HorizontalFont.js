@@ -127,8 +127,7 @@ class HorizontalFont extends DisplayFont {
     const { width, height } = rect;
     const { underline, strikethrough, align, verticalAlign, size } = attr;
     // 文字宽度
-    const text = this.displayFont();
-    const textWidth = this.textWidth(text);
+    const { text, textWidth } = this.displayFont();
     // 填充宽度
     const verticalAlignPadding = this.getVerticalAlignPadding();
     const alignPadding = this.getAlignPadding();
