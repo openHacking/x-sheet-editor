@@ -25,8 +25,9 @@ class BaseCellsHelper {
   getCellOverFlow(ri, ci, rect, cell) {
     const { x, y, height } = rect;
     const { fontAttr } = cell;
-    const { direction, textWrap } = fontAttr;
+    const { direction } = fontAttr;
     if (direction === BaseFont.TEXT_DIRECTION.HORIZONTAL) {
+      const { textWrap } = fontAttr;
       if (textWrap === BaseFont.TEXT_WRAP.OVER_FLOW) {
         const max = this.getHorizontalMaxWidth(ri, ci);
         return new Rect({
@@ -34,6 +35,7 @@ class BaseCellsHelper {
         });
       }
     } else if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
+      const { textWrap } = fontAttr;
       switch (textWrap) {
         case BaseFont.TEXT_WRAP.OVER_FLOW:
         case BaseFont.TEXT_WRAP.TRUNCATE: {

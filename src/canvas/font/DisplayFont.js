@@ -8,6 +8,19 @@ class DisplayFont extends BaseFont {
     const { width: rectWidth } = rect;
     const textLen = text.length;
     switch (align) {
+      case BaseFont.ALIGN.left: {
+        let start = 0;
+        let showStr = '';
+        while (start < textLen) {
+          const str = showStr + text.charAt(start);
+          if (this.textWidth(str) >= rectWidth) {
+            break;
+          }
+          showStr = str;
+          start += 1;
+        }
+        return showStr;
+      }
       case BaseFont.ALIGN.center: {
         const textWidth = this.textWidth(text);
         const lOffset = rectWidth / 2 - textWidth / 2;
@@ -35,19 +48,6 @@ class DisplayFont extends BaseFont {
           return showStr;
         }
         break;
-      }
-      case BaseFont.ALIGN.left: {
-        let start = 0;
-        let showStr = '';
-        while (start < textLen) {
-          const str = showStr + text.charAt(start);
-          if (this.textWidth(str) >= rectWidth) {
-            break;
-          }
-          showStr = str;
-          start += 1;
-        }
-        return showStr;
       }
       case BaseFont.ALIGN.right: {
         let start = textLen - 1;
