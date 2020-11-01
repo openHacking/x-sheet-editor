@@ -134,7 +134,6 @@ class AngleFont extends BaseFont {
         draw: dw,
         rect: overflow,
       });
-      crop.open();
       const dwAngle = new Angle({
         dw,
         angle,
@@ -145,6 +144,7 @@ class AngleFont extends BaseFont {
           height: trigonometricHeight,
         }),
       });
+      crop.open();
       dwAngle.rotate();
       const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
       const ty = rty + (trigonometricHeight / 2 - size / 2);

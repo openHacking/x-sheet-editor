@@ -1028,7 +1028,7 @@ class XTableContentUI extends XTableContentBaseUI {
     });
     textCellsHelper.getMergeCellByViewRange({
       rectRange: scrollView,
-      callback: (rect, cell, merge) => {
+      callback: (rect, cell) => {
         const {
           format, text, fontAttr,
         } = cell;
@@ -1037,7 +1037,7 @@ class XTableContentUI extends XTableContentBaseUI {
         builder.setText(XTableFormat(format, text));
         builder.setAttr(fontAttr);
         builder.setRect(rect);
-        builder.setOverFlow(merge);
+        builder.setOverFlow(rect);
         const font = builder.build();
         cell.setContentWidth(font.draw());
       },
