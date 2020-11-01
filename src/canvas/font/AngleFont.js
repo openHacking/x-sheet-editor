@@ -127,7 +127,7 @@ class AngleFont extends BaseFont {
         break;
     }
     // 文本宽度
-    let textHaveWidth = trigonometricWidth;
+    let textHaveWidth = trigonometricWidth + alignPadding;
     if (limitHeight > 0) {
       const tilt = RTSinKit.tilt({
         inverse: height,
@@ -198,15 +198,16 @@ class AngleFont extends BaseFont {
     const { width, height } = rect;
     const { underline, strikethrough, align, verticalAlign, size, lineHeight } = attr;
     // 填充宽度
+    const { padding } = attr;
     const verticalAlignPadding = this.getVerticalAlignPadding();
     const alignPadding = this.getAlignPadding();
     // 角度边界
     let { angle } = attr;
-    if (angle > 90) {
-      angle = 90;
-    }
     if (angle < -90) {
       angle = -90;
+    }
+    if (angle > 90) {
+      angle = 90;
     }
     if (angle === 0) {
       throw new TypeError('文字的角度必须是在90<0或者0>90之间!');
@@ -214,7 +215,7 @@ class AngleFont extends BaseFont {
     // 绘制文本
     if (angle > 0) {
       const textHypotenuseWidth = RTSinKit.tilt({
-        inverse: height - (alignPadding * 2),
+        inverse: height - (padding * 2),
         angle,
       });
       // 折行文本计算
@@ -336,7 +337,7 @@ class AngleFont extends BaseFont {
         // 渲染文本
         let jj = 0;
         while (jj < textArrayLen) {
-          // 计算文本的 绘制位置 旋转中心
+          // 计算文本的绘制位置旋转中心
           const item = textArray[jj];
           const rx = item.tx + bx;
           const ry = item.ty + by;
@@ -379,7 +380,7 @@ class AngleFont extends BaseFont {
           }
           const tx = ax - item.len / 2;
           const ty = ay - size / 2;
-          // 旋转并且 绘制文本
+          // 旋转并且绘制文本
           const dwAngle = new Angle({
             dw,
             angle,
@@ -463,7 +464,7 @@ class AngleFont extends BaseFont {
       return trigonometricWidth + alignPadding;
     }
     const textHypotenuseWidth = RTSinKit.tilt({
-      inverse: height - (alignPadding * 2),
+      inverse: height - (padding * 2),
       angle,
     });
     // 折行文本计算

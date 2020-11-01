@@ -183,7 +183,7 @@ class HorizontalFont extends DisplayFont {
         this.drawLine('strike', bx, by, textWidth);
       }
     }
-    return textWidth + alignPadding;
+    return 0;
   }
 
   overflowFont() {
@@ -395,7 +395,7 @@ class HorizontalFont extends DisplayFont {
         }
       }
     }
-    return width;
+    return 0;
   }
 
 }
