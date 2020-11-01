@@ -7,7 +7,7 @@ import { BaseFont } from './BaseFont';
 class XFont {
 
   constructor({
-    text, dw, rect, attr, overflow, angeOverFlowHandle,
+    text, dw, rect, attr, overflow,
   }) {
     this.attr = PlainUtils.mergeDeep({}, {
       verticalAlign: BaseFont.VERTICAL_ALIGN.center,
@@ -28,12 +28,12 @@ class XFont {
     switch (attr.direction) {
       case BaseFont.TEXT_DIRECTION.ANGLE:
         this.font = new AngleFont({
-          text, rect, dw, attr: this.attr, angeOverFlowHandle,
+          text, rect, dw, attr: this.attr, overflow,
         });
         break;
       case BaseFont.TEXT_DIRECTION.HORIZONTAL:
         this.font = new HorizontalFont({
-          text, rect, dw, overflow, attr: this.attr,
+          text, rect, dw, attr: this.attr, overflow,
         });
         break;
       case BaseFont.TEXT_DIRECTION.VERTICAL:

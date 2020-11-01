@@ -8,7 +8,7 @@ import { Crop } from '../Crop';
 class AngleFont extends BaseFont {
 
   constructor({
-    text, rect, dw, attr, angeOverFlowHandle = () => rect,
+    text, rect, dw, attr, overflow,
   }) {
     super({
       text, rect, dw, attr,
@@ -16,7 +16,7 @@ class AngleFont extends BaseFont {
     this.attr = PlainUtils.mergeDeep({
       lineHeight: 4,
     }, this.attr);
-    this.angeOverFlowHandle = angeOverFlowHandle;
+    this.overflow = overflow;
   }
 
   drawLine(type, tx, ty, textWidth) {
@@ -72,7 +72,7 @@ class AngleFont extends BaseFont {
   }
 
   overflowFont() {
-    const { text, dw, attr, rect, angeOverFlowHandle } = this;
+    const { text, dw, attr, rect, overflow } = this;
     const { x, y, width, height } = rect;
     const { underline, strikethrough, align, verticalAlign, size } = attr;
     // 填充宽度
@@ -126,17 +126,7 @@ class AngleFont extends BaseFont {
         rty += height - trigonometricHeight - verticalAlignPadding;
         break;
     }
-    // 文本宽度
-    let textHaveWidth = trigonometricWidth + alignPadding;
-    if (limitHeight > 0) {
-      const tilt = RTSinKit.tilt({
-        inverse: height,
-        angle,
-      });
-      textHaveWidth = Math.max(RTCosKit.nearby({ tilt, angle }), width);
-    }
     // 边界检查
-    const overflow = angeOverFlowHandle(textHaveWidth);
     const outboundsHeight = trigonometricHeight + verticalAlignPadding > overflow.height;
     const outboundsWidth = trigonometricWidth + alignPadding > overflow.width;
     if (outboundsHeight || outboundsWidth) {
@@ -190,7 +180,18 @@ class AngleFont extends BaseFont {
       }
       dwAngle.revert();
     }
-    return textHaveWidth;
+    // 文本宽度
+    let textHaveWidth = trigonometricWidth;
+    if (limitHeight > 0) {
+      const tilt = RTSinKit.tilt({
+        inverse: height,
+        angle,
+      });
+      textHaveWidth = RTCosKit.nearby({
+        tilt, angle,
+      });
+    }
+    return textHaveWidth + alignPadding;
   }
 
   wrapTextFont() {

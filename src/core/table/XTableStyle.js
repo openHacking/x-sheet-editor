@@ -34,7 +34,6 @@ import { VIEW_MODE, XTableScrollView } from './XTableScrollView';
 import { XFixedMeasure } from './tablebase/XFixedMeasure';
 import { FixedCellIcon } from './cellicon/FixedCellIcon';
 import { StaticCellIcon } from './cellicon/StaticCellIcon';
-import { CellFont } from './tablecell/CellFont';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -943,8 +942,6 @@ class XTableContentUI extends XTableContentBaseUI {
               builder.setAttr(fontAttr);
               builder.setRect(rect);
               builder.setOverFlow(overflow);
-              builder.setRow(row);
-              builder.setCol(col);
               const font = builder.build();
               cell.setContentWidth(font.draw());
             }
@@ -992,8 +989,6 @@ class XTableContentUI extends XTableContentBaseUI {
               builder.setAttr(fontAttr);
               builder.setRect(rect);
               builder.setOverFlow(overflow);
-              builder.setRow(row);
-              builder.setCol(col);
               const font = builder.build();
               cell.setContentWidth(font.draw());
             }
@@ -1027,8 +1022,6 @@ class XTableContentUI extends XTableContentBaseUI {
         builder.setAttr(fontAttr);
         builder.setRect(rect);
         builder.setOverFlow(overflow);
-        builder.setRow(row);
-        builder.setCol(col);
         const font = builder.build();
         cell.setContentWidth(font.draw());
       },
@@ -1045,7 +1038,6 @@ class XTableContentUI extends XTableContentBaseUI {
         builder.setAttr(fontAttr);
         builder.setRect(rect);
         builder.setOverFlow(merge);
-        builder.setMerge(merge);
         const font = builder.build();
         cell.setContentWidth(font.draw());
       },
@@ -2449,7 +2441,6 @@ class XTableStyle extends Widget {
       scaleAdapter: new ScaleAdapter({
         goto: v => this.scale.goto(v),
       }),
-      cols: this.cols,
     });
     // 单元格网格处理
     this.cellHorizontalGrid = new TableHorizontalGrid({
