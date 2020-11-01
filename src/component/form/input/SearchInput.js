@@ -19,13 +19,17 @@ class SearchInput extends Widget {
   }
 
   unbind() {
-    const { searchEle } = this;
+    const { searchEle, inputEle } = this;
     XEvent.unbind(searchEle);
+    XEvent.unbind(inputEle);
   }
 
   bind() {
     const { searchEle, inputEle } = this;
     XEvent.bind(searchEle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      this.setValue(inputEle.val());
+    });
+    XEvent.bind(inputEle, Constant.SYSTEM_EVENT_TYPE.INPUT, () => {
       this.setValue(inputEle.val());
     });
   }
