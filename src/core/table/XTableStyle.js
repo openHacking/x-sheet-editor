@@ -738,16 +738,16 @@ class XTableUI {
 
 }
 
-class XTableContentBaseUI extends XTableUI {
+class XTableContentUI extends XTableUI {
 
   /**
-   * 加载绘制小图标
+   * 加载绘制固定小图标
    * @param rect
    * @param ri
    * @param ci
    * @param view
    */
-  drawFixedCellXIcon(rect, ri, ci, view) {
+  drawFixedXIcon(rect, ri, ci, view) {
     const { table } = this;
     const { draw, fixedCellIcon } = table;
     const icons = fixedCellIcon.getIcon(ri, ci);
@@ -777,7 +777,43 @@ class XTableContentBaseUI extends XTableUI {
   }
 
   /**
-   * 加载绘制小图标
+   * 加载绘制静态小图标
+   * @param rect
+   * @param ri
+   * @param ci
+   * @param view
+   */
+  drawStaticXIcon(rect, ri, ci, view) {
+    const { table } = this;
+    const { draw, staticCellIcon } = table;
+    const icons = staticCellIcon.getIcon(ri, ci);
+    if (icons) {
+      const x = this.getX();
+      const y = this.getY();
+      rect.x += x;
+      rect.y += y;
+      for (let i = 0; i < icons.length; i += 1) {
+        const icon = icons[i];
+        icon.loadImage({
+          load: () => {
+            if (view.equals(this.getFullScrollView())) {
+              icon.drawIcon({
+                rect, draw,
+              });
+            }
+          },
+          sync: () => {
+            icon.drawIcon({
+              rect, draw,
+            });
+          },
+        });
+      }
+    }
+  }
+
+  /**
+   * 加载绘制单元格小图标
    * @param rect
    * @param cell
    * @param view
@@ -810,86 +846,37 @@ class XTableContentBaseUI extends XTableUI {
   }
 
   /**
-   * 加载绘制小图标
-   * @param rect
-   * @param ri
-   * @param ci
-   * @param view
+   * 绘制单元格图标
    */
-  drawStaticCellXIcon(rect, ri, ci, view) {
+  drawXIcon() {
     const { table } = this;
-    const { draw, staticCellIcon } = table;
-    const icons = staticCellIcon.getIcon(ri, ci);
-    if (icons) {
-      const x = this.getX();
-      const y = this.getY();
-      rect.x += x;
-      rect.y += y;
-      for (let i = 0; i < icons.length; i += 1) {
-        const icon = icons[i];
-        icon.loadImage({
-          load: () => {
-            if (view.equals(this.getFullScrollView())) {
-              icon.drawIcon({
-                rect, draw,
-              });
-            }
-          },
-          sync: () => {
-            icon.drawIcon({
-              rect, draw,
-            });
-          },
-        });
-      }
-    }
+    const { styleCellsHelper, merges } = table;
+    const scrollView = this.getFullScrollView();
+    styleCellsHelper.getMergeCellByViewRange({
+      rectRange: scrollView,
+      callback: (rect, cell, merge) => {
+        const { sri, sci } = merge;
+        const staticRect = rect.clone();
+        const cellRect = rect.clone();
+        this.drawStaticXIcon(staticRect, sri, sci, scrollView);
+        this.drawCellXIcon(cellRect, cell, scrollView);
+      },
+    });
+    styleCellsHelper.getCellByViewRange({
+      rectRange: scrollView,
+      callback: (ri, ci, cell, rect) => {
+        const fixedRect = rect.clone();
+        this.drawFixedXIcon(fixedRect, ri, ci, scrollView);
+        if (merges.getFirstIncludes(ri, ci)) {
+          return;
+        }
+        const staticRect = rect.clone();
+        const cellRect = rect.clone();
+        this.drawStaticXIcon(staticRect, ri, ci, scrollView);
+        this.drawCellXIcon(cellRect, cell, scrollView);
+      },
+    });
   }
-
-}
-
-class XTableIndexUI extends XTableUI {
-
-  /**
-   * 绘制文字
-   */
-  drawFont() {
-    throw new TypeError('drawFont child impl');
-  }
-
-  /**
-   * 绘制背景颜色
-   */
-  drawColor() {
-    throw new TypeError('drawColor child impl');
-  }
-
-  /**
-   * 绘制网格
-   */
-  drawGrid() {
-    throw new TypeError('drawGrid child impl');
-  }
-
-  /**
-   * 渲染界面
-   */
-  render() {
-    const { table } = this;
-    const renderMode = table.getRenderMode();
-    const viewMode = this.getViewMode();
-    if (viewMode === VIEW_MODE.STATIC && renderMode === RENDER_MODE.SCROLL) {
-      return;
-    }
-    this.drawMap();
-    this.drawClear();
-    this.drawColor();
-    this.drawGrid();
-    this.drawFont();
-  }
-
-}
-
-class XTableContentUI extends XTableContentBaseUI {
 
   /**
    * 绘制越界文本
@@ -1251,39 +1238,6 @@ class XTableContentUI extends XTableContentBaseUI {
   }
 
   /**
-   * 绘制单元格图标
-   */
-  drawXIcon() {
-    const { table } = this;
-    const { styleCellsHelper, merges } = table;
-    const scrollView = this.getFullScrollView();
-    styleCellsHelper.getMergeCellByViewRange({
-      rectRange: scrollView,
-      callback: (rect, cell, merge) => {
-        const { sri, sci } = merge;
-        const staticRect = rect.clone();
-        const cellRect = rect.clone();
-        this.drawStaticCellXIcon(staticRect, sri, sci, scrollView);
-        this.drawCellXIcon(cellRect, cell, scrollView);
-      },
-    });
-    styleCellsHelper.getCellByViewRange({
-      rectRange: scrollView,
-      callback: (ri, ci, cell, rect) => {
-        const fixedRect = rect.clone();
-        this.drawFixedCellXIcon(fixedRect, ri, ci, scrollView);
-        if (merges.getFirstIncludes(ri, ci)) {
-          return;
-        }
-        const staticRect = rect.clone();
-        const cellRect = rect.clone();
-        this.drawStaticCellXIcon(staticRect, ri, ci, scrollView);
-        this.drawCellXIcon(cellRect, cell, scrollView);
-      },
-    });
-  }
-
-  /**
    * 渲染界面
    */
   render() {
@@ -1323,6 +1277,48 @@ class XTableContentUI extends XTableContentBaseUI {
     // 绘制小图标
     this.drawXIcon();
     crop.close();
+  }
+
+}
+
+class XTableIndexUI extends XTableUI {
+
+  /**
+   * 绘制文字
+   */
+  drawFont() {
+    throw new TypeError('drawFont child impl');
+  }
+
+  /**
+   * 绘制背景颜色
+   */
+  drawColor() {
+    throw new TypeError('drawColor child impl');
+  }
+
+  /**
+   * 绘制网格
+   */
+  drawGrid() {
+    throw new TypeError('drawGrid child impl');
+  }
+
+  /**
+   * 渲染界面
+   */
+  render() {
+    const { table } = this;
+    const renderMode = table.getRenderMode();
+    const viewMode = this.getViewMode();
+    if (viewMode === VIEW_MODE.STATIC && renderMode === RENDER_MODE.SCROLL) {
+      return;
+    }
+    this.drawMap();
+    this.drawClear();
+    this.drawColor();
+    this.drawGrid();
+    this.drawFont();
   }
 
 }
