@@ -660,8 +660,13 @@ class TopMenu extends Widget {
               rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
-                cell.fontAttr.angle = angle;
-                cell.fontAttr.direction = BaseFont.TEXT_DIRECTION.ANGLE;
+                if (angle === 0) {
+                  cell.fontAttr.angle = angle;
+                  cell.fontAttr.direction = BaseFont.TEXT_DIRECTION.HORIZONTAL;
+                } else {
+                  cell.fontAttr.angle = angle;
+                  cell.fontAttr.direction = BaseFont.TEXT_DIRECTION.ANGLE;
+                }
                 cellDataProxy.setCell(r, c, cell);
               },
             });
