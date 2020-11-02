@@ -25,6 +25,11 @@ class BaseFont {
     throw new TypeError('child impl');
   }
 
+  /**
+   * 文字宽度测量(性能杀手,考虑缓存优化)
+   * @param text
+   * @returns {number}
+   */
   textWidth(text) {
     return this.dw.measureText(text).width;
   }
