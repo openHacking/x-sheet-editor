@@ -18,6 +18,7 @@ import { Tab } from './Tab';
 import { Sheet } from './Sheet';
 import Download from '../../lib/donwload/Download';
 import { Throttle } from '../../lib/Throttle';
+import { XDraw } from '../../canvas/XDraw';
 
 class WorkBody extends Widget {
 
@@ -185,6 +186,7 @@ class WorkBody extends Widget {
     });
     XEvent.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
       throttle.action(() => {
+        XDraw.dprUpdate();
         const table = this.getActiveTable();
         if (table) {
           table.reset();

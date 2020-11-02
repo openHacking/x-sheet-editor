@@ -1,6 +1,6 @@
 const Constant = {};
-const XSheetVersion = 'X-Sheet 1.0.0-develop';
 const cssPrefix = 'x-sheet';
+const XSheetVersion = `${cssPrefix} 1.0.0-develop`;
 Constant.WORK_BODY_EVENT_TYPE = {
   CHANGE_ACTIVE: 'changeactive',
 };

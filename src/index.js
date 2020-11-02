@@ -42,7 +42,6 @@ XSheet.XDraw = XDraw;
 XSheet.XIcon = XIcon;
 XSheet.RectRange = RectRange;
 XSheet.BaseFont = BaseFont;
-
 if (window) {
   window.XSheet = XSheet;
 }

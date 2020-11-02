@@ -1,12 +1,24 @@
 /* global window */
 
-const DPR = window.devicePixelRatio || 1;
-const LINE_WIDTH_LOW = Math.round(DPR);
-const LINE_WIDTH_MEDIUM = LINE_WIDTH_LOW + 2;
-const LINE_WIDTH_HIGH = LINE_WIDTH_MEDIUM + 2;
-const LINE_PIXEL_OFFSET = LINE_WIDTH_LOW / 2;
+let DPR = window.devicePixelRatio || 1;
+let LINE_WIDTH_LOW = Math.round(DPR);
+let LINE_WIDTH_MEDIUM = LINE_WIDTH_LOW + 2;
+let LINE_WIDTH_HIGH = LINE_WIDTH_MEDIUM + 2;
+let LINE_PIXEL_OFFSET = LINE_WIDTH_LOW / 2;
 
 class Base {
+
+  static styleTransformCssPx(px) {
+    return px / this.dpr();
+  }
+
+  static srcTransformCssPx(px) {
+    return this.styleTransformCssPx(this.srcTransformStylePx(px));
+  }
+
+  static srcTransformStylePx(px) {
+    return this.rounding(px * this.dpr());
+  }
 
   static rounding(val) {
     return Math.round(val);
@@ -20,16 +32,12 @@ class Base {
     return DPR;
   }
 
-  static styleTransformCssPx(px) {
-    return px / this.dpr();
-  }
-
-  static srcTransformCssPx(px) {
-    return this.styleTransformCssPx(this.srcTransformStylePx(px));
-  }
-
-  static srcTransformStylePx(px) {
-    return this.rounding(px * this.dpr());
+  static dprUpdate() {
+    DPR = window.devicePixelRatio || 1;
+    LINE_WIDTH_LOW = Math.round(DPR);
+    LINE_WIDTH_MEDIUM = LINE_WIDTH_LOW + 2;
+    LINE_WIDTH_HIGH = LINE_WIDTH_MEDIUM + 2;
+    LINE_PIXEL_OFFSET = LINE_WIDTH_LOW / 2;
   }
 
   constructor(canvas) {
