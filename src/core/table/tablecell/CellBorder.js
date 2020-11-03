@@ -26,6 +26,11 @@ class CellBorder {
     this.bottom = new Border(bottom);
   }
 
+  isDisplay() {
+    return this.left.display || this.top.display
+      || this.bottom.display || this.right.display;
+  }
+
   // ======================显示/隐藏=======================
 
   setAllDisplay(display) {

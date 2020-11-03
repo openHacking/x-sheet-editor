@@ -236,9 +236,9 @@ class XAutoFillItem extends XScreenCssBorderItem {
           autoFillRange = new RectRange(nextRow, sci, ri, eci);
         }
       }
-    } else if (ci < sci || ci > eci) {
+    } else if (originSCi < sci || ci > eci) {
       // 左右
-      if (ci < sci) {
+      if (originSCi < sci) {
         moveDirection = Serialize.SERIALIZE_DIRECTION.LEFT;
         if (hasFull) {
           let minCi = sci;
@@ -271,7 +271,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
           autoFillRange = new RectRange(sri, ci, eri, nextCol);
         }
       }
-      if (ci > eci) {
+      if (originSCi > eci) {
         moveDirection = Serialize.SERIALIZE_DIRECTION.RIGHT;
         if (hasFull) {
           let maxCi = eci;

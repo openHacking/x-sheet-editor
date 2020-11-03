@@ -1,6 +1,7 @@
 import { ScaleAdapter } from './Scale';
 import { XDraw } from '../../../canvas/XDraw';
-import { XFont } from '../../../canvas/font/XFont';
+import { XFontBuilder } from '../../../canvas/font/XFontBuilder';
+import { BaseFont } from '../../../canvas/font/BaseFont';
 
 class TextBuilder {
 
@@ -13,6 +14,15 @@ class TextBuilder {
     this.attr = null;
     this.dw = null;
     this.overflow = null;
+    this.border = null;
+  }
+
+  borderDisplay() {
+    const { border } = this;
+    if (border) {
+      return border.isDisplay();
+    }
+    return false;
   }
 
   setText(text) {
@@ -35,16 +45,25 @@ class TextBuilder {
     this.overflow = overflow;
   }
 
+  setBorder(border) {
+    this.border = border;
+  }
+
   build() {
     const { text, rect, attr, overflow, dw, scaleAdapter } = this;
-    const xFont = new XFont({
-      text, dw, overflow, rect, attr,
-    });
     const size = XDraw.srcTransformStylePx(scaleAdapter.goto(attr.size));
     const padding = XDraw.srcTransformStylePx(scaleAdapter.goto(attr.padding));
-    xFont.setSize(size);
-    xFont.setPadding(padding);
-    return xFont;
+    const builder = new XFontBuilder({
+      text, dw, overflow, rect, attr,
+    });
+    builder.setSize(size);
+    builder.setPadding(padding);
+    if (attr.direction === BaseFont.TEXT_DIRECTION.ANGLE) {
+      if (this.borderDisplay()) {
+        builder.setDirection(BaseFont.TEXT_DIRECTION.ANGLE_BAR);
+      }
+    }
+    return builder.build();
   }
 
 }

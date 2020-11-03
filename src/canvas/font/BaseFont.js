@@ -46,18 +46,6 @@ class BaseFont {
     return text === null || text === undefined || text.toString().trim() === '';
   }
 
-  setTextWrap(textWrap) {
-    this.attr.textWrap = textWrap;
-  }
-
-  setSize(size) {
-    this.attr.size = size;
-  }
-
-  setPadding(padding) {
-    this.attr.padding = padding;
-  }
-
   getAlignPadding() {
     if (this.attr.align === BaseFont.ALIGN.center) {
       return 0;
@@ -92,6 +80,7 @@ BaseFont.TEXT_DIRECTION = {
   HORIZONTAL: 'horizontal',
   VERTICAL: 'vertical',
   ANGLE: 'angle',
+  ANGLE_BAR: 'anglebar',
 };
 export {
   BaseFont,

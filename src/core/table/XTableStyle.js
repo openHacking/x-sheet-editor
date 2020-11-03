@@ -920,15 +920,14 @@ class XTableContentUI extends XTableUI {
           if (allowAlign && textWrap === BaseFont.TEXT_WRAP.OVER_FLOW) {
             const size = cells.getCellBoundOutSize(row, col);
             if (size === 0 || size > max) {
-              const {
-                format, text, fontAttr,
-              } = cell;
+              const { format, borderAttr } = cell;
               const builder = textFont.getBuilder();
               builder.setDraw(draw);
               builder.setText(XTableFormat(format, text));
               builder.setAttr(fontAttr);
               builder.setRect(rect);
               builder.setOverFlow(overflow);
+              builder.setBorder(borderAttr);
               const font = builder.build();
               cell.setContentWidth(font.draw());
             }
@@ -967,15 +966,14 @@ class XTableContentUI extends XTableUI {
           if (allowAlign && textWrap === BaseFont.TEXT_WRAP.OVER_FLOW) {
             const size = cells.getCellBoundOutSize(row, col);
             if (size === 0 || size > max) {
-              const {
-                format, text, fontAttr,
-              } = cell;
+              const { format, borderAttr } = cell;
               const builder = textFont.getBuilder();
               builder.setDraw(draw);
               builder.setText(XTableFormat(format, text));
               builder.setAttr(fontAttr);
               builder.setRect(rect);
               builder.setOverFlow(overflow);
+              builder.setBorder(borderAttr);
               const font = builder.build();
               cell.setContentWidth(font.draw());
             }
@@ -1002,13 +1000,14 @@ class XTableContentUI extends XTableUI {
     textCellsHelper.getCellSkipMergeCellByViewRange({
       rectRange: scrollView,
       callback: (row, col, cell, rect, overflow) => {
-        const { format, text, fontAttr } = cell;
+        const { format, text, fontAttr, borderAttr } = cell;
         const builder = textFont.getBuilder();
         builder.setDraw(draw);
         builder.setText(XTableFormat(format, text));
         builder.setAttr(fontAttr);
         builder.setRect(rect);
         builder.setOverFlow(overflow);
+        builder.setBorder(borderAttr);
         const font = builder.build();
         cell.setContentWidth(font.draw());
       },
