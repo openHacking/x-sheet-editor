@@ -171,7 +171,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
       if (originSRi < sri) {
         moveDirection = Serialize.SERIALIZE_DIRECTION.TOP;
         if (hasFull) {
-          let minRi = ri;
+          let minRi = sri;
           let number = 0;
           RowsIterator.getInstance()
             .setBegin(sri - 1)
