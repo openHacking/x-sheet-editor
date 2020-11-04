@@ -1,6 +1,9 @@
+import { RTCosKit, RTSinKit } from '../RTFunction';
 import { BaseFont } from './BaseFont';
 import { PlainUtils } from '../../utils/PlainUtils';
-import { RTCosKit, RTSinKit } from '../RTFunction';
+import { Rect } from '../Rect';
+import { Crop } from '../Crop';
+import { Angle } from '../Angle';
 
 class AngleBarFont extends BaseFont {
 
@@ -17,7 +20,51 @@ class AngleBarFont extends BaseFont {
   }
 
   drawLine(type, tx, ty, textWidth) {
+    const { dw, attr } = this;
+    const { size } = attr;
+    const s = [0, 0];
+    const e = [0, 0];
+    if (type === 'strike') {
+      s[0] = tx;
+      e[0] = tx + textWidth;
+      s[1] = ty + size / 2;
+      e[1] = ty + size / 2;
+    }
+    if (type === 'underline') {
+      s[0] = tx;
+      e[0] = tx + textWidth;
+      s[1] = ty + size;
+      e[1] = ty + size;
+    }
+    dw.line(s, e);
+  }
 
+  draw() {
+    const { text } = this;
+    if (this.isBlank(text)) {
+      return 0;
+    }
+    const { dw, attr } = this;
+    const { textWrap } = attr;
+    dw.attr({
+      textAlign: BaseFont.ALIGN.left,
+      textBaseline: BaseFont.VERTICAL_ALIGN.top,
+      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`,
+      fillStyle: attr.color,
+      strokeStyle: attr.color,
+    });
+    if (this.hasBreak(text)) {
+      return this.wrapTextFont();
+    }
+    switch (textWrap) {
+      case BaseFont.TEXT_WRAP.OVER_FLOW:
+        return this.overflowFont();
+      case BaseFont.TEXT_WRAP.TRUNCATE:
+        return this.truncateFont();
+      case BaseFont.TEXT_WRAP.WORD_WRAP:
+        return this.wrapTextFont();
+    }
+    return 0;
   }
 
   truncateFont() {
@@ -25,7 +72,7 @@ class AngleBarFont extends BaseFont {
   }
 
   overflowFont() {
-    const { text, dw, attr, rect, overflow } = this;
+    const { text, dw, attr, rect } = this;
     const { x, y, width, height } = rect;
     const { underline, strikethrough, align, verticalAlign, size } = attr;
     // 填充宽度
@@ -55,15 +102,6 @@ class AngleBarFont extends BaseFont {
       tilt: trigonometricTilt,
       angle,
     });
-    // 斜边一半的大小
-    const trigonometricHalfTiltWidth = RTCosKit.nearby({
-      tilt: trigonometricTilt / 2,
-      angle,
-    });
-    const trigonometricHalfTiltHeight = RTSinKit.inverse({
-      tilt: trigonometricTilt / 2,
-      angle,
-    });
     // 文本长度
     const textWidth = this.textWidth(text);
     // 文本块大小
@@ -75,31 +113,99 @@ class AngleBarFont extends BaseFont {
       tilt: textWidth,
       angle,
     });
-    // 计算文本绘制位置旋转中心
-    let rtx = x;
-    let rty = y;
-    switch (align) {
-      case BaseFont.ALIGN.left:
-        rtx += (trigonometricTiltWidth - trigonometricWidth) + alignPadding;
-        break;
-      case BaseFont.ALIGN.center:
-        rtx += trigonometricHalfTiltWidth - (trigonometricHeight / 2);
-        break;
-      case BaseFont.ALIGN.right:
-        break;
-    }
+    // 可溢出区域
+    const overflow = new Rect({
+      x, y, width: trigonometricTiltWidth, height: trigonometricTiltHeight,
+    });
+    // 计算文本绘制位置
+    let rtx = 0;
+    let rty = 0;
     switch (verticalAlign) {
       case BaseFont.VERTICAL_ALIGN.top:
-        rty += verticalAlignPadding;
+        rtx = x + (trigonometricTiltWidth - trigonometricWidth);
+        rty = y + verticalAlignPadding;
         break;
       case BaseFont.VERTICAL_ALIGN.center:
+        rtx = x + (trigonometricTiltWidth / 2 - trigonometricWidth / 2);
+        rty = y + (trigonometricTiltHeight / 2 - trigonometricHeight / 2);
         break;
       case BaseFont.VERTICAL_ALIGN.bottom:
+        rtx = x;
+        rty = y + (trigonometricTiltHeight - trigonometricHeight - verticalAlignPadding);
         break;
     }
+    switch (align) {
+      case BaseFont.ALIGN.left:
+        rtx += alignPadding;
+        break;
+      case BaseFont.ALIGN.center:
+        rtx += width / 2;
+        break;
+      case BaseFont.ALIGN.right:
+        rtx += width - alignPadding;
+        break;
+    }
+    // 边界检查
+    const outboundsHeight = trigonometricHeight + verticalAlignPadding > overflow.height;
+    const outboundsWidth = trigonometricWidth + alignPadding > overflow.width;
+    if (outboundsHeight || outboundsWidth) {
+      const crop = new Crop({
+        draw: dw,
+        rect: overflow,
+      });
+      const dwAngle = new Angle({
+        dw,
+        angle,
+        rect: new Rect({
+          x: rtx,
+          y: rty,
+          width: trigonometricWidth,
+          height: trigonometricHeight,
+        }),
+      });
+      crop.open();
+      dwAngle.rotate();
+      const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
+      const ty = rty + (trigonometricHeight / 2 - size / 2);
+      dw.fillText(text, tx, ty);
+      if (underline) {
+        this.drawLine('underline', tx, ty, textWidth);
+      }
+      if (strikethrough) {
+        this.drawLine('strike', tx, ty, textWidth);
+      }
+      dwAngle.revert();
+      crop.close();
+    } else {
+      const dwAngle = new Angle({
+        dw,
+        angle,
+        rect: new Rect({
+          x: rtx,
+          y: rty,
+          width: trigonometricWidth,
+          height: trigonometricHeight,
+        }),
+      });
+      dwAngle.rotate();
+      const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
+      const ty = rty + (trigonometricHeight / 2 - size / 2);
+      dw.fillText(text, tx, ty);
+      if (underline) {
+        this.drawLine('underline', tx, ty, textWidth);
+      }
+      if (strikethrough) {
+        this.drawLine('strike', tx, ty, textWidth);
+      }
+      dwAngle.revert();
+    }
+    // 文本宽度
+    return trigonometricTiltWidth;
   }
 
-  wrapTextFont() {}
+  wrapTextFont() {
+
+  }
 
 }
 
