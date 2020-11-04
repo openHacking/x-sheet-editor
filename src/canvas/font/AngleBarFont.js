@@ -75,9 +75,6 @@ class AngleBarFont extends BaseFont {
     const { text, dw, attr, rect } = this;
     const { x, y, width, height } = rect;
     const { underline, strikethrough, align, verticalAlign, size } = attr;
-    // 填充宽度
-    const verticalAlignPadding = this.getVerticalAlignPadding();
-    const alignPadding = this.getAlignPadding();
     // 角度边界
     let { angle } = attr;
     if (angle < -90) {
@@ -98,10 +95,6 @@ class AngleBarFont extends BaseFont {
       tilt: trigonometricTilt,
       angle,
     });
-    const trigonometricTiltHeight = RTSinKit.inverse({
-      tilt: trigonometricTilt,
-      angle,
-    });
     // 文本长度
     const textWidth = this.textWidth(text);
     // 文本块大小
@@ -115,7 +108,7 @@ class AngleBarFont extends BaseFont {
     });
     // 可溢出区域
     const overflow = new Rect({
-      x, y, width: trigonometricTiltWidth, height: trigonometricTiltHeight,
+      x, y, width: trigonometricTiltWidth + width, height,
     });
     // 计算文本绘制位置
     let rtx = 0;
@@ -123,31 +116,31 @@ class AngleBarFont extends BaseFont {
     switch (verticalAlign) {
       case BaseFont.VERTICAL_ALIGN.top:
         rtx = x + (trigonometricTiltWidth - trigonometricWidth);
-        rty = y + verticalAlignPadding;
+        rty = y;
         break;
       case BaseFont.VERTICAL_ALIGN.center:
         rtx = x + (trigonometricTiltWidth / 2 - trigonometricWidth / 2);
-        rty = y + (trigonometricTiltHeight / 2 - trigonometricHeight / 2);
+        rty = y + (height / 2 - trigonometricHeight / 2);
         break;
       case BaseFont.VERTICAL_ALIGN.bottom:
         rtx = x;
-        rty = y + (trigonometricTiltHeight - trigonometricHeight - verticalAlignPadding);
+        rty = y + (height - trigonometricHeight);
         break;
     }
     switch (align) {
       case BaseFont.ALIGN.left:
-        rtx += alignPadding;
+        rtx += size / 2;
         break;
       case BaseFont.ALIGN.center:
         rtx += width / 2;
         break;
       case BaseFont.ALIGN.right:
-        rtx += width - alignPadding;
+        rtx += width - size / 2;
         break;
     }
     // 边界检查
-    const outboundsHeight = trigonometricHeight + verticalAlignPadding > overflow.height;
-    const outboundsWidth = trigonometricWidth + alignPadding > overflow.width;
+    const outboundsHeight = trigonometricHeight > overflow.height;
+    const outboundsWidth = trigonometricWidth > overflow.width;
     if (outboundsHeight || outboundsWidth) {
       const crop = new Crop({
         draw: dw,
