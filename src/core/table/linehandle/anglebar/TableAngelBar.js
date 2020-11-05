@@ -1,0 +1,7 @@
+class TableAngelBar {
+
+}
+
+export {
+  TableAngelBar,
+};

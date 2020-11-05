@@ -9,6 +9,7 @@ class TableVerticalBorder extends TableBorder {
     const {
       verticalMergeFilter,
       rightBorderDiffFilter,
+      rightVerticalAngleBarFilter,
       rightOutRangeFilter,
     } = this;
     return this.computerRightVerticalLine({
@@ -16,6 +17,7 @@ class TableVerticalBorder extends TableBorder {
       filter: new FilterChain(ChainLogic.AND, [
         verticalMergeFilter,
         rightBorderDiffFilter,
+        rightVerticalAngleBarFilter,
         rightOutRangeFilter,
       ]),
     });
@@ -27,12 +29,14 @@ class TableVerticalBorder extends TableBorder {
     const {
       verticalMergeFilter,
       leftBorderDiffFilter,
+      leftVerticalAngleBarFilter,
       leftOutRangeFilter,
     } = this;
     return this.computerLeftVerticalLine({
       viewRange,
       filter: new FilterChain(ChainLogic.AND, [
         verticalMergeFilter,
+        leftVerticalAngleBarFilter,
         leftBorderDiffFilter,
         leftOutRangeFilter,
       ]),

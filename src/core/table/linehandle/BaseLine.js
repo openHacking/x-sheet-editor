@@ -6,6 +6,10 @@ import { LineFilter } from './filter/LineFilter';
 import { PlainUtils } from '../../../utils/PlainUtils';
 import { ColsIterator } from '../iterator/ColsIterator';
 import { RowsIterator } from '../iterator/RowsIterator';
+import { RightVerticalAngleBarFilter } from './filter/anglebar/RightVerticalAngleBarFilter';
+import { LeftVerticalAngleBarFilter } from './filter/anglebar/LeftVerticalAngleBarFilter';
+import { TopHorizontalAngleBarFilter } from './filter/anglebar/TopHorizontalAngleBarFilter';
+import { BottomHorizontalAngleBarFilter } from './filter/anglebar/BottomHorizontalAngleBarFilter';
 
 class BaseLine {
 
@@ -21,8 +25,24 @@ class BaseLine {
     this.rows = rows;
     this.cols = cols;
     this.foldOnOff = foldOnOff;
-    this.rightOutRangeFilter = new RightOutRangeFilter({ cells, cols, merges });
-    this.leftOutRangeFilter = new LeftOutRangeFilter({ cells, cols, merges });
+    this.rightOutRangeFilter = new RightOutRangeFilter({
+      cells, cols, merges,
+    });
+    this.leftOutRangeFilter = new LeftOutRangeFilter({
+      cells, cols, merges,
+    });
+    this.rightVerticalAngleBarFilter = new RightVerticalAngleBarFilter({
+      cells, cols, merges,
+    });
+    this.leftVerticalAngleBarFilter = new LeftVerticalAngleBarFilter({
+      cells, cols, merges,
+    });
+    this.topHorizontalAngleBarFilter = new TopHorizontalAngleBarFilter({
+      cells, cols, merges,
+    });
+    this.bottomHorizontalAngleBarFilter = new BottomHorizontalAngleBarFilter({
+      cells, cols, merges,
+    });
   }
 
   getMergeCoincideRange({

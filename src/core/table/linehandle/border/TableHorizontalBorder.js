@@ -9,11 +9,13 @@ class TableHorizontalBorder extends TableBorder {
     const {
       horizontalMergeFilter,
       bottomBorderDiffFilter,
+      bottomHorizontalAngleBarFilter,
     } = this;
     return this.computerBottomHorizontalLine({
       viewRange,
       filter: new FilterChain(ChainLogic.AND, [
         horizontalMergeFilter,
+        bottomHorizontalAngleBarFilter,
         bottomBorderDiffFilter,
       ]),
     });
@@ -25,11 +27,13 @@ class TableHorizontalBorder extends TableBorder {
     const {
       horizontalMergeFilter,
       topBorderDiffFilter,
+      topHorizontalAngleBarFilter,
     } = this;
     return this.computerTopHorizontalLine({
       viewRange,
       filter: new FilterChain(ChainLogic.AND, [
         horizontalMergeFilter,
+        topHorizontalAngleBarFilter,
         topBorderDiffFilter,
       ]),
     });

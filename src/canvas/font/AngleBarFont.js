@@ -107,91 +107,180 @@ class AngleBarFont extends BaseFont {
       tilt: textWidth,
       angle,
     });
-    // 可溢出区域
-    const overflow = new Rect({
-      x, y, width: trigonometricTiltWidth + width, height,
-    });
-    // 计算文本绘制位置
-    let rtx = 0;
-    let rty = 0;
-    switch (verticalAlign) {
-      case BaseFont.VERTICAL_ALIGN.top:
-        rtx = x + (trigonometricTiltWidth - trigonometricWidth) - padding;
-        rty = y + padding;
-        break;
-      case BaseFont.VERTICAL_ALIGN.center:
-        rtx = x + (trigonometricTiltWidth / 2 - trigonometricWidth / 2);
-        rty = y + (height / 2 - trigonometricHeight / 2);
-        break;
-      case BaseFont.VERTICAL_ALIGN.bottom:
-        rtx = x + padding;
-        rty = y + (height - trigonometricHeight) - padding;
-        break;
-    }
-    switch (align) {
-      case BaseFont.ALIGN.left:
-        rtx += size / 2 + padding;
-        break;
-      case BaseFont.ALIGN.center:
-        rtx += width / 2;
-        break;
-      case BaseFont.ALIGN.right:
-        rtx += width - size / 2 - padding;
-        break;
-    }
-    // 边界检查
-    const outboundsHeight = trigonometricHeight > overflow.height;
-    const outboundsWidth = trigonometricWidth > overflow.width;
-    if (outboundsHeight || outboundsWidth) {
-      const crop = new Crop({
-        draw: dw,
-        rect: overflow,
+    if (angle > 0) {
+      // 可溢出区域
+      const overflow = new Rect({
+        x, y, width: trigonometricTiltWidth + width, height,
       });
-      const dwAngle = new Angle({
-        dw,
-        angle,
-        rect: new Rect({
-          x: rtx,
-          y: rty,
-          width: trigonometricWidth,
-          height: trigonometricHeight,
-        }),
-      });
-      crop.open();
-      dwAngle.rotate();
-      const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
-      const ty = rty + (trigonometricHeight / 2 - size / 2);
-      dw.fillText(text, tx, ty);
-      if (underline) {
-        this.drawLine('underline', tx, ty, textWidth);
+      // 计算文本绘制位置
+      let rtx = 0;
+      let rty = 0;
+      switch (verticalAlign) {
+        case BaseFont.VERTICAL_ALIGN.top:
+          rtx = x + (trigonometricTiltWidth - trigonometricWidth) - padding;
+          rty = y + padding;
+          break;
+        case BaseFont.VERTICAL_ALIGN.center:
+          rtx = x + (trigonometricTiltWidth / 2 - trigonometricWidth / 2);
+          rty = y + (height / 2 - trigonometricHeight / 2);
+          break;
+        case BaseFont.VERTICAL_ALIGN.bottom:
+          rtx = x + padding;
+          rty = y + (height - trigonometricHeight) - padding;
+          break;
       }
-      if (strikethrough) {
-        this.drawLine('strike', tx, ty, textWidth);
+      switch (align) {
+        case BaseFont.ALIGN.left:
+          rtx += size / 2 + padding;
+          break;
+        case BaseFont.ALIGN.center:
+          rtx += width / 2;
+          break;
+        case BaseFont.ALIGN.right:
+          rtx += width - size / 2 - padding;
+          break;
       }
-      dwAngle.revert();
-      crop.close();
+      // 边界检查
+      const outboundsHeight = trigonometricHeight > overflow.height;
+      const outboundsWidth = trigonometricWidth > overflow.width;
+      if (outboundsHeight || outboundsWidth) {
+        const crop = new Crop({
+          draw: dw,
+          rect: overflow,
+        });
+        const dwAngle = new Angle({
+          dw,
+          angle,
+          rect: new Rect({
+            x: rtx,
+            y: rty,
+            width: trigonometricWidth,
+            height: trigonometricHeight,
+          }),
+        });
+        crop.open();
+        dwAngle.rotate();
+        const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
+        const ty = rty + (trigonometricHeight / 2 - size / 2);
+        dw.fillText(text, tx, ty);
+        if (underline) {
+          this.drawLine('underline', tx, ty, textWidth);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', tx, ty, textWidth);
+        }
+        dwAngle.revert();
+        crop.close();
+      } else {
+        const dwAngle = new Angle({
+          dw,
+          angle,
+          rect: new Rect({
+            x: rtx,
+            y: rty,
+            width: trigonometricWidth,
+            height: trigonometricHeight,
+          }),
+        });
+        dwAngle.rotate();
+        const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
+        const ty = rty + (trigonometricHeight / 2 - size / 2);
+        dw.fillText(text, tx, ty);
+        if (underline) {
+          this.drawLine('underline', tx, ty, textWidth);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', tx, ty, textWidth);
+        }
+        dwAngle.revert();
+      }
     } else {
-      const dwAngle = new Angle({
-        dw,
-        angle,
-        rect: new Rect({
-          x: rtx,
-          y: rty,
-          width: trigonometricWidth,
-          height: trigonometricHeight,
-        }),
+      // 可溢出区域
+      const overflow = new Rect({
+        x: x - trigonometricTiltWidth, y, width: trigonometricTiltWidth + width, height,
       });
-      dwAngle.rotate();
-      const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
-      const ty = rty + (trigonometricHeight / 2 - size / 2);
-      dw.fillText(text, tx, ty);
-      if (underline) {
-        this.drawLine('underline', tx, ty, textWidth);
+      // 计算文本绘制位置
+      let rtx = 0;
+      let rty = 0;
+      switch (verticalAlign) {
+        case BaseFont.VERTICAL_ALIGN.top:
+          rtx = x - trigonometricTiltWidth + padding;
+          rty = y + padding;
+          break;
+        case BaseFont.VERTICAL_ALIGN.center:
+          rtx = x - (trigonometricTiltWidth / 2 + trigonometricWidth / 2);
+          rty = y + (height / 2 - trigonometricHeight / 2);
+          break;
+        case BaseFont.VERTICAL_ALIGN.bottom:
+          rtx = x - trigonometricWidth - padding;
+          rty = y + (height - trigonometricHeight) - padding;
+          break;
       }
-      if (strikethrough) {
-        this.drawLine('strike', tx, ty, textWidth);
+      switch (align) {
+        case BaseFont.ALIGN.left:
+          rtx += size / 2 + padding;
+          break;
+        case BaseFont.ALIGN.center:
+          rtx += width / 2;
+          break;
+        case BaseFont.ALIGN.right:
+          rtx += width - size / 2 - padding;
+          break;
       }
-      dwAngle.revert();
+      // 边界检查
+      const outboundsHeight = trigonometricHeight > overflow.height;
+      const outboundsWidth = trigonometricWidth > overflow.width;
+      if (outboundsHeight || outboundsWidth) {
+        const crop = new Crop({
+          draw: dw,
+          rect: overflow,
+        });
+        const dwAngle = new Angle({
+          dw,
+          angle,
+          rect: new Rect({
+            x: rtx,
+            y: rty,
+            width: trigonometricWidth,
+            height: trigonometricHeight,
+          }),
+        });
+        crop.open();
+        dwAngle.rotate();
+        const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
+        const ty = rty + (trigonometricHeight / 2 - size / 2);
+        dw.fillText(text, tx, ty);
+        if (underline) {
+          this.drawLine('underline', tx, ty, textWidth);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', tx, ty, textWidth);
+        }
+        dwAngle.revert();
+        crop.close();
+      } else {
+        const dwAngle = new Angle({
+          dw,
+          angle,
+          rect: new Rect({
+            x: rtx,
+            y: rty,
+            width: trigonometricWidth,
+            height: trigonometricHeight,
+          }),
+        });
+        dwAngle.rotate();
+        const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
+        const ty = rty + (trigonometricHeight / 2 - size / 2);
+        dw.fillText(text, tx, ty);
+        if (underline) {
+          this.drawLine('underline', tx, ty, textWidth);
+        }
+        if (strikethrough) {
+          this.drawLine('strike', tx, ty, textWidth);
+        }
+        dwAngle.revert();
+      }
     }
     // 文本宽度
     return trigonometricTiltWidth;
@@ -414,7 +503,8 @@ class AngleBarFont extends BaseFont {
           dwAngle.revert();
           jj += 1;
         }
-        return 0;
+        // 文本宽度
+        return trigonometricTiltWidth;
       }
       // 文本长度
       const textWidth = this.textWidth(text);
@@ -476,7 +566,8 @@ class AngleBarFont extends BaseFont {
         this.drawLine('strike', tx, ty, textWidth);
       }
       dwAngle.revert();
-      return 0;
+      // 文本宽度
+      return trigonometricTiltWidth;
     }
     const textHypotenuseWidth = RTSinKit.tilt({
       inverse: height - (padding * 2),
@@ -578,15 +669,15 @@ class AngleBarFont extends BaseFont {
       let by = rect.y;
       switch (verticalAlign) {
         case BaseFont.VERTICAL_ALIGN.top:
-          bx = x + (trigonometricTiltWidth - textWidth) - padding;
+          bx = x - trigonometricTiltWidth + padding;
           by = y + padding;
           break;
         case BaseFont.VERTICAL_ALIGN.center:
-          bx = x + (trigonometricTiltWidth / 2 - textWidth / 2);
+          bx = x - (trigonometricTiltWidth / 2 + textWidth / 2);
           by = y + (height / 2 - textHeight / 2);
           break;
         case BaseFont.VERTICAL_ALIGN.bottom:
-          bx = x + padding;
+          bx = x - textWidth - padding;
           by = y + (height - textHeight) - padding;
           break;
       }
@@ -669,7 +760,8 @@ class AngleBarFont extends BaseFont {
         dwAngle.revert();
         jj += 1;
       }
-      return 0;
+      // 文本宽度
+      return trigonometricTiltWidth;
     }
     // 文本长度
     const textWidth = this.textWidth(text);
@@ -687,15 +779,15 @@ class AngleBarFont extends BaseFont {
     let rty = 0;
     switch (verticalAlign) {
       case BaseFont.VERTICAL_ALIGN.top:
-        rtx = x + (trigonometricTiltWidth - trigonometricWidth) - padding;
+        rtx = x - trigonometricTiltWidth + padding;
         rty = y + padding;
         break;
       case BaseFont.VERTICAL_ALIGN.center:
-        rtx = x + (trigonometricTiltWidth / 2 - trigonometricWidth / 2);
+        rtx = x - (trigonometricTiltWidth / 2 + trigonometricWidth / 2);
         rty = y + (height / 2 - trigonometricHeight / 2);
         break;
       case BaseFont.VERTICAL_ALIGN.bottom:
-        rtx = x + padding;
+        rtx = x - trigonometricWidth - padding;
         rty = y + (height - trigonometricHeight) - padding;
         break;
     }
@@ -731,7 +823,8 @@ class AngleBarFont extends BaseFont {
       this.drawLine('strike', tx, ty, textWidth);
     }
     dwAngle.revert();
-    return 0;
+    // 文本宽度
+    return trigonometricTiltWidth;
   }
 
 }
