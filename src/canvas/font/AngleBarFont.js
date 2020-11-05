@@ -74,7 +74,7 @@ class AngleBarFont extends BaseFont {
   overflowFont() {
     const { text, dw, attr, rect } = this;
     const { x, y, width, height } = rect;
-    const { underline, strikethrough, align, verticalAlign, size } = attr;
+    const { underline, strikethrough, align, verticalAlign, size, padding } = attr;
     // 角度边界
     let { angle } = attr;
     if (angle < -90) {
@@ -115,27 +115,27 @@ class AngleBarFont extends BaseFont {
     let rty = 0;
     switch (verticalAlign) {
       case BaseFont.VERTICAL_ALIGN.top:
-        rtx = x + (trigonometricTiltWidth - trigonometricWidth);
-        rty = y;
+        rtx = x + (trigonometricTiltWidth - trigonometricWidth) - padding;
+        rty = y + padding;
         break;
       case BaseFont.VERTICAL_ALIGN.center:
         rtx = x + (trigonometricTiltWidth / 2 - trigonometricWidth / 2);
         rty = y + (height / 2 - trigonometricHeight / 2);
         break;
       case BaseFont.VERTICAL_ALIGN.bottom:
-        rtx = x;
-        rty = y + (height - trigonometricHeight);
+        rtx = x + padding;
+        rty = y + (height - trigonometricHeight) - padding;
         break;
     }
     switch (align) {
       case BaseFont.ALIGN.left:
-        rtx += size / 2;
+        rtx += size / 2 + padding;
         break;
       case BaseFont.ALIGN.center:
         rtx += width / 2;
         break;
       case BaseFont.ALIGN.right:
-        rtx += width - size / 2;
+        rtx += width - size / 2 - padding;
         break;
     }
     // 边界检查
@@ -197,7 +197,296 @@ class AngleBarFont extends BaseFont {
   }
 
   wrapTextFont() {
+    const { text, dw, attr, rect } = this;
+    const { x, y, width, height } = rect;
+    const { underline, strikethrough, align, verticalAlign, size, lineHeight, padding } = attr;
+    // 角度边界
+    let { angle } = attr;
+    if (angle < -90) {
+      angle = -90;
+    }
+    if (angle > 90) {
+      angle = 90;
+    }
+    if (angle === 0) {
+      throw new TypeError('文字的角度必须是在90<0或者0>90之间!');
+    }
+    // 斜边的大小
+    const trigonometricTilt = RTSinKit.tilt({
+      inverse: height,
+      angle,
+    });
+    const trigonometricTiltWidth = RTCosKit.nearby({
+      tilt: trigonometricTilt,
+      angle,
+    });
+    // 绘制文本
+    if (angle > 0) {
+      const textHypotenuseWidth = RTSinKit.tilt({
+        inverse: height - (padding * 2),
+        angle,
+      });
+      // 折行文本计算
+      const breakArray = this.textBreak(text);
+      const textArray = [];
+      const breakLen = breakArray.length;
+      let bi = 0;
+      let maxLen = 0;
+      while (bi < breakLen) {
+        const text = breakArray[bi];
+        const textLen = text.length;
+        const line = {
+          str: '',
+          len: 0,
+          start: 0,
+        };
+        let ii = 0;
+        while (ii < textLen) {
+          const str = line.str + text.charAt(ii);
+          const len = this.textWidth(str);
+          if (len > textHypotenuseWidth) {
+            if (line.len === 0) {
+              textArray.push({
+                text: str,
+                len,
+                tx: 0,
+                ty: 0,
+              });
+              if (len > maxLen) {
+                maxLen = len;
+              }
+              ii += 1;
+            } else {
+              textArray.push({
+                text: line.str,
+                len: line.len,
+                tx: 0,
+                ty: 0,
+              });
+              if (line.len > maxLen) {
+                maxLen = line.len;
+              }
+            }
+            line.str = '';
+            line.len = 0;
+            line.start = ii;
+          } else {
+            line.str = str;
+            line.len = len;
+            ii += 1;
+          }
+        }
+        if (line.len > 0) {
+          textArray.push({
+            text: line.str,
+            len: line.len,
+            tx: 0,
+            ty: 0,
+          });
+        }
+        if (line.len > maxLen) {
+          maxLen = line.len;
+        }
+        bi += 1;
+      }
+      const textArrayLen = textArray.length;
+      // 多行文本
+      if (textArrayLen > 1) {
+        // 文本间隙
+        const spacing = RTSinKit.tilt({
+          inverse: size + lineHeight,
+          angle,
+        });
+        // 文本宽高
+        const textWidth = Math.max(RTCosKit.nearby({
+          tilt: maxLen,
+          angle,
+        }), size);
+        const textHeight = RTSinKit.inverse({
+          tilt: maxLen,
+          angle,
+        });
+        // 总宽度
+        const totalWidth = textWidth + ((textArrayLen - 1) * spacing);
+        // x坐标偏移量
+        let wOffset = 0;
+        let ii = 0;
+        while (ii < textArrayLen) {
+          const item = textArray[ii];
+          item.tx = wOffset;
+          wOffset += spacing;
+          ii += 1;
+        }
+        // 计算文本绘制位置
+        let bx = 0;
+        let by = 0;
+        switch (verticalAlign) {
+          case BaseFont.VERTICAL_ALIGN.top:
+            bx = x + (trigonometricTiltWidth - textWidth) - padding;
+            by = y + padding;
+            break;
+          case BaseFont.VERTICAL_ALIGN.center:
+            bx = x + (trigonometricTiltWidth / 2 - textWidth / 2);
+            by = y + (height / 2 - textHeight / 2);
+            break;
+          case BaseFont.VERTICAL_ALIGN.bottom:
+            bx = x + padding;
+            by = y + (height - textHeight) - padding;
+            break;
+        }
+        switch (align) {
+          case BaseFont.ALIGN.left:
+            bx += size / 2 + padding;
+            break;
+          case BaseFont.ALIGN.center:
+            bx += width / 2 - totalWidth / 2;
+            break;
+          case BaseFont.ALIGN.right:
+            bx += width - totalWidth - padding;
+            break;
+        }
+        // 渲染文本
+        let jj = 0;
+        while (jj < textArrayLen) {
+          // 计算文本的绘制位置旋转中心
+          const item = textArray[jj];
+          const rx = item.tx + bx;
+          const ry = item.ty + by;
+          let ax = 0;
+          let ay = 0;
+          switch (align) {
+            case BaseFont.ALIGN.left: {
+              const tilt = item.len / 2;
+              const tw = Math.max(RTCosKit.nearby({
+                tilt,
+                angle,
+              }), size);
+              const th = RTSinKit.inverse({
+                tilt,
+                angle,
+              });
+              ax += rx + tw;
+              ay += ry + textHeight - th;
+              break;
+            }
+            case BaseFont.ALIGN.center: {
+              ax = rx + textWidth / 2;
+              ay = ry + textHeight / 2;
+              break;
+            }
+            case BaseFont.ALIGN.right: {
+              const tilt = item.len / 2;
+              const tw = Math.max(RTCosKit.nearby({
+                tilt,
+                angle,
+              }), size);
+              const th = RTSinKit.inverse({
+                tilt,
+                angle,
+              });
+              ax += rx + textWidth - tw;
+              ay += ry + th;
+              break;
+            }
+          }
+          const tx = ax - item.len / 2;
+          const ty = ay - size / 2;
+          // 旋转并且绘制文本
+          const dwAngle = new Angle({
+            dw,
+            angle,
+            rect: new Rect({
+              x: tx,
+              y: ty,
+              width: item.len,
+              height: size,
+            }),
+          });
+          dwAngle.rotate();
+          dw.fillText(item.text, tx, ty);
+          if (underline) {
+            this.drawLine('underline', tx, ty, item.len);
+          }
+          if (strikethrough) {
+            this.drawLine('strike', tx, ty, item.len);
+          }
+          dwAngle.revert();
+          jj += 1;
+        }
+      }
+    }
+    const textHypotenuseWidth = RTSinKit.tilt({
+      inverse: height - (padding * 2),
+      angle,
+    });
+    // 折行文本计算
+    const breakArray = this.textBreak(text);
+    const textArray = [];
+    const breakLen = breakArray.length;
+    let bi = 0;
+    let maxLen = 0;
+    while (bi < breakLen) {
+      const text = breakArray[bi];
+      const textLen = text.length;
+      const line = {
+        str: '',
+        len: 0,
+        start: 0,
+      };
+      let ii = 0;
+      while (ii < textLen) {
+        const str = line.str + text.charAt(ii);
+        const len = this.textWidth(str);
+        if (len > textHypotenuseWidth) {
+          if (line.len === 0) {
+            textArray.push({
+              text: str,
+              len,
+              tx: 0,
+              ty: 0,
+            });
+            if (len > maxLen) {
+              maxLen = len;
+            }
+            ii += 1;
+          } else {
+            textArray.push({
+              text: line.str,
+              len: line.len,
+              tx: 0,
+              ty: 0,
+            });
+            if (line.len > maxLen) {
+              maxLen = line.len;
+            }
+          }
+          line.str = '';
+          line.len = 0;
+          line.start = ii;
+        } else {
+          line.str = str;
+          line.len = len;
+          ii += 1;
+        }
+      }
+      if (line.len > 0) {
+        textArray.push({
+          text: line.str,
+          len: line.len,
+          tx: 0,
+          ty: 0,
+        });
+      }
+      if (line.len > maxLen) {
+        maxLen = line.len;
+      }
+      bi += 1;
+    }
+    const textArrayLen = textArray.length;
+    // 多行文本
+    if (textArrayLen > 1) {
 
+    }
   }
 
 }

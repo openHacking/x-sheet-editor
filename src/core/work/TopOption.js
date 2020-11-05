@@ -13,7 +13,7 @@ class TopOption extends Widget {
     super(`${cssPrefix}-option`);
 
     this.workTop = workTop;
-    this.title = ' X-Sheet 工作簿';
+    this.title = `${cssPrefix} 工作簿`;
     this.logoEle = h('div', `${cssPrefix}-option-logo`);
     this.titleEle = h('div', `${cssPrefix}-option-title`);
     this.optionsEle = h('div', `${cssPrefix}-option-box`);

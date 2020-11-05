@@ -345,11 +345,6 @@ class AngleFont extends BaseFont {
           let ax = 0;
           let ay = 0;
           switch (align) {
-            case BaseFont.ALIGN.center: {
-              ax = rx + textWidth / 2;
-              ay = ry + textHeight / 2;
-              break;
-            }
             case BaseFont.ALIGN.left: {
               const tilt = item.len / 2;
               const tw = Math.max(RTCosKit.nearby({
@@ -362,6 +357,11 @@ class AngleFont extends BaseFont {
               });
               ax += rx + tw;
               ay += ry + textHeight - th;
+              break;
+            }
+            case BaseFont.ALIGN.center: {
+              ax = rx + textWidth / 2;
+              ay = ry + textHeight / 2;
               break;
             }
             case BaseFont.ALIGN.right: {
@@ -594,11 +594,6 @@ class AngleFont extends BaseFont {
         let ax = 0;
         let ay = 0;
         switch (align) {
-          case BaseFont.ALIGN.center: {
-            ax = rx + textWidth / 2;
-            ay = ry + textHeight / 2;
-            break;
-          }
           case BaseFont.ALIGN.left: {
             const tilt = item.len / 2;
             const tw = Math.max(RTCosKit.nearby({
@@ -611,6 +606,11 @@ class AngleFont extends BaseFont {
             });
             ax += rx + tw;
             ay += ry + th;
+            break;
+          }
+          case BaseFont.ALIGN.center: {
+            ax = rx + textWidth / 2;
+            ay = ry + textHeight / 2;
             break;
           }
           case BaseFont.ALIGN.right: {
