@@ -15,32 +15,20 @@ class CellBorder {
    * @param bottom
    */
   constructor({
-    angerBarPrefix = 0,
-    angleBarSuffix = 0,
-    top = {},
     left = {},
     bottom = {},
+    top = {},
     right = {},
   }) {
-    this.top = new Border(top);
     this.left = new Border(left);
     this.bottom = new Border(bottom);
+    this.top = new Border(top);
     this.right = new Border(right);
-    this.angerBarPrefix = angerBarPrefix;
-    this.angleBarSuffix = angleBarSuffix;
   }
 
   isDisplay() {
     return this.left.display || this.top.display
       || this.bottom.display || this.right.display;
-  }
-
-  setAngelBarPrefix(prefix = 0) {
-    this.angerBarPrefix = prefix;
-  }
-
-  setAngelBarSuffix(suffix = 0) {
-    this.angleBarSuffix = suffix;
   }
 
   // ======================显示/隐藏=======================
