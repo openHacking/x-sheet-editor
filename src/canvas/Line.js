@@ -26,17 +26,6 @@ class SolidLine {
     this.color = color;
   }
 
-  corsLine(sx, sy, ex, ey) {
-    const { draw } = this;
-    const {
-      widthType, color,
-    } = this;
-    draw.setLineColor(color);
-    draw.setLineWidthType(widthType);
-    draw.setLineDash([]);
-    draw.corsLine([sx, sy], [ex, ey]);
-  }
-
   horizonLine(sx, sy, ex, ey) {
     const { draw } = this;
     const {
@@ -57,6 +46,17 @@ class SolidLine {
     draw.setLineWidthType(widthType);
     draw.setLineDash([]);
     draw.verticalLine([sx, sy], [ex, ey]);
+  }
+
+  tiltingLine(sx, sy, ex, ey) {
+    const { draw } = this;
+    const {
+      widthType, color,
+    } = this;
+    draw.setLineColor(color);
+    draw.setLineWidthType(widthType);
+    draw.setLineDash([]);
+    draw.corsLine([sx, sy], [ex, ey]);
   }
 
 }
@@ -80,17 +80,6 @@ class DottedLine {
     this.color = color;
   }
 
-  corsLine(sx, sy, ex, ey) {
-    const { draw, dash } = this;
-    const {
-      widthType, color,
-    } = this;
-    draw.setLineColor(color);
-    draw.setLineWidthType(widthType);
-    draw.setLineDash(dash);
-    draw.corsLine([sx, sy], [ex, ey]);
-  }
-
   horizonLine(sx, sy, ex, ey) {
     const { draw, dash } = this;
     const {
@@ -111,6 +100,17 @@ class DottedLine {
     draw.setLineWidthType(widthType);
     draw.setLineDash(dash);
     draw.verticalLine([sx, sy], [ex, ey]);
+  }
+
+  tiltingLine(sx, sy, ex, ey) {
+    const { draw, dash } = this;
+    const {
+      widthType, color,
+    } = this;
+    draw.setLineColor(color);
+    draw.setLineWidthType(widthType);
+    draw.setLineDash(dash);
+    draw.corsLine([sx, sy], [ex, ey]);
   }
 
 }
@@ -532,24 +532,6 @@ class DoubleLine {
     return internal;
   }
 
-  corsLine(sx, sy, ex, ey, row, col, pos) {
-    const { draw } = this;
-    const {
-      widthType, color,
-    } = this;
-    draw.setLineColor(color);
-    draw.setLineWidthType(widthType);
-    draw.setLineDash([]);
-    const external = this.handleExternal(sx, sy, ex, ey, row, col, pos);
-    const internal = this.handleInternal(sx, sy, ex, ey, row, col, pos);
-    if (!PlainUtils.isEmptyObject(internal)) {
-      draw.corsLine([internal.sx, internal.sy], [internal.ex, internal.ey]);
-    }
-    if (!PlainUtils.isEmptyObject(external)) {
-      draw.corsLine([external.sx, external.sy], [external.ex, external.ey]);
-    }
-  }
-
   horizonLine(sx, sy, ex, ey, row, col, pos) {
     const { draw } = this;
     const {
@@ -583,6 +565,24 @@ class DoubleLine {
     }
     if (!PlainUtils.isEmptyObject(external)) {
       draw.verticalLine([external.sx, external.sy], [external.ex, external.ey]);
+    }
+  }
+
+  tiltingLine(sx, sy, ex, ey, row, col, pos) {
+    const { draw } = this;
+    const {
+      widthType, color,
+    } = this;
+    draw.setLineColor(color);
+    draw.setLineWidthType(widthType);
+    draw.setLineDash([]);
+    const external = this.handleExternal(sx, sy, ex, ey, row, col, pos);
+    const internal = this.handleInternal(sx, sy, ex, ey, row, col, pos);
+    if (!PlainUtils.isEmptyObject(internal)) {
+      draw.corsLine([internal.sx, internal.sy], [internal.ex, internal.ey]);
+    }
+    if (!PlainUtils.isEmptyObject(external)) {
+      draw.corsLine([external.sx, external.sy], [external.ex, external.ey]);
     }
   }
 
@@ -623,30 +623,6 @@ class Line {
 
   setType(type) {
     this.type = type;
-  }
-
-  corsLine(sx, sy, ex, ey, row, col, pos) {
-    const {
-      type,
-      solidLine,
-      dottedLine,
-      pointLine,
-      doubleLine,
-    } = this;
-    switch (type) {
-      case LINE_TYPE.SOLID_LINE:
-        solidLine.corsLine(sx, sy, ex, ey);
-        break;
-      case LINE_TYPE.DOTTED_LINE:
-        dottedLine.corsLine(sx, sy, ex, ey);
-        break;
-      case LINE_TYPE.POINT_LINE:
-        pointLine.corsLine(sx, sy, ex, ey);
-        break;
-      case LINE_TYPE.DOUBLE_LINE:
-        doubleLine.corsLine(sx, sy, ex, ey, row, col, pos);
-        break;
-    }
   }
 
   horizonLine(sx, sy, ex, ey, row, col, pos) {
@@ -693,6 +669,30 @@ class Line {
         break;
       case LINE_TYPE.DOUBLE_LINE:
         doubleLine.verticalLine(sx, sy, ex, ey, row, col, pos);
+        break;
+    }
+  }
+
+  tiltingLine(sx, sy, ex, ey, row, col, pos) {
+    const {
+      type,
+      solidLine,
+      dottedLine,
+      pointLine,
+      doubleLine,
+    } = this;
+    switch (type) {
+      case LINE_TYPE.SOLID_LINE:
+        solidLine.tiltingLine(sx, sy, ex, ey);
+        break;
+      case LINE_TYPE.DOTTED_LINE:
+        dottedLine.tiltingLine(sx, sy, ex, ey);
+        break;
+      case LINE_TYPE.POINT_LINE:
+        pointLine.tiltingLine(sx, sy, ex, ey);
+        break;
+      case LINE_TYPE.DOUBLE_LINE:
+        doubleLine.tiltingLine(sx, sy, ex, ey, row, col, pos);
         break;
     }
   }

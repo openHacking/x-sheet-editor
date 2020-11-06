@@ -1046,9 +1046,8 @@ class XTableContentUI extends XTableUI {
     const borderX = this.getLineX();
     const borderY = this.getLineY();
     const { table } = this;
+    const { draw, line } = table;
     const {
-      draw,
-      line,
       cellHorizontalBorder,
       cellVerticalBorder,
       angelBarHorizontal,
@@ -1123,15 +1122,6 @@ class XTableContentUI extends XTableUI {
     const rightMergeVerticalLine = cellVerticalBorder.getRightMergeVerticalLine({
       brink,
     });
-    topMergeHorizontalLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { top } = borderAttr;
-      const { color, widthType, type } = top;
-      line.setType(type);
-      line.setWidthType(widthType);
-      line.setColor(color);
-      line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
-    });
     bottomMergeHorizontalLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { bottom } = borderAttr;
@@ -1140,6 +1130,15 @@ class XTableContentUI extends XTableUI {
       line.setWidthType(widthType);
       line.setColor(color);
       line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+    });
+    topMergeHorizontalLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { top } = borderAttr;
+      const { color, widthType, type } = top;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
     });
     leftMergeVerticalLine.forEach((item) => {
       const { borderAttr, row, col } = item;
@@ -1179,7 +1178,7 @@ class XTableContentUI extends XTableUI {
       line.setType(type);
       line.setWidthType(widthType);
       line.setColor(color);
-      line.corsLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+      line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
     });
     topAngelBarHorizontalLine.forEach((item) => {
       const { borderAttr, row, col } = item;
@@ -1188,7 +1187,7 @@ class XTableContentUI extends XTableUI {
       line.setType(type);
       line.setWidthType(widthType);
       line.setColor(color);
-      line.corsLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+      line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
     });
     leftAngelBarVerticalLine.forEach((item) => {
       const { borderAttr, row, col } = item;
@@ -1197,7 +1196,7 @@ class XTableContentUI extends XTableUI {
       line.setType(type);
       line.setWidthType(widthType);
       line.setColor(color);
-      line.corsLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+      line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
     });
     rightAngelBarVerticalLine.forEach((item) => {
       const { borderAttr, row, col } = item;
@@ -1206,7 +1205,7 @@ class XTableContentUI extends XTableUI {
       line.setType(type);
       line.setWidthType(widthType);
       line.setColor(color);
-      line.corsLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+      line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
     });
     draw.offset(0, 0);
   }
