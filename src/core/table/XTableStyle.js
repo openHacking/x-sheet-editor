@@ -19,21 +19,23 @@ import { Text } from './tablebase/Text';
 import { StyleCellsHelper } from './helper/StyleCellsHelper';
 import { BREAK_LOOP, TextCellsHelper } from './helper/TextCellsHelper';
 import { Merges } from './tablebase/Merges';
-import { TableHorizontalGrid } from './linehandle/grid/TableHorizontalGrid';
-import { TableVerticalGrid } from './linehandle/grid/TableVerticalGrid';
+import { TableHorizontalGrid } from './linehandle/linegrid/TableHorizontalGrid';
+import { TableVerticalGrid } from './linehandle/linegrid/TableVerticalGrid';
 import { TableHorizontalBorder } from './linehandle/border/TableHorizontalBorder';
 import { TableVerticalBorder } from './linehandle/border/TableVerticalBorder';
-import { ChainLogic, FilterChain } from './linehandle/filter/FilterChain';
+import { ChainLogic, FilterChain } from './linehandle/linefilter/FilterChain';
 import { XTableHistoryAreaView } from './XTableHistoryAreaView';
-import { LineFilter } from './linehandle/filter/LineFilter';
-import { LeftOutRangeFilter } from './linehandle/filter/outrange/LeftOutRangeFilter';
-import { RightOutRangeFilter } from './linehandle/filter/outrange/RightOutRangeFilter';
+import { LineFilter } from './linehandle/linefilter/LineFilter';
+import { LeftOutRangeFilter } from './linehandle/linefilter/outrange/LeftOutRangeFilter';
+import { RightOutRangeFilter } from './linehandle/linefilter/outrange/RightOutRangeFilter';
 import { OperateCellsHelper } from './helper/OperateCellsHelper';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { VIEW_MODE, XTableScrollView } from './XTableScrollView';
 import { XFixedMeasure } from './tablebase/XFixedMeasure';
 import { FixedCellIcon } from './cellicon/FixedCellIcon';
 import { StaticCellIcon } from './cellicon/StaticCellIcon';
+import { TableHorizontalAngelBar } from './linehandle/anglebar/TableHorizontalAngelBar';
+import { TableVerticalAngelBar } from './linehandle/anglebar/TableVerticalAngelBar';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -741,16 +743,16 @@ class XTableUI {
 class XTableContentUI extends XTableUI {
 
   /**
-   * 加载绘制固定小图标
+   * 加载绘制静态小图标
    * @param rect
    * @param ri
    * @param ci
    * @param view
    */
-  drawFixedXIcon(rect, ri, ci, view) {
+  drawStaticXIcon(rect, ri, ci, view) {
     const { table } = this;
-    const { draw, fixedCellIcon } = table;
-    const icons = fixedCellIcon.getIcon(ri, ci);
+    const { draw, staticCellIcon } = table;
+    const icons = staticCellIcon.getIcon(ri, ci);
     if (icons) {
       const x = this.getX();
       const y = this.getY();
@@ -777,16 +779,16 @@ class XTableContentUI extends XTableUI {
   }
 
   /**
-   * 加载绘制静态小图标
+   * 加载绘制固定小图标
    * @param rect
    * @param ri
    * @param ci
    * @param view
    */
-  drawStaticXIcon(rect, ri, ci, view) {
+  drawFixedXIcon(rect, ri, ci, view) {
     const { table } = this;
-    const { draw, staticCellIcon } = table;
-    const icons = staticCellIcon.getIcon(ri, ci);
+    const { draw, fixedCellIcon } = table;
+    const icons = fixedCellIcon.getIcon(ri, ci);
     if (icons) {
       const x = this.getX();
       const y = this.getY();
@@ -1032,36 +1034,179 @@ class XTableContentUI extends XTableUI {
   }
 
   /**
-   * 绘制背景颜色
+   * 绘制越界边框
    */
-  drawColor() {
-    const scrollView = this.getScrollView();
+  drawBoundOutBorder() {}
+
+  /**
+   * 绘制边框
+   */
+  drawBorder() {
+    const borderView = this.getLineView();
+    const borderX = this.getLineX();
+    const borderY = this.getLineY();
     const { table } = this;
-    const drawX = this.getDrawX();
-    const drawY = this.getDrawY();
     const {
-      draw, styleCellsHelper, merges,
+      draw,
+      line,
+      cellHorizontalBorder,
+      cellVerticalBorder,
+      angelBarHorizontal,
+      angelBarVertical,
     } = table;
-    draw.offset(drawX, drawY);
-    styleCellsHelper.getMergeCellByViewRange({
-      rectRange: scrollView,
-      callback: (rect, cell) => {
-        const { background } = cell;
-        const box = new Box({ draw, rect });
-        box.drawBackgroundColor(background);
-      },
+    draw.offset(borderX, borderY);
+    const coincide = cellHorizontalBorder.getMergeCoincideRange({
+      viewRange: borderView,
     });
-    styleCellsHelper.getCellByViewRange({
-      rectRange: scrollView,
-      callback: (row, col, cell, rect) => {
-        const merge = merges.getFirstIncludes(row, col);
-        if (merge && (merge.sri !== row || merge.sci !== row)) {
-          return;
-        }
-        const { background } = cell;
-        const box = new Box({ draw, rect });
-        box.drawBackgroundColor(background);
-      },
+    const brink = cellHorizontalBorder.getCoincideRangeBrink({
+      coincide,
+    });
+    // 绘制单元格 水平线段 垂直线段
+    const bottomHorizontalLine = cellHorizontalBorder.getBottomHorizontalLine({
+      viewRange: borderView,
+    });
+    const topHorizontalLine = cellHorizontalBorder.getTopHorizontalLine({
+      viewRange: borderView,
+    });
+    const leftVerticalLine = cellVerticalBorder.getLeftVerticalLine({
+      viewRange: borderView,
+    });
+    const rightVerticalLine = cellVerticalBorder.getRightVerticalLine({
+      viewRange: borderView,
+    });
+    topHorizontalLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { top } = borderAttr;
+      const { color, widthType, type } = top;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+    });
+    bottomHorizontalLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { bottom } = borderAttr;
+      const { color, widthType, type } = bottom;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+    });
+    leftVerticalLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { left } = borderAttr;
+      const { color, widthType, type } = left;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+    });
+    rightVerticalLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { right } = borderAttr;
+      const { color, widthType, type } = right;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+    });
+    // 绘制合并单元格 水平线段 垂直线段
+    const topMergeHorizontalLine = cellHorizontalBorder.getTopMergeHorizontalLine({
+      brink,
+    });
+    const bottomMergeHorizontalLine = cellHorizontalBorder.getBottomMergeHorizontalLine({
+      brink,
+    });
+    const leftMergeVerticalLine = cellVerticalBorder.getLeftMergeVerticalLine({
+      brink,
+    });
+    const rightMergeVerticalLine = cellVerticalBorder.getRightMergeVerticalLine({
+      brink,
+    });
+    topMergeHorizontalLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { top } = borderAttr;
+      const { color, widthType, type } = top;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+    });
+    bottomMergeHorizontalLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { bottom } = borderAttr;
+      const { color, widthType, type } = bottom;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+    });
+    leftMergeVerticalLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { left } = borderAttr;
+      const { color, widthType, type } = left;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+    });
+    rightMergeVerticalLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { right } = borderAttr;
+      const { color, widthType, type } = right;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+    });
+    // 绘制 AngleBar单元格 水平线段 垂直线段
+    const bottomAngelBarHorizontalLine = angelBarHorizontal.getBottomHorizontalLine({
+      viewRange: borderView,
+    });
+    const topAngelBarHorizontalLine = angelBarHorizontal.getTopHorizontalLine({
+      viewRange: borderView,
+    });
+    const leftAngelBarVerticalLine = angelBarVertical.getLeftVerticalLine({
+      viewRange: borderView,
+    });
+    const rightAngelBarVerticalLine = angelBarVertical.getRightVerticalLine({
+      viewRange: borderView,
+    });
+    bottomAngelBarHorizontalLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { top } = borderAttr;
+      const { color, widthType, type } = top;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.corsLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+    });
+    topAngelBarHorizontalLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { bottom } = borderAttr;
+      const { color, widthType, type } = bottom;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.corsLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+    });
+    leftAngelBarVerticalLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { left } = borderAttr;
+      const { color, widthType, type } = left;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.corsLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+    });
+    rightAngelBarVerticalLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { right } = borderAttr;
+      const { color, widthType, type } = right;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.corsLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
     });
     draw.offset(0, 0);
   }
@@ -1116,122 +1261,41 @@ class XTableContentUI extends XTableUI {
   }
 
   /**
-   * 绘制边框
+   * 绘制越界背景颜色
    */
-  drawBorder() {
-    const borderView = this.getLineView();
-    const borderX = this.getLineX();
-    const borderY = this.getLineY();
+  drawBoundOutColor() {}
+
+  /**
+   * 绘制背景颜色
+   */
+  drawColor() {
+    const scrollView = this.getScrollView();
     const { table } = this;
+    const drawX = this.getDrawX();
+    const drawY = this.getDrawY();
     const {
-      draw, line, cellHorizontalBorder, cellVerticalBorder,
+      draw, styleCellsHelper, merges,
     } = table;
-    draw.offset(borderX, borderY);
-    const coincide = cellHorizontalBorder.getMergeCoincideRange({
-      viewRange: borderView,
+    draw.offset(drawX, drawY);
+    styleCellsHelper.getMergeCellByViewRange({
+      rectRange: scrollView,
+      callback: (rect, cell) => {
+        const { background } = cell;
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(background);
+      },
     });
-    const brink = cellHorizontalBorder.getCoincideRangeBrink({
-      coincide,
-    });
-    // 绘制单元格水平线段
-    // 和垂直线段
-    const bottomHorizontalLine = cellHorizontalBorder.getBottomHorizontalLine({
-      viewRange: borderView,
-    });
-    const topHorizontalLine = cellHorizontalBorder.getTopHorizontalLine({
-      viewRange: borderView,
-    });
-    const leftVerticalLine = cellVerticalBorder.getLeftVerticalLine({
-      viewRange: borderView,
-    });
-    const rightVerticalLine = cellVerticalBorder.getRightVerticalLine({
-      viewRange: borderView,
-    });
-    topHorizontalLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { top } = borderAttr;
-      const { color, widthType, type } = top;
-      line.setType(type);
-      line.setWidthType(widthType);
-      line.setColor(color);
-      line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
-    });
-    bottomHorizontalLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { bottom } = borderAttr;
-      const { color, widthType, type } = bottom;
-      line.setType(type);
-      line.setWidthType(widthType);
-      line.setColor(color);
-      line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
-    });
-    leftVerticalLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { left } = borderAttr;
-      const { color, widthType, type } = left;
-      line.setType(type);
-      line.setWidthType(widthType);
-      line.setColor(color);
-      line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
-    });
-    rightVerticalLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { right } = borderAttr;
-      const { color, widthType, type } = right;
-      line.setType(type);
-      line.setWidthType(widthType);
-      line.setColor(color);
-      line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
-    });
-    // 绘制合并单元格水平线段
-    // 和垂直线段
-    const topMergeHorizontalLine = cellHorizontalBorder.getTopMergeHorizontalLine({
-      brink,
-    });
-    const bottomMergeHorizontalLine = cellHorizontalBorder.getBottomMergeHorizontalLine({
-      brink,
-    });
-    const leftMergeVerticalLine = cellVerticalBorder.getLeftMergeVerticalLine({
-      brink,
-    });
-    const rightMergeVerticalLine = cellVerticalBorder.getRightMergeVerticalLine({
-      brink,
-    });
-    topMergeHorizontalLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { top } = borderAttr;
-      const { color, widthType, type } = top;
-      line.setType(type);
-      line.setWidthType(widthType);
-      line.setColor(color);
-      line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
-    });
-    bottomMergeHorizontalLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { bottom } = borderAttr;
-      const { color, widthType, type } = bottom;
-      line.setType(type);
-      line.setWidthType(widthType);
-      line.setColor(color);
-      line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
-    });
-    leftMergeVerticalLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { left } = borderAttr;
-      const { color, widthType, type } = left;
-      line.setType(type);
-      line.setWidthType(widthType);
-      line.setColor(color);
-      line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
-    });
-    rightMergeVerticalLine.forEach((item) => {
-      const { borderAttr, row, col } = item;
-      const { right } = borderAttr;
-      const { color, widthType, type } = right;
-      line.setType(type);
-      line.setWidthType(widthType);
-      line.setColor(color);
-      line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+    styleCellsHelper.getCellByViewRange({
+      rectRange: scrollView,
+      callback: (row, col, cell, rect) => {
+        const merge = merges.getFirstIncludes(row, col);
+        if (merge && (merge.sri !== row || merge.sci !== row)) {
+          return;
+        }
+        const { background } = cell;
+        const box = new Box({ draw, rect });
+        box.drawBackgroundColor(background);
+      },
     });
     draw.offset(0, 0);
   }
@@ -1264,6 +1328,7 @@ class XTableContentUI extends XTableUI {
     crop.open();
     // 绘制背景
     this.drawColor();
+    this.drawBoundOutColor();
     // 绘制文字
     this.drawFont();
     this.drawBoundOutFont();
@@ -1273,6 +1338,7 @@ class XTableContentUI extends XTableUI {
     }
     // 绘制边框
     this.drawBorder();
+    this.drawBoundOutBorder();
     // 绘制小图标
     this.drawXIcon();
     crop.close();
@@ -2499,6 +2565,19 @@ class XTableStyle extends Widget {
       cols: this.cols,
       cells: this.cells,
       drawOptimization: true,
+    });
+    // AngelBar单元格边框处理
+    this.angelBarHorizontal = new TableHorizontalAngelBar({
+      merges: this.merges,
+      rows: this.rows,
+      cols: this.cols,
+      cells: this.cells,
+    });
+    this.angelBarVertical = new TableVerticalAngelBar({
+      merges: this.merges,
+      rows: this.rows,
+      cols: this.cols,
+      cells: this.cells,
     });
     // 冻结内容
     this.xLeftFrozenIndex = new XTableFrozenLeftIndex(this);

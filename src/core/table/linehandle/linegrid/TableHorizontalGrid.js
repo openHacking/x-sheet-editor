@@ -1,5 +1,5 @@
 import { TableGrid } from './TableGrid';
-import { ChainLogic, FilterChain } from '../filter/FilterChain';
+import { ChainLogic, FilterChain } from '../linefilter/FilterChain';
 
 class TableHorizontalGrid extends TableGrid {
 

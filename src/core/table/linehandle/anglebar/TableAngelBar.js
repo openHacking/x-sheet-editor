@@ -1,7 +1,0 @@
-class TableAngelBar {
-
-}
-
-export {
-  TableAngelBar,
-};

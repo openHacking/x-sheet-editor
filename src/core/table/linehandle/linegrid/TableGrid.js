@@ -1,8 +1,8 @@
 import { BaseLine } from '../BaseLine';
-import { HorizontalMergeFilter } from '../filter/mege/HorizontalMergeFilter';
-import { VerticalMergeFilter } from '../filter/mege/VerticalMergeFilter';
-import { HorizontalBorderDisplayFilter } from '../filter/borderdisplay/HorizontalBorderDisplayFilter';
-import { VerticalBorderDisplayFilter } from '../filter/borderdisplay/VerticalBorderDisplayFilter';
+import { HorizontalMergeFilter } from '../linefilter/mege/HorizontalMergeFilter';
+import { VerticalMergeFilter } from '../linefilter/mege/VerticalMergeFilter';
+import { HorizontalBorderDisplayFilter } from '../linefilter/borderdisplay/HorizontalBorderDisplayFilter';
+import { VerticalBorderDisplayFilter } from '../linefilter/borderdisplay/VerticalBorderDisplayFilter';
 
 class TableGrid extends BaseLine {
 

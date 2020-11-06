@@ -1,11 +1,15 @@
 import { BaseLine } from '../BaseLine';
-import { HorizontalMergeFilter } from '../filter/mege/HorizontalMergeFilter';
-import { VerticalMergeFilter } from '../filter/mege/VerticalMergeFilter';
-import { BottomBorderDiffFilter } from '../filter/borderdiff/BottomBorderDiffFilter';
-import { LeftBorderDiffFilter } from '../filter/borderdiff/LeftBorderDiffFilter';
-import { RightBorderDiffFilter } from '../filter/borderdiff/RightBorderDiffFilter';
-import { TopBorderDiffFilter } from '../filter/borderdiff/TopBorderDiffFilter';
+import { HorizontalMergeFilter } from '../linefilter/mege/HorizontalMergeFilter';
+import { VerticalMergeFilter } from '../linefilter/mege/VerticalMergeFilter';
+import { BottomBorderDiffFilter } from '../linefilter/borderdiff/BottomBorderDiffFilter';
+import { LeftBorderDiffFilter } from '../linefilter/borderdiff/LeftBorderDiffFilter';
+import { RightBorderDiffFilter } from '../linefilter/borderdiff/RightBorderDiffFilter';
+import { TopBorderDiffFilter } from '../linefilter/borderdiff/TopBorderDiffFilter';
 import { RowsIterator } from '../../iterator/RowsIterator';
+import { RightVerticalAngleBarIgnoreFilter } from '../linefilter/anglebarignore/RightVerticalAngleBarIgnoreFilter';
+import { LeftVerticalAngleBarIgnoreFilter } from '../linefilter/anglebarignore/LeftVerticalAngleBarIgnoreFilter';
+import { TopHorizontalAngleBarIgnoreFilter } from '../linefilter/anglebarignore/TopHorizontalAngleBarIgnoreFilter';
+import { BottomHorizontalAngleBarIgnoreFilter } from '../linefilter/anglebarignore/BottomHorizontalAngleBarIgnoreFilter';
 
 class TableBorder extends BaseLine {
 
@@ -25,12 +29,27 @@ class TableBorder extends BaseLine {
       foldOnOff,
     });
     this.drawOptimization = drawOptimization;
+    // 合并单元格忽略
     this.horizontalMergeFilter = new HorizontalMergeFilter({ merges });
     this.verticalMergeFilter = new VerticalMergeFilter({ merges });
+    // 边框优先级对比
     this.bottomBorderDiffFilter = new BottomBorderDiffFilter({ cells });
     this.leftBorderDiffFilter = new LeftBorderDiffFilter({ cells });
     this.rightBorderDiffFilter = new RightBorderDiffFilter({ cells });
     this.topBorderDiffFilter = new TopBorderDiffFilter({ cells });
+    // AngleBar忽略
+    this.rightVerticalAngleBarIgnoreFilter = new RightVerticalAngleBarIgnoreFilter({
+      cells, cols, merges,
+    });
+    this.leftVerticalAngleBarIgnoreFilter = new LeftVerticalAngleBarIgnoreFilter({
+      cells, cols, merges,
+    });
+    this.topHorizontalAngleBarIgnoreFilter = new TopHorizontalAngleBarIgnoreFilter({
+      cells, cols, merges,
+    });
+    this.bottomHorizontalAngleBarIgnoreFilter = new BottomHorizontalAngleBarIgnoreFilter({
+      cells, cols, merges,
+    });
   }
 
   computerTopHorizontalLine({
@@ -48,13 +67,13 @@ class TableBorder extends BaseLine {
     let ey;
     this.horizontalIterate({
       viewRange,
+      filter,
       newRow: (row, y) => {
         sx = bx;
         sy = by + y;
         ex = sx;
         ey = sy;
       },
-      filter,
       jump: (row, col) => {
         const width = cols.getWidth(col);
         sx = ex + width;
@@ -103,6 +122,7 @@ class TableBorder extends BaseLine {
     let ey;
     this.horizontalIterate({
       viewRange,
+      filter,
       newRow: (row, y) => {
         const height = rows.getHeight(row);
         sx = bx;
@@ -110,7 +130,6 @@ class TableBorder extends BaseLine {
         ex = sx;
         ey = sy;
       },
-      filter,
       jump: (row, col) => {
         const width = cols.getWidth(col);
         sx = ex + width;
@@ -159,13 +178,13 @@ class TableBorder extends BaseLine {
     let ey;
     this.verticalIterate({
       viewRange,
+      filter,
       newCol: (col, x) => {
         sx = bx + x;
         sy = by;
         ex = sx;
         ey = sy;
       },
-      filter,
       jump: (col, row) => {
         const height = rows.getHeight(row);
         sy = ey + height;
@@ -218,6 +237,7 @@ class TableBorder extends BaseLine {
     let ey;
     this.verticalIterate({
       viewRange,
+      filter,
       newCol: (col, x) => {
         const width = cols.getWidth(col);
         sx = bx + x + width;
@@ -225,7 +245,6 @@ class TableBorder extends BaseLine {
         ex = sx;
         ey = sy;
       },
-      filter,
       jump: (col, row) => {
         const height = rows.getHeight(row);
         sy = ey + height;

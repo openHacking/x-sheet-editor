@@ -1,13 +1,13 @@
 import { LineFilter } from '../LineFilter';
 import { BaseFont } from '../../../../../canvas/font/BaseFont';
 
-class BottomHorizontalAngleBarFilter extends LineFilter {
+class LeftVerticalAngleBarIgnoreFilter extends LineFilter {
 
   constructor({
     cells, cols, merges,
   }) {
-    super((ri, ci) => {
-      const next = cells.getCell(ri + 1, ci);
+    super((ci, ri) => {
+      const last = cells.getCell(ri, ci - 1);
       const cell = cells.getCell(ri, ci);
       if (cell) {
         const { fontAttr } = cell;
@@ -19,8 +19,8 @@ class BottomHorizontalAngleBarFilter extends LineFilter {
           }
         }
       }
-      if (next) {
-        const { fontAttr } = next;
+      if (last) {
+        const { fontAttr } = last;
         const { direction } = fontAttr;
         if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
           const { angle } = fontAttr;
@@ -39,5 +39,5 @@ class BottomHorizontalAngleBarFilter extends LineFilter {
 }
 
 export {
-  BottomHorizontalAngleBarFilter,
+  LeftVerticalAngleBarIgnoreFilter,
 };

@@ -1,5 +1,5 @@
 import { TableBorder } from './TableBorder';
-import { ChainLogic, FilterChain } from '../filter/FilterChain';
+import { ChainLogic, FilterChain } from '../linefilter/FilterChain';
 
 class TableHorizontalBorder extends TableBorder {
 
@@ -9,14 +9,14 @@ class TableHorizontalBorder extends TableBorder {
     const {
       horizontalMergeFilter,
       bottomBorderDiffFilter,
-      bottomHorizontalAngleBarFilter,
+      bottomHorizontalAngleBarIgnoreFilter,
     } = this;
     return this.computerBottomHorizontalLine({
       viewRange,
       filter: new FilterChain(ChainLogic.AND, [
         horizontalMergeFilter,
-        bottomHorizontalAngleBarFilter,
         bottomBorderDiffFilter,
+        bottomHorizontalAngleBarIgnoreFilter,
       ]),
     });
   }
@@ -27,14 +27,14 @@ class TableHorizontalBorder extends TableBorder {
     const {
       horizontalMergeFilter,
       topBorderDiffFilter,
-      topHorizontalAngleBarFilter,
+      topHorizontalAngleBarIgnoreFilter,
     } = this;
     return this.computerTopHorizontalLine({
       viewRange,
       filter: new FilterChain(ChainLogic.AND, [
         horizontalMergeFilter,
-        topHorizontalAngleBarFilter,
         topBorderDiffFilter,
+        topHorizontalAngleBarIgnoreFilter,
       ]),
     });
   }

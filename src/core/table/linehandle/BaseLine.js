@@ -1,15 +1,17 @@
 import { RectRange } from '../tablebase/RectRange';
 import { Rect } from '../../../canvas/Rect';
-import { LeftOutRangeFilter } from './filter/outrange/LeftOutRangeFilter';
-import { RightOutRangeFilter } from './filter/outrange/RightOutRangeFilter';
-import { LineFilter } from './filter/LineFilter';
+import { LeftOutRangeFilter } from './linefilter/outrange/LeftOutRangeFilter';
+import { RightOutRangeFilter } from './linefilter/outrange/RightOutRangeFilter';
+import { LineFilter } from './linefilter/LineFilter';
 import { PlainUtils } from '../../../utils/PlainUtils';
 import { ColsIterator } from '../iterator/ColsIterator';
 import { RowsIterator } from '../iterator/RowsIterator';
-import { RightVerticalAngleBarFilter } from './filter/anglebar/RightVerticalAngleBarFilter';
-import { LeftVerticalAngleBarFilter } from './filter/anglebar/LeftVerticalAngleBarFilter';
-import { TopHorizontalAngleBarFilter } from './filter/anglebar/TopHorizontalAngleBarFilter';
-import { BottomHorizontalAngleBarFilter } from './filter/anglebar/BottomHorizontalAngleBarFilter';
+import { RightVerticalAngleBarIgnoreFilter } from './linefilter/anglebarignore/RightVerticalAngleBarIgnoreFilter';
+import { LeftVerticalAngleBarIgnoreFilter } from './linefilter/anglebarignore/LeftVerticalAngleBarIgnoreFilter';
+import { TopHorizontalAngleBarIgnoreFilter } from './linefilter/anglebarignore/TopHorizontalAngleBarIgnoreFilter';
+import { BottomHorizontalAngleBarIgnoreFilter } from './linefilter/anglebarignore/BottomHorizontalAngleBarIgnoreFilter';
+import { HorizontalAngleBarMustFilter } from './linefilter/anglebarmust/HorizontalAngleBarMustFilter';
+import { VerticalAngleBarMuseFilter } from './linefilter/anglebarmust/VerticalAngleBarMuseFilter';
 
 class BaseLine {
 
@@ -25,22 +27,11 @@ class BaseLine {
     this.rows = rows;
     this.cols = cols;
     this.foldOnOff = foldOnOff;
+    // 内容越界
     this.rightOutRangeFilter = new RightOutRangeFilter({
       cells, cols, merges,
     });
     this.leftOutRangeFilter = new LeftOutRangeFilter({
-      cells, cols, merges,
-    });
-    this.rightVerticalAngleBarFilter = new RightVerticalAngleBarFilter({
-      cells, cols, merges,
-    });
-    this.leftVerticalAngleBarFilter = new LeftVerticalAngleBarFilter({
-      cells, cols, merges,
-    });
-    this.topHorizontalAngleBarFilter = new TopHorizontalAngleBarFilter({
-      cells, cols, merges,
-    });
-    this.bottomHorizontalAngleBarFilter = new BottomHorizontalAngleBarFilter({
       cells, cols, merges,
     });
   }

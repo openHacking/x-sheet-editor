@@ -120,6 +120,7 @@ class Border {
     }
     return 0;
   }
+
 }
 
 export { Border };

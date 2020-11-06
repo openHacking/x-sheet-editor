@@ -26,6 +26,17 @@ class SolidLine {
     this.color = color;
   }
 
+  corsLine(sx, sy, ex, ey) {
+    const { draw } = this;
+    const {
+      widthType, color,
+    } = this;
+    draw.setLineColor(color);
+    draw.setLineWidthType(widthType);
+    draw.setLineDash([]);
+    draw.corsLine([sx, sy], [ex, ey]);
+  }
+
   horizonLine(sx, sy, ex, ey) {
     const { draw } = this;
     const {
@@ -67,6 +78,17 @@ class DottedLine {
 
   setColor(color) {
     this.color = color;
+  }
+
+  corsLine(sx, sy, ex, ey) {
+    const { draw, dash } = this;
+    const {
+      widthType, color,
+    } = this;
+    draw.setLineColor(color);
+    draw.setLineWidthType(widthType);
+    draw.setLineDash(dash);
+    draw.corsLine([sx, sy], [ex, ey]);
   }
 
   horizonLine(sx, sy, ex, ey) {
@@ -120,42 +142,6 @@ class DoubleLine {
 
   setColor(color) {
     this.color = color;
-  }
-
-  horizonLine(sx, sy, ex, ey, row, col, pos) {
-    const { draw } = this;
-    const {
-      widthType, color,
-    } = this;
-    draw.setLineColor(color);
-    draw.setLineWidthType(widthType);
-    draw.setLineDash([]);
-    const external = this.handleExternal(sx, sy, ex, ey, row, col, pos);
-    const internal = this.handleInternal(sx, sy, ex, ey, row, col, pos);
-    if (!PlainUtils.isEmptyObject(internal)) {
-      draw.horizonLine([internal.sx, internal.sy], [internal.ex, internal.ey]);
-    }
-    if (!PlainUtils.isEmptyObject(external)) {
-      draw.horizonLine([external.sx, external.sy], [external.ex, external.ey]);
-    }
-  }
-
-  verticalLine(sx, sy, ex, ey, row, col, pos) {
-    const { draw } = this;
-    const {
-      widthType, color,
-    } = this;
-    draw.setLineColor(color);
-    draw.setLineWidthType(widthType);
-    draw.setLineDash([]);
-    const external = this.handleExternal(sx, sy, ex, ey, row, col, pos);
-    const internal = this.handleInternal(sx, sy, ex, ey, row, col, pos);
-    if (!PlainUtils.isEmptyObject(internal)) {
-      draw.verticalLine([internal.sx, internal.sy], [internal.ex, internal.ey]);
-    }
-    if (!PlainUtils.isEmptyObject(external)) {
-      draw.verticalLine([external.sx, external.sy], [external.ex, external.ey]);
-    }
   }
 
   handleExternal(sx, sy, ex, ey, row, col, pos) {
@@ -546,6 +532,60 @@ class DoubleLine {
     return internal;
   }
 
+  corsLine(sx, sy, ex, ey, row, col, pos) {
+    const { draw } = this;
+    const {
+      widthType, color,
+    } = this;
+    draw.setLineColor(color);
+    draw.setLineWidthType(widthType);
+    draw.setLineDash([]);
+    const external = this.handleExternal(sx, sy, ex, ey, row, col, pos);
+    const internal = this.handleInternal(sx, sy, ex, ey, row, col, pos);
+    if (!PlainUtils.isEmptyObject(internal)) {
+      draw.corsLine([internal.sx, internal.sy], [internal.ex, internal.ey]);
+    }
+    if (!PlainUtils.isEmptyObject(external)) {
+      draw.corsLine([external.sx, external.sy], [external.ex, external.ey]);
+    }
+  }
+
+  horizonLine(sx, sy, ex, ey, row, col, pos) {
+    const { draw } = this;
+    const {
+      widthType, color,
+    } = this;
+    draw.setLineColor(color);
+    draw.setLineWidthType(widthType);
+    draw.setLineDash([]);
+    const external = this.handleExternal(sx, sy, ex, ey, row, col, pos);
+    const internal = this.handleInternal(sx, sy, ex, ey, row, col, pos);
+    if (!PlainUtils.isEmptyObject(internal)) {
+      draw.horizonLine([internal.sx, internal.sy], [internal.ex, internal.ey]);
+    }
+    if (!PlainUtils.isEmptyObject(external)) {
+      draw.horizonLine([external.sx, external.sy], [external.ex, external.ey]);
+    }
+  }
+
+  verticalLine(sx, sy, ex, ey, row, col, pos) {
+    const { draw } = this;
+    const {
+      widthType, color,
+    } = this;
+    draw.setLineColor(color);
+    draw.setLineWidthType(widthType);
+    draw.setLineDash([]);
+    const external = this.handleExternal(sx, sy, ex, ey, row, col, pos);
+    const internal = this.handleInternal(sx, sy, ex, ey, row, col, pos);
+    if (!PlainUtils.isEmptyObject(internal)) {
+      draw.verticalLine([internal.sx, internal.sy], [internal.ex, internal.ey]);
+    }
+    if (!PlainUtils.isEmptyObject(external)) {
+      draw.verticalLine([external.sx, external.sy], [external.ex, external.ey]);
+    }
+  }
+
 }
 DoubleLine.spacing = XDraw.dpr() >= 2 ? 3 : 2;
 
@@ -583,6 +623,30 @@ class Line {
 
   setType(type) {
     this.type = type;
+  }
+
+  corsLine(sx, sy, ex, ey, row, col, pos) {
+    const {
+      type,
+      solidLine,
+      dottedLine,
+      pointLine,
+      doubleLine,
+    } = this;
+    switch (type) {
+      case LINE_TYPE.SOLID_LINE:
+        solidLine.corsLine(sx, sy, ex, ey);
+        break;
+      case LINE_TYPE.DOTTED_LINE:
+        dottedLine.corsLine(sx, sy, ex, ey);
+        break;
+      case LINE_TYPE.POINT_LINE:
+        pointLine.corsLine(sx, sy, ex, ey);
+        break;
+      case LINE_TYPE.DOUBLE_LINE:
+        doubleLine.corsLine(sx, sy, ex, ey, row, col, pos);
+        break;
+    }
   }
 
   horizonLine(sx, sy, ex, ey, row, col, pos) {

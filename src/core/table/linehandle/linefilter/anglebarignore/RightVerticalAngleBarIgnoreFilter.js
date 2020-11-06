@@ -1,7 +1,7 @@
 import { LineFilter } from '../LineFilter';
 import { BaseFont } from '../../../../../canvas/font/BaseFont';
 
-class RightVerticalAngleBarFilter extends LineFilter {
+class RightVerticalAngleBarIgnoreFilter extends LineFilter {
 
   constructor({
     cells, cols, merges,
@@ -39,5 +39,5 @@ class RightVerticalAngleBarFilter extends LineFilter {
 }
 
 export {
-  RightVerticalAngleBarFilter,
+  RightVerticalAngleBarIgnoreFilter,
 };
