@@ -432,7 +432,7 @@ class AngleBarFont extends BaseFont {
             bx += (textWidth / 2 + width / 2) - totalWidth / 2;
             break;
           case BaseFont.ALIGN.right:
-            bx += (textWidth / 2 + width) - (totalWidth - textWidth / 2) - padding;
+            bx += (textWidth / 2 + width) - (totalWidth - textWidth / 2) - size / 2 - padding;
             break;
         }
         // 渲染文本
@@ -689,7 +689,7 @@ class AngleBarFont extends BaseFont {
           bx += (textWidth / 2 + width / 2) - totalWidth / 2;
           break;
         case BaseFont.ALIGN.right:
-          bx += (textWidth / 2 + width) - (totalWidth - textWidth / 2) - padding;
+          bx += (textWidth / 2 + width) - (totalWidth - textWidth / 2) - size / 2 - padding;
           break;
       }
       // 渲染文本
