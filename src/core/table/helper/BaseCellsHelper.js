@@ -170,27 +170,6 @@ class BaseCellsHelper {
     return { width, offset };
   }
 
-  getAngleBarWrapWidth(ri, ci, cell, rect) {
-    const { xTableAreaView, cols, merges } = this;
-    const merge = merges.getFirstIncludes(ri, ci);
-    if (merge) {
-      return merge;
-    }
-    const scrollView = xTableAreaView.getScrollView();
-    const { eci } = scrollView;
-    const { fontAttr } = cell;
-    const { angle } = fontAttr;
-    let width = 0;
-    let offset = 0;
-    if (angle > 0) {
-      width = cols.sectionSumWidth(ci, eci);
-    } else {
-      width = cols.sectionSumWidth(0, ci - 1) + rect.width;
-      offset = -(width - rect.width);
-    }
-    return { width, offset };
-  }
-
   getAngleBarMaxWidth(ri, ci, cell, rect) {
     const { rows, merges } = this;
     const merge = merges.getFirstIncludes(ri, ci);
@@ -288,6 +267,27 @@ class BaseCellsHelper {
     return {
       width, offset,
     };
+  }
+
+  getAngleBarWrapWidth(ri, ci, cell, rect) {
+    const { xTableAreaView, cols, merges } = this;
+    const merge = merges.getFirstIncludes(ri, ci);
+    if (merge) {
+      return merge;
+    }
+    const scrollView = xTableAreaView.getScrollView();
+    const { eci } = scrollView;
+    const { fontAttr } = cell;
+    const { angle } = fontAttr;
+    let width = 0;
+    let offset = 0;
+    if (angle > 0) {
+      width = cols.sectionSumWidth(ci, eci);
+    } else {
+      width = cols.sectionSumWidth(0, ci - 1) + rect.width;
+      offset = -(width - rect.width);
+    }
+    return { width, offset };
   }
 
 }

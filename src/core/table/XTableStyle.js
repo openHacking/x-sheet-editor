@@ -5,7 +5,7 @@ import { SCROLL_TYPE } from './tablebase/Scroll';
 import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../const/Constant';
 import { XDraw } from '../../canvas/XDraw';
-import { Line, LINE_TYPE } from '../../canvas/Line';
+import { Line } from '../../canvas/Line';
 import { Grid } from '../../canvas/Grid';
 import { Crop } from '../../canvas/Crop';
 import { Rect } from '../../canvas/Rect';
@@ -15,8 +15,8 @@ import { Cells } from './tablecell/Cells';
 import { Scale, ScaleAdapter } from './tablebase/Scale';
 import { Code } from './tablebase/Code';
 import { Text } from './tablebase/Text';
-import { StyleCellsHelper } from './helper/StyleCellsHelper';
-import { BREAK_LOOP, TextCellsHelper } from './helper/TextCellsHelper';
+import { STYLE_BREAK_LOOP, StyleCellsHelper } from './helper/StyleCellsHelper';
+import { TEXT_BREAK_LOOP, TextCellsHelper } from './helper/TextCellsHelper';
 import { Merges } from './tablebase/Merges';
 import { TableHorizontalGrid } from './linehandle/linegrid/TableHorizontalGrid';
 import { TableVerticalGrid } from './linehandle/linegrid/TableVerticalGrid';
@@ -852,29 +852,23 @@ class XTableContentUI extends XTableUI {
    */
   drawXIcon() {
     const { table } = this;
-    const { styleCellsHelper, merges } = table;
+    const { styleCellsHelper } = table;
     const scrollView = this.getFullScrollView();
-    styleCellsHelper.getMergeCellByViewRange({
-      rectRange: scrollView,
-      callback: (rect, cell, merge) => {
-        const { sri, sci } = merge;
+    styleCellsHelper.getCellByViewRange({
+      view: scrollView,
+      cellsINCallback: (row, col, cell, rect) => {
         const staticRect = rect.clone();
         const cellRect = rect.clone();
-        this.drawStaticXIcon(staticRect, sri, sci, scrollView);
+        this.drawStaticXIcon(staticRect, row, col, scrollView);
         this.drawCellXIcon(cellRect, cell, scrollView);
       },
-    });
-    styleCellsHelper.getCellByViewRange({
-      rectRange: scrollView,
-      callback: (ri, ci, cell, rect) => {
+      mergeCallback: (row, col, cell, rect, merge) => {
+        const { sri, sci } = merge;
         const fixedRect = rect.clone();
-        this.drawFixedXIcon(fixedRect, ri, ci, scrollView);
-        if (merges.getFirstIncludes(ri, ci)) {
-          return;
-        }
         const staticRect = rect.clone();
         const cellRect = rect.clone();
-        this.drawStaticXIcon(staticRect, ri, ci, scrollView);
+        this.drawFixedXIcon(fixedRect, row, col, scrollView);
+        this.drawStaticXIcon(staticRect, sri, sci, scrollView);
         this.drawCellXIcon(cellRect, cell, scrollView);
       },
     });
@@ -900,20 +894,20 @@ class XTableContentUI extends XTableUI {
       let max;
       textCellsHelper.getCellByViewRange({
         reverseCols: true,
-        rectRange: lView,
+        view: lView,
         newCol: (col) => {
           max += cols.getWidth(col);
         },
         newRow: () => {
           max = 0;
         },
-        callback: (row, col, cell, rect, overflow) => {
+        cellsINCallback: (row, col, cell, rect, overflow) => {
           if (merges.getFirstIncludes(row, col)) {
-            return BREAK_LOOP.ROW;
+            return TEXT_BREAK_LOOP.ROW;
           }
           const { text } = cell;
           if (PlainUtils.isBlank(text)) {
-            return BREAK_LOOP.CONTINUE;
+            return TEXT_BREAK_LOOP.CONTINUE;
           }
           const { fontAttr } = cell;
           const { align, textWrap, direction } = fontAttr;
@@ -935,7 +929,7 @@ class XTableContentUI extends XTableUI {
               cell.setRightSdistWidth(result.rightSdist);
             }
           }
-          return BREAK_LOOP.ROW;
+          return TEXT_BREAK_LOOP.ROW;
         },
       });
     }
@@ -945,22 +939,22 @@ class XTableContentUI extends XTableUI {
     rView.eci = cols.len - 1;
     if (rView.sci < cols.len) {
       let max;
-      textCellsHelper.getCellSkipMergeCellByViewRange({
-        rectRange: rView,
+      textCellsHelper.getCellByViewRange({
         startX: scrollView.w,
+        view: rView,
         newCol: (col) => {
           max += cols.getWidth(col);
         },
         newRow: () => {
           max = 0;
         },
-        callback: (row, col, cell, rect, overflow) => {
+        cellsINCallback: (row, col, cell, rect, overflow) => {
           if (merges.getFirstIncludes(row, col)) {
-            return BREAK_LOOP.ROW;
+            return TEXT_BREAK_LOOP.ROW;
           }
           const { text } = cell;
           if (PlainUtils.isBlank(text)) {
-            return BREAK_LOOP.CONTINUE;
+            return TEXT_BREAK_LOOP.CONTINUE;
           }
           const { fontAttr } = cell;
           const { align, textWrap, direction } = fontAttr;
@@ -982,7 +976,7 @@ class XTableContentUI extends XTableUI {
               cell.setRightSdistWidth(result.rightSdist);
             }
           }
-          return BREAK_LOOP.ROW;
+          return TEXT_BREAK_LOOP.ROW;
         },
       });
     }
@@ -1001,9 +995,9 @@ class XTableContentUI extends XTableUI {
       draw, textCellsHelper, textFont,
     } = table;
     draw.offset(drawX, drawY);
-    textCellsHelper.getCellSkipMergeCellByViewRange({
-      rectRange: scrollView,
-      callback: (row, col, cell, rect, overflow) => {
+    textCellsHelper.getCellByViewRange({
+      view: scrollView,
+      cellsINCallback: (row, col, cell, rect, overflow) => {
         const builder = textFont.getBuilder();
         builder.setDraw(draw);
         builder.setCell(cell);
@@ -1015,10 +1009,7 @@ class XTableContentUI extends XTableUI {
         cell.setLeftSdistWidth(result.leftSdist);
         cell.setRightSdistWidth(result.rightSdist);
       },
-    });
-    textCellsHelper.getMergeCellByViewRange({
-      rectRange: scrollView,
-      callback: (rect, cell) => {
+      mergeCallback: (row, col, cell, rect) => {
         const builder = textFont.getBuilder();
         builder.setDraw(draw);
         builder.setRect(rect);
@@ -1274,24 +1265,17 @@ class XTableContentUI extends XTableUI {
     const drawX = this.getDrawX();
     const drawY = this.getDrawY();
     const {
-      draw, styleCellsHelper, merges,
+      draw, styleCellsHelper,
     } = table;
     draw.offset(drawX, drawY);
-    styleCellsHelper.getMergeCellByViewRange({
-      rectRange: scrollView,
-      callback: (rect, cell) => {
+    styleCellsHelper.getCellByViewRange({
+      view: scrollView,
+      cellsINCallback: (row, col, cell, rect) => {
         const { background } = cell;
         const box = new Box({ draw, rect });
         box.drawBackgroundColor(background);
       },
-    });
-    styleCellsHelper.getCellByViewRange({
-      rectRange: scrollView,
-      callback: (row, col, cell, rect) => {
-        const merge = merges.getFirstIncludes(row, col);
-        if (merge && (merge.sri !== row || merge.sci !== row)) {
-          return;
-        }
+      mergeCallback: (row, col, cell, rect) => {
         const { background } = cell;
         const box = new Box({ draw, rect });
         box.drawBackgroundColor(background);
@@ -2686,34 +2670,29 @@ class XTableStyle extends Widget {
   /**
    * 边框渲染优化
    */
-  borderOptimize() {
+  optimize() {
     const { styleCellsHelper } = this;
     const { xTableAreaView } = this;
     const { cellHorizontalBorder, cellVerticalBorder } = this;
     const scrollView = xTableAreaView.getScrollView();
     let enable = true;
     styleCellsHelper.getCellByViewRange({
-      rectRange: scrollView,
-      callback: (row, col, cell) => {
+      view: scrollView,
+      cellsINCallback: (row, col, cell) => {
         const { borderAttr } = cell;
-        const { top, left, right, bottom } = borderAttr;
-        if (top.type === LINE_TYPE.DOUBLE_LINE) {
+        if (borderAttr.hasDouble()) {
           enable = false;
-          return enable;
+          return STYLE_BREAK_LOOP.RETURN;
         }
-        if (left.type === LINE_TYPE.DOUBLE_LINE) {
+        return STYLE_BREAK_LOOP.CONTINUE;
+      },
+      mergeCallback: (row, col, cell) => {
+        const { borderAttr } = cell;
+        if (borderAttr.hasDouble()) {
           enable = false;
-          return enable;
+          return STYLE_BREAK_LOOP.RETURN;
         }
-        if (right.type === LINE_TYPE.DOUBLE_LINE) {
-          enable = false;
-          return enable;
-        }
-        if (bottom.type === LINE_TYPE.DOUBLE_LINE) {
-          enable = false;
-          return enable;
-        }
-        return true;
+        return STYLE_BREAK_LOOP.CONTINUE;
       },
     });
     if (enable) {
@@ -2741,7 +2720,7 @@ class XTableStyle extends Widget {
     const { xTop } = this;
     const { xContent } = this;
     this.renderId = ++renderId;
-    this.borderOptimize();
+    this.optimize();
     xTableFrozenFullRect.render();
     if (xFixedView.hasFixedLeft() && xFixedView.hasFixedTop()) {
       xTableFrozenContent.render();

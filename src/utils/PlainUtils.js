@@ -332,6 +332,7 @@ class PlainUtils {
 PlainUtils.EMPTY = '';
 PlainUtils.Nul = null;
 PlainUtils.Undef = undefined;
+PlainUtils.noop = () => {};
 
 export {
   PlainUtils,

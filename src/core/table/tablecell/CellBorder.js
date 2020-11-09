@@ -1,4 +1,5 @@
 import { Border } from './Border';
+import { LINE_TYPE } from '../../../canvas/Line';
 
 /**
  * CellBorder
@@ -24,6 +25,20 @@ class CellBorder {
     this.bottom = new Border(bottom);
     this.top = new Border(top);
     this.right = new Border(right);
+  }
+
+  hasDouble() {
+    const { top, left, right, bottom } = this;
+    if (top.type === LINE_TYPE.DOUBLE_LINE) {
+      return true;
+    }
+    if (left.type === LINE_TYPE.DOUBLE_LINE) {
+      return true;
+    }
+    if (right.type === LINE_TYPE.DOUBLE_LINE) {
+      return true;
+    }
+    return bottom.type === LINE_TYPE.DOUBLE_LINE;
   }
 
   isDisplay() {
