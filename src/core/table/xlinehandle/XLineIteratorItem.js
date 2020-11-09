@@ -10,7 +10,7 @@ class XLineIteratorItem {
     newCol = PlainUtils.noop,
     endCol = PlainUtils.noop,
     jump = PlainUtils.noop,
-    handle = PlainUtils.noop,
+    exec = PlainUtils.noop,
   } = {}) {
     this.newRow = newRow;
     this.endRow = endRow;
@@ -18,7 +18,11 @@ class XLineIteratorItem {
     this.newCol = newCol;
     this.endCol = endCol;
     this.jump = jump;
-    this.handle = handle;
+    this.exec = exec;
+  }
+
+  getFilter() {
+    return this.filter;
   }
 
 }

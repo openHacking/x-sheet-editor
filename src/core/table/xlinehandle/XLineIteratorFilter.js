@@ -5,43 +5,54 @@ class XLineIteratorFilter {
   }) {
     this.stack = stack;
     this.logic = logic;
+    this.active = null;
+  }
+
+  getActive() {
+    return this.active;
   }
 
   run({
     row, col,
   }) {
     const { logic, stack } = this;
-    let filterResult = XLineIteratorFilter.RETURN_TYPE.HANDLE;
+    let result = XLineIteratorFilter.RETURN_TYPE.EXEC;
+    let active = null;
     switch (logic) {
       case XLineIteratorFilter.FILTER_LOGIC.AND: {
-        filterResult = XLineIteratorFilter.RETURN_TYPE.HANDLE;
+        result = XLineIteratorFilter.RETURN_TYPE.EXEC;
         for (let i = 0; i < stack.length; i += 1) {
-          const returnValue = stack[i](row, col);
-          if (returnValue !== XLineIteratorFilter.RETURN_TYPE.HANDLE) {
-            filterResult = XLineIteratorFilter.RETURN_TYPE.JUMP;
+          const filter = stack[i];
+          const returnValue = filter.run({ row, col });
+          if (returnValue !== XLineIteratorFilter.RETURN_TYPE.EXEC) {
+            result = XLineIteratorFilter.RETURN_TYPE.JUMP;
+            active = filter;
             break;
           }
         }
         break;
       }
       case XLineIteratorFilter.FILTER_LOGIC.OR: {
-        filterResult = XLineIteratorFilter.RETURN_TYPE.JUMP;
+        result = XLineIteratorFilter.RETURN_TYPE.JUMP;
         for (let i = 0; i < stack.length; i += 1) {
-          const returnValue = stack[i](row, col);
-          if (returnValue === XLineIteratorFilter.RETURN_TYPE.HANDLE) {
-            filterResult = XLineIteratorFilter.RETURN_TYPE.HANDLE;
+          const filter = stack[i];
+          const returnValue = filter.run({ row, col });
+          if (returnValue === XLineIteratorFilter.RETURN_TYPE.EXEC) {
+            result = XLineIteratorFilter.RETURN_TYPE.EXEC;
+            active = filter;
             break;
           }
         }
         break;
       }
     }
-    return filterResult;
+    this.active = active;
+    return result;
   }
 
 }
 XLineIteratorFilter.RETURN_TYPE = {
-  HANDLE: 1,
+  EXEC: 1,
   JUMP: 2,
 };
 XLineIteratorFilter.FILTER_LOGIC = {

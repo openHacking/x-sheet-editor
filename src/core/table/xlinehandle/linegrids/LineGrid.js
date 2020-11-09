@@ -7,11 +7,11 @@ class LineGrid {
   constructor({
     view, bx, by, getWidth, getHeight,
   }) {
-    this.view = view;
-    this.bx = bx;
-    this.by = by;
     this.getWidth = getWidth;
     this.getHeight = getHeight;
+    this.bx = bx;
+    this.by = by;
+    this.view = view;
   }
 
   run() {
@@ -20,7 +20,7 @@ class LineGrid {
     const bRow = {};
     const bLine = [];
     const b = new XLineIteratorItem({
-      newRow: (row, y) => {
+      newRow: ({ row, y }) => {
         const height = getHeight(row);
         bRow.sx = bx;
         bRow.sy = by + y + height;
@@ -38,12 +38,12 @@ class LineGrid {
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
         stack: [],
       }),
-      handle: (row, col) => {
+      exec: ({ col }) => {
         const width = getWidth(col);
         bRow.breakpoint = true;
         bRow.ex += width;
       },
-      jump: (row, col) => {
+      jump: ({ col }) => {
         if (bRow.breakpoint) {
           const { sx, sy, ex, ey } = bRow;
           bRow.breakpoint = false;
@@ -58,7 +58,7 @@ class LineGrid {
     const rCols = [];
     const rLine = [];
     const r = new XLineIteratorItem({
-      newCol: (col, x) => {
+      newCol: ({ col, x }) => {
         const width = getWidth(col);
         const sx = bx + x + width;
         const sy = by;
@@ -67,7 +67,7 @@ class LineGrid {
         const breakpoint = false;
         rCols[col] = { sx, sy, ex, ey, breakpoint };
       },
-      endCol: (col) => {
+      endCol: ({ col }) => {
         const item = rCols[col];
         if (item.breakpoint) {
           const { sx, sy, ex, ey } = item;
@@ -78,13 +78,13 @@ class LineGrid {
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
         stack: [],
       }),
-      handle: (row, col) => {
+      exec: ({ row, col }) => {
         const item = rCols[col];
         const height = getHeight(row);
         item.breakpoint = true;
         item.ey += height;
       },
-      jump: (row, col) => {
+      jump: ({ row, col }) => {
         const item = rCols[col];
         const height = getHeight(row);
         if (item.breakpoint) {
@@ -97,7 +97,11 @@ class LineGrid {
       },
     });
     // 运算
-    const loop = new XLineIteratorLoop({ r, b, view });
+    const loop = new XLineIteratorLoop({
+      r,
+      b,
+      view,
+    });
     loop.run();
     // 返回处理结果
     return {
