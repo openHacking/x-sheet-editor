@@ -7,6 +7,7 @@ class TableHorizontalAngelBar extends TableAngleBar {
     viewRange,
   }) {
     const {
+      horizontalAngleBarRowHas,
       horizontalAngleBarMustFilter,
       horizontalMergeFilter,
       bottomBorderDiffFilter,
@@ -14,6 +15,7 @@ class TableHorizontalAngelBar extends TableAngleBar {
     return this.computerBottomHorizontalLine({
       viewRange,
       filter: new FilterChain(ChainLogic.AND, [
+        horizontalAngleBarRowHas,
         horizontalAngleBarMustFilter,
         horizontalMergeFilter,
         bottomBorderDiffFilter,
@@ -25,6 +27,7 @@ class TableHorizontalAngelBar extends TableAngleBar {
     viewRange,
   }) {
     const {
+      horizontalAngleBarRowHas,
       horizontalAngleBarMustFilter,
       horizontalMergeFilter,
       topBorderDiffFilter,
@@ -32,6 +35,7 @@ class TableHorizontalAngelBar extends TableAngleBar {
     return this.computerTopHorizontalLine({
       viewRange,
       filter: new FilterChain(ChainLogic.AND, [
+        horizontalAngleBarRowHas,
         horizontalAngleBarMustFilter,
         horizontalMergeFilter,
         topBorderDiffFilter,

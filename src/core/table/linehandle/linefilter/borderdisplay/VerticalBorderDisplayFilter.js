@@ -11,7 +11,9 @@ class VerticalBorderDisplayFilter extends LineFilter {
       let display = false;
       if (cell && !display) display = cell.borderAttr.right.display;
       if (next && !display) display = next.borderAttr.left.display;
-      return !display;
+      return display
+        ? LineFilter.RETURN_TYPE.JUMP
+        : LineFilter.RETURN_TYPE.HANDLE;
     });
   }
 

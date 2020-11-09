@@ -1,6 +1,6 @@
 import { BaseLine } from '../BaseLine';
-import { HorizontalMergeFilter } from '../linefilter/mege/HorizontalMergeFilter';
-import { VerticalMergeFilter } from '../linefilter/mege/VerticalMergeFilter';
+import { HorizontalMergeFilter } from '../linefilter/megeignore/HorizontalMergeFilter';
+import { VerticalMergeFilter } from '../linefilter/megeignore/VerticalMergeFilter';
 import { BottomBorderDiffFilter } from '../linefilter/borderdiff/BottomBorderDiffFilter';
 import { LeftBorderDiffFilter } from '../linefilter/borderdiff/LeftBorderDiffFilter';
 import { RightBorderDiffFilter } from '../linefilter/borderdiff/RightBorderDiffFilter';
@@ -52,6 +52,33 @@ class TableBorder extends BaseLine {
     });
   }
 
+  topHorizontalLineOffsetX(sx, ex, row, col) {
+    const { cells } = this;
+    const last = cells.getCell(row, col - 1);
+    const next = cells.getCell(row, col + 1);
+    let osx = sx;
+    let oex = ex;
+    if (last) {
+      if (last.borderAttr.top.display) {
+        osx -= last.rightSdistWidth;
+      }
+    }
+    if (next) {
+      if (next.borderAttr.top.display) {
+        oex += next.leftSdistWidth;
+      }
+    }
+    return { osx, oex };
+  }
+
+  disableOptimization() {
+    this.drawOptimization = false;
+  }
+
+  enableOptimization() {
+    this.drawOptimization = true;
+  }
+
   computerTopHorizontalLine({
     viewRange = null,
     bx = 0,
@@ -84,7 +111,8 @@ class TableBorder extends BaseLine {
         const cell = cells.getCell(row, col);
         const { borderAttr } = cell;
         ex += width;
-        line.push({ sx, sy, ex, ey, row, col, borderAttr });
+        const { osx, oex } = this.topHorizontalLineOffsetX(sx, ex, row, col);
+        line.push({ sx: osx, sy, ex: oex, ey, row, col, borderAttr });
         sx = ex;
       },
     });
@@ -280,14 +308,6 @@ class TableBorder extends BaseLine {
       }
     }
     return line;
-  }
-
-  disableOptimization() {
-    this.drawOptimization = false;
-  }
-
-  enableOptimization() {
-    this.drawOptimization = true;
   }
 
 }

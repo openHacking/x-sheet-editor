@@ -11,6 +11,13 @@ class LineFilter {
 
 }
 
+LineFilter.RETURN_TYPE = {
+  HANDLE: 1,
+  JUMP: 2,
+  NEXT_ROW: 3,
+  NEXT_COL: 4,
+};
+
 export {
   LineFilter,
 };

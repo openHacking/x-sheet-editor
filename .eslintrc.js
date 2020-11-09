@@ -11,5 +11,6 @@ module.exports = {
     'padded-blocks': 0,
     'prefer-destructuring': 0,
     'default-case': 0,
+    'no-plusplus': 0,
   }
 };

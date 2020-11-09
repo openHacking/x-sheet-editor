@@ -6,12 +6,6 @@ import { LineFilter } from './linefilter/LineFilter';
 import { PlainUtils } from '../../../utils/PlainUtils';
 import { ColsIterator } from '../iterator/ColsIterator';
 import { RowsIterator } from '../iterator/RowsIterator';
-import { RightVerticalAngleBarIgnoreFilter } from './linefilter/anglebarignore/RightVerticalAngleBarIgnoreFilter';
-import { LeftVerticalAngleBarIgnoreFilter } from './linefilter/anglebarignore/LeftVerticalAngleBarIgnoreFilter';
-import { TopHorizontalAngleBarIgnoreFilter } from './linefilter/anglebarignore/TopHorizontalAngleBarIgnoreFilter';
-import { BottomHorizontalAngleBarIgnoreFilter } from './linefilter/anglebarignore/BottomHorizontalAngleBarIgnoreFilter';
-import { HorizontalAngleBarMustFilter } from './linefilter/anglebarmust/HorizontalAngleBarMustFilter';
-import { VerticalAngleBarMuseFilter } from './linefilter/anglebarmust/VerticalAngleBarMuseFilter';
 
 class BaseLine {
 
@@ -29,10 +23,10 @@ class BaseLine {
     this.foldOnOff = foldOnOff;
     // 内容越界
     this.rightOutRangeFilter = new RightOutRangeFilter({
-      cells, cols, merges,
+      cells, cols, merges, rows,
     });
     this.leftOutRangeFilter = new LeftOutRangeFilter({
-      cells, cols, merges,
+      cells, cols, merges, rows,
     });
   }
 
@@ -46,8 +40,9 @@ class BaseLine {
       viewRange,
       filter: new LineFilter((row, col) => {
         const merge = merges.getFirstIncludes(row, col);
-        return PlainUtils.isNotUnDef(merge)
-          && filter.indexOf(merge) === -1;
+        return PlainUtils.isNotUnDef(merge) && filter.indexOf(merge) === -1
+          ? LineFilter.RETURN_TYPE.HANDLE
+          : LineFilter.RETURN_TYPE.JUMP;
       }),
       handle: (row, col, x, y) => {
         const merge = merges.getFirstIncludes(row, col);
@@ -111,7 +106,7 @@ class BaseLine {
   horizontalIterate({
     viewRange = new RectRange(0, 0, 0, 0),
     newRow = () => true,
-    filter = new LineFilter(() => true),
+    filter = new LineFilter(() => LineFilter.RETURN_TYPE.HANDLE),
     jump = () => true,
     handle = () => true,
     endRow = () => true,
@@ -136,12 +131,19 @@ class BaseLine {
           .setLoop((j) => {
             const result = filter.execute(i, j, x, y);
             const width = cols.getWidth(j);
-            if (result) {
-              handle(i, j, x, y);
-            } else {
-              jump(i, j, x, y);
+            switch (result) {
+              case LineFilter.RETURN_TYPE.HANDLE:
+                handle(i, j, x, y);
+                x += width;
+                return true;
+              case LineFilter.RETURN_TYPE.JUMP:
+                jump(i, j, x, y);
+                x += width;
+                return true;
+              case LineFilter.RETURN_TYPE.NEXT_ROW:
+                return false;
+              default: return true;
             }
-            x += width;
           })
           .execute();
         endRow();
@@ -154,7 +156,7 @@ class BaseLine {
   verticalIterate({
     viewRange = new RectRange(0, 0, 0, 0),
     newCol = () => true,
-    filter = new LineFilter(() => true),
+    filter = new LineFilter(() => LineFilter.RETURN_TYPE.HANDLE),
     jump = () => true,
     handle = () => true,
     endCol = () => true,
@@ -177,14 +179,21 @@ class BaseLine {
           .setBegin(sri)
           .setEnd(eri)
           .setLoop((j) => {
-            const height = rows.getHeight(j);
             const result = filter.execute(i, j, x, y);
-            if (result) {
-              handle(i, j, x, y);
-            } else {
-              jump(i, j, x, y);
+            const height = rows.getHeight(j);
+            switch (result) {
+              case LineFilter.RETURN_TYPE.HANDLE:
+                handle(i, j, x, y);
+                y += height;
+                return true;
+              case LineFilter.RETURN_TYPE.JUMP:
+                jump(i, j, x, y);
+                y += height;
+                return true;
+              case LineFilter.RETURN_TYPE.NEXT_COL:
+                return false;
+              default: return true;
             }
-            y += height;
           })
           .foldOnOff(foldOnOff)
           .execute();

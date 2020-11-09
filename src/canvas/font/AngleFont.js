@@ -4,6 +4,7 @@ import { RTCosKit, RTSinKit } from '../RTFunction';
 import { Angle } from '../Angle';
 import { Rect } from '../Rect';
 import { Crop } from '../Crop';
+import { FontDrawResult } from './FontDrawResult';
 
 class AngleFont extends BaseFont {
 
@@ -42,7 +43,7 @@ class AngleFont extends BaseFont {
   draw() {
     const { text } = this;
     if (this.isBlank(text)) {
-      return 0;
+      return new FontDrawResult();
     }
     const { dw, attr } = this;
     const { textWrap } = attr;
@@ -64,7 +65,7 @@ class AngleFont extends BaseFont {
       case BaseFont.TEXT_WRAP.WORD_WRAP:
         return this.wrapTextFont();
     }
-    return 0;
+    return new FontDrawResult();
   }
 
   truncateFont() {
@@ -191,7 +192,7 @@ class AngleFont extends BaseFont {
         tilt, angle,
       });
     }
-    return textHaveWidth + alignPadding;
+    return new FontDrawResult(textHaveWidth + alignPadding);
   }
 
   wrapTextFont() {
@@ -403,7 +404,7 @@ class AngleFont extends BaseFont {
           dwAngle.revert();
           jj += 1;
         }
-        return totalWidth + alignPadding;
+        return new FontDrawResult(totalWidth + alignPadding);
       }
       // 文本大小
       const textWidth = this.textWidth(text);
@@ -462,7 +463,7 @@ class AngleFont extends BaseFont {
         this.drawLine('strike', tx, ty, textWidth);
       }
       dwAngle.revert();
-      return trigonometricWidth + alignPadding;
+      return new FontDrawResult(trigonometricWidth + alignPadding);
     }
     const textHypotenuseWidth = RTSinKit.tilt({
       inverse: height - (padding * 2),
@@ -652,7 +653,7 @@ class AngleFont extends BaseFont {
         dwAngle.revert();
         jj += 1;
       }
-      return totalWidth + alignPadding;
+      return new FontDrawResult(totalWidth + alignPadding);
     }
     // 计算文本块大小
     const textWidth = this.textWidth(text);
@@ -711,7 +712,7 @@ class AngleFont extends BaseFont {
       this.drawLine('strike', tx, ty, textWidth);
     }
     dwAngle.revert();
-    return trigonometricWidth + alignPadding;
+    return new FontDrawResult(trigonometricWidth + alignPadding);
   }
 
 }

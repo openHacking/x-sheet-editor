@@ -1,5 +1,4 @@
 import { LineFilter } from '../LineFilter';
-import { BaseFont } from '../../../../../canvas/font/BaseFont';
 
 class VerticalAngleBarMuseFilter extends LineFilter {
 
@@ -9,16 +8,11 @@ class VerticalAngleBarMuseFilter extends LineFilter {
     super((ci, ri) => {
       const cell = cells.getCell(ri, ci);
       if (cell) {
-        const { fontAttr } = cell;
-        const { direction } = fontAttr;
-        if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
-          const { angle } = fontAttr;
-          if (angle !== 90 && angle !== -90) {
-            return true;
-          }
-        }
+        return cell.isAngleBarCell()
+          ? LineFilter.RETURN_TYPE.HANDLE
+          : LineFilter.RETURN_TYPE.JUMP;
       }
-      return false;
+      return LineFilter.RETURN_TYPE.JUMP;
     });
     this.cells = cells;
     this.cols = cols;

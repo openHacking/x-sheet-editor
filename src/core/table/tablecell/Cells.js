@@ -89,21 +89,29 @@ class Cells {
   getCellBoundOutSize(ri, ci) {
     const { cols } = this;
     const cell = this.getCell(ri, ci);
-    if (cell) {
-      const colWidth = cols.getWidth(ci);
-      const { contentWidth, fontAttr } = cell;
-      const { align } = fontAttr;
-      switch (align) {
-        case BaseFont.ALIGN.right:
-        case BaseFont.ALIGN.left:
-          return contentWidth;
-        case BaseFont.ALIGN.center:
-          return colWidth + ((contentWidth - colWidth) / 2);
-        default:
-          return 0;
+    if (!cell) {
+      return 0;
+    }
+    const { contentWidth, fontAttr } = cell;
+    const { align } = fontAttr;
+    let boundOutWidth = 0;
+    const colWidth = cols.getWidth(ci);
+    switch (align) {
+      case BaseFont.ALIGN.right:
+      case BaseFont.ALIGN.left: {
+        boundOutWidth = contentWidth;
+        break;
+      }
+      case BaseFont.ALIGN.center: {
+        if (cell.isAngleBarCell()) {
+          boundOutWidth = contentWidth;
+        } else {
+          boundOutWidth = colWidth + ((contentWidth - colWidth) / 2);
+        }
+        break;
       }
     }
-    return 0;
+    return boundOutWidth;
   }
 
   getData() {

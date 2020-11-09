@@ -1,5 +1,4 @@
 import { LineFilter } from '../LineFilter';
-import { BaseFont } from '../../../../../canvas/font/BaseFont';
 
 class BottomHorizontalAngleBarIgnoreFilter extends LineFilter {
 
@@ -10,26 +9,16 @@ class BottomHorizontalAngleBarIgnoreFilter extends LineFilter {
       const next = cells.getCell(ri + 1, ci);
       const cell = cells.getCell(ri, ci);
       if (cell) {
-        const { fontAttr } = cell;
-        const { direction } = fontAttr;
-        if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
-          const { angle } = fontAttr;
-          if (angle !== 90 && angle !== -90) {
-            return false;
-          }
-        }
+        return cell.isAngleBarCell()
+          ? LineFilter.RETURN_TYPE.JUMP
+          : LineFilter.RETURN_TYPE.HANDLE;
       }
       if (next) {
-        const { fontAttr } = next;
-        const { direction } = fontAttr;
-        if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
-          const { angle } = fontAttr;
-          if (angle !== 90 && angle !== -90) {
-            return false;
-          }
-        }
+        return next.isAngleBarCell()
+          ? LineFilter.RETURN_TYPE.JUMP
+          : LineFilter.RETURN_TYPE.HANDLE;
       }
-      return true;
+      return LineFilter.RETURN_TYPE.HANDLE;
     });
     this.cells = cells;
     this.cols = cols;

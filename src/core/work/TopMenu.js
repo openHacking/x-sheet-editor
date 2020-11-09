@@ -664,6 +664,7 @@ class TopMenu extends Widget {
                   cell.fontAttr.angle = angle;
                   cell.fontAttr.direction = BaseFont.TEXT_DIRECTION.HORIZONTAL;
                 } else {
+                  cell.borderAttr.updateMaxIndex();
                   cell.fontAttr.angle = angle;
                   cell.fontAttr.direction = BaseFont.TEXT_DIRECTION.ANGLE;
                 }

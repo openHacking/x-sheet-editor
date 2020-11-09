@@ -1,6 +1,6 @@
 import { BaseLine } from '../BaseLine';
-import { HorizontalMergeFilter } from '../linefilter/mege/HorizontalMergeFilter';
-import { VerticalMergeFilter } from '../linefilter/mege/VerticalMergeFilter';
+import { HorizontalMergeFilter } from '../linefilter/megeignore/HorizontalMergeFilter';
+import { VerticalMergeFilter } from '../linefilter/megeignore/VerticalMergeFilter';
 import { HorizontalBorderDisplayFilter } from '../linefilter/borderdisplay/HorizontalBorderDisplayFilter';
 import { VerticalBorderDisplayFilter } from '../linefilter/borderdisplay/VerticalBorderDisplayFilter';
 

@@ -2,6 +2,7 @@ import { BaseFont } from './BaseFont';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { Crop } from '../Crop';
 import { DisplayFont } from './DisplayFont';
+import { FontDrawResult } from './FontDrawResult';
 
 class HorizontalFont extends DisplayFont {
 
@@ -96,7 +97,7 @@ class HorizontalFont extends DisplayFont {
   draw() {
     const { text } = this;
     if (this.isBlank(text)) {
-      return 0;
+      return new FontDrawResult();
     }
     const { dw, attr } = this;
     const { textWrap } = attr;
@@ -119,7 +120,7 @@ class HorizontalFont extends DisplayFont {
       case BaseFont.TEXT_WRAP.WORD_WRAP:
         return this.wrapTextFont();
     }
-    return 0;
+    return new FontDrawResult();
   }
 
   truncateFont() {
@@ -182,7 +183,7 @@ class HorizontalFont extends DisplayFont {
         this.drawLine('strike', bx, by, textWidth);
       }
     }
-    return 0;
+    return new FontDrawResult();
   }
 
   overflowFont() {
@@ -256,7 +257,7 @@ class HorizontalFont extends DisplayFont {
         this.drawLine('strike', bx, by, textWidth);
       }
     }
-    return textWidth + alignPadding;
+    return new FontDrawResult(textWidth + alignPadding);
   }
 
   wrapTextFont() {
@@ -394,7 +395,7 @@ class HorizontalFont extends DisplayFont {
         }
       }
     }
-    return 0;
+    return new FontDrawResult();
   }
 
 }

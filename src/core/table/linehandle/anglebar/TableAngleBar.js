@@ -1,13 +1,14 @@
 import { BaseLine } from '../BaseLine';
 import { HorizontalAngleBarMustFilter } from '../linefilter/anglebarmust/HorizontalAngleBarMustFilter';
 import { VerticalAngleBarMuseFilter } from '../linefilter/anglebarmust/VerticalAngleBarMuseFilter';
-import { HorizontalMergeFilter } from '../linefilter/mege/HorizontalMergeFilter';
-import { VerticalMergeFilter } from '../linefilter/mege/VerticalMergeFilter';
+import { HorizontalMergeFilter } from '../linefilter/megeignore/HorizontalMergeFilter';
+import { VerticalMergeFilter } from '../linefilter/megeignore/VerticalMergeFilter';
 import { BottomBorderDiffFilter } from '../linefilter/borderdiff/BottomBorderDiffFilter';
 import { LeftBorderDiffFilter } from '../linefilter/borderdiff/LeftBorderDiffFilter';
 import { RightBorderDiffFilter } from '../linefilter/borderdiff/RightBorderDiffFilter';
 import { TopBorderDiffFilter } from '../linefilter/borderdiff/TopBorderDiffFilter';
-import { RTCosKit, RTSinKit } from '../../../../canvas/RTFunction';
+import { HorizontalAngleBarRowHas } from '../linefilter/anglebarrowhas/HorizontalAngleBarRowHas';
+import { VerticalAngleBarRowHas } from '../linefilter/anglebarrowhas/VerticalAngleBarRowHas';
 
 class TableAngleBar extends BaseLine {
 
@@ -33,48 +34,38 @@ class TableAngleBar extends BaseLine {
     this.leftBorderDiffFilter = new LeftBorderDiffFilter({ cells });
     this.rightBorderDiffFilter = new RightBorderDiffFilter({ cells });
     this.topBorderDiffFilter = new TopBorderDiffFilter({ cells });
-    // AngleBar 检查
+    // AngleBar单元格检查
     this.horizontalAngleBarMustFilter = new HorizontalAngleBarMustFilter({
       cells, cols, merges,
     });
     this.verticalAngleBarMuseFilter = new VerticalAngleBarMuseFilter({
       cells, cols, merges,
     });
+    // 是否具有合并单元格
+    this.horizontalAngleBarRowHas = new HorizontalAngleBarRowHas({
+      cells, cols, merges, rows,
+    });
+    this.verticalAngleBarRowHas = new VerticalAngleBarRowHas({
+      cells, cols, merges, rows,
+    });
   }
 
   getAngleOffsetX(ri, ci, sx, ex) {
-    const { cells, rows } = this;
-    const height = rows.getHeight(ri);
+    const { cells } = this;
     const cell = cells.getCell(ri, ci);
     const { fontAttr } = cell;
     const { angle } = fontAttr;
-    const tilt = RTSinKit.tilt({ inverse: height, angle });
-    const nearby = RTCosKit.nearby({ tilt, angle });
     if (angle > 0) {
-      sx += nearby;
-      ex += nearby;
+      sx += cell.leftSdistWidth;
+      ex += cell.leftSdistWidth;
     } else {
-      sx -= nearby;
-      ex -= nearby;
+      sx -= cell.rightSdistWidth;
+      ex -= cell.rightSdistWidth;
     }
     return {
       osx: sx,
       oex: ex,
     };
-  }
-
-  getAngleBorderAttr(ri, ci) {
-    const { cells } = this;
-    const last = cells.getCell(ri - 1, ci);
-    const cell = cells.getCell(ri, ci);
-    if (last) {
-      const lastTop = last.borderAttr.top;
-      const cellTop = cell.borderAttr.top;
-      if (cellTop.priority(lastTop) !== 1) {
-        return last.borderAttr;
-      }
-    }
-    return cell.borderAttr;
   }
 
   computerTopHorizontalLine({
@@ -83,7 +74,7 @@ class TableAngleBar extends BaseLine {
     by = 0,
     filter = null,
   }) {
-    const { cols } = this;
+    const { cols, cells } = this;
     const line = [];
     let sx;
     let sy;
@@ -106,7 +97,7 @@ class TableAngleBar extends BaseLine {
       handle: (row, col) => {
         ex += cols.getWidth(col);
         const { osx, oex } = this.getAngleOffsetX(row, col, sx, ex);
-        const borderAttr = this.getAngleBorderAttr(row, col);
+        const { borderAttr } = cells.getCell(row, col);
         line.push({ sx: osx, sy, ex: oex, ey, row, col, borderAttr });
         sx = ex;
       },
@@ -120,7 +111,7 @@ class TableAngleBar extends BaseLine {
     by = 0,
     filter = null,
   }) {
-    const { cols, rows } = this;
+    const { cols, rows, cells } = this;
     const line = [];
     let sx;
     let sy;
@@ -143,7 +134,7 @@ class TableAngleBar extends BaseLine {
       },
       handle: (row, col) => {
         ex += cols.getWidth(col);
-        const borderAttr = this.getAngleBorderAttr(row, col);
+        const { borderAttr } = cells.getCell(row, col);
         line.push({ sx, sy, ex, ey, row, col, borderAttr });
         sx = ex;
       },
@@ -157,7 +148,7 @@ class TableAngleBar extends BaseLine {
     by = 0,
     filter = null,
   }) {
-    const { rows } = this;
+    const { rows, cells } = this;
     const line = [];
     let sx;
     let sy;
@@ -180,7 +171,7 @@ class TableAngleBar extends BaseLine {
       handle: (col, row) => {
         ey += rows.getHeight(row);
         const { osx } = this.getAngleOffsetX(row, col, sx, ex);
-        const borderAttr = this.getAngleBorderAttr(row, col);
+        const { borderAttr } = cells.getCell(row, col);
         line.push({ sx: osx, sy, ex, ey, row, col, borderAttr });
         sy = ey;
       },
@@ -194,7 +185,7 @@ class TableAngleBar extends BaseLine {
     by = 0,
     filter = null,
   }) {
-    const { rows, cols } = this;
+    const { rows, cols, cells } = this;
     const line = [];
     let sx;
     let sy;
@@ -218,7 +209,7 @@ class TableAngleBar extends BaseLine {
       handle: (col, row) => {
         ey += rows.getHeight(row);
         const { osx } = this.getAngleOffsetX(row, col, sx, ex);
-        const borderAttr = this.getAngleBorderAttr(row, col);
+        const { borderAttr } = cells.getCell(row, col);
         line.push({ sx: osx, sy, ex, ey, row, col, borderAttr });
         sy = ey;
       },

@@ -9,7 +9,6 @@ import { Line, LINE_TYPE } from '../../canvas/Line';
 import { Grid } from '../../canvas/Grid';
 import { Crop } from '../../canvas/Crop';
 import { Rect } from '../../canvas/Rect';
-import XTableFormat from './XTableFormat';
 import { Box } from '../../canvas/Box';
 import { RectRange } from './tablebase/RectRange';
 import { Cells } from './tablecell/Cells';
@@ -36,6 +35,7 @@ import { FixedCellIcon } from './cellicon/FixedCellIcon';
 import { StaticCellIcon } from './cellicon/StaticCellIcon';
 import { TableHorizontalAngelBar } from './linehandle/anglebar/TableHorizontalAngelBar';
 import { TableVerticalAngelBar } from './linehandle/anglebar/TableVerticalAngelBar';
+import { Row } from './tablebase/Row';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -916,22 +916,23 @@ class XTableContentUI extends XTableUI {
             return BREAK_LOOP.CONTINUE;
           }
           const { fontAttr } = cell;
-          const { align, textWrap } = fontAttr;
-          const allowAlign = align === BaseFont.ALIGN.left
-            || align === BaseFont.ALIGN.center;
-          if (allowAlign && textWrap === BaseFont.TEXT_WRAP.OVER_FLOW) {
+          const { align, textWrap, direction } = fontAttr;
+          const allowTextAlign = align === BaseFont.ALIGN.left || align === BaseFont.ALIGN.center;
+          const allowTextWrap = textWrap === BaseFont.TEXT_WRAP.OVER_FLOW;
+          const allowDirection = direction === BaseFont.TEXT_DIRECTION.ANGLE;
+          if (allowTextAlign && (allowTextWrap || allowDirection)) {
             const size = cells.getCellBoundOutSize(row, col);
             if (size === 0 || size > max) {
-              const { format, borderAttr } = cell;
               const builder = textFont.getBuilder();
               builder.setDraw(draw);
-              builder.setText(XTableFormat(format, text));
-              builder.setAttr(fontAttr);
               builder.setRect(rect);
+              builder.setCell(cell);
               builder.setOverFlow(overflow);
-              builder.setBorder(borderAttr);
               const font = builder.build();
-              cell.setContentWidth(font.draw());
+              const result = font.draw();
+              cell.setContentWidth(result.width);
+              cell.setLeftSdistWidth(result.leftSdist);
+              cell.setRightSdistWidth(result.rightSdist);
             }
           }
           return BREAK_LOOP.ROW;
@@ -962,22 +963,23 @@ class XTableContentUI extends XTableUI {
             return BREAK_LOOP.CONTINUE;
           }
           const { fontAttr } = cell;
-          const { align, textWrap } = fontAttr;
-          const allowAlign = align === BaseFont.ALIGN.right
-            || align === BaseFont.ALIGN.center;
-          if (allowAlign && textWrap === BaseFont.TEXT_WRAP.OVER_FLOW) {
+          const { align, textWrap, direction } = fontAttr;
+          const allowTextAlign = align === BaseFont.ALIGN.right || align === BaseFont.ALIGN.center;
+          const allowTextWrap = textWrap === BaseFont.TEXT_WRAP.OVER_FLOW;
+          const allowDirection = direction === BaseFont.TEXT_DIRECTION.ANGLE;
+          if (allowTextAlign && (allowTextWrap || allowDirection)) {
             const size = cells.getCellBoundOutSize(row, col);
             if (size === 0 || size > max) {
-              const { format, borderAttr } = cell;
               const builder = textFont.getBuilder();
               builder.setDraw(draw);
-              builder.setText(XTableFormat(format, text));
-              builder.setAttr(fontAttr);
               builder.setRect(rect);
+              builder.setCell(cell);
               builder.setOverFlow(overflow);
-              builder.setBorder(borderAttr);
               const font = builder.build();
-              cell.setContentWidth(font.draw());
+              const result = font.draw();
+              cell.setContentWidth(result.width);
+              cell.setLeftSdistWidth(result.leftSdist);
+              cell.setRightSdistWidth(result.rightSdist);
             }
           }
           return BREAK_LOOP.ROW;
@@ -1002,32 +1004,31 @@ class XTableContentUI extends XTableUI {
     textCellsHelper.getCellSkipMergeCellByViewRange({
       rectRange: scrollView,
       callback: (row, col, cell, rect, overflow) => {
-        const { format, text, fontAttr, borderAttr } = cell;
         const builder = textFont.getBuilder();
         builder.setDraw(draw);
-        builder.setText(XTableFormat(format, text));
-        builder.setAttr(fontAttr);
+        builder.setCell(cell);
         builder.setRect(rect);
         builder.setOverFlow(overflow);
-        builder.setBorder(borderAttr);
         const font = builder.build();
-        cell.setContentWidth(font.draw());
+        const result = font.draw();
+        cell.setContentWidth(result.width);
+        cell.setLeftSdistWidth(result.leftSdist);
+        cell.setRightSdistWidth(result.rightSdist);
       },
     });
     textCellsHelper.getMergeCellByViewRange({
       rectRange: scrollView,
       callback: (rect, cell) => {
-        const {
-          format, text, fontAttr,
-        } = cell;
         const builder = textFont.getBuilder();
         builder.setDraw(draw);
-        builder.setText(XTableFormat(format, text));
-        builder.setAttr(fontAttr);
         builder.setRect(rect);
+        builder.setCell(cell);
         builder.setOverFlow(rect);
         const font = builder.build();
-        cell.setContentWidth(font.draw());
+        const result = font.draw();
+        cell.setContentWidth(result.width);
+        cell.setLeftSdistWidth(result.leftSdist);
+        cell.setRightSdistWidth(result.rightSdist);
       },
     });
     draw.offset(0, 0);
@@ -2330,6 +2331,8 @@ class XTableContent extends XTableContentUI {
 
 // =============================== XTableStyle ==============================
 
+let renderId = 0;
+
 class XTableStyle extends Widget {
 
   /**
@@ -2353,6 +2356,7 @@ class XTableStyle extends Widget {
     this.xFixedView = xFixedView;
     // 渲染模式
     this.renderMode = RENDER_MODE.RENDER;
+    this.renderId = renderId;
     // 表格数据配置
     this.scale = new Scale();
     this.index = new Code({
@@ -2593,51 +2597,10 @@ class XTableStyle extends Widget {
     this.xTableFixedBar = new XTableFixedBar(this, settings.xFixedBar);
     // 同步合并单元格
     this.merges.sync();
-  }
-
-  /**
-   * 边框渲染优化
-   */
-  drawBorderOptimize() {
-    const { styleCellsHelper } = this;
-    const { xTableAreaView } = this;
-    const {
-      cellHorizontalBorder,
-      cellVerticalBorder,
-    } = this;
-    const scrollView = xTableAreaView.getScrollView();
-    let enable = true;
-    styleCellsHelper.getCellByViewRange({
-      rectRange: scrollView,
-      callback: (row, col, cell) => {
-        const { borderAttr } = cell;
-        const { top, left, right, bottom } = borderAttr;
-        if (top.type === LINE_TYPE.DOUBLE_LINE) {
-          enable = false;
-          return enable;
-        }
-        if (left.type === LINE_TYPE.DOUBLE_LINE) {
-          enable = false;
-          return enable;
-        }
-        if (right.type === LINE_TYPE.DOUBLE_LINE) {
-          enable = false;
-          return enable;
-        }
-        if (bottom.type === LINE_TYPE.DOUBLE_LINE) {
-          enable = false;
-          return enable;
-        }
-        return true;
-      },
-    });
-    if (enable) {
-      cellHorizontalBorder.enableOptimization();
-      cellVerticalBorder.enableOptimization();
-    } else {
-      cellHorizontalBorder.disableOptimization();
-      cellVerticalBorder.disableOptimization();
-    }
+    // 行基本属性设置
+    Row.seTableCols(this.cols);
+    Row.setTableCells(this.cells);
+    Row.setXTable(this);
   }
 
   /**
@@ -2721,6 +2684,48 @@ class XTableStyle extends Widget {
   }
 
   /**
+   * 边框渲染优化
+   */
+  borderOptimize() {
+    const { styleCellsHelper } = this;
+    const { xTableAreaView } = this;
+    const { cellHorizontalBorder, cellVerticalBorder } = this;
+    const scrollView = xTableAreaView.getScrollView();
+    let enable = true;
+    styleCellsHelper.getCellByViewRange({
+      rectRange: scrollView,
+      callback: (row, col, cell) => {
+        const { borderAttr } = cell;
+        const { top, left, right, bottom } = borderAttr;
+        if (top.type === LINE_TYPE.DOUBLE_LINE) {
+          enable = false;
+          return enable;
+        }
+        if (left.type === LINE_TYPE.DOUBLE_LINE) {
+          enable = false;
+          return enable;
+        }
+        if (right.type === LINE_TYPE.DOUBLE_LINE) {
+          enable = false;
+          return enable;
+        }
+        if (bottom.type === LINE_TYPE.DOUBLE_LINE) {
+          enable = false;
+          return enable;
+        }
+        return true;
+      },
+    });
+    if (enable) {
+      cellHorizontalBorder.enableOptimization();
+      cellVerticalBorder.enableOptimization();
+    } else {
+      cellHorizontalBorder.disableOptimization();
+      cellVerticalBorder.disableOptimization();
+    }
+  }
+
+  /**
    * 渲染静态界面
    */
   render() {
@@ -2735,7 +2740,8 @@ class XTableStyle extends Widget {
     const { xLeft } = this;
     const { xTop } = this;
     const { xContent } = this;
-    this.drawBorderOptimize();
+    this.renderId = ++renderId;
+    this.borderOptimize();
     xTableFrozenFullRect.render();
     if (xFixedView.hasFixedLeft() && xFixedView.hasFixedTop()) {
       xTableFrozenContent.render();

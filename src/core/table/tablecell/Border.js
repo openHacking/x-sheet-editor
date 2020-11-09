@@ -50,10 +50,6 @@ class Border {
     }
   }
 
-  get zIndex() {
-    return this.$zIndex;
-  }
-
   get display() {
     return this.$display;
   }
@@ -88,6 +84,14 @@ class Border {
   set type(value) {
     this.$zIndex = Border.getZIndex();
     this.$type = value;
+  }
+
+  get zIndex() {
+    return this.$zIndex;
+  }
+
+  set zIndex(value) {
+    this.$zIndex = value;
   }
 
   equal(target) {

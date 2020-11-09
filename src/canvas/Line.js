@@ -568,22 +568,10 @@ class DoubleLine {
     }
   }
 
+  // eslint-disable-next-line no-unused-vars
   tiltingLine(sx, sy, ex, ey, row, col, pos) {
-    const { draw } = this;
-    const {
-      widthType, color,
-    } = this;
-    draw.setLineColor(color);
-    draw.setLineWidthType(widthType);
-    draw.setLineDash([]);
-    const external = this.handleExternal(sx, sy, ex, ey, row, col, pos);
-    const internal = this.handleInternal(sx, sy, ex, ey, row, col, pos);
-    if (!PlainUtils.isEmptyObject(internal)) {
-      draw.corsLine([internal.sx, internal.sy], [internal.ex, internal.ey]);
-    }
-    if (!PlainUtils.isEmptyObject(external)) {
-      draw.corsLine([external.sx, external.sy], [external.ex, external.ey]);
-    }
+    // TODO ..
+    // ...
   }
 
 }

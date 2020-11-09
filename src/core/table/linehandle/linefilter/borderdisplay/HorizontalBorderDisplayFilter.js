@@ -11,7 +11,9 @@ class HorizontalBorderDisplayFilter extends LineFilter {
       let display = false;
       if (cell && !display) display = cell.borderAttr.bottom.display;
       if (next && !display) display = next.borderAttr.top.display;
-      return !display;
+      return display
+        ? LineFilter.RETURN_TYPE.JUMP
+        : LineFilter.RETURN_TYPE.HANDLE;
     });
   }
 

@@ -1,6 +1,7 @@
 import { BaseFont } from './BaseFont';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { Crop } from '../Crop';
+import { FontDrawResult } from './FontDrawResult';
 
 class VerticalFont extends BaseFont {
 
@@ -63,7 +64,7 @@ class VerticalFont extends BaseFont {
   draw() {
     const { text } = this;
     if (this.isBlank(text)) {
-      return 0;
+      return new FontDrawResult();
     }
     const { dw, attr } = this;
     const { textWrap } = attr;
@@ -85,7 +86,7 @@ class VerticalFont extends BaseFont {
       case BaseFont.TEXT_WRAP.WORD_WRAP:
         return this.wrapTextFont();
     }
-    return 0;
+    return new FontDrawResult();
   }
 
   truncateFont() {
@@ -187,7 +188,7 @@ class VerticalFont extends BaseFont {
         ti += 1;
       }
     }
-    return 0;
+    return new FontDrawResult();
   }
 
   overflowFont() {
@@ -310,7 +311,7 @@ class VerticalFont extends BaseFont {
         ti += 1;
       }
     }
-    return 0;
+    return new FontDrawResult();
   }
 
 }

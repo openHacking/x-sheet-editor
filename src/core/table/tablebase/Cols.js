@@ -2,6 +2,7 @@ import { PlainUtils } from '../../../utils/PlainUtils';
 import { ScaleAdapter } from './Scale';
 import { RectRange } from './RectRange';
 import { ColsIterator } from '../iterator/ColsIterator';
+import { Col } from './Col';
 
 class Cols {
 
@@ -16,13 +17,6 @@ class Cols {
     this.data = data;
     this.min = 5;
     this.width = PlainUtils.minIf(width, this.min);
-  }
-
-  rectRangeSumWidth(rectRange) {
-    if (!rectRange.equals(RectRange.EMPTY)) {
-      return this.sectionSumWidth(rectRange.sci, rectRange.eci);
-    }
-    return 0;
   }
 
   sectionSumWidth(sci, eci) {
@@ -40,8 +34,33 @@ class Cols {
     return total;
   }
 
+  rectRangeSumWidth(rectRange) {
+    if (!rectRange.equals(RectRange.EMPTY)) {
+      return this.sectionSumWidth(rectRange.sci, rectRange.eci);
+    }
+    return 0;
+  }
+
+  get(ci) {
+    let col = this.data[ci];
+    if (col) {
+      if (col instanceof Col) {
+        return col;
+      }
+      col = new Col(ci, col);
+      this.data[ci] = col;
+    }
+    return col;
+  }
+
   getOrNew(ci) {
-    this.data[ci] = this.data[ci] || {};
+    const col = this.get(ci);
+    if (col) {
+      return col;
+    }
+    this.data[ci] = new Col(ci, {
+      width: this.width,
+    });
     return this.data[ci];
   }
 
@@ -52,10 +71,6 @@ class Cols {
       return scaleAdapter.goto(col.width);
     }
     return scaleAdapter.goto(this.width);
-  }
-
-  get(ci) {
-    return this.data[ci];
   }
 
   eachWidth(ci, ei, cb, sx = 0) {
@@ -84,6 +99,7 @@ class Cols {
   setData(data) {
     this.data = data;
   }
+
 }
 
 export { Cols };

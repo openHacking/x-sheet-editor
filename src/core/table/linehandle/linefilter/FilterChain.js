@@ -12,22 +12,24 @@ class FilterChain extends LineFilter {
     super(function () {
       let result;
       if (logic === ChainLogic.AND) {
-        result = true;
+        result = LineFilter.RETURN_TYPE.HANDLE;
         // eslint-disable-next-line no-restricted-syntax
         for (const item of chain) {
           // eslint-disable-next-line prefer-spread,prefer-rest-params
-          if (item.execute.apply(item, arguments) === false) {
-            result = false;
+          const returnValue = item.execute.apply(item, arguments);
+          if (returnValue !== LineFilter.RETURN_TYPE.HANDLE) {
+            result = returnValue;
             break;
           }
         }
       } else {
-        result = false;
+        result = LineFilter.RETURN_TYPE.JUMP;
         // eslint-disable-next-line no-restricted-syntax
         for (const item of chain) {
           // eslint-disable-next-line prefer-spread,prefer-rest-params
-          if (item.execute.apply(item, arguments) === true) {
-            result = true;
+          const returnValue = item.execute.apply(item, arguments);
+          if (returnValue === LineFilter.RETURN_TYPE.HANDLE) {
+            result = LineFilter.RETURN_TYPE.HANDLE;
             break;
           }
         }

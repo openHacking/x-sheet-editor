@@ -31,8 +31,6 @@ class CellBorder {
       || this.bottom.display || this.right.display;
   }
 
-  // ======================显示/隐藏=======================
-
   setAllDisplay(display) {
     this.setLDisplay(display);
     this.setTDisplay(display);
@@ -55,8 +53,6 @@ class CellBorder {
   setBDisplay(display) {
     this.bottom.display = display;
   }
-
-  // ======================边框颜色=======================
 
   setAllColor(color) {
     this.setLColor(color);
@@ -81,8 +77,6 @@ class CellBorder {
     this.bottom.color = color;
   }
 
-  // ======================边框宽度=======================
-
   setAllWidthType(widthType) {
     this.setLWidthType(widthType);
     this.setTWidthType(widthType);
@@ -106,8 +100,6 @@ class CellBorder {
     this.bottom.widthType = widthType;
   }
 
-  // ======================边框类型=======================
-
   setAllType(type) {
     this.setLType(type);
     this.setTType(type);
@@ -129,6 +121,14 @@ class CellBorder {
 
   setBType(type) {
     this.bottom.type = type;
+  }
+
+  updateMaxIndex() {
+    const zIndex = Border.getZIndex();
+    this.left.zIndex = zIndex;
+    this.top.zIndex = zIndex;
+    this.right.zIndex = zIndex;
+    this.bottom.zIndex = zIndex;
   }
 
   clone() {

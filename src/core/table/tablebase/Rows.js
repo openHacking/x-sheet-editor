@@ -2,6 +2,7 @@ import { PlainUtils } from '../../../utils/PlainUtils';
 import { ScaleAdapter } from './Scale';
 import { RectRange } from './RectRange';
 import { RowsIterator } from '../iterator/RowsIterator';
+import { Row } from './Row';
 
 class Rows {
 
@@ -16,13 +17,6 @@ class Rows {
     this.data = data;
     this.min = 5;
     this.height = PlainUtils.minIf(height, this.min);
-  }
-
-  rectRangeSumHeight(rectRange) {
-    if (!rectRange.equals(RectRange.EMPTY)) {
-      return this.sectionSumHeight(rectRange.sri, rectRange.eri);
-    }
-    return 0;
   }
 
   sectionSumHeight(sri, eri) {
@@ -40,22 +34,43 @@ class Rows {
     return total;
   }
 
+  rectRangeSumHeight(rectRange) {
+    if (!rectRange.equals(RectRange.EMPTY)) {
+      return this.sectionSumHeight(rectRange.sri, rectRange.eri);
+    }
+    return 0;
+  }
+
+  get(ri) {
+    let row = this.data[ri];
+    if (row) {
+      if (row instanceof Row) {
+        return row;
+      }
+      row = new Row(ri, row);
+      this.data[ri] = row;
+    }
+    return row;
+  }
+
   getOrNew(ri) {
-    this.data[ri] = this.data[ri] || {};
+    const row = this.get(ri);
+    if (row) {
+      return row;
+    }
+    this.data[ri] = new Row(ri, {
+      height: this.height,
+    });
     return this.data[ri];
   }
 
   getHeight(ri) {
     const { scaleAdapter } = this;
     const row = this.get(ri);
-    if (row && row.height) {
+    if (row) {
       return scaleAdapter.goto(row.height);
     }
     return scaleAdapter.goto(this.height);
-  }
-
-  get(ri) {
-    return this.data[ri];
   }
 
   eachHeight(ri, ei, cb, sy = 0) {
@@ -84,6 +99,7 @@ class Rows {
   setData(data) {
     this.data = data;
   }
+
 }
 
 export { Rows };
