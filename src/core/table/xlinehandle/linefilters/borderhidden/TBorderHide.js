@@ -1,7 +1,7 @@
-import { XLineIteratorFilter } from '../../XLineIteratorFilter';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
+import { XLineIteratorFilter } from '../../XLineIteratorFilter';
 
-class AllBorderHide {
+class TBorderHide {
 
   constructor({
     cells,
@@ -17,7 +17,8 @@ class AllBorderHide {
     if (PlainUtils.isUnDef(cell)) {
       return XLineIteratorFilter.RETURN_TYPE.EXEC;
     }
-    return cell.borderAttr.isDisplay()
+    const { top } = cell.borderAttr;
+    return top.display
       ? XLineIteratorFilter.RETURN_TYPE.JUMP
       : XLineIteratorFilter.RETURN_TYPE.EXEC;
   }
@@ -25,5 +26,5 @@ class AllBorderHide {
 }
 
 export {
-  AllBorderHide,
+  TBorderHide,
 };

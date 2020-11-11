@@ -2,22 +2,19 @@ import { RowsIterator } from '../iterator/RowsIterator';
 import { ColsIterator } from '../iterator/ColsIterator';
 import { XLineIteratorFilter } from './XLineIteratorFilter';
 import { RectRange } from '../tablebase/RectRange';
-import { PlainUtils } from '../../../utils/PlainUtils';
 
 class XLineIteratorLoop {
 
   constructor({
-    cellLoop = PlainUtils.noop,
     foldOnOff = true,
+    items = [],
     bx = 0,
     by = 0,
-    items = [],
     rows,
     cols,
     filter = XLineIteratorFilter.EMPTY,
     view = RectRange.EMPTY,
   }) {
-    this.cellLoop = cellLoop;
     this.foldOnOff = foldOnOff;
     this.bx = bx;
     this.by = by;
@@ -28,64 +25,8 @@ class XLineIteratorLoop {
     this.view = view;
   }
 
-  runNewRow(row, y) {
-    const { items } = this;
-    for (let idx = 0; idx < items.length; idx++) {
-      const item = items[idx];
-      item.newRow({ row, y });
-    }
-  }
-
-  runEndRow(row) {
-    const { items } = this;
-    for (let idx = 0; idx < items.length; idx++) {
-      const item = items[idx];
-      item.endRow({ row });
-    }
-  }
-
-  runNewCol(col, x) {
-    const { items } = this;
-    for (let idx = 0; idx < items.length; idx++) {
-      const item = items[idx];
-      item.newCol({ col, x });
-    }
-  }
-
-  runFilter(row, col, x, y) {
-    const { items } = this;
-    for (let idx = 0; idx < items.length; idx++) {
-      const item = items[idx];
-      const result = item.filter.run({ row, col });
-      switch (result) {
-        case XLineIteratorFilter.RETURN_TYPE.EXEC:
-          item.exec({ row, col, x, y });
-          break;
-        case XLineIteratorFilter.RETURN_TYPE.JUMP:
-          item.jump({ row, col, x, y });
-          break;
-      }
-    }
-  }
-
-  runEndCol(col) {
-    const { items } = this;
-    for (let idx = 0; idx < items.length; idx++) {
-      const item = items[idx];
-      item.endCol({ col });
-    }
-  }
-
-  runComplete() {
-    const { items } = this;
-    for (let idx = 0; idx < items.length; idx++) {
-      const item = items[idx];
-      item.complete();
-    }
-  }
-
   run() {
-    const { view, rows, cols, cellLoop } = this;
+    const { view, rows, cols } = this;
     const { filter, foldOnOff } = this;
     const { bx, by } = this;
     const { sri, eri, sci, eci } = view;
@@ -108,7 +49,6 @@ class XLineIteratorLoop {
               .setEnd(eci)
               .setLoop((col) => {
                 const width = cols.getWidth(col);
-                cellLoop(row, col, x, y);
                 if (firstRow) {
                   this.runNewCol(col, x);
                 }
@@ -132,6 +72,62 @@ class XLineIteratorLoop {
       .foldOnOff(foldOnOff)
       .execute();
     this.runComplete();
+  }
+
+  runNewRow(row, y) {
+    const { items } = this;
+    for (let idx = 0; idx < items.length; idx++) {
+      const item = items[idx];
+      item.newRow({ row, y });
+    }
+  }
+
+  runNewCol(col, x) {
+    const { items } = this;
+    for (let idx = 0; idx < items.length; idx++) {
+      const item = items[idx];
+      item.newCol({ col, x });
+    }
+  }
+
+  runEndRow(row) {
+    const { items } = this;
+    for (let idx = 0; idx < items.length; idx++) {
+      const item = items[idx];
+      item.endRow({ row });
+    }
+  }
+
+  runEndCol(col) {
+    const { items } = this;
+    for (let idx = 0; idx < items.length; idx++) {
+      const item = items[idx];
+      item.endCol({ col });
+    }
+  }
+
+  runFilter(row, col, x, y) {
+    const { items } = this;
+    for (let idx = 0; idx < items.length; idx++) {
+      const item = items[idx];
+      const result = item.filter.run({ row, col });
+      switch (result) {
+        case XLineIteratorFilter.RETURN_TYPE.EXEC:
+          item.exec({ row, col, x, y });
+          break;
+        case XLineIteratorFilter.RETURN_TYPE.JUMP:
+          item.jump({ row, col, x, y });
+          break;
+      }
+    }
+  }
+
+  runComplete() {
+    const { items } = this;
+    for (let idx = 0; idx < items.length; idx++) {
+      const item = items[idx];
+      item.complete();
+    }
   }
 
 }

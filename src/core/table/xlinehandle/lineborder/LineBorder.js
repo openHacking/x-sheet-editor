@@ -1,16 +1,33 @@
-import { XLineIteratorItem } from '../XLineIteratorItem';
 import { XLineIteratorFilter } from '../XLineIteratorFilter';
+import { XLineIteratorItem } from '../XLineIteratorItem';
+import { XLineOptimizeJoin } from '../XLineOptimizeJoin';
+import { BBorderShow } from '../linefilters/borderdisplay/BBorderShow';
+import { BBorderPriority } from '../linefilters/borderpriority/BBorderPriority';
+import { MergeBNullEdge } from '../linefilters/mergenulledge/MergeBNullEdge';
+import { TBorderShow } from '../linefilters/borderdisplay/TBorderShow';
+import { TBorderPriority } from '../linefilters/borderpriority/TBorderPriority';
+import { MergeTNullEdge } from '../linefilters/mergenulledge/MergeTNullEdge';
+import { RCellOutRange } from '../linefilters/celloutrange/RCellOutRange';
+import { RBorderShow } from '../linefilters/borderdisplay/RBorderShow';
+import { RBorderPriority } from '../linefilters/borderpriority/RBorderPriority';
+import { MergeRNullEdge } from '../linefilters/mergenulledge/MergeRNullEdge';
+import { LBorderPriority } from '../linefilters/borderpriority/LBorderPriority';
+import { LBorderShow } from '../linefilters/borderdisplay/LBorderShow';
+import { MergeLNullEdge } from '../linefilters/mergenulledge/MergeLNullEdge';
+import { LCellOutRange } from '../linefilters/celloutrange/LCellOutRange';
 
 class LineBorder {
 
   constructor({
-    rows, cols, cells, bx, by,
+    rows, cols, cells, merges, bx = 0, by = 0, optimize = true,
   }) {
     this.cells = cells;
     this.rows = rows;
     this.cols = cols;
+    this.merges = merges;
     this.bx = bx;
     this.by = by;
+    this.optimize = optimize;
     this.lLine = [];
     this.tLine = [];
     this.rLine = [];
@@ -39,9 +56,9 @@ class LineBorder {
   }
 
   getBItem() {
-    const { cols, rows, cells, bx, by } = this;
-    const bRow = {};
+    const { cols, rows, cells, bx, by, merges, optimize } = this;
     const bLine = [];
+    const bRow = {};
     return new XLineIteratorItem({
       newRow: ({ row, y }) => {
         const height = rows.getHeight(row);
@@ -52,7 +69,11 @@ class LineBorder {
       },
       filter: new XLineIteratorFilter({
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
-        stack: [],
+        stack: [
+          new BBorderShow({ cells }),
+          new BBorderPriority({ cells }),
+          new MergeBNullEdge({ merges }),
+        ],
       }),
       exec: ({ row, col }) => {
         const width = cols.getWidth(col);
@@ -69,13 +90,15 @@ class LineBorder {
         bRow.ex = bRow.sx;
       },
       complete: () => {
-        this.bLine = XLineIteratorItem.hbJoin(bLine);
+        this.bLine = optimize
+          ? XLineOptimizeJoin.hbJoin(bLine)
+          : bLine;
       },
     });
   }
 
   getTItem() {
-    const { cols, cells, bx, by } = this;
+    const { cols, cells, bx, by, merges, optimize } = this;
     const tLine = [];
     const tRow = {};
     return new XLineIteratorItem({
@@ -87,7 +110,11 @@ class LineBorder {
       },
       filter: new XLineIteratorFilter({
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
-        stack: [],
+        stack: [
+          new TBorderShow({ cells }),
+          new TBorderPriority({ cells }),
+          new MergeTNullEdge({ merges }),
+        ],
       }),
       exec: ({ row, col }) => {
         const width = cols.getWidth(col);
@@ -105,13 +132,15 @@ class LineBorder {
         tRow.ex = tRow.sx;
       },
       complete: () => {
-        this.tLine = XLineIteratorItem.htJoin(tLine);
+        this.tLine = optimize
+          ? XLineOptimizeJoin.htJoin(tLine)
+          : tLine;
       },
     });
   }
 
   getRItem() {
-    const { cols, rows, cells, bx, by } = this;
+    const { cols, rows, cells, bx, by, merges, optimize } = this;
     const rCols = [];
     return new XLineIteratorItem({
       newCol: ({ col, x }) => {
@@ -125,7 +154,12 @@ class LineBorder {
       },
       filter: new XLineIteratorFilter({
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
-        stack: [],
+        stack: [
+          new RBorderShow({ cells }),
+          new RBorderPriority({ cells }),
+          new MergeRNullEdge({ merges }),
+          new RCellOutRange({ cells, cols, rows, merges }),
+        ],
       }),
       exec: ({ row, col }) => {
         const height = rows.getHeight(row);
@@ -147,7 +181,11 @@ class LineBorder {
         const rLine = [];
         for (let idx = 0; idx < rCols.length; idx++) {
           const item = rCols[idx];
-          rLine.push(XLineIteratorItem.vrJoin(item.rLine));
+          if (optimize) {
+            rLine.push(XLineOptimizeJoin.vrJoin(item.rLine));
+          } else {
+            rLine.push(item.rLine);
+          }
         }
         this.rLine = rLine;
       },
@@ -155,7 +193,7 @@ class LineBorder {
   }
 
   getLItem() {
-    const { rows, cells, bx, by } = this;
+    const { rows, cols, cells, bx, by, merges, optimize } = this;
     const lCols = [];
     return new XLineIteratorItem({
       newCol: ({ col, x }) => {
@@ -168,7 +206,12 @@ class LineBorder {
       },
       filter: new XLineIteratorFilter({
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
-        stack: [],
+        stack: [
+          new LBorderShow({ cells }),
+          new LBorderPriority({ cells }),
+          new MergeLNullEdge({ merges }),
+          new LCellOutRange({ cells, cols, rows, merges }),
+        ],
       }),
       exec: ({ row, col }) => {
         const item = lCols[col];
@@ -190,199 +233,11 @@ class LineBorder {
         const lLine = [];
         for (let idx = 0; idx < lCols.length; idx++) {
           const item = lCols[idx];
-          lLine.push(XLineIteratorItem.vlJoin(item.lLine));
-        }
-        this.lLine = lLine;
-      },
-    });
-  }
-
-  getItems() {
-    return [
-      this.getBItem(),
-      this.getTItem(),
-      this.getRItem(),
-      this.getLItem(),
-    ];
-  }
-
-  getResult() {
-    return {
-      vLine: this.rLine.concat(this.lLine),
-      hLine: this.bLine.concat(this.tLine),
-    };
-  }
-
-}
-
-class MergeBorder {
-
-  constructor({
-    rows, cols, cells, bx, by,
-  }) {
-    this.cells = cells;
-    this.rows = rows;
-    this.cols = cols;
-    this.bx = bx;
-    this.by = by;
-    this.lLine = [];
-    this.tLine = [];
-    this.rLine = [];
-    this.bLine = [];
-  }
-
-  getBItem() {
-    const { cols, rows, cells, bx, by } = this;
-    const bRow = {};
-    const bLine = [];
-    return new XLineIteratorItem({
-      newRow: ({ row, y }) => {
-        const height = rows.getHeight(row);
-        bRow.sx = bx;
-        bRow.sy = by + y + height;
-        bRow.ex = bRow.sx;
-        bRow.ey = bRow.sy;
-      },
-      filter: new XLineIteratorFilter({
-        logic: XLineIteratorFilter.FILTER_LOGIC.AND,
-        stack: [],
-      }),
-      exec: ({ row, col }) => {
-        const width = cols.getWidth(col);
-        const cell = cells.getCell(row, col);
-        const { borderAttr } = cell;
-        bRow.ex += width;
-        const { sx, sy, ex, ey } = bRow;
-        bLine.push({ sx, sy, ex, ey, row, col, borderAttr });
-        bRow.sx = bRow.ex;
-      },
-      jump: ({ col }) => {
-        const width = cols.getWidth(col);
-        bRow.sx = bRow.ex + width;
-        bRow.ex = bRow.sx;
-      },
-      complete: () => {
-        this.bLine = XLineIteratorItem.hbJoin(bLine);
-      },
-    });
-  }
-
-  getTItem() {
-    const { cols, cells, bx, by } = this;
-    const tLine = [];
-    const tRow = {};
-    return new XLineIteratorItem({
-      newRow: ({ y }) => {
-        tRow.sx = bx;
-        tRow.sy = by + y;
-        tRow.ex = tRow.sx;
-        tRow.ey = tRow.sy;
-      },
-      filter: new XLineIteratorFilter({
-        logic: XLineIteratorFilter.FILTER_LOGIC.AND,
-        stack: [],
-      }),
-      exec: ({ row, col }) => {
-        const width = cols.getWidth(col);
-        const cell = cells.getCell(row, col);
-        const { borderAttr } = cell;
-        tRow.ex += width;
-        const { sx, sy, ex, ey } = tRow;
-        tLine.push({ sx, sy, ex, ey, row, col, borderAttr });
-        tRow.sx = tRow.ex;
-      },
-      jump: ({ col }) => {
-        const width = cols.getWidth(col);
-        tRow.sx = tRow.ex + width;
-        tRow.ex = tRow.sx;
-      },
-      complete: () => {
-        this.tLine = XLineIteratorItem.hbJoin(tLine);
-      },
-    });
-  }
-
-  getRItem() {
-    const { cols, rows, cells, bx, by } = this;
-    const rCols = [];
-    return new XLineIteratorItem({
-      newCol: ({ col, x }) => {
-        const width = cols.getWidth(col);
-        const sx = bx + x + width;
-        const sy = by;
-        const ex = sx;
-        const ey = sy;
-        const rLine = [];
-        rCols[col] = { sx, sy, ex, ey, rLine };
-      },
-      filter: new XLineIteratorFilter({
-        logic: XLineIteratorFilter.FILTER_LOGIC.AND,
-        stack: [],
-      }),
-      exec: ({ row, col }) => {
-        const height = rows.getHeight(row);
-        const cell = cells.getCell(row, col);
-        const item = rCols[col];
-        const { borderAttr } = cell;
-        item.ey += height;
-        const { sx, sy, ex, ey, rLine } = item;
-        rLine.push({ sx, sy, ex, ey, row, col, borderAttr });
-        item.sy = item.ey;
-      },
-      jump: ({ row, col }) => {
-        const height = rows.getHeight(row);
-        const item = rCols[col];
-        item.sy = item.ey + height;
-        item.ey = item.sy;
-      },
-      complete: () => {
-        const rLine = [];
-        for (let idx = 0; idx < rCols.length; idx++) {
-          const item = rCols[idx];
-          rLine.push(XLineIteratorItem.vrJoin(item.rLine));
-        }
-        this.rLine = rLine;
-      },
-    });
-  }
-
-  getLItem() {
-    const { rows, cells, bx, by } = this;
-    const lCols = [];
-    return new XLineIteratorItem({
-      newCol: ({ col, x }) => {
-        const sx = bx + x;
-        const sy = by;
-        const ex = sx;
-        const ey = sy;
-        const lLine = [];
-        lCols[col] = { sx, sy, ex, ey, lLine };
-      },
-      filter: new XLineIteratorFilter({
-        logic: XLineIteratorFilter.FILTER_LOGIC.AND,
-        stack: [],
-      }),
-      exec: ({ row, col }) => {
-        const item = lCols[col];
-        const cell = cells.getCell(row, col);
-        const height = rows.getHeight(row);
-        const { borderAttr } = cell;
-        item.ey += height;
-        const { sx, sy, ex, ey, lLine } = item;
-        lLine.push({ sx, sy, ex, ey, row, col, borderAttr });
-        item.sy = item.ey;
-      },
-      jump: ({ row, col }) => {
-        const height = rows.getHeight(row);
-        const item = lCols[col];
-        item.sy = item.ey + height;
-        item.ey = item.sy;
-      },
-      complete: () => {
-        const lLine = [];
-        for (let idx = 0; idx < lCols.length; idx++) {
-          const item = lCols[idx];
-          lLine.push(XLineIteratorItem.vrJoin(item.lLine));
+          if (optimize) {
+            lLine.push(XLineOptimizeJoin.vlJoin(item.lLine));
+          } else {
+            lLine.push(item.lLine);
+          }
         }
         this.lLine = lLine;
       },
@@ -408,5 +263,5 @@ class MergeBorder {
 }
 
 export {
-  LineBorder, MergeBorder,
+  LineBorder,
 };

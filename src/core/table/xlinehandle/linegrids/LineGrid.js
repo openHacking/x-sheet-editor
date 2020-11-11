@@ -1,21 +1,30 @@
-import { XLineIteratorItem } from '../XLineIteratorItem';
 import { XLineIteratorFilter } from '../XLineIteratorFilter';
+import { XLineIteratorItem } from '../XLineIteratorItem';
+import { BBorderHide } from '../linefilters/borderhidden/BBorderHide';
+import { MergeBNullEdge } from '../linefilters/mergenulledge/MergeBNullEdge';
+import { RBorderHide } from '../linefilters/borderhidden/RBorderHide';
+import { MergeRNullEdge } from '../linefilters/mergenulledge/MergeRNullEdge';
+import { RCellOutRange } from '../linefilters/celloutrange/RCellOutRange';
 
 class LineGrid {
 
   constructor({
-    bx, by, getWidth, getHeight,
+    rows, cols, cells, merges, getWidth, getHeight, bx = 0, by = 0,
   }) {
-    this.getWidth = getWidth;
+    this.merges = merges;
+    this.cells = cells;
     this.getHeight = getHeight;
+    this.getWidth = getWidth;
     this.bx = bx;
     this.by = by;
+    this.rows = rows;
+    this.cols = cols;
     this.bLine = [];
     this.rLine = [];
   }
 
   getBItem() {
-    const { bx, by, getWidth, getHeight } = this;
+    const { bx, by, getWidth, getHeight, cells, merges } = this;
     const bRow = {};
     const bLine = [];
     return new XLineIteratorItem({
@@ -35,7 +44,10 @@ class LineGrid {
       },
       filter: new XLineIteratorFilter({
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
-        stack: [],
+        stack: [
+          new BBorderHide({ cells }),
+          new MergeBNullEdge({ merges }),
+        ],
       }),
       exec: ({ col }) => {
         const width = getWidth(col);
@@ -59,7 +71,7 @@ class LineGrid {
   }
 
   getRItem() {
-    const { bx, by, getWidth, getHeight } = this;
+    const { bx, by, getWidth, getHeight, rows, cols, cells, merges } = this;
     const rCols = [];
     const rLine = [];
     return new XLineIteratorItem({
@@ -81,7 +93,11 @@ class LineGrid {
       },
       filter: new XLineIteratorFilter({
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
-        stack: [],
+        stack: [
+          new RBorderHide({ cells }),
+          new MergeRNullEdge({ merges }),
+          new RCellOutRange({ cells, cols, rows, merges }),
+        ],
       }),
       exec: ({ row, col }) => {
         const item = rCols[col];
