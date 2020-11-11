@@ -38,19 +38,6 @@ class LineBorder {
     return { osx, oex };
   }
 
-  getResult() {
-    return this.bLine.concat(this.rLine).concat(this.lLine).concat(this.tLine);
-  }
-
-  getItems() {
-    return [
-      this.getBItem(),
-      this.getTItem(),
-      this.getRItem(),
-      this.getLItem(),
-    ];
-  }
-
   getBItem() {
     const { cols, rows, cells, bx, by } = this;
     const bRow = {};
@@ -210,6 +197,22 @@ class LineBorder {
     });
   }
 
+  getItems() {
+    return [
+      this.getBItem(),
+      this.getTItem(),
+      this.getRItem(),
+      this.getLItem(),
+    ];
+  }
+
+  getResult() {
+    return {
+      vLine: this.rLine.concat(this.lLine),
+      hLine: this.bLine.concat(this.tLine),
+    };
+  }
+
 }
 
 class MergeBorder {
@@ -226,19 +229,6 @@ class MergeBorder {
     this.tLine = [];
     this.rLine = [];
     this.bLine = [];
-  }
-
-  getResult() {
-    return this.bLine.concat(this.rLine).concat(this.lLine).concat(this.tLine);
-  }
-
-  getItems() {
-    return [
-      this.getBItem(),
-      this.getTItem(),
-      this.getRItem(),
-      this.getLItem(),
-    ];
   }
 
   getBItem() {
@@ -397,6 +387,22 @@ class MergeBorder {
         this.lLine = lLine;
       },
     });
+  }
+
+  getItems() {
+    return [
+      this.getBItem(),
+      this.getTItem(),
+      this.getRItem(),
+      this.getLItem(),
+    ];
+  }
+
+  getResult() {
+    return {
+      vLine: this.rLine.concat(this.lLine),
+      hLine: this.bLine.concat(this.tLine),
+    };
   }
 
 }

@@ -14,13 +14,6 @@ class LineGrid {
     this.rLine = [];
   }
 
-  getItems() {
-    return [
-      this.getBItem(),
-      this.getRItem(),
-    ];
-  }
-
   getBItem() {
     const { bx, by, getWidth, getHeight } = this;
     const bRow = {};
@@ -113,8 +106,18 @@ class LineGrid {
     });
   }
 
+  getItems() {
+    return [
+      this.getBItem(),
+      this.getRItem(),
+    ];
+  }
+
   getResult() {
-    return this.bLine.concat(this.rLine);
+    return {
+      hLine: this.bLine,
+      vLine: this.rLine,
+    };
   }
 
 }
