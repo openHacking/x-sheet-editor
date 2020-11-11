@@ -1,25 +1,31 @@
 import { XLineIteratorItem } from '../XLineIteratorItem';
-import { XLineIteratorLoop } from '../XLineIteratorLoop';
 import { XLineIteratorFilter } from '../XLineIteratorFilter';
 
 class LineGrid {
 
   constructor({
-    view, bx, by, getWidth, getHeight,
+    bx, by, getWidth, getHeight,
   }) {
     this.getWidth = getWidth;
     this.getHeight = getHeight;
     this.bx = bx;
     this.by = by;
-    this.view = view;
+    this.bLine = [];
+    this.rLine = [];
   }
 
-  run() {
-    const { view, bx, by, getWidth, getHeight } = this;
-    // 下线段
+  getItems() {
+    return [
+      this.getBItem(),
+      this.getRItem(),
+    ];
+  }
+
+  getBItem() {
+    const { bx, by, getWidth, getHeight } = this;
     const bRow = {};
     const bLine = [];
-    const b = new XLineIteratorItem({
+    return new XLineIteratorItem({
       newRow: ({ row, y }) => {
         const height = getHeight(row);
         bRow.sx = bx;
@@ -53,11 +59,17 @@ class LineGrid {
         bRow.sx = bRow.ex + width;
         bRow.ex = bRow.sx;
       },
+      complete: () => {
+        this.bLine = bLine;
+      },
     });
-    // 右线段
+  }
+
+  getRItem() {
+    const { bx, by, getWidth, getHeight } = this;
     const rCols = [];
     const rLine = [];
-    const r = new XLineIteratorItem({
+    return new XLineIteratorItem({
       newCol: ({ col, x }) => {
         const width = getWidth(col);
         const sx = bx + x + width;
@@ -95,18 +107,14 @@ class LineGrid {
         item.sy = item.ey + height;
         item.ey = item.sy;
       },
+      complete: () => {
+        this.rLine = rLine;
+      },
     });
-    // 运算
-    const loop = new XLineIteratorLoop({
-      r,
-      b,
-      view,
-    });
-    loop.run();
-    // 返回处理结果
-    return {
-      rLine, bLine,
-    };
+  }
+
+  getResult() {
+    return this.bLine.concat(this.rLine);
   }
 
 }
