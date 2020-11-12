@@ -117,7 +117,7 @@ class TextCellsHelper extends BaseCellsHelper {
                 });
                 if (mergeInfo) {
                   const { rect, cell, merge } = mergeInfo;
-                  result = mergeCallback(rect, cell, merge);
+                  result = mergeCallback(row, col, cell, rect, merge);
                 } else {
                   const { rect, overflow } = cellsINInfo;
                   result = cellsINCallback(row, col, cell, rect, overflow);
@@ -162,7 +162,7 @@ class TextCellsHelper extends BaseCellsHelper {
                 });
                 if (mergeInfo) {
                   const { rect, cell, merge } = mergeInfo;
-                  result = mergeCallback(rect, cell, merge);
+                  result = mergeCallback(row, col, cell, rect, merge);
                 } else {
                   const { rect, overflow } = cellsINInfo;
                   result = cellsINCallback(row, col, cell, rect, overflow);
@@ -206,7 +206,7 @@ class TextCellsHelper extends BaseCellsHelper {
                 });
                 if (mergeInfo) {
                   const { rect, cell, merge } = mergeInfo;
-                  result = mergeCallback(rect, cell, merge);
+                  result = mergeCallback(row, col, cell, rect, merge);
                 } else {
                   const { rect, overflow } = cellsINInfo;
                   result = cellsINCallback(row, col, cell, rect, overflow);
@@ -258,7 +258,7 @@ class TextCellsHelper extends BaseCellsHelper {
     // 计算尺寸
     const height = rows.sectionSumHeight(merge.sri, merge.eri);
     const width = cols.sectionSumWidth(merge.sci, merge.eci);
-    const cell = cells.getCellOrNew(merge.sri, merge.sci);
+    const cell = cells.getCell(merge.sri, merge.sci);
     const rect = new Rect({ x, y, width, height });
     return { rect, cell, merge };
   }

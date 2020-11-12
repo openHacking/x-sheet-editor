@@ -178,13 +178,15 @@ class LineBorder {
         item.ey = item.sy;
       },
       complete: () => {
-        const rLine = [];
+        let rLine = [];
         for (let idx = 0; idx < rCols.length; idx++) {
           const item = rCols[idx];
-          if (optimize) {
-            rLine.push(XLineOptimizeJoin.vrJoin(item.rLine));
-          } else {
-            rLine.push(item.rLine);
+          if (item) {
+            if (optimize) {
+              rLine = rLine.concat(XLineOptimizeJoin.vrJoin(item.rLine));
+            } else {
+              rLine.concat(item.rLine);
+            }
           }
         }
         this.rLine = rLine;
@@ -230,13 +232,15 @@ class LineBorder {
         item.ey = item.sy;
       },
       complete: () => {
-        const lLine = [];
+        let lLine = [];
         for (let idx = 0; idx < lCols.length; idx++) {
           const item = lCols[idx];
-          if (optimize) {
-            lLine.push(XLineOptimizeJoin.vlJoin(item.lLine));
-          } else {
-            lLine.push(item.lLine);
+          if (item) {
+            if (optimize) {
+              lLine = lLine.concat(XLineOptimizeJoin.vlJoin(item.lLine));
+            } else {
+              lLine = lLine.concat(item.lLine);
+            }
           }
         }
         this.lLine = lLine;

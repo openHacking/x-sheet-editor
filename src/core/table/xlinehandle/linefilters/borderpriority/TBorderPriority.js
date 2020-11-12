@@ -9,7 +9,9 @@ class TBorderPriority {
     this.cells = cells;
   }
 
-  run(row, col) {
+  run({
+    row, col,
+  }) {
     const { cells } = this;
     const next = cells.getCell(row - 1, col);
     const cell = cells.getCell(row, col);

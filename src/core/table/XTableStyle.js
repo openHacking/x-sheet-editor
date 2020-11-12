@@ -27,6 +27,15 @@ import { FixedCellIcon } from './cellicon/FixedCellIcon';
 import { StaticCellIcon } from './cellicon/StaticCellIcon';
 import { Row } from './tablebase/Row';
 import { XLinePlainGenerator } from './xlinehandle/XLinePlainGenerator';
+import { LBorderShow } from './xlinehandle/linefilters/borderdisplay/LBorderShow';
+import { LBorderPriority } from './xlinehandle/linefilters/borderpriority/LBorderPriority';
+import { XLineIteratorFilter } from './xlinehandle/XLineIteratorFilter';
+import { RBorderShow } from './xlinehandle/linefilters/borderdisplay/RBorderShow';
+import { RBorderPriority } from './xlinehandle/linefilters/borderpriority/RBorderPriority';
+import { TBorderShow } from './xlinehandle/linefilters/borderdisplay/TBorderShow';
+import { TBorderPriority } from './xlinehandle/linefilters/borderpriority/TBorderPriority';
+import { BBorderShow } from './xlinehandle/linefilters/borderdisplay/BBorderShow';
+import { BBorderPriority } from './xlinehandle/linefilters/borderpriority/BBorderPriority';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -983,7 +992,7 @@ class XTableContentUI extends XTableUI {
     const drawY = this.getDrawY();
     const { table } = this;
     const {
-      draw, textCellsHelper, textFont,
+      draw, textCellsHelper, textFont, cells,
     } = table;
     draw.offset(drawX, drawY);
     textCellsHelper.getCellByViewRange({
@@ -1000,11 +1009,13 @@ class XTableContentUI extends XTableUI {
         cell.setLeftSdistWidth(result.leftSdist);
         cell.setRightSdistWidth(result.rightSdist);
       },
-      mergeCallback: (row, col, cell, rect) => {
+      mergeCallback: (row, col, cell, rect, mrege) => {
+        const { sri, sci } = mrege;
+        const mergeCell = cells.getCell(sri, sci);
         const builder = textFont.getBuilder();
         builder.setDraw(draw);
         builder.setRect(rect);
-        builder.setCell(cell);
+        builder.setCell(mergeCell);
         builder.setOverFlow(rect);
         const font = builder.build();
         const result = font.draw();
@@ -1063,17 +1074,18 @@ class XTableContentUI extends XTableUI {
     const borderY = this.getLineY();
     const { table } = this;
     const { settings, draw, grid, line, rows, cols, cells, merges, optimizeEnable } = table;
-    const showGrid = settings.table.showGrid;
     draw.offset(borderX, borderY);
-    const { gResult, bResult } = XLinePlainGenerator.runTableLine({
+    const { gResult, bResult } = XLinePlainGenerator.run({
       scrollView: borderView,
       foldOnOff: false,
       optimize: optimizeEnable,
-      showGrid: showGrid,
-      rows,
       merges,
-      cols,
       cells,
+      cols,
+      rows,
+      model: settings.table.showGrid
+        ? XLinePlainGenerator.MODEL.ALL
+        : XLinePlainGenerator.MODEL.BORDER,
     });
     gResult.hLine.forEach((item) => {
       grid.horizonLine(item.sx, item.sy, item.ex, item.ey);
@@ -1147,10 +1159,10 @@ class XTableContentUI extends XTableUI {
 class XTableIndexUI extends XTableUI {
 
   /**
-   * 绘制文字
+   * 绘制网格
    */
-  drawFont() {
-    throw new TypeError('drawFont child impl');
+  drawGridBorder() {
+    throw new TypeError('drawGrid child impl');
   }
 
   /**
@@ -1161,10 +1173,10 @@ class XTableIndexUI extends XTableUI {
   }
 
   /**
-   * 绘制网格
+   * 绘制文字
    */
-  drawGridBorder() {
-    throw new TypeError('drawGrid child impl');
+  drawFont() {
+    throw new TypeError('drawFont child impl');
   }
 
   /**
@@ -1189,32 +1201,6 @@ class XTableIndexUI extends XTableUI {
 class XTableLeftIndexUI extends XTableIndexUI {
 
   /**
-   *  绘制文字
-   */
-  drawFont() {
-    const dx = this.getDrawX();
-    const dy = this.getDrawY();
-    const scrollView = this.getScrollView();
-    const width = this.getWidth();
-    const { table } = this;
-    const {
-      draw, rows, index,
-    } = table;
-    const { sri, eri } = scrollView;
-    draw.offset(dx, dy);
-    draw.attr({
-      textAlign: 'center',
-      textBaseline: 'middle',
-      font: `${index.getSize()}px Arial`,
-      fillStyle: index.getColor(),
-    });
-    rows.eachHeight(sri, eri, (i, ch, y) => {
-      draw.fillText(i + 1, width / 2, y + (ch / 2));
-    });
-    draw.offset(0, 0);
-  }
-
-  /**
    * 绘制网格
    */
   drawGridBorder() {
@@ -1223,9 +1209,10 @@ class XTableLeftIndexUI extends XTableIndexUI {
     const borderY = this.getLineY();
     const { table } = this;
     const { draw, indexGrid, rows, cols, merges, cells } = table;
-    const { gResult } = XLinePlainGenerator.runIndexLine({
+    const { gResult } = XLinePlainGenerator.run({
       scrollView: borderView,
       foldOnOff: true,
+      model: XLinePlainGenerator.MODEL.GRID,
       rows,
       merges,
       cols,
@@ -1263,10 +1250,6 @@ class XTableLeftIndexUI extends XTableIndexUI {
     draw.offset(0, 0);
   }
 
-}
-
-class XTableTopIndexUI extends XTableIndexUI {
-
   /**
    *  绘制文字
    */
@@ -1274,12 +1257,12 @@ class XTableTopIndexUI extends XTableIndexUI {
     const dx = this.getDrawX();
     const dy = this.getDrawY();
     const scrollView = this.getScrollView();
-    const height = this.getHeight();
+    const width = this.getWidth();
     const { table } = this;
     const {
-      draw, cols, index,
+      draw, rows, index,
     } = table;
-    const { sci, eci } = scrollView;
+    const { sri, eri } = scrollView;
     draw.offset(dx, dy);
     draw.attr({
       textAlign: 'center',
@@ -1287,11 +1270,15 @@ class XTableTopIndexUI extends XTableIndexUI {
       font: `${index.getSize()}px Arial`,
       fillStyle: index.getColor(),
     });
-    cols.eachWidth(sci, eci, (i, cw, x) => {
-      draw.fillText(PlainUtils.stringAt(i), x + (cw / 2), height / 2);
+    rows.eachHeight(sri, eri, (i, ch, y) => {
+      draw.fillText(i + 1, width / 2, y + (ch / 2));
     });
     draw.offset(0, 0);
   }
+
+}
+
+class XTableTopIndexUI extends XTableIndexUI {
 
   /**
    * 绘制网格
@@ -1302,9 +1289,10 @@ class XTableTopIndexUI extends XTableIndexUI {
     const borderY = this.getLineY();
     const { table } = this;
     const { draw, indexGrid, rows, cols, merges, cells } = table;
-    const { gResult } = XLinePlainGenerator.runIndexLine({
+    const { gResult } = XLinePlainGenerator.run({
       scrollView: borderView,
       foldOnOff: true,
+      model: XLinePlainGenerator.MODEL.GRID,
       rows,
       merges,
       cols,
@@ -1339,6 +1327,32 @@ class XTableTopIndexUI extends XTableIndexUI {
       fillStyle: index.getBackground(),
     });
     draw.fillRect(0, 0, width, height);
+    draw.offset(0, 0);
+  }
+
+  /**
+   *  绘制文字
+   */
+  drawFont() {
+    const dx = this.getDrawX();
+    const dy = this.getDrawY();
+    const scrollView = this.getScrollView();
+    const height = this.getHeight();
+    const { table } = this;
+    const {
+      draw, cols, index,
+    } = table;
+    const { sci, eci } = scrollView;
+    draw.offset(dx, dy);
+    draw.attr({
+      textAlign: 'center',
+      textBaseline: 'middle',
+      font: `${index.getSize()}px Arial`,
+      fillStyle: index.getColor(),
+    });
+    cols.eachWidth(sci, eci, (i, cw, x) => {
+      draw.fillText(PlainUtils.stringAt(i), x + (cw / 2), height / 2);
+    });
     draw.offset(0, 0);
   }
 
@@ -2241,12 +2255,52 @@ class XTableStyle extends Widget {
       cols: this.cols,
     });
     // 绘制资源
+    const lBorderFilter = new XLineIteratorFilter({
+      logic: XLineIteratorFilter.FILTER_LOGIC.AND,
+      stack: [
+        new LBorderShow({ cells: this.cells }),
+        new LBorderPriority({ cells: this.cells }),
+      ],
+    });
+    const rBorderFilter = new XLineIteratorFilter({
+      logic: XLineIteratorFilter.FILTER_LOGIC.AND,
+      stack: [
+        new RBorderShow({ cells: this.cells }),
+        new RBorderPriority({ cells: this.cells }),
+      ],
+    });
+    const tBorderFilter = new XLineIteratorFilter({
+      logic: XLineIteratorFilter.FILTER_LOGIC.AND,
+      stack: [
+        new TBorderShow({ cells: this.cells }),
+        new TBorderPriority({ cells: this.cells }),
+      ],
+    });
+    const bBorderFilter = new XLineIteratorFilter({
+      logic: XLineIteratorFilter.FILTER_LOGIC.AND,
+      stack: [
+        new BBorderShow({ cells: this.cells }),
+        new BBorderPriority({ cells: this.cells }),
+      ],
+    });
     this.draw = new XDraw(this.el);
     this.line = new Line(this.draw, {
-      leftShow: () => true,
-      topShow: () => true,
-      rightShow: () => true,
-      bottomShow: () => true,
+      bottomShow: (row, col) => {
+        const result = bBorderFilter.run({ row, col });
+        return result === XLineIteratorFilter.RETURN_TYPE.EXEC;
+      },
+      topShow: (row, col) => {
+        const result = tBorderFilter.run({ row, col });
+        return result === XLineIteratorFilter.RETURN_TYPE.EXEC;
+      },
+      leftShow: (row, col) => {
+        const result = lBorderFilter.run({ row, col });
+        return result === XLineIteratorFilter.RETURN_TYPE.EXEC;
+      },
+      rightShow: (row, col) => {
+        const result = rBorderFilter.run({ row, col });
+        return result === XLineIteratorFilter.RETURN_TYPE.EXEC;
+      },
       iFMerge: (row, col) => this.merges.getFirstIncludes(row, col) !== null,
       iFMergeFirstRow: (row, col) => this.merges.getFirstIncludes(row, col).sri === row,
       iFMergeLastRow: (row, col) => this.merges.getFirstIncludes(row, col).eri === row,

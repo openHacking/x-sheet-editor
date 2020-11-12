@@ -9,7 +9,9 @@ class RBorderPriority {
     this.cells = cells;
   }
 
-  run(row, col) {
+  run({
+    row, col,
+  }) {
     const { cells } = this;
     const next = cells.getCell(row, col + 1);
     const cell = cells.getCell(row, col);
