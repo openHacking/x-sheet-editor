@@ -858,12 +858,14 @@ class XTableContentUI extends XTableUI {
         this.drawStaticXIcon(staticRect, row, col, scrollView);
         this.drawCellXIcon(cellRect, cell, scrollView);
       },
+      loopINCallback: (row, col, rect) => {
+        const fixedRect = rect.clone();
+        this.drawFixedXIcon(fixedRect, row, col, scrollView);
+      },
       mergeCallback: (row, col, cell, rect, merge) => {
         const { sri, sci } = merge;
-        const fixedRect = rect.clone();
         const staticRect = rect.clone();
         const cellRect = rect.clone();
-        this.drawFixedXIcon(fixedRect, row, col, scrollView);
         this.drawStaticXIcon(staticRect, sri, sci, scrollView);
         this.drawCellXIcon(cellRect, cell, scrollView);
       },
@@ -1262,10 +1264,10 @@ class XTableLeftIndexUI extends XTableIndexUI {
     const borderY = this.getLineY();
     const { table } = this;
     const { draw, indexGrid, rows, cols, merges, cells } = table;
-    const { gResult } = XLinePlainGenerator.run({
+    const { iResult } = XLinePlainGenerator.run({
       scrollView: borderView,
       foldOnOff: true,
-      model: XLinePlainGenerator.MODEL.GRID,
+      model: XLinePlainGenerator.MODEL.INDEX,
       rows,
       merges,
       cols,
@@ -1273,10 +1275,10 @@ class XTableLeftIndexUI extends XTableIndexUI {
       getWidth: () => table.index.getWidth(),
     });
     draw.offset(borderX, borderY);
-    gResult.bLine.forEach((item) => {
+    iResult.bLine.forEach((item) => {
       indexGrid.horizonLine(item.sx, item.sy, item.ex, item.ey);
     });
-    gResult.rLine.forEach((item) => {
+    iResult.rLine.forEach((item) => {
       indexGrid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
@@ -1342,10 +1344,10 @@ class XTableTopIndexUI extends XTableIndexUI {
     const borderY = this.getLineY();
     const { table } = this;
     const { draw, indexGrid, rows, cols, merges, cells } = table;
-    const { gResult } = XLinePlainGenerator.run({
+    const { iResult } = XLinePlainGenerator.run({
       scrollView: borderView,
       foldOnOff: true,
-      model: XLinePlainGenerator.MODEL.GRID,
+      model: XLinePlainGenerator.MODEL.INDEX,
       rows,
       merges,
       cols,
@@ -1353,10 +1355,10 @@ class XTableTopIndexUI extends XTableIndexUI {
       getHeight: () => table.index.getHeight(),
     });
     draw.offset(borderX, borderY);
-    gResult.bLine.forEach((item) => {
+    iResult.bLine.forEach((item) => {
       indexGrid.horizonLine(item.sx, item.sy, item.ex, item.ey);
     });
-    gResult.rLine.forEach((item) => {
+    iResult.rLine.forEach((item) => {
       indexGrid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);

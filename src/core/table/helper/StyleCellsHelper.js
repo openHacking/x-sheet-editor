@@ -37,6 +37,7 @@ class StyleCellsHelper extends BaseCellsHelper {
     view,
     cellsINCallback = () => {},
     mergeCallback = () => {},
+    loopINCallback = () => {},
   }) {
     const { rows, cols, cells, merges } = this;
     const { sri, eri, sci, eci } = view;
@@ -55,6 +56,8 @@ class StyleCellsHelper extends BaseCellsHelper {
           .setLoop((col) => {
             const merge = merges.getFirstIncludes(row, col);
             const width = cols.getWidth(col);
+            const rect = new Rect({ x, y, width, height });
+            loopINCallback(row, col, rect);
             if (merge) {
               const find = filter.find(i => i === merge);
               if (PlainUtils.isUnDef(find)) {
@@ -68,10 +71,6 @@ class StyleCellsHelper extends BaseCellsHelper {
             } else {
               const cell = cells.getCell(row, col);
               if (cell) {
-                const cellsINInfo = this.cellsINInfo({
-                  x, y, width, height,
-                });
-                const { rect } = cellsINInfo;
                 result = cellsINCallback(row, col, cell, rect);
               }
             }
@@ -115,13 +114,6 @@ class StyleCellsHelper extends BaseCellsHelper {
     const cell = cells.getCellOrNew(merge.sri, merge.sci);
     const rect = new Rect({ x, y, width, height });
     return { rect, cell };
-  }
-
-  cellsINInfo({
-    height, width, x, y,
-  }) {
-    const rect = new Rect({ x, y, width, height });
-    return { rect };
   }
 
 }

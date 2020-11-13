@@ -2,6 +2,7 @@ import { XLineIteratorLoop } from './XLineIteratorLoop';
 import { LineGrid } from './linegrids/LineGrid';
 import { LineBorder } from './lineborder/LineBorder';
 import { AngleBar } from './anglebar/AngleBar';
+import { LineIndex } from './lineindex/LineIndex';
 
 class XLinePlainGenerator {
 
@@ -83,6 +84,23 @@ class XLinePlainGenerator {
           gResult,
         };
       }
+      case XLinePlainGenerator.MODEL.INDEX: {
+        const iLine = new LineIndex({
+          bx, by, getWidth, getHeight,
+        });
+        const xIterator = new XLineIteratorLoop({
+          items: iLine.getItems(),
+          foldOnOff,
+          rows,
+          cols,
+          view: scrollView,
+        });
+        xIterator.run();
+        const iResult = iLine.getResult();
+        return {
+          iResult,
+        };
+      }
     }
     return null;
   }
@@ -93,6 +111,7 @@ XLinePlainGenerator.MODEL = {
   BORDER: 1,
   ALL: 3,
   GRID: 2,
+  INDEX: 4,
 };
 
 export {
