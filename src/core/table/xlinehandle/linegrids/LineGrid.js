@@ -5,6 +5,7 @@ import { MergeBNullEdge } from '../linefilters/mergenulledge/MergeBNullEdge';
 import { RBorderHide } from '../linefilters/borderhidden/RBorderHide';
 import { MergeRNullEdge } from '../linefilters/mergenulledge/MergeRNullEdge';
 import { RCellOutRange } from '../linefilters/celloutrange/RCellOutRange';
+import { AngleBarHide } from '../linefilters/anglebarhidden/AngleBarHide';
 
 class LineGrid {
 
@@ -47,6 +48,7 @@ class LineGrid {
         stack: [
           new BBorderHide({ cells }),
           new MergeBNullEdge({ merges }),
+          new AngleBarHide({ cells }),
         ],
       }),
       exec: ({ col }) => {
@@ -96,6 +98,7 @@ class LineGrid {
         stack: [
           new RBorderHide({ cells }),
           new MergeRNullEdge({ merges }),
+          new AngleBarHide({ cells }),
           new RCellOutRange({ cells, cols, rows, merges }),
         ],
       }),
@@ -130,9 +133,9 @@ class LineGrid {
   }
 
   getResult() {
+    const { bLine, rLine } = this;
     return {
-      hLine: this.bLine,
-      vLine: this.rLine,
+      bLine, rLine,
     };
   }
 

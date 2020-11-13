@@ -1,6 +1,7 @@
 import { XLineIteratorLoop } from './XLineIteratorLoop';
 import { LineGrid } from './linegrids/LineGrid';
 import { LineBorder } from './lineborder/LineBorder';
+import { AngleBar } from './anglebar/AngleBar';
 
 class XLinePlainGenerator {
 
@@ -23,8 +24,11 @@ class XLinePlainGenerator {
         const bLine = new LineBorder({
           rows, cols, cells, merges, bx, by, optimize,
         });
+        const aLine = new AngleBar({
+          rows, cols, cells, merges, bx, by, optimize,
+        });
         const xIterator = new XLineIteratorLoop({
-          items: bLine.getItems(),
+          items: bLine.getItems().concat(aLine.getItems()),
           foldOnOff,
           rows,
           cols,
@@ -32,8 +36,9 @@ class XLinePlainGenerator {
         });
         xIterator.run();
         const bResult = bLine.getResult();
+        const aResult = aLine.getResult();
         return {
-          bResult,
+          bResult, aResult,
         };
       }
       case XLinePlainGenerator.MODEL.ALL: {
@@ -43,8 +48,11 @@ class XLinePlainGenerator {
         const gLine = new LineGrid({
           rows, cols, cells, merges, bx, by, getWidth, getHeight,
         });
+        const aLine = new AngleBar({
+          rows, cols, cells, merges, bx, by, optimize,
+        });
         const xIterator = new XLineIteratorLoop({
-          items: bLine.getItems().concat(gLine.getItems()),
+          items: bLine.getItems().concat(gLine.getItems()).concat(aLine.getItems()),
           foldOnOff,
           rows,
           cols,
@@ -53,8 +61,9 @@ class XLinePlainGenerator {
         xIterator.run();
         const gResult = gLine.getResult();
         const bResult = bLine.getResult();
+        const aResult = aLine.getResult();
         return {
-          gResult, bResult,
+          gResult, bResult, aResult,
         };
       }
       case XLinePlainGenerator.MODEL.GRID: {

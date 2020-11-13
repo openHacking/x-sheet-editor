@@ -15,6 +15,7 @@ import { LBorderPriority } from '../linefilters/borderpriority/LBorderPriority';
 import { LBorderShow } from '../linefilters/borderdisplay/LBorderShow';
 import { MergeLNullEdge } from '../linefilters/mergenulledge/MergeLNullEdge';
 import { LCellOutRange } from '../linefilters/celloutrange/LCellOutRange';
+import { AngleBarHide } from '../linefilters/anglebarhidden/AngleBarHide';
 
 class LineBorder {
 
@@ -34,7 +35,7 @@ class LineBorder {
     this.bLine = [];
   }
 
-  tOffsetX({
+  offsetX({
     sx, ex, row, col,
   }) {
     const { cells } = this;
@@ -73,6 +74,7 @@ class LineBorder {
           new BBorderShow({ cells }),
           new BBorderPriority({ cells }),
           new MergeBNullEdge({ merges }),
+          new AngleBarHide({ cells }),
         ],
       }),
       exec: ({ row, col }) => {
@@ -114,6 +116,7 @@ class LineBorder {
           new TBorderShow({ cells }),
           new TBorderPriority({ cells }),
           new MergeTNullEdge({ merges }),
+          new AngleBarHide({ cells }),
         ],
       }),
       exec: ({ row, col }) => {
@@ -122,7 +125,7 @@ class LineBorder {
         const { borderAttr } = cell;
         tRow.ex += width;
         const { sx, sy, ex, ey } = tRow;
-        const { osx, oex } = this.tOffsetX({ sx, ex, row, col });
+        const { osx, oex } = this.offsetX({ sx, ex, row, col });
         tLine.push({ sx: osx, sy, ex: oex, ey, row, col, borderAttr });
         tRow.sx = tRow.ex;
       },
@@ -158,6 +161,7 @@ class LineBorder {
           new RBorderShow({ cells }),
           new RBorderPriority({ cells }),
           new MergeRNullEdge({ merges }),
+          new AngleBarHide({ cells }),
           new RCellOutRange({ cells, cols, rows, merges }),
         ],
       }),
@@ -185,7 +189,7 @@ class LineBorder {
             if (optimize) {
               rLine = rLine.concat(XLineOptimizeJoin.vrJoin(item.rLine));
             } else {
-              rLine.concat(item.rLine);
+              rLine = rLine.concat(item.rLine);
             }
           }
         }
@@ -212,6 +216,7 @@ class LineBorder {
           new LBorderShow({ cells }),
           new LBorderPriority({ cells }),
           new MergeLNullEdge({ merges }),
+          new AngleBarHide({ cells }),
           new LCellOutRange({ cells, cols, rows, merges }),
         ],
       }),
@@ -258,9 +263,9 @@ class LineBorder {
   }
 
   getResult() {
+    const { rLine, bLine, lLine, tLine } = this;
     return {
-      vLine: this.rLine.concat(this.lLine),
-      hLine: this.bLine.concat(this.tLine),
+      rLine, bLine, lLine, tLine,
     };
   }
 

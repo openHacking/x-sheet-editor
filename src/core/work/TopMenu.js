@@ -69,7 +69,7 @@ class TopMenu extends Widget {
           const {
             xScreen,
           } = table;
-          const styleCellsHelper = table.getStyleCellsHelper();
+          const operateCellsHelper = table.getOperateCellsHelper();
           const { tableDataSnapshot } = table;
           const xSelect = xScreen.findType(XSelectItem);
           const { selectRange } = xSelect;
@@ -77,7 +77,7 @@ class TopMenu extends Widget {
           if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            styleCellsHelper.getCellOrNewCellByViewRange({
+            operateCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -99,7 +99,7 @@ class TopMenu extends Widget {
           const {
             xScreen,
           } = table;
-          const styleCellsHelper = table.getStyleCellsHelper();
+          const operateCellsHelper = table.getOperateCellsHelper();
           const { tableDataSnapshot } = table;
           const xSelect = xScreen.findType(XSelectItem);
           const { selectRange } = xSelect;
@@ -107,7 +107,7 @@ class TopMenu extends Widget {
           if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            styleCellsHelper.getCellOrNewCellByViewRange({
+            operateCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -127,7 +127,7 @@ class TopMenu extends Widget {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
           const { xScreen } = table;
-          const styleCellsHelper = table.getStyleCellsHelper();
+          const operateCellsHelper = table.getOperateCellsHelper();
           const { tableDataSnapshot } = table;
           const xSelect = xScreen.findType(XSelectItem);
           const { selectRange } = xSelect;
@@ -135,7 +135,7 @@ class TopMenu extends Widget {
           if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            styleCellsHelper.getCellOrNewCellByViewRange({
+            operateCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -157,7 +157,7 @@ class TopMenu extends Widget {
           const {
             xScreen,
           } = table;
-          const styleCellsHelper = table.getStyleCellsHelper();
+          const operateCellsHelper = table.getOperateCellsHelper();
           const { tableDataSnapshot } = table;
           const xSelect = xScreen.findType(XSelectItem);
           const { selectRange } = xSelect;
@@ -165,7 +165,7 @@ class TopMenu extends Widget {
           if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            styleCellsHelper.getCellOrNewCellByViewRange({
+            operateCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -187,7 +187,7 @@ class TopMenu extends Widget {
           const {
             xScreen,
           } = table;
-          const styleCellsHelper = table.getStyleCellsHelper();
+          const operateCellsHelper = table.getOperateCellsHelper();
           const { tableDataSnapshot } = table;
           const xSelect = xScreen.findType(XSelectItem);
           const { selectRange } = xSelect;
@@ -195,7 +195,7 @@ class TopMenu extends Widget {
           if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            styleCellsHelper.getCellOrNewCellByViewRange({
+            operateCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -469,7 +469,7 @@ class TopMenu extends Widget {
           const {
             xScreen,
           } = table;
-          const styleCellsHelper = table.getStyleCellsHelper();
+          const operateCellsHelper = table.getOperateCellsHelper();
           const { tableDataSnapshot } = table;
           const xSelect = xScreen.findType(XSelectItem);
           const { selectRange } = xSelect;
@@ -488,7 +488,7 @@ class TopMenu extends Widget {
           if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            styleCellsHelper.getCellOrNewCellByViewRange({
+            operateCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -510,7 +510,7 @@ class TopMenu extends Widget {
           const {
             xScreen,
           } = table;
-          const styleCellsHelper = table.getStyleCellsHelper();
+          const operateCellsHelper = table.getOperateCellsHelper();
           const { tableDataSnapshot } = table;
           const xSelect = xScreen.findType(XSelectItem);
           const { selectRange } = xSelect;
@@ -529,7 +529,7 @@ class TopMenu extends Widget {
           if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            styleCellsHelper.getCellOrNewCellByViewRange({
+            operateCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -551,7 +551,7 @@ class TopMenu extends Widget {
           const {
             xScreen,
           } = table;
-          const styleCellsHelper = table.getStyleCellsHelper();
+          const operateCellsHelper = table.getOperateCellsHelper();
           const { tableDataSnapshot } = table;
           const xSelect = xScreen.findType(XSelectItem);
           const { selectRange } = xSelect;
@@ -571,7 +571,7 @@ class TopMenu extends Widget {
           if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            styleCellsHelper.getCellOrNewCellByViewRange({
+            operateCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -649,14 +649,14 @@ class TopMenu extends Widget {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
           const { xScreen } = table;
-          const styleCellsHelper = table.getStyleCellsHelper();
+          const operateCellsHelper = table.getOperateCellsHelper();
           const { tableDataSnapshot } = table;
           const xSelect = xScreen.findType(XSelectItem);
           const { selectRange } = xSelect;
           if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            styleCellsHelper.getCellOrNewCellByViewRange({
+            operateCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -679,14 +679,14 @@ class TopMenu extends Widget {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
           const { xScreen } = table;
-          const styleCellsHelper = table.getStyleCellsHelper();
+          const operateCellsHelper = table.getOperateCellsHelper();
           const { tableDataSnapshot } = table;
           const xSelect = xScreen.findType(XSelectItem);
           const { selectRange } = xSelect;
           if (selectRange) {
             tableDataSnapshot.begin();
             const { cellDataProxy } = tableDataSnapshot;
-            styleCellsHelper.getCellOrNewCellByViewRange({
+            operateCellsHelper.getCellOrNewCellByViewRange({
               rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
@@ -873,14 +873,14 @@ class TopMenu extends Widget {
       const {
         xScreen,
       } = table;
-      const styleCellsHelper = table.getStyleCellsHelper();
+      const operateCellsHelper = table.getOperateCellsHelper();
       const { tableDataSnapshot } = table;
       const xSelect = xScreen.findType(XSelectItem);
       const { selectRange } = xSelect;
       if (selectRange) {
         tableDataSnapshot.begin();
         const { cellDataProxy } = tableDataSnapshot;
-        styleCellsHelper.getCellOrNewCellByViewRange({
+        operateCellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectRange,
           callback: (r, c, origin) => {
             const { text } = origin;
@@ -936,7 +936,7 @@ class TopMenu extends Widget {
       const {
         xScreen,
       } = table;
-      const styleCellsHelper = table.getStyleCellsHelper();
+      const operateCellsHelper = table.getOperateCellsHelper();
       const cells = table.getTableCells();
       const { tableDataSnapshot } = table;
       const xSelect = xScreen.findType(XSelectItem);
@@ -946,7 +946,7 @@ class TopMenu extends Widget {
         const bold = !firstCell.fontAttr.bold;
         tableDataSnapshot.begin();
         const { cellDataProxy } = tableDataSnapshot;
-        styleCellsHelper.getCellOrNewCellByViewRange({
+        operateCellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectRange,
           callback: (r, c, origin) => {
             const cell = origin.clone();
@@ -964,7 +964,7 @@ class TopMenu extends Widget {
       const {
         xScreen,
       } = table;
-      const styleCellsHelper = table.getStyleCellsHelper();
+      const operateCellsHelper = table.getOperateCellsHelper();
       const cells = table.getTableCells();
       const { tableDataSnapshot } = table;
       const xSelect = xScreen.findType(XSelectItem);
@@ -974,7 +974,7 @@ class TopMenu extends Widget {
         const italic = !firstCell.fontAttr.italic;
         tableDataSnapshot.begin();
         const { cellDataProxy } = tableDataSnapshot;
-        styleCellsHelper.getCellOrNewCellByViewRange({
+        operateCellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectRange,
           callback: (r, c, origin) => {
             const cell = origin.clone();
@@ -992,7 +992,7 @@ class TopMenu extends Widget {
       const {
         xScreen,
       } = table;
-      const styleCellsHelper = table.getStyleCellsHelper();
+      const operateCellsHelper = table.getOperateCellsHelper();
       const cells = table.getTableCells();
       const { tableDataSnapshot } = table;
       const xSelect = xScreen.findType(XSelectItem);
@@ -1002,7 +1002,7 @@ class TopMenu extends Widget {
         const underline = !firstCell.fontAttr.underline;
         tableDataSnapshot.begin();
         const { cellDataProxy } = tableDataSnapshot;
-        styleCellsHelper.getCellOrNewCellByViewRange({
+        operateCellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectRange,
           callback: (r, c, origin) => {
             const cell = origin.clone();
@@ -1020,7 +1020,7 @@ class TopMenu extends Widget {
       const {
         xScreen,
       } = table;
-      const styleCellsHelper = table.getStyleCellsHelper();
+      const operateCellsHelper = table.getOperateCellsHelper();
       const cells = table.getTableCells();
       const { tableDataSnapshot } = table;
       const xSelect = xScreen.findType(XSelectItem);
@@ -1030,7 +1030,7 @@ class TopMenu extends Widget {
         const strikethrough = !firstCell.fontAttr.strikethrough;
         tableDataSnapshot.begin();
         const { cellDataProxy } = tableDataSnapshot;
-        styleCellsHelper.getCellOrNewCellByViewRange({
+        operateCellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectRange,
           callback: (r, c, origin) => {
             const cell = origin.clone();

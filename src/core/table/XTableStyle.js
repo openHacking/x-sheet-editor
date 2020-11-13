@@ -28,14 +28,10 @@ import { StaticCellIcon } from './cellicon/StaticCellIcon';
 import { Row } from './tablebase/Row';
 import { XLinePlainGenerator } from './xlinehandle/XLinePlainGenerator';
 import { LBorderShow } from './xlinehandle/linefilters/borderdisplay/LBorderShow';
-import { LBorderPriority } from './xlinehandle/linefilters/borderpriority/LBorderPriority';
 import { XLineIteratorFilter } from './xlinehandle/XLineIteratorFilter';
 import { RBorderShow } from './xlinehandle/linefilters/borderdisplay/RBorderShow';
-import { RBorderPriority } from './xlinehandle/linefilters/borderpriority/RBorderPriority';
 import { TBorderShow } from './xlinehandle/linefilters/borderdisplay/TBorderShow';
-import { TBorderPriority } from './xlinehandle/linefilters/borderpriority/TBorderPriority';
 import { BBorderShow } from './xlinehandle/linefilters/borderdisplay/BBorderShow';
-import { BBorderPriority } from './xlinehandle/linefilters/borderpriority/BBorderPriority';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -992,7 +988,7 @@ class XTableContentUI extends XTableUI {
     const drawY = this.getDrawY();
     const { table } = this;
     const {
-      draw, textCellsHelper, textFont, cells,
+      draw, textCellsHelper, textFont,
     } = table;
     draw.offset(drawX, drawY);
     textCellsHelper.getCellByViewRange({
@@ -1009,13 +1005,11 @@ class XTableContentUI extends XTableUI {
         cell.setLeftSdistWidth(result.leftSdist);
         cell.setRightSdistWidth(result.rightSdist);
       },
-      mergeCallback: (row, col, cell, rect, mrege) => {
-        const { sri, sci } = mrege;
-        const mergeCell = cells.getCell(sri, sci);
+      mergeCallback: (row, col, cell, rect) => {
         const builder = textFont.getBuilder();
         builder.setDraw(draw);
         builder.setRect(rect);
-        builder.setCell(mergeCell);
+        builder.setCell(cell);
         builder.setOverFlow(rect);
         const font = builder.build();
         const result = font.draw();
@@ -1075,7 +1069,7 @@ class XTableContentUI extends XTableUI {
     const { table } = this;
     const { settings, draw, grid, line, rows, cols, cells, merges, optimizeEnable } = table;
     draw.offset(borderX, borderY);
-    const { gResult, bResult } = XLinePlainGenerator.run({
+    const { gResult, bResult, aResult } = XLinePlainGenerator.run({
       scrollView: borderView,
       foldOnOff: false,
       optimize: optimizeEnable,
@@ -1087,13 +1081,17 @@ class XTableContentUI extends XTableUI {
         ? XLinePlainGenerator.MODEL.ALL
         : XLinePlainGenerator.MODEL.BORDER,
     });
-    gResult.hLine.forEach((item) => {
-      grid.horizonLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    gResult.vLine.forEach((item) => {
-      grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
-    });
-    bResult.hLine.forEach((item) => {
+    // 网格
+    if (gResult) {
+      gResult.bLine.forEach((item) => {
+        grid.horizonLine(item.sx, item.sy, item.ex, item.ey);
+      });
+      gResult.rLine.forEach((item) => {
+        grid.verticalLine(item.sx, item.sy, item.ex, item.ey);
+      });
+    }
+    // 边框
+    bResult.tLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { top } = borderAttr;
       const { color, widthType, type } = top;
@@ -1102,7 +1100,7 @@ class XTableContentUI extends XTableUI {
       line.setColor(color);
       line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
     });
-    bResult.vLine.forEach((item) => {
+    bResult.lLine.forEach((item) => {
       const { borderAttr, row, col } = item;
       const { left } = borderAttr;
       const { color, widthType, type } = left;
@@ -1110,6 +1108,61 @@ class XTableContentUI extends XTableUI {
       line.setWidthType(widthType);
       line.setColor(color);
       line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+    });
+    bResult.rLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { right } = borderAttr;
+      const { color, widthType, type } = right;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.verticalLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+    });
+    bResult.bLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { bottom } = borderAttr;
+      const { color, widthType, type } = bottom;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.horizonLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+    });
+    // 旋转
+    aResult.tLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { top } = borderAttr;
+      const { color, widthType, type } = top;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+    });
+    aResult.lLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { left } = borderAttr;
+      const { color, widthType, type } = left;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+    });
+    aResult.rLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { right } = borderAttr;
+      const { color, widthType, type } = right;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+    });
+    aResult.bLine.forEach((item) => {
+      const { borderAttr, row, col } = item;
+      const { bottom } = borderAttr;
+      const { color, widthType, type } = bottom;
+      line.setType(type);
+      line.setWidthType(widthType);
+      line.setColor(color);
+      line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
     });
     draw.offset(0, 0);
   }
@@ -1145,7 +1198,7 @@ class XTableContentUI extends XTableUI {
     this.drawBoundOutBackground();
     // 绘制文字
     this.drawXFont();
-    this.drawBoundOutXFont();
+    // this.drawBoundOutXFont();
     // 绘制边框
     this.drawGridBorder();
     this.drawBoundOutGridBorder();
@@ -1220,10 +1273,10 @@ class XTableLeftIndexUI extends XTableIndexUI {
       getWidth: () => table.index.getWidth(),
     });
     draw.offset(borderX, borderY);
-    gResult.hLine.forEach((item) => {
+    gResult.bLine.forEach((item) => {
       indexGrid.horizonLine(item.sx, item.sy, item.ex, item.ey);
     });
-    gResult.vLine.forEach((item) => {
+    gResult.rLine.forEach((item) => {
       indexGrid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
@@ -1300,10 +1353,10 @@ class XTableTopIndexUI extends XTableIndexUI {
       getHeight: () => table.index.getHeight(),
     });
     draw.offset(borderX, borderY);
-    gResult.hLine.forEach((item) => {
+    gResult.bLine.forEach((item) => {
       indexGrid.horizonLine(item.sx, item.sy, item.ex, item.ey);
     });
-    gResult.vLine.forEach((item) => {
+    gResult.rLine.forEach((item) => {
       indexGrid.verticalLine(item.sx, item.sy, item.ex, item.ey);
     });
     draw.offset(0, 0);
@@ -2254,35 +2307,32 @@ class XTableStyle extends Widget {
       rows: this.rows,
       cols: this.cols,
     });
-    // 绘制资源
+    // 边框过滤器
     const lBorderFilter = new XLineIteratorFilter({
       logic: XLineIteratorFilter.FILTER_LOGIC.AND,
       stack: [
         new LBorderShow({ cells: this.cells }),
-        new LBorderPriority({ cells: this.cells }),
       ],
     });
     const rBorderFilter = new XLineIteratorFilter({
       logic: XLineIteratorFilter.FILTER_LOGIC.AND,
       stack: [
         new RBorderShow({ cells: this.cells }),
-        new RBorderPriority({ cells: this.cells }),
       ],
     });
     const tBorderFilter = new XLineIteratorFilter({
       logic: XLineIteratorFilter.FILTER_LOGIC.AND,
       stack: [
         new TBorderShow({ cells: this.cells }),
-        new TBorderPriority({ cells: this.cells }),
       ],
     });
     const bBorderFilter = new XLineIteratorFilter({
       logic: XLineIteratorFilter.FILTER_LOGIC.AND,
       stack: [
         new BBorderShow({ cells: this.cells }),
-        new BBorderPriority({ cells: this.cells }),
       ],
     });
+    // 绘制资源
     this.draw = new XDraw(this.el);
     this.line = new Line(this.draw, {
       bottomShow: (row, col) => {

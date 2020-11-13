@@ -38,8 +38,9 @@ class StyleCellsHelper extends BaseCellsHelper {
     cellsINCallback = () => {},
     mergeCallback = () => {},
   }) {
-    const { rows, cols, cells } = this;
+    const { rows, cols, cells, merges } = this;
     const { sri, eri, sci, eci } = view;
+    const filter = [];
     let y = startY;
     RowsIterator.getInstance()
       .setBegin(sri)
@@ -52,54 +53,51 @@ class StyleCellsHelper extends BaseCellsHelper {
           .setBegin(sci)
           .setEnd(eci)
           .setLoop((col) => {
+            const merge = merges.getFirstIncludes(row, col);
             const width = cols.getWidth(col);
-            const cell = cells.getCell(row, col);
-            if (cell) {
-              const mergeInfo = this.mergeInfo({
-                view, row, col,
-              });
-              const cellsINInfo = this.cellsINInfo({
-                x, y, width, height,
-              });
-              if (mergeInfo) {
-                const { rect, cell, merge } = mergeInfo;
+            if (merge) {
+              const find = filter.find(i => i === merge);
+              if (PlainUtils.isUnDef(find)) {
+                filter.push(merge);
+                const mergeInfo = this.mergeInfo({
+                  view, merge,
+                });
+                const { rect, cell } = mergeInfo;
                 result = mergeCallback(row, col, cell, rect, merge);
-              } else {
+              }
+            } else {
+              const cell = cells.getCell(row, col);
+              if (cell) {
+                const cellsINInfo = this.cellsINInfo({
+                  x, y, width, height,
+                });
                 const { rect } = cellsINInfo;
                 result = cellsINCallback(row, col, cell, rect);
               }
-              switch (result) {
-                case STYLE_BREAK_LOOP.RETURN:
-                case STYLE_BREAK_LOOP.ROW:
-                  return false;
-              }
             }
             x += width;
-            return true;
+            switch (result) {
+              case STYLE_BREAK_LOOP.RETURN:
+              case STYLE_BREAK_LOOP.ROW:
+                return false;
+              default: return true;
+            }
           })
           .execute();
         y += height;
-        return result !== STYLE_BREAK_LOOP.RETURN;
+        switch (result) {
+          case STYLE_BREAK_LOOP.RETURN:
+            return false;
+          default: return true;
+        }
       })
       .execute();
   }
 
   mergeInfo({
-    view,
-    row,
-    col,
+    view, merge,
   }) {
-    const { rows, cols, merges, cells, filterMerges } = this;
-    const merge = merges.getFirstIncludes(row, col);
-    // 筛选掉不存在合并单元格
-    if (PlainUtils.isUnDef(merge)) {
-      return null;
-    }
-    // 筛选掉已处理合并单元格
-    const find = filterMerges.find(item => item === merge);
-    if (find) {
-      return null;
-    }
+    const { rows, cols, cells } = this;
     // 计算坐标
     const minSri = Math.min(view.sri, merge.sri);
     const minSci = Math.min(view.sci, merge.sci);
@@ -116,14 +114,11 @@ class StyleCellsHelper extends BaseCellsHelper {
     const width = cols.sectionSumWidth(merge.sci, merge.eci);
     const cell = cells.getCellOrNew(merge.sri, merge.sci);
     const rect = new Rect({ x, y, width, height });
-    return { rect, cell, merge };
+    return { rect, cell };
   }
 
   cellsINInfo({
-    height,
-    width,
-    x,
-    y,
+    height, width, x, y,
   }) {
     const rect = new Rect({ x, y, width, height });
     return { rect };
