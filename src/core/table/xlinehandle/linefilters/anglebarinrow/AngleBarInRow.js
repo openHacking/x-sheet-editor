@@ -3,21 +3,15 @@ import { XLineIteratorFilter } from '../../XLineIteratorFilter';
 
 class AngleBarInRow {
 
-  constructor({
-    table,
-  }) {
+  constructor(table) {
     this.table = table;
   }
 
   run({
     row,
   }) {
-    const { rows } = this;
-    const rowObject = rows.get(row);
-    if (PlainUtils.isUnDef(rowObject)) {
-      return XLineIteratorFilter.RETURN_TYPE.JUMP;
-    }
-    return rowObject.hasAngleCell()
+    const { table } = this;
+    return table.hasAngleCell(row)
       ? XLineIteratorFilter.RETURN_TYPE.EXEC
       : XLineIteratorFilter.RETURN_TYPE.JUMP;
   }

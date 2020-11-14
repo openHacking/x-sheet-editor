@@ -21,18 +21,19 @@ class AngleBar {
     table, bx = 0, by = 0,
   }) {
     this.table = table;
-    this.bx = bx;
-    this.by = by;
     this.lLine = [];
     this.tLine = [];
     this.rLine = [];
     this.bLine = [];
+    this.bx = bx;
+    this.by = by;
   }
 
   offsetX({
     sx, ex, row, col,
   }) {
-    const { cells } = this;
+    const { table } = this;
+    const { cells } = table;
     const cell = cells.getCell(row, col);
     const { fontAttr } = cell;
     const { angle } = fontAttr;
@@ -50,7 +51,8 @@ class AngleBar {
   }
 
   getBItem() {
-    const { cols, rows, cells, bx, by, merges } = this;
+    const { bx, by, table } = this;
+    const { cols, rows, cells } = table;
     const bLine = [];
     const bRow = {};
     return new XLineIteratorItem({
@@ -64,11 +66,11 @@ class AngleBar {
       filter: new XLineIteratorFilter({
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
         stack: [
-          new AngleBarInRow({ rows }),
-          new BBorderShow({ cells }),
-          new AngleBarShow({ cells }),
-          new BBorderPriority({ cells }),
-          new MergeBNullEdge({ merges }),
+          new AngleBarInRow(table),
+          new BBorderShow(table),
+          new AngleBarShow(table),
+          new BBorderPriority(table),
+          new MergeBNullEdge(table),
         ],
       }),
       exec: ({ row, col }) => {
@@ -92,7 +94,8 @@ class AngleBar {
   }
 
   getTItem() {
-    const { cols, rows, cells, bx, by, merges } = this;
+    const { table, bx, by } = this;
+    const { cols, cells } = table;
     const tLine = [];
     const tRow = {};
     return new XLineIteratorItem({
@@ -105,11 +108,11 @@ class AngleBar {
       filter: new XLineIteratorFilter({
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
         stack: [
-          new AngleBarInRow({ rows }),
-          new TBorderShow({ cells }),
-          new AngleBarShow({ cells }),
-          new TBorderPriority({ cells }),
-          new MergeTNullEdge({ merges }),
+          new AngleBarInRow(table),
+          new TBorderShow(table),
+          new AngleBarShow(table),
+          new TBorderPriority(table),
+          new MergeTNullEdge(table),
         ],
       }),
       exec: ({ row, col }) => {
@@ -136,7 +139,8 @@ class AngleBar {
   }
 
   getRItem() {
-    const { cols, rows, cells, bx, by, merges } = this;
+    const { bx, by, table } = this;
+    const { cols, rows, cells } = table;
     const rCols = [];
     return new XLineIteratorItem({
       newCol: ({ col, x }) => {
@@ -151,11 +155,11 @@ class AngleBar {
       filter: new XLineIteratorFilter({
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
         stack: [
-          new AngleBarInRow({ rows }),
-          new RBorderShow({ cells }),
-          new AngleBarShow({ cells }),
-          new RBorderPriority({ cells }),
-          new MergeRNullEdge({ merges }),
+          new AngleBarInRow(table),
+          new RBorderShow(table),
+          new AngleBarShow(table),
+          new RBorderPriority(table),
+          new MergeRNullEdge(table),
         ],
       }),
       exec: ({ row, col }) => {
@@ -191,7 +195,8 @@ class AngleBar {
   }
 
   getLItem() {
-    const { rows, cols, cells, bx, by, merges } = this;
+    const { bx, by, table } = this;
+    const { rows, cells } = table;
     const lCols = [];
     return new XLineIteratorItem({
       newCol: ({ col, x }) => {
@@ -205,11 +210,11 @@ class AngleBar {
       filter: new XLineIteratorFilter({
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
         stack: [
-          new AngleBarInRow({ rows }),
-          new LBorderShow({ cells }),
-          new AngleBarShow({ cells }),
-          new LBorderPriority({ cells }),
-          new MergeLNullEdge({ merges }),
+          new AngleBarInRow(table),
+          new LBorderShow(table),
+          new AngleBarShow(table),
+          new LBorderPriority(table),
+          new MergeLNullEdge(table),
         ],
       }),
       exec: ({ row, col }) => {

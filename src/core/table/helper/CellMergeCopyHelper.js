@@ -380,12 +380,44 @@ Serialize.SERIALIZE_DIRECTION = {
 
 class CellMergeCopyHelper extends BaseCellsHelper {
 
+  constructor(table) {
+    super();
+    this.table = table;
+  }
+
+  getStyleTable() {
+    return this.table.xTableStyle;
+  }
+
+  getTableDataSnapshot() {
+    return this.table.tableDataSnapshot;
+  }
+
+  getXTableAreaView() {
+    return this.table.xTableAreaView;
+  }
+
+  getRows() {
+    return this.table.rows;
+  }
+
+  getCols() {
+    return this.table.cols;
+  }
+
+  getCells() {
+    return this.table.getTableCells();
+  }
+
+  getMerges() {
+    return this.table.getTableMerges();
+  }
+
   copyCellINContent({
     originViewRange, targetViewRange,
   }) {
-    const {
-      cells, tableDataSnapshot,
-    } = this;
+    const tableDataSnapshot = this.getTableDataSnapshot();
+    const cells = this.getCells();
     const { cellDataProxy } = tableDataSnapshot;
     const copy = new CopyCellIN({
       originViewRange,
@@ -404,9 +436,8 @@ class CellMergeCopyHelper extends BaseCellsHelper {
   copyMergeContent({
     originViewRange, targetViewRange,
   }) {
-    const {
-      merges, tableDataSnapshot,
-    } = this;
+    const tableDataSnapshot = this.getTableDataSnapshot();
+    const merges = this.getMerges();
     const { mergeDataProxy } = tableDataSnapshot;
     const copy = new CopyMerge({
       originViewRange,
@@ -440,9 +471,8 @@ class CellMergeCopyHelper extends BaseCellsHelper {
   copyStylesContent({
     originViewRange, targetViewRange,
   }) {
-    const {
-      cells, tableDataSnapshot,
-    } = this;
+    const tableDataSnapshot = this.getTableDataSnapshot();
+    const cells = this.getCells();
     const { cellDataProxy } = tableDataSnapshot;
     const copy = new CopyCellIN({
       originViewRange,
@@ -463,7 +493,8 @@ class CellMergeCopyHelper extends BaseCellsHelper {
   serializeContent({
     originViewRange, direction,
   }) {
-    const { tableDataSnapshot, cells } = this;
+    const tableDataSnapshot = this.getTableDataSnapshot();
+    const cells = this.getCells();
     const { cellDataProxy } = tableDataSnapshot;
     const serialize = new Serialize({
       originViewRange,

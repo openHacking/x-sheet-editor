@@ -919,6 +919,8 @@ class XTableContentUI extends XTableUI {
               builder.setDraw(draw);
               builder.setRect(rect);
               builder.setCell(cell);
+              builder.setRow(row);
+              builder.setCol(col);
               builder.setOverFlow(overflow);
               const font = builder.build();
               const result = font.draw();
@@ -966,6 +968,8 @@ class XTableContentUI extends XTableUI {
               builder.setDraw(draw);
               builder.setRect(rect);
               builder.setCell(cell);
+              builder.setRow(row);
+              builder.setCol(col);
               builder.setOverFlow(overflow);
               const font = builder.build();
               const result = font.draw();
@@ -1000,6 +1004,8 @@ class XTableContentUI extends XTableUI {
         builder.setDraw(draw);
         builder.setCell(cell);
         builder.setRect(rect);
+        builder.setRow(row);
+        builder.setCol(col);
         builder.setOverFlow(overflow);
         const font = builder.build();
         const result = font.draw();
@@ -1012,6 +1018,8 @@ class XTableContentUI extends XTableUI {
         builder.setDraw(draw);
         builder.setRect(rect);
         builder.setCell(cell);
+        builder.setRow(row);
+        builder.setCol(col);
         builder.setOverFlow(rect);
         const font = builder.build();
         const result = font.draw();
@@ -2246,10 +2254,8 @@ class XTableStyle extends Widget {
       cols: this.cols,
     });
     this.cells = new Cells({
-      rows: this.rows,
-      cols: this.cols,
+      table: this,
       data: this.settings.data,
-      merges: this.merges,
     });
     // 固定区域测量
     this.xFixedMeasure = new XFixedMeasure({
@@ -2279,27 +2285,9 @@ class XTableStyle extends Widget {
       cols: this.cols,
     });
     // 单元格辅助类
-    this.operateCellsHelper = new OperateCellsHelper({
-      xTableAreaView: this.xTableAreaView,
-      cells: this.cells,
-      merges: this.merges,
-      rows: this.rows,
-      cols: this.cols,
-    });
-    this.textCellsHelper = new TextCellsHelper({
-      xTableAreaView: this.xTableAreaView,
-      cells: this.cells,
-      merges: this.merges,
-      rows: this.rows,
-      cols: this.cols,
-    });
-    this.styleCellsHelper = new StyleCellsHelper({
-      xTableAreaView: this.xTableAreaView,
-      cells: this.cells,
-      merges: this.merges,
-      rows: this.rows,
-      cols: this.cols,
-    });
+    this.operateCellsHelper = new OperateCellsHelper(this);
+    this.textCellsHelper = new TextCellsHelper(this);
+    this.styleCellsHelper = new StyleCellsHelper(this);
     // 边框过滤器
     const lBorderFilter = new XLineIteratorFilter({
       logic: XLineIteratorFilter.FILTER_LOGIC.AND,
@@ -2360,6 +2348,7 @@ class XTableStyle extends Widget {
       scaleAdapter: new ScaleAdapter({
         goto: v => this.scale.goto(v),
       }),
+      table: this,
     });
     // 冻结内容
     this.xLeftFrozenIndex = new XTableFrozenLeftIndex(this);
@@ -2376,10 +2365,6 @@ class XTableStyle extends Widget {
     this.xTableFixedBar = new XTableFixedBar(this, settings.xFixedBar);
     // 同步合并单元格
     this.merges.sync();
-    // 行基本属性设置
-    Row.seTableCols(this.cols);
-    Row.setTableCells(this.cells);
-    Row.setXTable(this);
   }
 
   /**
@@ -2563,6 +2548,41 @@ class XTableStyle extends Widget {
     const lessZero = fontAttr.angle < 0 && fontAttr.angle > -90;
     const moreZero = fontAttr.angle > 0 && fontAttr.angle < 90;
     return (lessZero || moreZero) && borderAttr.isDisplay();
+  }
+
+  /**
+   * 当前行是否存在旋转单元格
+   * @param row
+   * @returns {boolean}
+   */
+  hasAngleCell(row) {
+    const { renderId, rows } = this;
+    const rowObject = rows.get(row);
+    if (rowObject) {
+      if (renderId === rowObject.renderId) {
+        return rowObject.hasAngelCell;
+      }
+    }
+    const { cols, cells } = this;
+    const { len } = cols;
+    let hasAngelCell = false;
+    for (let i = 0; i < len; i += 1) {
+      const cell = cells.getCell(row, i);
+      if (cell) {
+        const { fontAttr } = cell;
+        const { direction } = fontAttr;
+        if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
+          hasAngelCell = true;
+          break;
+        }
+      }
+    }
+    if (hasAngelCell) {
+      const rowObject = rows.getOrNew(row);
+      rowObject.setRenderId(renderId);
+      rowObject.setHasAngelCell(hasAngelCell);
+    }
+    return hasAngelCell;
   }
 
 }

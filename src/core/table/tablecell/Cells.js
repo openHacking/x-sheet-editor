@@ -9,14 +9,10 @@ import { BaseFont } from '../../../canvas/font/BaseFont';
 class Cells {
 
   constructor({
-    merges,
-    cols,
-    rows,
+    table,
     data = [],
   }) {
-    this.merges = merges;
-    this.rows = rows;
-    this.cols = cols;
+    this.table = table;
     this.data = data;
   }
 
@@ -60,7 +56,8 @@ class Cells {
   }
 
   getCellOrMergeCell(ri, ci) {
-    const { merges } = this;
+    const { table } = this;
+    const { merges } = table;
     const merge = merges.getFirstIncludes(ri, ci);
     if (merge) {
       return this.getCell(merge.sri, merge.sci);
@@ -87,7 +84,8 @@ class Cells {
   }
 
   getCellBoundOutSize(ri, ci) {
-    const { cols } = this;
+    const { table } = this;
+    const { cols } = table;
     const cell = this.getCell(ri, ci);
     if (!cell) {
       return 0;
@@ -103,7 +101,7 @@ class Cells {
         break;
       }
       case BaseFont.ALIGN.center: {
-        if (cell.isAngleBarCell()) {
+        if (table.isAngleBarCell(ri, ci)) {
           boundOutWidth = contentWidth;
         } else {
           boundOutWidth = colWidth + ((contentWidth - colWidth) / 2);

@@ -2,19 +2,12 @@ import { PlainUtils } from '../../../utils/PlainUtils';
 import { CellFont } from './CellFont';
 import { CellBorder } from './CellBorder';
 import { XIcon } from '../xicon/XIcon';
-import { BaseFont } from '../../../canvas/font/BaseFont';
-
-const tableMerges = null;
 
 /**
  * Cell
  * @author jerry
  */
 class Cell {
-
-  static setTableMerges(merges) {
-    this.tableMerges = merges;
-  }
 
   /**
    * Cell
@@ -48,16 +41,6 @@ class Cell {
     this.contentWidth = contentWidth;
     this.leftSdistWidth = leftSdistWidth;
     this.rightSdistWidth = rightSdistWidth;
-  }
-
-  isAngleBarCell() {
-    const { fontAttr, borderAttr } = this;
-    if (fontAttr.direction !== BaseFont.TEXT_DIRECTION.ANGLE) {
-      return false;
-    }
-    const lessZero = fontAttr.angle < 0 && fontAttr.angle > -90;
-    const moreZero = fontAttr.angle > 0 && fontAttr.angle < 90;
-    return (lessZero || moreZero) && borderAttr.isDisplay();
   }
 
   setContentWidth(contentWidth) {

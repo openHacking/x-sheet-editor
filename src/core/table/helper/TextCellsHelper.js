@@ -13,22 +13,33 @@ const TEXT_BREAK_LOOP = {
 
 class TextCellsHelper extends BaseCellsHelper {
 
-  constructor({
-    merges,
-    cells,
-    rows,
-    cols,
-    tableDataSnapshot,
-    xTableAreaView,
-  }) {
-    super({
-      cells,
-      merges,
-      rows,
-      cols,
-      tableDataSnapshot,
-      xTableAreaView,
-    });
+  constructor(table) {
+    super();
+    this.table = table;
+  }
+
+  getXTableAreaView() {
+    return this.table.xTableAreaView;
+  }
+
+  getRows() {
+    return this.table.rows;
+  }
+
+  getStyleTable() {
+    return this.table;
+  }
+
+  getCols() {
+    return this.table.cols;
+  }
+
+  getMerges() {
+    return this.table.merges;
+  }
+
+  getCells() {
+    return this.table.cells;
   }
 
   getCellByViewRange({
@@ -42,7 +53,10 @@ class TextCellsHelper extends BaseCellsHelper {
     cellsINCallback = () => {},
     mergeCallback = () => {},
   }) {
-    const { rows, cols, cells, merges } = this;
+    const rows = this.getRows();
+    const cols = this.getCols();
+    const cells = this.getCells();
+    const merges = this.getMerges();
     const { sri, eri, sci, eci } = view;
     const filter = [];
     if (reverseRows && reverseCols) {
@@ -263,7 +277,9 @@ class TextCellsHelper extends BaseCellsHelper {
   mergeInfo({
     view, merge,
   }) {
-    const { rows, cols, cells } = this;
+    const rows = this.getRows();
+    const cols = this.getCols();
+    const cells = this.getCells();
     // 计算坐标
     const minSri = Math.min(view.sri, merge.sri);
     const minSci = Math.min(view.sci, merge.sci);

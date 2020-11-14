@@ -5,14 +5,17 @@ import { RowsIterator } from '../iterator/RowsIterator';
 
 class OperateCellsHelper extends BaseCellsHelper {
 
+  constructor(table) {
+    super();
+    this.table = table;
+  }
+
   getCellOrNewCellByViewRange({
     rectRange = new RectRange(-1, -1, -1, -1),
     callback = () => {},
   }) {
-    const { cells } = this;
-    const {
-      sri, eri, sci, eci,
-    } = rectRange;
+    const cells = this.getCells();
+    const { sri, eri, sci, eci } = rectRange;
     RowsIterator.getInstance()
       .setBegin(sri)
       .setEnd(eri)
@@ -27,6 +30,30 @@ class OperateCellsHelper extends BaseCellsHelper {
           .execute();
       })
       .execute();
+  }
+
+  getXTableAreaView() {
+    return this.table.xTableAreaView;
+  }
+
+  getRows() {
+    return this.table.rows;
+  }
+
+  getStyleTable() {
+    return this.table;
+  }
+
+  getCols() {
+    return this.table.cols;
+  }
+
+  getMerges() {
+    return this.table.merges;
+  }
+
+  getCells() {
+    return this.table.cells;
   }
 
 }

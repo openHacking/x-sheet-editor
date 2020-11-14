@@ -3,21 +3,20 @@ import { XLineIteratorFilter } from '../../XLineIteratorFilter';
 
 class AngleBarShow {
 
-  constructor({
-    table,
-  }) {
+  constructor(table) {
     this.table = table;
   }
 
   run({
     row, col,
   }) {
-    const { cells } = this;
+    const { table } = this;
+    const { cells } = table;
     const cell = cells.getCell(row, col);
     if (PlainUtils.isUnDef(cell)) {
       return XLineIteratorFilter.RETURN_TYPE.JUMP;
     }
-    return cell.isAngleBarCell()
+    return table.isAngleBarCell(row, col)
       ? XLineIteratorFilter.RETURN_TYPE.EXEC
       : XLineIteratorFilter.RETURN_TYPE.JUMP;
   }

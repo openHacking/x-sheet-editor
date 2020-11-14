@@ -2,16 +2,15 @@ import { XLineIteratorFilter } from '../../XLineIteratorFilter';
 
 class MergeTNullEdge {
 
-  constructor({
-    table,
-  }) {
+  constructor(table) {
     this.table = table;
   }
 
   run({
     row, col,
   }) {
-    const { merges } = this;
+    const { table } = this;
+    const { merges } = table;
     const merge = merges.getFirstIncludes(row, col);
     if (merge) {
       return merge.sri === row

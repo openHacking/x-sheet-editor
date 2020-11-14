@@ -7,12 +7,15 @@ import XTableFormat from '../XTableFormat';
 class TextBuilder {
 
   constructor({
-    scaleAdapter,
+    scaleAdapter, table,
   }) {
     this.scaleAdapter = scaleAdapter;
     this.rect = null;
     this.dw = null;
     this.cell = null;
+    this.row = -1;
+    this.col = -1;
+    this.table = table;
     this.overflow = null;
   }
 
@@ -28,12 +31,20 @@ class TextBuilder {
     this.cell = cell;
   }
 
+  setCol(col) {
+    this.col = col;
+  }
+
+  setRow(row) {
+    this.row = row;
+  }
+
   setOverFlow(overflow) {
     this.overflow = overflow;
   }
 
   build() {
-    const { rect, overflow, dw, scaleAdapter, cell } = this;
+    const { rect, overflow, row, col, cell, dw, scaleAdapter, table } = this;
     const { format, text, fontAttr } = cell;
     const size = XDraw.srcTransformStylePx(scaleAdapter.goto(fontAttr.size));
     const padding = XDraw.srcTransformStylePx(scaleAdapter.goto(fontAttr.padding));
@@ -42,7 +53,7 @@ class TextBuilder {
     });
     builder.setSize(size);
     builder.setPadding(padding);
-    if (cell.isAngleBarCell()) {
+    if (table.isAngleBarCell(row, col)) {
       builder.setDirection(BaseFont.TEXT_DIRECTION.ANGLE_BAR);
     }
     return builder.build();
@@ -54,14 +65,16 @@ class Text {
 
   constructor({
     scaleAdapter = new ScaleAdapter(),
+    table,
   }) {
     this.scaleAdapter = scaleAdapter;
+    this.table = table;
   }
 
   getBuilder() {
-    const { scaleAdapter } = this;
+    const { scaleAdapter, table } = this;
     return new TextBuilder({
-      scaleAdapter,
+      scaleAdapter, table,
     });
   }
 

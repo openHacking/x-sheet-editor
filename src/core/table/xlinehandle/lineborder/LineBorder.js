@@ -22,14 +22,14 @@ class LineBorder {
   constructor({
     table, bx = 0, by = 0, optimize = true,
   }) {
-    this.table = table;
-    this.bx = bx;
-    this.by = by;
     this.optimize = optimize;
+    this.table = table;
     this.lLine = [];
     this.tLine = [];
     this.rLine = [];
     this.bLine = [];
+    this.bx = bx;
+    this.by = by;
   }
 
   offsetX({
@@ -56,7 +56,7 @@ class LineBorder {
 
   getBItem() {
     const { table, bx, by, optimize } = this;
-    const { cols, rows, cells, merges } = table;
+    const { cols, rows, cells } = table;
     const bLine = [];
     const bRow = {};
     return new XLineIteratorItem({
@@ -70,10 +70,10 @@ class LineBorder {
       filter: new XLineIteratorFilter({
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
         stack: [
-          new BBorderShow({ cells }),
-          new BBorderPriority({ cells }),
-          new MergeBNullEdge({ merges }),
-          new AngleBarHide({ cells }),
+          new BBorderShow(table),
+          new BBorderPriority(table),
+          new MergeBNullEdge(table),
+          new AngleBarHide(table),
         ],
       }),
       exec: ({ row, col }) => {
@@ -100,7 +100,7 @@ class LineBorder {
 
   getTItem() {
     const { table, bx, by, optimize } = this;
-    const { cols, cells, merges } = table;
+    const { cols, cells } = table;
     const tLine = [];
     const tRow = {};
     return new XLineIteratorItem({
@@ -113,10 +113,10 @@ class LineBorder {
       filter: new XLineIteratorFilter({
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
         stack: [
-          new TBorderShow({ cells }),
-          new TBorderPriority({ cells }),
-          new MergeTNullEdge({ merges }),
-          new AngleBarHide({ cells }),
+          new TBorderShow(table),
+          new TBorderPriority(table),
+          new MergeTNullEdge(table),
+          new AngleBarHide(table),
         ],
       }),
       exec: ({ row, col }) => {
@@ -144,7 +144,7 @@ class LineBorder {
 
   getRItem() {
     const { table, bx, by, optimize } = this;
-    const { cols, rows, cells, merges } = table;
+    const { cols, rows, cells } = table;
     const rCols = [];
     return new XLineIteratorItem({
       newCol: ({ col, x }) => {
@@ -159,11 +159,11 @@ class LineBorder {
       filter: new XLineIteratorFilter({
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
         stack: [
-          new RBorderShow({ cells }),
-          new RBorderPriority({ cells }),
-          new MergeRNullEdge({ merges }),
-          new AngleBarHide({ cells }),
-          new RCellOutRange({ cells, cols, rows, merges }),
+          new RBorderShow(table),
+          new RBorderPriority(table),
+          new MergeRNullEdge(table),
+          new AngleBarHide(table),
+          new RCellOutRange(table),
         ],
       }),
       exec: ({ row, col }) => {
@@ -201,7 +201,7 @@ class LineBorder {
 
   getLItem() {
     const { table, bx, by, optimize } = this;
-    const { cols, rows, cells, merges } = table;
+    const { rows, cells } = table;
     const lCols = [];
     return new XLineIteratorItem({
       newCol: ({ col, x }) => {
@@ -215,11 +215,11 @@ class LineBorder {
       filter: new XLineIteratorFilter({
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
         stack: [
-          new LBorderShow({ cells }),
-          new LBorderPriority({ cells }),
-          new MergeLNullEdge({ merges }),
-          new AngleBarHide({ cells }),
-          new LCellOutRange({ cells, cols, rows, merges }),
+          new LBorderShow(table),
+          new LBorderPriority(table),
+          new MergeLNullEdge(table),
+          new AngleBarHide(table),
+          new LCellOutRange(table),
         ],
       }),
       exec: ({ row, col }) => {

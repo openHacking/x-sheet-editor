@@ -3,16 +3,15 @@ import { PlainUtils } from '../../../../../utils/PlainUtils';
 
 class LBorderPriority {
 
-  constructor({
-    table,
-  }) {
+  constructor(table) {
     this.table = table;
   }
 
   run({
     row, col,
   }) {
-    const { cells } = this;
+    const { table } = this;
+    const { cells } = table;
     const next = cells.getCell(row, col - 1);
     const cell = cells.getCell(row, col);
     // 对面的单元格不存在

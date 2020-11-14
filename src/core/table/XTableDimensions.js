@@ -731,13 +731,7 @@ class XTableDimensions extends Widget {
     this.dropColFixed = new DropColFixed(this);
     this.dropRowFixed = new DropRowFixed(this);
     // 单元格辅助类
-    this.cellMergeCopyHelper = new CellMergeCopyHelper({
-      merges: this.getTableMerges(),
-      cells: this.getTableCells(),
-      cols: this.cols,
-      rows: this.rows,
-      tableDataSnapshot: this.tableDataSnapshot,
-    });
+    this.cellMergeCopyHelper = new CellMergeCopyHelper(this);
     // 粘贴板
     this.clipboard = new Clipboard({
       filter: () => {

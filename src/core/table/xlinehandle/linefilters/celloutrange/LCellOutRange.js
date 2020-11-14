@@ -17,7 +17,8 @@ class LCellOutRange extends CellOutRange {
   master({
     row, col,
   }) {
-    const { cells, cols } = this;
+    const { table } = this;
+    const { cells, cols } = table;
     const last = cells.getCell(row, col - 1);
     const master = cells.getCell(row, col);
 
@@ -31,7 +32,7 @@ class LCellOutRange extends CellOutRange {
     // 是否旋转文本
     if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
       const { angle } = fontAttr;
-      if (master.isAngleBarCell()) {
+      if (table.isAngleBarCell(row, col)) {
         return angle > 0;
       }
       if (angle === 90 || angle === -90) {
@@ -64,14 +65,14 @@ class LCellOutRange extends CellOutRange {
   left({
     row, col,
   }) {
-    const { cells, cols, rows, merges } = this;
-    const rowObject = rows.getOrNew(row);
+    const { table } = this;
+    const { cells, cols, merges } = table;
     const master = cells.getCell(row, col);
     let find = true;
     let leftWidth = cols.getWidth(col - 1);
 
     // 左方向越界检查
-    if (rowObject.hasAngleCell()) {
+    if (table.hasAngleCell(row)) {
       ColsIterator.getInstance()
         .setBegin(col - 1)
         .setEnd(0)
@@ -98,7 +99,7 @@ class LCellOutRange extends CellOutRange {
           if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
             const { angle } = fontAttr;
             // 忽略反方向旋转的angleBar单元格
-            if (cell.isAngleBarCell()) {
+            if (table.isAngleBarCell(row, i)) {
               if (angle < 0) {
                 return true;
               }
@@ -195,16 +196,16 @@ class LCellOutRange extends CellOutRange {
   right({
     row, col,
   }) {
-    const { cells, cols, merges, rows } = this;
+    const { table } = this;
+    const { cells, cols, merges } = table;
     const { len } = cols;
-    const rowObject = rows.getOrNew(row);
     const last = cells.getCell(row, col - 1);
     const master = cells.getCell(row, col);
     let find = true;
     let rightWidth = cols.getWidth(col + 1) + cols.getWidth(col);
 
     // 右方向越界检查
-    if (rowObject.hasAngleCell()) {
+    if (table.hasAngleCell(row)) {
       ColsIterator.getInstance()
         .setBegin(col + 1)
         .setEnd(len)
@@ -231,7 +232,7 @@ class LCellOutRange extends CellOutRange {
           if (direction === BaseFont.TEXT_DIRECTION.ANGLE) {
             const { angle } = fontAttr;
             // 忽略反方向旋转的angleBar单元格
-            if (cell.isAngleBarCell()) {
+            if (table.isAngleBarCell(row, j)) {
               if (angle > 0) {
                 return true;
               }
@@ -330,7 +331,6 @@ class LCellOutRange extends CellOutRange {
     }
     return find;
   }
-
 
 }
 

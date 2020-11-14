@@ -23,7 +23,6 @@ class LineGrid {
 
   getBItem() {
     const { table, bx, by, getWidth, getHeight } = this;
-    const { cells, merges } = table;
     const bRow = {};
     const bLine = [];
     return new XLineIteratorItem({
@@ -44,9 +43,9 @@ class LineGrid {
       filter: new XLineIteratorFilter({
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
         stack: [
-          new BBorderHide({ cells }),
-          new MergeBNullEdge({ merges }),
-          new AngleBarHide({ cells }),
+          new BBorderHide(table),
+          new MergeBNullEdge(table),
+          new AngleBarHide(table),
         ],
       }),
       exec: ({ col }) => {
@@ -72,7 +71,6 @@ class LineGrid {
 
   getRItem() {
     const { table, bx, by, getWidth, getHeight } = this;
-    const { rows, cols, cells, merges } = table;
     const rCols = [];
     const rLine = [];
     return new XLineIteratorItem({
@@ -95,10 +93,10 @@ class LineGrid {
       filter: new XLineIteratorFilter({
         logic: XLineIteratorFilter.FILTER_LOGIC.AND,
         stack: [
-          new RBorderHide({ cells }),
-          new MergeRNullEdge({ merges }),
-          new AngleBarHide({ cells }),
-          new RCellOutRange({ cells, cols, rows, merges }),
+          new RBorderHide(table),
+          new MergeRNullEdge(table),
+          new AngleBarHide(table),
+          new RCellOutRange(table),
         ],
       }),
       exec: ({ row, col }) => {

@@ -6,74 +6,57 @@ import { ColsIterator } from '../iterator/ColsIterator';
 
 class BaseCellsHelper {
 
-  constructor({
-    cells,
-    merges,
-    rows,
-    cols,
-    tableDataSnapshot,
-    xTableAreaView,
-  }) {
-    this.tableDataSnapshot = tableDataSnapshot;
-    this.xTableAreaView = xTableAreaView;
-    this.cells = cells;
-    this.merges = merges;
-    this.rows = rows;
-    this.cols = cols;
+  getXTableAreaView() {
+    throw new TypeError('child impl');
   }
 
-  getCellOverFlow(ri, ci, rect, cell) {
-    const { x, y, height } = rect;
-    const { fontAttr } = cell;
-    const { direction } = fontAttr;
-    switch (direction) {
-      case BaseFont.TEXT_DIRECTION.HORIZONTAL: {
-        const { textWrap } = fontAttr;
-        if (textWrap === BaseFont.TEXT_WRAP.OVER_FLOW) {
-          const max = this.getHorizontalMaxWidth(ri, ci, cell);
-          return new Rect({
-            x: x + max.offset, y, width: max.width, height,
-          });
-        }
-        break;
-      }
-      case BaseFont.TEXT_DIRECTION.ANGLE: {
-        const { textWrap } = fontAttr;
-        if (cell.isAngleBarCell()) {
-          switch (textWrap) {
-            case BaseFont.TEXT_WRAP.OVER_FLOW:
-            case BaseFont.TEXT_WRAP.TRUNCATE: {
-              const max = this.getAngleBarMaxWidth(ri, ci, cell, rect);
-              return new Rect({
-                x: x + max.offset, y, width: max.width, height,
-              });
-            }
-            case BaseFont.TEXT_WRAP.WORD_WRAP: {
-              const max = this.getAngleBarWrapWidth(ri, ci, cell, rect);
-              return new Rect({
-                x: x + max.offset, y, width: max.width, height,
-              });
-            }
-          }
-        } else {
-          switch (textWrap) {
-            case BaseFont.TEXT_WRAP.OVER_FLOW:
-            case BaseFont.TEXT_WRAP.TRUNCATE: {
-              const max = this.getAngleMaxWidth(ri, ci, cell, rect);
-              return new Rect({
-                x: x + max.offset, y, width: max.width, height,
-              });
-            }
-          }
-        }
-        break;
-      }
+  getRows() {
+    throw new TypeError('child impl');
+  }
+
+  getStyleTable() {
+
+  }
+
+  getCols() {
+    throw new TypeError('child impl');
+  }
+
+  getMerges() {
+    throw new TypeError('child impl');
+  }
+
+  getCells() {
+    throw new TypeError('child impl');
+  }
+
+  getAngleBarWrapWidth(ri, ci, cell, rect) {
+    const xTableAreaView = this.getXTableAreaView();
+    const merges = this.getMerges();
+    const cols = this.getCols();
+    const merge = merges.getFirstIncludes(ri, ci);
+    if (merge) {
+      return merge;
     }
-    return null;
+    const scrollView = xTableAreaView.getScrollView();
+    const { eci } = scrollView;
+    const { fontAttr } = cell;
+    const { angle } = fontAttr;
+    let width = 0;
+    let offset = 0;
+    if (angle > 0) {
+      width = cols.sectionSumWidth(ci, eci);
+    } else {
+      width = cols.sectionSumWidth(0, ci - 1) + rect.width;
+      offset = -(width - rect.width);
+    }
+    return { width, offset };
   }
 
   getHorizontalMaxWidth(ri, ci, cell) {
-    const { cells, cols, merges } = this;
+    const merges = this.getMerges();
+    const cols = this.getCols();
+    const cells = this.getCells();
     const { fontAttr } = cell;
     const { align } = fontAttr;
     let width = 0;
@@ -170,30 +153,10 @@ class BaseCellsHelper {
     return { width, offset };
   }
 
-  getAngleBarMaxWidth(ri, ci, cell, rect) {
-    const { rows, merges } = this;
-    const merge = merges.getFirstIncludes(ri, ci);
-    if (merge) {
-      return merge;
-    }
-    const { fontAttr } = cell;
-    const { angle } = fontAttr;
-    const rowHeight = rows.getHeight(ri);
-    const tilt = RTSinKit.tilt({
-      inverse: rowHeight,
-      angle,
-    });
-    let width = RTCosKit.nearby({ tilt, angle });
-    let offset = 0;
-    if (angle < 0) {
-      width = RTCosKit.nearby({ tilt, angle }) + rect.width;
-      offset = -width;
-    }
-    return { width, offset };
-  }
-
   getAngleMaxWidth(ri, ci, cell, rect) {
-    const { cols, rows, merges } = this;
+    const merges = this.getMerges();
+    const cols = this.getCols();
+    const rows = this.getRows();
     const merge = merges.getFirstIncludes(ri, ci);
     if (merge) {
       return merge;
@@ -269,25 +232,78 @@ class BaseCellsHelper {
     };
   }
 
-  getAngleBarWrapWidth(ri, ci, cell, rect) {
-    const { xTableAreaView, cols, merges } = this;
+  getAngleBarMaxWidth(ri, ci, cell, rect) {
+    const merges = this.getMerges();
+    const rows = this.getRows();
     const merge = merges.getFirstIncludes(ri, ci);
     if (merge) {
       return merge;
     }
-    const scrollView = xTableAreaView.getScrollView();
-    const { eci } = scrollView;
     const { fontAttr } = cell;
     const { angle } = fontAttr;
-    let width = 0;
+    const rowHeight = rows.getHeight(ri);
+    const tilt = RTSinKit.tilt({
+      inverse: rowHeight,
+      angle,
+    });
+    let width = RTCosKit.nearby({ tilt, angle });
     let offset = 0;
-    if (angle > 0) {
-      width = cols.sectionSumWidth(ci, eci);
-    } else {
-      width = cols.sectionSumWidth(0, ci - 1) + rect.width;
-      offset = -(width - rect.width);
+    if (angle < 0) {
+      width = RTCosKit.nearby({ tilt, angle }) + rect.width;
+      offset = -width;
     }
     return { width, offset };
+  }
+
+  getCellOverFlow(ri, ci, rect, cell) {
+    const styleTable = this.getStyleTable();
+    const { x, y, height } = rect;
+    const { fontAttr } = cell;
+    const { direction } = fontAttr;
+    switch (direction) {
+      case BaseFont.TEXT_DIRECTION.HORIZONTAL: {
+        const { textWrap } = fontAttr;
+        if (textWrap === BaseFont.TEXT_WRAP.OVER_FLOW) {
+          const max = this.getHorizontalMaxWidth(ri, ci, cell);
+          return new Rect({
+            x: x + max.offset, y, width: max.width, height,
+          });
+        }
+        break;
+      }
+      case BaseFont.TEXT_DIRECTION.ANGLE: {
+        const { textWrap } = fontAttr;
+        if (styleTable.isAngleBarCell(ri, ci)) {
+          switch (textWrap) {
+            case BaseFont.TEXT_WRAP.OVER_FLOW:
+            case BaseFont.TEXT_WRAP.TRUNCATE: {
+              const max = this.getAngleBarMaxWidth(ri, ci, cell, rect);
+              return new Rect({
+                x: x + max.offset, y, width: max.width, height,
+              });
+            }
+            case BaseFont.TEXT_WRAP.WORD_WRAP: {
+              const max = this.getAngleBarWrapWidth(ri, ci, cell, rect);
+              return new Rect({
+                x: x + max.offset, y, width: max.width, height,
+              });
+            }
+          }
+        } else {
+          switch (textWrap) {
+            case BaseFont.TEXT_WRAP.OVER_FLOW:
+            case BaseFont.TEXT_WRAP.TRUNCATE: {
+              const max = this.getAngleMaxWidth(ri, ci, cell, rect);
+              return new Rect({
+                x: x + max.offset, y, width: max.width, height,
+              });
+            }
+          }
+        }
+        break;
+      }
+    }
+    return null;
   }
 
 }
