@@ -10,8 +10,7 @@ class XLineIteratorLoop {
     items = [],
     bx = 0,
     by = 0,
-    rows,
-    cols,
+    table,
     filter = XLineIteratorFilter.EMPTY,
     view = RectRange.EMPTY,
   }) {
@@ -19,14 +18,14 @@ class XLineIteratorLoop {
     this.bx = bx;
     this.by = by;
     this.items = items;
-    this.rows = rows;
-    this.cols = cols;
+    this.table = table;
     this.filter = filter;
     this.view = view;
   }
 
   run() {
-    const { view, rows, cols } = this;
+    const { view, table } = this;
+    const { rows, cols } = table;
     const { filter, foldOnOff } = this;
     const { bx, by } = this;
     const { sri, eri, sci, eci } = view;

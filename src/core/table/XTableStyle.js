@@ -1069,16 +1069,13 @@ class XTableContentUI extends XTableUI {
     const borderX = this.getLineX();
     const borderY = this.getLineY();
     const { table } = this;
-    const { settings, draw, grid, line, rows, cols, cells, merges, optimizeEnable } = table;
+    const { settings, draw, grid, line, optimizeEnable } = table;
     draw.offset(borderX, borderY);
     const { gResult, bResult, aResult } = XLinePlainGenerator.run({
       scrollView: borderView,
       foldOnOff: false,
       optimize: optimizeEnable,
-      merges,
-      cells,
-      cols,
-      rows,
+      table,
       model: settings.table.showGrid
         ? XLinePlainGenerator.MODEL.ALL
         : XLinePlainGenerator.MODEL.BORDER,
@@ -1263,15 +1260,12 @@ class XTableLeftIndexUI extends XTableIndexUI {
     const borderX = this.getLineX();
     const borderY = this.getLineY();
     const { table } = this;
-    const { draw, indexGrid, rows, cols, merges, cells } = table;
+    const { draw, indexGrid } = table;
     const { iResult } = XLinePlainGenerator.run({
       scrollView: borderView,
       foldOnOff: true,
       model: XLinePlainGenerator.MODEL.INDEX,
-      rows,
-      merges,
-      cols,
-      cells,
+      table,
       getWidth: () => table.index.getWidth(),
     });
     draw.offset(borderX, borderY);
@@ -1343,15 +1337,12 @@ class XTableTopIndexUI extends XTableIndexUI {
     const borderX = this.getLineX();
     const borderY = this.getLineY();
     const { table } = this;
-    const { draw, indexGrid, rows, cols, merges, cells } = table;
+    const { draw, indexGrid } = table;
     const { iResult } = XLinePlainGenerator.run({
       scrollView: borderView,
       foldOnOff: true,
       model: XLinePlainGenerator.MODEL.INDEX,
-      rows,
-      merges,
-      cols,
-      cells,
+      table,
       getHeight: () => table.index.getHeight(),
     });
     draw.offset(borderX, borderY);
@@ -2549,6 +2540,29 @@ class XTableStyle extends Widget {
     xTableAreaView.record();
     this.renderMode = RENDER_MODE.RENDER;
     this.reset();
+  }
+
+  /**
+   * 单元格是否旋转
+   * @returns {boolean|boolean|*}
+   */
+  isAngleBarCell(row, col) {
+    const { cells, merges } = this;
+    const merge = merges.getFirstIncludes(row, col);
+    if (PlainUtils.isNotUnDef(merge)) {
+      return false;
+    }
+    const cell = cells.getCell(row, col);
+    if (PlainUtils.isUnDef(cell)) {
+      return false;
+    }
+    const { fontAttr, borderAttr } = cell;
+    if (fontAttr.direction !== BaseFont.TEXT_DIRECTION.ANGLE) {
+      return false;
+    }
+    const lessZero = fontAttr.angle < 0 && fontAttr.angle > -90;
+    const moreZero = fontAttr.angle > 0 && fontAttr.angle < 90;
+    return (lessZero || moreZero) && borderAttr.isDisplay();
   }
 
 }

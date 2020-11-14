@@ -10,22 +10,20 @@ import { AngleBarHide } from '../linefilters/anglebarhidden/AngleBarHide';
 class LineGrid {
 
   constructor({
-    rows, cols, cells, merges, getWidth, getHeight, bx = 0, by = 0,
+    table, getWidth, getHeight, bx = 0, by = 0,
   }) {
-    this.merges = merges;
-    this.cells = cells;
+    this.table = table;
     this.getHeight = getHeight;
     this.getWidth = getWidth;
     this.bx = bx;
     this.by = by;
-    this.rows = rows;
-    this.cols = cols;
     this.bLine = [];
     this.rLine = [];
   }
 
   getBItem() {
-    const { bx, by, getWidth, getHeight, cells, merges } = this;
+    const { table, bx, by, getWidth, getHeight } = this;
+    const { cells, merges } = table;
     const bRow = {};
     const bLine = [];
     return new XLineIteratorItem({
@@ -73,7 +71,8 @@ class LineGrid {
   }
 
   getRItem() {
-    const { bx, by, getWidth, getHeight, rows, cols, cells, merges } = this;
+    const { table, bx, by, getWidth, getHeight } = this;
+    const { rows, cols, cells, merges } = table;
     const rCols = [];
     const rLine = [];
     return new XLineIteratorItem({

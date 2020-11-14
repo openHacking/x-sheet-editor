@@ -20,12 +20,9 @@ import { AngleBarHide } from '../linefilters/anglebarhidden/AngleBarHide';
 class LineBorder {
 
   constructor({
-    rows, cols, cells, merges, bx = 0, by = 0, optimize = true,
+    table, bx = 0, by = 0, optimize = true,
   }) {
-    this.cells = cells;
-    this.rows = rows;
-    this.cols = cols;
-    this.merges = merges;
+    this.table = table;
     this.bx = bx;
     this.by = by;
     this.optimize = optimize;
@@ -38,7 +35,8 @@ class LineBorder {
   offsetX({
     sx, ex, row, col,
   }) {
-    const { cells } = this;
+    const { table } = this;
+    const { cells } = table;
     const last = cells.getCell(row, col - 1);
     const next = cells.getCell(row, col + 1);
     let osx = sx;
@@ -57,7 +55,8 @@ class LineBorder {
   }
 
   getBItem() {
-    const { cols, rows, cells, bx, by, merges, optimize } = this;
+    const { table, bx, by, optimize } = this;
+    const { cols, rows, cells, merges } = table;
     const bLine = [];
     const bRow = {};
     return new XLineIteratorItem({
@@ -100,7 +99,8 @@ class LineBorder {
   }
 
   getTItem() {
-    const { cols, cells, bx, by, merges, optimize } = this;
+    const { table, bx, by, optimize } = this;
+    const { cols, cells, merges } = table;
     const tLine = [];
     const tRow = {};
     return new XLineIteratorItem({
@@ -143,7 +143,8 @@ class LineBorder {
   }
 
   getRItem() {
-    const { cols, rows, cells, bx, by, merges, optimize } = this;
+    const { table, bx, by, optimize } = this;
+    const { cols, rows, cells, merges } = table;
     const rCols = [];
     return new XLineIteratorItem({
       newCol: ({ col, x }) => {
@@ -199,7 +200,8 @@ class LineBorder {
   }
 
   getLItem() {
-    const { rows, cols, cells, bx, by, merges, optimize } = this;
+    const { table, bx, by, optimize } = this;
+    const { cols, rows, cells, merges } = table;
     const lCols = [];
     return new XLineIteratorItem({
       newCol: ({ col, x }) => {

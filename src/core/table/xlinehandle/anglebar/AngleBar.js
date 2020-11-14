@@ -18,12 +18,9 @@ import { AngleBarInRow } from '../linefilters/anglebarinrow/AngleBarInRow';
 class AngleBar {
 
   constructor({
-    rows, cols, cells, merges, bx = 0, by = 0,
+    table, bx = 0, by = 0,
   }) {
-    this.cells = cells;
-    this.rows = rows;
-    this.cols = cols;
-    this.merges = merges;
+    this.table = table;
     this.bx = bx;
     this.by = by;
     this.lLine = [];

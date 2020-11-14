@@ -3,9 +3,9 @@ import { XLineIteratorFilter } from '../../XLineIteratorFilter';
 class MergeTNullEdge {
 
   constructor({
-    merges,
+    table,
   }) {
-    this.merges = merges;
+    this.table = table;
   }
 
   run({

@@ -4,9 +4,9 @@ import { XLineIteratorFilter } from '../../XLineIteratorFilter';
 class AngleBarInRow {
 
   constructor({
-    rows,
+    table,
   }) {
-    this.rows = rows;
+    this.table = table;
   }
 
   run({

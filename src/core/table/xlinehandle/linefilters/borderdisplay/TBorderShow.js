@@ -4,9 +4,9 @@ import { PlainUtils } from '../../../../../utils/PlainUtils';
 class TBorderShow {
 
   constructor({
-    cells,
+    table,
   }) {
-    this.cells = cells;
+    this.table = table;
   }
 
   run({

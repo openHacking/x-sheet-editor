@@ -4,11 +4,17 @@ import { CellBorder } from './CellBorder';
 import { XIcon } from '../xicon/XIcon';
 import { BaseFont } from '../../../canvas/font/BaseFont';
 
+const tableMerges = null;
+
 /**
  * Cell
  * @author jerry
  */
 class Cell {
+
+  static setTableMerges(merges) {
+    this.tableMerges = merges;
+  }
 
   /**
    * Cell

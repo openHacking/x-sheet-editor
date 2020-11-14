@@ -4,9 +4,9 @@ import { PlainUtils } from '../../../../../utils/PlainUtils';
 class RBorderShow {
 
   constructor({
-    cells,
+    table,
   }) {
-    this.cells = cells;
+    this.table = table;
   }
 
   run({

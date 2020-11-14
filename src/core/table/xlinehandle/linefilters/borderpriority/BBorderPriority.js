@@ -4,9 +4,9 @@ import { PlainUtils } from '../../../../../utils/PlainUtils';
 class BBorderPriority {
 
   constructor({
-    cells,
+    table,
   }) {
-    this.cells = cells;
+    this.table = table;
   }
 
   run({

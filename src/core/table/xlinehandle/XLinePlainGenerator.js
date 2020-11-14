@@ -10,30 +10,26 @@ class XLinePlainGenerator {
     optimize = true,
     scrollView,
     foldOnOff,
-    merges,
+    table,
     by = 0,
     bx = 0,
-    rows,
-    cols,
-    cells,
-    getHeight = ri => rows.getHeight(ri),
-    getWidth = ci => cols.getWidth(ci),
+    getHeight = ri => table.rows.getHeight(ri),
+    getWidth = ci => table.cols.getWidth(ci),
     model = XLinePlainGenerator.MODEL.ALL,
   }) {
     switch (model) {
       case XLinePlainGenerator.MODEL.BORDER: {
         const bLine = new LineBorder({
-          rows, cols, cells, merges, bx, by, optimize,
+          table, bx, by, optimize,
         });
         const aLine = new AngleBar({
-          rows, cols, cells, merges, bx, by, optimize,
+          table, bx, by, optimize,
         });
         const xIterator = new XLineIteratorLoop({
           items: bLine.getItems().concat(aLine.getItems()),
-          foldOnOff,
-          rows,
-          cols,
           view: scrollView,
+          table,
+          foldOnOff,
         });
         xIterator.run();
         const bResult = bLine.getResult();
@@ -44,19 +40,18 @@ class XLinePlainGenerator {
       }
       case XLinePlainGenerator.MODEL.ALL: {
         const bLine = new LineBorder({
-          rows, cols, cells, merges, bx, by, optimize,
+          table, bx, by, optimize,
         });
         const gLine = new LineGrid({
-          rows, cols, cells, merges, bx, by, getWidth, getHeight,
+          table, bx, by, getWidth, getHeight,
         });
         const aLine = new AngleBar({
-          rows, cols, cells, merges, bx, by, optimize,
+          table, bx, by, optimize,
         });
         const xIterator = new XLineIteratorLoop({
           items: bLine.getItems().concat(gLine.getItems()).concat(aLine.getItems()),
           foldOnOff,
-          rows,
-          cols,
+          table,
           view: scrollView,
         });
         xIterator.run();
@@ -69,13 +64,12 @@ class XLinePlainGenerator {
       }
       case XLinePlainGenerator.MODEL.GRID: {
         const gLine = new LineGrid({
-          rows, cols, cells, merges, bx, by, getWidth, getHeight,
+          table, bx, by, getWidth, getHeight,
         });
         const xIterator = new XLineIteratorLoop({
           items: gLine.getItems(),
           foldOnOff,
-          rows,
-          cols,
+          table,
           view: scrollView,
         });
         xIterator.run();
@@ -91,8 +85,7 @@ class XLinePlainGenerator {
         const xIterator = new XLineIteratorLoop({
           items: iLine.getItems(),
           foldOnOff,
-          rows,
-          cols,
+          table,
           view: scrollView,
         });
         xIterator.run();

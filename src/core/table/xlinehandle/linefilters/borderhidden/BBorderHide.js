@@ -4,9 +4,9 @@ import { XLineIteratorFilter } from '../../XLineIteratorFilter';
 class BBorderHide {
 
   constructor({
-    cells,
+    table,
   }) {
-    this.cells = cells;
+    this.table = table;
   }
 
   run({

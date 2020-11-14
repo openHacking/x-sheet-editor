@@ -2,12 +2,9 @@
 class CellOutRange {
 
   constructor({
-    cells, cols, rows, merges,
+    table,
   }) {
-    this.cells = cells;
-    this.cols = cols;
-    this.merges = merges;
-    this.rows = rows;
+    this.table = table;
   }
 
 }
