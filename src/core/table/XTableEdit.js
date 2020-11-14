@@ -166,7 +166,7 @@ class XTableEdit extends Widget {
       } else {
         this.html(cell.text);
       }
-      this.attr('style', cell.toCssStyle());
+      this.attr('style', table.getCellCssStyle(sri, sci));
       this.editOffset();
       this.throttle.action(() => {
         PlainUtils.keepLastIndex(this.el);

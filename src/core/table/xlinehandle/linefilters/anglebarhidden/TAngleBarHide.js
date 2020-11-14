@@ -1,6 +1,6 @@
 import { XLineIteratorFilter } from '../../XLineIteratorFilter';
 
-class AngleBarHide {
+class TAngleBarHide {
 
   constructor(table) {
     this.table = table;
@@ -10,7 +10,7 @@ class AngleBarHide {
     row, col,
   }) {
     const { table } = this;
-    return table.isAngleBarCell(row, col)
+    return table.isAngleBarCell(row, col) || table.isAngleBarCell(row - 1, col)
       ? XLineIteratorFilter.RETURN_TYPE.JUMP
       : XLineIteratorFilter.RETURN_TYPE.EXEC;
   }
@@ -18,5 +18,5 @@ class AngleBarHide {
 }
 
 export {
-  AngleBarHide,
+  TAngleBarHide,
 };

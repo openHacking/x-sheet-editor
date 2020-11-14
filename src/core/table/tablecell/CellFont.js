@@ -1,15 +1,10 @@
 import { BaseFont } from '../../../canvas/font/BaseFont';
-import { XDraw } from '../../../canvas/XDraw';
 
 /**
  *  CellFont
  *  @author jerry
  */
 class CellFont {
-
-  static setScaleAdapter(scaleAdapter) {
-    CellFont.scaleAdapter = scaleAdapter;
-  }
 
   /**
    * CellFont
@@ -55,43 +50,6 @@ class CellFont {
     this.direction = direction;
     this.angle = angle;
     this.padding = padding;
-  }
-
-  toCssStyle() {
-    const { scaleAdapter } = CellFont;
-    const {
-      align, size, color, bold, italic, name,
-    } = this;
-
-    // 水平对齐
-    let textAlign = 'left';
-    switch (align) {
-      case BaseFont.ALIGN.left:
-        textAlign = 'left';
-        break;
-      case BaseFont.ALIGN.center:
-        textAlign = 'center';
-        break;
-      case BaseFont.ALIGN.right:
-        textAlign = 'right';
-        break;
-    }
-
-    // 文字大小
-    let fontSize = size;
-    if (scaleAdapter) {
-      fontSize = scaleAdapter.goto(fontSize);
-    } else {
-      fontSize = XDraw.srcTransformCssPx(fontSize);
-    }
-
-    // output css
-    return `
-      text-align:${textAlign};
-      font-size: ${XDraw.srcTransformCssPx(fontSize)}px;color: ${color};font-weight: ${bold ? 'bold' : 'initial'};
-      font-style: ${italic ? 'italic' : 'initial'};
-      font-family: ${name};
-    `.replace(/\s/g, '');
   }
 
   clone() {

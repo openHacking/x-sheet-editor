@@ -15,7 +15,10 @@ import { LBorderPriority } from '../linefilters/borderpriority/LBorderPriority';
 import { LBorderShow } from '../linefilters/borderdisplay/LBorderShow';
 import { MergeLNullEdge } from '../linefilters/mergenulledge/MergeLNullEdge';
 import { LCellOutRange } from '../linefilters/celloutrange/LCellOutRange';
-import { AngleBarHide } from '../linefilters/anglebarhidden/AngleBarHide';
+import { LAngleBarHide } from '../linefilters/anglebarhidden/LAngleBarHide';
+import { RAngleBarHide } from '../linefilters/anglebarhidden/RAngleBarHide';
+import { TAngleBarHide } from '../linefilters/anglebarhidden/TAngleBarHide';
+import { BAngleBarHide } from '../linefilters/anglebarhidden/BAngleBarHide';
 
 class LineBorder {
 
@@ -73,7 +76,7 @@ class LineBorder {
           new BBorderShow(table),
           new BBorderPriority(table),
           new MergeBNullEdge(table),
-          new AngleBarHide(table),
+          new BAngleBarHide(table),
         ],
       }),
       exec: ({ row, col }) => {
@@ -116,7 +119,7 @@ class LineBorder {
           new TBorderShow(table),
           new TBorderPriority(table),
           new MergeTNullEdge(table),
-          new AngleBarHide(table),
+          new TAngleBarHide(table),
         ],
       }),
       exec: ({ row, col }) => {
@@ -162,7 +165,7 @@ class LineBorder {
           new RBorderShow(table),
           new RBorderPriority(table),
           new MergeRNullEdge(table),
-          new AngleBarHide(table),
+          new RAngleBarHide(table),
           new RCellOutRange(table),
         ],
       }),
@@ -218,7 +221,7 @@ class LineBorder {
           new LBorderShow(table),
           new LBorderPriority(table),
           new MergeLNullEdge(table),
-          new AngleBarHide(table),
+          new LAngleBarHide(table),
           new LCellOutRange(table),
         ],
       }),

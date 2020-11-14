@@ -47,16 +47,16 @@ class Cell {
     this.contentWidth = contentWidth;
   }
 
+  setFontAttr(fontAttr) {
+    this.fontAttr = fontAttr;
+  }
+
   setBorderAttr(borderAttr) {
     this.borderAttr = borderAttr;
   }
 
   setIcons(icons) {
     this.icons = icons;
-  }
-
-  setFontAttr(fontAttr) {
-    this.fontAttr = fontAttr;
   }
 
   setLeftSdistWidth(leftSdistWidth) {
@@ -67,24 +67,6 @@ class Cell {
     this.rightSdistWidth = rightSdistWidth;
   }
 
-  toJSON() {
-    const {
-      background, format, text, fontAttr, borderAttr, contentWidth, icons,
-    } = this;
-    return {
-      background, format, text, fontAttr, borderAttr, contentWidth, icons,
-    };
-  }
-
-  toCssStyle() {
-    const { background, fontAttr } = this;
-    let css = `
-      background:${background};
-    `;
-    css = css.replace(/\s/g, '');
-    return fontAttr.toCssStyle() + css;
-  }
-
   clone() {
     const {
       background, format, text, fontAttr, borderAttr, contentWidth, icons,
@@ -92,6 +74,15 @@ class Cell {
     return new Cell({
       background, format, text, fontAttr, borderAttr, contentWidth, icons,
     });
+  }
+
+  toJSON() {
+    const {
+      background, format, text, fontAttr, borderAttr, contentWidth, icons,
+    } = this;
+    return {
+      background, format, text, fontAttr, borderAttr, contentWidth, icons,
+    };
   }
 
 }

@@ -39,6 +39,7 @@ import { Clipboard } from '../../lib/Clipboard';
 import { XIcon } from './xicon/XIcon';
 import { XIconBuilder } from './xicon/XIconBuilder';
 import { CellFont } from './tablecell/CellFont';
+import { BaseFont } from '../../canvas/font/BaseFont';
 
 class Dimensions {
 
@@ -742,10 +743,6 @@ class XTableDimensions extends Widget {
       },
       paste: () => {},
     });
-    // 设置单元格缩放
-    CellFont.setScaleAdapter(new ScaleAdapter({
-      goto: v => XDraw.srcTransformCssPx(this.scale.goto(v)),
-    }));
   }
 
   /**
@@ -759,15 +756,6 @@ class XTableDimensions extends Widget {
   }
 
   /**
-   * 读取合并单元格
-   */
-  getTableMerges() {
-    const { xTableStyle } = this;
-    const { merges } = xTableStyle;
-    return merges;
-  }
-
-  /**
    * 单元辅助实例
    * @returns {StyleCellsHelper}
    */
@@ -778,6 +766,24 @@ class XTableDimensions extends Widget {
   }
 
   /**
+   * 获取表格渲染对象
+   * @returns {XTableStyle}
+   */
+  getXTableStyle() {
+    const { xTableStyle } = this;
+    return xTableStyle;
+  }
+
+  /**
+   * 读取合并单元格
+   */
+  getTableMerges() {
+    const { xTableStyle } = this;
+    const { merges } = xTableStyle;
+    return merges;
+  }
+
+  /**
    * 获取表格单元格
    * @returns {Cells}
    */
@@ -785,15 +791,6 @@ class XTableDimensions extends Widget {
     const { xTableStyle } = this;
     const { cells } = xTableStyle;
     return cells;
-  }
-
-  /**
-   * 获取表格渲染对象
-   * @returns {XTableStyle}
-   */
-  getXTableStyle() {
-    const { xTableStyle } = this;
-    return xTableStyle;
   }
 
   /**
@@ -832,6 +829,41 @@ class XTableDimensions extends Widget {
       width = cols.sectionSumWidth(0, cols.len - 1);
     }
     return width;
+  }
+
+  /**
+   * 获取单元格CSS样式
+   * @param row
+   * @param col
+   */
+  getCellCssStyle(row, col) {
+    const cells = this.getTableCells();
+    const cell = cells.getCell(row, col);
+    const { fontAttr, background } = cell;
+    const { align, size, color, bold, italic, name } = fontAttr;
+    const fontSize = XDraw.srcTransformCssPx(this.scale.goto(size));
+    let textAlign = 'left';
+    switch (align) {
+      case BaseFont.ALIGN.left:
+        textAlign = 'left';
+        break;
+      case BaseFont.ALIGN.center:
+        textAlign = 'center';
+        break;
+      case BaseFont.ALIGN.right:
+        textAlign = 'right';
+        break;
+    }
+    const css = `
+      text-align:${textAlign};
+      color: ${color};
+      background:${background};
+      font-style: ${italic ? 'italic' : 'initial'};
+      font-weight: ${bold ? 'bold' : 'initial'};
+      font-size: ${XDraw.srcTransformCssPx(fontSize)}px;
+      font-family: ${name};
+    `;
+    return css.replace(/\s/g, '');
   }
 
   /**
@@ -1117,14 +1149,6 @@ class XTableDimensions extends Widget {
   }
 
   /**
-   * 移除事件绑定
-   */
-  unbind() {
-    this.keyboard.unbind();
-    this.focus.unbind();
-  }
-
-  /**
    * 事件绑定
    */
   bind() {
@@ -1149,6 +1173,14 @@ class XTableDimensions extends Widget {
         this.xIconsEvent(XIcon.ICON_EVENT_TYPE.MOUSE_DOWN, info, e);
       }
     });
+  }
+
+  /**
+   * 移除事件绑定
+   */
+  unbind() {
+    this.keyboard.unbind();
+    this.focus.unbind();
   }
 
   /**
