@@ -9,11 +9,13 @@ import { BaseFont } from '../../../canvas/font/BaseFont';
 class Cells {
 
   constructor({
+    onChange = () => {},
     table,
     data = [],
   }) {
     this.table = table;
     this.data = data;
+    this.onChange = onChange;
   }
 
   emptyRectRange(rectRange) {
@@ -34,12 +36,14 @@ class Cells {
       this.data[ri] = [];
     }
     this.data[ri][ci] = cell;
+    this.onChange(ri, ci);
   }
 
   setCell(ri, ci, cell) {
     const row = this.data[ri];
     if (row && row[ci]) {
       row[ci] = cell;
+      this.onChange(ri, ci);
     }
   }
 

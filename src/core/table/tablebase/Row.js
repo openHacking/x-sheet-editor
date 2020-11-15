@@ -3,18 +3,18 @@ class Row {
   constructor(row, {
     height = 30,
   } = {}) {
-    this.hasAngelCell = false;
-    this.renderId = -1;
-    this.row = row;
     this.height = height;
+    this.row = row;
+    this.reCkHasAngle = false;
+    this.hasAngelCell = false;
   }
 
-  setRenderId(renderId) {
-    this.renderId = renderId;
+  setHasAngelCell(value) {
+    this.hasAngelCell = value;
   }
 
-  setHasAngelCell(exist) {
-    this.hasAngelCell = exist;
+  setReCkHasAngle(value) {
+    this.reCkHasAngle = value;
   }
 
 }

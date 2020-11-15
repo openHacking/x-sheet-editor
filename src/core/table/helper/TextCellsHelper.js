@@ -76,8 +76,8 @@ class TextCellsHelper extends BaseCellsHelper {
             .setLoop((col) => {
               const merge = merges.getFirstIncludes(row, col);
               const width = cols.getWidth(col);
-              x -= width;
               newCol(col);
+              x -= width;
               if (merge) {
                 const find = filter.find(i => i === merge);
                 if (PlainUtils.isUnDef(find)) {
@@ -121,8 +121,8 @@ class TextCellsHelper extends BaseCellsHelper {
           const height = rows.getHeight(row);
           let result = null;
           let x = startX;
-          y -= height;
           newRow(row);
+          y -= height;
           ColsIterator.getInstance()
             .setBegin(sci)
             .setEnd(eci)
@@ -181,8 +181,8 @@ class TextCellsHelper extends BaseCellsHelper {
             .setLoop((col) => {
               const merge = merges.getFirstIncludes(row, col);
               const width = cols.getWidth(col);
-              x -= width;
               newCol(col);
+              x -= width;
               if (merge) {
                 const find = filter.find(i => i === merge);
                 if (PlainUtils.isUnDef(find)) {
