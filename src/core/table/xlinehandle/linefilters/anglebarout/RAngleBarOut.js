@@ -4,6 +4,7 @@ class RAngleBarOut {
 
   constructor(table) {
     this.table = table;
+    this.maxWidth = 0;
   }
 
   run({

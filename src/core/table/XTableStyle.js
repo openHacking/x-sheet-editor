@@ -1090,15 +1090,15 @@ class XTableContentUI extends XTableUI {
    * 绘制越界边框
    */
   drawBoundOutGridBorder() {
-    const lineView = this.getLineView();
+    const scrollView = this.getScrollView();
     const drawX = this.getDrawX();
     const drawY = this.getDrawY();
     const { table } = this;
     const { draw, cols, line } = table;
     // 左边区域
-    const lView = lineView.clone();
+    const lView = scrollView.clone();
     lView.sci = 0;
-    lView.eci = lineView.sci - 1;
+    lView.eci = scrollView.sci - 1;
     if (lView.eci > -1) {
       const offset = cols.rectRangeSumWidth(lView);
       const { alResult } = XLinePlainGenerator.run({
@@ -1146,11 +1146,11 @@ class XTableContentUI extends XTableUI {
       });
     }
     // 右边区域
-    const rView = lineView.clone();
-    rView.sci = lineView.eci + 1;
+    const rView = scrollView.clone();
+    rView.sci = scrollView.eci + 1;
     rView.eci = cols.len - 1;
     if (rView.sci < cols.len) {
-      const offset = lineView.w;
+      const offset = scrollView.w;
       const { arResult } = XLinePlainGenerator.run({
         scrollView: rView,
         foldOnOff: false,
