@@ -70,6 +70,7 @@ class TableMergeDataProxy extends DataProxy {
     }
     super.backNotice();
   }
+
 }
 
 export { TableMergeDataProxy };

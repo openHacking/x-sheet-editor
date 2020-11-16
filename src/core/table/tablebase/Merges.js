@@ -4,7 +4,7 @@ import { PlainUtils } from '../../../utils/PlainUtils';
 /**
  * Merges Class
  */
-class Merges {
+class Manage {
 
   /**
    * Merges
@@ -23,43 +23,42 @@ class Merges {
     this.index = new Array(rows.len * cols.len);
   }
 
-  /**
-   * 获取包含在指定区域中的合并单元格
-   * @param rectRange
-   * @param cb
-   */
-  getIncludes(rectRange, cb) {
+  add(rectRange, checked = true) {
     const { index, data } = this;
+    if (checked) {
+      this.deleteIntersects(rectRange);
+    }
+    const len = data.length;
+    data.push(rectRange);
     rectRange.each((ri, ci) => {
-      const offset = this.getOffset(ri, ci);
-      const no = index[offset];
-      if (PlainUtils.isNotUnDef(no)) {
-        cb(data[no]);
-      }
+      const offset = this.getOffsetIndex(ri, ci);
+      index[offset] = len;
     });
   }
 
-  /**
-   * 获取偏移量
-   * @param ri
-   * @param ci
-   * @return {*}
-   */
-  getOffset(ri, ci) {
-    const { cols } = this;
-    const { len } = cols;
-    return (ri * len) + ci;
+  deleteIntersects(rectRange) {
+    this.getIncludes(rectRange, old => this.delete(old));
   }
 
-  /**
-   * 获取指定行列的合并单元格
-   * @param ri
-   * @param ci
-   * @return {null|RectRange}
-   */
+  delete(rectRange) {
+    const { sri, sci } = rectRange;
+    const { index, data } = this;
+    const offset = this.getOffsetIndex(sri, sci);
+    const no = index[offset];
+    if (PlainUtils.isUnDef(no)) {
+      return;
+    }
+    data.splice(no, 1);
+    rectRange.each((ri, ci) => {
+      const offset = this.getOffsetIndex(ri, ci);
+      index[offset] = undefined;
+    });
+    this.sync(no);
+  }
+
   getFirstIncludes(ri, ci) {
     const { index, data } = this;
-    const offset = this.getOffset(ri, ci);
+    const offset = this.getOffsetIndex(ri, ci);
     const no = index[offset];
     if (PlainUtils.isUnDef(no)) {
       return null;
@@ -71,65 +70,35 @@ class Merges {
     return item;
   }
 
-  /**
-   * 添加合并单元格
-   * @param rectRange
-   * @param checked
-   */
-  add(rectRange, checked = true) {
+  getOffsetIndex(ri, ci) {
+    const { cols } = this;
+    const { len } = cols;
+    return (ri * len) + ci;
+  }
+
+  getIncludes(rectRange, cb) {
     const { index, data } = this;
-    // 删除旧的关联关系
-    if (checked) {
-      this.deleteIntersects(rectRange);
-    }
-    // 添加新的单元格
-    const len = data.length;
-    data.push(rectRange);
-    // 添加新的关联关系
     rectRange.each((ri, ci) => {
-      const offset = this.getOffset(ri, ci);
-      index[offset] = len;
+      const offset = this.getOffsetIndex(ri, ci);
+      const no = index[offset];
+      if (PlainUtils.isNotUnDef(no)) {
+        cb(data[no], no);
+      }
     });
   }
 
-  /**
-   * 删除合并单元格
-   * @param rectRange
-   */
-  delete(rectRange) {
+  sync(offset = 0) {
     const { index, data } = this;
-    // 删除合并单元格
-    const { sri, sci } = rectRange;
-    const offset = this.getOffset(sri, sci);
-    const no = index[offset];
-    if (PlainUtils.isUnDef(no)) {
-      return;
+    for (let i = offset; i < data.length; i += 1) {
+      const rectRange = data[i];
+      rectRange.each((ri, ci) => {
+        const offset = this.getOffsetIndex(ri, ci);
+        index[offset] = i;
+      });
     }
-    data.splice(no, 1);
-    // 删除旧单元格索引
-    rectRange.each((ri, ci) => {
-      const offset = this.getOffset(ri, ci);
-      index[offset] = undefined;
-    });
-    // 同步当前合并单元格索引
-    this.sync(no);
   }
 
-  /**
-   * 删除与指定区域重合的
-   * 合并单元格
-   * @param rectRange
-   */
-  deleteIntersects(rectRange) {
-    this.getIncludes(rectRange, old => this.delete(old));
-  }
-
-  /**
-   * 返回联合的合并单元格(性能差,以后优化)
-   * @param cellRange
-   * @return {RectRange}
-   */
-  union(cellRange) {
+  union(cellRange = RectRange.EMPTY) {
     let cr = cellRange;
     const filter = [];
     for (let i = 0; i < this.data.length; i += 1) {
@@ -146,35 +115,127 @@ class Merges {
     return cr;
   }
 
-  /**
-   * 同步索引
-   */
-  sync(offset = 0) {
-    const { index, data } = this;
-    for (let i = offset; i < data.length; i += 1) {
-      const rectRange = data[i];
-      rectRange.each((ri, ci) => {
-        const offset = this.getOffset(ri, ci);
-        index[offset] = i;
-      });
-    }
-  }
-
-  /**
-   * 获取数据
-   * @return {RectRange[]}
-   */
   getData() {
     return this.data;
   }
 
-  /**
-   * 设置数据
-   * @param data
-   */
   setData(data) {
     this.data = data;
   }
+
+}
+
+/**
+ * Insert
+ */
+class Insert extends Manage {
+
+  leftInsert(col, number) {
+    const { cols, rows } = this;
+    const oldRectRange = [];
+    const newRectRange = [];
+    const target = new RectRange(0, col, rows.len - 1, cols.len - 1);
+    let firstNo = 0;
+    this.getIncludes(target, (rectRange, no) => {
+      oldRectRange.push(rectRange);
+      firstNo = no;
+    });
+    for (let i = 0; i < oldRectRange.length; i += 1) {
+      const rectRange = oldRectRange[i].clone();
+      if (rectRange.sci <= col) {
+        rectRange.eci += number;
+      } else {
+        rectRange.sci += number;
+      }
+      newRectRange.push(rectRange);
+    }
+    this.sync(firstNo);
+    return {
+      oldRectRange, newRectRange,
+    };
+  }
+
+  bottomInsert(row, number) {
+    const { cols, rows } = this;
+    const oldRectRange = [];
+    const newRectRange = [];
+    const target = new RectRange(row, 0, rows.len - 1, cols.len - 1);
+    let firstNo = 0;
+    this.getIncludes(target, (rectRange, no) => {
+      oldRectRange.push(rectRange);
+      firstNo = no;
+    });
+    for (let i = 0; i < oldRectRange.length; i += 1) {
+      const rectRange = oldRectRange[i];
+      if (rectRange.sri < row) {
+        rectRange.eri += number;
+      } else {
+        rectRange.sri += number;
+      }
+      newRectRange.push(rectRange);
+    }
+    this.sync(firstNo);
+    return {
+      oldRectRange, newRectRange,
+    };
+  }
+
+  topInsert(row, number) {
+    const { cols, rows } = this;
+    const oldRectRange = [];
+    const newRectRange = [];
+    const target = new RectRange(row, 0, rows.len - 1, cols.len - 1);
+    let firstNo = 0;
+    this.getIncludes(target, (rectRange, no) => {
+      oldRectRange.push(rectRange);
+      firstNo = no;
+    });
+    for (let i = 0; i < oldRectRange.length; i += 1) {
+      const rectRange = oldRectRange[i];
+      if (rectRange.sri <= row) {
+        rectRange.eri += number;
+      } else {
+        rectRange.sri += number;
+      }
+      newRectRange.push(rectRange);
+    }
+    this.sync(firstNo);
+    return {
+      oldRectRange, newRectRange,
+    };
+  }
+
+  rightInsert(col, number) {
+    const { cols, rows } = this;
+    const oldRectRange = [];
+    const newRectRange = [];
+    const target = new RectRange(0, col, rows.len - 1, cols.len - 1);
+    let firstNo = 0;
+    this.getIncludes(target, (rectRange, no) => {
+      oldRectRange.push(rectRange);
+      firstNo = no;
+    });
+    for (let i = 0; i < oldRectRange.length; i += 1) {
+      const rectRange = oldRectRange[i];
+      if (rectRange.sci < col) {
+        rectRange.eci += number;
+      } else {
+        rectRange.sci += number;
+      }
+      newRectRange.push(rectRange);
+    }
+    this.sync(firstNo);
+    return {
+      oldRectRange, newRectRange,
+    };
+  }
+
+}
+
+/**
+ * Merges
+ */
+class Merges extends Insert {
 
 }
 
