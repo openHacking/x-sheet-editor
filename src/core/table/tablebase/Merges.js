@@ -4,7 +4,7 @@ import { PlainUtils } from '../../../utils/PlainUtils';
 /**
  * Merges Class
  */
-class Manage {
+class Merges {
 
   /**
    * Merges
@@ -23,37 +23,15 @@ class Manage {
     this.index = new Array(rows.len * cols.len);
   }
 
-  add(rectRange, checked = true) {
+  getIncludes(rectRange, cb) {
     const { index, data } = this;
-    if (checked) {
-      this.deleteIntersects(rectRange);
-    }
-    const len = data.length;
-    data.push(rectRange);
     rectRange.each((ri, ci) => {
       const offset = this.getOffsetIndex(ri, ci);
-      index[offset] = len;
+      const no = index[offset];
+      if (PlainUtils.isNotUnDef(no)) {
+        cb(data[no], no);
+      }
     });
-  }
-
-  deleteIntersects(rectRange) {
-    this.getIncludes(rectRange, old => this.delete(old));
-  }
-
-  delete(rectRange) {
-    const { sri, sci } = rectRange;
-    const { index, data } = this;
-    const offset = this.getOffsetIndex(sri, sci);
-    const no = index[offset];
-    if (PlainUtils.isUnDef(no)) {
-      return;
-    }
-    data.splice(no, 1);
-    rectRange.each((ri, ci) => {
-      const offset = this.getOffsetIndex(ri, ci);
-      index[offset] = undefined;
-    });
-    this.sync(no);
   }
 
   getFirstIncludes(ri, ci) {
@@ -76,14 +54,36 @@ class Manage {
     return (ri * len) + ci;
   }
 
-  getIncludes(rectRange, cb) {
+  deleteIntersects(rectRange) {
+    this.getIncludes(rectRange, old => this.delete(old));
+  }
+
+  delete(rectRange) {
+    const { sri, sci } = rectRange;
     const { index, data } = this;
+    const offset = this.getOffsetIndex(sri, sci);
+    const no = index[offset];
+    if (PlainUtils.isUnDef(no)) {
+      return;
+    }
+    data.splice(no, 1);
     rectRange.each((ri, ci) => {
       const offset = this.getOffsetIndex(ri, ci);
-      const no = index[offset];
-      if (PlainUtils.isNotUnDef(no)) {
-        cb(data[no], no);
-      }
+      index[offset] = undefined;
+    });
+    this.sync(no);
+  }
+
+  add(rectRange, checked = true) {
+    const { index, data } = this;
+    if (checked) {
+      this.deleteIntersects(rectRange);
+    }
+    const len = data.length;
+    data.push(rectRange);
+    rectRange.each((ri, ci) => {
+      const offset = this.getOffsetIndex(ri, ci);
+      index[offset] = len;
     });
   }
 
@@ -122,120 +122,6 @@ class Manage {
   setData(data) {
     this.data = data;
   }
-
-}
-
-/**
- * Insert
- */
-class Insert extends Manage {
-
-  leftInsert(col, number) {
-    const { cols, rows } = this;
-    const oldRectRange = [];
-    const newRectRange = [];
-    const target = new RectRange(0, col, rows.len - 1, cols.len - 1);
-    let firstNo = 0;
-    this.getIncludes(target, (rectRange, no) => {
-      oldRectRange.push(rectRange);
-      firstNo = no;
-    });
-    for (let i = 0; i < oldRectRange.length; i += 1) {
-      const rectRange = oldRectRange[i].clone();
-      if (rectRange.sci <= col) {
-        rectRange.eci += number;
-      } else {
-        rectRange.sci += number;
-      }
-      newRectRange.push(rectRange);
-    }
-    this.sync(firstNo);
-    return {
-      oldRectRange, newRectRange,
-    };
-  }
-
-  bottomInsert(row, number) {
-    const { cols, rows } = this;
-    const oldRectRange = [];
-    const newRectRange = [];
-    const target = new RectRange(row, 0, rows.len - 1, cols.len - 1);
-    let firstNo = 0;
-    this.getIncludes(target, (rectRange, no) => {
-      oldRectRange.push(rectRange);
-      firstNo = no;
-    });
-    for (let i = 0; i < oldRectRange.length; i += 1) {
-      const rectRange = oldRectRange[i];
-      if (rectRange.sri < row) {
-        rectRange.eri += number;
-      } else {
-        rectRange.sri += number;
-      }
-      newRectRange.push(rectRange);
-    }
-    this.sync(firstNo);
-    return {
-      oldRectRange, newRectRange,
-    };
-  }
-
-  topInsert(row, number) {
-    const { cols, rows } = this;
-    const oldRectRange = [];
-    const newRectRange = [];
-    const target = new RectRange(row, 0, rows.len - 1, cols.len - 1);
-    let firstNo = 0;
-    this.getIncludes(target, (rectRange, no) => {
-      oldRectRange.push(rectRange);
-      firstNo = no;
-    });
-    for (let i = 0; i < oldRectRange.length; i += 1) {
-      const rectRange = oldRectRange[i];
-      if (rectRange.sri <= row) {
-        rectRange.eri += number;
-      } else {
-        rectRange.sri += number;
-      }
-      newRectRange.push(rectRange);
-    }
-    this.sync(firstNo);
-    return {
-      oldRectRange, newRectRange,
-    };
-  }
-
-  rightInsert(col, number) {
-    const { cols, rows } = this;
-    const oldRectRange = [];
-    const newRectRange = [];
-    const target = new RectRange(0, col, rows.len - 1, cols.len - 1);
-    let firstNo = 0;
-    this.getIncludes(target, (rectRange, no) => {
-      oldRectRange.push(rectRange);
-      firstNo = no;
-    });
-    for (let i = 0; i < oldRectRange.length; i += 1) {
-      const rectRange = oldRectRange[i];
-      if (rectRange.sci < col) {
-        rectRange.eci += number;
-      } else {
-        rectRange.sci += number;
-      }
-      newRectRange.push(rectRange);
-    }
-    this.sync(firstNo);
-    return {
-      oldRectRange, newRectRange,
-    };
-  }
-
-}
-
-/**
- * Merges
- */
-class Merges extends Insert {
 
 }
 
