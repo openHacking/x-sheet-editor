@@ -17,7 +17,6 @@ import { Code } from './tablebase/Code';
 import { Text } from './tablebase/Text';
 import { STYLE_BREAK_LOOP, StyleCellsHelper } from './helper/StyleCellsHelper';
 import { TEXT_BREAK_LOOP, TextCellsHelper } from './helper/TextCellsHelper';
-import { Merges } from './tablebase/Merges';
 import { XTableHistoryAreaView } from './XTableHistoryAreaView';
 import { OperateCellsHelper } from './helper/OperateCellsHelper';
 import { BaseFont } from '../../canvas/font/BaseFont';
@@ -31,6 +30,7 @@ import { XLineIteratorFilter } from './xlinehandle/XLineIteratorFilter';
 import { RBorderShow } from './xlinehandle/linefilters/borderdisplay/RBorderShow';
 import { TBorderShow } from './xlinehandle/linefilters/borderdisplay/TBorderShow';
 import { BBorderShow } from './xlinehandle/linefilters/borderdisplay/BBorderShow';
+import { Merges } from './xmerges/Merges';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -2381,9 +2381,7 @@ class XTableStyle extends Widget {
       ...this.settings.cols,
     });
     this.merges = new Merges({
-      ...this.settings.merge,
-      rows: this.rows,
-      cols: this.cols,
+      data: settings.merge.merges,
     });
     this.cells = new Cells({
       onChange: (ri) => {
@@ -2511,8 +2509,6 @@ class XTableStyle extends Widget {
     // 细节内容
     this.xTableFrozenFullRect = new XTableFrozenFullRect(this);
     this.xTableFixedBar = new XTableFixedBar(this, settings.xFixedBar);
-    // 同步合并单元格
-    this.merges.sync();
   }
 
   /**

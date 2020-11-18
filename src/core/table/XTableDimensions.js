@@ -38,7 +38,6 @@ import { CellMergeCopyHelper } from './helper/CellMergeCopyHelper';
 import { Clipboard } from '../../lib/Clipboard';
 import { XIcon } from './xicon/XIcon';
 import { XIconBuilder } from './xicon/XIconBuilder';
-import { CellFont } from './tablecell/CellFont';
 import { BaseFont } from '../../canvas/font/BaseFont';
 
 class Dimensions {
@@ -642,7 +641,9 @@ class XTableDimensions extends Widget {
         buttonColor: '#c1c1c1',
       },
       data: [],
-      merge: {},
+      merge: {
+        data: [],
+      },
     }, settings);
     // 视口区域大小
     this.visualHeightCache = null;
