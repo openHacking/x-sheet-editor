@@ -30,7 +30,7 @@ import { XLineIteratorFilter } from './xlinehandle/XLineIteratorFilter';
 import { RBorderShow } from './xlinehandle/linefilters/borderdisplay/RBorderShow';
 import { TBorderShow } from './xlinehandle/linefilters/borderdisplay/TBorderShow';
 import { BBorderShow } from './xlinehandle/linefilters/borderdisplay/BBorderShow';
-import { Merges } from './tablebase/Merges';
+import { XMerges } from './xmerges/XMerges';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -2388,10 +2388,8 @@ class XTableStyle extends Widget {
       table: this,
       data: this.settings.data,
     });
-    this.merges = new Merges({
-      ...settings.merge,
-      rows: this.rows,
-      cols: this.cols,
+    this.merges = new XMerges({
+      data: settings.merge.merges,
     });
     // 固定区域测量
     this.xFixedMeasure = new XFixedMeasure({
