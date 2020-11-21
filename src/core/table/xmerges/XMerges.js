@@ -120,6 +120,16 @@ class XMerges {
     this.xMergesItems.clear(point);
   }
 
+  getData() {
+    const data = [];
+    this.xMergesItems.getItems().forEach((item) => {
+      if (item) {
+        data.push(item.getView().toString());
+      }
+    });
+    return data;
+  }
+
 }
 
 export {

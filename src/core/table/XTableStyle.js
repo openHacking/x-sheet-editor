@@ -1070,18 +1070,16 @@ class XTableContentUI extends XTableUI {
       cellsINCallback: (row, col, cell, rect) => {
         const { background } = cell;
         const box = new Box({
-          draw,
-          rect,
+          draw, rect, background,
         });
-        box.drawBackgroundColor(background);
+        box.render();
       },
       mergeCallback: (row, col, cell, rect) => {
         const { background } = cell;
         const box = new Box({
-          draw,
-          rect,
+          draw, rect, background,
         });
-        box.drawBackgroundColor(background);
+        box.render();
       },
     });
     draw.offset(0, 0);

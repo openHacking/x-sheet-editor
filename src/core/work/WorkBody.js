@@ -328,7 +328,7 @@ class WorkBody extends Widget {
             data: cols.getData(),
           },
           merge: {
-            merges: merges.getData().map(merge => merge.toString()),
+            merges: merges.getData(),
           },
           data: cells.getData(),
         },

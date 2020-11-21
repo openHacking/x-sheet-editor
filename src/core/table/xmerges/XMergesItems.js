@@ -24,6 +24,10 @@ class XMergesItems {
     this.recovery.push(point);
   }
 
+  getItems() {
+    return this.items;
+  }
+
 }
 
 export {
