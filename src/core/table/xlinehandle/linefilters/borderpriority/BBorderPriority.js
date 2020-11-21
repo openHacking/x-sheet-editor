@@ -23,7 +23,7 @@ class BBorderPriority {
     if (top.display) {
       const { bottom } = cell.borderAttr;
       const result = bottom.priority(top);
-      return result === 1 || result === 0
+      return result === 1
         ? XLineIteratorFilter.RETURN_TYPE.EXEC
         : XLineIteratorFilter.RETURN_TYPE.JUMP;
     }

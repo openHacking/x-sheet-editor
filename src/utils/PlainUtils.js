@@ -91,6 +91,10 @@ class PlainUtils {
     return PlainUtils.type(obj) === DATA_TYPE.String;
   }
 
+  static isChildType(obj, parent) {
+    return obj instanceof parent;
+  }
+
   static mergeDeep(object = {}, ...sources) {
     if (PlainUtils.isUnDef(object)) {
       return {};

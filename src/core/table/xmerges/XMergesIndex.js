@@ -1,24 +1,23 @@
 class XMergesIndex {
 
-  constructor() {
-    this.index = [];
+  constructor(xTableData) {
+    this.xTableData = xTableData;
   }
 
   set(ri, ci, point) {
-    const line = this.index[ri] || [];
-    line[ci] = point;
-    this.index[ri] = line;
+    const item = this.xTableData.getOrNew(ri, ci);
+    item.setMergeId(point);
   }
 
   get(ri, ci) {
-    const line = this.index[ri];
-    return line ? line[ci] : undefined;
+    const item = this.xTableData.get(ri, ci);
+    return item ? item.getMergeId() : undefined;
   }
 
   clear(ri, ci) {
-    const line = this.index[ri];
-    if (line) {
-      line[ci] = undefined;
+    const item = this.xTableData.get(ri, ci);
+    if (item) {
+      item.setMergeId(null);
     }
   }
 

@@ -31,6 +31,7 @@ import { RBorderShow } from './xlinehandle/linefilters/borderdisplay/RBorderShow
 import { TBorderShow } from './xlinehandle/linefilters/borderdisplay/TBorderShow';
 import { BBorderShow } from './xlinehandle/linefilters/borderdisplay/BBorderShow';
 import { XMerges } from './xmerges/XMerges';
+import { XTableDataItems } from './XTableDataItems';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -2360,6 +2361,7 @@ class XTableStyle extends Widget {
     // 线段优化
     this.optimizeEnable = true;
     // 表格数据配置
+    this.xTableData = new XTableDataItems(this.settings.data);
     this.scale = new Scale();
     this.index = new Code({
       scaleAdapter: new ScaleAdapter({
@@ -2386,10 +2388,11 @@ class XTableStyle extends Widget {
         row.reCkHasAngle = true;
       },
       table: this,
-      data: this.settings.data,
+      xTableData: this.xTableData,
     });
     this.merges = new XMerges({
-      data: settings.merge.merges,
+      ...settings.merge,
+      xTableData: this.xTableData,
     });
     // 固定区域测量
     this.xFixedMeasure = new XFixedMeasure({

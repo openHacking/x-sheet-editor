@@ -1,11 +1,8 @@
 class XMergesItems {
 
   constructor() {
+    this.recovery = [];
     this.items = [];
-  }
-
-  splice(s, e = 1) {
-    return this.items.splice(s, e);
   }
 
   get(point) {
@@ -13,8 +10,18 @@ class XMergesItems {
   }
 
   add(item) {
+    const point = this.recovery.pop();
+    if (point) {
+      this.items[point] = item;
+      return point;
+    }
     this.items.push(item);
     return this.items.length - 1;
+  }
+
+  clear(point) {
+    this.items[point] = null;
+    this.recovery.push(point);
   }
 
 }

@@ -642,7 +642,7 @@ class XTableDimensions extends Widget {
       },
       data: [],
       merge: {
-        data: [],
+        merges: [],
       },
     }, settings);
     // 视口区域大小

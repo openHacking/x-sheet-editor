@@ -8,12 +8,15 @@ import { RectRange } from '../tablebase/RectRange';
 
 class XMerges {
 
-  constructor({ data = [] }) {
+  constructor({
+    merges = [],
+    xTableData,
+  }) {
     this.xMergesNoRow = new XMergesNoRow();
     this.xMergesNoCol = new XMergesNoCol();
-    this.xMergesIndex = new XMergesIndex();
+    this.xMergesIndex = new XMergesIndex(xTableData);
     this.xMergesItems = new XMergesItems();
-    data.map(merge => RectRange.valueOf(merge)).forEach(view => this.add(view));
+    merges.map(merge => RectRange.valueOf(merge)).forEach(view => this.add(view));
   }
 
   getFirstIncludes(ri, ci) {
@@ -114,7 +117,7 @@ class XMerges {
     view.each((ri, ci) => {
       this.xMergesIndex.clear(ri, ci);
     });
-    this.xMergesItems.splice(point);
+    this.xMergesItems.clear(point);
   }
 
 }

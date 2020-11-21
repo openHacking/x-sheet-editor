@@ -11,10 +11,10 @@ class Cells {
   constructor({
     onChange = () => {},
     table,
-    data = [],
+    xTableData,
   }) {
     this.table = table;
-    this.data = data;
+    this.xTableData = xTableData;
     this.onChange = onChange;
   }
 
@@ -31,32 +31,29 @@ class Cells {
     return empty;
   }
 
-  setCellOrNew(ri, ci, cell) {
-    if (PlainUtils.isUnDef(this.data[ri])) {
-      this.data[ri] = [];
-    }
-    this.data[ri][ci] = cell;
-    this.onChange(ri, ci);
-  }
-
   setCell(ri, ci, cell) {
-    const row = this.data[ri];
-    if (row && row[ci]) {
-      row[ci] = cell;
+    const item = this.xTableData.get(ri, ci);
+    if (item) {
+      item.setCell(cell);
       this.onChange(ri, ci);
     }
   }
 
+  setCellOrNew(ri, ci, cell) {
+    const item = this.xTableData.getOrNew(ri, ci);
+    item.setCell(cell);
+    this.onChange(ri, ci);
+  }
+
   getCellOrNew(ri, ci) {
-    if (PlainUtils.isUnDef(this.data[ri])) {
-      this.data[ri] = [];
+    const item = this.xTableData.getOrNew(ri, ci);
+    const find = item.getCell();
+    if (find) {
+      return find;
     }
-    if (PlainUtils.isUnDef(this.data[ri][ci])) {
-      this.data[ri][ci] = {
-        text: '',
-      };
-    }
-    return this.getCell(ri, ci);
+    const cell = new Cell({ text: PlainUtils.EMPTY });
+    item.setCell(cell);
+    return cell;
   }
 
   getCellOrMergeCell(ri, ci) {
@@ -70,19 +67,9 @@ class Cells {
   }
 
   getCell(ri, ci) {
-    const row = this.data[ri];
-    if (row && row[ci]) {
-      let item = row[ci];
-      if (item instanceof Cell) {
-        return row[ci];
-      }
-      if (PlainUtils.isString(item)) {
-        item = {
-          text: item,
-        };
-      }
-      row[ci] = new Cell(item);
-      return row[ci];
+    const item = this.xTableData.get(ri, ci);
+    if (item) {
+      return item.getCell();
     }
     return null;
   }
@@ -117,12 +104,7 @@ class Cells {
   }
 
   getData() {
-    return this.data;
-  }
-
-  setData(data = []) {
-    this.data = data;
-    return this;
+    return this.xTableData.getItems().map(item => item.getCell());
   }
 
 }

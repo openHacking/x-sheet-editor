@@ -23,7 +23,7 @@ class RBorderPriority {
     if (left.display) {
       const { right } = cell.borderAttr;
       const result = right.priority(left);
-      return result === 1 || result === 0
+      return result === 1
         ? XLineIteratorFilter.RETURN_TYPE.EXEC
         : XLineIteratorFilter.RETURN_TYPE.JUMP;
     }
