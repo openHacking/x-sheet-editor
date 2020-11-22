@@ -37,8 +37,10 @@ class Box {
       return;
     }
     if (path && background) {
-      // TODO ...
-      // ....
+      draw.attr({
+        fillStyle: background,
+      });
+      draw.fillPath(path);
     }
   }
 

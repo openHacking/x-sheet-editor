@@ -144,14 +144,7 @@ class Wrapping extends Base {
 
 class Extends extends Wrapping {
 
-  fullRect() {
-    const { canvas } = this;
-    const { width, height } = canvas;
-    this.ctx.fillRect(0, 0, width, height);
-    return this;
-  }
-
-  polyline(interpolation = xys => xys, ...xys) {
+  polyStroke(interpolation = xys => xys, ...xys) {
     const { ctx } = this;
     if (xys.length > 1) {
       this.beginPath();
@@ -163,6 +156,27 @@ class Extends extends Wrapping {
       }
       ctx.stroke();
     }
+  }
+
+  polyInFill(interpolation = xys => xys, ...xys) {
+    const { ctx } = this;
+    if (xys.length > 1) {
+      this.beginPath();
+      const [x, y] = interpolation(xys[0]);
+      ctx.moveTo(x, y);
+      for (let i = 1, len = xys.length; i < len; i += 1) {
+        const [x, y] = interpolation(xys[i]);
+        ctx.lineTo(x, y);
+      }
+      ctx.fill();
+    }
+  }
+
+  fullRect() {
+    const { canvas } = this;
+    const { width, height } = canvas;
+    this.ctx.fillRect(0, 0, width, height);
+    return this;
   }
 
   rotate(angle) {
@@ -214,7 +228,7 @@ class Position extends Extends {
 class BaseLine extends Position {
 
   line(...xys) {
-    this.polyline((xys) => {
+    this.polyStroke((xys) => {
       const [x, y] = xys;
       return [this.transformLinePx(Base.rounding(x + this.getOffsetX())),
         this.transformLinePx(Base.rounding(y + this.getOffsetY()))];
@@ -267,7 +281,7 @@ class CorsLine extends BaseLine {
       strokeStyle: lineColor,
       lineWidth,
     });
-    this.polyline((xys) => {
+    this.polyStroke((xys) => {
       const [x, y] = xys;
       return [
         Base.rounding(x + this.getOffsetX()) - LINE_PIXEL_OFFSET,
@@ -311,6 +325,14 @@ class XDraw extends CorsLine {
     x += this.getOffsetX();
     y += this.getOffsetY();
     this.ctx.fillText(text, XDraw.rounding(x), XDraw.rounding(y));
+    return this;
+  }
+
+  fillPath(path) {
+    this.polyInFill((xys) => {
+      const { x, y } = xys;
+      return [Base.rounding(x + this.getOffsetX()), Base.rounding(y + this.getOffsetY())];
+    }, ...path.points);
     return this;
   }
 

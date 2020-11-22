@@ -34,6 +34,7 @@ import { XMerges } from './xmerges/XMerges';
 import { XTableDataItems } from './XTableDataItems';
 import { Path } from '../../canvas/Path';
 import { Point } from '../../canvas/Point';
+import { RTCosKit, RTSinKit } from '../../canvas/RTFunction';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -1078,18 +1079,18 @@ class XTableContentUI extends XTableUI {
           if (table.isAngleBarCell(row, col)) {
             const { fontAttr } = cell;
             const { angle } = fontAttr;
-            if (angle > 0) {
-              const path = new Path();
-              box.setPath({ path });
-            } else {
-              const path = new Path([
-                [rect.x, rect.y, rect.x + rect.width, rect.y], // top
-                [rect.x + rect.width, rect.y, rect.x + rect.width, rect.y + rect.height], // right
-                [rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height], // bottom
-                [rect.x, rect.y, rect.x, rect.y + rect.height], // left
-              ]);
-              box.setPath({ path });
-            }
+            const offset = angle > 0
+              ? table.getSdistWidth(row, col)
+              : -table.getSdistWidth(row, col);
+            const { x, y, width, height } = rect;
+            const tl = new Point(x + offset, y);
+            const tr = new Point(x + width + offset, y);
+            const br = new Point(x + width, y + height);
+            const bl = new Point(x, y + height);
+            const path = new Path({
+              points: [tl, tr, br, bl],
+            });
+            box.setPath({ path });
           } else {
             box.setRect({ rect });
           }
@@ -2534,6 +2535,36 @@ class XTableStyle extends Widget {
     // 细节内容
     this.xTableFrozenFullRect = new XTableFrozenFullRect(this);
     this.xTableFixedBar = new XTableFixedBar(this, settings.xFixedBar);
+  }
+
+  /**
+   * 获取单元格斜率宽度
+   * @param row
+   * @param col
+   */
+  getSdistWidth(row, col) {
+    const { cells } = this;
+    const cell = cells.getCell(row, col);
+    if (PlainUtils.isUnDef(cell)) {
+      return 0;
+    }
+    if (cell.leftSdistWidth > 0) {
+      return cell.leftSdistWidth;
+    }
+    if (cell.rightSdistWidth > 0) {
+      return cell.rightSdistWidth;
+    }
+    const { rows } = this;
+    const { fontAttr } = cell;
+    const { angle } = fontAttr;
+    const tilt = RTSinKit.tilt({
+      inverse: rows.getHeight(row),
+      angle,
+    });
+    return RTCosKit.nearby({
+      tilt,
+      angle,
+    });
   }
 
   /**
