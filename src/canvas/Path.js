@@ -1,15 +1,15 @@
 class Path {
 
   constructor({
-    lines = [],
+    points = [],
   }) {
-    this.lines = lines;
+    this.points = points;
   }
 
   set({
-    lines = [],
+    points = [],
   }) {
-    this.lines = lines;
+    this.points = points;
   }
 
 }

@@ -32,6 +32,8 @@ import { TBorderShow } from './xlinehandle/linefilters/borderdisplay/TBorderShow
 import { BBorderShow } from './xlinehandle/linefilters/borderdisplay/BBorderShow';
 import { XMerges } from './xmerges/XMerges';
 import { XTableDataItems } from './XTableDataItems';
+import { Path } from '../../canvas/Path';
+import { Point } from '../../canvas/Point';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -1070,8 +1072,30 @@ class XTableContentUI extends XTableUI {
       cellsINCallback: (row, col, cell, rect) => {
         const { background } = cell;
         const box = new Box({
-          draw, rect, background,
+          draw, background,
         });
+        if (table.hasAngleCell(row)) {
+          if (table.isAngleBarCell(row, col)) {
+            const { fontAttr } = cell;
+            const { angle } = fontAttr;
+            if (angle > 0) {
+              const path = new Path();
+              box.setPath({ path });
+            } else {
+              const path = new Path([
+                [rect.x, rect.y, rect.x + rect.width, rect.y], // top
+                [rect.x + rect.width, rect.y, rect.x + rect.width, rect.y + rect.height], // right
+                [rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height], // bottom
+                [rect.x, rect.y, rect.x, rect.y + rect.height], // left
+              ]);
+              box.setPath({ path });
+            }
+          } else {
+            box.setRect({ rect });
+          }
+        } else {
+          box.setRect({ rect });
+        }
         box.render();
       },
       mergeCallback: (row, col, cell, rect) => {
