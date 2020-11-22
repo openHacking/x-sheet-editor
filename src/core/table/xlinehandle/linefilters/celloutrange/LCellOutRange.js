@@ -50,7 +50,7 @@ class LCellOutRange extends CellOutRange {
       return true;
     }
     // 文本是否越界
-    const width = cells.getCellBoundOutSize(row, col);
+    const width = table.getCellContentBoundOutWidth(row, col);
     const maxWidth = cols.getWidth(col);
     if (width > maxWidth) {
       // 只有next单元格是空时
@@ -127,7 +127,7 @@ class LCellOutRange extends CellOutRange {
             }
           }
           // 文本是否越界
-          const width = cells.getCellBoundOutSize(row, i);
+          const width = table.getCellContentBoundOutWidth(row, i);
           if (width > leftWidth) {
             // 只有master单元格为
             // 空时才允许不绘制边框
@@ -175,7 +175,7 @@ class LCellOutRange extends CellOutRange {
             return false;
           }
           // 文本是否越界
-          const width = cells.getCellBoundOutSize(row, i);
+          const width = table.getCellContentBoundOutWidth(row, i);
           if (width > leftWidth) {
             // 只有master单元格为
             // 空时才允许不绘制边框
@@ -260,7 +260,7 @@ class LCellOutRange extends CellOutRange {
             }
           }
           // 检查文本是否越界
-          const width = cells.getCellBoundOutSize(row, j);
+          const width = table.getCellContentBoundOutWidth(row, j);
           if (width > rightWidth) {
             // 只有master单元格和
             // last单元格都是空时
@@ -311,7 +311,7 @@ class LCellOutRange extends CellOutRange {
             return false;
           }
           // 文本越界检查
-          const width = cells.getCellBoundOutSize(row, j);
+          const width = table.getCellContentBoundOutWidth(row, j);
           if (width > rightWidth) {
             // 只有master单元格和
             // last单元格都是空时

@@ -24,7 +24,7 @@ class LAngleBarOut {
     if (angle < 0) {
       return XLineIteratorFilter.RETURN_TYPE.JUMP;
     }
-    const size = cells.getCellBoundOutSize(row, col);
+    const size = table.getCellContentBoundOutWidth(row, col);
     if (size === 0 || size > this.maxWidth) {
       return XLineIteratorFilter.RETURN_TYPE.EXEC;
     }

@@ -889,14 +889,14 @@ class XTableContentUI extends XTableUI {
     const drawX = this.getDrawX();
     const drawY = this.getDrawY();
     const { table } = this;
-    const { draw, cols, textCellsHelper, cells, textFont } = table;
-    draw.offset(drawX, drawY);
+    const { draw, cols, textCellsHelper, textFont } = table;
     // 左边区域
     const lView = scrollView.clone();
     lView.sci = 0;
     lView.eci = scrollView.sci - 1;
     if (lView.eci > -1) {
       let max;
+      draw.offset(drawX, drawY);
       textCellsHelper.getCellByViewRange({
         reverseCols: true,
         view: lView,
@@ -917,7 +917,7 @@ class XTableContentUI extends XTableUI {
           const allowTextWrap = textWrap === BaseFont.TEXT_WRAP.OVER_FLOW;
           const allowDirection = direction === BaseFont.TEXT_DIRECTION.ANGLE;
           if (allowTextAlign && (allowTextWrap || allowDirection)) {
-            const size = cells.getCellBoundOutSize(row, col);
+            const size = table.getCellContentBoundOutWidth(row, col);
             if (size === 0 || size > max) {
               const builder = textFont.getBuilder();
               builder.setDraw(draw);
@@ -952,6 +952,7 @@ class XTableContentUI extends XTableUI {
     rView.eci = cols.len - 1;
     if (rView.sci < cols.len) {
       let max;
+      draw.offset(drawX + scrollView.w, drawY);
       textCellsHelper.getCellByViewRange({
         startX: scrollView.w,
         view: rView,
@@ -972,7 +973,7 @@ class XTableContentUI extends XTableUI {
           const allowTextWrap = textWrap === BaseFont.TEXT_WRAP.OVER_FLOW;
           const allowDirection = direction === BaseFont.TEXT_DIRECTION.ANGLE;
           if (allowTextAlign && (allowTextWrap || allowDirection)) {
-            const size = cells.getCellBoundOutSize(row, col);
+            const size = table.getCellContentBoundOutWidth(row, col);
             if (size === 0 || size > max) {
               const builder = textFont.getBuilder();
               builder.setDraw(draw);
@@ -1054,6 +1055,103 @@ class XTableContentUI extends XTableUI {
    * 绘制越界背景颜色
    */
   drawBoundOutBackground() {
+    const scrollView = this.getScrollView();
+    const drawX = this.getDrawX();
+    const drawY = this.getDrawY();
+    const { table } = this;
+    const { draw, cols, styleCellsHelper } = table;
+    // 左边区域
+    const lView = scrollView.clone();
+    lView.sci = 0;
+    lView.eci = scrollView.sci - 1;
+    if (lView.eci > -1) {
+      let max = 0;
+      draw.offset(drawX, drawY);
+      styleCellsHelper.getCellByViewRange({
+        reverseCols: true,
+        view: lView,
+        newCol: (col) => {
+          max += cols.getWidth(col);
+        },
+        newRow: () => {
+          max = 0;
+        },
+        cellsINCallback: (row, col, cell, rect) => {
+          if (table.hasAngleCell(row)) {
+            if (table.isAngleBarCell(row, col)) {
+              const size = table.getCellStyleBoundOutWidth(row, col);
+              const { fontAttr } = cell;
+              const { angle } = fontAttr;
+              if (size > max && angle > 0) {
+                const { background } = cell;
+                const box = new Box({
+                  draw, background,
+                });
+                const offset = table.getSdistWidth(row, col);
+                const { x, y, width, height } = rect;
+                const tl = new Point(x + offset, y);
+                const tr = new Point(x + width + offset, y);
+                const br = new Point(x + width, y + height);
+                const bl = new Point(x, y + height);
+                const path = new Path({
+                  points: [tl, tr, br, bl],
+                });
+                box.setPath({ path });
+                box.render();
+              }
+            }
+            return STYLE_BREAK_LOOP.CONTINUE;
+          }
+          return STYLE_BREAK_LOOP.ROW;
+        },
+      });
+    }
+    // 右边区域
+    const rView = scrollView.clone();
+    rView.sci = scrollView.eci + 1;
+    rView.eci = cols.len - 1;
+    if (rView.sci < cols.len) {
+      let max = 0;
+      draw.offset(drawX + scrollView.w, drawY);
+      styleCellsHelper.getCellByViewRange({
+        view: rView,
+        newCol: (col) => {
+          max += cols.getWidth(col);
+        },
+        newRow: () => {
+          max = 0;
+        },
+        cellsINCallback: (row, col, cell, rect) => {
+          if (table.hasAngleCell(row)) {
+            if (table.isAngleBarCell(row, col)) {
+              const size = table.getCellStyleBoundOutWidth(row, col);
+              const { fontAttr } = cell;
+              const { angle } = fontAttr;
+              if (size > max && angle < 0) {
+                const { background } = cell;
+                const box = new Box({
+                  draw, background,
+                });
+                const offset = -table.getSdistWidth(row, col);
+                const { x, y, width, height } = rect;
+                const tl = new Point(x + offset, y);
+                const tr = new Point(x + width + offset, y);
+                const br = new Point(x + width, y + height);
+                const bl = new Point(x, y + height);
+                const path = new Path({
+                  points: [tl, tr, br, bl],
+                });
+                box.setPath({ path });
+                box.render();
+              }
+            }
+            return STYLE_BREAK_LOOP.CONTINUE;
+          }
+          return STYLE_BREAK_LOOP.ROW;
+        },
+      });
+    }
+    draw.offset(0, 0);
   }
 
   /**
@@ -2535,6 +2633,67 @@ class XTableStyle extends Widget {
     // 细节内容
     this.xTableFrozenFullRect = new XTableFrozenFullRect(this);
     this.xTableFixedBar = new XTableFixedBar(this, settings.xFixedBar);
+  }
+
+  /**
+   * 获取单元格越界的宽度
+   * @param ri
+   * @param ci
+   * @returns {number}
+   */
+  getCellContentBoundOutWidth(ri, ci) {
+    const { cells } = this;
+    const cell = cells.getCell(ri, ci);
+    if (!cell) {
+      return 0;
+    }
+    const { cols } = this;
+    const { contentWidth, fontAttr } = cell;
+    const { align } = fontAttr;
+    let boundOutWidth = 0;
+    const colWidth = cols.getWidth(ci);
+    switch (align) {
+      case BaseFont.ALIGN.right:
+      case BaseFont.ALIGN.left: {
+        boundOutWidth = contentWidth;
+        break;
+      }
+      case BaseFont.ALIGN.center: {
+        if (this.isAngleBarCell(ri, ci)) {
+          boundOutWidth = contentWidth;
+        } else {
+          boundOutWidth = colWidth + ((contentWidth - colWidth) / 2);
+        }
+        break;
+      }
+    }
+    return boundOutWidth;
+  }
+
+  /**
+   * 获取单元格越界的宽度
+   * @param ri
+   * @param ci
+   * @returns {number}
+   */
+  getCellStyleBoundOutWidth(ri, ci) {
+    const { cells } = this;
+    const cell = cells.getCell(ri, ci);
+    if (!cell) {
+      return 0;
+    }
+    const { cols } = this;
+    let boundOutWidth = 0;
+    const colWidth = cols.getWidth(ci);
+    if (this.hasAngleCell(ri)) {
+      if (this.isAngleBarCell(ri, ci)) {
+        const offset = this.getSdistWidth(ri, ci);
+        boundOutWidth = colWidth + offset;
+      }
+    } else {
+      boundOutWidth = colWidth;
+    }
+    return boundOutWidth;
   }
 
   /**

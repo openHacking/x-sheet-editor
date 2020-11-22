@@ -1,6 +1,5 @@
 import { Cell } from './Cell';
 import { PlainUtils } from '../../../utils/PlainUtils';
-import { BaseFont } from '../../../canvas/font/BaseFont';
 
 /**
  * Cells
@@ -72,35 +71,6 @@ class Cells {
       return item.getCell();
     }
     return null;
-  }
-
-  getCellBoundOutSize(ri, ci) {
-    const { table } = this;
-    const { cols } = table;
-    const cell = this.getCell(ri, ci);
-    if (!cell) {
-      return 0;
-    }
-    const { contentWidth, fontAttr } = cell;
-    const { align } = fontAttr;
-    let boundOutWidth = 0;
-    const colWidth = cols.getWidth(ci);
-    switch (align) {
-      case BaseFont.ALIGN.right:
-      case BaseFont.ALIGN.left: {
-        boundOutWidth = contentWidth;
-        break;
-      }
-      case BaseFont.ALIGN.center: {
-        if (table.isAngleBarCell(ri, ci)) {
-          boundOutWidth = contentWidth;
-        } else {
-          boundOutWidth = colWidth + ((contentWidth - colWidth) / 2);
-        }
-        break;
-      }
-    }
-    return boundOutWidth;
   }
 
   getData() {

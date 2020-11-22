@@ -3,6 +3,7 @@ import { Rect } from '../../../canvas/Rect';
 import { PlainUtils } from '../../../utils/PlainUtils';
 import { RowsIterator } from '../iterator/RowsIterator';
 import { ColsIterator } from '../iterator/ColsIterator';
+import { TEXT_BREAK_LOOP } from './TextCellsHelper';
 
 const STYLE_BREAK_LOOP = {
   CONTINUE: 3,
@@ -42,9 +43,13 @@ class StyleCellsHelper extends BaseCellsHelper {
   }
 
   getCellByViewRange({
+    reverseRows = false,
+    reverseCols = false,
     startX = 0,
     startY = 0,
     view,
+    newRow = () => {},
+    newCol = () => {},
     cellsINCallback = () => {},
     mergeCallback = () => {},
     loopINCallback = () => {},
@@ -56,54 +61,213 @@ class StyleCellsHelper extends BaseCellsHelper {
     const { sri, eri, sci, eci } = view;
     const filter = [];
     let y = startY;
-    RowsIterator.getInstance()
-      .setBegin(sri)
-      .setEnd(eri)
-      .setLoop((row) => {
-        const height = rows.getHeight(row);
-        let result = null;
-        let x = startX;
-        ColsIterator.getInstance()
-          .setBegin(sci)
-          .setEnd(eci)
-          .setLoop((col) => {
-            const merge = merges.getFirstIncludes(row, col);
-            const width = cols.getWidth(col);
-            const rect = new Rect({ x, y, width, height });
-            loopINCallback(row, col, rect);
-            if (merge) {
-              const find = filter.find(i => i === merge);
-              if (PlainUtils.isUnDef(find)) {
-                filter.push(merge);
-                const mergeInfo = this.mergeInfo({
-                  view, merge,
-                });
-                const { rect, cell } = mergeInfo;
-                result = mergeCallback(row, col, cell, rect, merge);
+    if (reverseRows && reverseCols) {
+      let y = startY;
+      RowsIterator.getInstance()
+        .setBegin(eri)
+        .setEnd(sri)
+        .setLoop((row) => {
+          const height = rows.getHeight(row);
+          let result = null;
+          let x = startX;
+          y -= height;
+          newRow(row);
+          ColsIterator.getInstance()
+            .setBegin(eci)
+            .setEnd(sci)
+            .setLoop((col) => {
+              const merge = merges.getFirstIncludes(row, col);
+              const width = cols.getWidth(col);
+              x -= width;
+              const rect = new Rect({ x, y, width, height });
+              newCol(col);
+              loopINCallback(row, col, rect);
+              if (merge) {
+                const find = filter.find(i => i === merge);
+                if (PlainUtils.isUnDef(find)) {
+                  filter.push(merge);
+                  const mergeInfo = this.mergeInfo({
+                    view, merge,
+                  });
+                  const { rect, cell } = mergeInfo;
+                  result = mergeCallback(row, col, cell, rect, merge);
+                }
+              } else {
+                const cell = cells.getCell(row, col);
+                if (cell) {
+                  result = cellsINCallback(row, col, cell, rect);
+                }
               }
-            } else {
-              const cell = cells.getCell(row, col);
-              if (cell) {
-                result = cellsINCallback(row, col, cell, rect);
+              switch (result) {
+                case STYLE_BREAK_LOOP.RETURN:
+                case STYLE_BREAK_LOOP.ROW:
+                  return false;
+                default: return true;
               }
-            }
-            x += width;
-            switch (result) {
-              case STYLE_BREAK_LOOP.RETURN:
-              case STYLE_BREAK_LOOP.ROW:
-                return false;
-              default: return true;
-            }
-          })
-          .execute();
-        y += height;
-        switch (result) {
-          case STYLE_BREAK_LOOP.RETURN:
-            return false;
-          default: return true;
-        }
-      })
-      .execute();
+            })
+            .execute();
+          switch (result) {
+            case TEXT_BREAK_LOOP.RETURN:
+            default: return true;
+          }
+        })
+        .execute();
+    } else if (reverseRows) {
+      let y = startY;
+      RowsIterator.getInstance()
+        .setBegin(eri)
+        .setEnd(sri)
+        .setLoop((row) => {
+          const height = rows.getHeight(row);
+          let result = null;
+          let x = startX;
+          newRow(row);
+          y -= height;
+          ColsIterator.getInstance()
+            .setBegin(sci)
+            .setEnd(eci)
+            .setLoop((col) => {
+              const merge = merges.getFirstIncludes(row, col);
+              const width = cols.getWidth(col);
+              const rect = new Rect({ x, y, width, height });
+              newCol(col);
+              loopINCallback(row, col, rect);
+              if (merge) {
+                const find = filter.find(i => i === merge);
+                if (PlainUtils.isUnDef(find)) {
+                  filter.push(merge);
+                  const mergeInfo = this.mergeInfo({
+                    view, merge,
+                  });
+                  const { rect, cell } = mergeInfo;
+                  result = mergeCallback(row, col, cell, rect, merge);
+                }
+              } else {
+                const cell = cells.getCell(row, col);
+                if (cell) {
+                  result = cellsINCallback(row, col, cell, rect);
+                }
+              }
+              x += width;
+              switch (result) {
+                case STYLE_BREAK_LOOP.RETURN:
+                case STYLE_BREAK_LOOP.ROW:
+                  return false;
+                default: return true;
+              }
+            })
+            .execute();
+          switch (result) {
+            case STYLE_BREAK_LOOP.RETURN:
+              return false;
+            default: return true;
+          }
+        })
+        .execute();
+    } else if (reverseCols) {
+      let y = startY;
+      RowsIterator.getInstance()
+        .setBegin(sri)
+        .setEnd(eri)
+        .setLoop((row) => {
+          const height = rows.getHeight(row);
+          let result = null;
+          let x = startX;
+          newRow(row);
+          ColsIterator.getInstance()
+            .setBegin(eci)
+            .setEnd(sci)
+            .setLoop((col) => {
+              const merge = merges.getFirstIncludes(row, col);
+              const width = cols.getWidth(col);
+              x -= width;
+              const rect = new Rect({ x, y, width, height });
+              newCol(col);
+              loopINCallback(row, col, rect);
+              if (merge) {
+                const find = filter.find(i => i === merge);
+                if (PlainUtils.isUnDef(find)) {
+                  filter.push(merge);
+                  const mergeInfo = this.mergeInfo({
+                    view, merge,
+                  });
+                  const { rect, cell } = mergeInfo;
+                  result = mergeCallback(row, col, cell, rect, merge);
+                }
+              } else {
+                const cell = cells.getCell(row, col);
+                if (cell) {
+                  result = cellsINCallback(row, col, cell, rect);
+                }
+              }
+              switch (result) {
+                case STYLE_BREAK_LOOP.RETURN:
+                case STYLE_BREAK_LOOP.ROW:
+                  return false;
+                default: return true;
+              }
+            })
+            .execute();
+          y += height;
+          switch (result) {
+            case STYLE_BREAK_LOOP.RETURN:
+              return false;
+            default: return true;
+          }
+        })
+        .execute();
+    } else {
+      RowsIterator.getInstance()
+        .setBegin(sri)
+        .setEnd(eri)
+        .setLoop((row) => {
+          const height = rows.getHeight(row);
+          let result = null;
+          let x = startX;
+          newRow(row);
+          ColsIterator.getInstance()
+            .setBegin(sci)
+            .setEnd(eci)
+            .setLoop((col) => {
+              const merge = merges.getFirstIncludes(row, col);
+              const width = cols.getWidth(col);
+              const rect = new Rect({ x, y, width, height });
+              newCol(col);
+              loopINCallback(row, col, rect);
+              if (merge) {
+                const find = filter.find(i => i === merge);
+                if (PlainUtils.isUnDef(find)) {
+                  filter.push(merge);
+                  const mergeInfo = this.mergeInfo({
+                    view, merge,
+                  });
+                  const { rect, cell } = mergeInfo;
+                  result = mergeCallback(row, col, cell, rect, merge);
+                }
+              } else {
+                const cell = cells.getCell(row, col);
+                if (cell) {
+                  result = cellsINCallback(row, col, cell, rect);
+                }
+              }
+              x += width;
+              switch (result) {
+                case STYLE_BREAK_LOOP.RETURN:
+                case STYLE_BREAK_LOOP.ROW:
+                  return false;
+                default: return true;
+              }
+            })
+            .execute();
+          y += height;
+          switch (result) {
+            case STYLE_BREAK_LOOP.RETURN:
+              return false;
+            default: return true;
+          }
+        })
+        .execute();
+    }
   }
 
   mergeInfo({
