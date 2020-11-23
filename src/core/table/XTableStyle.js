@@ -1169,12 +1169,34 @@ class XTableContentUI extends XTableUI {
     styleCellsHelper.getCellByViewRange({
       view: scrollView,
       cellsINCallback: (row, col, cell, rect) => {
-        const { background } = cell;
-        const box = new Box({
-          draw, background,
-        });
         if (table.hasAngleCell(row)) {
           if (table.isAngleBarCell(row, col)) {
+            return;
+          }
+        }
+        const { background } = cell;
+        const box = new Box({
+          draw, background, rect,
+        });
+        box.render();
+      },
+      mergeCallback: (row, col, cell, rect) => {
+        const { background } = cell;
+        const box = new Box({
+          draw, rect, background,
+        });
+        box.render();
+      },
+    });
+    styleCellsHelper.getCellByViewRange({
+      view: scrollView,
+      cellsINCallback: (row, col, cell, rect) => {
+        if (table.hasAngleCell(row)) {
+          if (table.isAngleBarCell(row, col)) {
+            const { background } = cell;
+            const box = new Box({
+              draw, background,
+            });
             const { fontAttr } = cell;
             const { angle } = fontAttr;
             const offset = angle > 0
@@ -1189,20 +1211,9 @@ class XTableContentUI extends XTableUI {
               points: [tl, tr, br, bl],
             });
             box.setPath({ path });
-          } else {
-            box.setRect({ rect });
+            box.render();
           }
-        } else {
-          box.setRect({ rect });
         }
-        box.render();
-      },
-      mergeCallback: (row, col, cell, rect) => {
-        const { background } = cell;
-        const box = new Box({
-          draw, rect, background,
-        });
-        box.render();
       },
     });
     draw.offset(0, 0);
