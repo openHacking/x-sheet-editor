@@ -216,6 +216,7 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const { xScreen } = table;
           const operateCellsHelper = table.getOperateCellsHelper();
+          const xTableStyle = table.getXTableStyle();
           const { tableDataSnapshot } = table;
           const xSelect = xScreen.findType(XSelectItem);
           const { selectRange } = xSelect;
@@ -248,12 +249,19 @@ class TopMenu extends Widget {
                 type = LINE_TYPE.DOUBLE_LINE;
                 break;
             }
+            const angleCells = [];
             switch (borderType) {
               case 'border1':
                 operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: rect,
                   callback: (ri, ci, cell) => {
                     const newCell = cell.clone();
+                    if (xTableStyle.hasAngleCell(ri)) {
+                      if (xTableStyle.isAngleBarCell(ri, ci)) {
+                        angleCells.push({ ri, ci, newCell });
+                        return;
+                      }
+                    }
                     const { borderAttr } = newCell;
                     borderAttr.setAllDisplay(true);
                     borderAttr.setAllColor(color);
@@ -262,12 +270,27 @@ class TopMenu extends Widget {
                     cellDataProxy.setCell(ri, ci, newCell);
                   },
                 });
+                angleCells.forEach((options) => {
+                  const { ri, ci, newCell } = options;
+                  const { borderAttr } = newCell;
+                  borderAttr.setAllDisplay(true);
+                  borderAttr.setAllColor(color);
+                  borderAttr.setAllWidthType(widthType);
+                  borderAttr.setAllType(type);
+                  cellDataProxy.setCell(ri, ci, newCell);
+                });
                 break;
               case 'border2':
                 operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: rect,
                   callback: (ri, ci, cell) => {
                     const newCell = cell.clone();
+                    if (xTableStyle.hasAngleCell(ri)) {
+                      if (xTableStyle.isAngleBarCell(ri, ci)) {
+                        angleCells.push({ ri, ci, newCell });
+                        return;
+                      }
+                    }
                     const { borderAttr } = newCell;
                     if (ri !== rect.sri) {
                       borderAttr.setTDisplay(true);
@@ -295,6 +318,35 @@ class TopMenu extends Widget {
                     }
                     cellDataProxy.setCell(ri, ci, newCell);
                   },
+                });
+                angleCells.forEach((options) => {
+                  const { ri, ci, newCell } = options;
+                  const { borderAttr } = newCell;
+                  if (ri !== rect.sri) {
+                    borderAttr.setTDisplay(true);
+                    borderAttr.setTColor(color);
+                    borderAttr.setTWidthType(widthType);
+                    borderAttr.setTType(type);
+                  }
+                  if (ri !== rect.eri) {
+                    borderAttr.setBDisplay(true);
+                    borderAttr.setBColor(color);
+                    borderAttr.setBWidthType(widthType);
+                    borderAttr.setBType(type);
+                  }
+                  if (ci !== rect.sci) {
+                    borderAttr.setLDisplay(true);
+                    borderAttr.setLColor(color);
+                    borderAttr.setLWidthType(widthType);
+                    borderAttr.setLType(type);
+                  }
+                  if (ci !== rect.eci) {
+                    borderAttr.setRDisplay(true);
+                    borderAttr.setRColor(color);
+                    borderAttr.setRWidthType(widthType);
+                    borderAttr.setRType(type);
+                  }
+                  cellDataProxy.setCell(ri, ci, newCell);
                 });
                 break;
               case 'border3':
@@ -302,6 +354,12 @@ class TopMenu extends Widget {
                   rectRange: rect,
                   callback: (ri, ci, cell) => {
                     const newCell = cell.clone();
+                    if (xTableStyle.hasAngleCell(ri)) {
+                      if (xTableStyle.isAngleBarCell(ri, ci)) {
+                        angleCells.push({ ri, ci, newCell });
+                        return;
+                      }
+                    }
                     const { borderAttr } = newCell;
                     if (ri !== rect.sri) {
                       borderAttr.setTDisplay(true);
@@ -317,12 +375,34 @@ class TopMenu extends Widget {
                     }
                   },
                 });
+                angleCells.forEach((options) => {
+                  const { ri, newCell } = options;
+                  const { borderAttr } = newCell;
+                  if (ri !== rect.sri) {
+                    borderAttr.setTDisplay(true);
+                    borderAttr.setTColor(color);
+                    borderAttr.setTWidthType(widthType);
+                    borderAttr.setTType(type);
+                  }
+                  if (ri !== rect.eri) {
+                    borderAttr.setBDisplay(true);
+                    borderAttr.setBColor(color);
+                    borderAttr.setBWidthType(widthType);
+                    borderAttr.setBType(type);
+                  }
+                });
                 break;
               case 'border4':
                 operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: rect,
                   callback: (ri, ci, cell) => {
                     const newCell = cell.clone();
+                    if (xTableStyle.hasAngleCell(ri)) {
+                      if (xTableStyle.isAngleBarCell(ri, ci)) {
+                        angleCells.push({ ri, ci, newCell });
+                        return;
+                      }
+                    }
                     const { borderAttr } = newCell;
                     if (ci !== rect.sci) {
                       borderAttr.setLDisplay(true);
@@ -339,12 +419,35 @@ class TopMenu extends Widget {
                     cellDataProxy.setCell(ri, ci, newCell);
                   },
                 });
+                angleCells.forEach((options) => {
+                  const { ri, ci, newCell } = options;
+                  const { borderAttr } = newCell;
+                  if (ci !== rect.sci) {
+                    borderAttr.setLDisplay(true);
+                    borderAttr.setLColor(color);
+                    borderAttr.setLWidthType(widthType);
+                    borderAttr.setLType(type);
+                  }
+                  if (ci !== rect.eci) {
+                    borderAttr.setRDisplay(true);
+                    borderAttr.setRColor(color);
+                    borderAttr.setRWidthType(widthType);
+                    borderAttr.setRType(type);
+                  }
+                  cellDataProxy.setCell(ri, ci, newCell);
+                });
                 break;
               case 'border5':
                 operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: rect,
                   callback: (ri, ci, cell) => {
                     const newCell = cell.clone();
+                    if (xTableStyle.hasAngleCell(ri)) {
+                      if (xTableStyle.isAngleBarCell(ri, ci)) {
+                        angleCells.push({ ri, ci, newCell });
+                        return;
+                      }
+                    }
                     const { borderAttr } = newCell;
                     if (ri === rect.sri) {
                       borderAttr.setTDisplay(true);
@@ -372,6 +475,35 @@ class TopMenu extends Widget {
                     }
                     cellDataProxy.setCell(ri, ci, newCell);
                   },
+                });
+                angleCells.forEach((options) => {
+                  const { ri, ci, newCell } = options;
+                  const { borderAttr } = newCell;
+                  if (ri === rect.sri) {
+                    borderAttr.setTDisplay(true);
+                    borderAttr.setTColor(color);
+                    borderAttr.setTWidthType(widthType);
+                    borderAttr.setTType(type);
+                  }
+                  if (ri === rect.eri) {
+                    borderAttr.setBDisplay(true);
+                    borderAttr.setBColor(color);
+                    borderAttr.setBWidthType(widthType);
+                    borderAttr.setBType(type);
+                  }
+                  if (ci === rect.sci) {
+                    borderAttr.setLDisplay(true);
+                    borderAttr.setLColor(color);
+                    borderAttr.setLWidthType(widthType);
+                    borderAttr.setLType(type);
+                  }
+                  if (ci === rect.eci) {
+                    borderAttr.setRDisplay(true);
+                    borderAttr.setRColor(color);
+                    borderAttr.setRWidthType(widthType);
+                    borderAttr.setRType(type);
+                  }
+                  cellDataProxy.setCell(ri, ci, newCell);
                 });
                 break;
               case 'border6':
@@ -379,6 +511,12 @@ class TopMenu extends Widget {
                   rectRange: rect,
                   callback: (ri, ci, cell) => {
                     const newCell = cell.clone();
+                    if (xTableStyle.hasAngleCell(ri)) {
+                      if (xTableStyle.isAngleBarCell(ri, ci)) {
+                        angleCells.push({ ri, ci, newCell });
+                        return;
+                      }
+                    }
                     const { borderAttr } = newCell;
                     if (ci === rect.sci) {
                       borderAttr.setLDisplay(true);
@@ -389,12 +527,29 @@ class TopMenu extends Widget {
                     cellDataProxy.setCell(ri, ci, newCell);
                   },
                 });
+                angleCells.forEach((options) => {
+                  const { ri, ci, newCell } = options;
+                  const { borderAttr } = newCell;
+                  if (ci === rect.sci) {
+                    borderAttr.setLDisplay(true);
+                    borderAttr.setLColor(color);
+                    borderAttr.setLWidthType(widthType);
+                    borderAttr.setLType(type);
+                  }
+                  cellDataProxy.setCell(ri, ci, newCell);
+                });
                 break;
               case 'border7':
                 operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: rect,
                   callback: (ri, ci, cell) => {
                     const newCell = cell.clone();
+                    if (xTableStyle.hasAngleCell(ri)) {
+                      if (xTableStyle.isAngleBarCell(ri, ci)) {
+                        angleCells.push({ ri, ci, newCell });
+                        return;
+                      }
+                    }
                     const { borderAttr } = newCell;
                     if (ri === rect.sri) {
                       borderAttr.setTDisplay(true);
@@ -405,12 +560,29 @@ class TopMenu extends Widget {
                     cellDataProxy.setCell(ri, ci, newCell);
                   },
                 });
+                angleCells.forEach((options) => {
+                  const { ri, ci, newCell } = options;
+                  const { borderAttr } = newCell;
+                  if (ri === rect.sri) {
+                    borderAttr.setTDisplay(true);
+                    borderAttr.setTColor(color);
+                    borderAttr.setTWidthType(widthType);
+                    borderAttr.setTType(type);
+                  }
+                  cellDataProxy.setCell(ri, ci, newCell);
+                });
                 break;
               case 'border8':
                 operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: rect,
                   callback: (ri, ci, cell) => {
                     const newCell = cell.clone();
+                    if (xTableStyle.hasAngleCell(ri)) {
+                      if (xTableStyle.isAngleBarCell(ri, ci)) {
+                        angleCells.push({ ri, ci, newCell });
+                        return;
+                      }
+                    }
                     const { borderAttr } = newCell;
                     if (ci === rect.eci) {
                       borderAttr.setRDisplay(true);
@@ -421,12 +593,29 @@ class TopMenu extends Widget {
                     cellDataProxy.setCell(ri, ci, newCell);
                   },
                 });
+                angleCells.forEach((options) => {
+                  const { ri, ci, newCell } = options;
+                  const { borderAttr } = newCell;
+                  if (ci === rect.eci) {
+                    borderAttr.setRDisplay(true);
+                    borderAttr.setRColor(color);
+                    borderAttr.setRWidthType(widthType);
+                    borderAttr.setRType(type);
+                  }
+                  cellDataProxy.setCell(ri, ci, newCell);
+                });
                 break;
               case 'border9':
                 operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: rect,
                   callback: (ri, ci, cell) => {
                     const newCell = cell.clone();
+                    if (xTableStyle.hasAngleCell(ri)) {
+                      if (xTableStyle.isAngleBarCell(ri, ci)) {
+                        angleCells.push({ ri, ci, newCell });
+                        return;
+                      }
+                    }
                     const { borderAttr } = newCell;
                     if (ri === rect.eri) {
                       borderAttr.setBDisplay(true);
@@ -437,16 +626,39 @@ class TopMenu extends Widget {
                     cellDataProxy.setCell(ri, ci, newCell);
                   },
                 });
+                angleCells.forEach((options) => {
+                  const { ri, ci, newCell } = options;
+                  const { borderAttr } = newCell;
+                  if (ri === rect.eri) {
+                    borderAttr.setBDisplay(true);
+                    borderAttr.setBColor(color);
+                    borderAttr.setBWidthType(widthType);
+                    borderAttr.setBType(type);
+                  }
+                  cellDataProxy.setCell(ri, ci, newCell);
+                });
                 break;
               case 'border10':
                 operateCellsHelper.getCellOrNewCellByViewRange({
                   rectRange: rect,
                   callback: (ri, ci, cell) => {
                     const newCell = cell.clone();
+                    if (xTableStyle.hasAngleCell(ri)) {
+                      if (xTableStyle.isAngleBarCell(ri, ci)) {
+                        angleCells.push({ ri, ci, newCell });
+                        return;
+                      }
+                    }
                     const { borderAttr } = newCell;
                     borderAttr.setAllDisplay(false);
                     cellDataProxy.setCell(ri, ci, newCell);
                   },
+                });
+                angleCells.forEach((options) => {
+                  const { ri, ci, newCell } = options;
+                  const { borderAttr } = newCell;
+                  borderAttr.setAllDisplay(false);
+                  cellDataProxy.setCell(ri, ci, newCell);
                 });
                 break;
             }

@@ -1236,7 +1236,7 @@ class XTableContentUI extends XTableUI {
       const offset = cols.rectRangeSumWidth(lView);
       const { alResult } = XLinePlainGenerator.run({
         scrollView: lView,
-        foldOnOff: false,
+        foldOnOff: true,
         table,
         model: XLinePlainGenerator.MODEL.OUT_ANGLE_BAR_L,
       });
@@ -1286,7 +1286,7 @@ class XTableContentUI extends XTableUI {
       const offset = scrollView.w;
       const { arResult } = XLinePlainGenerator.run({
         scrollView: rView,
-        foldOnOff: false,
+        foldOnOff: true,
         table,
         model: XLinePlainGenerator.MODEL.OUT_ANGLE_BAR_R,
       });
@@ -1343,7 +1343,7 @@ class XTableContentUI extends XTableUI {
     draw.offset(borderX, borderY);
     const { gResult, bResult, aResult } = XLinePlainGenerator.run({
       scrollView: borderView,
-      foldOnOff: false,
+      foldOnOff: true,
       optimize: optimizeEnable,
       table,
       model: settings.table.showGrid
@@ -1538,7 +1538,7 @@ class XTableLeftIndexUI extends XTableIndexUI {
     const { draw, indexGrid } = table;
     const { iResult } = XLinePlainGenerator.run({
       scrollView: borderView,
-      foldOnOff: true,
+      foldOnOff: false,
       model: XLinePlainGenerator.MODEL.INDEX,
       table,
       getWidth: () => table.index.getWidth(),
@@ -1615,7 +1615,7 @@ class XTableTopIndexUI extends XTableIndexUI {
     const { draw, indexGrid } = table;
     const { iResult } = XLinePlainGenerator.run({
       scrollView: borderView,
-      foldOnOff: true,
+      foldOnOff: false,
       model: XLinePlainGenerator.MODEL.INDEX,
       table,
       getHeight: () => table.index.getHeight(),
