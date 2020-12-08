@@ -47,10 +47,10 @@ class CellBorder {
   }
 
   setAllDisplay(display) {
+    this.setBDisplay(display);
     this.setLDisplay(display);
     this.setTDisplay(display);
     this.setRDisplay(display);
-    this.setBDisplay(display);
   }
 
   setLDisplay(display) {
@@ -70,10 +70,10 @@ class CellBorder {
   }
 
   setAllColor(color) {
+    this.setBColor(color);
     this.setLColor(color);
     this.setTColor(color);
     this.setRColor(color);
-    this.setBColor(color);
   }
 
   setLColor(color) {
@@ -93,10 +93,10 @@ class CellBorder {
   }
 
   setAllWidthType(widthType) {
+    this.setBWidthType(widthType);
     this.setLWidthType(widthType);
     this.setTWidthType(widthType);
     this.setRWidthType(widthType);
-    this.setBWidthType(widthType);
   }
 
   setLWidthType(widthType) {
@@ -116,10 +116,10 @@ class CellBorder {
   }
 
   setAllType(type) {
+    this.setBType(type);
     this.setLType(type);
     this.setTType(type);
     this.setRType(type);
-    this.setBType(type);
   }
 
   setLType(type) {
@@ -140,10 +140,10 @@ class CellBorder {
 
   updateMaxIndex() {
     const zIndex = Border.getZIndex();
+    this.bottom.zIndex = zIndex;
     this.left.zIndex = zIndex;
     this.top.zIndex = zIndex;
     this.right.zIndex = zIndex;
-    this.bottom.zIndex = zIndex;
   }
 
   clone() {
@@ -160,6 +160,7 @@ class CellBorder {
       bottom,
     });
   }
+
 }
 
 export { CellBorder };

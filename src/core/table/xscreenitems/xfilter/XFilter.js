@@ -43,8 +43,7 @@ class XFilter extends XScreenCssBorderItem {
         activeIcon.valueFilterValue = valueFilterValue;
         activeIcon.ifFilterType = ifFilterType;
         activeIcon.ifFilterValue = ifFilterValue;
-        // 执行搜索过滤
-        // TODO ...
+        this.filterFoldRow();
       },
     });
     this.flt = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-lt`);
@@ -425,6 +424,11 @@ class XFilter extends XScreenCssBorderItem {
     // 打开面板
     filter.open();
   }
+
+  /**
+   * 过滤折叠行
+   */
+  filterFoldRow() {}
 
   /**
    * 隐藏过滤器

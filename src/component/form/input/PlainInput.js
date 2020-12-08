@@ -23,7 +23,7 @@ class PlainInput extends Widget {
 
   bind() {
     const { inputEle } = this;
-    XEvent.bind(inputEle, Constant.SYSTEM_EVENT_TYPE.CHANGE, () => {
+    XEvent.bind(inputEle, Constant.SYSTEM_EVENT_TYPE.INPUT, () => {
       this.setValue(inputEle.val());
     });
   }
