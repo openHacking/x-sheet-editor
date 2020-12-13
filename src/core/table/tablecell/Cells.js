@@ -74,7 +74,12 @@ class Cells {
   }
 
   getData() {
-    return this.xTableData.getItems().map(item => item.getCell());
+    return this.xTableData.getItems().map(rows => rows.map((item) => {
+      if (item) {
+        return item.getCell();
+      }
+      return null;
+    }));
   }
 
 }

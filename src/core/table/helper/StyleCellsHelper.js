@@ -3,7 +3,6 @@ import { Rect } from '../../../canvas/Rect';
 import { PlainUtils } from '../../../utils/PlainUtils';
 import { RowsIterator } from '../iterator/RowsIterator';
 import { ColsIterator } from '../iterator/ColsIterator';
-import { TEXT_BREAK_LOOP } from './TextCellsHelper';
 
 const STYLE_BREAK_LOOP = {
   CONTINUE: 3,
@@ -107,7 +106,8 @@ class StyleCellsHelper extends BaseCellsHelper {
             })
             .execute();
           switch (result) {
-            case TEXT_BREAK_LOOP.RETURN:
+            case STYLE_BREAK_LOOP.RETURN:
+              return false;
             default: return true;
           }
         })

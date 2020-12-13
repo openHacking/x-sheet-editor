@@ -5,7 +5,7 @@ class Row {
   } = {}) {
     this.height = height;
     this.row = row;
-    this.reCkHasAngle = false;
+    this.reCkHasAngle = true;
     this.hasAngelCell = false;
   }
 

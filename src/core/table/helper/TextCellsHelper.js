@@ -108,6 +108,7 @@ class TextCellsHelper extends BaseCellsHelper {
             .execute();
           switch (result) {
             case TEXT_BREAK_LOOP.RETURN:
+              return false;
             default: return true;
           }
         })
@@ -161,6 +162,7 @@ class TextCellsHelper extends BaseCellsHelper {
             .execute();
           switch (result) {
             case TEXT_BREAK_LOOP.RETURN:
+              return false;
             default: return true;
           }
         })
@@ -214,6 +216,7 @@ class TextCellsHelper extends BaseCellsHelper {
           y += height;
           switch (result) {
             case TEXT_BREAK_LOOP.RETURN:
+              return false;
             default: return true;
           }
         })
@@ -267,6 +270,7 @@ class TextCellsHelper extends BaseCellsHelper {
           y += height;
           switch (result) {
             case TEXT_BREAK_LOOP.RETURN:
+              return false;
             default: return true;
           }
         })
