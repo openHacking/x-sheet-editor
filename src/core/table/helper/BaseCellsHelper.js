@@ -257,50 +257,57 @@ class BaseCellsHelper {
 
   getCellOverFlow(ri, ci, rect, cell) {
     const styleTable = this.getStyleTable();
-    const { x, y, height } = rect;
-    const { fontAttr } = cell;
+    const { x, y, height, width } = rect;
+    const { fontAttr, contentWidth } = cell;
     const { direction } = fontAttr;
+    const blank = PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text);
     switch (direction) {
       case BaseFont.TEXT_DIRECTION.HORIZONTAL: {
-        const { textWrap } = fontAttr;
-        if (textWrap === BaseFont.TEXT_WRAP.OVER_FLOW) {
-          const max = this.getHorizontalMaxWidth(ri, ci, cell);
-          return new Rect({
-            x: x + max.offset, y, width: max.width, height,
-          });
+        if (blank === false) {
+          const { textWrap } = fontAttr;
+          if (textWrap === BaseFont.TEXT_WRAP.OVER_FLOW) {
+            if (contentWidth === 0 || contentWidth > width) {
+              const max = this.getHorizontalMaxWidth(ri, ci, cell);
+              return new Rect({
+                x: x + max.offset, y, width: max.width, height,
+              });
+            }
+          }
         }
-        break;
+        return rect;
       }
       case BaseFont.TEXT_DIRECTION.ANGLE: {
-        const { textWrap } = fontAttr;
-        if (styleTable.isAngleBarCell(ri, ci)) {
-          switch (textWrap) {
-            case BaseFont.TEXT_WRAP.OVER_FLOW:
-            case BaseFont.TEXT_WRAP.TRUNCATE: {
-              const max = this.getAngleBarMaxWidth(ri, ci, cell, rect);
-              return new Rect({
-                x: x + max.offset, y, width: max.width, height,
-              });
+        if (blank === false) {
+          const { textWrap } = fontAttr;
+          if (styleTable.isAngleBarCell(ri, ci)) {
+            switch (textWrap) {
+              case BaseFont.TEXT_WRAP.OVER_FLOW:
+              case BaseFont.TEXT_WRAP.TRUNCATE: {
+                const max = this.getAngleBarMaxWidth(ri, ci, cell, rect);
+                return new Rect({
+                  x: x + max.offset, y, width: max.width, height,
+                });
+              }
+              case BaseFont.TEXT_WRAP.WORD_WRAP: {
+                const max = this.getAngleBarWrapWidth(ri, ci, cell, rect);
+                return new Rect({
+                  x: x + max.offset, y, width: max.width, height,
+                });
+              }
             }
-            case BaseFont.TEXT_WRAP.WORD_WRAP: {
-              const max = this.getAngleBarWrapWidth(ri, ci, cell, rect);
-              return new Rect({
-                x: x + max.offset, y, width: max.width, height,
-              });
-            }
-          }
-        } else {
-          switch (textWrap) {
-            case BaseFont.TEXT_WRAP.OVER_FLOW:
-            case BaseFont.TEXT_WRAP.TRUNCATE: {
-              const max = this.getAngleMaxWidth(ri, ci, cell, rect);
-              return new Rect({
-                x: x + max.offset, y, width: max.width, height,
-              });
+          } else {
+            switch (textWrap) {
+              case BaseFont.TEXT_WRAP.OVER_FLOW:
+              case BaseFont.TEXT_WRAP.TRUNCATE: {
+                const max = this.getAngleMaxWidth(ri, ci, cell, rect);
+                return new Rect({
+                  x: x + max.offset, y, width: max.width, height,
+                });
+              }
             }
           }
         }
-        break;
+        return rect;
       }
     }
     return null;
