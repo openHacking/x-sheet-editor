@@ -59,6 +59,13 @@ class Cell {
     this.icons = icons;
   }
 
+  setText(text) {
+    this.text = text;
+    this.setContentWidth(0);
+    this.setLeftSdistWidth(0);
+    this.setRightSdistWidth(0);
+  }
+
   setLeftSdistWidth(leftSdistWidth) {
     this.leftSdistWidth = leftSdistWidth;
   }
