@@ -16,6 +16,82 @@ class XHDrawFont extends DrawFont {
     this.attr = attr;
   }
 
+  drawFontLine(type, tx, ty, textWidth) {
+    const { dw, attr } = this;
+    const { size, verticalAlign, align } = attr;
+    const s = [0, 0];
+    const e = [0, 0];
+    if (type === 'strike') {
+      switch (align) {
+        case BaseFont.ALIGN.right:
+          s[0] = tx - textWidth;
+          e[0] = tx;
+          break;
+        case BaseFont.ALIGN.center:
+          s[0] = tx - textWidth / 2;
+          e[0] = tx + textWidth / 2;
+          break;
+        case BaseFont.ALIGN.left:
+          s[0] = tx;
+          e[0] = tx + textWidth;
+          break;
+        default:
+          break;
+      }
+      switch (verticalAlign) {
+        case BaseFont.VERTICAL_ALIGN.top:
+          s[1] = ty + size / 2;
+          e[1] = ty + size / 2;
+          break;
+        case BaseFont.VERTICAL_ALIGN.center:
+          s[1] = ty;
+          e[1] = ty;
+          break;
+        case BaseFont.VERTICAL_ALIGN.bottom:
+          s[1] = ty - size / 2;
+          e[1] = ty - size / 2;
+          break;
+        default:
+          break;
+      }
+    }
+    if (type === 'underline') {
+      switch (align) {
+        case BaseFont.ALIGN.right:
+          s[0] = tx - textWidth;
+          e[0] = tx;
+          break;
+        case BaseFont.ALIGN.center:
+          s[0] = tx - textWidth / 2;
+          e[0] = tx + textWidth / 2;
+          break;
+        case BaseFont.ALIGN.left:
+          s[0] = tx;
+          e[0] = tx + textWidth;
+          break;
+        default:
+          break;
+      }
+      switch (verticalAlign) {
+        case BaseFont.VERTICAL_ALIGN.top:
+          s[1] = ty + size;
+          e[1] = ty + size;
+          break;
+        case BaseFont.VERTICAL_ALIGN.center:
+          s[1] = ty + size / 2;
+          e[1] = ty + size / 2;
+          break;
+        case BaseFont.VERTICAL_ALIGN.bottom:
+          s[1] = ty;
+          e[1] = ty;
+          break;
+        default:
+          break;
+      }
+    }
+    dw.line(s, e);
+  }
+
   drawXHTFont(xhtMeasure) {
     const { xDraw, attr, rect } = this;
     const { width, height } = rect;
@@ -59,19 +135,19 @@ class XHDrawFont extends DrawFont {
       crop.open();
       xDraw.fillText(xhtMeasure.text, bx, by);
       if (underline) {
-        this.drawLine('underline', bx, by, xhtMeasure.measure);
+        this.drawFontLine('underline', bx, by, xhtMeasure.measure);
       }
       if (strikethrough) {
-        this.drawLine('strike', bx, by, xhtMeasure.measure);
+        this.drawFontLine('strike', bx, by, xhtMeasure.measure);
       }
       crop.close();
     } else {
       xDraw.fillText(xhtMeasure.text, bx, by);
       if (underline) {
-        this.drawLine('underline', bx, by, xhtMeasure.measure);
+        this.drawFontLine('underline', bx, by, xhtMeasure.measure);
       }
       if (strikethrough) {
-        this.drawLine('strike', bx, by, xhtMeasure.measure);
+        this.drawFontLine('strike', bx, by, xhtMeasure.measure);
       }
     }
     return new FontDrawResult();
@@ -131,19 +207,19 @@ class XHDrawFont extends DrawFont {
       crop.open();
       xDraw.fillText(xhoMeasure.text, bx, by);
       if (underline) {
-        this.drawLine('underline', bx, by, xhoMeasure.measure);
+        this.drawFontLine('underline', bx, by, xhoMeasure.measure);
       }
       if (strikethrough) {
-        this.drawLine('strike', bx, by, xhoMeasure.measure);
+        this.drawFontLine('strike', bx, by, xhoMeasure.measure);
       }
       crop.close();
     } else {
       xhoMeasure.fillText(xhoMeasure.text, bx, by);
       if (underline) {
-        this.drawLine('underline', bx, by, xhoMeasure.textWidth);
+        this.drawFontLine('underline', bx, by, xhoMeasure.textWidth);
       }
       if (strikethrough) {
-        this.drawLine('strike', bx, by, xhoMeasure.textWidth);
+        this.drawFontLine('strike', bx, by, xhoMeasure.textWidth);
       }
     }
     return new FontDrawResult(xhoMeasure.measure + alignPadding);
@@ -198,10 +274,10 @@ class XHDrawFont extends DrawFont {
         item.ty += by;
         xDraw.fillText(item.text, item.tx, item.ty);
         if (underline) {
-          this.drawLine('underline', item.tx, item.ty, item.len);
+          this.drawFontLine('underline', item.tx, item.ty, item.len);
         }
         if (strikethrough) {
-          this.drawLine('strike', item.tx, item.ty, item.len);
+          this.drawFontLine('strike', item.tx, item.ty, item.len);
         }
         ti += 1;
       }
@@ -213,10 +289,10 @@ class XHDrawFont extends DrawFont {
         item.ty += by;
         xDraw.fillText(item.text, item.tx, item.ty);
         if (underline) {
-          this.drawLine('underline', item.tx, item.ty, item.len);
+          this.drawFontLine('underline', item.tx, item.ty, item.len);
         }
         if (strikethrough) {
-          this.drawLine('strike', item.tx, item.ty, item.len);
+          this.drawFontLine('strike', item.tx, item.ty, item.len);
         }
       }
     }
