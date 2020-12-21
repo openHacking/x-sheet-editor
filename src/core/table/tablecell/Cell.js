@@ -32,8 +32,8 @@ class Cell {
     leftSdistWidth = 0,
     rightSdistWidth = 0,
   }) {
-    this.background = background;
     this.text = text;
+    this.background = background;
     this.format = format;
     this.icons = XIcon.newInstances(icons);
     this.borderAttr = new CellBorder(borderAttr);
@@ -75,18 +75,14 @@ class Cell {
   }
 
   clone() {
-    const {
-      background, format, text, fontAttr, borderAttr, contentWidth, icons,
-    } = this;
+    const { background, format, text, fontAttr, borderAttr, contentWidth, icons } = this;
     return new Cell({
       background, format, text, fontAttr, borderAttr, contentWidth, icons,
     });
   }
 
   toJSON() {
-    const {
-      background, format, text, fontAttr, borderAttr, contentWidth, icons,
-    } = this;
+    const { background, format, text, fontAttr, borderAttr, contentWidth, icons } = this;
     return {
       background, format, text, fontAttr, borderAttr, contentWidth, icons,
     };

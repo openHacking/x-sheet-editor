@@ -6,10 +6,10 @@ import { FontDrawResult } from './FontDrawResult';
 class VerticalFont extends BaseFont {
 
   constructor({
-    text, rect, dw, attr,
+    text, rect, draw, attr,
   }) {
     super({
-      text, rect, dw, attr,
+      text, rect, draw, attr,
     });
     this.attr = PlainUtils.mergeDeep({
       lineHeight: 8,
@@ -18,7 +18,7 @@ class VerticalFont extends BaseFont {
   }
 
   drawLine(type, tx, ty, textWidth, align, verticalAlign) {
-    const { dw, attr } = this;
+    const { draw, attr } = this;
     const { size } = attr;
     const s = [0, 0];
     const e = [0, 0];
@@ -58,17 +58,17 @@ class VerticalFont extends BaseFont {
           break;
       }
     }
-    dw.line(s, e);
+    draw.line(s, e);
   }
 
-  draw() {
+  drawFont() {
     const { text } = this;
     if (this.isBlank(text)) {
       return new FontDrawResult();
     }
-    const { dw, attr } = this;
+    const { draw, attr } = this;
     const { textWrap } = attr;
-    dw.attr({
+    draw.attr({
       textAlign: BaseFont.ALIGN.left,
       textBaseline: BaseFont.VERTICAL_ALIGN.top,
       font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`,
@@ -90,7 +90,7 @@ class VerticalFont extends BaseFont {
   }
 
   truncateFont() {
-    const { text, dw, attr, rect } = this;
+    const { text, draw, attr, rect } = this;
     const { width, height } = rect;
     const { underline, strikethrough, align, verticalAlign } = attr;
     const { size, spacing } = attr;
@@ -151,7 +151,7 @@ class VerticalFont extends BaseFont {
     const outboundsWidth = size + alignPadding > width;
     if (outboundsHeight || outboundsWidth) {
       const crop = new Crop({
-        draw: dw,
+        draw,
         rect,
       });
       crop.open();
@@ -161,7 +161,7 @@ class VerticalFont extends BaseFont {
         const item = textArray[ti];
         item.tx += bx;
         item.ty += by;
-        dw.fillText(item.text, item.tx, item.ty);
+        draw.fillText(item.text, item.tx, item.ty);
         if (underline) {
           this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
         }
@@ -178,7 +178,7 @@ class VerticalFont extends BaseFont {
         const item = textArray[ti];
         item.tx += bx;
         item.ty += by;
-        dw.fillText(item.text, item.tx, item.ty);
+        draw.fillText(item.text, item.tx, item.ty);
         if (underline) {
           this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
         }
@@ -196,7 +196,7 @@ class VerticalFont extends BaseFont {
   }
 
   wrapTextFont() {
-    const { text, dw, attr, rect } = this;
+    const { text, draw, attr, rect } = this;
     const { width, height } = rect;
     const { size, spacing, verticalAlign, underline } = attr;
     const { strikethrough, align, lineHeight } = attr;
@@ -275,7 +275,7 @@ class VerticalFont extends BaseFont {
     if (outboundsWidth) {
       const textLen = textArray.length;
       const crop = new Crop({
-        draw: dw,
+        draw,
         rect,
       });
       crop.open();
@@ -284,7 +284,7 @@ class VerticalFont extends BaseFont {
         const item = textArray[ti];
         item.tx += bx;
         item.ty += by;
-        dw.fillText(item.text, item.tx, item.ty);
+        draw.fillText(item.text, item.tx, item.ty);
         if (underline) {
           this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
         }
@@ -301,7 +301,7 @@ class VerticalFont extends BaseFont {
         const item = textArray[ti];
         item.tx += bx;
         item.ty += by;
-        dw.fillText(item.text, item.tx, item.ty);
+        draw.fillText(item.text, item.tx, item.ty);
         if (underline) {
           this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
         }

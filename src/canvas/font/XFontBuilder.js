@@ -8,7 +8,7 @@ import { AngleBarFont } from './AngleBarFont';
 class XFontBuilder {
 
   constructor({
-    text, dw, rect, attr, overflow,
+    text, draw, rect, attr, overflow,
   }) {
     this.attr = PlainUtils.mergeDeep({}, {
       verticalAlign: BaseFont.VERTICAL_ALIGN.center,
@@ -26,7 +26,7 @@ class XFontBuilder {
       padding: 8,
     }, attr);
     this.text = text;
-    this.dw = dw;
+    this.draw = draw;
     this.rect = rect;
     this.overflow = overflow;
   }
@@ -44,23 +44,23 @@ class XFontBuilder {
   }
 
   build() {
-    const { text, dw, rect, attr, overflow } = this;
+    const { text, draw, rect, attr, overflow } = this;
     switch (attr.direction) {
       case BaseFont.TEXT_DIRECTION.ANGLE:
         return new AngleFont({
-          text, rect, dw, attr: this.attr, overflow,
+          text, rect, draw, attr: this.attr, overflow,
         });
       case BaseFont.TEXT_DIRECTION.ANGLE_BAR:
         return new AngleBarFont({
-          text, rect, dw, attr: this.attr, overflow,
+          text, rect, draw, attr: this.attr, overflow,
         });
       case BaseFont.TEXT_DIRECTION.HORIZONTAL:
         return new HorizontalFont({
-          text, rect, dw, attr: this.attr, overflow,
+          text, rect, draw, attr: this.attr, overflow,
         });
       case BaseFont.TEXT_DIRECTION.VERTICAL:
         return new VerticalFont({
-          text, rect, dw, attr: this.attr,
+          text, rect, draw, attr: this.attr,
         });
     }
     return null;

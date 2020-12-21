@@ -9,10 +9,10 @@ import { FontDrawResult } from './FontDrawResult';
 class AngleFont extends BaseFont {
 
   constructor({
-    text, rect, dw, attr, overflow,
+    text, rect, draw, attr, overflow,
   }) {
     super({
-      text, rect, dw, attr,
+      text, rect, draw, attr,
     });
     this.attr = PlainUtils.mergeDeep({
       lineHeight: 4,
@@ -21,7 +21,7 @@ class AngleFont extends BaseFont {
   }
 
   drawLine(type, tx, ty, textWidth) {
-    const { dw, attr } = this;
+    const { draw, attr } = this;
     const { size } = attr;
     const s = [0, 0];
     const e = [0, 0];
@@ -37,17 +37,17 @@ class AngleFont extends BaseFont {
       s[1] = ty + size;
       e[1] = ty + size;
     }
-    dw.line(s, e);
+    draw.line(s, e);
   }
 
-  draw() {
+  drawFont() {
     const { text } = this;
     if (this.isBlank(text)) {
       return new FontDrawResult();
     }
-    const { dw, attr } = this;
+    const { draw, attr } = this;
     const { textWrap } = attr;
-    dw.attr({
+    draw.attr({
       textAlign: BaseFont.ALIGN.left,
       textBaseline: BaseFont.VERTICAL_ALIGN.top,
       font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`,
@@ -73,7 +73,7 @@ class AngleFont extends BaseFont {
   }
 
   overflowFont() {
-    const { text, dw, attr, rect, overflow } = this;
+    const { text, draw, attr, rect, overflow } = this;
     const { x, y, width, height } = rect;
     const { underline, strikethrough, align, verticalAlign, size } = attr;
     // 填充宽度
@@ -132,11 +132,11 @@ class AngleFont extends BaseFont {
     const outboundsWidth = trigonometricWidth + alignPadding > overflow.width;
     if (outboundsHeight || outboundsWidth) {
       const crop = new Crop({
-        draw: dw,
+        draw,
         rect: overflow,
       });
       const dwAngle = new Angle({
-        dw,
+        draw,
         angle,
         rect: new Rect({
           x: rtx,
@@ -149,7 +149,7 @@ class AngleFont extends BaseFont {
       dwAngle.rotate();
       const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
       const ty = rty + (trigonometricHeight / 2 - size / 2);
-      dw.fillText(text, tx, ty);
+      draw.fillText(text, tx, ty);
       if (underline) {
         this.drawLine('underline', tx, ty, textWidth);
       }
@@ -160,7 +160,7 @@ class AngleFont extends BaseFont {
       crop.close();
     } else {
       const dwAngle = new Angle({
-        dw,
+        draw,
         angle,
         rect: new Rect({
           x: rtx,
@@ -172,7 +172,7 @@ class AngleFont extends BaseFont {
       dwAngle.rotate();
       const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
       const ty = rty + (trigonometricHeight / 2 - size / 2);
-      dw.fillText(text, tx, ty);
+      draw.fillText(text, tx, ty);
       if (underline) {
         this.drawLine('underline', tx, ty, textWidth);
       }
@@ -192,11 +192,13 @@ class AngleFont extends BaseFont {
         tilt, angle,
       });
     }
-    return new FontDrawResult(textHaveWidth + alignPadding);
+    return new FontDrawResult({
+      width: textHaveWidth + alignPadding,
+    });
   }
 
   wrapTextFont() {
-    const { text, dw, attr, rect } = this;
+    const { text, draw, attr, rect } = this;
     const { width, height } = rect;
     const { underline, strikethrough, align, verticalAlign, size, lineHeight } = attr;
     // 填充宽度
@@ -384,7 +386,7 @@ class AngleFont extends BaseFont {
           const ty = ay - size / 2;
           // 旋转并且绘制文本
           const dwAngle = new Angle({
-            dw,
+            draw,
             angle,
             rect: new Rect({
               x: tx,
@@ -394,7 +396,7 @@ class AngleFont extends BaseFont {
             }),
           });
           dwAngle.rotate();
-          dw.fillText(item.text, tx, ty);
+          draw.fillText(item.text, tx, ty);
           if (underline) {
             this.drawLine('underline', tx, ty, item.len);
           }
@@ -404,7 +406,9 @@ class AngleFont extends BaseFont {
           dwAngle.revert();
           jj += 1;
         }
-        return new FontDrawResult(totalWidth + alignPadding);
+        return new FontDrawResult({
+          width: totalWidth + alignPadding,
+        });
       }
       // 文本大小
       const textWidth = this.textWidth(text);
@@ -443,7 +447,7 @@ class AngleFont extends BaseFont {
       }
       // 渲染文本
       const dwAngle = new Angle({
-        dw,
+        draw,
         angle,
         rect: new Rect({
           x: rtx,
@@ -455,7 +459,7 @@ class AngleFont extends BaseFont {
       dwAngle.rotate();
       const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
       const ty = rty + (trigonometricHeight / 2 - size / 2);
-      dw.fillText(text, tx, ty);
+      draw.fillText(text, tx, ty);
       if (underline) {
         this.drawLine('underline', tx, ty, textWidth);
       }
@@ -463,7 +467,9 @@ class AngleFont extends BaseFont {
         this.drawLine('strike', tx, ty, textWidth);
       }
       dwAngle.revert();
-      return new FontDrawResult(trigonometricWidth + alignPadding);
+      return new FontDrawResult({
+        width: trigonometricWidth + alignPadding,
+      });
     }
     const textHypotenuseWidth = RTSinKit.tilt({
       inverse: height - (padding * 2),
@@ -633,7 +639,7 @@ class AngleFont extends BaseFont {
         const ty = ay - size / 2;
         // 旋转并且绘制文本
         const dwAngle = new Angle({
-          dw,
+          draw,
           angle,
           rect: new Rect({
             x: tx,
@@ -643,7 +649,7 @@ class AngleFont extends BaseFont {
           }),
         });
         dwAngle.rotate();
-        dw.fillText(item.text, tx, ty);
+        draw.fillText(item.text, tx, ty);
         if (underline) {
           this.drawLine('underline', tx, ty, item.len);
         }
@@ -653,7 +659,9 @@ class AngleFont extends BaseFont {
         dwAngle.revert();
         jj += 1;
       }
-      return new FontDrawResult(totalWidth + alignPadding);
+      return new FontDrawResult({
+        width: totalWidth + alignPadding,
+      });
     }
     // 计算文本块大小
     const textWidth = this.textWidth(text);
@@ -692,7 +700,7 @@ class AngleFont extends BaseFont {
     }
     // 渲染文本
     const dwAngle = new Angle({
-      dw,
+      draw,
       angle,
       rect: new Rect({
         x: rtx,
@@ -704,7 +712,7 @@ class AngleFont extends BaseFont {
     dwAngle.rotate();
     const tx = rtx + (trigonometricWidth / 2 - textWidth / 2);
     const ty = rty + (trigonometricHeight / 2 - size / 2);
-    dw.fillText(text, tx, ty);
+    draw.fillText(text, tx, ty);
     if (underline) {
       this.drawLine('underline', tx, ty, textWidth);
     }
@@ -712,7 +720,9 @@ class AngleFont extends BaseFont {
       this.drawLine('strike', tx, ty, textWidth);
     }
     dwAngle.revert();
-    return new FontDrawResult(trigonometricWidth + alignPadding);
+    return new FontDrawResult({
+      width: trigonometricWidth + alignPadding,
+    });
   }
 
 }

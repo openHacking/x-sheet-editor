@@ -11,7 +11,7 @@ class TextBuilder {
   }) {
     this.scaleAdapter = scaleAdapter;
     this.rect = null;
-    this.dw = null;
+    this.draw = null;
     this.cell = null;
     this.row = -1;
     this.col = -1;
@@ -23,8 +23,8 @@ class TextBuilder {
     this.rect = rect;
   }
 
-  setDraw(dw) {
-    this.dw = dw;
+  setDraw(draw) {
+    this.draw = draw;
   }
 
   setCell(cell) {
@@ -44,12 +44,12 @@ class TextBuilder {
   }
 
   build() {
-    const { rect, overflow, row, col, cell, dw, scaleAdapter, table } = this;
+    const { rect, overflow, row, col, cell, draw, scaleAdapter, table } = this;
     const { format, text, fontAttr } = cell;
     const size = XDraw.srcTransformStylePx(scaleAdapter.goto(fontAttr.size));
     const padding = XDraw.srcTransformStylePx(scaleAdapter.goto(fontAttr.padding));
     const builder = new XFontBuilder({
-      text: XTableFormat(format, text), dw, overflow, rect, attr: fontAttr,
+      text: XTableFormat(format, text), draw, overflow, rect, attr: fontAttr,
     });
     builder.setSize(size);
     builder.setPadding(padding);
@@ -80,6 +80,4 @@ class Text {
 
 }
 
-export {
-  Text,
-};
+export { Text };

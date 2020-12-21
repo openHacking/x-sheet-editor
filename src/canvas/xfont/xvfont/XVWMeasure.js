@@ -1,7 +1,0 @@
-class XVWMeasure {
-
-}
-
-export {
-  XVWMeasure,
-};

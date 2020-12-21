@@ -1,7 +1,0 @@
-class XVTMeasure {
-
-}
-
-export {
-  XVTMeasure,
-};

@@ -7,10 +7,10 @@ import { FontDrawResult } from './FontDrawResult';
 class HorizontalFont extends DisplayFont {
 
   constructor({
-    text, overflow, rect, dw, attr,
+    text, overflow, rect, draw, attr,
   }) {
     super({
-      text, rect, dw, attr,
+      text, rect, draw, attr,
     });
     this.overflow = overflow;
     this.attr = PlainUtils.mergeDeep({
@@ -19,7 +19,7 @@ class HorizontalFont extends DisplayFont {
   }
 
   drawLine(type, tx, ty, textWidth) {
-    const { dw, attr } = this;
+    const { draw, attr } = this;
     const { size, verticalAlign, align } = attr;
     const s = [0, 0];
     const e = [0, 0];
@@ -91,18 +91,18 @@ class HorizontalFont extends DisplayFont {
           break;
       }
     }
-    dw.line(s, e);
+    draw.line(s, e);
   }
 
-  draw() {
+  drawFont() {
     const { text } = this;
     if (this.isBlank(text)) {
       return new FontDrawResult();
     }
-    const { dw, attr } = this;
+    const { draw, attr } = this;
     const { textWrap } = attr;
     const font = `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`.trim();
-    dw.attr({
+    draw.attr({
       textAlign: attr.align,
       textBaseline: attr.verticalAlign,
       font,
@@ -124,11 +124,11 @@ class HorizontalFont extends DisplayFont {
   }
 
   truncateFont() {
-    const { dw, attr, rect } = this;
+    const { draw, attr, rect } = this;
     const { width, height } = rect;
     const { underline, strikethrough, align, verticalAlign, size } = attr;
     // 文字宽度
-    const { text, textWidth } = this.displayFont();
+    const { text, textWidth } = this.displayFont(rect);
     // 填充宽度
     const verticalAlignPadding = this.getVerticalAlignPadding();
     const alignPadding = this.getAlignPadding();
@@ -162,11 +162,11 @@ class HorizontalFont extends DisplayFont {
     const outboundsWidth = textWidth + alignPadding > width;
     if (outboundsHeight || outboundsWidth) {
       const crop = new Crop({
-        draw: dw,
+        draw,
         rect,
       });
       crop.open();
-      dw.fillText(text, bx, by);
+      draw.fillText(text, bx, by);
       if (underline) {
         this.drawLine('underline', bx, by, textWidth);
       }
@@ -175,7 +175,7 @@ class HorizontalFont extends DisplayFont {
       }
       crop.close();
     } else {
-      dw.fillText(text, bx, by);
+      draw.fillText(text, bx, by);
       if (underline) {
         this.drawLine('underline', bx, by, textWidth);
       }
@@ -187,11 +187,11 @@ class HorizontalFont extends DisplayFont {
   }
 
   overflowFont() {
-    const { dw, attr, rect, overflow, text } = this;
+    const { draw, attr, rect, overflow } = this;
     const { width, height } = rect;
     const { underline, strikethrough, align, verticalAlign, size } = attr;
     // 文字宽度
-    const textWidth = this.textWidth(text);
+    const { text, textWidth } = this.displayFont(overflow);
     // 填充宽度
     const verticalAlignPadding = this.getVerticalAlignPadding();
     const alignPadding = this.getAlignPadding();
@@ -236,11 +236,11 @@ class HorizontalFont extends DisplayFont {
     }
     if (outboundsHeight || outboundsWidth || pointOffset) {
       const crop = new Crop({
-        draw: dw,
+        draw,
         rect: overflow,
       });
       crop.open();
-      dw.fillText(text, bx, by);
+      draw.fillText(text, bx, by);
       if (underline) {
         this.drawLine('underline', bx, by, textWidth);
       }
@@ -249,7 +249,7 @@ class HorizontalFont extends DisplayFont {
       }
       crop.close();
     } else {
-      dw.fillText(text, bx, by);
+      draw.fillText(text, bx, by);
       if (underline) {
         this.drawLine('underline', bx, by, textWidth);
       }
@@ -257,11 +257,13 @@ class HorizontalFont extends DisplayFont {
         this.drawLine('strike', bx, by, textWidth);
       }
     }
-    return new FontDrawResult(textWidth + alignPadding);
+    return new FontDrawResult({
+      width: textWidth + alignPadding,
+    });
   }
 
   wrapTextFont() {
-    const { text, dw, attr, rect } = this;
+    const { text, draw, attr, rect } = this;
     const { width, height } = rect;
     const { underline, strikethrough, align, verticalAlign, size, lineHeight } = attr;
     // 填充宽度
@@ -361,7 +363,7 @@ class HorizontalFont extends DisplayFont {
     const outboundsHeight = totalHeight + verticalAlignPadding > height;
     if (outboundsHeight) {
       const crop = new Crop({
-        draw: dw,
+        draw,
         rect,
       });
       crop.open();
@@ -371,7 +373,7 @@ class HorizontalFont extends DisplayFont {
         const item = textArray[ti];
         item.tx += bx;
         item.ty += by;
-        dw.fillText(item.text, item.tx, item.ty);
+        draw.fillText(item.text, item.tx, item.ty);
         if (underline) {
           this.drawLine('underline', item.tx, item.ty, item.len);
         }
@@ -386,7 +388,7 @@ class HorizontalFont extends DisplayFont {
         const item = textArray[i];
         item.tx += bx;
         item.ty += by;
-        dw.fillText(item.text, item.tx, item.ty);
+        draw.fillText(item.text, item.tx, item.ty);
         if (underline) {
           this.drawLine('underline', item.tx, item.ty, item.len);
         }
