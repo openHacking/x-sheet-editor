@@ -113,7 +113,7 @@ BaseFont.TEXT_DIRECTION = {
   HORIZONTAL: 'horizontal',
   VERTICAL: 'vertical',
   ANGLE: 'angle',
-  ANGLE_BAR: 'anglebar',
+  ANGLE_BAR: 'bar',
 };
 export {
   BaseFont,
