@@ -1,7 +1,8 @@
-class XBasicTextMeasure {
+class XMeasure {
 
-  constructor({ draw }) {
+  constructor({ draw, padding }) {
     this.draw = draw;
+    this.padding = padding;
   }
 
   measureText(text) {
@@ -15,6 +16,13 @@ class XBasicTextMeasure {
 
 }
 
+XMeasure.USED = {
+  DEFAULT_INI: 0,
+  OVERFLOW: 1,
+  TRUNCATE: 2,
+  TEXT_WRAP: 3,
+};
+
 export {
-  XBasicTextMeasure,
+  XMeasure,
 };
