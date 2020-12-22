@@ -1,0 +1,7 @@
+class XVerticalDrawFont {
+
+}
+
+export {
+  XVerticalDrawFont,
+};

@@ -1,0 +1,7 @@
+class XAngleBoxDrawFont {
+
+}
+
+export {
+  XAngleBoxDrawFont,
+};
