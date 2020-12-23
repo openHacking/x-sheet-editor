@@ -896,3 +896,7 @@ class AngleBarDraw extends BaseFont {
   }
 
 }
+
+export {
+  AngleBarDraw,
+};
