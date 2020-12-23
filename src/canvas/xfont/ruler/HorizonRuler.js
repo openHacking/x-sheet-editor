@@ -1,53 +1,49 @@
-import { XBaseTextMeasure } from './XBaseTextMeasure';
-import { XMeasure } from '../XMeasure';
+import { HorizonVisual } from './HorizonVisual';
+import { BaseRuler } from '../BaseRuler';
 
-class XHorizonMeasure extends XBaseTextMeasure {
+class HorizonRuler extends HorizonVisual {
 
   constructor({
-    draw, text, size, rect, align, overflow, lineHeight = 4, padding,
-  } = {}) {
+    draw, text, size, rect, overflow, align, lineHeight, padding,
+  }) {
     super({
-      draw, text, align, padding,
+      draw, align, padding,
     });
-    // 基本属性
-    this.used = XMeasure.USED.DEFAULT_INI;
+    this.text = text;
     this.size = size;
     this.rect = rect;
     this.overflow = overflow;
     this.lineHeight = lineHeight;
-    // 截断文本
+    this.used = BaseRuler.USED.DEFAULT_INI;
     this.truncateText = '';
-    this.truncateWidth = 0;
-    // 溢出文本
+    this.truncateTextWidth = 0;
     this.overflowText = '';
-    this.overflowWidth = 0;
-    // 多行文本
-    this.wrappingText = [];
-    this.wrappingHeight = 0;
+    this.overflowTextWidth = 0;
+    this.textWrapTextArray = [];
+    this.textWrapHOffset = 0;
   }
 
-  truncateMeasure() {
+  truncateRuler() {
     if (this.used) { return; }
     const { rect } = this;
-    const { text, textWidth } = this.visibleText(rect);
+    const { text, textWidth } = this.displayFont(rect);
     this.truncateText = text;
-    this.truncateWidth = textWidth;
-    this.used = XMeasure.USED.TRUNCATE;
+    this.truncateTextWidth = textWidth;
+    this.used = BaseRuler.USED.TRUNCATE;
   }
 
-  overflowMeasure() {
+  overflowRuler() {
     if (this.used) { return; }
     const { overflow } = this;
-    const { text, textWidth } = this.visibleText(overflow);
-    this.truncateText = text;
-    this.truncateWidth = textWidth;
-    this.used = XMeasure.USED.OVERFLOW;
+    const { text, textWidth } = this.displayFont(overflow);
+    this.overflowText = text;
+    this.overflowTextWidth = textWidth;
+    this.used = BaseRuler.USED.OVER_FLOW;
   }
 
-  wrapTextMeasure() {
+  textWrapRuler() {
     if (this.used) { return; }
-    // 折行文本计算
-    const { text, rect, size, lineHeight } = this;
+    const { text, size, rect, lineHeight } = this;
     const { width } = rect;
     const alignPadding = this.getAlignPadding();
     const breakArray = this.textBreak(text);
@@ -111,14 +107,13 @@ class XHorizonMeasure extends XBaseTextMeasure {
     if (hOffset > 0) {
       hOffset -= lineHeight;
     }
-    // 保存计算结果
-    this.wrappingText = textArray;
-    this.wrappingHeight = hOffset;
-    this.used = XMeasure.USED.TEXT_WRAP;
+    this.textWrapTextArray = textArray;
+    this.textWrapHOffset = hOffset;
+    this.used = BaseRuler.USED.TEXT_WRAP;
   }
 
 }
 
 export {
-  XHorizonMeasure,
+  HorizonRuler,
 };

@@ -1,7 +1,0 @@
-class XVerticalDrawFont {
-
-}
-
-export {
-  XVerticalDrawFont,
-};

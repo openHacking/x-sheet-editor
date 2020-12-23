@@ -1,19 +1,19 @@
-import { XMeasure } from '../XMeasure';
-import { BaseFont } from '../../font/BaseFont';
+import { BaseRuler } from '../BaseRuler';
+import { BaseFont } from '../BaseFont';
 
-class XBaseTextMeasure extends XMeasure {
+class HorizonVisual extends BaseRuler {
 
   constructor({
-    draw, text, align, padding,
+    draw, align, padding,
   }) {
-    super({ draw, padding });
-    this.text = text;
+    super({ draw });
     this.align = align;
+    this.padding = padding;
   }
 
-  visibleText(rect) {
+  displayFont(rect) {
     const { align } = this;
-    const maxWidth = rect.width - this.getAlignPadding();
+    const { width } = rect;
     const origin = this.text;
     const length = origin.length;
     switch (align) {
@@ -24,7 +24,7 @@ class XBaseTextMeasure extends XMeasure {
         while (start < length) {
           const str = text + origin.charAt(start);
           const len = this.textWidth(str);
-          if (len >= maxWidth) {
+          if (len >= width) {
             break;
           }
           text = str;
@@ -47,7 +47,7 @@ class XBaseTextMeasure extends XMeasure {
         while (start >= 0) {
           const str = origin.charAt(start) + text;
           const len = this.textWidth(str);
-          if (len >= maxWidth) {
+          if (len >= width) {
             break;
           }
           text = str;
@@ -66,20 +66,14 @@ class XBaseTextMeasure extends XMeasure {
   }
 
   getAlignPadding() {
-    const { align, padding } = this;
-    switch (align) {
-      case BaseFont.ALIGN.left:
-        return padding;
-      case BaseFont.ALIGN.center:
-        return 0;
-      case BaseFont.ALIGN.right:
-        return padding;
+    if (this.align === BaseFont.ALIGN.center) {
+      return 0;
     }
-    return 0;
+    return this.padding;
   }
 
 }
 
 export {
-  XBaseTextMeasure,
+  HorizonVisual,
 };

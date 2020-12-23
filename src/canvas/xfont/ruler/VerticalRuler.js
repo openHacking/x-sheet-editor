@@ -1,30 +1,29 @@
-import { XBaseTextMeasure } from './XBaseTextMeasure';
-import { XMeasure } from '../XMeasure';
+import { VerticalVisual } from './VerticalVisual';
+import { BaseRuler } from '../BaseRuler';
 
-class XVerticalDrawFont extends XBaseTextMeasure {
+class VerticalRuler extends VerticalVisual {
 
   constructor({
-    draw, text, size, rect, verticalAlign, padding, spacing = 2, lineHeight = 4,
-  } = {}) {
+    draw, text, size, rect, verticalAlign, spacing, lineHeight, padding,
+  }) {
     super({
-      draw, text, size, verticalAlign, padding,
+      draw, verticalAlign, padding,
     });
-    // 基本属性
-    this.used = XMeasure.USED.DEFAULT_INI;
+    this.text = text;
+    this.size = size;
     this.rect = rect;
-    this.verticalAlign = verticalAlign;
     this.spacing = spacing;
     this.lineHeight = lineHeight;
-    // 截断文本
-    this.truncateText = [];
-    this.truncateHeight = 0;
-    // 多行文本
-    this.wrappingText = [];
-    this.wrappingWidth = 0;
-    this.wrappingHeight = 0;
+    this.used = BaseRuler.USED.DEFAULT_INI;
+    this.truncateTextArray = [];
+    this.truncateMaxLen = 0;
+    this.truncateHOffset = 0;
+    this.textWrapTextArray = [];
+    this.textWrapMaxLen = 0;
+    this.textWrapHOffset = 0;
   }
 
-  truncateMeasure() {
+  truncateRuler() {
     if (this.used) { return; }
     const { text, size, spacing } = this;
     const textArray = [];
@@ -50,18 +49,18 @@ class XVerticalDrawFont extends XBaseTextMeasure {
     if (hOffset > maxLen) {
       maxLen = hOffset;
     }
-    this.truncateText = textArray;
-    this.truncateHeight = hOffset;
-    this.used = XMeasure.USED.TRUNCATE;
+    this.truncateMaxLen = maxLen;
+    this.truncateHOffset = hOffset;
+    this.truncateTextArray = textArray;
+    this.used = BaseRuler.USED.TRUNCATE;
   }
 
-  overflowMeasure() {
-    this.truncateMeasure();
+  overflowRuler() {
+    this.truncateRuler();
   }
 
-  wrapTextMeasure() {
-    if (this.used) { return; }
-    const { text, size, rect, spacing, lineHeight } = this;
+  textWrapRuler() {
+    const { rect, text, size, spacing, lineHeight } = this;
     const { height } = rect;
     const verticalAlignPadding = this.getVerticalAlignPadding();
     const breakArray = this.textBreak(text);
@@ -104,14 +103,13 @@ class XVerticalDrawFont extends XBaseTextMeasure {
       wOffset += size;
       bi += 1;
     }
-    this.wrappingText = textArray;
-    this.wrappingWidth = wOffset;
-    this.wrappingHeight = maxLen;
-    this.used = XMeasure.USED.TEXT_WRAP;
+    this.textWrapMaxLen = maxLen;
+    this.textWrapHOffset = wOffset;
+    this.textWrapTextArray = textArray;
   }
 
 }
 
 export {
-  XVerticalDrawFont,
+  VerticalRuler,
 };

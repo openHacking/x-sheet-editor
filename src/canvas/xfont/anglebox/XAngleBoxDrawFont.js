@@ -1,7 +1,0 @@
-class XAngleBoxDrawFont {
-
-}
-
-export {
-  XAngleBoxDrawFont,
-};
