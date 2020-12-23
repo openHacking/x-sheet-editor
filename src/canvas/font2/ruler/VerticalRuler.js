@@ -9,18 +9,20 @@ class VerticalRuler extends VerticalVisual {
     super({
       draw, verticalAlign, padding,
     });
+
     this.text = text;
     this.size = size;
     this.rect = rect;
     this.spacing = spacing;
     this.lineHeight = lineHeight;
     this.used = BaseRuler.USED.DEFAULT_INI;
+
     this.truncateTextArray = [];
     this.truncateMaxLen = 0;
-    this.truncateHOffset = 0;
+
     this.textWrapTextArray = [];
     this.textWrapMaxLen = 0;
-    this.textWrapHOffset = 0;
+    this.textWrapWOffset = 0;
   }
 
   truncateRuler() {
@@ -49,9 +51,8 @@ class VerticalRuler extends VerticalVisual {
     if (hOffset > maxLen) {
       maxLen = hOffset;
     }
-    this.truncateMaxLen = maxLen;
-    this.truncateHOffset = hOffset;
     this.truncateTextArray = textArray;
+    this.truncateMaxLen = maxLen;
     this.used = BaseRuler.USED.TRUNCATE;
   }
 
@@ -103,9 +104,9 @@ class VerticalRuler extends VerticalVisual {
       wOffset += size;
       bi += 1;
     }
-    this.textWrapMaxLen = maxLen;
-    this.textWrapHOffset = wOffset;
     this.textWrapTextArray = textArray;
+    this.textWrapMaxLen = maxLen;
+    this.textWrapWOffset = wOffset;
   }
 
 }

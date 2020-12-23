@@ -1,89 +1,94 @@
+import { HorizonVisual } from './HorizonVisual';
 import { BaseRuler } from '../BaseRuler';
-import { RTSinKit } from '../../RTFunction';
 
-class AngleBoxRuler extends BaseRuler {
+class HorizonRuler extends HorizonVisual {
 
   constructor({
-    draw, text, size, angle, rect, overflow, align, verticalAlign, lineHeight, padding,
+    draw, text, size, rect, overflow, align, lineHeight, padding,
   }) {
     super({
-      draw,
+      draw, align, padding,
     });
+
     this.text = text;
     this.size = size;
-    this.angle = angle;
     this.rect = rect;
     this.overflow = overflow;
-    this.align = align;
-    this.verticalAlign = verticalAlign;
     this.lineHeight = lineHeight;
-    this.padding = padding;
+    this.used = BaseRuler.USED.DEFAULT_INI;
+
+    this.truncateText = '';
+    this.truncateTextWidth = 0;
+
     this.overflowText = '';
     this.overflowTextWidth = 0;
+
     this.textWrapTextArray = [];
-    this.textWrapMaxLen = 0;
+    this.textWrapHOffset = 0;
   }
 
   truncateRuler() {
-    this.overflowRuler();
+    if (this.used) { return; }
+    const { rect } = this;
+    const { text, textWidth } = this.displayFont(rect);
+    this.truncateText = text;
+    this.truncateTextWidth = textWidth;
+    this.used = BaseRuler.USED.TRUNCATE;
   }
 
   overflowRuler() {
     if (this.used) { return; }
-    const { text } = this;
-    const textWidth = this.textWidth(text);
+    const { overflow } = this;
+    const { text, textWidth } = this.displayFont(overflow);
     this.overflowText = text;
     this.overflowTextWidth = textWidth;
     this.used = BaseRuler.USED.OVER_FLOW;
   }
 
   textWrapRuler() {
-    const { rect, angle, text, padding } = this;
-    const { height } = rect;
-    const textHypotenuseWidth = RTSinKit.tilt({
-      inverse: height - (padding * 2),
-      angle,
-    });
+    if (this.used) { return; }
+    const { text, size, rect, lineHeight } = this;
+    const { width } = rect;
+    const alignPadding = this.getAlignPadding();
     const breakArray = this.textBreak(text);
     const textArray = [];
+    const maxWidth = width - (alignPadding * 2);
     const breakLen = breakArray.length;
     let bi = 0;
-    let maxLen = 0;
+    let hOffset = 0;
     while (bi < breakLen) {
+      if (bi > 0) {
+        hOffset += size + lineHeight;
+      }
       const text = breakArray[bi];
       const textLen = text.length;
+      let ii = 0;
       const line = {
         str: '',
         len: 0,
         start: 0,
       };
-      let ii = 0;
       while (ii < textLen) {
         const str = line.str + text.charAt(ii);
         const len = this.textWidth(str);
-        if (len > textHypotenuseWidth) {
+        if (len > maxWidth) {
           if (line.len === 0) {
             textArray.push({
               text: str,
               len,
               tx: 0,
-              ty: 0,
+              ty: hOffset,
             });
-            if (len > maxLen) {
-              maxLen = len;
-            }
             ii += 1;
           } else {
             textArray.push({
               text: line.str,
               len: line.len,
               tx: 0,
-              ty: 0,
+              ty: hOffset,
             });
-            if (line.len > maxLen) {
-              maxLen = line.len;
-            }
           }
+          hOffset += size + lineHeight;
           line.str = '';
           line.len = 0;
           line.start = ii;
@@ -98,20 +103,21 @@ class AngleBoxRuler extends BaseRuler {
           text: line.str,
           len: line.len,
           tx: 0,
-          ty: 0,
+          ty: hOffset,
         });
-      }
-      if (line.len > maxLen) {
-        maxLen = line.len;
       }
       bi += 1;
     }
+    if (hOffset > 0) {
+      hOffset -= lineHeight;
+    }
     this.textWrapTextArray = textArray;
-    this.textWrapMaxLen = maxLen;
+    this.textWrapHOffset = hOffset;
+    this.used = BaseRuler.USED.TEXT_WRAP;
   }
 
 }
 
 export {
-  AngleBoxRuler,
+  HorizonRuler,
 };
