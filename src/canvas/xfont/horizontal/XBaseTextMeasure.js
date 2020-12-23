@@ -23,7 +23,7 @@ class XBaseTextMeasure extends XMeasure {
         let start = 0;
         while (start < length) {
           const str = text + origin.charAt(start);
-          const len = this.measureText(str);
+          const len = this.textWidth(str);
           if (len >= maxWidth) {
             break;
           }
@@ -37,7 +37,7 @@ class XBaseTextMeasure extends XMeasure {
       }
       case BaseFont.ALIGN.center: {
         return {
-          text: origin, textWidth: this.measureText(origin),
+          text: origin, textWidth: this.textWidth(origin),
         };
       }
       case BaseFont.ALIGN.right: {
@@ -46,7 +46,7 @@ class XBaseTextMeasure extends XMeasure {
         let textWidth = 0;
         while (start >= 0) {
           const str = origin.charAt(start) + text;
-          const len = this.measureText(str);
+          const len = this.textWidth(str);
           if (len >= maxWidth) {
             break;
           }

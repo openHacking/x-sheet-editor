@@ -46,47 +46,49 @@ class XHorizonMeasure extends XBaseTextMeasure {
 
   wrapTextMeasure() {
     if (this.used) { return; }
+    // 折行文本计算
     const { text, rect, size, lineHeight } = this;
+    const { width } = rect;
     const alignPadding = this.getAlignPadding();
-    const textWrapBlock = this.textWrapBlock(text);
-    const length = textWrapBlock.length;
-    const maxWidth = rect.width - (alignPadding * 2);
-    const wrappingText = [];
-    let wrappingHeight = 0;
-    let blockIndex = 0;
-    while (blockIndex < length) {
-      if (blockIndex > 0) {
-        wrappingHeight += size + lineHeight;
+    const breakArray = this.textBreak(text);
+    const textArray = [];
+    const maxWidth = width - (alignPadding * 2);
+    const breakLen = breakArray.length;
+    let bi = 0;
+    let hOffset = 0;
+    while (bi < breakLen) {
+      if (bi > 0) {
+        hOffset += size + lineHeight;
       }
-      const text = textWrapBlock[blockIndex];
-      const length = text.length;
+      const text = breakArray[bi];
+      const textLen = text.length;
       let ii = 0;
       const line = {
         str: '',
         len: 0,
         start: 0,
       };
-      while (ii < length) {
+      while (ii < textLen) {
         const str = line.str + text.charAt(ii);
         const len = this.textWidth(str);
         if (len > maxWidth) {
           if (line.len === 0) {
-            wrappingText.push({
+            textArray.push({
               text: str,
               len,
               tx: 0,
-              ty: wrappingHeight,
+              ty: hOffset,
             });
             ii += 1;
           } else {
-            wrappingText.push({
+            textArray.push({
               text: line.str,
               len: line.len,
               tx: 0,
-              ty: wrappingHeight,
+              ty: hOffset,
             });
           }
-          wrappingHeight += size + lineHeight;
+          hOffset += size + lineHeight;
           line.str = '';
           line.len = 0;
           line.start = ii;
@@ -97,20 +99,21 @@ class XHorizonMeasure extends XBaseTextMeasure {
         }
       }
       if (line.len > 0) {
-        wrappingText.push({
+        textArray.push({
           text: line.str,
           len: line.len,
           tx: 0,
-          ty: wrappingHeight,
+          ty: hOffset,
         });
       }
-      blockIndex += 1;
+      bi += 1;
     }
-    if (wrappingHeight > 0) {
-      wrappingHeight -= lineHeight;
+    if (hOffset > 0) {
+      hOffset -= lineHeight;
     }
-    this.wrappingText = wrappingText;
-    this.wrappingHeight = wrappingHeight;
+    // 保存计算结果
+    this.wrappingText = textArray;
+    this.wrappingHeight = hOffset;
     this.used = XMeasure.USED.TEXT_WRAP;
   }
 

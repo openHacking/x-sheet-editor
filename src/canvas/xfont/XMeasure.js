@@ -5,12 +5,12 @@ class XMeasure {
     this.padding = padding;
   }
 
-  measureText(text) {
+  textWidth(text) {
     const { draw } = this;
     return draw.measureText(text).width;
   }
 
-  textWrapBlock(text) {
+  textBreak(text) {
     return text.split(/\n/);
   }
 
