@@ -1,80 +1,17 @@
-/**
- * BaseFont
- */
 class BaseFont {
 
-  /**
-   * BaseFont
-   * @param text
-   * @param draw
-   * @param attr
-   * @param rect
-   */
   constructor({
-    text, draw, attr, rect,
+    draw, ruler, attr,
   }) {
-    this.text = text;
     this.draw = draw;
+    this.ruler = ruler;
     this.attr = attr;
-    this.rect = rect;
   }
 
-  truncateFont() {
-    throw new TypeError('child impl');
+  setRuler(ruler) {
+    this.ruler = ruler;
   }
 
-  overflowFont() {
-    throw new TypeError('child impl');
-  }
-
-  wrapTextFont() {
-    throw new TypeError('child impl');
-  }
-
-  drawFont() {
-    throw new TypeError('child impl');
-  }
-
-  /**
-   * 文字宽度测量(性能杀手,考虑缓存优化)
-   * @param text
-   * @returns {number}
-   */
-  textWidth(text) {
-    return this.draw.measureText(text).width;
-  }
-
-  /**
-   * 文本换行
-   * @param text
-   * @returns {void|*|string[]|[]}
-   */
-  textBreak(text) {
-    return text.split(/\n/);
-  }
-
-  /**
-   * 是否具有换行符
-   * @param text
-   * @returns {boolean}
-   */
-  hasBreak(text) {
-    return text.indexOf('\n') > -1;
-  }
-
-  /**
-   * 是否为空字符
-   * @param text
-   * @returns {boolean}
-   */
-  isBlank(text) {
-    return text === null || text === undefined || text.toString().trim() === '';
-  }
-
-  /**
-   * 获取水平对齐的填充
-   * @returns {number|*}
-   */
   getAlignPadding() {
     if (this.attr.align === BaseFont.ALIGN.center) {
       return 0;
@@ -82,10 +19,14 @@ class BaseFont {
     return this.attr.padding;
   }
 
-  /**
-   * 获取垂直对齐的填充
-   * @returns {number|*}
-   */
+  isBlank(text) {
+    return text === null || text === undefined || text.toString().trim() === '';
+  }
+
+  hasBreak(text) {
+    return text.indexOf('\n') > -1;
+  }
+
   getVerticalAlignPadding() {
     if (this.attr.verticalAlign === BaseFont.VERTICAL_ALIGN.center) {
       return 0;

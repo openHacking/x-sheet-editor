@@ -4,13 +4,12 @@ import { BaseRuler } from '../BaseRuler';
 class VerticalRuler extends VerticalVisual {
 
   constructor({
-    draw, text, size, rect, verticalAlign, spacing, lineHeight, padding,
+    draw, text, size, rect, verticalAlign, spacing = 2, lineHeight = 8, padding,
   }) {
     super({
-      draw, verticalAlign, padding,
+      draw, text, verticalAlign, padding,
     });
 
-    this.text = text;
     this.size = size;
     this.rect = rect;
     this.spacing = spacing;
@@ -61,10 +60,10 @@ class VerticalRuler extends VerticalVisual {
   }
 
   textWrapRuler() {
-    const { rect, text, size, spacing, lineHeight } = this;
+    const { rect, size, spacing, lineHeight } = this;
     const { height } = rect;
     const verticalAlignPadding = this.getVerticalAlignPadding();
-    const breakArray = this.textBreak(text);
+    const breakArray = this.textBreak();
     const textArray = [];
     const maxHeight = height - (verticalAlignPadding * 2);
     const breakLen = breakArray.length;

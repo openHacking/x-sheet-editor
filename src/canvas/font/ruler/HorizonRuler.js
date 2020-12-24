@@ -4,13 +4,12 @@ import { BaseRuler } from '../BaseRuler';
 class HorizonRuler extends HorizonVisual {
 
   constructor({
-    draw, text, size, rect, overflow, align, lineHeight, padding,
+    draw, text, size, rect, overflow, align, lineHeight = 4, padding,
   }) {
     super({
-      draw, align, padding,
+      text, draw, align, padding,
     });
 
-    this.text = text;
     this.size = size;
     this.rect = rect;
     this.overflow = overflow;
@@ -47,10 +46,10 @@ class HorizonRuler extends HorizonVisual {
 
   textWrapRuler() {
     if (this.used) { return; }
-    const { text, size, rect, lineHeight } = this;
+    const { size, rect, lineHeight } = this;
     const { width } = rect;
     const alignPadding = this.getAlignPadding();
-    const breakArray = this.textBreak(text);
+    const breakArray = this.textBreak();
     const textArray = [];
     const maxWidth = width - (alignPadding * 2);
     const breakLen = breakArray.length;

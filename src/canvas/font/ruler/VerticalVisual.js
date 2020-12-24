@@ -1,12 +1,12 @@
-import { BaseRuler } from '../BaseRuler';
+import { PlainRuler } from '../PlainRuler';
 import { BaseFont } from '../BaseFont';
 
-class VerticalVisual extends BaseRuler {
+class VerticalVisual extends PlainRuler {
 
   constructor({
-    draw, verticalAlign, padding,
+    draw, text, verticalAlign, padding,
   }) {
-    super({ draw });
+    super({ draw, text });
     this.verticalAlign = verticalAlign;
     this.padding = padding;
   }

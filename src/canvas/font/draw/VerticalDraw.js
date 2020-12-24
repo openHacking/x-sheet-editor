@@ -1,23 +1,45 @@
-import { BaseFont } from './BaseFont';
-import { PlainUtils } from '../../utils/PlainUtils';
-import { Crop } from '../Crop';
-import { FontDrawResult } from './FontDrawResult';
+import { BaseFont } from '../BaseFont';
+import { Crop } from '../../Crop';
+import { DrawResult } from '../DrawResult';
 
-class VerticalFont extends BaseFont {
+class VerticalDraw extends BaseFont {
 
   constructor({
-    text, rect, draw, attr,
+    draw, ruler, rect, attr,
   }) {
-    super({
-      text, rect, draw, attr,
-    });
-    this.attr = PlainUtils.mergeDeep({
-      lineHeight: 8,
-      spacing: 2,
-    }, this.attr);
+    super({ draw, ruler, attr });
+    this.rect = rect;
   }
 
-  drawLine(type, tx, ty, textWidth, align, verticalAlign) {
+  drawingFont() {
+    const { ruler } = this;
+    if (ruler.isBlank()) {
+      return new DrawResult();
+    }
+    const { draw, attr } = this;
+    const { textWrap } = attr;
+    draw.attr({
+      textAlign: BaseFont.ALIGN.left,
+      textBaseline: BaseFont.VERTICAL_ALIGN.top,
+      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`,
+      fillStyle: attr.color,
+      strokeStyle: attr.color,
+    });
+    if (ruler.hasBreak()) {
+      return this.textWrapDraw();
+    }
+    switch (textWrap) {
+      case BaseFont.TEXT_WRAP.OVER_FLOW:
+        return this.overflowDraw();
+      case BaseFont.TEXT_WRAP.TRUNCATE:
+        return this.truncateDraw();
+      case BaseFont.TEXT_WRAP.WORD_WRAP:
+        return this.textWrapDraw();
+    }
+    return new DrawResult();
+  }
+
+  drawingLine(type, tx, ty, textWidth, align, verticalAlign) {
     const { draw, attr } = this;
     const { size } = attr;
     const s = [0, 0];
@@ -61,66 +83,21 @@ class VerticalFont extends BaseFont {
     draw.line(s, e);
   }
 
-  drawFont() {
-    const { text } = this;
-    if (this.isBlank(text)) {
-      return new FontDrawResult();
-    }
-    const { draw, attr } = this;
-    const { textWrap } = attr;
-    draw.attr({
-      textAlign: BaseFont.ALIGN.left,
-      textBaseline: BaseFont.VERTICAL_ALIGN.top,
-      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`,
-      fillStyle: attr.color,
-      strokeStyle: attr.color,
-    });
-    if (this.hasBreak(text)) {
-      return this.wrapTextFont();
-    }
-    switch (textWrap) {
-      case BaseFont.TEXT_WRAP.OVER_FLOW:
-        return this.overflowFont();
-      case BaseFont.TEXT_WRAP.TRUNCATE:
-        return this.truncateFont();
-      case BaseFont.TEXT_WRAP.WORD_WRAP:
-        return this.wrapTextFont();
-    }
-    return new FontDrawResult();
-  }
-
-  truncateFont() {
-    const { text, draw, attr, rect } = this;
+  truncateDraw() {
+    const { draw, ruler, attr } = this;
+    const { rect } = this;
     const { width, height } = rect;
     const { underline, strikethrough, align, verticalAlign } = attr;
-    const { size, spacing } = attr;
+    const { size } = attr;
     // 填充宽度
     const verticalAlignPadding = this.getVerticalAlignPadding();
     const alignPadding = this.getAlignPadding();
     // 文本位置计算
-    const textArray = [];
-    const textLen = text.length;
-    let maxLen = 0;
-    let hOffset = 0;
-    let ii = 0;
-    while (ii < textLen) {
-      const char = text.charAt(ii);
-      const width = this.textWidth(char);
-      textArray.push({
-        len: width,
-        text: char,
-        tx: size / 2 - width / 2,
-        ty: hOffset,
-      });
-      hOffset += size + spacing;
-      ii += 1;
-    }
-    if (hOffset > 0) {
-      hOffset -= spacing;
-    }
-    if (hOffset > maxLen) {
-      maxLen = hOffset;
-    }
+    ruler.truncateRuler();
+    const {
+      truncateTextArray: textArray,
+      truncateMaxLen: maxLen,
+    } = ruler;
     // 计算文本坐标
     let bx = rect.x;
     let by = rect.y;
@@ -163,10 +140,10 @@ class VerticalFont extends BaseFont {
         item.ty += by;
         draw.fillText(item.text, item.tx, item.ty);
         if (underline) {
-          this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
+          this.drawingLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
         }
         if (strikethrough) {
-          this.drawLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
+          this.drawingLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
         }
         ti += 1;
       }
@@ -180,70 +157,37 @@ class VerticalFont extends BaseFont {
         item.ty += by;
         draw.fillText(item.text, item.tx, item.ty);
         if (underline) {
-          this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
+          this.drawingLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
         }
         if (strikethrough) {
-          this.drawLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
+          this.drawingLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
         }
         ti += 1;
       }
     }
-    return new FontDrawResult();
+    return new DrawResult();
   }
 
-  overflowFont() {
-    return this.truncateFont();
+  overflowDraw() {
+    return this.truncateDraw();
   }
 
-  wrapTextFont() {
-    const { text, draw, attr, rect } = this;
+  textWrapDraw() {
+    const { draw, ruler, attr } = this;
+    const { rect } = this;
     const { width, height } = rect;
-    const { size, spacing, verticalAlign, underline } = attr;
-    const { strikethrough, align, lineHeight } = attr;
+    const { size, verticalAlign, underline } = attr;
+    const { strikethrough, align } = attr;
     // 填充宽度
     const verticalAlignPadding = this.getVerticalAlignPadding();
     const alignPadding = this.getAlignPadding();
     // 计算文本折行
-    const breakArray = this.textBreak(text);
-    const textArray = [];
-    const maxHeight = height - (verticalAlignPadding * 2);
-    const breakLen = breakArray.length;
-    let maxLen = 0;
-    let wOffset = 0;
-    let bi = 0;
-    while (bi < breakLen) {
-      const text = breakArray[bi];
-      const textLen = text.length;
-      let hOffset = 0;
-      let ii = 0;
-      while (ii < textLen) {
-        const char = text.charAt(ii);
-        const width = this.textWidth(char);
-        const item = {
-          len: width,
-          text: char,
-          tx: wOffset + (size / 2 - width / 2),
-          ty: hOffset,
-        };
-        textArray.push(item);
-        if (hOffset + size > maxHeight) {
-          if (hOffset > maxLen) {
-            maxLen = hOffset - spacing;
-          }
-          wOffset += size + lineHeight;
-          hOffset = 0;
-          item.tx = wOffset + (size / 2 - width / 2);
-          item.ty = hOffset;
-        }
-        hOffset += size + spacing;
-        ii += 1;
-      }
-      if (hOffset > maxLen) {
-        maxLen = hOffset - spacing;
-      }
-      wOffset += size;
-      bi += 1;
-    }
+    ruler.textWrapRuler();
+    const {
+      textWrapTextArray: textArray,
+      textWrapMaxLen: maxLen,
+      textWrapWOffset: wOffset,
+    } = ruler;
     // 计算文本坐标
     let bx = rect.x;
     let by = rect.y;
@@ -286,10 +230,10 @@ class VerticalFont extends BaseFont {
         item.ty += by;
         draw.fillText(item.text, item.tx, item.ty);
         if (underline) {
-          this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
+          this.drawingLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
         }
         if (strikethrough) {
-          this.drawLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
+          this.drawingLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
         }
         ti += 1;
       }
@@ -303,19 +247,19 @@ class VerticalFont extends BaseFont {
         item.ty += by;
         draw.fillText(item.text, item.tx, item.ty);
         if (underline) {
-          this.drawLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
+          this.drawingLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
         }
         if (strikethrough) {
-          this.drawLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
+          this.drawingLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
         }
         ti += 1;
       }
     }
-    return new FontDrawResult();
+    return new DrawResult();
   }
 
 }
 
 export {
-  VerticalFont,
+  VerticalDraw,
 };

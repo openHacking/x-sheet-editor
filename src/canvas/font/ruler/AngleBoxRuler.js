@@ -1,16 +1,16 @@
 import { BaseRuler } from '../BaseRuler';
 import { RTSinKit } from '../../RTFunction';
+import { PlainRuler } from '../PlainRuler';
 
-class AngleBoxRuler extends BaseRuler {
+class AngleBoxRuler extends PlainRuler {
 
   constructor({
-    draw, text, size, angle, rect, overflow, align, verticalAlign, lineHeight, padding,
+    draw, text, size, angle, rect, overflow, align, verticalAlign, lineHeight = 4, padding,
   }) {
     super({
-      draw,
+      draw, text,
     });
 
-    this.text = text;
     this.size = size;
     this.angle = angle;
     this.rect = rect;
@@ -52,7 +52,7 @@ class AngleBoxRuler extends BaseRuler {
         angle,
       });
       // 折行文本计算
-      const breakArray = this.textBreak(text);
+      const breakArray = this.textBreak();
       const textArray = [];
       const breakLen = breakArray.length;
       let bi = 0;
@@ -122,7 +122,7 @@ class AngleBoxRuler extends BaseRuler {
         angle,
       });
       // 折行文本计算
-      const breakArray = this.textBreak(text);
+      const breakArray = this.textBreak();
       const textArray = [];
       const breakLen = breakArray.length;
       let bi = 0;
