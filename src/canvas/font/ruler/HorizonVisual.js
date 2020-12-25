@@ -36,8 +36,38 @@ class HorizonVisual extends PlainRuler {
         };
       }
       case BaseFont.ALIGN.center: {
+        const textWidth = this.textWidth(origin);
+        const lOffset = width / 2 - textWidth / 2;
+        if (lOffset < 0) {
+          let start = 0;
+          let temp = '';
+          while (start < length) {
+            const str = temp + origin.charAt(start);
+            if (lOffset + this.textWidth(str) >= 0) {
+              break;
+            }
+            temp = str;
+            start += 1;
+          }
+          let over = start;
+          let text = '';
+          let textWidth = 0;
+          while (over < length) {
+            const str = text + origin.charAt(over);
+            const len = this.textWidth(str);
+            if (len >= width) {
+              break;
+            }
+            text = str;
+            textWidth = len;
+            over += 1;
+          }
+          return {
+            text, textWidth,
+          };
+        }
         return {
-          text: origin, textWidth: this.textWidth(origin),
+          text: origin, textWidth,
         };
       }
       case BaseFont.ALIGN.right: {

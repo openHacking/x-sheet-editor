@@ -321,14 +321,14 @@ class HorizonDraw extends BaseFont {
       let ti = 0;
       while (ti < textLen) {
         const item = textArray[ti];
-        item.tx += bx;
-        item.ty += by;
-        draw.fillText(item.text, item.tx, item.ty);
+        const tx = item.tx + bx;
+        const ty = item.ty + by;
+        draw.fillText(item.text, tx, ty);
         if (underline) {
-          this.drawingLine('underline', item.tx, item.ty, item.len);
+          this.drawingLine('underline', tx, ty, item.len);
         }
         if (strikethrough) {
-          this.drawingLine('strike', item.tx, item.ty, item.len);
+          this.drawingLine('strike', tx, ty, item.len);
         }
         ti += 1;
       }
@@ -336,14 +336,14 @@ class HorizonDraw extends BaseFont {
     } else {
       for (let i = 0, len = textArray.length; i < len; i += 1) {
         const item = textArray[i];
-        item.tx += bx;
-        item.ty += by;
-        draw.fillText(item.text, item.tx, item.ty);
+        const tx = item.tx + bx;
+        const ty = item.ty + by;
+        draw.fillText(item.text, tx, ty);
         if (underline) {
-          this.drawingLine('underline', item.tx, item.ty, item.len);
+          this.drawingLine('underline', tx, ty, item.len);
         }
         if (strikethrough) {
-          this.drawingLine('strike', item.tx, item.ty, item.len);
+          this.drawingLine('strike', tx, ty, item.len);
         }
       }
     }

@@ -246,15 +246,6 @@ class AngleBoxDraw extends BaseFont {
         });
         // 总宽度
         const totalWidth = textWidth + ((textArrayLen - 1) * spacing);
-        // x坐标偏移量
-        let wOffset = 0;
-        let ii = 0;
-        while (ii < textArrayLen) {
-          const item = textArray[ii];
-          item.tx = wOffset;
-          wOffset += spacing;
-          ii += 1;
-        }
         // 文本坐标
         let bx = rect.x;
         let by = rect.y;
@@ -441,15 +432,6 @@ class AngleBoxDraw extends BaseFont {
       });
       // 文本总宽度
       const totalWidth = textWidth + ((textArrayLen - 1) * spacing);
-      // 计算x坐标偏移量
-      let wOffset = 0;
-      let ii = textArrayLen - 1;
-      while (ii >= 0) {
-        const item = textArray[ii];
-        item.tx = wOffset;
-        wOffset += spacing;
-        ii -= 1;
-      }
       // 文本坐标
       let bx = rect.x;
       let by = rect.y;

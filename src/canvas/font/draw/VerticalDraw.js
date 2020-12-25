@@ -136,14 +136,14 @@ class VerticalDraw extends BaseFont {
       let ti = 0;
       while (ti < textLen) {
         const item = textArray[ti];
-        item.tx += bx;
-        item.ty += by;
-        draw.fillText(item.text, item.tx, item.ty);
+        const tx = item.tx + bx;
+        const ty = item.ty + by;
+        draw.fillText(item.text, tx, ty);
         if (underline) {
-          this.drawingLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
+          this.drawingLine('underline', tx, ty, item.len, align, verticalAlign);
         }
         if (strikethrough) {
-          this.drawingLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
+          this.drawingLine('strike', tx, ty, item.len, align, verticalAlign);
         }
         ti += 1;
       }
@@ -153,14 +153,14 @@ class VerticalDraw extends BaseFont {
       let ti = 0;
       while (ti < textLen) {
         const item = textArray[ti];
-        item.tx += bx;
-        item.ty += by;
-        draw.fillText(item.text, item.tx, item.ty);
+        const tx = item.tx + bx;
+        const ty = item.ty + by;
+        draw.fillText(item.text, tx, ty);
         if (underline) {
-          this.drawingLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
+          this.drawingLine('underline', tx, ty, item.len, align, verticalAlign);
         }
         if (strikethrough) {
-          this.drawingLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
+          this.drawingLine('strike', tx, ty, item.len, align, verticalAlign);
         }
         ti += 1;
       }
@@ -226,14 +226,14 @@ class VerticalDraw extends BaseFont {
       let ti = 0;
       while (ti < textLen) {
         const item = textArray[ti];
-        item.tx += bx;
-        item.ty += by;
-        draw.fillText(item.text, item.tx, item.ty);
+        const tx = item.tx + bx;
+        const ty = item.ty + by;
+        draw.fillText(item.text, tx, ty);
         if (underline) {
-          this.drawingLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
+          this.drawingLine('underline', tx, ty, item.len, align, verticalAlign);
         }
         if (strikethrough) {
-          this.drawingLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
+          this.drawingLine('strike', tx, ty, item.len, align, verticalAlign);
         }
         ti += 1;
       }
@@ -243,14 +243,14 @@ class VerticalDraw extends BaseFont {
       let ti = 0;
       while (ti < textLen) {
         const item = textArray[ti];
-        item.tx += bx;
-        item.ty += by;
-        draw.fillText(item.text, item.tx, item.ty);
+        const tx = item.tx + bx;
+        const ty = item.ty + by;
+        draw.fillText(item.text, tx, ty);
         if (underline) {
-          this.drawingLine('underline', item.tx, item.ty, item.len, align, verticalAlign);
+          this.drawingLine('underline', tx, ty, item.len, align, verticalAlign);
         }
         if (strikethrough) {
-          this.drawingLine('strike', item.tx, item.ty, item.len, align, verticalAlign);
+          this.drawingLine('strike', tx, ty, item.len, align, verticalAlign);
         }
         ti += 1;
       }

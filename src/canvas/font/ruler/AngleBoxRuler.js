@@ -111,7 +111,7 @@ class AngleBoxRuler extends PlainRuler {
 
   textWrapRuler() {
     if (this.used) { return; }
-    const { rect, angle, text, padding } = this;
+    const { text, size, angle, rect, lineHeight, padding } = this;
     const { height } = rect;
     if (angle > 0) {
       const textHypotenuseWidth = RTSinKit.tilt({
@@ -180,6 +180,20 @@ class AngleBoxRuler extends PlainRuler {
           maxLen = line.len;
         }
         bi += 1;
+      }
+      // x坐标偏移量
+      const spacing = RTSinKit.tilt({
+        inverse: size + lineHeight,
+        angle,
+      });
+      const textArrayLen = textArray.length;
+      let wOffset = 0;
+      let ii = 0;
+      while (ii < textArrayLen) {
+        const item = textArray[ii];
+        item.tx = wOffset;
+        wOffset += spacing;
+        ii += 1;
       }
       this.textWrapTextArray = textArray;
       this.textWrapMaxLen = maxLen;
@@ -250,6 +264,20 @@ class AngleBoxRuler extends PlainRuler {
           maxLen = line.len;
         }
         bi += 1;
+      }
+      // 计算x坐标偏移量
+      const spacing = RTSinKit.tilt({
+        inverse: size + lineHeight,
+        angle,
+      });
+      const textArrayLen = textArray.length;
+      let wOffset = 0;
+      let ii = textArrayLen - 1;
+      while (ii >= 0) {
+        const item = textArray[ii];
+        item.tx = wOffset;
+        wOffset += spacing;
+        ii -= 1;
       }
       this.textWrapTextArray = textArray;
       this.textWrapMaxLen = maxLen;
