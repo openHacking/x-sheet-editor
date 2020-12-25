@@ -33,6 +33,7 @@ class Cell {
     rightSdistWidth = 0,
   }) {
     this.text = text;
+    this.ruler = null;
     this.background = background;
     this.format = format;
     this.icons = XIcon.newInstances(icons);
@@ -64,6 +65,10 @@ class Cell {
     this.setContentWidth(0);
     this.setLeftSdistWidth(0);
     this.setRightSdistWidth(0);
+  }
+
+  setRuler(ruler) {
+    this.ruler = ruler;
   }
 
   setLeftSdistWidth(leftSdistWidth) {

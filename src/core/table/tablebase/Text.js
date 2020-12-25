@@ -45,7 +45,7 @@ class TextBuilder {
 
   build() {
     const { rect, overflow, row, col, cell, draw, scaleAdapter, table } = this;
-    const { format, text, fontAttr } = cell;
+    const { format, text, fontAttr, ruler } = cell;
     const size = XDraw.srcTransformStylePx(scaleAdapter.goto(fontAttr.size));
     const padding = XDraw.srcTransformStylePx(scaleAdapter.goto(fontAttr.padding));
     const builder = new DrawFontBuilder({
@@ -56,10 +56,11 @@ class TextBuilder {
     if (table.isAngleBarCell(row, col)) {
       builder.setDirection(BaseFont.TEXT_DIRECTION.ANGLE_BAR);
     }
-    const ruler = builder.buildRuler();
-    const font = builder.buildFont();
-    font.setRuler(ruler);
-    return font;
+    const buildRuler = builder.buildRuler();
+    const buildFont = builder.buildFont();
+    buildFont.setRuler(buildRuler.equals(ruler) ? ruler : buildRuler);
+    cell.setRuler(buildFont.ruler);
+    return buildFont;
   }
 
 }

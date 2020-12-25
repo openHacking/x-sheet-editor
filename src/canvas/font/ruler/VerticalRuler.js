@@ -1,17 +1,30 @@
 import { VerticalVisual } from './VerticalVisual';
 import { BaseRuler } from '../BaseRuler';
+import { BaseFont } from '../BaseFont';
 
 class VerticalRuler extends VerticalVisual {
 
   constructor({
-    draw, text, size, rect, verticalAlign, spacing = 2, lineHeight = 8, padding,
+    draw,
+    text,
+    size,
+    rect,
+    verticalAlign,
+    textWrap,
+    spacing = 2,
+    lineHeight = 8,
+    padding,
   }) {
     super({
-      draw, text, verticalAlign, padding,
+      draw,
+      text,
+      verticalAlign,
+      padding,
     });
 
     this.size = size;
     this.rect = rect;
+    this.textWrap = textWrap;
     this.spacing = spacing;
     this.lineHeight = lineHeight;
     this.used = BaseRuler.USED.DEFAULT_INI;
@@ -24,8 +37,55 @@ class VerticalRuler extends VerticalVisual {
     this.textWrapWOffset = 0;
   }
 
+  equals(other) {
+    if (other === null) {
+      return false;
+    }
+    if (other.constructor !== VerticalRuler) {
+      return false;
+    }
+    if (other.text !== this.text) {
+      return false;
+    }
+    if (other.size !== this.size) {
+      return false;
+    }
+    if (other.spacing !== this.spacing) {
+      return false;
+    }
+    if (other.padding !== this.padding) {
+      return false;
+    }
+    if (other.verticalAlign !== this.verticalAlign) {
+      return false;
+    }
+    if (other.textWrap !== this.textWrap) {
+      return false;
+    }
+    switch (this.textWrap) {
+      case BaseFont.TEXT_WRAP.TRUNCATE:
+      case BaseFont.TEXT_WRAP.OVER_FLOW: {
+        const notWidth = other.rect.width !== this.rect.width;
+        const notHeight = other.rect.height !== this.rect.height;
+        if (notWidth || notHeight) {
+          return false;
+        }
+        break;
+      }
+      case BaseFont.TEXT_WRAP.WORD_WRAP: {
+        if (other.lineHeight !== this.lineHeight) {
+          return false;
+        }
+        break;
+      }
+    }
+    return true;
+  }
+
   truncateRuler() {
-    if (this.used) { return; }
+    if (this.used) {
+      return;
+    }
     const { text, size, spacing } = this;
     const textArray = [];
     const textLen = text.length;
