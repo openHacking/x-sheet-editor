@@ -28,10 +28,10 @@ class XFilter extends XScreenCssBorderItem {
    */
   constructor(table) {
     super({ table });
+    this.display = false;
+    this.icons = [];
     this.selectRange = null;
     this.activeIcon = null;
-    this.icons = [];
-    this.display = false;
     this.mask = new Mask().setRoot(table);
     this.filter = new FilterData({
       el: this.mask,
@@ -100,7 +100,9 @@ class XFilter extends XScreenCssBorderItem {
    * 创建过滤小图标
    */
   createFilterIcon() {
-    const { table, selectRange, icons } = this;
+    const { selectRange } = this;
+    const { table } = this;
+    const { icons } = this;
     if (selectRange) {
       const { top } = selectRange.brink();
       const { xIconBuilder } = table;
@@ -119,12 +121,6 @@ class XFilter extends XScreenCssBorderItem {
           vertical: XIcon.ICON_VERTICAL.BOTTOM,
         });
         const item = { ri, ci, icon };
-        icon.setOnDown((event) => {
-          const { native } = event;
-          this.activeIcon = item;
-          this.filterOpen();
-          native.stopPropagation();
-        });
         icon.setOnEnter((event) => {
           const { position } = event;
           const cssHeight = XDraw.styleTransformCssPx(position.height);
@@ -136,6 +132,12 @@ class XFilter extends XScreenCssBorderItem {
             .setWidth(cssWidth)
             .setHeight(cssHeight)
             .open();
+        });
+        icon.setOnDown((event) => {
+          const { native } = event;
+          this.activeIcon = item;
+          this.filterOpen();
+          native.stopPropagation();
         });
         icon.setOnMove(() => {
           mousePointer.set(XTableMousePointer.KEYS.pointer, XFilter);
@@ -428,7 +430,38 @@ class XFilter extends XScreenCssBorderItem {
   /**
    * 过滤折叠行
    */
-  filterFoldRow() {}
+  filterFoldRow() {
+    const { selectRange } = this;
+    const { table } = this;
+    const { icons } = this;
+    const { sri, sci, eri, eci } = selectRange;
+    const cells = table.getTableCells();
+    for (let ri = sri; ri <= eri; ri++) {
+      for (let ci = sci; ci <= eci; ci++) {
+        const cell = cells.getCell(ri, ci);
+        if (PlainUtils.isEmptyObject(cell)) {
+          continue;
+        }
+        const { text } = cell;
+        if (PlainUtils.isBlank(text)) {
+          continue;
+        }
+        const icon = icons[ci];
+        // 数值筛选
+        const { valueFilterItems } = icon;
+        const { valueFilterValue } = icon;
+        if (valueFilterItems) {
+
+        }
+        // 条件筛选
+        const { ifFilterType } = icon;
+        const { ifFilterValue } = icon;
+        if (ifFilterType) {
+
+        }
+      }
+    }
+  }
 
   /**
    * 隐藏过滤器
