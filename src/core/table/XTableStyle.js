@@ -2614,7 +2614,7 @@ class XTableStyle extends Widget {
         });
         return result === XLineIteratorFilter.RETURN_TYPE.EXEC;
       },
-      iFMerge: (row, col) => this.merges.getFirstIncludes(row, col) !== null,
+      iFMerge: (row, col) => PlainUtils.isNotEmptyObject(this.merges.getFirstIncludes(row, col)),
       iFMergeFirstRow: (row, col) => this.merges.getFirstIncludes(row, col).sri === row,
       iFMergeLastRow: (row, col) => this.merges.getFirstIncludes(row, col).eri === row,
       iFMergeFirstCol: (row, col) => this.merges.getFirstIncludes(row, col).sci === col,
