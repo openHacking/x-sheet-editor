@@ -39,6 +39,7 @@ import { Clipboard } from '../../lib/Clipboard';
 import { XIcon } from './xicon/XIcon';
 import { XIconBuilder } from './xicon/XIconBuilder';
 import { BaseFont } from '../../canvas/font/BaseFont';
+import { RowHeightIndex } from './tablebase/RowHeightIndex';
 
 class Dimensions {
 
@@ -744,6 +745,12 @@ class XTableDimensions extends Widget {
       },
       paste: () => {},
     });
+    // 表格行高索引
+    this.rowHeightIndex = new RowHeightIndex({
+      rows: this.rows,
+      xFixedView: this.xFixedView,
+    });
+    this.rowHeightIndex.compute();
   }
 
   /**
@@ -1174,6 +1181,12 @@ class XTableDimensions extends Widget {
         this.xIconsEvent(XIcon.ICON_EVENT_TYPE.MOUSE_DOWN, info, e);
       }
     });
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+      this.rowHeightIndex.compute();
+    });
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
+      this.rowHeightIndex.compute();
+    });
   }
 
   /**
@@ -1225,13 +1238,11 @@ class XTableDimensions extends Widget {
    * @param y
    */
   scrollY(y) {
-    const {
-      rows, xFixedView, scroll,
-    } = this;
-    const fixedView = xFixedView.getFixedView();
+    const { rows, scroll, rowHeightIndex } = this;
+    const find = rowHeightIndex.getTop(y);
     const [
       ri, top, height,
-    ] = XTableDimensions.rowsReduceIf(fixedView.eri + 1, rows.len, 0, 0, y, i => rows.getHeight(i));
+    ] = XTableDimensions.rowsReduceIf(find.ri, rows.len, find.top, 0, y, i => rows.getHeight(i));
     let y1 = top;
     if (y > 0) y1 += height;
     let type;
