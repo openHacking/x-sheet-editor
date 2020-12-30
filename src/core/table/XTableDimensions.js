@@ -1184,7 +1184,7 @@ class XTableDimensions extends Widget {
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
       this.rowHeightIndex.compute();
     });
-    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.FIXED_ROW_CHANGE, () => {
       this.rowHeightIndex.compute();
     });
   }
@@ -1312,13 +1312,14 @@ class XTableDimensions extends Widget {
       scroll.y = rows.sectionSumHeight(0, sri - 1);
       scroll.ri = sri;
     }
-    // 跟新固定条
+    // 更新固定条
     rowFixed.fxSri = fixedView.sri;
     rowFixed.fxEri = fixedView.eri;
     // 更新视图
     this.resize();
     // 发送更新通知
     this.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
+    this.trigger(Constant.TABLE_EVENT_TYPE.FIXED_ROW_CHANGE);
   }
 
   /**
