@@ -12,11 +12,15 @@ class RowHeightIndex {
   }
 
   compute() {
-    const { rows, group, index, xFixedView } = this;
+    const { rows, group, xFixedView } = this;
     const { len } = rows;
     const fixedView = xFixedView.getFixedView();
     const min = fixedView.eri + 1;
-    for (let ri = min, top = 0; ri < len; ri++) {
+    const index = [];
+    index.push({
+      ri: min, top: 0,
+    });
+    for (let ri = min + 1, top = 0; ri < len; ri++) {
       if (ri % group === 0) {
         index.push({
           ri, top,
@@ -24,6 +28,7 @@ class RowHeightIndex {
       }
       top += rows.getHeight(ri);
     }
+    this.index = index;
   }
 
   getTop(height) {

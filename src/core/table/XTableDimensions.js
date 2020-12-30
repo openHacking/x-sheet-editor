@@ -1240,6 +1240,7 @@ class XTableDimensions extends Widget {
   scrollY(y) {
     const { rows, scroll, rowHeightIndex } = this;
     const find = rowHeightIndex.getTop(y);
+    console.log(find);
     const [
       ri, top, height,
     ] = XTableDimensions.rowsReduceIf(find.ri, rows.len, find.top, 0, y, i => rows.getHeight(i));
