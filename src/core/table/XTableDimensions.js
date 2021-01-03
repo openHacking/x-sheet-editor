@@ -40,6 +40,7 @@ import { XIcon } from './xicon/XIcon';
 import { XIconBuilder } from './xicon/XIconBuilder';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { RowHeightIndex } from './tablebase/RowHeightIndex';
+import { XIteratorBuilder } from './iterator/XIteratorBuilder';
 
 class Dimensions {
 
@@ -719,6 +720,8 @@ class XTableDimensions extends Widget {
     this.xContent = new XTableContent(this);
     // 图标创建器
     this.xIconBuilder = new XIconBuilder();
+    // 行列迭代器
+    this.xIteratorBuilder = new XIteratorBuilder();
     // table组件
     this.focus = new XTableFocus(this);
     this.mousePointer = new XTableMousePointer(this);
@@ -750,7 +753,7 @@ class XTableDimensions extends Widget {
       rows: this.rows,
       xFixedView: this.xFixedView,
     });
-    this.rowHeightIndex.compute();
+    this.rowHeightIndex.computeIndex();
   }
 
   /**
@@ -1182,10 +1185,10 @@ class XTableDimensions extends Widget {
       }
     });
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      this.rowHeightIndex.compute();
+      this.rowHeightIndex.computeIndex();
     });
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.FIXED_ROW_CHANGE, () => {
-      this.rowHeightIndex.compute();
+      this.rowHeightIndex.computeIndex();
     });
   }
 

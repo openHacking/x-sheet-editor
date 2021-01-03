@@ -12,6 +12,7 @@ import { BaseFont } from './canvas/font/BaseFont';
 import { XIcon } from './core/table/xicon/XIcon';
 import './styles/base.less';
 import './styles/index.less';
+import '../template/stresstesting';
 
 class XSheet extends Widget {
   constructor(selectors, options = {

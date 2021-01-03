@@ -1,3 +1,5 @@
+import { RowsIterator } from '../iterator/RowsIterator';
+
 class RowHeightIndex {
 
   constructor({
@@ -11,23 +13,35 @@ class RowHeightIndex {
     this.xFixedView = xFixedView;
   }
 
-  compute() {
+  computeIndex() {
     const { rows, group, xFixedView } = this;
     const { len } = rows;
     const fixedView = xFixedView.getFixedView();
     const min = fixedView.eri + 1;
     const index = [];
+    let top = 0;
     index.push({
       ri: min, top: 0,
     });
-    for (let ri = min + 1, top = 0; ri < len; ri++) {
-      if (ri % group === 0) {
-        index.push({
-          ri, top,
-        });
-      }
-      top += rows.getHeight(ri);
-    }
+    RowsIterator.getInstance()
+      .setBegin(min + 1)
+      .setEnd(len - 1)
+      .setLoop((ri) => {
+        if (ri % group === 0) {
+          index.push({
+            ri, top,
+          });
+        }
+        top += rows.getHeight(ri);
+      })
+      .setSkip((ri) => {
+        if (ri % group === 0) {
+          index.push({
+            ri, top,
+          });
+        }
+      })
+      .execute();
     this.index = index;
   }
 

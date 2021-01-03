@@ -20,7 +20,12 @@
   const xSheet = new XSheet(dome, {
     workConfig: {
       body: {
-        sheets: [{}],
+        sheets: [{
+          tableConfig: {
+            rows: { len: 1000000 },
+            data: StressTestingData
+          }
+        }],
       },
     },
   });
