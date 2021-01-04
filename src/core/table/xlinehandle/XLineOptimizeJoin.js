@@ -1,5 +1,3 @@
-import { RowsIterator } from '../iterator/RowsIterator';
-
 class XLineOptimizeJoin {
 
   static htJoin(line) {
@@ -38,11 +36,11 @@ class XLineOptimizeJoin {
     return line;
   }
 
-  static vlJoin(line) {
+  static vlJoin(xIteratorBuilder, line) {
     for (let i = 1; i < line.length;) {
       const item = line[i];
       const last = line[i - 1];
-      const nextRow = RowsIterator.getInstance()
+      const nextRow = xIteratorBuilder.getRowIterator()
         .setBegin(last.row)
         .setEnd(item.row)
         .nextRow();
@@ -60,11 +58,11 @@ class XLineOptimizeJoin {
     return line;
   }
 
-  static vrJoin(line) {
+  static vrJoin(xIteratorBuilder, line) {
     for (let i = 1; i < line.length;) {
       const item = line[i];
       const last = line[i - 1];
-      const nextRow = RowsIterator.getInstance()
+      const nextRow = xIteratorBuilder.getRowIterator()
         .setBegin(last.row)
         .setEnd(item.row)
         .nextRow();

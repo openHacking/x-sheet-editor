@@ -2474,12 +2474,14 @@ class XTableStyle extends Widget {
    * @param xTableScrollView
    * @param settings
    * @param xFixedView
+   * @param xIteratorBuilder
    * @param scroll
    */
   constructor({
     xTableScrollView,
     settings,
     xFixedView,
+    xIteratorBuilder,
     scroll,
   }) {
     super(`${cssPrefix}-table-canvas`, 'canvas');
@@ -2493,6 +2495,8 @@ class XTableStyle extends Widget {
     this.renderMode = RENDER_MODE.RENDER;
     // 线段优化
     this.optimizeEnable = true;
+    // 迭代器
+    this.xIteratorBuilder = xIteratorBuilder;
     // 表格数据配置
     this.xTableData = new XTableDataItems(this.settings.data);
     this.scale = new Scale();
@@ -2506,6 +2510,7 @@ class XTableStyle extends Widget {
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.srcTransformStylePx(this.scale.goto(v)),
       }),
+      xIteratorBuilder: this.xIteratorBuilder,
       ...this.settings.rows,
     });
     this.cols = new Cols({
@@ -2513,6 +2518,7 @@ class XTableStyle extends Widget {
         goto: v => XDraw.srcTransformStylePx(this.scale.goto(v)),
         back: v => this.scale.back(v),
       }),
+      xIteratorBuilder: this.xIteratorBuilder,
       ...this.settings.cols,
     });
     this.cells = new Cells({
@@ -2522,6 +2528,7 @@ class XTableStyle extends Widget {
       },
       table: this,
       xTableData: this.xTableData,
+      xIteratorBuilder: this.xIteratorBuilder,
     });
     this.merges = new XMerges({
       ...settings.merge,

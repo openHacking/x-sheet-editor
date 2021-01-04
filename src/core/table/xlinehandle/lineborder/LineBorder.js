@@ -147,7 +147,7 @@ class LineBorder {
 
   getRItem() {
     const { table, bx, by, optimize } = this;
-    const { cols, rows, cells } = table;
+    const { cols, rows, cells, xIteratorBuilder } = table;
     const rCols = [];
     return new XLineIteratorItem({
       newCol: ({ col, x }) => {
@@ -191,7 +191,7 @@ class LineBorder {
           const item = rCols[idx];
           if (item) {
             if (optimize) {
-              rLine = rLine.concat(XLineOptimizeJoin.vrJoin(item.rLine));
+              rLine = rLine.concat(XLineOptimizeJoin.vrJoin(xIteratorBuilder, item.rLine));
             } else {
               rLine = rLine.concat(item.rLine);
             }
@@ -204,7 +204,7 @@ class LineBorder {
 
   getLItem() {
     const { table, bx, by, optimize } = this;
-    const { rows, cells } = table;
+    const { rows, cells, xIteratorBuilder } = table;
     const lCols = [];
     return new XLineIteratorItem({
       newCol: ({ col, x }) => {
@@ -247,7 +247,7 @@ class LineBorder {
           const item = lCols[idx];
           if (item) {
             if (optimize) {
-              lLine = lLine.concat(XLineOptimizeJoin.vlJoin(item.lLine));
+              lLine = lLine.concat(XLineOptimizeJoin.vlJoin(xIteratorBuilder, item.lLine));
             } else {
               lLine = lLine.concat(item.lLine);
             }

@@ -1,4 +1,3 @@
-import { RowsIterator } from '../iterator/RowsIterator';
 
 class RowHeightIndex {
 
@@ -6,11 +5,13 @@ class RowHeightIndex {
     group = 1000,
     rows,
     xFixedView,
+    xIteratorBuilder,
   }) {
+    this.group = group;
     this.rows = rows;
     this.index = [];
-    this.group = group;
     this.xFixedView = xFixedView;
+    this.xIteratorBuilder = xIteratorBuilder;
   }
 
   computeIndex() {
@@ -23,7 +24,7 @@ class RowHeightIndex {
     index.push({
       ri: min, top: 0,
     });
-    RowsIterator.getInstance()
+    this.xIteratorBuilder.getRowIterator()
       .setBegin(min + 1)
       .setEnd(len - 1)
       .setLoop((ri) => {
