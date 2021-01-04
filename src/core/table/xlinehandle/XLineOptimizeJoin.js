@@ -1,6 +1,10 @@
 class XLineOptimizeJoin {
 
-  static htJoin(line) {
+  constructor(xIteratorBuilder) {
+    this.xIteratorBuilder = xIteratorBuilder;
+  }
+
+  htJoin(line) {
     for (let i = 1; i < line.length;) {
       const item = line[i];
       const last = line[i - 1];
@@ -18,7 +22,7 @@ class XLineOptimizeJoin {
     return line;
   }
 
-  static hbJoin(line) {
+  hbJoin(line) {
     for (let i = 1; i < line.length;) {
       const item = line[i];
       const last = line[i - 1];
@@ -36,7 +40,8 @@ class XLineOptimizeJoin {
     return line;
   }
 
-  static vlJoin(xIteratorBuilder, line) {
+  vlJoin(line) {
+    const { xIteratorBuilder } = this;
     for (let i = 1; i < line.length;) {
       const item = line[i];
       const last = line[i - 1];
@@ -58,7 +63,8 @@ class XLineOptimizeJoin {
     return line;
   }
 
-  static vrJoin(xIteratorBuilder, line) {
+  vrJoin(line) {
+    const { xIteratorBuilder } = this;
     for (let i = 1; i < line.length;) {
       const item = line[i];
       const last = line[i - 1];

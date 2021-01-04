@@ -2532,6 +2532,7 @@ class XTableStyle extends Widget {
     });
     this.merges = new XMerges({
       ...settings.merge,
+      xIteratorBuilder: this.xIteratorBuilder,
       xTableData: this.xTableData,
     });
     // 固定区域测量
