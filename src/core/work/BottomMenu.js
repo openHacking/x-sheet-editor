@@ -44,6 +44,7 @@ class BottomMenu extends Widget {
       const { sri, sci, eri, eci } = selectRange;
       let number = 0;
       let total = 0;
+      // 性能杀手(后续优化)
       xIteratorBuilder.getRowIterator()
         .setBegin(sri)
         .setEnd(eri)
@@ -53,15 +54,15 @@ class BottomMenu extends Widget {
             .setEnd(eci)
             .setLoop((ci) => {
               const merge = merges.getFirstIncludes(ri, ci);
-              const cell = cells.getCell(ri, ci);
               if (merge) {
                 if (merge.sri !== ri || merge.sci !== ci) {
                   return;
                 }
               }
+              const cell = cells.getCell(ri, ci);
               if (cell) {
-                number += 1;
                 const { text } = cell;
+                number += 1;
                 if (PlainUtils.isNumber(text)) {
                   total += parseFloat(text);
                 }
