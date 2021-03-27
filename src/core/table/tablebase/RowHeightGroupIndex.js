@@ -64,7 +64,7 @@ class RowHeightGroupIndex {
   get(scroll) {
     let { groupIndex, group, rows } = this;
     let { length } = groupIndex;
-    if (rows.len < group) {
+    if (rows.len <= group) {
       return groupIndex[0];
     }
     if (scroll === 0) {
