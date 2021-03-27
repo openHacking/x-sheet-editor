@@ -4,9 +4,9 @@ import { OrderAZ } from './OrderAZ';
 import { OrderZA } from './OrderZA';
 import { IFFilter } from './IFFilter';
 import { ValueFilter } from './valuefilter/ValueFilter';
-import { h } from '../../lib/Element';
+import { h } from '../../libs/Element';
 import { ELContextMenuDivider } from '../contextmenu/ELContextMenuDivider';
-import { XEvent } from '../../lib/XEvent';
+import { XEvent } from '../../libs/XEvent';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { ElPopUp } from '../elpopup/ElPopUp';
 

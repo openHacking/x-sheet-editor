@@ -7,8 +7,8 @@ import { Icon } from '../../../Icon';
 import { ColorArray } from '../../../../../../component/colorpicker/colorarray/ColorArray';
 import { ELContextMenuDivider } from '../../../../../../component/contextmenu/ELContextMenuDivider';
 import { BorderColorContextMenuItem } from './BorderColorContextMenuItem';
-import { h } from '../../../../../../lib/Element';
-import { XEvent } from '../../../../../../lib/XEvent';
+import { h } from '../../../../../../libs/Element';
+import { XEvent } from '../../../../../../libs/XEvent';
 
 class BorderColorContextMenu extends ELContextMenu {
 

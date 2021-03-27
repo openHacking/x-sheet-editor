@@ -1,12 +1,12 @@
 import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMenu';
 import { cssPrefix, Constant } from '../../../../../const/Constant';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
-import { h } from '../../../../../lib/Element';
+import { h } from '../../../../../libs/Element';
 import { VerticalContextMenuItem } from './VerticalContextMenuItem';
 import { VerticalIcon1 } from '../icon/vertical/VerticalIcon1';
 import { VerticalIcon2 } from '../icon/vertical/VerticalIcon2';
 import { VerticalIcon3 } from '../icon/vertical/VerticalIcon3';
-import { XEvent } from '../../../../../lib/XEvent';
+import { XEvent } from '../../../../../libs/XEvent';
 import { BaseFont } from '../../../../../canvas/font/BaseFont';
 
 class VerticalContextMenu extends ELContextMenu {

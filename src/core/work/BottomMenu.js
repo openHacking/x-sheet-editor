@@ -1,10 +1,10 @@
-import { Widget } from '../../lib/Widget';
+import { Widget } from '../../libs/Widget';
 import { Constant, cssPrefix } from '../../const/Constant';
-import { h } from '../../lib/Element';
-import { XEvent } from '../../lib/XEvent';
+import { h } from '../../libs/Element';
+import { XEvent } from '../../libs/XEvent';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { XSelectItem } from '../table/xscreenitems/xselect/XSelectItem';
-import { Throttle } from '../../lib/Throttle';
+import { Throttle } from '../../libs/Throttle';
 
 class BottomMenu extends Widget {
 

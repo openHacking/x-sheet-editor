@@ -3,7 +3,7 @@ import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMen
 import { FormatContextMenuItem } from './FormatContextMenuItem';
 import { ELContextMenuDivider } from '../../../../../component/contextmenu/ELContextMenuDivider';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
-import { XEvent } from '../../../../../lib/XEvent';
+import { XEvent } from '../../../../../libs/XEvent';
 
 class FormatContextMenu extends ELContextMenu {
 

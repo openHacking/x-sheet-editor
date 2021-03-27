@@ -2,7 +2,7 @@ import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMen
 import { Constant, cssPrefix } from '../../../../../const/Constant';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
 import { ScaleContextMenuItem } from './ScaleContextMenuItem';
-import { XEvent } from '../../../../../lib/XEvent';
+import { XEvent } from '../../../../../libs/XEvent';
 
 class ScaleContextMenu extends ELContextMenu {
 

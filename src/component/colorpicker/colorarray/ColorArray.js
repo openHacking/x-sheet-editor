@@ -1,8 +1,8 @@
-import { Widget } from '../../../lib/Widget';
+import { Widget } from '../../../libs/Widget';
 import { cssPrefix, Constant } from '../../../const/Constant';
 import { ColorItem } from './ColorItem';
 import { PlainUtils } from '../../../utils/PlainUtils';
-import { XEvent } from '../../../lib/XEvent';
+import { XEvent } from '../../../libs/XEvent';
 
 class ColorArray extends Widget {
 

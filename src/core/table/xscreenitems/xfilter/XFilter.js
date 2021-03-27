@@ -1,9 +1,9 @@
 import { XSelectItem } from '../xselect/XSelectItem';
 import { PlainUtils } from '../../../../utils/PlainUtils';
 import { RectRange } from '../../tablebase/RectRange';
-import { Widget } from '../../../../lib/Widget';
+import { Widget } from '../../../../libs/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
-import { XEvent } from '../../../../lib/XEvent';
+import { XEvent } from '../../../../libs/XEvent';
 import { Alert } from '../../../../component/alert/Alert';
 import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBorderItem';
 import darkFilter from '../../../../../assets/svg/filter-dark.svg';

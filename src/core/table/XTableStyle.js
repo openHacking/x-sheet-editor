@@ -2,7 +2,7 @@ import { PlainUtils } from '../../utils/PlainUtils';
 import { Rows } from './tablebase/Rows';
 import { Cols } from './tablebase/Cols';
 import { SCROLL_TYPE } from './tablebase/Scroll';
-import { Widget } from '../../lib/Widget';
+import { Widget } from '../../libs/Widget';
 import { cssPrefix } from '../../const/Constant';
 import { XDraw } from '../../canvas/XDraw';
 import { Line } from '../../canvas/Line';

@@ -1,10 +1,10 @@
-import { Widget } from '../../lib/Widget';
+import { Widget } from '../../libs/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
-import { XEvent } from '../../lib/XEvent';
+import { XEvent } from '../../libs/XEvent';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { XSelectItem } from './xscreenitems/xselect/XSelectItem';
 import { XDraw } from '../../canvas/XDraw';
-import { Throttle } from '../../lib/Throttle';
+import { Throttle } from '../../libs/Throttle';
 import { BaseFont } from '../../canvas/font/BaseFont';
 
 class XTableEdit extends Widget {

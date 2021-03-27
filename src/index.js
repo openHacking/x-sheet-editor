@@ -1,8 +1,8 @@
 /* global window, document */
 import { cssPrefix, XSheetVersion } from './const/Constant';
-import { h } from './lib/Element';
+import { h } from './libs/Element';
 import { Work } from './core/work/Work';
-import { Widget } from './lib/Widget';
+import { Widget } from './libs/Widget';
 import { DragPanel } from './component/dragpanel/DragPanel';
 import { ElPopUp } from './component/elpopup/ElPopUp';
 import { XDraw } from './canvas/XDraw';

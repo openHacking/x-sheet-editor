@@ -2,7 +2,7 @@ import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMen
 import { PlainUtils } from '../../../../../utils/PlainUtils';
 import { cssPrefix, Constant } from '../../../../../const/Constant';
 import { FontSizeContextMenuItem } from './FontSizeContextMenuItem';
-import { XEvent } from '../../../../../lib/XEvent';
+import { XEvent } from '../../../../../libs/XEvent';
 
 class FontSizeContextMenu extends ELContextMenu {
 

@@ -1,9 +1,9 @@
 /* global document */
 import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBorderItem';
-import { XEvent } from '../../../../lib/XEvent';
+import { XEvent } from '../../../../libs/XEvent';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
-import { Widget } from '../../../../lib/Widget';
+import { Widget } from '../../../../libs/Widget';
 import { XTableMousePointer } from '../../XTableMousePointer';
 import { RANGE_OVER_GO } from '../../xscreen/item/viewborder/XScreenStyleBorderItem';
 

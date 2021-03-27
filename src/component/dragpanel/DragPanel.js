@@ -1,9 +1,9 @@
 /* global document */
-import { Widget } from '../../lib/Widget';
+import { Widget } from '../../libs/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
-import { XEvent } from '../../lib/XEvent';
+import { XEvent } from '../../libs/XEvent';
 
-import { h } from '../../lib/Element';
+import { h } from '../../libs/Element';
 import { PlainUtils } from '../../utils/PlainUtils';
 
 let root = PlainUtils.Undef;

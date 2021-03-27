@@ -1,4 +1,4 @@
-import { Widget } from '../../lib/Widget';
+import { Widget } from '../../libs/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
 import { Undo } from './tools/Undo';
 import { Redo } from './tools/Redo';
@@ -21,7 +21,7 @@ import { TextWrapping } from './tools/TextWrapping';
 import { Fixed } from './tools/Fixed';
 import { Filter } from './tools/Filter';
 import { Functions } from './tools/Functions';
-import { XEvent } from '../../lib/XEvent';
+import { XEvent } from '../../libs/XEvent';
 import { ElPopUp } from '../../component/elpopup/ElPopUp';
 import { LINE_TYPE } from '../../canvas/Line';
 import { Icon } from './tools/Icon';

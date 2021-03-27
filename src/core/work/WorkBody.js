@@ -1,23 +1,23 @@
 /* global window */
-import { Widget } from '../../lib/Widget';
+import { Widget } from '../../libs/Widget';
 import { cssPrefix, Constant, XSheetVersion } from '../../const/Constant';
-import { VerticalLayer } from '../../lib/layer/VerticalLayer';
-import { HorizontalLayer } from '../../lib/layer/HorizontalLayer';
-import { VerticalLayerElement } from '../../lib/layer/VerticalLayerElement';
+import { VerticalLayer } from '../../libs/layer/VerticalLayer';
+import { HorizontalLayer } from '../../libs/layer/HorizontalLayer';
+import { VerticalLayerElement } from '../../libs/layer/VerticalLayerElement';
 import { ScrollBarX } from '../../component/scrollbar/ScrollBarX';
 import { ScrollBarY } from '../../component/scrollbar/ScrollBarY';
-import { HorizontalLayerElement } from '../../lib/layer/HorizontalLayerElement';
-import { VerticalCenterElement } from '../../lib/layer/center/VerticalCenterElement';
-import { VerticalCenter } from '../../lib/layer/center/VerticalCenter';
+import { HorizontalLayerElement } from '../../libs/layer/HorizontalLayerElement';
+import { VerticalCenterElement } from '../../libs/layer/center/VerticalCenterElement';
+import { VerticalCenter } from '../../libs/layer/center/VerticalCenter';
 import { SheetView } from './SheetView';
 import { TabView } from './TabView';
 import { PlainUtils } from '../../utils/PlainUtils';
-import { XEvent } from '../../lib/XEvent';
-import { h } from '../../lib/Element';
+import { XEvent } from '../../libs/XEvent';
+import { h } from '../../libs/Element';
 import { Tab } from './Tab';
 import { Sheet } from './Sheet';
-import Download from '../../lib/donwload/Download';
-import { Throttle } from '../../lib/Throttle';
+import Download from '../../libs/donwload/Download';
+import { Throttle } from '../../libs/Throttle';
 import { XDraw } from '../../canvas/XDraw';
 
 class WorkBody extends Widget {
@@ -180,9 +180,9 @@ class WorkBody extends Widget {
         }
       }
       if (scroll.blockTop < scroll.maxBlockTop && scroll.blockTop > 0) {
-        e.preventDefault();
         e.stopPropagation();
       }
+      e.preventDefault();
     });
     XEvent.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
       throttle.action(() => {

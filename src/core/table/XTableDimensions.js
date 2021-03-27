@@ -3,9 +3,9 @@ import { Code } from './tablebase/Code';
 import { Rows } from './tablebase/Rows';
 import { Cols } from './tablebase/Cols';
 import { Scroll, SCROLL_TYPE } from './tablebase/Scroll';
-import { Widget } from '../../lib/Widget';
+import { Widget } from '../../libs/Widget';
 import { Constant, cssPrefix } from '../../const/Constant';
-import { XEvent } from '../../lib/XEvent';
+import { XEvent } from '../../libs/XEvent';
 import { Scale, ScaleAdapter } from './tablebase/Scale';
 import { XTableMousePointer } from './XTableMousePointer';
 import { XTableKeyboard } from './XTableKeyboard';
@@ -33,12 +33,12 @@ import { XFixedView } from './tablebase/XFixedView';
 import { XFilter } from './xscreenitems/xfilter/XFilter';
 import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
 import { CellMergeCopyHelper } from './helper/CellMergeCopyHelper';
-import { Clipboard } from '../../lib/Clipboard';
+import { Clipboard } from '../../libs/Clipboard';
 import { XIcon } from './xicon/XIcon';
 import { XIconBuilder } from './xicon/XIconBuilder';
 import { BaseFont } from '../../canvas/font/BaseFont';
-import { RowHeightIndex } from './tablebase/RowHeightIndex';
 import { XIteratorBuilder } from './iterator/XIteratorBuilder';
+import { RowHeightGroupIndex } from './tablebase/RowHeightGroupIndex';
 
 class Dimensions {
 
@@ -687,12 +687,11 @@ class XTableDimensions extends Widget {
       paste: () => {},
     });
     // 表格行高索引
-    this.rowHeightIndex = new RowHeightIndex({
+    this.rowHeightGroupIndex = new RowHeightGroupIndex({
       rows: this.rows,
       xFixedView: this.xFixedView,
       xIteratorBuilder: this.xIteratorBuilder,
     });
-    this.rowHeightIndex.computeIndex();
   }
 
   /**
@@ -1188,10 +1187,10 @@ class XTableDimensions extends Widget {
       }
     });
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      this.rowHeightIndex.computeIndex();
+      this.rowHeightGroupIndex.clear();
     });
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.FIXED_ROW_CHANGE, () => {
-      this.rowHeightIndex.computeIndex();
+      this.rowHeightGroupIndex.clear();
     });
   }
 
@@ -1244,8 +1243,8 @@ class XTableDimensions extends Widget {
    * @param y
    */
   scrollY(y) {
-    const { rows, scroll, rowHeightIndex } = this;
-    const find = rowHeightIndex.getTop(y);
+    const { rows, scroll, rowHeightGroupIndex } = this;
+    const find = rowHeightGroupIndex.get(y);
     const [
       ri, top, height,
     ] = this.rowsReduceIf(find.ri, rows.len, find.top, 0, y, i => rows.getHeight(i));

@@ -2,7 +2,7 @@ import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMen
 import { Constant, cssPrefix } from '../../../../../const/Constant';
 import { ELContextMenuDivider } from '../../../../../component/contextmenu/ELContextMenuDivider';
 import { FixedContextMenuItem } from './FixedContextMenuItem';
-import { XEvent } from '../../../../../lib/XEvent';
+import { XEvent } from '../../../../../libs/XEvent';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
 
 class FixedContextMenu extends ELContextMenu {
