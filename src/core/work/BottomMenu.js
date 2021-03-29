@@ -5,6 +5,7 @@ import { XEvent } from '../../libs/XEvent';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { XSelectItem } from '../table/xscreenitems/xselect/XSelectItem';
 import { Throttle } from '../../libs/Throttle';
+import { Cell } from '../table/tablecell/Cell';
 
 class BottomMenu extends Widget {
 
@@ -61,10 +62,10 @@ class BottomMenu extends Widget {
               }
               const cell = cells.getCell(ri, ci);
               if (cell) {
-                const { text } = cell;
+                const { text, contentType } = cell;
                 number += 1;
-                if (PlainUtils.isNumber(text)) {
-                  total += parseFloat(text);
+                if (contentType === Cell.CONTENT_TYPE.NUMBER) {
+                  total += text;
                 }
               }
             })
@@ -72,13 +73,13 @@ class BottomMenu extends Widget {
         })
         .execute();
       const avg = total / number;
-      this.setNumber(number);
       this.setSum(total);
       this.setAvg(avg);
+      this.setNumber(number);
     } else {
-      this.setNumber(0);
       this.setSum(0);
       this.setAvg(0);
+      this.setNumber(0);
     }
   }
 
@@ -126,16 +127,16 @@ class BottomMenu extends Widget {
     });
   }
 
-  setNumber(val) {
-    this.number.text(`数量: ${val}`);
-  }
-
   setSum(val) {
     this.sum.text(`求和: ${val}`);
   }
 
   setAvg(val) {
     this.avg.text(`平均数: ${val}`);
+  }
+
+  setNumber(val) {
+    this.number.text(`数量: ${val}`);
   }
 
   destroy() {
