@@ -1,11 +1,14 @@
 /* global navigator document window */
 
+import { XDraw } from '../canvas/XDraw';
+
 function S4() {
   // eslint-disable-next-line no-bitwise
   return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 }
 
 const alphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+
 const DATA_TYPE = {
   String: 1,
   Boolean: 2,
@@ -332,7 +335,16 @@ class PlainUtils {
     return undefined;
   }
 
+  static ptToPx(pt) {
+    return (XDraw.dpr() / 72) * pt;
+  }
+
+  static pxToPt(px) {
+    return px / (XDraw.dpr() / 72);
+  }
+
 }
+
 PlainUtils.EMPTY = '';
 PlainUtils.Nul = null;
 PlainUtils.Undef = undefined;
