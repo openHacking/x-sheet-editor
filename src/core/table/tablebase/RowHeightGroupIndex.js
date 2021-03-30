@@ -45,7 +45,7 @@ class RowHeightGroupIndex {
           });
           if (top > max) {
             let { length } = groupIndex;
-            find = groupIndex[length - 1];
+            find = groupIndex[length - 2];
             return false;
           }
         }
