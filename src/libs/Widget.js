@@ -1,3 +1,5 @@
+/* global document */
+
 import { Element, h } from './Element';
 import { cssPrefix } from '../const/Constant';
 import { XEvent } from './XEvent';

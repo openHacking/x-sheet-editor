@@ -1,23 +1,19 @@
 import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMenu';
 import { Constant, cssPrefix } from '../../../../../const/Constant';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
-import { ScaleContextMenuItem } from './ScaleContextMenuItem';
+import { FileContextMenuItem } from './FileContextMenuItem';
 import { XEvent } from '../../../../../libs/XEvent';
 
-class ScaleContextMenu extends ELContextMenu {
+class FileContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
     super(`${cssPrefix}-scale-context-menu`, PlainUtils.mergeDeep({
       onUpdate: () => {},
     }, options));
     this.items = [
-      new ScaleContextMenuItem(200),
-      new ScaleContextMenuItem(150),
-      new ScaleContextMenuItem(125),
-      new ScaleContextMenuItem(100),
-      new ScaleContextMenuItem(90),
-      new ScaleContextMenuItem(75),
-      new ScaleContextMenuItem(50),
+      new FileContextMenuItem('导入xlsx文件'),
+      new FileContextMenuItem('导出xlsx文件'),
+      new FileContextMenuItem('导入cvs文件'),
     ];
     this.items.forEach((item) => {
       this.addItem(item);
@@ -25,10 +21,16 @@ class ScaleContextMenu extends ELContextMenu {
     this.bind();
   }
 
+  update(item) {
+    const { options } = this;
+    options.onUpdate(item);
+    this.close();
+  }
+
   bind() {
     this.items.forEach((item) => {
       XEvent.bind(item, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-        this.update(item.scale);
+        this.update(item);
       });
     });
   }
@@ -39,12 +41,6 @@ class ScaleContextMenu extends ELContextMenu {
     });
   }
 
-  update(scale) {
-    const { options } = this;
-    options.onUpdate(scale);
-    this.close();
-  }
-
   destroy() {
     super.destroy();
     this.unbind();
@@ -53,5 +49,5 @@ class ScaleContextMenu extends ELContextMenu {
 }
 
 export {
-  ScaleContextMenu,
+  FileContextMenu,
 };

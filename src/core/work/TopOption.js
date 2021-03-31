@@ -1,17 +1,19 @@
 import { Widget } from '../../libs/Widget';
-import { cssPrefix } from '../../const/Constant';
+import { Constant, cssPrefix } from '../../const/Constant';
 import { h } from '../../libs/Element';
 import { File } from './options/File';
 import { ForMart } from './options/ForMart';
 import { Insert } from './options/Insert';
 import { Look } from './options/Look';
 import { Update } from './options/Update';
+import { XEvent } from '../../libs/XEvent';
+import { ElPopUp } from '../../component/elpopup/ElPopUp';
+import { Alert } from '../../component/alert/Alert';
 
 class TopOption extends Widget {
 
   constructor(workTop) {
     super(`${cssPrefix}-option`);
-
     this.workTop = workTop;
     this.title = `${cssPrefix} 工作簿`;
     this.logoEle = h('div', `${cssPrefix}-option-logo`);
@@ -24,7 +26,13 @@ class TopOption extends Widget {
     this.children(this.leftEle);
     this.children(this.rightEle);
     this.setTitle(this.title);
-    this.file = new File();
+    this.file = new File({
+      contextMenu: {
+        onUpdate() {
+          new Alert({ message: '开发人员正在努力施工中....' }).open();
+        },
+      },
+    });
     this.format = new ForMart();
     this.insert = new Insert();
     this.look = new Look();
@@ -35,6 +43,28 @@ class TopOption extends Widget {
     this.optionsEle.children(this.look);
     this.optionsEle.children(this.update);
   }
+
+  onAttach() {
+    this.bind();
+  }
+
+  bind() {
+    XEvent.bind(this.file, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const { file } = this;
+      const { fileContextMenu } = file;
+      const { elPopUp } = fileContextMenu;
+      ElPopUp.closeAll([elPopUp]);
+      if (fileContextMenu.isClose()) {
+        fileContextMenu.open();
+      } else {
+        fileContextMenu.close();
+      }
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  }
+
+  unbind() {}
 
   setTitle(title) {
     this.title = title;
