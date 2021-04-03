@@ -818,7 +818,7 @@ class XTableDimensions extends Widget {
     let height;
     if (xFixedView.hasFixedTop()) {
       const fixedView = xFixedView.getFixedView();
-      height = rows.sectionSumHeight(fixedView.eri, rows.len - 1);
+      height = rows.sectionSumHeight(fixedView.eri + 1, rows.len - 1);
     } else {
       height = rows.sectionSumHeight(0, rows.len - 1);
     }
