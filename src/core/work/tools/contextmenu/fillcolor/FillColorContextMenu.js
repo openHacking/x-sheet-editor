@@ -14,7 +14,7 @@ import { XEvent } from '../../../../../libs/XEvent';
 class FillColorContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-font-color-context-menu`, PlainUtils.mergeDeep({
+    super(`${cssPrefix}-font-color-context-menu`, PlainUtils.copy({
       onUpdate: () => {},
     }, options));
     this.colorPicker = new ColorPicker({

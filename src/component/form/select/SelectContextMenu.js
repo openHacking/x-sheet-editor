@@ -6,7 +6,7 @@ import { XEvent } from '../../../libs/XEvent';
 class SelectContextMenu extends ELContextMenu {
 
   constructor(options) {
-    super(`${cssPrefix}-form-select-menu`, PlainUtils.mergeDeep({
+    super(`${cssPrefix}-form-select-menu`, PlainUtils.copy({
       autoHeight: true,
       onUpdate: () => {},
     }, options));

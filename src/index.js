@@ -13,16 +13,19 @@ import { XIcon } from './core/table/xicon/XIcon';
 import './styles/base.less';
 import './styles/index.less';
 
-class XSheet extends Widget {
-  constructor(selectors, options = {
-    workConfig: {
-      body: {
-        sheets: [{
-          tableConfig: {},
-        }],
-      },
+const settings = {
+  workConfig: {
+    name: 'x-sheet',
+    body: {
+      sheets: [{
+        tableConfig: {},
+      }],
     },
-  }) {
+  },
+};
+
+class XSheet extends Widget {
+  constructor(selectors, options) {
     super(`${cssPrefix}`);
     let root = selectors;
     if (typeof selectors === 'string') {
@@ -30,7 +33,8 @@ class XSheet extends Widget {
     }
     root = h(root);
     root.children(this);
-    this.work = new Work(options);
+    this.options = PlainUtils.copy({}, settings, options);
+    this.work = new Work(this.options.workConfig);
     this.attach(this.work);
     ElPopUp.setRoot(this);
     DragPanel.setRoot(this);

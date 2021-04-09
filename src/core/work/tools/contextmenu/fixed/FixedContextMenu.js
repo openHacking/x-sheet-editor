@@ -8,7 +8,7 @@ import { PlainUtils } from '../../../../../utils/PlainUtils';
 class FixedContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-fixed-context-menu`, PlainUtils.mergeDeep({
+    super(`${cssPrefix}-fixed-context-menu`, PlainUtils.copy({
       onUpdate: () => {
       },
     }, options));

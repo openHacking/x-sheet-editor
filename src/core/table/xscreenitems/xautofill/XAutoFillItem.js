@@ -15,7 +15,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
 
   constructor(table, options = {}) {
     super({ table });
-    this.options = PlainUtils.mergeDeep({
+    this.options = PlainUtils.copy({
       mergeForceSplit: false,
       onBeforeAutoFill: () => {},
       onAfterAutoFill: () => {},

@@ -6,7 +6,7 @@ class LayerBar extends Layer {
 
   constructor(options) {
     super(`${cssPrefix}-layer-bar`);
-    this.options = PlainUtils.mergeDeep({
+    this.options = PlainUtils.copy({
       style: {},
     }, options);
     this.css(this.options.style);

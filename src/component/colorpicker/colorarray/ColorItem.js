@@ -8,7 +8,7 @@ class ColorItem extends Widget {
 
   constructor(options) {
     super(`${cssPrefix}-color-array-item`);
-    this.options = PlainUtils.mergeDeep({
+    this.options = PlainUtils.copy({
       color: null,
       icon: null,
     }, options);

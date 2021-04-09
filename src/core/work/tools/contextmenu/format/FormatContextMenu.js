@@ -8,7 +8,7 @@ import { XEvent } from '../../../../../libs/XEvent';
 class FormatContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-format-context-menu`, PlainUtils.mergeDeep({
+    super(`${cssPrefix}-format-context-menu`, PlainUtils.copy({
       onUpdate: () => {},
     }, options));
     this.items = [

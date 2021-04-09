@@ -20,13 +20,17 @@ import Download from '../../libs/donwload/Download';
 import { Throttle } from '../../libs/Throttle';
 import { XDraw } from '../../canvas/XDraw';
 
+const settings = {
+  sheets: [],
+};
+
 class WorkBody extends Widget {
 
-  constructor(work, options = { sheets: [] }) {
+  constructor(work, options) {
     super(`${cssPrefix}-work-body`);
     this.work = work;
-    this.workConfig = options;
-    this.sheets = this.workConfig.sheets;
+    this.options = PlainUtils.copy({}, settings, options);
+    this.sheets = this.options.sheets;
     this.tabSheet = [];
     this.activeIndex = -1;
     // 版本标识
@@ -82,6 +86,17 @@ class WorkBody extends Widget {
     this.layerVerticalLayer.children(this.horizontalLayer2Layer);
     this.children(this.layerVerticalLayer);
     // 组件
+    this.sheetView = new SheetView();
+    this.tabView = new TabView({
+      onAdd: () => {
+        const tab = new Tab();
+        const sheet = new Sheet(tab);
+        this.addTabSheet({ tab, sheet });
+      },
+      onSwitch: (tab) => {
+        this.setActiveTab(tab);
+      },
+    });
     this.scrollBarY = new ScrollBarY({
       scroll: (move) => {
         const sheet = this.sheetView.getActiveSheet();
@@ -92,17 +107,6 @@ class WorkBody extends Widget {
       scroll: (move) => {
         const sheet = this.sheetView.getActiveSheet();
         sheet.table.scrollX(move);
-      },
-    });
-    this.sheetView = new SheetView();
-    this.tabView = new TabView({
-      onAdd: () => {
-        const sheet = new Sheet();
-        const tab = new Tab();
-        this.addTabSheet({ tab, sheet });
-      },
-      onSwitch: (tab) => {
-        this.setActiveTab(tab);
       },
     });
   }
@@ -244,8 +248,8 @@ class WorkBody extends Widget {
     for (const item of this.sheets) {
       // eslint-disable-next-line no-restricted-syntax
       const { name } = item;
-      const sheet = new Sheet(item);
       const tab = new Tab(name);
+      const sheet = new Sheet(tab, item);
       this.addTabSheet({ tab, sheet });
     }
     if (this.tabSheet.length) {

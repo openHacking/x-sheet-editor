@@ -23,7 +23,7 @@ class DragPanel extends Widget {
   constructor(options) {
     super(`${cssPrefix}-drag-panel`);
     instances.push(this);
-    this.options = PlainUtils.mergeDeep({
+    this.options = PlainUtils.copy({
       position: DragPanel.DRAG_PANEL_POSITION.CENTER,
     }, options);
     this.status = false;

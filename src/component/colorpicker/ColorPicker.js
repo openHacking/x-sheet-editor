@@ -10,7 +10,7 @@ class ColorPicker extends Widget {
 
   constructor(options) {
     super(`${cssPrefix}-color-picker`);
-    this.options = PlainUtils.mergeDeep({
+    this.options = PlainUtils.copy({
       selectCb: () => {},
     }, options);
     // 拖拽组件

@@ -21,7 +21,7 @@ class ElPopUp extends Widget {
    */
   constructor(options) {
     super(`${cssPrefix}-el-pop-up`);
-    this.options = PlainUtils.mergeDeep({
+    this.options = PlainUtils.copy({
       el: PlainUtils.Nul,
       autoWidth: false,
       autoHeight: false,

@@ -6,7 +6,7 @@ class HorizontalLayerElement extends Layer {
 
   constructor(options) {
     super(`${cssPrefix}-horizontal-layer-element`);
-    this.options = PlainUtils.mergeDeep({
+    this.options = PlainUtils.copy({
       style: {
         flexGrow: '0',
       },

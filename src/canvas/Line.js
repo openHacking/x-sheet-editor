@@ -12,7 +12,7 @@ class SolidLine {
 
   constructor(draw, attr) {
     this.draw = draw;
-    PlainUtils.mergeDeep(this, {
+    PlainUtils.copy(this, {
       color: '#000000',
       widthType: XDraw.LINE_WIDTH_TYPE.low,
     }, attr);
@@ -65,7 +65,7 @@ class DottedLine {
 
   constructor(draw, attr) {
     this.draw = draw;
-    PlainUtils.mergeDeep(this, {
+    PlainUtils.copy(this, {
       color: '#000000',
       widthType: XDraw.LINE_WIDTH_TYPE.low,
       dash: [5],
@@ -119,7 +119,7 @@ class DoubleLine {
 
   constructor(draw, attr) {
     this.draw = draw;
-    PlainUtils.mergeDeep(this, {
+    PlainUtils.copy(this, {
       color: '#000000',
       widthType: XDraw.LINE_WIDTH_TYPE.low,
       padding: 1,
@@ -582,14 +582,14 @@ class Line {
   constructor(draw, attr = {}) {
     this.widthType = XDraw.LINE_WIDTH_TYPE.low;
     this.type = LINE_TYPE.SOLID_LINE;
-    this.solidLine = new SolidLine(draw, PlainUtils.mergeDeep({}, attr));
-    this.dottedLine = new DottedLine(draw, PlainUtils.mergeDeep({
+    this.solidLine = new SolidLine(draw, PlainUtils.copy({}, attr));
+    this.dottedLine = new DottedLine(draw, PlainUtils.copy({
       dash: [5],
     }, attr));
-    this.pointLine = new DottedLine(draw, PlainUtils.mergeDeep({
+    this.pointLine = new DottedLine(draw, PlainUtils.copy({
       dash: [2, 2],
     }, attr));
-    this.doubleLine = new DoubleLine(draw, PlainUtils.mergeDeep({}, attr));
+    this.doubleLine = new DoubleLine(draw, PlainUtils.copy({}, attr));
   }
 
   setWidthType(widthType) {

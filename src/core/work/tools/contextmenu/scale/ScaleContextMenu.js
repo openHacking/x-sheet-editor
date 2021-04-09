@@ -7,7 +7,7 @@ import { XEvent } from '../../../../../libs/XEvent';
 class ScaleContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-scale-context-menu`, PlainUtils.mergeDeep({
+    super(`${cssPrefix}-scale-context-menu`, PlainUtils.copy({
       onUpdate: () => {},
     }, options));
     this.items = [

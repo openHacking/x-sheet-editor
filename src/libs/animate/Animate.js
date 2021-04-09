@@ -23,7 +23,7 @@ const TWEEN = {
 
 class Animate {
   constructor(option) {
-    this.option = PlainUtils.mergeDeep({
+    this.option = PlainUtils.copy({
       loop: false,
       begin: 0,
       end: 0,

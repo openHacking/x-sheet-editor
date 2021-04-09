@@ -7,7 +7,7 @@ import { XEvent } from '../../../../../../libs/XEvent';
 class LineTypeContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-line-type-context-menu`, PlainUtils.mergeDeep({
+    super(`${cssPrefix}-line-type-context-menu`, PlainUtils.copy({
       onUpdate: () => {},
     }, options));
     this.items = [

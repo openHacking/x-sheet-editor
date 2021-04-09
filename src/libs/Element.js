@@ -131,7 +131,7 @@ class Element {
    * @returns {Element}
    */
   parent() {
-    return Element.wrap(this.el.parentNode)
+    return Element.wrap(this.el.parentNode);
   }
 
   /**

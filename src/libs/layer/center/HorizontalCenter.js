@@ -6,7 +6,7 @@ class HorizontalCenter extends Layer {
 
   constructor(options) {
     super(`${cssPrefix}-horizontal-center`);
-    this.options = PlainUtils.mergeDeep({
+    this.options = PlainUtils.copy({
       style: {},
     }, options);
     this.css(this.options.style);

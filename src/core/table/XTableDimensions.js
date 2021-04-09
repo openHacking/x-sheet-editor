@@ -529,6 +529,47 @@ class KeyBoardTabCode {
 
 // ================================= XTable ================================
 
+const settings = {
+  index: {
+    height: 30,
+    width: 50,
+    gridColor: '#c1c1c1',
+    size: 11,
+    color: '#000000',
+  },
+  table: {
+    showGrid: true,
+    background: '#ffffff',
+    borderColor: '#000000',
+    gridColor: '#e1e1e1',
+  },
+  rows: {
+    len: 1000,
+    height: 30,
+    data: [],
+  },
+  cols: {
+    len: 36,
+    width: 110,
+    data: [],
+  },
+  xFixedView: {
+    fixedView: new RectRange(0, 0, -1, -1),
+    fxLeft: -1,
+    fxTop: -1,
+  },
+  xFixedBar: {
+    height: RowFixed.HEIGHT,
+    width: ColFixed.WIDTH,
+    background: '#eaeaea',
+    buttonColor: '#c1c1c1',
+  },
+  data: [],
+  merge: {
+    merges: [],
+  },
+};
+
 /**
  * XTable
  */
@@ -536,51 +577,12 @@ class XTableDimensions extends Widget {
 
   /**
    * XTable
-   * @param settings
+   * @param options
    */
-  constructor({ settings }) {
+  constructor(options) {
     super(`${cssPrefix}-table`);
     // 表格设置
-    this.settings = PlainUtils.mergeDeep({
-      index: {
-        height: 30,
-        width: 50,
-        gridColor: '#c1c1c1',
-        size: 11,
-        color: '#000000',
-      },
-      table: {
-        showGrid: true,
-        background: '#ffffff',
-        borderColor: '#000000',
-        gridColor: '#e1e1e1',
-      },
-      rows: {
-        len: 1000,
-        height: 30,
-        data: [],
-      },
-      cols: {
-        len: 36,
-        width: 110,
-        data: [],
-      },
-      xFixedView: {
-        fixedView: new RectRange(0, 0, -1, -1),
-        fxLeft: -1,
-        fxTop: -1,
-      },
-      xFixedBar: {
-        height: RowFixed.HEIGHT,
-        width: ColFixed.WIDTH,
-        background: '#eaeaea',
-        buttonColor: '#c1c1c1',
-      },
-      data: [],
-      merge: {
-        merges: [],
-      },
-    }, settings);
+    this.settings = PlainUtils.copy({}, settings, options);
     // 视口区域大小
     this.visualHeightCache = null;
     this.visualWidthCache = null;

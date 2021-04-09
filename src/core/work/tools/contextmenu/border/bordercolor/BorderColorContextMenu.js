@@ -13,7 +13,7 @@ import { XEvent } from '../../../../../../libs/XEvent';
 class BorderColorContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-border-color-context-menu`, PlainUtils.mergeDeep({
+    super(`${cssPrefix}-border-color-context-menu`, PlainUtils.copy({
       onUpdate: () => {},
     }, options));
     this.colorPicker = new ColorPicker({

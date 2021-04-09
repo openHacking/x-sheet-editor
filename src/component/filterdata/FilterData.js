@@ -13,7 +13,7 @@ import { ElPopUp } from '../elpopup/ElPopUp';
 class FilterData extends ELContextMenu {
 
   constructor(options) {
-    super(`${cssPrefix}-filter-data-menu`, PlainUtils.mergeDeep({
+    super(`${cssPrefix}-filter-data-menu`, PlainUtils.copy({
       ok: () => {},
       no: () => {},
     }, options));

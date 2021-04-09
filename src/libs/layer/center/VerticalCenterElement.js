@@ -6,7 +6,7 @@ class VerticalCenterElement extends Layer {
 
   constructor(options) {
     super(`${cssPrefix}-vertical-center-element`);
-    this.options = PlainUtils.mergeDeep({
+    this.options = PlainUtils.copy({
       style: {},
     }, options);
     this.css(this.options.style);

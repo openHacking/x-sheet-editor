@@ -89,7 +89,7 @@ class XEvent {
     XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt) => {
       const current = Date.now();
       const { pageX, pageY } = evt;
-      const diff = current - last <= 300
+      const diff = current - last <= 300;
       if (diff && pageX === x && pageY === y) {
         doubleFunc(evt);
         last = 0;
@@ -122,5 +122,5 @@ class XEvent {
 window.XEventPool = pool;
 
 export {
-  XEvent
+  XEvent,
 };

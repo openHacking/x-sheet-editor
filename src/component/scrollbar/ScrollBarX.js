@@ -10,7 +10,7 @@ class ScrollBarX extends Widget {
 
   constructor(option) {
     super(`${cssPrefix}-scroll-bar-x`);
-    this.option = PlainUtils.mergeDeep({
+    this.option = PlainUtils.copy({
       style: {},
       scroll: to => to,
     }, option);

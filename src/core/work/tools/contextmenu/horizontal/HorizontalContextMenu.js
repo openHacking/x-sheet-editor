@@ -12,7 +12,7 @@ import { BaseFont } from '../../../../../canvas/font/BaseFont';
 class HorizontalContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-horizontal-type-context-menu`, PlainUtils.mergeDeep({
+    super(`${cssPrefix}-horizontal-type-context-menu`, PlainUtils.copy({
       onUpdate: () => {},
     }, options));
     this.horizontalIcon1 = new HorizontalIcon1();

@@ -15,7 +15,7 @@ class Clipboard {
 
   bind() {
     const { target, paste, filter } = this;
-    XEvent.bind(target, "paste", (e) => {
+    XEvent.bind(target, 'paste', (e) => {
       if (filter()) {
         paste(e);
       }
@@ -25,5 +25,5 @@ class Clipboard {
 }
 
 export {
-  Clipboard
-}
+  Clipboard,
+};

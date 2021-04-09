@@ -17,7 +17,7 @@ import { BaseFont } from '../../../../../canvas/font/BaseFont';
 class FontAngleContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-font-angle-context-menu`, PlainUtils.mergeDeep({
+    super(`${cssPrefix}-font-angle-context-menu`, PlainUtils.copy({
       onUpdateAngle: () => {},
       onUpdateType: () => {},
     }, options));

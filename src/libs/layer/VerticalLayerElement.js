@@ -5,7 +5,7 @@ import { Layer } from '../Layer';
 class VerticalLayerElement extends Layer {
   constructor(options) {
     super(`${cssPrefix}-vertical-layer-element`);
-    this.options = PlainUtils.mergeDeep({
+    this.options = PlainUtils.copy({
       style: {
         flexGrow: '0',
       },

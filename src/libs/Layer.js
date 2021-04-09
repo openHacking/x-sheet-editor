@@ -9,4 +9,4 @@ class Layer extends Widget {
 
 }
 
-export {Layer}
+export { Layer };

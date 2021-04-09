@@ -25,7 +25,7 @@ import { ElPopUp } from '../../../../../../component/elpopup/ElPopUp';
 class BorderTypeContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-border-type-context-menu`, PlainUtils.mergeDeep({
+    super(`${cssPrefix}-border-type-context-menu`, PlainUtils.copy({
       onUpdate: () => {},
     }, options));
     this.type = LINE_TYPE.SOLID_LINE;
@@ -71,7 +71,7 @@ class BorderTypeContextMenu extends ELContextMenu {
     this.addItem(new ELContextMenuDivider());
     this.addItem(this.borderColorAndType);
     // 边框颜色菜单
-    this.borderColorContextMenu = new BorderColorContextMenu(PlainUtils.copyProp({
+    this.borderColorContextMenu = new BorderColorContextMenu(PlainUtils.copy({
       el: this.borderColor,
     }, {
       onUpdate: (color) => {
@@ -80,7 +80,7 @@ class BorderTypeContextMenu extends ELContextMenu {
       },
     }));
     // 边框类型
-    this.lineTypeContextMenu = new LineTypeContextMenu(PlainUtils.copyProp({
+    this.lineTypeContextMenu = new LineTypeContextMenu(PlainUtils.copy({
       el: this.borderType,
     }, {
       onUpdate: (type) => {

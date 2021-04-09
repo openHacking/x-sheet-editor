@@ -5,14 +5,17 @@ import { VerticalLayerElement } from '../../libs/layer/VerticalLayerElement';
 import { WorkTop } from './WorkTop';
 import { WorkBody } from './WorkBody';
 import { WorkBottom } from './WorkBottom';
+import { PlainUtils } from '../../utils/PlainUtils';
+
+const settings = {
+  body: {},
+};
 
 class Work extends Widget {
 
-  constructor(options = {
-    body: {},
-  }) {
+  constructor(options) {
     super(`${cssPrefix}-work`);
-    this.options = options.workConfig;
+    this.options = PlainUtils.copy({}, settings, options);
     this.root = null;
     // 布局
     this.topLayer = new VerticalLayerElement();

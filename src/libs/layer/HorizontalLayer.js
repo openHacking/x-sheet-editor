@@ -6,7 +6,7 @@ class HorizontalLayer extends Layer {
 
   constructor(options) {
     super(`${cssPrefix}-horizontal-layer`);
-    this.options = PlainUtils.mergeDeep({
+    this.options = PlainUtils.copy({
       style: {},
     }, options);
     this.css(this.options.style);

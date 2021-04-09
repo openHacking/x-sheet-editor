@@ -23,7 +23,7 @@ class Widget extends Life {
    * @param className
    * @param nodeType
    */
-  constructor(className = '', nodeType = "div") {
+  constructor(className = '', nodeType = 'div') {
     if (typeof className === 'string') {
       super(nodeType, `${cssPrefix}-widget ${className}`);
     } else {
@@ -81,9 +81,9 @@ class Widget extends Life {
 
 }
 
-const w = (className = '', nodeType = "div") => new Widget(className, nodeType);
+const w = (className = '', nodeType = 'div') => new Widget(className, nodeType);
 
 export {
   Widget,
-  w
+  w,
 };

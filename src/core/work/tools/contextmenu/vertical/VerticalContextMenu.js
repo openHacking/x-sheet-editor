@@ -12,7 +12,7 @@ import { BaseFont } from '../../../../../canvas/font/BaseFont';
 class VerticalContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-vertical-type-context-menu`, PlainUtils.mergeDeep({
+    super(`${cssPrefix}-vertical-type-context-menu`, PlainUtils.copy({
       onUpdate: () => {},
     }, options));
     this.verticalIcon1 = new VerticalIcon1();

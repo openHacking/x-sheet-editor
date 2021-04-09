@@ -12,7 +12,7 @@ import { BaseFont } from '../../../../../canvas/font/BaseFont';
 class TextWrappingContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-text-wrapping-context-menu`, PlainUtils.mergeDeep({
+    super(`${cssPrefix}-text-wrapping-context-menu`, PlainUtils.copy({
       onUpdate: () => {},
     }, options));
     this.textWrappingIcon1 = new TextWrappingIcon1();

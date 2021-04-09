@@ -7,7 +7,7 @@ import { XEvent } from '../../../../../libs/XEvent';
 class FontSizeContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-font-size-context-menu`, PlainUtils.mergeDeep({
+    super(`${cssPrefix}-font-size-context-menu`, PlainUtils.copy({
       onUpdate: () => {},
     }, options));
     this.items = [

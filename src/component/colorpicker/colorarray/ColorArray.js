@@ -8,7 +8,7 @@ class ColorArray extends Widget {
 
   constructor(options) {
     super(`${cssPrefix}-color-array`);
-    this.options = PlainUtils.mergeDeep({
+    this.options = PlainUtils.copy({
       colors: [
         new ColorItem({ color: 'rgb(0,0,0)' }),
         new ColorItem({ color: 'rgb(67, 67, 67)' }),

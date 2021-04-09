@@ -7,7 +7,7 @@ import { PlainUtils } from '../../../../../utils/PlainUtils';
 class FontAngleValueContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-font-angle-value-context-menu`, PlainUtils.mergeDeep({
+    super(`${cssPrefix}-font-angle-value-context-menu`, PlainUtils.copy({
       onUpdate: () => {},
     }, options));
     this.items = [
