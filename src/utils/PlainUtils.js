@@ -1,7 +1,4 @@
 /* global navigator document window */
-
-import { XDraw } from '../canvas/XDraw';
-
 function S4() {
   // eslint-disable-next-line no-bitwise
   return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
@@ -329,14 +326,6 @@ class PlainUtils {
     }
     // undefined
     return undefined;
-  }
-
-  static ptToPx(pt) {
-    return (XDraw.dpr() / 72) * pt;
-  }
-
-  static pxToPt(px) {
-    return px / (XDraw.dpr() / 72);
   }
 
 }
