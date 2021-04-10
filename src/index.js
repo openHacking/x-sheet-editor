@@ -16,10 +16,21 @@ import './styles/index.less';
 const settings = {
   workConfig: {
     name: 'x-sheet',
+    top: {
+      option: {
+        show: true,
+      },
+      menu: {
+        show: true,
+      },
+    },
     body: {
       sheets: [{
         tableConfig: {},
       }],
+    },
+    bottom: {
+      show: true,
     },
   },
 };

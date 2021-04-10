@@ -1508,20 +1508,23 @@ class XTableIndexUI extends XTableUI {
   }
 
   /**
+   * 绘制条件
+   */
+  drawFilter() {
+    throw new TypeError('drawFilter child impl');
+  }
+
+  /**
    * 渲染界面
    */
   render() {
-    const { table } = this;
-    const renderMode = table.getRenderMode();
-    const viewMode = this.getViewMode();
-    if (viewMode === VIEW_MODE.STATIC && renderMode === RENDER_MODE.SCROLL) {
-      return;
+    if (this.drawFilter()) {
+      this.drawMap();
+      this.drawClear();
+      this.drawColor();
+      this.drawFont();
+      this.drawGridBorder();
     }
-    this.drawMap();
-    this.drawClear();
-    this.drawColor();
-    this.drawFont();
-    this.drawGridBorder();
   }
 
 }
@@ -1601,6 +1604,30 @@ class XTableLeftIndexUI extends XTableIndexUI {
     draw.offset(0, 0);
   }
 
+  /**
+   * 绘制条件
+   */
+  drawFilter() {
+    const { table } = this;
+    const { scroll } = table;
+    const renderMode = table.getRenderMode();
+    const viewMode = this.getViewMode();
+    if (renderMode === RENDER_MODE.RENDER) {
+      return true;
+    }
+    if (renderMode === RENDER_MODE.SCROLL) {
+      if (viewMode === VIEW_MODE.STATIC) {
+        return false;
+      }
+      switch (scroll.type) {
+        case SCROLL_TYPE.V_TOP:
+        case SCROLL_TYPE.V_BOTTOM:
+          return true;
+      }
+    }
+    return false;
+  }
+
 }
 
 class XTableTopIndexUI extends XTableIndexUI {
@@ -1614,6 +1641,11 @@ class XTableTopIndexUI extends XTableIndexUI {
     const borderY = this.getLineY();
     const { table } = this;
     const { draw, indexGrid } = table;
+    // 边缘线条
+    const lineWidth = XDraw.getLineWidthTypePx(XDraw.LINE_WIDTH_TYPE.low);
+    const width = table.visualWidth();
+    indexGrid.horizonLine(0, lineWidth, width, lineWidth);
+    // 索引边框
     const { iResult } = XLinePlainGenerator.run({
       scrollView: borderView,
       foldOnOff: false,
@@ -1676,6 +1708,30 @@ class XTableTopIndexUI extends XTableIndexUI {
       draw.fillText(PlainUtils.stringAt(i), x + (cw / 2), height / 2);
     });
     draw.offset(0, 0);
+  }
+
+  /**
+   * 绘制条件
+   */
+  drawFilter() {
+    const { table } = this;
+    const { scroll } = table;
+    const renderMode = table.getRenderMode();
+    const viewMode = this.getViewMode();
+    if (renderMode === RENDER_MODE.RENDER) {
+      return true;
+    }
+    if (renderMode === RENDER_MODE.SCROLL) {
+      if (viewMode === VIEW_MODE.STATIC) {
+        return false;
+      }
+      switch (scroll.type) {
+        case SCROLL_TYPE.H_LEFT:
+        case SCROLL_TYPE.H_RIGHT:
+          return true;
+      }
+    }
+    return false;
   }
 
 }

@@ -8,7 +8,22 @@ import { WorkBottom } from './WorkBottom';
 import { PlainUtils } from '../../utils/PlainUtils';
 
 const settings = {
-  body: {},
+  top: {
+    option: {
+      show: true,
+    },
+    menu: {
+      show: true,
+    },
+  },
+  body: {
+    sheets: [{
+      tableConfig: {},
+    }],
+  },
+  bottom: {
+    show: true,
+  },
 };
 
 class Work extends Widget {
@@ -30,19 +45,19 @@ class Work extends Widget {
     this.verticalLayer.children(this.bodyLayer);
     this.verticalLayer.children(this.bottomLayer);
     this.children(this.verticalLayer);
-    // 组件
-    this.top = new WorkTop(this);
-    this.body = new WorkBody(this, this.options.body);
-    this.bottom = new WorkBottom(this);
   }
 
   onAttach(element) {
+    const { options, bodyLayer, topLayer, bottomLayer } = this;
     this.root = element;
-    const {
-      bodyLayer, topLayer, bottomLayer,
-    } = this;
+    // 组件
+    this.top = new WorkTop(this, this.options.top);
+    this.body = new WorkBody(this, this.options.body);
+    this.bottom = new WorkBottom(this);
     topLayer.attach(this.top);
-    bottomLayer.attach(this.bottom);
+    if (options.bottom.show) {
+      bottomLayer.attach(this.bottom);
+    }
     bodyLayer.attach(this.body);
     this.bottom.bottomMenu.setSum(0);
     this.bottom.bottomMenu.setAvg(0);
