@@ -217,12 +217,13 @@ class TopMenu extends Widget {
           const { xScreen } = table;
           const operateCellsHelper = table.getOperateCellsHelper();
           const xTableStyle = table.getXTableStyle();
+          const merges = table.getTableMerges();
           const { tableDataSnapshot } = table;
           const xSelect = xScreen.findType(XSelectItem);
           const { selectRange } = xSelect;
           if (selectRange) {
             tableDataSnapshot.begin();
-            const { cellDataProxy } = tableDataSnapshot;
+            const { mergeDataProxy, cellDataProxy } = tableDataSnapshot;
             const rect = selectRange;
             let widthType = XDraw.LINE_WIDTH_TYPE.low;
             let type = LINE_TYPE.SOLID_LINE;

@@ -4,6 +4,9 @@ import { XDraw } from '../canvas/XDraw';
 import Download from '../libs/donwload/Download';
 import { BaseFont } from '../canvas/font/BaseFont';
 import { ColorPicker } from '../component/colorpicker/ColorPicker';
+import {PlainUtils} from "../utils/PlainUtils";
+import {Cell} from "../core/table/tablecell/Cell";
+import {LINE_TYPE} from "../canvas/Line";
 
 class XlsxExport {
 
@@ -59,9 +62,17 @@ class XlsxExport {
             .setLoop((col) => {
               const cell = cells.getCell(row, col);
               if (cell) {
-                const { fontAttr, borderAttr, background } = cell;
+                const { fontAttr, borderAttr, contentType, background } = cell;
                 const workCell = workRow.getCell(this.next(col));
-                workCell.value = cell.text;
+                // 单元格文本
+                switch (contentType) {
+                  case Cell.CONTENT_TYPE.NUMBER:
+                    workCell.value = PlainUtils.parseFloat(cell.text);
+                    break;
+                  case Cell.CONTENT_TYPE.STRING:
+                    workCell.value = cell.text;
+                    break;
+                }
                 // 字体样式
                 workCell.font = {
                   name: fontAttr.name,
@@ -80,34 +91,43 @@ class XlsxExport {
                   horizontal: fontAttr.align,
                   wrapText: fontAttr.textWrap === BaseFont.TEXT_WRAP.WORD_WRAP,
                 };
+                switch (fontAttr.direction) {
+                  case BaseFont.TEXT_DIRECTION.VERTICAL:
+                    workCell.alignment.textRotation = 'vertical';
+                    break;
+                  case BaseFont.TEXT_DIRECTION.ANGLE:
+                  case BaseFont.TEXT_DIRECTION.ANGLE_BAR:
+                    workCell.alignment.textRotation = fontAttr.angle;
+                    break;
+                }
                 // 单元格边框
                 workCell.border = {
                   top: {}, left: {}, right: {}, bottom: {},
                 };
                 if (borderAttr.top.display) {
-                  const { widthType, color } = borderAttr.top;
-                  workCell.border.top.style = this.convertBorderType(widthType);
+                  const { widthType, type, color } = borderAttr.top;
+                  workCell.border.top.style = this.convertBorderType(widthType, type);
                   workCell.border.top.color = {
                     argb: ColorPicker.parseRgbToHex(color),
                   };
                 }
                 if (borderAttr.left.display) {
-                  const { widthType, color } = borderAttr.left;
-                  workCell.border.left.style = this.convertBorderType(widthType);
+                  const { widthType, type, color } = borderAttr.left;
+                  workCell.border.left.style = this.convertBorderType(widthType, type);
                   workCell.border.left.color = {
                     argb: ColorPicker.parseRgbToHex(color),
                   };
                 }
                 if (borderAttr.right.display) {
-                  const { widthType, color } = borderAttr.right;
-                  workCell.border.right.style = this.convertBorderType(widthType);
+                  const { widthType, type, color } = borderAttr.right;
+                  workCell.border.right.style = this.convertBorderType(widthType, type);
                   workCell.border.right.color = {
                     argb: ColorPicker.parseRgbToHex(color),
                   };
                 }
                 if (borderAttr.bottom.display) {
-                  const { widthType, color } = borderAttr.bottom;
-                  workCell.border.bottom.style = this.convertBorderType(widthType);
+                  const { widthType, type,  color } = borderAttr.bottom;
+                  workCell.border.bottom.style = this.convertBorderType(widthType, type);
                   workCell.border.bottom.color = {
                     argb: ColorPicker.parseRgbToHex(color),
                   };
@@ -116,7 +136,8 @@ class XlsxExport {
                 if (background) {
                   workCell.fill = {
                     type: 'pattern',
-                    bgColor: { argb: ColorPicker.parseRgbToHex(background) },
+                    pattern: 'solid',
+                    fgColor: { argb: ColorPicker.parseRgbToHex(background) },
                   };
                 }
               }
@@ -162,14 +183,26 @@ class XlsxExport {
     return value * 0.6666666666666666;
   }
 
-  static convertBorderType(value) {
-    switch (value) {
-      case XDraw.LINE_WIDTH_TYPE.low:
-        return 'thin';
-      case XDraw.LINE_WIDTH_TYPE.medium:
-        return 'medium';
-      case XDraw.LINE_WIDTH_TYPE.high:
-        return 'thick';
+  static convertBorderType(value, type) {
+    switch (type) {
+      case LINE_TYPE.SOLID_LINE: {
+        switch (value) {
+          case XDraw.LINE_WIDTH_TYPE.low:
+            return 'thin'
+          case XDraw.LINE_WIDTH_TYPE.medium:
+            return 'medium';
+          case XDraw.LINE_WIDTH_TYPE.high:
+            return 'thick';
+        }
+        break;
+      }
+      case LINE_TYPE.DOTTED_LINE: {
+        return 'dotted';
+      }
+      case LINE_TYPE.DOUBLE_LINE:
+        return "double";
+      case LINE_TYPE.POINT_LINE:
+        return 'dashDot';
     }
     return 'thick';
   }
