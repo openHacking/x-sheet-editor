@@ -12,6 +12,8 @@ import { BaseFont } from './canvas/font/BaseFont';
 import { XIcon } from './core/table/xicon/XIcon';
 import './styles/base.less';
 import './styles/index.less';
+import { ColorPicker } from './component/colorpicker/ColorPicker';
+import { XlsxExport } from './io/XlsxExport';
 
 const settings = {
   workConfig: {
@@ -57,6 +59,8 @@ XSheet.XDraw = XDraw;
 XSheet.XIcon = XIcon;
 XSheet.RectRange = RectRange;
 XSheet.BaseFont = BaseFont;
+XSheet.ColorPicker = ColorPicker;
+XSheet.XlsxExport = XlsxExport;
 if (window) {
   window.XSheet = XSheet;
 }

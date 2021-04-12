@@ -13,7 +13,7 @@ class SolidLine {
   constructor(draw, attr) {
     this.draw = draw;
     PlainUtils.copy(this, {
-      color: '#000000',
+      color: 'rgb(0,0,0)',
       widthType: XDraw.LINE_WIDTH_TYPE.low,
     }, attr);
   }
@@ -66,7 +66,7 @@ class DottedLine {
   constructor(draw, attr) {
     this.draw = draw;
     PlainUtils.copy(this, {
-      color: '#000000',
+      color: 'rgb(0,0,0)',
       widthType: XDraw.LINE_WIDTH_TYPE.low,
       dash: [5],
     }, attr);
@@ -120,7 +120,7 @@ class DoubleLine {
   constructor(draw, attr) {
     this.draw = draw;
     PlainUtils.copy(this, {
-      color: '#000000',
+      color: 'rgb(0,0,0)',
       widthType: XDraw.LINE_WIDTH_TYPE.low,
       padding: 1,
       spacing: DoubleLine.spacing,

@@ -270,7 +270,7 @@ class CorsLine extends BaseLine {
   constructor(canvas) {
     super(canvas);
     this.lineWidthType = CorsLine.LINE_WIDTH_TYPE.low;
-    this.lineColor = '#000000';
+    this.lineColor = 'rgb(0,0,0)';
   }
 
   corsLine([sx, sy], [ex, ey]) {

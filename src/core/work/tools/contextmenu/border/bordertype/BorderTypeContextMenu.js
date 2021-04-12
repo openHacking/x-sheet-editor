@@ -29,7 +29,7 @@ class BorderTypeContextMenu extends ELContextMenu {
       onUpdate: () => {},
     }, options));
     this.type = LINE_TYPE.SOLID_LINE;
-    this.color = '#000000';
+    this.color = 'rgb(0,0,0)';
     // 边框样式
     this.borderIcon1 = new BorderIcon1();
     this.borderIcon2 = new BorderIcon2();

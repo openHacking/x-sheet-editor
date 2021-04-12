@@ -52,7 +52,7 @@ class XFilter extends XScreenCssBorderItem {
     this.bl.children(this.fl);
     this.bt.children(this.ft);
     this.bbr.children(this.fbr);
-    this.setBorderColor('#0071cf');
+    this.setBorderColor('rgb(0,113,207)');
     this.bind();
   }
 

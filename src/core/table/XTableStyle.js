@@ -63,7 +63,7 @@ class XTableFrozenFullRect {
     draw.offset(dx, dy);
     // 绘制背景
     draw.attr({
-      fillStyle: '#f4f5f8',
+      fillStyle: 'rgb(244,245,248)',
     });
     draw.fillRect(0, 0, index.getWidth(), indexHeight);
     draw.offset(0, 0);
@@ -2259,8 +2259,8 @@ class XTableLeft extends XTableContentUI {
     const scrollView = xTableAreaView.getScrollView();
     const enterView = xTableAreaView.getScrollEnterView();
     const view = PlainUtils.isNotUnDef(enterView) && renderMode === RENDER_MODE.SCROLL
-        ? enterView
-        : scrollView;
+      ? enterView
+      : scrollView;
     view.sci = fixedView.sci;
     view.eci = fixedView.eci;
     view.w = cols.sectionSumWidth(view.sci, view.eci);

@@ -533,15 +533,15 @@ const settings = {
   index: {
     height: 30,
     width: 50,
-    gridColor: '#c1c1c1',
+    gridColor: 'rgb(193,193,193)',
     size: 11,
-    color: '#000000',
+    color: 'rgb(0,0,0)',
   },
   table: {
     showGrid: true,
-    background: '#ffffff',
-    borderColor: '#000000',
-    gridColor: '#e1e1e1',
+    background: 'rgb(255,255,255)',
+    borderColor: 'rgb(0,0,0)',
+    gridColor: 'rgb(225,225,225)',
   },
   rows: {
     len: 1000,
@@ -561,8 +561,8 @@ const settings = {
   xFixedBar: {
     height: RowFixed.HEIGHT,
     width: ColFixed.WIDTH,
-    background: '#eaeaea',
-    buttonColor: '#c1c1c1',
+    background: 'rgb(234,234,234)',
+    buttonColor: 'rgb(293,293,293)',
   },
   data: [],
   merge: {
