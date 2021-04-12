@@ -11,9 +11,9 @@ class FileContextMenu extends ELContextMenu {
       onUpdate: () => {},
     }, options));
     this.items = [
-      new FileContextMenuItem('导入xlsx文件'),
-      new FileContextMenuItem('导出xlsx文件'),
-      new FileContextMenuItem('导入cvs文件'),
+      new FileContextMenuItem('导入xlsx文件', 1),
+      new FileContextMenuItem('导出xlsx文件', 2),
+      new FileContextMenuItem('导入cvs文件', 3),
     ];
     this.items.forEach((item) => {
       this.addItem(item);

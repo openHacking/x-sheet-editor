@@ -9,6 +9,7 @@ import { Update } from './options/Update';
 import { XEvent } from '../../libs/XEvent';
 import { ElPopUp } from '../../component/elpopup/ElPopUp';
 import { Alert } from '../../component/alert/Alert';
+import {XlsxExport} from "../../io/XlsxExport";
 
 class TopOption extends Widget {
 
@@ -28,8 +29,20 @@ class TopOption extends Widget {
     this.setTitle(this.title);
     this.file = new File({
       contextMenu: {
-        onUpdate() {
-          new Alert({ message: '开发人员正在努力施工中....' }).open();
+        onUpdate(item) {
+          const { work } = workTop;
+          const { type } = item;
+          switch (type) {
+            case 1:
+              new Alert({ message: '开发人员正在努力施工中....' }).open();
+              break;
+            case 2:
+              XlsxExport.export(work);
+              break;
+            case 3:
+              new Alert({ message: '开发人员正在努力施工中....' }).open();
+              break;
+          }
         },
       },
     });
