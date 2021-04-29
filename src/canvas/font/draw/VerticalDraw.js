@@ -18,10 +18,15 @@ class VerticalDraw extends BaseFont {
     }
     const { draw, attr } = this;
     const { textWrap } = attr;
+    const fontItalic = `${attr.italic ? 'italic' : ''}`;
+    const fontBold = `${attr.bold ? 'bold' : ''}`;
+    const fontName = `${attr.name}`;
+    const fontSize = `${attr.size}px`;
+    const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
     draw.attr({
-      textAlign: BaseFont.ALIGN.left,
-      textBaseline: BaseFont.VERTICAL_ALIGN.top,
-      font: `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`,
+      font: fontStyle.trim(),
+      textAlign: "start",
+      textBaseline: "alphabetic",
       fillStyle: attr.color,
       strokeStyle: attr.color,
     });
@@ -87,8 +92,8 @@ class VerticalDraw extends BaseFont {
     const { draw, ruler, attr } = this;
     const { rect } = this;
     const { width, height } = rect;
-    const { underline, strikethrough, align, verticalAlign } = attr;
-    const { size } = attr;
+    const { size, underline, align } = attr;
+    const { strikethrough, verticalAlign } = attr;
     // 填充宽度
     const verticalAlignPadding = this.getVerticalAlignPadding();
     const alignPadding = this.getAlignPadding();
@@ -96,73 +101,95 @@ class VerticalDraw extends BaseFont {
     ruler.truncateRuler();
     const {
       truncateTextArray: textArray,
-      truncateMaxLen: maxLen,
+      truncateTextHeight: textHeight,
     } = ruler;
-    // 计算文本坐标
-    let bx = rect.x;
-    let by = rect.y;
-    switch (align) {
-      case BaseFont.ALIGN.left:
-        bx += alignPadding;
-        break;
-      case BaseFont.ALIGN.center:
-        bx += width / 2 - size / 2;
-        break;
-      case BaseFont.ALIGN.right:
-        bx += width - size - alignPadding;
-        break;
-    }
-    switch (verticalAlign) {
-      case BaseFont.VERTICAL_ALIGN.top:
-        by += verticalAlignPadding;
-        break;
-      case BaseFont.VERTICAL_ALIGN.center:
-        by += height / 2 - maxLen / 2;
-        break;
-      case BaseFont.VERTICAL_ALIGN.bottom:
-        by += height - maxLen - verticalAlignPadding;
-        break;
-    }
-    // 边界检查
-    const outboundsHeight = maxLen + verticalAlignPadding > height;
-    const outboundsWidth = size + alignPadding > width;
-    if (outboundsHeight || outboundsWidth) {
+    // 文本越界检查
+    const outboundsHeight = textHeight + verticalAlignPadding > height;
+    if (textHeight > outboundsHeight) {
       const crop = new Crop({
         draw,
         rect,
       });
       crop.open();
-      const textLen = textArray.length;
-      let ti = 0;
-      while (ti < textLen) {
-        const item = textArray[ti];
+      for (let index = 0, length = textArray.length; index < length; index++) {
+        const item = textArray[index];
+        // 计算文本坐标
+        let bx = rect.x + (size / 2 - item.width / 2);
+        let by = rect.y;
+        // 计算文本对齐
+        switch (align) {
+          case BaseFont.ALIGN.left:
+            bx += alignPadding + (size / 2 - item.width / 2)
+            break;
+          case BaseFont.ALIGN.center:
+            bx += width / 2 - item.width / 2;
+            break;
+          case BaseFont.ALIGN.right:
+            bx += (width - item.width - alignPadding) - (size / 2 - item.width / 2);
+            break;
+        }
+        switch (verticalAlign) {
+          case BaseFont.VERTICAL_ALIGN.top:
+            by += verticalAlignPadding;
+            break;
+          case BaseFont.VERTICAL_ALIGN.center:
+            by += height / 2 - textHeight / 2;
+            break;
+          case BaseFont.VERTICAL_ALIGN.bottom:
+            by += height - textHeight - verticalAlignPadding;
+            break;
+        }
+        // 绘制文本
         const tx = item.tx + bx;
         const ty = item.ty + by;
-        draw.fillText(item.text, tx, ty);
+        draw.fillText(item.text, tx, ty + item.ascent);
         if (underline) {
-          this.drawingLine('underline', tx, ty, item.len, align, verticalAlign);
+          this.drawingLine('underline', tx, ty, item.width, align, verticalAlign);
         }
         if (strikethrough) {
-          this.drawingLine('strike', tx, ty, item.len, align, verticalAlign);
+          this.drawingLine('strike', tx, ty, item.width, align, verticalAlign);
         }
-        ti += 1;
       }
       crop.close();
     } else {
-      const textLen = textArray.length;
-      let ti = 0;
-      while (ti < textLen) {
-        const item = textArray[ti];
+      for (let index = 0, length = textArray.length; index < length; index++) {
+        const item = textArray[index];
+        // 计算文本坐标
+        let bx = rect.x + (size / 2 - item.width / 2);
+        let by = rect.y;
+        // 计算文本对齐
+        switch (align) {
+          case BaseFont.ALIGN.left:
+            bx += alignPadding + (size / 2 - item.width / 2)
+            break;
+          case BaseFont.ALIGN.center:
+            bx += width / 2 - item.width / 2;
+            break;
+          case BaseFont.ALIGN.right:
+            bx += (width - item.width - alignPadding) - (size / 2 - item.width / 2);
+            break;
+        }
+        switch (verticalAlign) {
+          case BaseFont.VERTICAL_ALIGN.top:
+            by += verticalAlignPadding;
+            break;
+          case BaseFont.VERTICAL_ALIGN.center:
+            by += height / 2 - textHeight / 2;
+            break;
+          case BaseFont.VERTICAL_ALIGN.bottom:
+            by += height - textHeight - verticalAlignPadding;
+            break;
+        }
+        // 绘制文本
         const tx = item.tx + bx;
         const ty = item.ty + by;
-        draw.fillText(item.text, tx, ty);
+        draw.fillText(item.text, tx, ty + item.ascent);
         if (underline) {
-          this.drawingLine('underline', tx, ty, item.len, align, verticalAlign);
+          this.drawingLine('underline', tx, ty, item.width, align, verticalAlign);
         }
         if (strikethrough) {
-          this.drawingLine('strike', tx, ty, item.len, align, verticalAlign);
+          this.drawingLine('strike', tx, ty, item.width, align, verticalAlign);
         }
-        ti += 1;
       }
     }
     return new DrawResult();
@@ -176,83 +203,113 @@ class VerticalDraw extends BaseFont {
     const { draw, ruler, attr } = this;
     const { rect } = this;
     const { width, height } = rect;
-    const { size, verticalAlign, underline } = attr;
-    const { strikethrough, align } = attr;
-    // 填充宽度
+    const { verticalAlign, underline } = attr;
+    const { size, strikethrough, align } = attr;
+    // 填充尺寸
     const verticalAlignPadding = this.getVerticalAlignPadding();
     const alignPadding = this.getAlignPadding();
     // 计算文本折行
     ruler.textWrapRuler();
     const {
       textWrapTextArray: textArray,
-      textWrapMaxLen: maxLen,
-      textWrapWOffset: wOffset,
+      textWrapTextWidth: textWidth,
+      textWrapHeightArray: heightArray,
     } = ruler;
-    // 计算文本坐标
-    let bx = rect.x;
-    let by = rect.y;
-    switch (align) {
-      case BaseFont.ALIGN.left:
-        bx += alignPadding;
-        break;
-      case BaseFont.ALIGN.center:
-        bx += width / 2 - wOffset / 2;
-        break;
-      case BaseFont.ALIGN.right:
-        bx += width - wOffset - alignPadding;
-        break;
-    }
-    switch (verticalAlign) {
-      case BaseFont.VERTICAL_ALIGN.top:
-        by += verticalAlignPadding;
-        break;
-      case BaseFont.VERTICAL_ALIGN.center:
-        by += height / 2 - maxLen / 2;
-        break;
-      case BaseFont.VERTICAL_ALIGN.bottom:
-        by += height - maxLen - verticalAlignPadding;
-        break;
-    }
     // 边界检查
-    const totalWidth = textArray.length * size;
-    const outboundsWidth = totalWidth + alignPadding > width;
+    const outboundsWidth = textWidth + alignPadding > width;
     if (outboundsWidth) {
-      const textLen = textArray.length;
       const crop = new Crop({
         draw,
         rect,
       });
       crop.open();
-      let ti = 0;
-      while (ti < textLen) {
-        const item = textArray[ti];
-        const tx = item.tx + bx;
-        const ty = item.ty + by;
-        draw.fillText(item.text, tx, ty);
-        if (underline) {
-          this.drawingLine('underline', tx, ty, item.len, align, verticalAlign);
+      for (let index = 0, length = textArray.length; index < length; index ++) {
+        const textLine = textArray[index];
+        const lineHeight = heightArray[index];
+        for (let index = 0, length = textLine.length; index < length; index ++) {
+          const item = textLine[index];
+          // 计算文本坐标
+          let bx = rect.x + (size / 2 - item.width / 2);
+          let by = rect.y;
+          // 计算文本对齐
+          switch (align) {
+            case BaseFont.ALIGN.left:
+              bx += alignPadding;
+              break;
+            case BaseFont.ALIGN.center:
+              bx += width / 2 - textWidth / 2;
+              break;
+            case BaseFont.ALIGN.right:
+              bx += width - textWidth - alignPadding;
+              break;
+          }
+          switch (verticalAlign) {
+            case BaseFont.VERTICAL_ALIGN.top:
+              by += verticalAlignPadding;
+              break;
+            case BaseFont.VERTICAL_ALIGN.center:
+              by += height / 2 - lineHeight / 2;
+              break;
+            case BaseFont.VERTICAL_ALIGN.bottom:
+              by += height - lineHeight - verticalAlignPadding;
+              break;
+          }
+          // 绘制文本
+          const tx = item.tx + bx;
+          const ty = item.ty + by;
+          draw.fillText(item.text, tx, ty + item.ascent);
+          if (underline) {
+            this.drawingLine('underline', tx, ty, item.width, align, verticalAlign);
+          }
+          if (strikethrough) {
+            this.drawingLine('strike', tx, ty, item.width, align, verticalAlign);
+          }
         }
-        if (strikethrough) {
-          this.drawingLine('strike', tx, ty, item.len, align, verticalAlign);
-        }
-        ti += 1;
       }
       crop.close();
     } else {
-      const textLen = textArray.length;
-      let ti = 0;
-      while (ti < textLen) {
-        const item = textArray[ti];
-        const tx = item.tx + bx;
-        const ty = item.ty + by;
-        draw.fillText(item.text, tx, ty);
-        if (underline) {
-          this.drawingLine('underline', tx, ty, item.len, align, verticalAlign);
+      for (let index = 0, length = textArray.length; index < length; index ++) {
+        const textLine = textArray[index];
+        const lineHeight = heightArray[index];
+        for (let index = 0, length = textLine.length; index < length; index ++) {
+          const item = textLine[index];
+          // 计算文本坐标
+          let bx = rect.x + (size / 2 - item.width / 2);
+          let by = rect.y;
+          // 计算文本对齐
+          switch (align) {
+            case BaseFont.ALIGN.left:
+              bx += alignPadding;
+              break;
+            case BaseFont.ALIGN.center:
+              bx += width / 2 - textWidth / 2;
+              break;
+            case BaseFont.ALIGN.right:
+              bx += width - textWidth - alignPadding;
+              break;
+          }
+          switch (verticalAlign) {
+            case BaseFont.VERTICAL_ALIGN.top:
+              by += verticalAlignPadding;
+              break;
+            case BaseFont.VERTICAL_ALIGN.center:
+              by += height / 2 - lineHeight / 2;
+              break;
+            case BaseFont.VERTICAL_ALIGN.bottom:
+              by += height - lineHeight - verticalAlignPadding;
+              break;
+          }
+          // 绘制文本
+          const tx = item.tx + bx;
+          const ty = item.ty + by;
+          draw.fillText(item.text, tx, ty + item.ascent);
+          if (underline) {
+            this.drawingLine('underline', tx, ty, item.width, align, verticalAlign);
+          }
+          if (strikethrough) {
+            this.drawingLine('strike', tx, ty, item.width, align, verticalAlign);
+          }
         }
-        if (strikethrough) {
-          this.drawingLine('strike', tx, ty, item.len, align, verticalAlign);
-        }
-        ti += 1;
       }
     }
     return new DrawResult();

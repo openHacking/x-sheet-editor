@@ -20,7 +20,67 @@
   const xSheet = new XSheet(dome, {
     workConfig: {
       body: {
-        sheets: [{}],
+        sheets: [{
+            name: '测试',
+            tableConfig: {
+                table: {},
+                rows: {
+                    data: [{}, {}, {height: 300}],
+                },
+                cols: {
+                    data: [],
+                },
+                merges: {
+                    data: [],
+                },
+                data: [
+                    [],[],
+                    [{}, {}, {}, {}, {}, {}, {
+                        ID: '1584265551097',
+                        text: 'Canvas Context',
+                        format: 'default',
+                        background: null,
+                        fontAttr: {
+                            align: 'left',
+                            verticalAlign: 'top',
+                            textWrap: 2,
+                            strikethrough: false,
+                            underline: false,
+                            color: 'rgb(0,0,0)',
+                            name: 'Arial',
+                            size: 30,
+                            bold: false,
+                            italic: false,
+                            angle: -45,
+                            direction: 'angle',
+                        },
+                        borderAttr: {
+                            time: '1584265551097',
+                            left: {
+                                display: true,
+                                width: 1,
+                                color: '#000000',
+                            },
+                            top: {
+                                display: true,
+                                width: 1,
+                                color: '#000000',
+                            },
+                            right: {
+                                display: true,
+                                width: 1,
+                                color: '#000000',
+                            },
+                            bottom: {
+                                display: true,
+                                width: 1,
+                                color: '#000000',
+                            },
+                        },
+                    }],
+                ],
+            },
+        }],
       },
     },
   });

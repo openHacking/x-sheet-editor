@@ -23,6 +23,7 @@ class FontSizeContextMenu extends ELContextMenu {
       new FontSizeContextMenuItem(18),
       new FontSizeContextMenuItem(24),
       new FontSizeContextMenuItem(36),
+      new FontSizeContextMenuItem(500),
     ];
     this.items.forEach((item) => {
       this.addItem(item);

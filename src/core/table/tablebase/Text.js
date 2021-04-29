@@ -58,8 +58,10 @@ class TextBuilder {
     }
     const buildRuler = builder.buildRuler();
     const buildFont = builder.buildFont();
-    buildFont.setRuler(buildRuler.equals(ruler) ? ruler : buildRuler);
-    cell.setRuler(buildFont.ruler);
+    const equals = buildRuler.equals(ruler);
+    const diffRuler = equals ? ruler : buildRuler;
+    cell.setRuler(diffRuler);
+    buildFont.setRuler(diffRuler);
     return buildFont;
   }
 

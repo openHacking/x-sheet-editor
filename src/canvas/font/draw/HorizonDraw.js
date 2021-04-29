@@ -7,9 +7,11 @@ class HorizonDraw extends BaseFont {
   constructor({
     draw, ruler, rect, overflow, lineHeight = 4, attr,
   }) {
-    super({ draw, ruler, attr });
-    this.rect = rect;
+    super({
+      draw, ruler, attr
+    });
     this.overflow = overflow;
+    this.rect = rect;
     this.lineHeight = lineHeight;
   }
 
@@ -20,11 +22,13 @@ class HorizonDraw extends BaseFont {
     }
     const { draw, attr } = this;
     const { textWrap } = attr;
-    const font = `${attr.italic ? 'italic' : ''} ${attr.bold ? 'bold' : ''} ${attr.size}px ${attr.name}`.trim();
+    const fontItalic = `${attr.italic ? 'italic' : ''}`;
+    const fontBold = `${attr.bold ? 'bold' : ''}`;
+    const fontName = `${attr.name}`;
+    const fontSize = `${attr.size}px`;
+    const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
     draw.attr({
-      textAlign: attr.align,
-      textBaseline: attr.verticalAlign,
-      font,
+      font: fontStyle.trim(),
       fillStyle: attr.color,
       strokeStyle: attr.color,
     });
@@ -122,12 +126,14 @@ class HorizonDraw extends BaseFont {
     const { draw, ruler, attr } = this;
     const { rect } = this;
     const { width, height } = rect;
-    const { underline, strikethrough, align, verticalAlign, size } = attr;
+    const { underline, strikethrough, align, verticalAlign } = attr;
     // 文字宽度
     ruler.truncateRuler();
     const {
       truncateText: text,
       truncateTextWidth: textWidth,
+      truncateTextHeight: textHeight,
+      truncateTextAscent: textAscent,
     } = ruler;
     // 填充宽度
     const verticalAlignPadding = this.getVerticalAlignPadding();
@@ -136,14 +142,14 @@ class HorizonDraw extends BaseFont {
     let bx = rect.x;
     let by = rect.y;
     switch (align) {
-      case BaseFont.ALIGN.center:
-        bx += width / 2;
-        break;
       case BaseFont.ALIGN.left:
         bx += alignPadding;
         break;
+      case BaseFont.ALIGN.center:
+        bx += width / 2 - textWidth / 2;
+        break;
       case BaseFont.ALIGN.right:
-        bx += width - alignPadding;
+        bx += width - textWidth - alignPadding;
         break;
     }
     switch (verticalAlign) {
@@ -151,14 +157,14 @@ class HorizonDraw extends BaseFont {
         by += verticalAlignPadding;
         break;
       case BaseFont.VERTICAL_ALIGN.center:
-        by += height / 2;
+        by += height / 2 - textHeight / 2;
         break;
       case BaseFont.VERTICAL_ALIGN.bottom:
-        by += height - verticalAlignPadding;
+        by += height - textHeight - verticalAlignPadding;
         break;
     }
     // 边界检查
-    const outboundsHeight = size + verticalAlignPadding > height;
+    const outboundsHeight = textHeight + verticalAlignPadding > height;
     const outboundsWidth = textWidth + alignPadding > width;
     if (outboundsHeight || outboundsWidth) {
       const crop = new Crop({
@@ -166,7 +172,7 @@ class HorizonDraw extends BaseFont {
         rect,
       });
       crop.open();
-      draw.fillText(text, bx, by);
+      draw.fillText(text, bx, by + textAscent);
       if (underline) {
         this.drawingLine('underline', bx, by, textWidth);
       }
@@ -175,7 +181,7 @@ class HorizonDraw extends BaseFont {
       }
       crop.close();
     } else {
-      draw.fillText(text, bx, by);
+      draw.fillText(text, bx, by + textAscent);
       if (underline) {
         this.drawingLine('underline', bx, by, textWidth);
       }
@@ -190,12 +196,14 @@ class HorizonDraw extends BaseFont {
     const { draw, ruler, attr } = this;
     const { rect, overflow } = this;
     const { width, height } = rect;
-    const { underline, strikethrough, align, verticalAlign, size } = attr;
+    const { underline, strikethrough, align, verticalAlign } = attr;
     // 文字宽度
     ruler.overflowRuler();
     const {
       overflowText: text,
       overflowTextWidth: textWidth,
+      overflowTextHeight: textHeight,
+      overflowTextAscent: textAscent,
     } = ruler;
     // 填充宽度
     const verticalAlignPadding = this.getVerticalAlignPadding();
@@ -208,10 +216,10 @@ class HorizonDraw extends BaseFont {
         bx += alignPadding;
         break;
       case BaseFont.ALIGN.center:
-        bx += width / 2;
+        bx += width / 2 - textWidth / 2;
         break;
       case BaseFont.ALIGN.right:
-        bx += width - alignPadding;
+        bx += width - textWidth - alignPadding;
         break;
     }
     switch (verticalAlign) {
@@ -219,14 +227,14 @@ class HorizonDraw extends BaseFont {
         by += verticalAlignPadding;
         break;
       case BaseFont.VERTICAL_ALIGN.center:
-        by += height / 2;
+        by += height / 2 - textHeight / 2;
         break;
       case BaseFont.VERTICAL_ALIGN.bottom:
-        by += height - verticalAlignPadding;
+        by += height -textHeight - verticalAlignPadding;
         break;
     }
     // 边界检查
-    const outboundsHeight = size + verticalAlignPadding > overflow.height;
+    const outboundsHeight = textHeight + verticalAlignPadding > overflow.height;
     const outboundsWidth = textWidth + alignPadding > overflow.width;
     let pointOffset = false;
     if (align === BaseFont.ALIGN.center) {
@@ -245,7 +253,7 @@ class HorizonDraw extends BaseFont {
         rect: overflow,
       });
       crop.open();
-      draw.fillText(text, bx, by);
+      draw.fillText(text, bx, by + textAscent);
       if (underline) {
         this.drawingLine('underline', bx, by, textWidth);
       }
@@ -254,7 +262,7 @@ class HorizonDraw extends BaseFont {
       }
       crop.close();
     } else {
-      draw.fillText(text, bx, by);
+      draw.fillText(text, bx, by + textAscent);
       if (underline) {
         this.drawingLine('underline', bx, by, textWidth);
       }
@@ -268,82 +276,106 @@ class HorizonDraw extends BaseFont {
   }
 
   textWrapDraw() {
-    const { draw, ruler, attr } = this;
-    const { rect, lineHeight } = this;
+    const { rect, draw, ruler, attr } = this;
     const { width, height } = rect;
-    const { underline, strikethrough, align, verticalAlign, size } = attr;
-    // 填充宽度
+    const { underline, strikethrough, align, verticalAlign } = attr;
+    // 填充尺寸
     const verticalAlignPadding = this.getVerticalAlignPadding();
     const alignPadding = this.getAlignPadding();
     // 计算文本折行
     ruler.textWrapRuler();
     const {
       textWrapTextArray: textArray,
-      textWrapHOffset: hOffset,
+      textWrapTextHeight: textHeight,
     } = ruler;
-    // 计算文本坐标
-    let bx = rect.x;
-    let by = rect.y;
-    switch (align) {
-      case BaseFont.ALIGN.left:
-        bx += alignPadding;
-        break;
-      case BaseFont.ALIGN.center:
-        bx += width / 2;
-        break;
-      case BaseFont.ALIGN.right:
-        bx += width - alignPadding;
-        break;
-      default:
-        break;
-    }
-    switch (verticalAlign) {
-      case BaseFont.VERTICAL_ALIGN.center:
-        by += height / 2 - hOffset / 2;
-        break;
-      case BaseFont.VERTICAL_ALIGN.top:
-        by += verticalAlignPadding;
-        break;
-      case BaseFont.VERTICAL_ALIGN.bottom:
-        by += height - hOffset - verticalAlignPadding;
-        break;
-    }
     // 边界检查
-    const totalHeight = (textArray.length * (size + lineHeight)) - lineHeight;
-    const outboundsHeight = totalHeight + verticalAlignPadding > height;
+    const outboundsHeight = textHeight > height;
     if (outboundsHeight) {
       const crop = new Crop({
         draw,
         rect,
       });
       crop.open();
-      const textLen = textArray.length;
-      let ti = 0;
-      while (ti < textLen) {
-        const item = textArray[ti];
+      for (let index = 0, textLength = textArray.length; index < textLength; index ++) {
+        // 文本信息
+        let item = textArray[index];
+        // 计算文本坐标
+        let bx = rect.x;
+        let by = rect.y;
+        // 对齐方式
+        switch (align) {
+          case BaseFont.ALIGN.left:
+            bx += alignPadding;
+            break;
+          case BaseFont.ALIGN.center:
+            bx += width / 2 - item.width / 2;
+            break;
+          case BaseFont.ALIGN.right:
+            bx += width - item.width - alignPadding;
+            break;
+        }
+        switch (verticalAlign) {
+          case BaseFont.VERTICAL_ALIGN.top:
+            by += verticalAlignPadding;
+            break;
+          case BaseFont.VERTICAL_ALIGN.center:
+            by += height / 2 - textHeight / 2;
+            break;
+          case BaseFont.VERTICAL_ALIGN.bottom:
+            by += height - textHeight - verticalAlignPadding;
+            break;
+        }
+        // 绘制文本
         const tx = item.tx + bx;
         const ty = item.ty + by;
-        draw.fillText(item.text, tx, ty);
+        draw.fillText(item.text, tx, ty + item.ascent);
         if (underline) {
-          this.drawingLine('underline', tx, ty, item.len);
+          this.drawingLine('underline', tx, ty, item.width);
         }
         if (strikethrough) {
-          this.drawingLine('strike', tx, ty, item.len);
+          this.drawingLine('strike', tx, ty, item.width);
         }
-        ti += 1;
       }
       crop.close();
     } else {
-      for (let i = 0, len = textArray.length; i < len; i += 1) {
-        const item = textArray[i];
+      for (let index = 0, textLength = textArray.length; index < textLength; index ++) {
+        // 文本信息
+        let item = textArray[index];
+        // 计算文本坐标
+        let bx = rect.x;
+        let by = rect.y;
+        // 对齐方式
+        switch (align) {
+          case BaseFont.ALIGN.left:
+            bx += alignPadding;
+            break;
+          case BaseFont.ALIGN.center:
+            bx += width / 2 - item.width / 2;
+            break;
+          case BaseFont.ALIGN.right:
+            bx += width - item.width - alignPadding;
+            break;
+        }
+        switch (verticalAlign) {
+          case BaseFont.VERTICAL_ALIGN.top:
+            by += verticalAlignPadding;
+            break;
+          case BaseFont.VERTICAL_ALIGN.center:
+            by += height / 2 - textHeight / 2;
+            break;
+          case BaseFont.VERTICAL_ALIGN.bottom:
+            by += height - textHeight - verticalAlignPadding;
+            break;
+        }
+        // 绘制文本
         const tx = item.tx + bx;
         const ty = item.ty + by;
-        draw.fillText(item.text, tx, ty);
+        draw.fillText(item.text, tx, ty + item.ascent);
         if (underline) {
-          this.drawingLine('underline', tx, ty, item.len);
+          this.drawingLine('underline', tx, ty, item.width);
         }
         if (strikethrough) {
-          this.drawingLine('strike', tx, ty, item.len);
+          this.drawingLine('strike', tx, ty, item.width);
         }
       }
     }

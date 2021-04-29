@@ -328,6 +328,14 @@ class PlainUtils {
     return undefined;
   }
 
+  static arrayHead(array) {
+    return array[0];
+  }
+
+  static arrayLast(array) {
+    return array[array.length - 1];
+  }
+
 }
 
 PlainUtils.EMPTY = '';

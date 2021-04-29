@@ -1588,13 +1588,19 @@ class XTableLeftIndexUI extends XTableIndexUI {
     const { sri, eri } = scrollView;
     draw.offset(dx, dy);
     draw.attr({
-      textAlign: 'center',
-      textBaseline: 'middle',
       font: `${index.getSize()}px Arial`,
       fillStyle: index.getColor(),
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
-      draw.fillText(i + 1, width / 2, y + (ch / 2));
+      const index = `${i + 1}`;
+      const metrics = draw.measureText(index);
+      const ascent = metrics.actualBoundingBoxAscent;
+      const descent = metrics.actualBoundingBoxDescent;
+      const fontWidth = metrics.width;
+      const fontHeight = ascent + descent;
+      const fx = (width / 2) - (fontWidth / 2);
+      const fy = y + ((ch / 2) - (fontHeight / 2)) + ascent;
+      draw.fillText(index, fx, fy);
     });
     draw.offset(0, 0);
   }
@@ -1685,13 +1691,19 @@ class XTableTopIndexUI extends XTableIndexUI {
     const { sci, eci } = scrollView;
     draw.offset(dx, dy);
     draw.attr({
-      textAlign: 'center',
-      textBaseline: 'middle',
       font: `${index.getSize()}px Arial`,
       fillStyle: index.getColor(),
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
-      draw.fillText(PlainUtils.stringAt(i), x + (cw / 2), height / 2);
+      const index = PlainUtils.stringAt(i);
+      const metrics = draw.measureText(index);
+      const ascent = metrics.actualBoundingBoxAscent;
+      const descent = metrics.actualBoundingBoxDescent;
+      const fontWidth = metrics.width;
+      const fontHeight = ascent + descent;
+      const fx = x + ((cw / 2) - fontWidth / 2);
+      const fy = ((height / 2) - fontHeight / 2)  + ascent;
+      draw.fillText(index, fx, fy);
     });
     draw.offset(0, 0);
   }
