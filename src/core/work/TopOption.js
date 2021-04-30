@@ -37,7 +37,7 @@ class TopOption extends Widget {
               new Alert({ message: '开发人员正在努力施工中....' }).open();
               break;
             case 2:
-              XlsxExport.export(work);
+              XlsxExport.exportXlsx(work);
               break;
             case 3:
               new Alert({ message: '开发人员正在努力施工中....' }).open();

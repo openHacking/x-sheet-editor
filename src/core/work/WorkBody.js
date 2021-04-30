@@ -303,17 +303,15 @@ class WorkBody extends Widget {
     return null;
   }
 
-  toJSONTemplate() {
-    const { activeIndex, sheetView, tabView } = this;
-    const sheet = sheetView.sheetList[activeIndex];
-    const tab = tabView.tabList[activeIndex];
-    if (sheet && tab) {
-      const { table } = sheet;
-      const {
-        rows, cols, settings,
-      } = table;
-      const cells = table.getTableCells();
+  toJson() {
+    const { activeIndex, sheetView } = this;
+    const { sheetList } = sheetView;
+    const sheet = sheetList[activeIndex];
+    if (sheet) {
+      const { table, tab } = sheet;
+      const { rows, cols, settings } = table;
       const merges = table.getTableMerges();
+      const cells = table.getTableCells();
       const data = {
         name: tab.name,
         tableConfig: {
@@ -321,18 +319,18 @@ class WorkBody extends Widget {
             showGrid: settings.table.showGrid,
             background: settings.table.background,
           },
-          rows: {
-            len: rows.len,
-            height: rows.height,
-            data: rows.getData(),
+          merge: {
+            merges: merges.getData(),
           },
           cols: {
             len: cols.len,
             width: cols.width,
             data: cols.getData(),
           },
-          merge: {
-            merges: merges.getData(),
+          rows: {
+            len: rows.len,
+            height: rows.height,
+            data: rows.getData(),
           },
           data: cells.getData(),
         },
@@ -340,6 +338,42 @@ class WorkBody extends Widget {
       const text = `window['${tab.name}'] = ${JSON.stringify(data)}`;
       Download(text, `${tab.name}.js`, 'application/x-javascript');
     }
+  }
+
+  toJsonAll() {
+    const {  sheetView } = this;
+    const { sheetList } = sheetView;
+    sheetList.forEach(sheet => {
+      const { table, tab } = sheet;
+      const { rows, cols, settings } = table;
+      const merges = table.getTableMerges();
+      const cells = table.getTableCells();
+      const data = {
+        name: tab.name,
+        tableConfig: {
+          table: {
+            showGrid: settings.table.showGrid,
+            background: settings.table.background,
+          },
+          merge: {
+            merges: merges.getData(),
+          },
+          cols: {
+            len: cols.len,
+            width: cols.width,
+            data: cols.getData(),
+          },
+          rows: {
+            len: rows.len,
+            height: rows.height,
+            data: rows.getData(),
+          },
+          data: cells.getData(),
+        },
+      };
+      const text = `window['${tab.name}'] = ${JSON.stringify(data)}`;
+      Download(text, `${tab.name}.js`, 'application/x-javascript');
+    });
   }
 
   destroy() {

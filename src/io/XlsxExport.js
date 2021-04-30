@@ -1,7 +1,7 @@
 /* global Blob */
+import Download from '../libs/donwload/Download';
 import ExcelJS from 'exceljs/dist/exceljs';
 import { XDraw } from '../canvas/XDraw';
-import Download from '../libs/donwload/Download';
 import { BaseFont } from '../canvas/font/BaseFont';
 import { ColorPicker } from '../component/colorpicker/ColorPicker';
 import { PlainUtils } from '../utils/PlainUtils';
@@ -18,14 +18,14 @@ class XlsxExport {
     return i - step;
   }
 
-  static export(work) {
+  static exportXlsx(work) {
     const { sheetView } = work.body;
     const { sheetList } = sheetView;
     // 创建工作薄
     const workbook = new ExcelJS.Workbook();
     workbook.lastModifiedBy = work.options.lastModifiedBy;
-    workbook.creator = work.options.creator;
     workbook.created = work.options.created;
+    workbook.creator = work.options.creator;
     workbook.modified = work.options.modified;
     // 添加工作表
     sheetList.forEach((sheet) => {
@@ -45,7 +45,7 @@ class XlsxExport {
       // 处理列宽
       const sheetColumns = [];
       cols.eachWidth(0, this.last(cols.len), (idx, width) => {
-        sheetColumns.push({ width: this.convertWidth(width) });
+        sheetColumns.push({ width: this.colWidth(width) });
       });
       worksheet.columns = sheetColumns;
       // 处理数据
@@ -55,7 +55,7 @@ class XlsxExport {
         .setEnd(this.last(rows.len))
         .setLoop((row) => {
           const workRow = worksheet.getRow(this.next(row));
-          workRow.height = this.convertHeight(rows.getHeight(row));
+          workRow.height = this.rowHeight(rows.getHeight(row));
           xIteratorBuilder.getColIterator()
             .setBegin(0)
             .setEnd(this.last(cols.len))
@@ -76,7 +76,7 @@ class XlsxExport {
                 // 字体样式
                 workCell.font = {
                   name: fontAttr.name,
-                  size: this.convertFontSize(fontAttr.size),
+                  size: this.fontsize(fontAttr.size),
                   color: {
                     argb: ColorPicker.parseRgbToHex(fontAttr.color),
                   },
@@ -106,28 +106,28 @@ class XlsxExport {
                 };
                 if (borderAttr.top.display) {
                   const { widthType, type, color } = borderAttr.top;
-                  workCell.border.top.style = this.convertBorderType(widthType, type);
+                  workCell.border.top.style = this.borderType(widthType, type);
                   workCell.border.top.color = {
                     argb: ColorPicker.parseRgbToHex(color),
                   };
                 }
                 if (borderAttr.left.display) {
                   const { widthType, type, color } = borderAttr.left;
-                  workCell.border.left.style = this.convertBorderType(widthType, type);
+                  workCell.border.left.style = this.borderType(widthType, type);
                   workCell.border.left.color = {
                     argb: ColorPicker.parseRgbToHex(color),
                   };
                 }
                 if (borderAttr.right.display) {
                   const { widthType, type, color } = borderAttr.right;
-                  workCell.border.right.style = this.convertBorderType(widthType, type);
+                  workCell.border.right.style = this.borderType(widthType, type);
                   workCell.border.right.color = {
                     argb: ColorPicker.parseRgbToHex(color),
                   };
                 }
                 if (borderAttr.bottom.display) {
                   const { widthType, type, color } = borderAttr.bottom;
-                  workCell.border.bottom.style = this.convertBorderType(widthType, type);
+                  workCell.border.bottom.style = this.borderType(widthType, type);
                   workCell.border.bottom.color = {
                     argb: ColorPicker.parseRgbToHex(color),
                   };
@@ -160,30 +160,30 @@ class XlsxExport {
         });
     });
     // 导出XLSX
-    workbook.xlsx
-      .writeBuffer().then((data) => {
+    workbook.xlsx.writeBuffer()
+      .then((data) => {
         Download(new Blob([data], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         }), `${work.options.name}.xlsx`);
       });
   }
 
-  static convertWidth(value) {
-    // 8.11 / 64.8
-    return value * 0.1251543209876543;
-  }
-
-  static convertHeight(value) {
+  static rowHeight(value) {
     // 13.2 / 20
     return value * 0.6599999999999999;
   }
 
-  static convertFontSize(value) {
+  static colWidth(value) {
+    // 8.11 / 64.8
+    return value * 0.1251543209876543;
+  }
+
+  static fontsize(value) {
     // 16 / 24
     return value * 0.6666666666666666;
   }
 
-  static convertBorderType(value, type) {
+  static borderType(value, type) {
     switch (type) {
       case LINE_TYPE.SOLID_LINE: {
         switch (value) {
