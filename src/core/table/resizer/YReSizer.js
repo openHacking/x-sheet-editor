@@ -35,7 +35,7 @@ class YReSizer extends Widget {
   bind() {
     const { table } = this;
     const {
-      rows, mousePointer, focus, xFixedView,
+      scale, rows, mousePointer, focus, xFixedView,
     } = table;
     const { tableDataSnapshot } = table;
     const { rowsDataProxy } = tableDataSnapshot;
@@ -63,7 +63,7 @@ class YReSizer extends Widget {
         }
         const newTop = my - (top - rows.getHeight(ri)) + this.height;
         tableDataSnapshot.begin();
-        rowsDataProxy.setHeight(ri, newTop);
+        rowsDataProxy.setHeight(ri, scale.back(newTop));
         tableDataSnapshot.end();
         table.resize();
       });
