@@ -93,7 +93,7 @@ class VerticalRuler extends VerticalVisual {
       textIndex += 1;
     }
     if (textHeight > 0) {
-      textHeight = textHeight - spacing;
+      textHeight -= spacing;
     }
     this.truncateTextArray = textArray;
     this.truncateTextHeight = textHeight;
@@ -164,7 +164,7 @@ class VerticalRuler extends VerticalVisual {
         innerIndex += 1;
       }
       // 将文本换行
-      textWidth += size + lineHeight
+      textWidth += size + lineHeight;
       // 保存当前行(如果存在的话)
       if (breakTextLine.length > 0) {
         textArray.push(breakTextLine);
@@ -174,7 +174,7 @@ class VerticalRuler extends VerticalVisual {
     }
     // 文本最大宽度
     if (textWidth > 0) {
-      textWidth = textWidth - lineHeight;
+      textWidth -= lineHeight;
     }
     this.textWrapTextWidth = textWidth;
     this.textWrapTextArray = textArray;

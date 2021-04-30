@@ -22,7 +22,7 @@ class HorizonVisual extends PlainRuler {
         let displayWidth = 0;
         let displayAscent = 0;
         let displayStart = 0;
-        let displayText = "";
+        let displayText = '';
         while (displayStart < length) {
           const measureText = displayText + text.charAt(displayStart);
           const measure = this.textSize(measureText);
@@ -40,7 +40,7 @@ class HorizonVisual extends PlainRuler {
           ascent: displayAscent,
           width: displayWidth,
           height: displayHeight,
-        }
+        };
       }
       case BaseFont.ALIGN.center: {
         const measure = this.textSize(text);
@@ -81,19 +81,19 @@ class HorizonVisual extends PlainRuler {
             ascent: displayAscent,
             width: displayWidth,
             height: displayHeight,
-          }
-        } else {
-          let displayText = text;
-          let displayHeight = measure.height;
-          let displayWidth = measure.width;
-          let displayAscent = measure.ascent;
-          return {
-            text: displayText,
-            ascent: displayAscent,
-            width: displayWidth,
-            height: displayHeight,
-          }
+          };
         }
+        let displayText = text;
+        let displayHeight = measure.height;
+        let displayWidth = measure.width;
+        let displayAscent = measure.ascent;
+        return {
+          text: displayText,
+          ascent: displayAscent,
+          width: displayWidth,
+          height: displayHeight,
+        };
+
       }
       case BaseFont.ALIGN.right: {
         let displayStart = length - 1;
@@ -130,7 +130,7 @@ class HorizonVisual extends PlainRuler {
   }
 
   getAlignPadding() {
-    const {align, padding} = this;
+    const { align, padding } = this;
     switch (align) {
       case BaseFont.ALIGN.center:
         return 0;

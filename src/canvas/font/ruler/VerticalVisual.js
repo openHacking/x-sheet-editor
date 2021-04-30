@@ -12,7 +12,7 @@ class VerticalVisual extends PlainRuler {
   }
 
   getVerticalAlignPadding() {
-    const {verticalAlign, padding} = this;
+    const { verticalAlign, padding } = this;
     switch (verticalAlign) {
       case BaseFont.VERTICAL_ALIGN.center:
         return 0;

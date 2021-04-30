@@ -4,9 +4,9 @@ import { XDraw } from '../canvas/XDraw';
 import Download from '../libs/donwload/Download';
 import { BaseFont } from '../canvas/font/BaseFont';
 import { ColorPicker } from '../component/colorpicker/ColorPicker';
-import {PlainUtils} from "../utils/PlainUtils";
-import {Cell} from "../core/table/tablecell/Cell";
-import {LINE_TYPE} from "../canvas/Line";
+import { PlainUtils } from '../utils/PlainUtils';
+import { Cell } from '../core/table/tablecell/Cell';
+import { LINE_TYPE } from '../canvas/Line';
 
 class XlsxExport {
 
@@ -126,7 +126,7 @@ class XlsxExport {
                   };
                 }
                 if (borderAttr.bottom.display) {
-                  const { widthType, type,  color } = borderAttr.bottom;
+                  const { widthType, type, color } = borderAttr.bottom;
                   workCell.border.bottom.style = this.convertBorderType(widthType, type);
                   workCell.border.bottom.color = {
                     argb: ColorPicker.parseRgbToHex(color),
@@ -188,7 +188,7 @@ class XlsxExport {
       case LINE_TYPE.SOLID_LINE: {
         switch (value) {
           case XDraw.LINE_WIDTH_TYPE.low:
-            return 'thin'
+            return 'thin';
           case XDraw.LINE_WIDTH_TYPE.medium:
             return 'medium';
           case XDraw.LINE_WIDTH_TYPE.high:
@@ -200,7 +200,7 @@ class XlsxExport {
         return 'dotted';
       }
       case LINE_TYPE.DOUBLE_LINE:
-        return "double";
+        return 'double';
       case LINE_TYPE.POINT_LINE:
         return 'dashDot';
     }

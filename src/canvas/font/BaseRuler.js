@@ -11,8 +11,8 @@ class BaseRuler {
     const width = metrics.width;
     const height = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
     return {
-      width, height, ascent: metrics.actualBoundingBoxAscent
-    }
+      width, height, ascent: metrics.actualBoundingBoxAscent,
+    };
   }
 
   // 文本测量性能杀手谨慎使用

@@ -25,8 +25,8 @@ class VerticalDraw extends BaseFont {
     const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
     draw.attr({
       font: fontStyle.trim(),
-      textAlign: "start",
-      textBaseline: "alphabetic",
+      textAlign: 'start',
+      textBaseline: 'alphabetic',
       fillStyle: attr.color,
       strokeStyle: attr.color,
     });
@@ -44,44 +44,43 @@ class VerticalDraw extends BaseFont {
     return new DrawResult();
   }
 
-  drawingLine(type, tx, ty, textWidth, align, verticalAlign) {
-    const { draw, attr } = this;
-    const { size } = attr;
+  drawingLine(type, tx, ty, textWidth, textHeight, align, verticalAlign) {
+    const { draw } = this;
     const s = [0, 0];
     const e = [0, 0];
     if (type === 'strike') {
       switch (align) {
-        case BaseFont.ALIGN.center:
         case BaseFont.ALIGN.left:
+        case BaseFont.ALIGN.center:
         case BaseFont.ALIGN.right:
           s[0] = tx;
           e[0] = tx + textWidth;
           break;
       }
       switch (verticalAlign) {
-        case BaseFont.VERTICAL_ALIGN.center:
         case BaseFont.VERTICAL_ALIGN.top:
+        case BaseFont.VERTICAL_ALIGN.center:
         case BaseFont.VERTICAL_ALIGN.bottom:
-          s[1] = ty + size / 2;
-          e[1] = ty + size / 2;
+          s[1] = ty + textHeight / 2;
+          e[1] = ty + textHeight / 2;
           break;
       }
     }
     if (type === 'underline') {
       switch (align) {
-        case BaseFont.ALIGN.center:
         case BaseFont.ALIGN.left:
+        case BaseFont.ALIGN.center:
         case BaseFont.ALIGN.right:
           s[0] = tx;
           e[0] = tx + textWidth;
           break;
       }
       switch (verticalAlign) {
-        case BaseFont.VERTICAL_ALIGN.center:
         case BaseFont.VERTICAL_ALIGN.top:
+        case BaseFont.VERTICAL_ALIGN.center:
         case BaseFont.VERTICAL_ALIGN.bottom:
-          s[1] = ty + size;
-          e[1] = ty + size;
+          s[1] = ty + textHeight;
+          e[1] = ty + textHeight;
           break;
       }
     }
@@ -119,7 +118,7 @@ class VerticalDraw extends BaseFont {
         // 计算文本对齐
         switch (align) {
           case BaseFont.ALIGN.left:
-            bx += alignPadding + (size / 2 - item.width / 2)
+            bx += alignPadding + (size / 2 - item.width / 2);
             break;
           case BaseFont.ALIGN.center:
             bx += width / 2 - item.width / 2;
@@ -144,10 +143,10 @@ class VerticalDraw extends BaseFont {
         const ty = item.ty + by;
         draw.fillText(item.text, tx, ty + item.ascent);
         if (underline) {
-          this.drawingLine('underline', tx, ty, item.width, align, verticalAlign);
+          this.drawingLine('underline', tx, ty, item.width, item.height, align, verticalAlign);
         }
         if (strikethrough) {
-          this.drawingLine('strike', tx, ty, item.width, align, verticalAlign);
+          this.drawingLine('strike', tx, ty, item.width, item.height, align, verticalAlign);
         }
       }
       crop.close();
@@ -160,7 +159,7 @@ class VerticalDraw extends BaseFont {
         // 计算文本对齐
         switch (align) {
           case BaseFont.ALIGN.left:
-            bx += alignPadding + (size / 2 - item.width / 2)
+            bx += alignPadding + (size / 2 - item.width / 2);
             break;
           case BaseFont.ALIGN.center:
             bx += width / 2 - item.width / 2;
@@ -185,10 +184,10 @@ class VerticalDraw extends BaseFont {
         const ty = item.ty + by;
         draw.fillText(item.text, tx, ty + item.ascent);
         if (underline) {
-          this.drawingLine('underline', tx, ty, item.width, align, verticalAlign);
+          this.drawingLine('underline', tx, ty, item.width, item.height, align, verticalAlign);
         }
         if (strikethrough) {
-          this.drawingLine('strike', tx, ty, item.width, align, verticalAlign);
+          this.drawingLine('strike', tx, ty, item.width, item.height, align, verticalAlign);
         }
       }
     }
@@ -223,10 +222,10 @@ class VerticalDraw extends BaseFont {
         rect,
       });
       crop.open();
-      for (let index = 0, length = textArray.length; index < length; index ++) {
+      for (let index = 0, length = textArray.length; index < length; index++) {
         const textLine = textArray[index];
         const lineHeight = heightArray[index];
-        for (let index = 0, length = textLine.length; index < length; index ++) {
+        for (let index = 0, length = textLine.length; index < length; index++) {
           const item = textLine[index];
           // 计算文本坐标
           let bx = rect.x + (size / 2 - item.width / 2);
@@ -259,19 +258,19 @@ class VerticalDraw extends BaseFont {
           const ty = item.ty + by;
           draw.fillText(item.text, tx, ty + item.ascent);
           if (underline) {
-            this.drawingLine('underline', tx, ty, item.width, align, verticalAlign);
+            this.drawingLine('underline', tx, ty, item.width, item.height, align, verticalAlign);
           }
           if (strikethrough) {
-            this.drawingLine('strike', tx, ty, item.width, align, verticalAlign);
+            this.drawingLine('strike', tx, ty, item.width, item.height, align, verticalAlign);
           }
         }
       }
       crop.close();
     } else {
-      for (let index = 0, length = textArray.length; index < length; index ++) {
+      for (let index = 0, length = textArray.length; index < length; index++) {
         const textLine = textArray[index];
         const lineHeight = heightArray[index];
-        for (let index = 0, length = textLine.length; index < length; index ++) {
+        for (let index = 0, length = textLine.length; index < length; index++) {
           const item = textLine[index];
           // 计算文本坐标
           let bx = rect.x + (size / 2 - item.width / 2);
@@ -304,10 +303,10 @@ class VerticalDraw extends BaseFont {
           const ty = item.ty + by;
           draw.fillText(item.text, tx, ty + item.ascent);
           if (underline) {
-            this.drawingLine('underline', tx, ty, item.width, align, verticalAlign);
+            this.drawingLine('underline', tx, ty, item.width, item.height, align, verticalAlign);
           }
           if (strikethrough) {
-            this.drawingLine('strike', tx, ty, item.width, align, verticalAlign);
+            this.drawingLine('strike', tx, ty, item.width, item.height, align, verticalAlign);
           }
         }
       }

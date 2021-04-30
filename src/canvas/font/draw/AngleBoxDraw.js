@@ -49,22 +49,46 @@ class AngleBoxDraw extends BaseFont {
     return new DrawResult();
   }
 
-  drawingLine(type, tx, ty, textWidth) {
+  drawingLine(type, tx, ty, textWidth, textHeight) {
     const { draw, attr } = this;
-    const { size } = attr;
+    const { verticalAlign, align } = attr;
     const s = [0, 0];
     const e = [0, 0];
     if (type === 'strike') {
-      s[0] = tx;
-      e[0] = tx + textWidth;
-      s[1] = ty + size / 2;
-      e[1] = ty + size / 2;
+      switch (align) {
+        case BaseFont.ALIGN.left:
+        case BaseFont.ALIGN.center:
+        case BaseFont.ALIGN.right:
+          s[0] = tx;
+          e[0] = tx + textWidth;
+          break;
+      }
+      switch (verticalAlign) {
+        case BaseFont.VERTICAL_ALIGN.top:
+        case BaseFont.VERTICAL_ALIGN.center:
+        case BaseFont.VERTICAL_ALIGN.bottom:
+          s[1] = ty + textHeight / 2;
+          e[1] = ty + textHeight / 2;
+          break;
+      }
     }
     if (type === 'underline') {
-      s[0] = tx;
-      e[0] = tx + textWidth;
-      s[1] = ty + size;
-      e[1] = ty + size;
+      switch (align) {
+        case BaseFont.ALIGN.left:
+        case BaseFont.ALIGN.center:
+        case BaseFont.ALIGN.right:
+          s[0] = tx;
+          e[0] = tx + textWidth;
+          break;
+      }
+      switch (verticalAlign) {
+        case BaseFont.VERTICAL_ALIGN.top:
+        case BaseFont.VERTICAL_ALIGN.center:
+        case BaseFont.VERTICAL_ALIGN.bottom:
+          s[1] = ty + textHeight;
+          e[1] = ty + textHeight;
+          break;
+      }
     }
     draw.line(s, e);
   }
@@ -152,10 +176,10 @@ class AngleBoxDraw extends BaseFont {
       const ty = rty + (blockHeight / 2 - textHeight / 2);
       draw.fillText(text, tx, ty + textAscent);
       if (underline) {
-        this.drawingLine('underline', tx, ty, textWidth);
+        this.drawingLine('underline', tx, ty, textWidth, textHeight);
       }
       if (strikethrough) {
-        this.drawingLine('strike', tx, ty, textWidth);
+        this.drawingLine('strike', tx, ty, textWidth, textHeight);
       }
       dwAngle.revert();
       crop.close();
@@ -175,10 +199,10 @@ class AngleBoxDraw extends BaseFont {
       const ty = rty + (blockHeight / 2 - textHeight / 2);
       draw.fillText(text, tx, ty + textAscent);
       if (underline) {
-        this.drawingLine('underline', tx, ty, textWidth);
+        this.drawingLine('underline', tx, ty, textWidth, textHeight);
       }
       if (strikethrough) {
-        this.drawingLine('strike', tx, ty, textWidth);
+        this.drawingLine('strike', tx, ty, textWidth, textHeight);
       }
       dwAngle.revert();
     }
@@ -249,7 +273,7 @@ class AngleBoxDraw extends BaseFont {
         break;
     }
     // 绘制文本
-    for (let index = 0, length = textArray.length; index < length; index ++) {
+    for (let index = 0, length = textArray.length; index < length; index++) {
       const item = textArray[index];
       const ax = item.tx + rtx;
       const ay = item.ty + rty;
@@ -265,13 +289,13 @@ class AngleBoxDraw extends BaseFont {
       });
       dwAngle.rotate();
       const tx = ax + (item.blockWidth / 2 - item.width / 2);
-      const ty = ay + (item.blockHeight/ 2 - item.height / 2);
+      const ty = ay + (item.blockHeight / 2 - item.height / 2);
       draw.fillText(item.text, tx, ty + item.ascent);
       if (underline) {
-        this.drawingLine('underline', tx, ty, item.width);
+        this.drawingLine('underline', tx, ty, item.width, item.height);
       }
       if (strikethrough) {
-        this.drawingLine('strike', tx, ty, item.width);
+        this.drawingLine('strike', tx, ty, item.width, item.height);
       }
       dwAngle.revert();
     }

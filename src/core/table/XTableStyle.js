@@ -1702,7 +1702,7 @@ class XTableTopIndexUI extends XTableIndexUI {
       const fontWidth = metrics.width;
       const fontHeight = ascent + descent;
       const fx = x + ((cw / 2) - fontWidth / 2);
-      const fy = ((height / 2) - fontHeight / 2)  + ascent;
+      const fy = ((height / 2) - fontHeight / 2) + ascent;
       draw.fillText(index, fx, fy);
     });
     draw.offset(0, 0);

@@ -4,20 +4,20 @@ import { Rect } from '../../Rect';
 import { Crop } from '../../Crop';
 import { Angle } from '../../Angle';
 import { DrawResult } from '../DrawResult';
-import {PlainUtils} from "../../../utils/PlainUtils";
+import { PlainUtils } from '../../../utils/PlainUtils';
 
 class AngleBarDraw extends BaseFont {
 
   constructor({
     draw, ruler, rect, overflow, lineHeight = 4, attr,
   }) {
-super({
-draw, ruler, attr,
-});
-this.rect = rect;
-this.overflow = overflow;
-this.lineHeight = lineHeight;
-}
+    super({
+      draw, ruler, attr,
+    });
+    this.rect = rect;
+    this.overflow = overflow;
+    this.lineHeight = lineHeight;
+  }
 
   drawingFont() {
     const { ruler } = this;
@@ -50,22 +50,46 @@ this.lineHeight = lineHeight;
     return new DrawResult();
   }
 
-  drawingLine(type, tx, ty, textWidth) {
+  drawingLine(type, tx, ty, textWidth, textHeight) {
     const { draw, attr } = this;
-    const { size } = attr;
+    const { verticalAlign, align } = attr;
     const s = [0, 0];
     const e = [0, 0];
     if (type === 'strike') {
-      s[0] = tx;
-      e[0] = tx + textWidth;
-      s[1] = ty + size / 2;
-      e[1] = ty + size / 2;
+      switch (align) {
+        case BaseFont.ALIGN.left:
+        case BaseFont.ALIGN.center:
+        case BaseFont.ALIGN.right:
+          s[0] = tx;
+          e[0] = tx + textWidth;
+          break;
+      }
+      switch (verticalAlign) {
+        case BaseFont.VERTICAL_ALIGN.top:
+        case BaseFont.VERTICAL_ALIGN.center:
+        case BaseFont.VERTICAL_ALIGN.bottom:
+          s[1] = ty + textHeight / 2;
+          e[1] = ty + textHeight / 2;
+          break;
+      }
     }
     if (type === 'underline') {
-      s[0] = tx;
-      e[0] = tx + textWidth;
-      s[1] = ty + size;
-      e[1] = ty + size;
+      switch (align) {
+        case BaseFont.ALIGN.left:
+        case BaseFont.ALIGN.center:
+        case BaseFont.ALIGN.right:
+          s[0] = tx;
+          e[0] = tx + textWidth;
+          break;
+      }
+      switch (verticalAlign) {
+        case BaseFont.VERTICAL_ALIGN.top:
+        case BaseFont.VERTICAL_ALIGN.center:
+        case BaseFont.VERTICAL_ALIGN.bottom:
+          s[1] = ty + textHeight;
+          e[1] = ty + textHeight;
+          break;
+      }
     }
     draw.line(s, e);
   }
@@ -77,7 +101,7 @@ this.lineHeight = lineHeight;
   overflowDraw() {
     const { draw, ruler, attr } = this;
     const { rect } = this;
-    const { width, height } = rect;
+    const { x, y, width, height } = rect;
     const { underline, strikethrough, align, verticalAlign } = attr;
     // 填充宽度
     const verticalAlignPadding = this.getVerticalAlignPadding();
@@ -99,7 +123,7 @@ this.lineHeight = lineHeight;
       angle,
     });
     const tiltWidth = RTCosKit.nearby({
-      tilt: tilt,
+      tilt,
       angle,
     });
     // 文本长度
@@ -111,6 +135,7 @@ this.lineHeight = lineHeight;
       overflowTextAscent: textAscent,
       overflowBlockWidth: blockWidth,
       overflowBlockHeight: blockHeight,
+      overflowTextCenterX: textCenterX,
     } = ruler;
     // 文本的仰角范围
     if (angle > 0) {
@@ -119,16 +144,17 @@ this.lineHeight = lineHeight;
         x, y, width: tiltWidth + width, height,
       });
       // 计算文本绘制位置
-      let rtx = rect.x;
-      let rty = rect.y;
+      let rtx = x;
+      let rty = y;
       switch (verticalAlign) {
         case BaseFont.VERTICAL_ALIGN.top: {
           rty += verticalAlignPadding;
-          rtx -= verticalAlignPadding;
+          rtx += tiltWidth - blockWidth - verticalAlignPadding;
           break;
         }
         case BaseFont.VERTICAL_ALIGN.center: {
-          rty += (height / 2 - blockHeight / 2);
+          rty += height / 2 - blockHeight / 2;
+          rtx += tiltWidth / 2 - blockWidth / 2;
           break;
         }
         case BaseFont.VERTICAL_ALIGN.bottom: {
@@ -139,23 +165,27 @@ this.lineHeight = lineHeight;
       }
       switch (align) {
         case BaseFont.ALIGN.left: {
-          const diff = RTSinKit.tilt({
+          const hat = RTSinKit.tilt({
             inverse: textHeight / 2,
             angle,
           });
-          rtx += tiltWidth - blockWidth + diff + alignPadding;
+          rtx = rtx + alignPadding + hat;
           break;
         }
         case BaseFont.ALIGN.center: {
-          rtx += (tiltWidth + width) / 2 - blockWidth / 2
+          const offset = rtx + width / 2;
+          const center = offset + blockWidth / 2;
+          rtx = center - textCenterX;
           break;
         }
         case BaseFont.ALIGN.right: {
-          const diff = RTSinKit.tilt({
+          const hat = RTSinKit.tilt({
             inverse: textHeight / 2,
             angle,
           });
-          rtx += tiltWidth + width - blockWidth - diff - alignPadding;
+          const offset = rtx + width;
+          const right = offset + blockWidth;
+          rtx = right - blockWidth - alignPadding - hat;
           break;
         }
       }
@@ -183,10 +213,10 @@ this.lineHeight = lineHeight;
         const ty = rty + (blockHeight / 2 - textHeight / 2);
         draw.fillText(text, tx, ty + textAscent);
         if (underline) {
-          this.drawingLine('underline', tx, ty, textWidth);
+          this.drawingLine('underline', tx, ty, textWidth, textHeight);
         }
         if (strikethrough) {
-          this.drawingLine('strike', tx, ty, textWidth);
+          this.drawingLine('strike', tx, ty, textWidth, textHeight);
         }
         dwAngle.revert();
         crop.close();
@@ -206,111 +236,127 @@ this.lineHeight = lineHeight;
         const ty = rty + (blockHeight / 2 - textHeight / 2);
         draw.fillText(text, tx, ty + textAscent);
         if (underline) {
-          this.drawingLine('underline', tx, ty, textWidth);
+          this.drawingLine('underline', tx, ty, textWidth, textHeight);
         }
         if (strikethrough) {
-          this.drawingLine('strike', tx, ty, textWidth);
+          this.drawingLine('strike', tx, ty, textWidth, textHeight);
         }
         dwAngle.revert();
       }
       // 文本宽度
-      const haveWidth = tiltWidth + width;
       return new DrawResult({
-        width: haveWidth, leftSdist: tiltWidth, rightSdist: 0,
-      });
-    } else {
-      // 可溢出区域
-      const overflow = new Rect({
-        x: x - tiltWidth, y, width: tiltWidth + width, height,
-      });
-      // 相对偏移量
-      let rtx = 0;
-      let rty = 0;
-      switch (verticalAlign) {
-        case BaseFont.VERTICAL_ALIGN.top:
-          rtx = x - tiltWidth + verticalAlignPadding;
-          rty = y + verticalAlignPadding;
-          break;
-        case BaseFont.VERTICAL_ALIGN.center:
-          rtx = x - (tiltWidth / 2 + blockWidth / 2) + verticalAlignPadding;
-          rty = y + (height / 2 - blockHeight / 2) + verticalAlignPadding;
-          break;
-        case BaseFont.VERTICAL_ALIGN.bottom:
-          rtx = x - blockWidth - verticalAlignPadding;
-          rty = y + (height - blockHeight) - verticalAlignPadding;
-          break;
-      }
-      switch (align) {
-        case BaseFont.ALIGN.left:
-          rtx += textHeight / 2 + alignPadding;
-          break;
-        case BaseFont.ALIGN.center:
-          rtx += width / 2;
-          break;
-        case BaseFont.ALIGN.right:
-          rtx += width - textHeight / 2 - alignPadding;
-          break;
-      }
-      // 边界检查
-      const outboundsHeight = blockHeight + verticalAlignPadding > overflow.height;
-      const outboundsWidth = blockWidth + alignPadding > overflow.width;
-      if (outboundsHeight || outboundsWidth) {
-        const crop = new Crop({
-          draw,
-          rect: overflow,
-        });
-        const dwAngle = new Angle({
-          draw,
-          angle,
-          rect: new Rect({
-            x: rtx,
-            y: rty,
-            width: blockWidth,
-            height: blockHeight,
-          }),
-        });
-        crop.open();
-        dwAngle.rotate();
-        const tx = rtx + (blockWidth / 2 - textWidth / 2);
-        const ty = rty + (blockHeight / 2 - textHeight / 2);
-        draw.fillText(text, tx, ty + textAscent);
-        if (underline) {
-          this.drawingLine('underline', tx, ty, textWidth);
-        }
-        if (strikethrough) {
-          this.drawingLine('strike', tx, ty, textWidth);
-        }
-        dwAngle.revert();
-        crop.close();
-      } else {
-        const dwAngle = new Angle({
-          draw,
-          angle,
-          rect: new Rect({
-            x: rtx,
-            y: rty,
-            width: blockWidth,
-            height: blockHeight,
-          }),
-        });
-        dwAngle.rotate();
-        const tx = rtx + (blockWidth / 2 - textWidth / 2);
-        const ty = rty + (blockHeight / 2 - textHeight / 2);
-        draw.fillText(text, tx, ty + textAscent);
-        if (underline) {
-          this.drawingLine('underline', tx, ty, textWidth);
-        }
-        if (strikethrough) {
-          this.drawingLine('strike', tx, ty, textWidth);
-        }
-        dwAngle.revert();
-      }
-      // 文本宽度
-      const haveWidth = tiltWidth + width;
-      return new DrawResult({
-        width: haveWidth, leftSdist: 0, rightSdist: tiltWidth,
+        width: tiltWidth + width,
+        rightSdist: 0,
+        leftSdist: tiltWidth,
       });
     }
+    // 可溢出区域
+    const overflow = new Rect({
+      x: x - tiltWidth, y, width: tiltWidth + width, height,
+    });
+      // 相对偏移量
+    let rtx = x;
+    let rty = y;
+    switch (verticalAlign) {
+      case BaseFont.VERTICAL_ALIGN.top:
+        rty += verticalAlignPadding;
+        rtx -= tiltWidth - verticalAlignPadding;
+        break;
+      case BaseFont.VERTICAL_ALIGN.center:
+        rty += height / 2 - blockHeight / 2;
+        rtx -= tiltWidth / 2 + blockWidth / 2;
+        break;
+      case BaseFont.VERTICAL_ALIGN.bottom:
+        rty += (height - blockHeight) - verticalAlignPadding;
+        rtx -= blockWidth + verticalAlignPadding;
+        break;
+    }
+    switch (align) {
+      case BaseFont.ALIGN.left: {
+        const hat = RTSinKit.tilt({
+          inverse: textHeight / 2,
+          angle,
+        });
+        rtx = rtx + alignPadding + hat;
+        break;
+      }
+      case BaseFont.ALIGN.center: {
+        const offset = rtx + width / 2;
+        const center = offset + blockWidth / 2;
+        rtx = center - textCenterX;
+        break;
+      }
+      case BaseFont.ALIGN.right: {
+        const hat = RTSinKit.tilt({
+          inverse: textHeight / 2,
+          angle,
+        });
+        const offset = rtx + width;
+        const right = offset + blockWidth;
+        rtx = right - blockWidth - alignPadding - hat;
+        break;
+      }
+    }
+    // 边界检查
+    const outboundsHeight = blockHeight + verticalAlignPadding > overflow.height;
+    const outboundsWidth = blockWidth + alignPadding > overflow.width;
+    if (outboundsHeight || outboundsWidth) {
+      const crop = new Crop({
+        draw,
+        rect: overflow,
+      });
+      const dwAngle = new Angle({
+        draw,
+        angle,
+        rect: new Rect({
+          x: rtx,
+          y: rty,
+          width: blockWidth,
+          height: blockHeight,
+        }),
+      });
+      crop.open();
+      dwAngle.rotate();
+      const tx = rtx + (blockWidth / 2 - textWidth / 2);
+      const ty = rty + (blockHeight / 2 - textHeight / 2);
+      draw.fillText(text, tx, ty + textAscent);
+      if (underline) {
+        this.drawingLine('underline', tx, ty, textWidth, textHeight);
+      }
+      if (strikethrough) {
+        this.drawingLine('strike', tx, ty, textWidth, textHeight);
+      }
+      dwAngle.revert();
+      crop.close();
+    } else {
+      const dwAngle = new Angle({
+        draw,
+        angle,
+        rect: new Rect({
+          x: rtx,
+          y: rty,
+          width: blockWidth,
+          height: blockHeight,
+        }),
+      });
+      dwAngle.rotate();
+      const tx = rtx + (blockWidth / 2 - textWidth / 2);
+      const ty = rty + (blockHeight / 2 - textHeight / 2);
+      draw.fillText(text, tx, ty + textAscent);
+      if (underline) {
+        this.drawingLine('underline', tx, ty, textWidth, textHeight);
+      }
+      if (strikethrough) {
+        this.drawingLine('strike', tx, ty, textWidth, textHeight);
+      }
+      dwAngle.revert();
+    }
+    // 文本宽度
+    return new DrawResult({
+      width: tiltWidth + width,
+      leftSdist: 0,
+      rightSdist: tiltWidth,
+    });
   }
 
   textWrapDraw() {
@@ -336,7 +382,7 @@ this.lineHeight = lineHeight;
     const {
       textWrapTextArray: textArray,
       textWrapTextWidth: textWidth,
-      textWrapCenterX: textCenterX,
+      textWrapTextCenterX: textCenterX,
       textWrapTextHeight: textHeight,
     } = ruler;
     // 斜边的大小
@@ -345,7 +391,7 @@ this.lineHeight = lineHeight;
       angle,
     });
     const tiltWidth = RTCosKit.nearby({
-      tilt: tilt,
+      tilt,
       angle,
     });
     // 文本的仰角范围
@@ -363,7 +409,7 @@ this.lineHeight = lineHeight;
           break;
         }
         case BaseFont.VERTICAL_ALIGN.center: {
-          rty += (height / 2 - textHeight / 2);
+          rty += height / 2 - textHeight / 2;
           rtx += tiltWidth / 2 - head.blockWidth / 2;
           break;
         }
@@ -415,11 +461,11 @@ this.lineHeight = lineHeight;
       if (outbounds) {
         const crop = new Crop({
           rect: overflow,
-          draw
+          draw,
         });
         crop.open();
         // 绘制文本
-        for (let index = 0, length = textArray.length; index < length; index ++) {
+        for (let index = 0, length = textArray.length; index < length; index++) {
           const item = textArray[index];
           const ax = rtx + item.tx;
           const ay = rty + item.ty;
@@ -438,17 +484,17 @@ this.lineHeight = lineHeight;
           const ty = ay + (item.blockHeight / 2 - item.height / 2);
           draw.fillText(item.text, tx, ty + item.ascent);
           if (underline) {
-            this.drawingLine('underline', tx, ty, item.width);
+            this.drawingLine('underline', tx, ty, item.width, item.height);
           }
           if (strikethrough) {
-            this.drawingLine('strike', tx, ty, item.width);
+            this.drawingLine('strike', tx, ty, item.width, item.height);
           }
           dwAngle.revert();
         }
         crop.close();
       } else {
         // 绘制文本
-        for (let index = 0, length = textArray.length; index < length; index ++) {
+        for (let index = 0, length = textArray.length; index < length; index++) {
           const item = textArray[index];
           const ax = rtx + item.tx;
           const ay = rty + item.ty;
@@ -467,10 +513,10 @@ this.lineHeight = lineHeight;
           const ty = ay + (item.blockHeight / 2 - item.height / 2);
           draw.fillText(item.text, tx, ty + item.ascent);
           if (underline) {
-            this.drawingLine('underline', tx, ty, item.width);
+            this.drawingLine('underline', tx, ty, item.width, item.height);
           }
           if (strikethrough) {
-            this.drawingLine('strike', tx, ty, item.width);
+            this.drawingLine('strike', tx, ty, item.width, item.height);
           }
           dwAngle.revert();
         }
@@ -481,146 +527,145 @@ this.lineHeight = lineHeight;
       const rectX = x + maxWidth;
       const diffX = textX - rectX;
       return new DrawResult({
-        width: diffX > 0 ? maxWidth + diffX : maxWidth,
+        width: diffX > 0 ? maxWidth + diffX + alignPadding : maxWidth,
         rightSdist: 0,
         leftSdist: tiltWidth,
       });
-    } else {
-        // 相对偏移量
-        const head = PlainUtils.arrayHead(textArray);
-        const last = PlainUtils.arrayLast(textArray);
-        let rtx = x;
-        let rty = y;
-        switch (verticalAlign) {
-            case BaseFont.VERTICAL_ALIGN.top: {
-                rty += verticalAlignPadding;
-                rtx -= tiltWidth - verticalAlignPadding;
-                break;
-            }
-            case BaseFont.VERTICAL_ALIGN.center: {
-                rty += (height / 2 - textHeight / 2);
-                rtx -= tiltWidth / 2 + head.blockWidth / 2;
-                break;
-            }
-            case BaseFont.VERTICAL_ALIGN.bottom: {
-                rty += (height - textHeight) - verticalAlignPadding;
-                rtx -= head.blockWidth + verticalAlignPadding;
-                break;
-            }
-        }
-        switch (align) {
-          case BaseFont.ALIGN.left: {
-            const hat = RTSinKit.tilt({
-              inverse: head.height / 2,
-              angle,
-            });
-            rtx = rtx + alignPadding + hat;
-            break;
-          }
-          case BaseFont.ALIGN.center: {
-            const offset = rtx + width / 2;
-            const center = offset + head.blockWidth / 2;
-            rtx = center - textCenterX;
-            break;
-          }
-          case BaseFont.ALIGN.right: {
-            const hat = RTSinKit.tilt({
-              inverse: last.height / 2,
-              angle,
-            });
-            const offset = rtx + width;
-            const right = offset + head.blockWidth;
-            rtx = right - textWidth - alignPadding - hat;
-            break;
-          }
-        }
-        // 边界检查
-        let outbounds = false;
-        switch (align) {
-            case BaseFont.ALIGN.center:
-            case BaseFont.ALIGN.left: {
-                outbounds = overflow.x + overflow.width  < rtx + textWidth;
-                break;
-            }
-            case BaseFont.ALIGN.right: {
-                outbounds = rtx < overflow.x;
-                break;
-            }
-        }
-        if (outbounds) {
-            const crop = new Crop({
-                rect: overflow,
-                draw
-            });
-            crop.open();
-            // 绘制文本
-            for (let index = 0, length = textArray.length; index < length; index ++) {
-                const item = textArray[index];
-                const ax = rtx + item.tx;
-                const ay = rty + item.ty;
-                const dwAngle = new Angle({
-                    draw,
-                    angle,
-                    rect: new Rect({
-                        x: ax,
-                        y: ay,
-                        width: item.blockWidth,
-                        height: item.blockHeight,
-                    }),
-                });
-                dwAngle.rotate();
-                const tx = ax + (item.blockWidth / 2 - item.width / 2);
-                const ty = ay + (item.blockHeight / 2 - item.height / 2);
-                draw.fillText(item.text, tx, ty + item.ascent);
-                if (underline) {
-                    this.drawingLine('underline', tx, ty, item.width);
-                }
-                if (strikethrough) {
-                    this.drawingLine('strike', tx, ty, item.width);
-                }
-                dwAngle.revert();
-            }
-            crop.close();
-        } else {
-            // 绘制文本
-            for (let index = 0, length = textArray.length; index < length; index ++) {
-                const item = textArray[index];
-                const ax = rtx + item.tx;
-                const ay = rty + item.ty;
-                const dwAngle = new Angle({
-                    draw,
-                    angle,
-                    rect: new Rect({
-                        x: ax,
-                        y: ay,
-                        width: item.blockWidth,
-                        height: item.blockHeight,
-                    }),
-                });
-                dwAngle.rotate();
-                const tx = ax + (item.blockWidth / 2 - item.width / 2);
-                const ty = ay + (item.blockHeight / 2 - item.height / 2);
-                draw.fillText(item.text, tx, ty + item.ascent);
-                if (underline) {
-                    this.drawingLine('underline', tx, ty, item.width);
-                }
-                if (strikethrough) {
-                    this.drawingLine('strike', tx, ty, item.width);
-                }
-                dwAngle.revert();
-            }
-        }
-        // 实际宽度
-        const maxWidth = tiltWidth + width;
-        const textX = rtx + textWidth;
-        const rectX = x + maxWidth;
-        const diffX = textX - rectX;
-        return new DrawResult({
-            width: diffX > 0 ? maxWidth + diffX : maxWidth,
-            leftSdist: 0,
-            rightSdist: tiltWidth,
-        });
     }
+    // 相对偏移量
+    const head = PlainUtils.arrayHead(textArray);
+    const last = PlainUtils.arrayLast(textArray);
+    let rtx = x;
+    let rty = y;
+    switch (verticalAlign) {
+      case BaseFont.VERTICAL_ALIGN.top: {
+        rty += verticalAlignPadding;
+        rtx -= tiltWidth - verticalAlignPadding;
+        break;
+      }
+      case BaseFont.VERTICAL_ALIGN.center: {
+        rty += height / 2 - textHeight / 2;
+        rtx -= tiltWidth / 2 + head.blockWidth / 2;
+        break;
+      }
+      case BaseFont.VERTICAL_ALIGN.bottom: {
+        rty += (height - textHeight) - verticalAlignPadding;
+        rtx -= head.blockWidth + verticalAlignPadding;
+        break;
+      }
+    }
+    switch (align) {
+      case BaseFont.ALIGN.left: {
+        const hat = RTSinKit.tilt({
+          inverse: head.height / 2,
+          angle,
+        });
+        rtx = rtx + alignPadding + hat;
+        break;
+      }
+      case BaseFont.ALIGN.center: {
+        const offset = rtx + width / 2;
+        const center = offset + head.blockWidth / 2;
+        rtx = center - textCenterX;
+        break;
+      }
+      case BaseFont.ALIGN.right: {
+        const hat = RTSinKit.tilt({
+          inverse: last.height / 2,
+          angle,
+        });
+        const offset = rtx + width;
+        const right = offset + head.blockWidth;
+        rtx = right - textWidth - alignPadding - hat;
+        break;
+      }
+    }
+    // 边界检查
+    let outbounds = false;
+    switch (align) {
+      case BaseFont.ALIGN.center:
+      case BaseFont.ALIGN.left: {
+        outbounds = overflow.x + overflow.width < rtx + textWidth;
+        break;
+      }
+      case BaseFont.ALIGN.right: {
+        outbounds = rtx < overflow.x;
+        break;
+      }
+    }
+    if (outbounds) {
+      const crop = new Crop({
+        rect: overflow,
+        draw,
+      });
+      crop.open();
+      // 绘制文本
+      for (let index = 0, length = textArray.length; index < length; index++) {
+        const item = textArray[index];
+        const ax = rtx + item.tx;
+        const ay = rty + item.ty;
+        const dwAngle = new Angle({
+          draw,
+          angle,
+          rect: new Rect({
+            x: ax,
+            y: ay,
+            width: item.blockWidth,
+            height: item.blockHeight,
+          }),
+        });
+        dwAngle.rotate();
+        const tx = ax + (item.blockWidth / 2 - item.width / 2);
+        const ty = ay + (item.blockHeight / 2 - item.height / 2);
+        draw.fillText(item.text, tx, ty + item.ascent);
+        if (underline) {
+          this.drawingLine('underline', tx, ty, item.width, item.height);
+        }
+        if (strikethrough) {
+          this.drawingLine('strike', tx, ty, item.width, item.height);
+        }
+        dwAngle.revert();
+      }
+      crop.close();
+    } else {
+      // 绘制文本
+      for (let index = 0, length = textArray.length; index < length; index++) {
+        const item = textArray[index];
+        const ax = rtx + item.tx;
+        const ay = rty + item.ty;
+        const dwAngle = new Angle({
+          draw,
+          angle,
+          rect: new Rect({
+            x: ax,
+            y: ay,
+            width: item.blockWidth,
+            height: item.blockHeight,
+          }),
+        });
+        dwAngle.rotate();
+        const tx = ax + (item.blockWidth / 2 - item.width / 2);
+        const ty = ay + (item.blockHeight / 2 - item.height / 2);
+        draw.fillText(item.text, tx, ty + item.ascent);
+        if (underline) {
+          this.drawingLine('underline', tx, ty, item.width, item.height);
+        }
+        if (strikethrough) {
+          this.drawingLine('strike', tx, ty, item.width, item.height);
+        }
+        dwAngle.revert();
+      }
+    }
+    // 实际宽度
+    const maxWidth = tiltWidth + width;
+    const textX = rtx;
+    const rectX = x - maxWidth;
+    const diffX = textX - rectX;
+    return new DrawResult({
+      width: diffX > 0 ? Math.abs(maxWidth) : maxWidth + Math.abs(diffX) + alignPadding,
+      leftSdist: 0,
+      rightSdist: tiltWidth,
+    });
   }
 
 }

@@ -7,32 +7,32 @@ class HorizonRuler extends HorizonVisual {
   constructor({
     draw, text, size, rect, overflow, align, textWrap, lineHeight = 8, padding,
   }) {
-      super({
+    super({
       text, draw, align, padding,
-      });
+    });
 
-      this.overflow = overflow;
-      this.textWrap = textWrap;
-      this.size = size;
-      this.rect = rect;
-      this.lineHeight = lineHeight;
-      this.used = BaseRuler.USED.DEFAULT_INI;
+    this.overflow = overflow;
+    this.textWrap = textWrap;
+    this.size = size;
+    this.rect = rect;
+    this.lineHeight = lineHeight;
+    this.used = BaseRuler.USED.DEFAULT_INI;
 
-      // 裁剪文本
-      this.truncateText = '';
-      this.truncateTextWidth = 0;
-      this.truncateTextHeight = 0;
-      this.truncateTextAscent = 0;
+    // 裁剪文本
+    this.truncateText = '';
+    this.truncateTextWidth = 0;
+    this.truncateTextHeight = 0;
+    this.truncateTextAscent = 0;
 
-      // 溢出文本
-      this.overflowText = '';
-      this.overflowTextWidth = 0;
-      this.overflowTextHeight = 0;
-      this.overflowTextAscent = 0;
+    // 溢出文本
+    this.overflowText = '';
+    this.overflowTextWidth = 0;
+    this.overflowTextHeight = 0;
+    this.overflowTextAscent = 0;
 
-      // 自动换行文本
-      this.textWrapTextArray = [];
-      this.textWrapTextHeight = 0;
+    // 自动换行文本
+    this.textWrapTextArray = [];
+    this.textWrapTextHeight = 0;
   }
 
   equals(other) {

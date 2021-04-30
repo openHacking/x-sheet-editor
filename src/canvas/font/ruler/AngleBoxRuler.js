@@ -1,12 +1,13 @@
 import { BaseRuler } from '../BaseRuler';
-import {RTCosKit, RTSinKit} from '../../RTFunction';
+import { RTCosKit, RTSinKit } from '../../RTFunction';
 import { PlainRuler } from '../PlainRuler';
 import { BaseFont } from '../BaseFont';
 
 class AngleBoxRuler extends PlainRuler {
 
   constructor({
-    draw, text, size, angle, rect, overflow, align, verticalAlign, textWrap, lineHeight = 8, padding,
+    draw, text, size, angle, rect, overflow, align, verticalAlign,
+    textWrap, lineHeight = 8, padding,
   }) {
     super({
       draw, text,
@@ -85,7 +86,7 @@ class AngleBoxRuler extends PlainRuler {
   overflowRuler() {
     if (this.used) { return; }
     const { angle, text } = this;
-    const {width, height, ascent} = this.textSize(text);
+    const { width, height, ascent } = this.textSize(text);
     const blockWidth = Math.max(RTCosKit.nearby({
       tilt: width,
       angle,
@@ -148,7 +149,7 @@ class AngleBoxRuler extends PlainRuler {
                 text: measureText,
                 ascent: measure.ascent,
                 width: measure.width,
-                height: measure.height
+                height: measure.height,
               });
               innerIndex += 1;
             } else {
@@ -218,14 +219,14 @@ class AngleBoxRuler extends PlainRuler {
         item.ty = last.ty;
         switch (align) {
           case BaseFont.ALIGN.left:
-            item.ty = item.ty + (last.blockHeight - item.blockHeight);
+            item.ty += (last.blockHeight - item.blockHeight);
             break;
           case BaseFont.ALIGN.center:
-            item.tx = item.tx + (last.blockWidth / 2 - item.blockWidth / 2);
-            item.ty = item.ty + (last.blockHeight / 2 - item.blockHeight / 2);
+            item.tx += (last.blockWidth / 2 - item.blockWidth / 2);
+            item.ty += (last.blockHeight / 2 - item.blockHeight / 2);
             break;
           case BaseFont.ALIGN.right:
-            item.tx = item.tx + (last.blockWidth - item.blockWidth);
+            item.tx += (last.blockWidth - item.blockWidth);
             break;
         }
         // 偏移上一个文本的行宽
@@ -235,7 +236,7 @@ class AngleBoxRuler extends PlainRuler {
         });
         item.tx += spacing;
         // 统计文本块的总宽度
-        const widthOffset = item.tx + item.blockWidth
+        const widthOffset = item.tx + item.blockWidth;
         if (widthOffset > maxTextWidth) {
           maxTextWidth = widthOffset;
         }
@@ -358,12 +359,12 @@ class AngleBoxRuler extends PlainRuler {
           case BaseFont.ALIGN.left:
             break;
           case BaseFont.ALIGN.center:
-            item.tx = item.tx + (last.blockWidth / 2 - item.blockWidth / 2);
-            item.ty = item.ty + (last.blockHeight / 2 - item.blockHeight / 2);
+            item.tx += (last.blockWidth / 2 - item.blockWidth / 2);
+            item.ty += (last.blockHeight / 2 - item.blockHeight / 2);
             break;
           case BaseFont.ALIGN.right:
-            item.tx = item.tx + (last.blockWidth - item.blockWidth);
-            item.ty = item.ty + (last.blockHeight - item.blockHeight);
+            item.tx += (last.blockWidth - item.blockWidth);
+            item.ty += (last.blockHeight - item.blockHeight);
             break;
         }
         // 偏移下一个文本的行宽
@@ -387,7 +388,7 @@ class AngleBoxRuler extends PlainRuler {
         item.tx += offsetX;
         item.ty += offsetY;
         // 统计文本块的总宽度
-        const widthOffset = item.tx + item.blockWidth
+        const widthOffset = item.tx + item.blockWidth;
         if (widthOffset > maxTextWidth) {
           maxTextWidth = widthOffset;
         }

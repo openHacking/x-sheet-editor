@@ -8,7 +8,7 @@ class HorizonDraw extends BaseFont {
     draw, ruler, rect, overflow, lineHeight = 4, attr,
   }) {
     super({
-      draw, ruler, attr
+      draw, ruler, attr,
     });
     this.overflow = overflow;
     this.rect = rect;
@@ -46,76 +46,44 @@ class HorizonDraw extends BaseFont {
     return new DrawResult();
   }
 
-  drawingLine(type, tx, ty, textWidth) {
+  drawingLine(type, tx, ty, textWidth, textHeight) {
     const { draw, attr } = this;
-    const { size, verticalAlign, align } = attr;
+    const { verticalAlign, align } = attr;
     const s = [0, 0];
     const e = [0, 0];
     if (type === 'strike') {
       switch (align) {
-        case BaseFont.ALIGN.right:
-          s[0] = tx - textWidth;
-          e[0] = tx;
-          break;
-        case BaseFont.ALIGN.center:
-          s[0] = tx - textWidth / 2;
-          e[0] = tx + textWidth / 2;
-          break;
         case BaseFont.ALIGN.left:
+        case BaseFont.ALIGN.center:
+        case BaseFont.ALIGN.right:
           s[0] = tx;
           e[0] = tx + textWidth;
-          break;
-        default:
           break;
       }
       switch (verticalAlign) {
         case BaseFont.VERTICAL_ALIGN.top:
-          s[1] = ty + size / 2;
-          e[1] = ty + size / 2;
-          break;
         case BaseFont.VERTICAL_ALIGN.center:
-          s[1] = ty;
-          e[1] = ty;
-          break;
         case BaseFont.VERTICAL_ALIGN.bottom:
-          s[1] = ty - size / 2;
-          e[1] = ty - size / 2;
-          break;
-        default:
+          s[1] = ty + textHeight / 2;
+          e[1] = ty + textHeight / 2;
           break;
       }
     }
     if (type === 'underline') {
       switch (align) {
-        case BaseFont.ALIGN.right:
-          s[0] = tx - textWidth;
-          e[0] = tx;
-          break;
-        case BaseFont.ALIGN.center:
-          s[0] = tx - textWidth / 2;
-          e[0] = tx + textWidth / 2;
-          break;
         case BaseFont.ALIGN.left:
+        case BaseFont.ALIGN.center:
+        case BaseFont.ALIGN.right:
           s[0] = tx;
           e[0] = tx + textWidth;
-          break;
-        default:
           break;
       }
       switch (verticalAlign) {
         case BaseFont.VERTICAL_ALIGN.top:
-          s[1] = ty + size;
-          e[1] = ty + size;
-          break;
         case BaseFont.VERTICAL_ALIGN.center:
-          s[1] = ty + size / 2;
-          e[1] = ty + size / 2;
-          break;
         case BaseFont.VERTICAL_ALIGN.bottom:
-          s[1] = ty;
-          e[1] = ty;
-          break;
-        default:
+          s[1] = ty + textHeight;
+          e[1] = ty + textHeight;
           break;
       }
     }
@@ -174,19 +142,19 @@ class HorizonDraw extends BaseFont {
       crop.open();
       draw.fillText(text, bx, by + textAscent);
       if (underline) {
-        this.drawingLine('underline', bx, by, textWidth);
+        this.drawingLine('underline', bx, by, textWidth, textHeight);
       }
       if (strikethrough) {
-        this.drawingLine('strike', bx, by, textWidth);
+        this.drawingLine('strike', bx, by, textWidth, textHeight);
       }
       crop.close();
     } else {
       draw.fillText(text, bx, by + textAscent);
       if (underline) {
-        this.drawingLine('underline', bx, by, textWidth);
+        this.drawingLine('underline', bx, by, textWidth, textHeight);
       }
       if (strikethrough) {
-        this.drawingLine('strike', bx, by, textWidth);
+        this.drawingLine('strike', bx, by, textWidth, textHeight);
       }
     }
     return new DrawResult();
@@ -230,7 +198,7 @@ class HorizonDraw extends BaseFont {
         by += height / 2 - textHeight / 2;
         break;
       case BaseFont.VERTICAL_ALIGN.bottom:
-        by += height -textHeight - verticalAlignPadding;
+        by += height - textHeight - verticalAlignPadding;
         break;
     }
     // 边界检查
@@ -255,19 +223,19 @@ class HorizonDraw extends BaseFont {
       crop.open();
       draw.fillText(text, bx, by + textAscent);
       if (underline) {
-        this.drawingLine('underline', bx, by, textWidth);
+        this.drawingLine('underline', bx, by, textWidth, textHeight);
       }
       if (strikethrough) {
-        this.drawingLine('strike', bx, by, textWidth);
+        this.drawingLine('strike', bx, by, textWidth, textHeight);
       }
       crop.close();
     } else {
       draw.fillText(text, bx, by + textAscent);
       if (underline) {
-        this.drawingLine('underline', bx, by, textWidth);
+        this.drawingLine('underline', bx, by, textWidth, textHeight);
       }
       if (strikethrough) {
-        this.drawingLine('strike', bx, by, textWidth);
+        this.drawingLine('strike', bx, by, textWidth, textHeight);
       }
     }
     return new DrawResult({
@@ -296,7 +264,7 @@ class HorizonDraw extends BaseFont {
         rect,
       });
       crop.open();
-      for (let index = 0, textLength = textArray.length; index < textLength; index ++) {
+      for (let index = 0, textLength = textArray.length; index < textLength; index++) {
         // 文本信息
         let item = textArray[index];
         // 计算文本坐标
@@ -330,15 +298,15 @@ class HorizonDraw extends BaseFont {
         const ty = item.ty + by;
         draw.fillText(item.text, tx, ty + item.ascent);
         if (underline) {
-          this.drawingLine('underline', tx, ty, item.width);
+          this.drawingLine('underline', tx, ty, item.width, item.height);
         }
         if (strikethrough) {
-          this.drawingLine('strike', tx, ty, item.width);
+          this.drawingLine('strike', tx, ty, item.width, item.height);
         }
       }
       crop.close();
     } else {
-      for (let index = 0, textLength = textArray.length; index < textLength; index ++) {
+      for (let index = 0, textLength = textArray.length; index < textLength; index++) {
         // 文本信息
         let item = textArray[index];
         // 计算文本坐标
@@ -372,10 +340,10 @@ class HorizonDraw extends BaseFont {
         const ty = item.ty + by;
         draw.fillText(item.text, tx, ty + item.ascent);
         if (underline) {
-          this.drawingLine('underline', tx, ty, item.width);
+          this.drawingLine('underline', tx, ty, item.width, item.height);
         }
         if (strikethrough) {
-          this.drawingLine('strike', tx, ty, item.width);
+          this.drawingLine('strike', tx, ty, item.width, item.height);
         }
       }
     }
