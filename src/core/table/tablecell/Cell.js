@@ -85,6 +85,10 @@ class Cell {
     this.rightSdistWidth = rightSdistWidth;
   }
 
+  setContentType(type) {
+    this.contentType = type;
+  }
+
   clone() {
     const { background, format, text, fontAttr, borderAttr, contentWidth, icons } = this;
     return new Cell({

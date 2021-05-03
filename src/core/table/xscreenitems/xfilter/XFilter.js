@@ -92,6 +92,12 @@ class XFilter extends XScreenCssBorderItem {
         this.xFilterOffset();
       }
     });
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, () => {
+      if (this.display) {
+        ElPopUp.closeAll();
+        this.xFilterOffset();
+      }
+    });
   }
 
   /**

@@ -62,26 +62,30 @@ class XlsxExport {
             .setLoop((col) => {
               const cell = cells.getCell(row, col);
               if (cell) {
-                const { fontAttr, borderAttr, contentType, background } = cell;
+                const { text, fontAttr, borderAttr } = cell;
+                const { contentType, background } = cell;
+                const { top, right, left, bottom } = borderAttr;
                 const workCell = workRow.getCell(this.next(col));
                 // 单元格文本
-                switch (contentType) {
-                  case Cell.CONTENT_TYPE.NUMBER:
-                    workCell.value = PlainUtils.parseFloat(cell.text);
-                    break;
-                  case Cell.CONTENT_TYPE.STRING:
-                    workCell.value = cell.text;
-                    break;
+                if (text) {
+                  switch (contentType) {
+                    case Cell.CONTENT_TYPE.NUMBER:
+                      workCell.value = PlainUtils.parseFloat(text);
+                      break;
+                    case Cell.CONTENT_TYPE.STRING:
+                      workCell.value = text;
+                      break;
+                  }
                 }
                 // 字体样式
                 workCell.font = {
                   name: fontAttr.name,
-                  size: this.fontsize(fontAttr.size),
                   color: {
                     argb: ColorPicker.parseRgbToHex(fontAttr.color),
                   },
-                  bold: fontAttr.bold,
+                  size: this.fontsize(fontAttr.size),
                   italic: fontAttr.italic,
+                  bold: fontAttr.bold,
                   underline: fontAttr.underline,
                   strike: fontAttr.strikethrough,
                 };
@@ -100,44 +104,44 @@ class XlsxExport {
                     workCell.alignment.textRotation = fontAttr.angle;
                     break;
                 }
-                // 单元格边框
-                workCell.border = {
-                  top: {}, left: {}, right: {}, bottom: {},
-                };
-                if (borderAttr.top.display) {
-                  const { widthType, type, color } = borderAttr.top;
-                  workCell.border.top.style = this.borderType(widthType, type);
-                  workCell.border.top.color = {
-                    argb: ColorPicker.parseRgbToHex(color),
-                  };
-                }
-                if (borderAttr.left.display) {
-                  const { widthType, type, color } = borderAttr.left;
-                  workCell.border.left.style = this.borderType(widthType, type);
-                  workCell.border.left.color = {
-                    argb: ColorPicker.parseRgbToHex(color),
-                  };
-                }
-                if (borderAttr.right.display) {
-                  const { widthType, type, color } = borderAttr.right;
-                  workCell.border.right.style = this.borderType(widthType, type);
-                  workCell.border.right.color = {
-                    argb: ColorPicker.parseRgbToHex(color),
-                  };
-                }
-                if (borderAttr.bottom.display) {
-                  const { widthType, type, color } = borderAttr.bottom;
-                  workCell.border.bottom.style = this.borderType(widthType, type);
-                  workCell.border.bottom.color = {
-                    argb: ColorPicker.parseRgbToHex(color),
-                  };
-                }
                 // 单元格背景
                 if (background) {
                   workCell.fill = {
                     type: 'pattern',
                     pattern: 'solid',
                     fgColor: { argb: ColorPicker.parseRgbToHex(background) },
+                  };
+                }
+                // 单元格边框
+                workCell.border = {
+                  top: {}, left: {}, right: {}, bottom: {},
+                };
+                if (top.display) {
+                  const { widthType, type, color } = borderAttr.top;
+                  workCell.border.top.style = this.borderType(widthType, type);
+                  workCell.border.top.color = {
+                    argb: ColorPicker.parseRgbToHex(color),
+                  };
+                }
+                if (right.display) {
+                  const { widthType, type, color } = borderAttr.right;
+                  workCell.border.right.style = this.borderType(widthType, type);
+                  workCell.border.right.color = {
+                    argb: ColorPicker.parseRgbToHex(color),
+                  };
+                }
+                if (left.display) {
+                  const { widthType, type, color } = borderAttr.left;
+                  workCell.border.left.style = this.borderType(widthType, type);
+                  workCell.border.left.color = {
+                    argb: ColorPicker.parseRgbToHex(color),
+                  };
+                }
+                if (bottom.display) {
+                  const { widthType, type, color } = borderAttr.bottom;
+                  workCell.border.bottom.style = this.borderType(widthType, type);
+                  workCell.border.bottom.color = {
+                    argb: ColorPicker.parseRgbToHex(color),
                   };
                 }
               }
