@@ -15,6 +15,7 @@ class Cell {
    * @param background
    * @param format
    * @param fontAttr
+   * @param ruler
    * @param icons
    * @param borderAttr
    * @param contentWidth
@@ -29,6 +30,7 @@ class Cell {
     borderAttr = {},
     icons = [],
     fontAttr = {},
+    ruler = null,
     contentWidth = 0,
     leftSdistWidth = 0,
     rightSdistWidth = 0,
@@ -40,6 +42,7 @@ class Cell {
     this.icons = XIcon.newInstances(icons);
     this.borderAttr = new CellBorder(borderAttr);
     this.fontAttr = new CellFont(fontAttr);
+    this.ruler = ruler;
     this.contentWidth = contentWidth;
     this.leftSdistWidth = leftSdistWidth;
     this.rightSdistWidth = rightSdistWidth;
