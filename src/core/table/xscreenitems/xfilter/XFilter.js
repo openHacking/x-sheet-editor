@@ -452,16 +452,16 @@ class XFilter extends XScreenCssBorderItem {
           continue;
         }
         const icon = icons[ci];
-        // 数值筛选
-        const { valueFilterItems } = icon;
-        const { valueFilterValue } = icon;
-        if (valueFilterItems) {
-
-        }
         // 条件筛选
         const { ifFilterType } = icon;
         const { ifFilterValue } = icon;
         if (ifFilterType) {
+
+        }
+        // 数值筛选
+        const { valueFilterItems } = icon;
+        const { valueFilterValue } = icon;
+        if (valueFilterItems) {
 
         }
       }

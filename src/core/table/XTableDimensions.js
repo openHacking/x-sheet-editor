@@ -470,7 +470,7 @@ class KeyBoardTabCode {
 
   static register(table) {
     const {
-      keyboard, cols, rows, xScreen, edit,
+      keyboard, xTableScrollView, cols, rows, xScreen, edit,
     } = table;
     const xSelect = xScreen.findType(XSelectItem);
     const merges = table.getTableMerges();
@@ -480,11 +480,12 @@ class KeyBoardTabCode {
       keyCode: 9,
       callback: () => {
         edit.hideEdit();
+        const scrollView = xTableScrollView.getScrollView();
         const { selectRange } = xSelect;
         const { tabNext } = selectRange;
-        const rect = selectRange.clone();
+        const selectRangeClone = selectRange.clone();
         if (!tabNext) {
-          const { sri, sci } = rect;
+          const { sri, sci } = selectRangeClone;
           $tabNext = { sri, sci };
         }
         const cLen = cols.len - 1;
@@ -514,13 +515,17 @@ class KeyBoardTabCode {
           eri = targetMerges.eri;
           eci = targetMerges.eci;
         }
-        rect.tabNext = true;
-        rect.sri = sri;
-        rect.sci = sci;
-        rect.eri = eri;
-        rect.eci = eci;
-        xSelect.setRange(rect);
-        edit.showEdit();
+        selectRangeClone.tabNext = true;
+        selectRangeClone.sri = sri;
+        selectRangeClone.sci = sci;
+        selectRangeClone.eri = eri;
+        selectRangeClone.eci = eci;
+        xSelect.setRange(selectRangeClone);
+        if (scrollView.intersects(selectRangeClone)) {
+          edit.showEdit();
+        } else {
+          edit.hideEdit();
+        }
       },
     });
   }
