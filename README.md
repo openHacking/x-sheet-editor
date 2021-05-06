@@ -22,6 +22,36 @@
 
 ------------
 
+## Features
+  - 撤销 & 反撤销
+  - 格式刷
+  - 清空格式
+  - 文本格式
+  - 字体设置
+  - 字体大小
+  - 字体加粗
+  - 斜体字
+  - 下划线
+  - 删除线
+  - 文字颜色
+  - 单元格背景
+  - 单元格边框
+  - 合并单元格
+  - 水平对齐
+  - 自动换行
+  - 冻结单元格
+  - 单元格函数(处理中)
+  - 行高和列宽设置
+  - 复制, 剪切, 粘贴(处理中)
+  - 自动填充
+  - 插入行, 列(处理中)
+  - 删除行, 列(处理中)
+  - 隐藏行, 列(处理中)
+  - 支持多个sheet表
+  - 打印(处理中)
+  - 数据验证(处理中)
+
+
 ## **初始化**
     <!DOCTYPE html>
     <html lang="en">
@@ -45,13 +75,7 @@
         <body id="dome">
             <script>
               const dome = document.getElementById('dome');
-              const xSheet = new XSheet(dome, {
-                workConfig: {
-                  body: {
-                    sheets: [{}],
-                  },
-                },
-              });
+              const xSheet = new XSheet(dome);
             </script>
         </body>
     </html>
@@ -61,5 +85,3 @@
        
 ## **LICENSE**
     MOZILLA PUBLIC LICENSE
-
-###### `来都来了帮忙点一个Star呗 谢谢了`
