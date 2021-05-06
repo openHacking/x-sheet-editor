@@ -341,9 +341,9 @@ class WorkBody extends Widget {
   }
 
   toJsonAll() {
-    const {  sheetView } = this;
+    const { sheetView } = this;
     const { sheetList } = sheetView;
-    sheetList.forEach(sheet => {
+    sheetList.forEach((sheet) => {
       const { table, tab } = sheet;
       const { rows, cols, settings } = table;
       const merges = table.getTableMerges();

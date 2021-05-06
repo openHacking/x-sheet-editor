@@ -154,4 +154,4 @@
     reader.readAsDataURL(blob);
   }
   return true;
-}, /* end download() */));
+} /* end download() */));

@@ -87,6 +87,7 @@ class Cell {
 
   setContentType(type) {
     this.contentType = type;
+    this.convert(this.text);
   }
 
   clone() {

@@ -3,8 +3,8 @@ import { XDraw } from '../../../canvas/XDraw';
 import { BaseFont } from '../../../canvas/font/BaseFont';
 import XTableFormat from '../XTableFormat';
 import { DrawFontBuilder } from '../../../canvas/font/build/DrawFontBuilder';
-import {Cells} from "../tablecell/Cells";
-import {Cell} from "../tablecell/Cell";
+import { Cells } from '../tablecell/Cells';
+import { Cell } from '../tablecell/Cell';
 
 class TextBuilder {
 
@@ -40,12 +40,12 @@ class TextBuilder {
     builder.setPadding(padding);
     builder.setSize(size);
     switch (format) {
-      case "decimal":
-      case "eNotation":
-      case "percentage":
-      case "rmb":
-      case "dollar":
-      case "number":
+      case 'decimal':
+      case 'eNotation':
+      case 'percentage':
+      case 'rmb':
+      case 'dollar':
+      case 'number':
         cell.setContentType(Cell.CONTENT_TYPE.NUMBER);
         break;
       default:
