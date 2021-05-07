@@ -3,7 +3,6 @@ import { XDraw } from '../../../canvas/XDraw';
 import { BaseFont } from '../../../canvas/font/BaseFont';
 import XTableFormat from '../XTableFormat';
 import { DrawFontBuilder } from '../../../canvas/font/build/DrawFontBuilder';
-import { Cells } from '../tablecell/Cells';
 import { Cell } from '../tablecell/Cell';
 
 class TextBuilder {

@@ -35,6 +35,8 @@ import { XTableDataItems } from './XTableDataItems';
 import { Path } from '../../canvas/Path';
 import { Point } from '../../canvas/Point';
 import { RTCosKit, RTSinKit } from '../../canvas/RTFunction';
+import { WidthUnit } from './tablebase/WidthUnit';
+import { HeightUnit } from './tablebase/HeightUnit';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -2782,6 +2784,9 @@ class XTableStyle extends Widget {
     // 细节内容
     this.xTableFrozenFullRect = new XTableFrozenFullRect(this);
     this.xTableFixedBar = new XTableFixedBar(this, settings.xFixedBar);
+    // xlsx导出时的尺寸单位
+    this.widthUnit = new WidthUnit(this.draw);
+    this.heightUnit = new HeightUnit();
   }
 
   /**

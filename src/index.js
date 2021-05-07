@@ -13,7 +13,8 @@ import { XIcon } from './core/table/xicon/XIcon';
 import { XlsxExport } from './io/xlsx/XlsxExport';
 import { ColorPicker } from './component/colorpicker/ColorPicker';
 import FindDpi from './libs/finddpi/FindDpi';
-import { WidthUnit } from './io/xlsx/WidthUnit';
+import { WidthUnit } from './core/table/tablebase/WidthUnit';
+import { HeightUnit } from './core/table/tablebase/HeightUnit';
 import './styles/base.less';
 import './styles/index.less';
 
@@ -64,6 +65,7 @@ XSheet.RectRange = RectRange;
 XSheet.BaseFont = BaseFont;
 XSheet.FindDpi = FindDpi;
 XSheet.WidthUnit = WidthUnit;
+XSheet.HeightUnit = HeightUnit;
 XSheet.ColorPicker = ColorPicker;
 XSheet.XlsxExport = XlsxExport;
 

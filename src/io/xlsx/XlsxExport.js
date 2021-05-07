@@ -23,29 +23,38 @@ class XlsxExport {
 
   /**
    * 像素行高转换
+   * @param table
    * @param value
    * @returns {number}
    */
-  static rowHeight(value) {
-    return value * 0.6599999999999999;
+  static rowHeight(table, value) {
+    const { xTableStyle } = table;
+    const { heightUnit } = xTableStyle;
+    return heightUnit.getPoint(XDraw.srcTransformStylePx(value));
   }
 
   /**
    * 字体大小转换
+   * @param table
    * @param value
    * @returns {number}
    */
-  static fontsize(value) {
-    return value * 0.6666666666666666;
+  static fontsize(table, value) {
+    const { xTableStyle } = table;
+    const { heightUnit } = xTableStyle;
+    return heightUnit.getPoint(XDraw.srcTransformStylePx(value));
   }
 
   /**
    * 像素列宽转换
+   * @param table
    * @param value
    * @returns {number}
    */
-  static colWidth(value) {
-    return value * 0.1251543209876543;
+  static colWidth(table, value) {
+    const { xTableStyle } = table;
+    const { widthUnit } = xTableStyle;
+    return widthUnit.getNumber(XDraw.styleTransformCssPx(value));
   }
 
   /**
@@ -54,7 +63,7 @@ class XlsxExport {
    * @param type
    * @returns {string}
    */
-  static border(value, type) {
+  static borderType(value, type) {
     switch (type) {
       case LINE_TYPE.SOLID_LINE: {
         switch (value) {
@@ -109,7 +118,7 @@ class XlsxExport {
       // 处理列宽
       const sheetColumns = [];
       cols.eachWidth(0, last(cols.len), (idx, width) => {
-        sheetColumns.push({ width: this.colWidth(width) });
+        sheetColumns.push({ width: this.colWidth(table, width) });
       });
       worksheet.columns = sheetColumns;
       // 处理数据
@@ -119,7 +128,7 @@ class XlsxExport {
         .setEnd(last(rows.len))
         .setLoop((row) => {
           const workRow = worksheet.getRow(next(row));
-          workRow.height = this.rowHeight(rows.getHeight(row));
+          workRow.height = this.rowHeight(table, rows.getHeight(row));
           xIteratorBuilder.getColIterator()
             .setBegin(0)
             .setEnd(last(cols.len))
@@ -147,7 +156,7 @@ class XlsxExport {
                   color: {
                     argb: ColorPicker.parseRgbToHex(fontAttr.color),
                   },
-                  size: this.fontsize(fontAttr.size),
+                  size: this.fontsize(table, fontAttr.size),
                   italic: fontAttr.italic,
                   bold: fontAttr.bold,
                   underline: fontAttr.underline,
@@ -182,28 +191,28 @@ class XlsxExport {
                 };
                 if (top.display) {
                   const { widthType, type, color } = borderAttr.top;
-                  workCell.border.top.style = this.border(widthType, type);
+                  workCell.border.top.style = this.borderType(widthType, type);
                   workCell.border.top.color = {
                     argb: ColorPicker.parseRgbToHex(color),
                   };
                 }
                 if (right.display) {
                   const { widthType, type, color } = borderAttr.right;
-                  workCell.border.right.style = this.border(widthType, type);
+                  workCell.border.right.style = this.borderType(widthType, type);
                   workCell.border.right.color = {
                     argb: ColorPicker.parseRgbToHex(color),
                   };
                 }
                 if (left.display) {
                   const { widthType, type, color } = borderAttr.left;
-                  workCell.border.left.style = this.border(widthType, type);
+                  workCell.border.left.style = this.borderType(widthType, type);
                   workCell.border.left.color = {
                     argb: ColorPicker.parseRgbToHex(color),
                   };
                 }
                 if (bottom.display) {
                   const { widthType, type, color } = borderAttr.bottom;
-                  workCell.border.bottom.style = this.border(widthType, type);
+                  workCell.border.bottom.style = this.borderType(widthType, type);
                   workCell.border.bottom.color = {
                     argb: ColorPicker.parseRgbToHex(color),
                   };

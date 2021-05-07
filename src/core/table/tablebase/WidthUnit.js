@@ -26,7 +26,7 @@ class WidthUnit {
     draw.attr({
       font: fontStyle.trim(),
     });
-    const standard = '0123456789';
+    const standard = '1234567890';
     const measure = draw.measureText(standard);
     // 1个字符大约是unit个像素
     this.unit = measure.width / standard.length;

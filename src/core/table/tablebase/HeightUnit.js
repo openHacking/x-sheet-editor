@@ -1,4 +1,4 @@
-import FindDpi from '../../libs/finddpi/FindDpi';
+import FindDpi from '../../../libs/finddpi/FindDpi';
 
 const DPI = FindDpi();
 
