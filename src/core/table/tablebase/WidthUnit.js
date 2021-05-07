@@ -5,22 +5,23 @@ class WidthUnit {
 
   /**
    * 宽度单位
-   * @param draw
+   * @param table
    * @param fontName
-   * @param fontSize
+   * @param wordSize
    * @param fontBold
    * @param fontItalic
    */
-  constructor(draw, {
+  constructor(table, {
     fontName = 'Arial',
-    fontSize = 12,
+    wordSize = 12,
     fontBold = false,
     fontItalic = false,
   } = {}) {
+    const { draw, heightUnit } = table;
+    const size = `${heightUnit.getPixel(wordSize)}px`;
+    const name = `${fontName}`;
     const italic = `${fontItalic ? 'italic' : ''}`;
     const bold = `${fontBold ? 'bold' : ''}`;
-    const name = `${fontName}`;
-    const size = `${fontSize}px`;
     const fontStyle = `${italic} ${bold} ${size} ${name}`;
     draw.save();
     draw.attr({
@@ -28,7 +29,6 @@ class WidthUnit {
     });
     const standard = '1234567890';
     const measure = draw.measureText(standard);
-    // 1个字符大约是unit个像素
     this.unit = measure.width / standard.length;
     draw.restore();
   }

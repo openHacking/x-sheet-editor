@@ -2785,8 +2785,8 @@ class XTableStyle extends Widget {
     this.xTableFrozenFullRect = new XTableFrozenFullRect(this);
     this.xTableFixedBar = new XTableFixedBar(this, settings.xFixedBar);
     // xlsx导出时的尺寸单位
-    this.widthUnit = new WidthUnit(this.draw);
     this.heightUnit = new HeightUnit();
+    this.widthUnit = new WidthUnit(this);
   }
 
   /**

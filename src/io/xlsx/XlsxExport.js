@@ -54,7 +54,7 @@ class XlsxExport {
   static colWidth(table, value) {
     const { xTableStyle } = table;
     const { widthUnit } = xTableStyle;
-    return widthUnit.getNumber(XDraw.styleTransformCssPx(value));
+    return widthUnit.getNumber(XDraw.srcTransformStylePx(value));
   }
 
   /**
