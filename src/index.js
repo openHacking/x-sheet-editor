@@ -10,12 +10,12 @@ import { PlainUtils } from './utils/PlainUtils';
 import { RectRange } from './core/table/tablebase/RectRange';
 import { BaseFont } from './canvas/font/BaseFont';
 import { XIcon } from './core/table/xicon/XIcon';
-import { XlsxExport } from './io/XlsxExport';
+import { XlsxExport } from './io/xlsx/XlsxExport';
 import { ColorPicker } from './component/colorpicker/ColorPicker';
 import FindDpi from './libs/finddpi/FindDpi';
+import { WidthUnit } from './io/xlsx/WidthUnit';
 import './styles/base.less';
 import './styles/index.less';
-import { WidthUnit } from './canvas/WidthUnit';
 
 const settings = {
   workConfig: {
