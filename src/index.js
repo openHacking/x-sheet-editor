@@ -1,19 +1,21 @@
 /* global window, document */
 import { cssPrefix, XSheetVersion } from './const/Constant';
-import { h } from './libs/Element';
 import { Work } from './core/work/Work';
 import { Widget } from './libs/Widget';
+import { XDraw } from './canvas/XDraw';
+import { h } from './libs/Element';
 import { DragPanel } from './component/dragpanel/DragPanel';
 import { ElPopUp } from './component/elpopup/ElPopUp';
-import { XDraw } from './canvas/XDraw';
 import { PlainUtils } from './utils/PlainUtils';
 import { RectRange } from './core/table/tablebase/RectRange';
 import { BaseFont } from './canvas/font/BaseFont';
 import { XIcon } from './core/table/xicon/XIcon';
+import { XlsxExport } from './io/XlsxExport';
+import { ColorPicker } from './component/colorpicker/ColorPicker';
+import FindDpi from './libs/finddpi/FindDpi';
 import './styles/base.less';
 import './styles/index.less';
-import { ColorPicker } from './component/colorpicker/ColorPicker';
-import { XlsxExport } from './io/XlsxExport';
+import { WidthUnit } from './canvas/WidthUnit';
 
 const settings = {
   workConfig: {
@@ -53,14 +55,18 @@ class XSheet extends Widget {
     DragPanel.setRoot(this);
   }
 }
+
 XSheet.version = XSheetVersion;
 XSheet.PlainUtils = PlainUtils;
 XSheet.XDraw = XDraw;
 XSheet.XIcon = XIcon;
 XSheet.RectRange = RectRange;
 XSheet.BaseFont = BaseFont;
+XSheet.FindDpi = FindDpi;
+XSheet.WidthUnit = WidthUnit;
 XSheet.ColorPicker = ColorPicker;
 XSheet.XlsxExport = XlsxExport;
+
 if (window) {
   window.XSheet = XSheet;
 }
