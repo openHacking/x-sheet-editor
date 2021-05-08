@@ -13,7 +13,7 @@ class WidthUnit {
    */
   constructor(table, {
     fontName = 'Arial',
-    wordSize = 12,
+    wordSize = 10,
     fontBold = false,
     fontItalic = false,
   } = {}) {
@@ -31,7 +31,7 @@ class WidthUnit {
     const measure = draw.measureText(standard);
     const standardWidth = measure.width;
     const standardCount = standard.length;
-    this.unit = (standardWidth / standardCount) + 0.5;
+    this.unit = standardWidth / standardCount + 0.5;
     draw.restore();
   }
 

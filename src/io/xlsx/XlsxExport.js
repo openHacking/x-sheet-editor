@@ -118,7 +118,9 @@ class XlsxExport {
       const sheetColumns = [];
       cols.eachWidth(0, last(cols.len), (col) => {
         const width = cols.getOriginWidth(col);
-        sheetColumns.push({ width: this.colWidth(table, width) });
+        sheetColumns.push({
+          width: this.colWidth(table, width) + 0.78
+        });
       });
       worksheet.columns = sheetColumns;
       // 处理数据
