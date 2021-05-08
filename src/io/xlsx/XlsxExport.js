@@ -103,21 +103,21 @@ class XlsxExport {
     // 添加工作表
     sheetList.forEach((sheet) => {
       const { tab, table } = sheet;
-      const { settings, rows, cols } = table;
-      const { xIteratorBuilder } = table;
+      const { settings, xIteratorBuilder, rows, cols } = table;
       const merges = table.getTableMerges();
       const cells = table.getTableCells();
       const { xMergesItems } = merges;
       // 创建工作表
       const worksheet = workbook.addWorksheet(tab.name);
       // 默认宽高
-      worksheet.defaultRowHeight = rows.getDefaultHeight();
-      worksheet.defaultColWidth = cols.getDefaultWidth();
+      worksheet.defaultRowHeight = this.rowHeight(table, rows.getOriginDefaultHeight());
+      worksheet.defaultColWidth = this.colWidth(table, cols.getOriginDefaultWidth());
       // 是否显示网格
       worksheet.views = [{ showGridLines: settings.table.showGrid }];
       // 处理列宽
       const sheetColumns = [];
-      cols.eachWidth(0, last(cols.len), (idx, width) => {
+      cols.eachWidth(0, last(cols.len), (col) => {
+        const width = cols.getOriginWidth(col);
         sheetColumns.push({ width: this.colWidth(table, width) });
       });
       worksheet.columns = sheetColumns;
@@ -128,15 +128,15 @@ class XlsxExport {
         .setEnd(last(rows.len))
         .setLoop((row) => {
           const workRow = worksheet.getRow(next(row));
-          workRow.height = this.rowHeight(table, rows.getHeight(row));
+          workRow.height = this.rowHeight(table, rows.getOriginHeight(row));
           xIteratorBuilder.getColIterator()
             .setBegin(0)
             .setEnd(last(cols.len))
             .setLoop((col) => {
               const cell = cells.getCell(row, col);
               if (cell) {
-                const { text, fontAttr, borderAttr } = cell;
                 const { contentType, background } = cell;
+                const { text, fontAttr, borderAttr } = cell;
                 const { top, right, left, bottom } = borderAttr;
                 const workCell = workRow.getCell(next(col));
                 // 单元格文本

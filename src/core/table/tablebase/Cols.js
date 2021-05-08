@@ -20,6 +20,19 @@ class Cols {
     this.width = PlainUtils.minIf(width, this.min);
   }
 
+  eachWidth(ci, ei, cb, sx = 0) {
+    let x = sx;
+    this.xIteratorBuilder.getColIterator()
+      .setBegin(ci)
+      .setEnd(ei)
+      .setLoop((i) => {
+        const colWidth = this.getWidth(i);
+        cb(i, colWidth, x);
+        x += colWidth;
+      })
+      .execute();
+  }
+
   sectionSumWidth(sci, eci) {
     let total = 0;
     if (sci > eci) {
@@ -40,11 +53,6 @@ class Cols {
       return this.sectionSumWidth(rectRange.sci, rectRange.eci);
     }
     return 0;
-  }
-
-  getDefaultWidth() {
-    const { scaleAdapter } = this;
-    return scaleAdapter.goto(this.width);
   }
 
   get(ci) {
@@ -70,32 +78,30 @@ class Cols {
     return this.data[ci];
   }
 
-  getWidth(i) {
+  getWidth(ci) {
     const { scaleAdapter } = this;
-    const col = this.data[i];
+    const col = this.data[ci];
     if (col && col.width) {
       return scaleAdapter.goto(col.width);
     }
     return scaleAdapter.goto(this.width);
   }
 
-  eachWidth(ci, ei, cb, sx = 0) {
-    let x = sx;
-    this.xIteratorBuilder.getColIterator()
-      .setBegin(ci)
-      .setEnd(ei)
-      .setLoop((i) => {
-        const colWidth = this.getWidth(i);
-        cb(i, colWidth, x);
-        x += colWidth;
-      })
-      .execute();
+  getDefaultWidth() {
+    const { scaleAdapter } = this;
+    return scaleAdapter.goto(this.width);
   }
 
-  setWidth(i, width) {
-    const col = this.getOrNew(i);
-    const { scaleAdapter } = this;
-    col.width = scaleAdapter.back(PlainUtils.minIf(width, this.min));
+  getOriginWidth(ci) {
+    const col = this.data[ci];
+    if (col && col.width) {
+      return col.width;
+    }
+    return this.width;
+  }
+
+  getOriginDefaultWidth() {
+    return this.width;
   }
 
   getData() {
@@ -104,6 +110,12 @@ class Cols {
 
   setData(data) {
     this.data = data;
+  }
+
+  setWidth(i, width) {
+    const col = this.getOrNew(i);
+    const { scaleAdapter } = this;
+    col.width = scaleAdapter.back(PlainUtils.minIf(width, this.min));
   }
 
 }

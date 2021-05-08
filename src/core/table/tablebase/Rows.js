@@ -20,6 +20,19 @@ class Rows {
     this.height = PlainUtils.minIf(height, this.min);
   }
 
+  eachHeight(ri, ei, cb, sy = 0) {
+    let y = sy;
+    this.xIteratorBuilder.getRowIterator()
+      .setBegin(ri)
+      .setEnd(ei)
+      .setLoop((i) => {
+        const rowHeight = this.getHeight(i);
+        cb(i, rowHeight, y);
+        y += rowHeight;
+      })
+      .execute();
+  }
+
   sectionSumHeight(sri, eri) {
     let total = 0;
     if (sri > eri) {
@@ -40,11 +53,6 @@ class Rows {
       return this.sectionSumHeight(rectRange.sri, rectRange.eri);
     }
     return 0;
-  }
-
-  getDefaultHeight() {
-    const { scaleAdapter } = this;
-    return scaleAdapter.goto(this.height);
   }
 
   get(ri) {
@@ -73,29 +81,27 @@ class Rows {
   getHeight(ri) {
     const { scaleAdapter } = this;
     const row = this.get(ri);
-    if (row) {
+    if (row && row.height) {
       return scaleAdapter.goto(row.height);
     }
     return scaleAdapter.goto(this.height);
   }
 
-  eachHeight(ri, ei, cb, sy = 0) {
-    let y = sy;
-    this.xIteratorBuilder.getRowIterator()
-      .setBegin(ri)
-      .setEnd(ei)
-      .setLoop((i) => {
-        const rowHeight = this.getHeight(i);
-        cb(i, rowHeight, y);
-        y += rowHeight;
-      })
-      .execute();
+  getDefaultHeight() {
+    const { scaleAdapter } = this;
+    return scaleAdapter.goto(this.height);
   }
 
-  setHeight(ri, height) {
-    const row = this.getOrNew(ri);
-    const { scaleAdapter } = this;
-    row.height = scaleAdapter.back(PlainUtils.minIf(height, this.min));
+  getOriginHeight(ri) {
+    const row = this.get(ri);
+    if (row && row.height) {
+      return row.height;
+    }
+    return this.height;
+  }
+
+  getOriginDefaultHeight() {
+    return this.height;
   }
 
   getData() {
@@ -104,6 +110,12 @@ class Rows {
 
   setData(data) {
     this.data = data;
+  }
+
+  setHeight(ri, height) {
+    const row = this.getOrNew(ri);
+    const { scaleAdapter } = this;
+    row.height = scaleAdapter.back(PlainUtils.minIf(height, this.min));
   }
 
 }

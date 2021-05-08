@@ -18,18 +18,20 @@ class WidthUnit {
     fontItalic = false,
   } = {}) {
     const { draw, heightUnit } = table;
-    const size = `${heightUnit.getPixel(wordSize)}px`;
+    const size = heightUnit.getPixel(wordSize);
     const name = `${fontName}`;
     const italic = `${fontItalic ? 'italic' : ''}`;
     const bold = `${fontBold ? 'bold' : ''}`;
-    const fontStyle = `${italic} ${bold} ${size} ${name}`;
+    const fontStyle = `${italic} ${bold} ${size}px ${name}`;
     draw.save();
     draw.attr({
       font: fontStyle.trim(),
     });
-    const standard = '1234567890';
+    const standard = '0123456789';
     const measure = draw.measureText(standard);
-    this.unit = measure.width / standard.length;
+    const standardWidth = measure.width;
+    const standardCount = standard.length;
+    this.unit = (standardWidth / standardCount) + 0.5;
     draw.restore();
   }
 
