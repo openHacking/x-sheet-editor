@@ -31,7 +31,7 @@ class WidthUnit {
     const measure = draw.measureText(standard);
     const standardWidth = measure.width;
     const standardCount = standard.length;
-    this.unit = standardWidth / standardCount + 0.5;
+    this.unit = standardWidth / standardCount;
     draw.restore();
   }
 

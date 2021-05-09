@@ -117,9 +117,12 @@ class XlsxExport {
       // 处理列宽
       const sheetColumns = [];
       cols.eachWidth(0, last(cols.len), (col) => {
-        const width = cols.getOriginWidth(col);
+        const srcWidth = cols.getOriginWidth(col);
+        const colWidth = this.colWidth(table, srcWidth);
+        // 列宽计算不精确 (😤气人) , 在研究研究
+        // todo ...
         sheetColumns.push({
-          width: this.colWidth(table, width) + 0.78,
+          width: colWidth + 0.38,
         });
       });
       worksheet.columns = sheetColumns;
