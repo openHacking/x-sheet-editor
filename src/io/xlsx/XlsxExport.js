@@ -54,7 +54,9 @@ class XlsxExport {
   static colWidth(table, value) {
     const { xTableStyle } = table;
     const { wideUnit } = xTableStyle;
-    return wideUnit.getPixelNumber(value + 5);
+    return XDraw.dpr() > 1
+      ? wideUnit.getPixelNumber(value + 5)
+      : wideUnit.getPixelNumber(value - 5);
   }
 
   /**
@@ -121,6 +123,7 @@ class XlsxExport {
       cols.eachWidth(0, last(cols.len), (col) => {
         const srcWidth = cols.getOriginWidth(col);
         const colWidth = this.colWidth(table, srcWidth);
+        // 列宽计算不精确 (😤气人) , 研究研究 TODO ..
         sheetColumns.push({
           width: colWidth,
         });
