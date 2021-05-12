@@ -603,19 +603,19 @@ class XTableDimensions extends Widget {
       }),
       ...this.settings.index,
     });
-    this.rows = new Rows({
-      scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.cssPx(this.scale.goto(v)),
-      }),
-      xIteratorBuilder: this.xIteratorBuilder,
-      ...this.settings.rows,
-    });
     this.cols = new Cols({
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.cssPx(this.scale.goto(v)),
       }),
       xIteratorBuilder: this.xIteratorBuilder,
       ...this.settings.cols,
+    });
+    this.rows = new Rows({
+      scaleAdapter: new ScaleAdapter({
+        goto: v => XDraw.cssPx(this.scale.goto(v)),
+      }),
+      xIteratorBuilder: this.xIteratorBuilder,
+      ...this.settings.rows,
     });
     // 冻结视图坐标
     this.xFixedView = new XFixedView(this.settings.xFixedView);

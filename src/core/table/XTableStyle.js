@@ -37,6 +37,7 @@ import { Point } from '../../canvas/Point';
 import { RTCosKit, RTSinKit } from '../../canvas/RTFunction';
 import { WidthUnit } from './tableunit/WidthUnit';
 import { HeightUnit } from './tableunit/HeightUnit';
+import { WideUnit } from './tableunit/WideUnit';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -2611,9 +2612,9 @@ class XTableStyle extends Widget {
   constructor({
     xTableScrollView,
     settings,
+    scroll,
     xFixedView,
     xIteratorBuilder,
-    scroll,
   }) {
     super(`${cssPrefix}-table-canvas`, 'canvas');
     // 表格设置
@@ -2786,6 +2787,7 @@ class XTableStyle extends Widget {
     this.xTableFixedBar = new XTableFixedBar(this, settings.xFixedBar);
     // xlsx导出时的尺寸单位
     this.heightUnit = new HeightUnit();
+    this.wideUnit = new WideUnit(this);
     this.widthUnit = new WidthUnit(this);
   }
 

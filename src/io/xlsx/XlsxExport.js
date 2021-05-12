@@ -53,8 +53,8 @@ class XlsxExport {
    */
   static colWidth(table, value) {
     const { xTableStyle } = table;
-    const { widthUnit } = xTableStyle;
-    return widthUnit.getNumber(XDraw.stylePx(value));
+    const { wideUnit } = xTableStyle;
+    return wideUnit.getPixelNumber(value + 5);
   }
 
   /**
@@ -113,16 +113,16 @@ class XlsxExport {
       worksheet.defaultRowHeight = this.rowHeight(table, rows.getOriginDefaultHeight());
       worksheet.defaultColWidth = this.colWidth(table, cols.getOriginDefaultWidth());
       // 是否显示网格
-      worksheet.views = [{ showGridLines: settings.table.showGrid }];
+      worksheet.views = [{
+        showGridLines: settings.table.showGrid,
+      }];
       // 处理列宽
       const sheetColumns = [];
       cols.eachWidth(0, last(cols.len), (col) => {
         const srcWidth = cols.getOriginWidth(col);
         const colWidth = this.colWidth(table, srcWidth);
-        // 列宽计算不精确 (😤气人) , 在研究研究
-        // todo ...
         sheetColumns.push({
-          width: colWidth + 0.38,
+          width: colWidth,
         });
       });
       worksheet.columns = sheetColumns;
