@@ -31,8 +31,8 @@ class TextBuilder {
   build() {
     const { rect, overflow, row, col, cell, draw, scaleAdapter, table } = this;
     const { format, text, fontAttr, ruler } = cell;
-    const size = XDraw.srcTransformStylePx(scaleAdapter.goto(fontAttr.size));
-    const padding = XDraw.srcTransformStylePx(scaleAdapter.goto(fontAttr.padding));
+    const size = XDraw.stylePx(scaleAdapter.goto(fontAttr.size));
+    const padding = XDraw.stylePx(scaleAdapter.goto(fontAttr.padding));
     const builder = new DrawFontBuilder({
       text: XTableFormat(format, text), draw, overflow, rect, attr: fontAttr,
     });

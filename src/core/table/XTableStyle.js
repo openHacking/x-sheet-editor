@@ -1,6 +1,6 @@
 import { PlainUtils } from '../../utils/PlainUtils';
-import { Rows } from './tablebase/Rows';
-import { Cols } from './tablebase/Cols';
+import { Rows } from './tablerow/Rows';
+import { Cols } from './tablecol/Cols';
 import { SCROLL_TYPE } from './tablebase/Scroll';
 import { Widget } from '../../libs/Widget';
 import { cssPrefix } from '../../const/Constant';
@@ -35,8 +35,8 @@ import { XTableDataItems } from './XTableDataItems';
 import { Path } from '../../canvas/Path';
 import { Point } from '../../canvas/Point';
 import { RTCosKit, RTSinKit } from '../../canvas/RTFunction';
-import { WidthUnit } from './tablebase/WidthUnit';
-import { HeightUnit } from './tablebase/HeightUnit';
+import { WidthUnit } from './tableunit/WidthUnit';
+import { HeightUnit } from './tableunit/HeightUnit';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -105,7 +105,7 @@ class XTableFixedBar {
       xFixedView, draw, index, xFixedMeasure,
     } = table;
     if (xFixedView.hasFixedTop()) {
-      const rpxHeight = XDraw.srcTransformStylePx(height);
+      const rpxHeight = XDraw.stylePx(height);
       const width = table.visualWidth();
       const x = index.getWidth();
       const y = xFixedMeasure.getHeight() + index.getHeight() - rpxHeight / 2;
@@ -114,7 +114,7 @@ class XTableFixedBar {
     }
     if (xFixedView.hasFixedLeft()) {
       const height = table.visualHeight();
-      const rpxWidth = XDraw.srcTransformStylePx(width);
+      const rpxWidth = XDraw.stylePx(width);
       const x = xFixedMeasure.getWidth() + index.getWidth() - rpxWidth / 2;
       const y = index.getHeight();
       draw.attr({ fillStyle: background });
@@ -130,7 +130,7 @@ class XTableFixedBar {
       xFixedView, draw, index, xFixedMeasure,
     } = table;
     if (xFixedView.hasFixedTop()) {
-      const rpxHeight = XDraw.srcTransformStylePx(height);
+      const rpxHeight = XDraw.stylePx(height);
       const width = index.getWidth();
       const x = 0;
       const y = xFixedMeasure.getHeight() + index.getHeight() - rpxHeight / 2;
@@ -139,7 +139,7 @@ class XTableFixedBar {
     }
     if (xFixedView.hasFixedLeft()) {
       const height = index.getHeight();
-      const rpxWidth = XDraw.srcTransformStylePx(width);
+      const rpxWidth = XDraw.stylePx(width);
       const x = xFixedMeasure.getWidth() + index.getWidth() - rpxWidth / 2;
       const y = 0;
       draw.attr({ fillStyle: buttonColor });
@@ -2633,20 +2633,20 @@ class XTableStyle extends Widget {
     this.scale = new Scale();
     this.index = new Code({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.srcTransformStylePx(this.scale.goto(v)),
+        goto: v => XDraw.stylePx(this.scale.goto(v)),
       }),
       ...this.settings.index,
     });
     this.rows = new Rows({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.srcTransformStylePx(this.scale.goto(v)),
+        goto: v => XDraw.stylePx(this.scale.goto(v)),
       }),
       xIteratorBuilder: this.xIteratorBuilder,
       ...this.settings.rows,
     });
     this.cols = new Cols({
       scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.srcTransformStylePx(this.scale.goto(v)),
+        goto: v => XDraw.stylePx(this.scale.goto(v)),
         back: v => this.scale.back(v),
       }),
       xIteratorBuilder: this.xIteratorBuilder,
@@ -2724,6 +2724,12 @@ class XTableStyle extends Widget {
     });
     // 绘制资源
     this.draw = new XDraw(this.el);
+    this.textFont = new Text({
+      scaleAdapter: new ScaleAdapter({
+        goto: v => this.scale.goto(v),
+      }),
+      table: this,
+    });
     this.line = new Line(this.draw, {
       bottomShow: (row, col) => {
         const result = bBorderFilter.run({
@@ -2759,17 +2765,11 @@ class XTableStyle extends Widget {
       iFMergeFirstCol: (row, col) => this.merges.getFirstIncludes(row, col).sci === col,
       iFMergeLastCol: (row, col) => this.merges.getFirstIncludes(row, col).eci === col,
     });
-    this.indexGrid = new Grid(this.draw, {
-      color: this.index.getGridColor(),
-    });
     this.grid = new Grid(this.draw, {
       color: this.settings.table.gridColor,
     });
-    this.textFont = new Text({
-      scaleAdapter: new ScaleAdapter({
-        goto: v => this.scale.goto(v),
-      }),
-      table: this,
+    this.indexGrid = new Grid(this.draw, {
+      color: this.index.getGridColor(),
     });
     // 冻结内容
     this.xLeftFrozenIndex = new XTableFrozenLeftIndex(this);
@@ -2825,32 +2825,6 @@ class XTableStyle extends Widget {
   }
 
   /**
-   * 获取单元格越界的宽度
-   * @param ri
-   * @param ci
-   * @returns {number}
-   */
-  getCellStyleBoundOutWidth(ri, ci) {
-    const { cells } = this;
-    const cell = cells.getCell(ri, ci);
-    if (!cell) {
-      return 0;
-    }
-    const { cols } = this;
-    let boundOutWidth = 0;
-    const colWidth = cols.getWidth(ci);
-    if (this.hasAngleCell(ri)) {
-      if (this.isAngleBarCell(ri, ci)) {
-        const offset = this.getSdistWidth(ri, ci);
-        boundOutWidth = colWidth + offset;
-      }
-    } else {
-      boundOutWidth = colWidth;
-    }
-    return boundOutWidth;
-  }
-
-  /**
    * 获取单元格斜率宽度
    * @param row
    * @param col
@@ -2878,6 +2852,32 @@ class XTableStyle extends Widget {
       tilt,
       angle,
     });
+  }
+
+  /**
+   * 获取单元格越界的宽度
+   * @param ri
+   * @param ci
+   * @returns {number}
+   */
+  getCellStyleBoundOutWidth(ri, ci) {
+    const { cells } = this;
+    const cell = cells.getCell(ri, ci);
+    if (!cell) {
+      return 0;
+    }
+    const { cols } = this;
+    let boundOutWidth = 0;
+    const colWidth = cols.getWidth(ci);
+    if (this.hasAngleCell(ri)) {
+      if (this.isAngleBarCell(ri, ci)) {
+        const offset = this.getSdistWidth(ri, ci);
+        boundOutWidth = colWidth + offset;
+      }
+    } else {
+      boundOutWidth = colWidth;
+    }
+    return boundOutWidth;
   }
 
   /**

@@ -30,7 +30,7 @@ class XlsxExport {
   static rowHeight(table, value) {
     const { xTableStyle } = table;
     const { heightUnit } = xTableStyle;
-    return heightUnit.getPoint(XDraw.srcTransformStylePx(value));
+    return heightUnit.getPoint(XDraw.stylePx(value));
   }
 
   /**
@@ -42,7 +42,7 @@ class XlsxExport {
   static fontsize(table, value) {
     const { xTableStyle } = table;
     const { heightUnit } = xTableStyle;
-    return heightUnit.getPoint(XDraw.srcTransformStylePx(value));
+    return heightUnit.getPoint(XDraw.stylePx(value));
   }
 
   /**
@@ -54,7 +54,7 @@ class XlsxExport {
   static colWidth(table, value) {
     const { xTableStyle } = table;
     const { widthUnit } = xTableStyle;
-    return widthUnit.getNumber(XDraw.srcTransformStylePx(value));
+    return widthUnit.getNumber(XDraw.stylePx(value));
   }
 
   /**

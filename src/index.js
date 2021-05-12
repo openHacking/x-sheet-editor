@@ -13,8 +13,8 @@ import { XIcon } from './core/table/xicon/XIcon';
 import { XlsxExport } from './io/xlsx/XlsxExport';
 import { ColorPicker } from './component/colorpicker/ColorPicker';
 import FindDpi from './libs/finddpi/FindDpi';
-import { WidthUnit } from './core/table/tablebase/WidthUnit';
-import { HeightUnit } from './core/table/tablebase/HeightUnit';
+import { WidthUnit } from './core/table/tableunit/WidthUnit';
+import { HeightUnit } from './core/table/tableunit/HeightUnit';
 import './styles/base.less';
 import './styles/index.less';
 
