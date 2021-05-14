@@ -299,16 +299,16 @@ class ColorPicker extends Widget {
   }
 
   static isDark(rgb) {
-    if (PlainUtils.isBlank(rgb)) {
-      return false;
+    if (PlainUtils.isString(rgb)) {
+      if (this.isHex(rgb)) {
+        const v = ColorPicker.hexToRgb(rgb);
+        rgb = `rgb(${v.r}, ${v.g}, ${v.b})`;
+      }
+      const result = ColorPicker.parseRgb(rgb);
+      const { r, g, b } = result;
+      return (r * 0.299) + (g * 0.578) + (b * 0.114) >= 192;
     }
-    if (this.isHex(rgb)) {
-      const v = ColorPicker.hexToRgb(rgb);
-      rgb = `rgb(${v.r}, ${v.g}, ${v.b})`;
-    }
-    const result = ColorPicker.parseRgb(rgb);
-    const { r, g, b } = result;
-    return (r * 0.299) + (g * 0.578) + (b * 0.114) >= 192;
+    return false;
   }
 
   static hexToRgb(hex) {

@@ -72,10 +72,16 @@ class BottomMenu extends Widget {
             .execute();
         })
         .execute();
-      const avg = total / number;
-      this.setSum(total.toFixed(2));
-      this.setAvg(avg.toFixed(2));
-      this.setNumber(number);
+      if (number > 0) {
+        let avg = total / number;
+        this.setNumber(number);
+        this.setAvg(avg.toFixed(2));
+        this.setSum(total.toFixed(2));
+      } else {
+        this.setSum(0);
+        this.setAvg(0);
+        this.setNumber(0);
+      }
     } else {
       this.setSum(0);
       this.setAvg(0);

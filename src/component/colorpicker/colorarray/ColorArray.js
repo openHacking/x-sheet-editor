@@ -135,15 +135,16 @@ class ColorArray extends Widget {
   }
 
   findItemByColor(color) {
-    return this.colors.find(item => item.options.color === color);
+    color = PlainUtils.deleteBlank(color);
+    return this.colors.find(item => item.color === color);
   }
 
   setActiveByColor(color) {
+    color = PlainUtils.deleteBlank(color);
     this.colors.forEach((item) => {
-      const { options } = item;
-      if (options.color === color) {
+      if (item.color === color) {
         item.setActive(true);
-        this.activeColor = options.color;
+        this.activeColor = item.color;
       } else {
         item.setActive(false);
       }
@@ -163,4 +164,9 @@ class ColorArray extends Widget {
 
 }
 
-export { ColorArray };
+ColorArray.BLACK = 'rgb(0, 0, 0)';
+ColorArray.WHITE = 'rgb(255, 255, 255)';
+
+export {
+  ColorArray,
+};

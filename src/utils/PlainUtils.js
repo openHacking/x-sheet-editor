@@ -340,6 +340,13 @@ class PlainUtils {
     return PlainUtils.isUnDef(value) ? defaultValue : value;
   }
 
+  static deleteBlank(value) {
+    if (PlainUtils.isString(value)) {
+      return value.replace(/\s*/g, PlainUtils.EMPTY);
+    }
+    return value;
+  }
+
 }
 
 PlainUtils.EMPTY = '';

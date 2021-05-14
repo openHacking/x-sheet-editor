@@ -12,8 +12,11 @@ class ColorItem extends Widget {
       color: null,
       icon: null,
     }, options);
-    this.color = this.options.color;
     this.icon = this.options.icon;
+    this.color = PlainUtils.deleteBlank(this.options.color);
+    if (this.icon) {
+      this.children(this.options.icon);
+    }
     if (this.color) {
       this.css('backgroundColor', this.color);
       if (ColorPicker.isDark(this.options.color)) {
@@ -24,9 +27,6 @@ class ColorItem extends Widget {
         this.children(this.checkedIcon);
       }
       this.checkedIcon.hide();
-    }
-    if (this.icon) {
-      this.children(this.options.icon);
     }
   }
 

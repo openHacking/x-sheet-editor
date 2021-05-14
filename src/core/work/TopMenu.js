@@ -37,6 +37,7 @@ import { XCopyStyle } from '../table/xscreenitems/xcopystyle/XCopyStyle';
 import { Confirm } from '../../component/confirm/Confirm';
 import { FontAngle } from './tools/FontAngle';
 import { Divider } from './tools/base/Divider';
+import { ColorArray } from '../../component/colorpicker/colorarray/ColorArray';
 
 class TopMenu extends Widget {
 
@@ -1773,10 +1774,10 @@ class TopMenu extends Widget {
     const cells = table.getTableCells();
     const xSelect = xScreen.findType(XSelectItem);
     const { selectRange } = xSelect;
-    let leftColor = 'rgb(0, 0, 0)';
-    let topColor = 'rgb(0, 0, 0)';
-    let rightColor = 'rgb(0, 0, 0)';
-    let bottomColor = 'rgb(0, 0, 0)';
+    let leftColor = ColorArray.BLACK;
+    let topColor = ColorArray.BLACK;
+    let rightColor = ColorArray.BLACK;
+    let bottomColor = ColorArray.BLACK;
     if (selectRange) {
       const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
       const { borderAttr } = firstCell;
@@ -1802,7 +1803,7 @@ class TopMenu extends Widget {
     const cells = table.getTableCells();
     const xSelect = xScreen.findType(XSelectItem);
     const { selectRange } = xSelect;
-    let color = 'rgb(255, 255, 255)';
+    let color = ColorArray.WHITE;
     if (selectRange) {
       const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
       if (firstCell.background) {
@@ -1810,7 +1811,7 @@ class TopMenu extends Widget {
       }
     }
     this.fillColor.setColor(color);
-    this.fillColor.fillColorContextMenu.clearCustomizeColor(color);
+    this.fillColor.fillColorContextMenu.clearCustomizeColor();
     this.fillColor.fillColorContextMenu.addCustomizeColor(color);
     this.fillColor.fillColorContextMenu.setActiveByColor(color);
   }
@@ -1824,7 +1825,7 @@ class TopMenu extends Widget {
     const cells = table.getTableCells();
     const xSelect = xScreen.findType(XSelectItem);
     const { selectRange } = xSelect;
-    let color = 'rgb(0, 0, 0)';
+    let color = ColorArray.BLACK;
     if (selectRange) {
       const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
       color = firstCell.fontAttr.color;
