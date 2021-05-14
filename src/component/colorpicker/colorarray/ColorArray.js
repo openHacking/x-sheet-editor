@@ -10,7 +10,7 @@ class ColorArray extends Widget {
     super(`${cssPrefix}-color-array`);
     this.options = PlainUtils.copy({
       colors: [
-        new ColorItem({ color: 'rgb(0,0,0)' }),
+        new ColorItem({ color: 'rgb(0, 0, 0)' }),
         new ColorItem({ color: 'rgb(67, 67, 67)' }),
         new ColorItem({ color: 'rgb(102, 102, 102)' }),
         new ColorItem({ color: 'rgb(153, 153, 153)' }),
@@ -110,9 +110,13 @@ class ColorArray extends Widget {
   }
 
   add(item) {
-    this.colors.push(item);
-    this.children(item);
-    this.bind(item);
+    const find = this.colors.findIndex(color => color.color === item.color);
+    if (find === -1) {
+      const { colors } = this;
+      colors.push(item);
+      this.children(item);
+      this.bind(item);
+    }
   }
 
   unbind() {
@@ -130,6 +134,10 @@ class ColorArray extends Widget {
     });
   }
 
+  findItemByColor(color) {
+    return this.colors.find(item => item.options.color === color);
+  }
+
   setActiveByColor(color) {
     this.colors.forEach((item) => {
       const { options } = item;
@@ -140,6 +148,12 @@ class ColorArray extends Widget {
         item.setActive(false);
       }
     });
+  }
+
+  clear() {
+    this.unbind();
+    this.colors = [];
+    this.empty();
   }
 
   destroy() {

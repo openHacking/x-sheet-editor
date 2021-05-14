@@ -63,8 +63,8 @@ class BottomMenu extends Widget {
               const cell = cells.getCell(ri, ci);
               if (cell) {
                 const { text, contentType } = cell;
-                number += 1;
                 if (contentType === Cell.CONTENT_TYPE.NUMBER) {
+                  number += 1;
                   total += text;
                 }
               }
@@ -73,8 +73,8 @@ class BottomMenu extends Widget {
         })
         .execute();
       const avg = total / number;
-      this.setSum(total);
-      this.setAvg(avg);
+      this.setSum(total.toFixed(2));
+      this.setAvg(avg.toFixed(2));
       this.setNumber(number);
     } else {
       this.setSum(0);

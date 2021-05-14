@@ -36,7 +36,6 @@ class Cell {
     rightSdistWidth = 0,
     contentType = Cell.CONTENT_TYPE.STRING,
   }) {
-    this.ruler = null;
     this.background = background;
     this.format = format;
     this.icons = XIcon.newInstances(icons);
@@ -101,7 +100,9 @@ class Cell {
     const { contentType } = this;
     switch (contentType) {
       case Cell.CONTENT_TYPE.NUMBER: {
-        if (!PlainUtils.isBlank(text)) {
+        if (PlainUtils.isBlank(text)) {
+          this.contentType = Cell.CONTENT_TYPE.STRING;
+        } else {
           this.text = PlainUtils.parseFloat(text);
         }
         break;

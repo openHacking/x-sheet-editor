@@ -567,7 +567,7 @@ const settings = {
     height: RowFixed.HEIGHT,
     width: ColFixed.WIDTH,
     background: 'rgb(234,234,234)',
-    buttonColor: 'rgb(293,293,293)',
+    buttonColor: 'rgb(193,193,193)',
   },
   data: [],
   merge: {

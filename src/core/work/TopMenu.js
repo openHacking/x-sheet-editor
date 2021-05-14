@@ -217,13 +217,12 @@ class TopMenu extends Widget {
           const { xScreen } = table;
           const operateCellsHelper = table.getOperateCellsHelper();
           const xTableStyle = table.getXTableStyle();
-          const merges = table.getTableMerges();
           const { tableDataSnapshot } = table;
           const xSelect = xScreen.findType(XSelectItem);
           const { selectRange } = xSelect;
           if (selectRange) {
             tableDataSnapshot.begin();
-            const { mergeDataProxy, cellDataProxy } = tableDataSnapshot;
+            const { cellDataProxy } = tableDataSnapshot;
             const rect = selectRange;
             let widthType = XDraw.LINE_WIDTH_TYPE.low;
             let type = LINE_TYPE.SOLID_LINE;
@@ -989,6 +988,7 @@ class TopMenu extends Widget {
       this.setFontItalicStatus();
       this.setUnderLineStatus();
       this.setFontStrikeStatus();
+      this.setBorderStatus();
       this.setFontColorStatus();
       this.setFillColorStatus();
       this.setHorizontalAlignStatus();
@@ -1416,6 +1416,29 @@ class TopMenu extends Widget {
     });
   }
 
+  setStatus() {
+    this.setUndoStatus();
+    this.setRedoStatus();
+    this.setScaleStatus();
+    this.setPaintFormatStatus();
+    this.setFormatStatus();
+    this.setFontStatus();
+    this.setFontSizeStatus();
+    this.setFontBoldStatus();
+    this.setFontItalicStatus();
+    this.setUnderLineStatus();
+    this.setBorderStatus();
+    this.setFontStrikeStatus();
+    this.setFontColorStatus();
+    this.setFillColorStatus();
+    this.setHorizontalAlignStatus();
+    this.setVerticalAlignStatus();
+    this.setTextWrappingStatus();
+    this.setFixedStatus();
+    this.setFilterStatus();
+    this.setFontAngleStatus();
+  }
+
   setHorizontalAlignStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
@@ -1613,28 +1636,6 @@ class TopMenu extends Widget {
     this.font.fontContextMenu.setActiveByType(name);
   }
 
-  setStatus() {
-    this.setUndoStatus();
-    this.setRedoStatus();
-    this.setScaleStatus();
-    this.setPaintFormatStatus();
-    this.setFormatStatus();
-    this.setFontStatus();
-    this.setFontSizeStatus();
-    this.setFontBoldStatus();
-    this.setFontItalicStatus();
-    this.setUnderLineStatus();
-    this.setFontStrikeStatus();
-    this.setFontColorStatus();
-    this.setFillColorStatus();
-    this.setHorizontalAlignStatus();
-    this.setVerticalAlignStatus();
-    this.setTextWrappingStatus();
-    this.setFixedStatus();
-    this.setFilterStatus();
-    this.setFontAngleStatus();
-  }
-
   setFixedStatus() {
     const { body } = this.workTop.work;
     const { fixed } = this;
@@ -1727,46 +1728,6 @@ class TopMenu extends Widget {
     this.fontStrike.active(strikethrough);
   }
 
-  setFontColorStatus() {
-    const { body } = this.workTop.work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    const { xScreen } = table;
-    const cells = table.getTableCells();
-    const xSelect = xScreen.findType(XSelectItem);
-    const { selectRange } = xSelect;
-    let color = 'rgb(0, 0, 0)';
-    if (selectRange) {
-      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
-      // eslint-disable-next-line prefer-destructuring
-      color = firstCell.fontAttr.color;
-    }
-    this.fontColor.setColor(color);
-    this.fontColor.fontColorContextMenu.setActiveByColor(color);
-  }
-
-  setFillColorStatus() {
-    const { body } = this.workTop.work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    const { xScreen } = table;
-    const cells = table.getTableCells();
-    const xSelect = xScreen.findType(XSelectItem);
-    const { selectRange } = xSelect;
-    let color = 'rgb(255, 255, 255)';
-    if (selectRange) {
-      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
-      // eslint-disable-next-line prefer-destructuring
-      if (firstCell.background) {
-        color = firstCell.background;
-      }
-    }
-    this.fillColor.setColor(color);
-    this.fillColor.fillColorContextMenu.setActiveByColor(color);
-  }
-
   setFontItalicStatus() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
@@ -1801,6 +1762,77 @@ class TopMenu extends Widget {
       angle = firstCell.fontAttr.angle;
     }
     this.fontAngle.setValue(angle);
+  }
+
+  setBorderStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const cells = table.getTableCells();
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    let leftColor = 'rgb(0, 0, 0)';
+    let topColor = 'rgb(0, 0, 0)';
+    let rightColor = 'rgb(0, 0, 0)';
+    let bottomColor = 'rgb(0, 0, 0)';
+    if (selectRange) {
+      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+      const { borderAttr } = firstCell;
+      const { left, bottom, top, right } = borderAttr;
+      leftColor = left.color;
+      topColor = top.color;
+      rightColor = right.color;
+      bottomColor = bottom.color;
+    }
+    this.border.borderTypeContextMenu.borderColorContextMenu.clearCustomizeColor();
+    this.border.borderTypeContextMenu.borderColorContextMenu.addCustomizeColor(leftColor);
+    this.border.borderTypeContextMenu.borderColorContextMenu.addCustomizeColor(topColor);
+    this.border.borderTypeContextMenu.borderColorContextMenu.addCustomizeColor(rightColor);
+    this.border.borderTypeContextMenu.borderColorContextMenu.addCustomizeColor(bottomColor);
+  }
+
+  setFillColorStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const cells = table.getTableCells();
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    let color = 'rgb(255, 255, 255)';
+    if (selectRange) {
+      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+      if (firstCell.background) {
+        color = firstCell.background;
+      }
+    }
+    this.fillColor.setColor(color);
+    this.fillColor.fillColorContextMenu.clearCustomizeColor(color);
+    this.fillColor.fillColorContextMenu.addCustomizeColor(color);
+    this.fillColor.fillColorContextMenu.setActiveByColor(color);
+  }
+
+  setFontColorStatus() {
+    const { body } = this.workTop.work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const cells = table.getTableCells();
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    let color = 'rgb(0, 0, 0)';
+    if (selectRange) {
+      const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+      color = firstCell.fontAttr.color;
+    }
+    this.fontColor.setColor(color);
+    this.fontColor.fontColorContextMenu.clearCustomizeColor();
+    this.fontColor.fontColorContextMenu.addCustomizeColor(color);
+    this.fontColor.fontColorContextMenu.setActiveByColor(color);
   }
 
   destroy() {

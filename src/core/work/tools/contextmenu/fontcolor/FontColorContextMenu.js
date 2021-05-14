@@ -18,31 +18,34 @@ class FontColorContextMenu extends ELContextMenu {
     }, options));
     this.colorPicker = new ColorPicker({
       selectCb: (color) => {
-        const item = new ColorItem({ color });
-        this.customizeColorArray.add(item);
-        this.customizeColorArray.setActiveByColor(color);
-        this.colorArray.setActiveByColor(null);
         this.options.onUpdate(color);
+        if (this.addCustomizeColor(color)) {
+          this.customizeColorArray.setActiveByColor(color);
+        } else {
+          this.defaultColorArray.setActiveByColor(color);
+        }
         this.close();
       },
     });
-    // 重置
-    this.reset = new FontColorContextMenuItem('重置', new Icon('clear-color'));
-    // 颜色筛选
-    this.array = new FontColorContextMenuItem();
-    this.array.removeClass('hover');
-    this.colorArray = new ColorArray({
+    // 重置颜色按钮
+    this.resetColorButton = new FontColorContextMenuItem('重置', new Icon('clear-color'));
+    // 默认颜色筛选
+    this.defaultColorArrayItem = new FontColorContextMenuItem();
+    this.defaultColorArrayItem.removeClass('hover');
+    this.defaultColorArray = new ColorArray({
       selectCb: (item) => {
         const { color } = item.options;
-        if (color) this.options.onUpdate(color);
+        if (color) {
+          this.options.onUpdate(color);
+        }
         this.customizeColorArray.setActiveByColor(null);
         this.close();
       },
     });
-    this.array.children(this.colorArray);
-    // 历史选中
-    this.title = h('div', `${cssPrefix}-font-color-context-menu-color-title`);
-    this.title.text('自定义');
+    this.defaultColorArrayItem.children(this.defaultColorArray);
+    // 自定义颜色
+    this.customizeColorArrayItem = new FontColorContextMenuItem();
+    this.customizeColorArrayItem.removeClass('hover');
     this.plus = new Icon('plus');
     this.customizeColorArray = new ColorArray({
       colors: [
@@ -52,40 +55,56 @@ class FontColorContextMenu extends ELContextMenu {
         const { color } = item.options;
         if (color) {
           this.options.onUpdate(color);
-          this.colorArray.setActiveByColor(null);
+          this.defaultColorArray.setActiveByColor(null);
           this.close();
         } else {
-          this.colorPicker.open(this.customizeColorArray.activeColor);
+          const activeColor = this.customizeColorArray.activeColor
+            || this.defaultColorArray.activeColor;
+          this.colorPicker.open(activeColor);
         }
       },
     });
-    this.customize = new FontColorContextMenuItem();
-    this.customize.removeClass('hover');
-    this.customize.children(this.title);
-    this.customize.children(this.customizeColorArray);
+    this.customizeColorTitle = h('div', `${cssPrefix}-font-color-context-menu-color-title`);
+    this.customizeColorTitle.text('自定义');
+    this.customizeColorArrayItem.children(this.customizeColorTitle);
+    this.customizeColorArrayItem.children(this.customizeColorArray);
     // 菜单元素追加子节点
-    this.addItem(this.reset);
-    this.addItem(this.array);
+    this.addItem(this.resetColorButton);
+    this.addItem(this.defaultColorArrayItem);
     this.addItem(new ELContextMenuDivider());
-    this.addItem(this.customize);
+    this.addItem(this.customizeColorArrayItem);
     this.bind();
   }
 
   unbind() {
-    XEvent.unbind(this.reset);
+    XEvent.unbind(this.resetColorButton);
   }
 
   bind() {
-    XEvent.bind(this.reset, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+    XEvent.bind(this.resetColorButton, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       this.options.onUpdate('rgb(0,0,0)');
       this.customizeColorArray.setActiveByColor(null);
-      this.colorArray.setActiveByColor(null);
+      this.defaultColorArray.setActiveByColor(null);
     });
   }
 
   setActiveByColor(color) {
     this.customizeColorArray.setActiveByColor(color);
-    this.colorArray.setActiveByColor(color);
+    this.defaultColorArray.setActiveByColor(color);
+  }
+
+  clearCustomizeColor() {
+    this.customizeColorArray.clear();
+    this.customizeColorArray.add(new ColorItem({ icon: this.plus }));
+  }
+
+  addCustomizeColor(color) {
+    const result = this.defaultColorArray.findItemByColor(color);
+    if (!result) {
+      this.customizeColorArray.add(new ColorItem({ color }));
+      return true;
+    }
+    return false;
   }
 
   destroy() {
