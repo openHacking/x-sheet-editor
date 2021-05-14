@@ -133,8 +133,8 @@ class ColorPicker extends Widget {
         s: parseInt(color[1], 10),
         x: parseInt(color[2], 10),
       });
-      const colorValue = ColorPicker.hsbToHex(hsb);
-      this.options.selectCb(`#${colorValue}`);
+      const rgb = ColorPicker.hsbToRgb(hsb);
+      this.options.selectCb(rgb);
       this.close();
     });
   }
