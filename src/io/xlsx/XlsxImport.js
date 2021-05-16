@@ -126,9 +126,10 @@ class XlsxImport {
     work.options.lastModifiedBy = workbook.lastModifiedBy;
     // 读取sheet表
     const xSheets = [];
-    workbook.eachSheet((worksheet) => {
-      const { name, model, views } = worksheet;
-      const { rows, cols, merges } = model;
+    const { model } = workbook;
+    const { worksheets } = model;
+    worksheets.forEach((sheet) => {
+      const { name, cols, rows, merges, views } = sheet;
       const xCols = {
         data: [],
       };
@@ -144,16 +145,18 @@ class XlsxImport {
         background: '#ffffff',
       };
       // 读取列宽
+      const colsLast = cols.length - 1;
       cols.forEach((col, index) => {
         const { min, max, width } = col;
-        if (min === max || index === cols.length - 1) {
+        const colWidth = this.colWidth(defaultTable, width);
+        if (min === max || colsLast === index) {
           xCols.data.push({
-            width: this.colWidth(defaultTable, width),
+            width: colWidth,
           });
         } else {
           for (let i = min; i <= max; i++) {
             xCols.data.push({
-              width: this.colWidth(defaultTable, width),
+              width: colWidth,
             });
           }
         }
