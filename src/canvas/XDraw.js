@@ -23,6 +23,10 @@ class Base {
     return Math.round(val);
   }
 
+  static ceil(val) {
+    return Math.ceil(val);
+  }
+
   static trunc(val) {
     return Math.trunc(val);
   }

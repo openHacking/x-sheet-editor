@@ -16,15 +16,14 @@ class XlsxImport {
   /**
    * 行高转换
    * @param table
-   * @param height
+   * @param value
    */
-  static rowHeight(table, height) {
+  static rowHeight(table, value) {
     const { xTableStyle } = table;
     const { heightUnit } = xTableStyle;
-    const pixelUnit = heightUnit.getPixel(height);
-    const pixelRound = XDraw.round(pixelUnit);
-    const srcHeight = XDraw.srcPx(pixelRound);
-    return XDraw.round(srcHeight);
+    const pixel = heightUnit.getPixel(value);
+    const height = XDraw.srcPx(pixel);
+    return XDraw.round(height);
   }
 
   /**
@@ -70,29 +69,27 @@ class XlsxImport {
   /**
    * 列宽转换
    * @param table
-   * @param width
+   * @param value
    */
-  static colWidth(table, width) {
+  static colWidth(table, value) {
     const { xTableStyle } = table;
     const { wideUnit } = xTableStyle;
-    const pixelUnit = wideUnit.getWidePixel(width);
-    const pixelRound = XDraw.round(pixelUnit);
-    const srcWidth = XDraw.cssPx(pixelRound);
-    return XDraw.round(srcWidth);
+    const pixel = wideUnit.getWidePixel(value);
+    const width = XDraw.cssPx(pixel);
+    return XDraw.round(width);
   }
 
   /**
    * 字体大小转换
    * @param table
-   * @param size
+   * @param value
    */
-  static fontsize(table, size) {
+  static fontsize(table, value) {
     const { xTableStyle } = table;
     const { heightUnit } = xTableStyle;
-    const pixelUnit = heightUnit.getPixel(size);
-    const pixelRound = XDraw.round(pixelUnit);
-    const srcFontSize = XDraw.srcPx(pixelRound);
-    return XDraw.round(srcFontSize);
+    const pixel = heightUnit.getPixel(value);
+    const fontsize = XDraw.srcPx(pixel);
+    return XDraw.ceil(fontsize);
   }
 
   /**
