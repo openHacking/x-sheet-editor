@@ -106,6 +106,24 @@ class XlsxImport {
   }
 
   /**
+   * 颜色转换
+   * @param argb
+   * @returns {string|*}
+   */
+  static argbToRgb(argb) {
+    if (argb) {
+      if (argb.startsWith('#')) {
+        if (argb.length === 9) {
+          return `#${argb.substring(3)}`;
+        }
+      } else if (argb.length === 8) {
+        return argb.substring(2);
+      }
+    }
+    return argb;
+  }
+
+  /**
    * 导入XLSX文件
    * @param work
    * @param file
@@ -175,11 +193,12 @@ class XlsxImport {
         const item = [];
         cells.forEach((cell) => {
           // 单元格基本属性
-          const { value, address, style = {} } = cell;
+          const { value = '', address = '', style = {} } = cell;
+          const { richText } = value;
           const { border, fill, font, alignment } = style;
           // 读取列编号
-          const colAddress = address.replace(number, '');
-          const colIndex = PlainUtils.indexAt(colAddress);
+          const colNo = address.replace(number, '');
+          const colIndex = PlainUtils.indexAt(colNo);
           // 创建新的XCell;
           const xCell = {
             background: null,
@@ -192,10 +211,14 @@ class XlsxImport {
               bottom: {},
             },
           };
+          // 富文本
+          if (richText) {
+            xCell.text = PlainUtils.EMPTY;
+          }
           // 字体属性
           if (font) {
             const { name, bold, size, italic, underline, strike, color = {} } = font;
-            const { argb } = color;
+            const { theme, argb } = color;
             xCell.fontAttr.name = name;
             xCell.fontAttr.bold = bold;
             xCell.fontAttr.size = this.fontsize(defaultTable, size);
@@ -204,14 +227,24 @@ class XlsxImport {
             xCell.fontAttr.direction = BaseFont.TEXT_DIRECTION.HORIZONTAL;
             xCell.fontAttr.underline = underline;
             xCell.fontAttr.strikethrough = strike;
-            if (argb) {
-              xCell.fontAttr.color = ColorPicker.parseHexToRgb(argb, ColorArray.BLACK);
+            if (PlainUtils.isNotUnDef(argb)) {
+              const rgb = this.argbToRgb(argb);
+              xCell.fontAttr.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
+            } else if (PlainUtils.isNotUnDef(theme)) {
+              xCell.fontAttr.color = XlsxImport.THEME_COLOR[theme];
             }
           }
           // 背景颜色
           if (fill) {
-            if (fill.fgColor) {
-              xCell.background = ColorPicker.parseHexToRgb(fill.fgColor.argb);
+            const { fgColor } = fill;
+            if (fgColor) {
+              const { theme, argb } = fgColor;
+              if (PlainUtils.isNotUnDef(argb)) {
+                const rgb = this.argbToRgb(argb);
+                xCell.background = ColorPicker.parseHexToRgb(rgb);
+              } else if (PlainUtils.isNotUnDef(theme)) {
+                xCell.background = XlsxImport.THEME_COLOR[theme];
+              }
             }
           }
           // 对齐方式
@@ -238,46 +271,58 @@ class XlsxImport {
           if (border) {
             if (border.right) {
               const { style, color = {} } = border.right;
-              const { argb } = color;
+              const { theme, argb } = color;
               const { widthType, type } = this.borderType(style);
               xCell.borderAttr.right.widthType = widthType;
               xCell.borderAttr.right.type = type;
               xCell.borderAttr.right.display = true;
-              if (argb) {
-                xCell.borderAttr.right.color = ColorPicker.parseHexToRgb(argb, ColorArray.BLACK);
+              if (PlainUtils.isNotUnDef(argb)) {
+                const rgb = this.argbToRgb(argb);
+                xCell.borderAttr.right.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
+              } else if (PlainUtils.isNotUnDef(theme)) {
+                xCell.borderAttr.right.color = XlsxImport.THEME_COLOR[theme];
               }
             }
             if (border.top) {
               const { style, color = {} } = border.top;
-              const { argb } = color;
+              const { theme, argb } = color;
               const { widthType, type } = this.borderType(style);
               xCell.borderAttr.top.display = true;
               xCell.borderAttr.top.type = type;
               xCell.borderAttr.top.widthType = widthType;
-              if (argb) {
-                xCell.borderAttr.top.color = ColorPicker.parseHexToRgb(argb, ColorArray.BLACK);
+              if (PlainUtils.isNotUnDef(argb)) {
+                const rgb = this.argbToRgb(argb);
+                xCell.borderAttr.top.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
+              } else if (PlainUtils.isNotUnDef(theme)) {
+                xCell.borderAttr.top.color = XlsxImport.THEME_COLOR[theme];
               }
             }
             if (border.left) {
               const { style, color = {} } = border.left;
-              const { argb } = color;
+              const { theme, argb } = color;
               const { widthType, type } = this.borderType(style);
               xCell.borderAttr.left.display = true;
               xCell.borderAttr.left.type = type;
               xCell.borderAttr.left.widthType = widthType;
-              if (argb) {
-                xCell.borderAttr.left.color = ColorPicker.parseHexToRgb(argb, ColorArray.BLACK);
+              if (PlainUtils.isNotUnDef(argb)) {
+                const rgb = this.argbToRgb(argb);
+                xCell.borderAttr.left.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
+              } else if (PlainUtils.isNotUnDef(theme)) {
+                xCell.borderAttr.left.color = XlsxImport.THEME_COLOR[theme];
               }
             }
             if (border.bottom) {
               const { style, color = {} } = border.bottom;
-              const { argb } = color;
+              const { theme, argb } = color;
               const { widthType, type } = this.borderType(style);
               xCell.borderAttr.bottom.display = true;
               xCell.borderAttr.bottom.type = type;
               xCell.borderAttr.bottom.widthType = widthType;
-              if (argb) {
-                xCell.borderAttr.bottom.color = ColorPicker.parseHexToRgb(argb, ColorArray.BLACK);
+              if (PlainUtils.isNotUnDef(argb)) {
+                const rgb = this.argbToRgb(argb);
+                xCell.borderAttr.bottom.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
+              } else if (PlainUtils.isNotUnDef(theme)) {
+                xCell.borderAttr.bottom.color = XlsxImport.THEME_COLOR[theme];
               }
             }
           }
@@ -317,7 +362,6 @@ class XlsxImport {
   }
 
 }
-
 XlsxImport.INDEX_COLOR = [
   '000000',
   'FFFFFF',
@@ -383,6 +427,73 @@ XlsxImport.INDEX_COLOR = [
   '993366',
   '333399',
   '333333',
+];
+XlsxImport.THEME_COLOR = [
+  'rgb(255,255,255)',
+  'rgb(0,0,0)',
+  'rgb(231,230,230)',
+  'rgb(68,84,106)',
+  'rgb(91,155,213)',
+  'rgb(237,125,49)',
+  'rgb(165,165,165)',
+  'rgb(255,192,0)',
+  'rgb(68,144,196)',
+  'rgb(112,173,71)',
+
+  'rgb(242,242,242)',
+  'rgb(128,128,128)',
+  'rgb(208,208,206)',
+  'rgb(214,220,218)',
+  'rgb(221,235,247)',
+  'rgb(252,228,214)',
+  'rgb(237,237,237)',
+  'rgb(255,242,204)',
+  'rgb(217,225,242)',
+  'rgb(226,239,218)',
+
+  'rgb(217,217,217)',
+  'rgb(89,89,89)',
+  'rgb(174,170,170)',
+  'rgb(172,185,202)',
+  'rgb(189,215,238)',
+  'rgb(248,203,173)',
+  'rgb(219,219,219)',
+  'rgb(255,230,153)',
+  'rgb(180,198,231)',
+  'rgb(198,224,180)',
+
+  'rgb(191,191,191)',
+  'rgb(64,64,64)',
+  'rgb(117,113,113)',
+  'rgb(132,151,176)',
+  'rgb(155,194,230)',
+  'rgb(244,176,132)',
+  'rgb(201,201,201)',
+  'rgb(255, 217, 102)',
+  'rgb(142,169,219)',
+  'rgb(169,208,142)',
+
+  'rgb(166,166,166)',
+  'rgb(38,38,38)',
+  'rgb(58,56,56)',
+  'rgb(51,63,79)',
+  'rgb(47,117,181)',
+  'rgb(198, 89, 17)',
+  'rgb(123,123,123)',
+  'rgb(191, 143, 0)',
+  'rgb(48, 84, 150)',
+  'rgb(165,165,165)',
+
+  'rgb(128,128,128)',
+  'rgb(13,13,13)',
+  'rgb(22,22,22)',
+  'rgb(34, 43, 53)',
+  'rgb(31, 78, 120)',
+  'rgb(131, 60, 12)',
+  'rgb(82,82,82)',
+  'rgb(128, 96, 0)',
+  'rgb(32, 55, 100)',
+  'rgb(55, 86, 35)',
 ];
 
 export {
