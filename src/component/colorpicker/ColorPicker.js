@@ -134,7 +134,7 @@ class ColorPicker extends Widget {
         x: parseInt(color[2], 10),
       });
       const rgb = ColorPicker.hsbToRgb(hsb);
-      this.options.selectCb(ColorPicker.parseHexToRgb(rgb));
+      this.options.selectCb(`rgb(${rgb.r},${rgb.g},${rgb.b})`);
       this.close();
     });
   }
@@ -427,9 +427,6 @@ class ColorPicker extends Widget {
 
   static parseHexToRgb(hex, defaultValue = null) {
     if (hex) {
-      if (hex.startsWith('#')) {
-        hex = `#${hex}`;
-      }
       const rgb = ColorPicker.hexToRgb(hex);
       return `rgb(${rgb.r},${rgb.g},${rgb.b})`;
     }

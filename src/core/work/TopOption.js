@@ -39,12 +39,14 @@ class TopOption extends Widget {
     });
     this.file = new File({
       contextMenu: {
-        onUpdate: (item) => {
+        autoClose: false,
+        onUpdate: (item, menu) => {
           const { work } = workTop;
           const { type } = item;
           switch (type) {
             case 1: {
               this.xlsxSelect.choose().then((file) => {
+                menu.close();
                 if (file) {
                   XlsxImport.import(work, file).then();
                 }
@@ -52,12 +54,15 @@ class TopOption extends Widget {
               break;
             }
             case 2: {
-              XlsxExport.export(work)
-                .then();
+              menu.close();
+              XlsxExport.export(work).then();
               break;
             }
             case 3: {
-              new Alert({ message: '开发人员正在努力施工中....' }).open();
+              menu.close();
+              new Alert({
+                message: '开发人员正在努力施工中....',
+              }).open();
               break;
             }
           }

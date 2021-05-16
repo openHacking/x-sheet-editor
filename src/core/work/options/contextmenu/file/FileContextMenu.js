@@ -8,6 +8,7 @@ class FileContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
     super(`${cssPrefix}-scale-context-menu`, PlainUtils.copy({
+      autoClose: true,
       onUpdate: () => {},
     }, options));
     this.items = [
@@ -23,8 +24,11 @@ class FileContextMenu extends ELContextMenu {
 
   update(item) {
     const { options } = this;
-    options.onUpdate(item);
-    this.close();
+    const { autoClose } = options;
+    options.onUpdate(item, this);
+    if (autoClose) {
+      this.close();
+    }
   }
 
   bind() {
