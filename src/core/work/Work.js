@@ -8,6 +8,10 @@ import { WorkBottom } from './WorkBottom';
 import { PlainUtils } from '../../utils/PlainUtils';
 
 const settings = {
+  created: new Date(),
+  modified: new Date(),
+  creator: '',
+  lastModifiedBy: '',
   top: {
     option: {
       show: true,

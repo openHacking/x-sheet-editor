@@ -10,6 +10,8 @@ import { XEvent } from '../../libs/XEvent';
 import { ElPopUp } from '../../component/elpopup/ElPopUp';
 import { Alert } from '../../component/alert/Alert';
 import { XlsxExport } from '../../io/xlsx/XlsxExport';
+import { SelectFile } from '../../libs/SelectFile';
+import { XlsxImport } from '../../io/xlsx/XlsxImport';
 
 class TopOption extends Widget {
 
@@ -27,21 +29,37 @@ class TopOption extends Widget {
     this.children(this.leftEle);
     this.children(this.rightEle);
     this.setTitle(this.title);
+    this.xlsxSelect = new SelectFile({
+      accept: SelectFile.ACCEPT.XLSX,
+      multiple: false,
+    });
+    this.cvsSelect = new SelectFile({
+      accept: SelectFile.ACCEPT.CVS,
+      multiple: false,
+    });
     this.file = new File({
       contextMenu: {
-        onUpdate(item) {
+        onUpdate: (item) => {
           const { work } = workTop;
           const { type } = item;
           switch (type) {
-            case 1:
+            case 1: {
+              this.xlsxSelect.choose().then((file) => {
+                if (file) {
+                  XlsxImport.importXlsx(work, file).then();
+                }
+              });
+              break;
+            }
+            case 2: {
+              XlsxExport.exportXlsx(work)
+                .then();
+              break;
+            }
+            case 3: {
               new Alert({ message: '开发人员正在努力施工中....' }).open();
               break;
-            case 2:
-              XlsxExport.exportXlsx(work);
-              break;
-            case 3:
-              new Alert({ message: '开发人员正在努力施工中....' }).open();
-              break;
+            }
           }
         },
       },

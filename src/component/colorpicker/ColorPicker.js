@@ -134,7 +134,7 @@ class ColorPicker extends Widget {
         x: parseInt(color[2], 10),
       });
       const rgb = ColorPicker.hsbToRgb(hsb);
-      this.options.selectCb(rgb);
+      this.options.selectCb(ColorPicker.parseHexToRgb(rgb));
       this.close();
     });
   }
@@ -212,9 +212,7 @@ class ColorPicker extends Widget {
       s: parseInt(color[1], 10),
       x: parseInt(color[2], 10),
     });
-    const {
-      preViewColorPoint, selectColorPoint, colorInput,
-    } = this;
+    const { preViewColorPoint, selectColorPoint, colorInput } = this;
     const colorValue = ColorPicker.hsbToHex(hsb);
     selectColorPoint.css('backgroundColor', `#${colorValue}`);
     preViewColorPoint.css('backgroundColor', `#${colorValue}`);
@@ -425,6 +423,17 @@ class ColorPicker extends Widget {
       return this.rgbToHex(value);
     }
     return 'ffffff';
+  }
+
+  static parseHexToRgb(hex) {
+    if (hex) {
+      if (hex.startsWith('#')) {
+        hex = `#${hex}`;
+      }
+      const rgb = ColorPicker.hexToRgb(hex);
+      return `rgb(${rgb.r},${rgb.g},${rgb.b})`;
+    }
+    return hex;
   }
 
 }

@@ -1,5 +1,5 @@
 /* global Blob */
-import ExcelJS from 'exceljs/dist/exceljs';
+import { Workbook } from 'exceljs';
 import { XDraw } from '../../canvas/XDraw';
 import { ColorPicker } from '../../component/colorpicker/ColorPicker';
 import { BaseFont } from '../../canvas/font/BaseFont';
@@ -93,11 +93,11 @@ class XlsxExport {
    * 导出xlsx文件
    * @param work
    */
-  static exportXlsx(work) {
+  static async exportXlsx(work) {
     const { sheetView } = work.body;
     const { sheetList } = sheetView;
     // 创建工作薄
-    const workbook = new ExcelJS.Workbook();
+    const workbook = new Workbook();
     workbook.created = work.options.created;
     workbook.creator = work.options.creator;
     workbook.modified = work.options.modified;
@@ -123,7 +123,6 @@ class XlsxExport {
       cols.eachWidth(0, last(cols.len), (col) => {
         const srcWidth = cols.getOriginWidth(col);
         const colWidth = this.colWidth(table, srcWidth);
-        // 列宽计算不精确 (😤气人) , 研究研究 TODO ..
         sheetColumns.push({
           width: colWidth,
         });
@@ -245,13 +244,10 @@ class XlsxExport {
         });
     });
     // 导出XLSX
-    workbook.xlsx
-      .writeBuffer()
-      .then((data) => {
-        Download(new Blob([data], {
-          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        }), `${work.options.name}.xlsx`);
-      });
+    const data = await workbook.xlsx.writeBuffer();
+    Download(new Blob([data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    }), `${work.options.name}.xlsx`);
   }
 
 }

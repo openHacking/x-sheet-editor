@@ -62,6 +62,7 @@ class BindPool {
   }
 
 }
+
 const pool = new BindPool();
 
 class XEvent {
@@ -72,6 +73,7 @@ class XEvent {
     } else {
       pool.unbind(target, name, fn, option);
     }
+    return target;
   }
 
   static bind(target, name, fn, option = false) {
@@ -80,6 +82,7 @@ class XEvent {
     } else {
       pool.bind(target, name, fn, option);
     }
+    return target;
   }
 
   static mouseDoubleClick(target, doubleFunc = () => {}) {
@@ -101,6 +104,7 @@ class XEvent {
         last = current;
       }
     });
+    return target;
   }
 
   static mouseMoveUp(target, moveFunc = () => {}, upFunc = () => {}) {
@@ -116,10 +120,10 @@ class XEvent {
     };
     XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, xEvtMove, true);
     XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);
+    return target;
   }
 
 }
-window.XEventPool = pool;
 
 export {
   XEvent,

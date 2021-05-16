@@ -315,7 +315,7 @@ class PlainUtils {
       return { type: 'Opera', version: ver };
     }
     // Safari
-    if (explorer.indexOf('Safari') >= 0) {
+    if (explorer.indexOf('safari') >= 0) {
       const ver = explorer.match(/version\/([\d.]+)/)[1];
       return { type: 'Safari', version: ver };
     }
