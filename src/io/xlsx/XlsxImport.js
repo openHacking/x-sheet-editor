@@ -128,13 +128,15 @@ class XlsxImport {
     const xSheets = [];
     const { model } = workbook;
     const { worksheets } = model;
-    worksheets.forEach((sheet) => {
-      const { name, cols, rows, merges, views } = sheet;
+    worksheets.forEach((worksheet) => {
+      const { name, cols = [], rows = [], merges = [], views = [] } = worksheet;
       const xCols = {
         data: [],
+        len: 25,
       };
       const xRows = {
         data: [],
+        len: 100,
       };
       const xData = [];
       const xMerge = {
@@ -145,34 +147,38 @@ class XlsxImport {
         background: '#ffffff',
       };
       // 读取列宽
-      const colsLast = cols.length - 1;
+      const lastIndex = cols.length - 1;
       cols.forEach((col, index) => {
         const { min, max, width } = col;
         const colWidth = this.colWidth(defaultTable, width);
-        if (min === max || colsLast === index) {
-          xCols.data.push({
+        if (min === max || lastIndex === index) {
+          xCols.data[min - 1] = {
             width: colWidth,
-          });
+          };
         } else {
           for (let i = min; i <= max; i++) {
-            xCols.data.push({
+            xCols.data[i - 1] = {
               width: colWidth,
-            });
+            };
           }
         }
       });
       // 读取行高
       rows.forEach((row) => {
-        const { cells, height } = row;
-        xRows.data.push({
+        const { cells, height, number } = row;
+        const rowIndex = number - 1;
+        xRows.data[rowIndex] = {
           height: this.rowHeight(defaultTable, height),
-        });
+        };
         // 读取数据
         const item = [];
         cells.forEach((cell) => {
           // 单元格基本属性
-          const { value = PlainUtils.EMPTY, style = {} } = cell;
+          const { value = '', address, style = {} } = cell;
           const { border, fill, font, alignment } = style;
+          // 读取列编号
+          const colAddress = address.replace(number, '');
+          const colIndex = PlainUtils.indexAt(colAddress);
           // 创建新的XCell;
           const xCell = {
             background: null,
@@ -264,15 +270,19 @@ class XlsxImport {
               }
             }
           }
-          // 追加单元格数据
-          item.push(xCell);
+          // 添加单元格
+          item[colIndex] = xCell;
         });
         // 添加新行
-        xData.push(item);
+        xData[rowIndex] = item;
       });
       // 添加sheet表
-      xCols.len = xCols.data.length;
-      xRows.len = xRows.data.length;
+      if (xCols.data.length) {
+        xCols.len = xCols.data.length;
+      }
+      if (xRows.data.length) {
+        xRows.len = xRows.data.length;
+      }
       xSheets.push({
         name,
         tableConfig: {

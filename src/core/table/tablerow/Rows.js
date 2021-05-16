@@ -78,6 +78,11 @@ class Rows {
     return this.data[ri];
   }
 
+  getMinHeight() {
+    const { scaleAdapter } = this;
+    return scaleAdapter.goto(this.min);
+  }
+
   getHeight(ri) {
     const { scaleAdapter } = this;
     const row = this.get(ri);

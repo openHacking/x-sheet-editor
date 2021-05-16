@@ -1585,25 +1585,26 @@ class XTableLeftIndexUI extends XTableIndexUI {
     const scrollView = this.getScrollView();
     const width = this.getWidth();
     const { table } = this;
-    const {
-      draw, rows, index,
-    } = table;
+    const { draw, rows, index } = table;
     const { sri, eri } = scrollView;
+    const minHeight = rows.getMinHeight();
     draw.offset(dx, dy);
     draw.attr({
       font: `${index.getSize()}px Arial`,
       fillStyle: index.getColor(),
     });
     rows.eachHeight(sri, eri, (i, ch, y) => {
-      const index = `${i + 1}`;
-      const metrics = draw.measureText(index);
-      const ascent = metrics.actualBoundingBoxAscent;
-      const descent = metrics.actualBoundingBoxDescent;
-      const fontWidth = metrics.width;
-      const fontHeight = ascent + descent;
-      const fx = (width / 2) - (fontWidth / 2);
-      const fy = y + ((ch / 2) - (fontHeight / 2)) + ascent;
-      draw.fillText(index, fx, fy);
+      if (ch > minHeight) {
+        const index = `${i + 1}`;
+        const metrics = draw.measureText(index);
+        const ascent = metrics.actualBoundingBoxAscent;
+        const descent = metrics.actualBoundingBoxDescent;
+        const fontWidth = metrics.width;
+        const fontHeight = ascent + descent;
+        const fx = (width / 2) - (fontWidth / 2);
+        const fy = y + ((ch / 2) - (fontHeight / 2)) + ascent;
+        draw.fillText(index, fx, fy);
+      }
     });
     draw.offset(0, 0);
   }
@@ -1688,25 +1689,26 @@ class XTableTopIndexUI extends XTableIndexUI {
     const scrollView = this.getScrollView();
     const height = this.getHeight();
     const { table } = this;
-    const {
-      draw, cols, index,
-    } = table;
+    const { draw, cols, index } = table;
     const { sci, eci } = scrollView;
+    const minWidth = cols.getMinWidth();
     draw.offset(dx, dy);
     draw.attr({
       font: `${index.getSize()}px Arial`,
       fillStyle: index.getColor(),
     });
     cols.eachWidth(sci, eci, (i, cw, x) => {
-      const index = PlainUtils.stringAt(i);
-      const metrics = draw.measureText(index);
-      const ascent = metrics.actualBoundingBoxAscent;
-      const descent = metrics.actualBoundingBoxDescent;
-      const fontWidth = metrics.width;
-      const fontHeight = ascent + descent;
-      const fx = x + ((cw / 2) - fontWidth / 2);
-      const fy = ((height / 2) - fontHeight / 2) + ascent;
-      draw.fillText(index, fx, fy);
+      if (cw > minWidth) {
+        const index = PlainUtils.stringAt(i);
+        const metrics = draw.measureText(index);
+        const ascent = metrics.actualBoundingBoxAscent;
+        const descent = metrics.actualBoundingBoxDescent;
+        const fontWidth = metrics.width;
+        const fontHeight = ascent + descent;
+        const fx = x + ((cw / 2) - fontWidth / 2);
+        const fy = ((height / 2) - fontHeight / 2) + ascent;
+        draw.fillText(index, fx, fy);
+      }
     });
     draw.offset(0, 0);
   }

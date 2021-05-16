@@ -78,6 +78,11 @@ class Cols {
     return this.data[ci];
   }
 
+  getMinWidth() {
+    const { scaleAdapter } = this;
+    return scaleAdapter.goto(this.min);
+  }
+
   getWidth(ci) {
     const { scaleAdapter } = this;
     const col = this.data[ci];
