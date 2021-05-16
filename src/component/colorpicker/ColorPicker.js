@@ -414,7 +414,7 @@ class ColorPicker extends Widget {
     };
   }
 
-  static parseRgbToHex(rgb) {
+  static parseRgbToHex(rgb, defaultValue = null) {
     if (rgb) {
       if (this.isHex(rgb)) {
         return rgb.substring(1);
@@ -422,10 +422,10 @@ class ColorPicker extends Widget {
       const value = this.parseRgb(rgb);
       return this.rgbToHex(value);
     }
-    return 'ffffff';
+    return defaultValue;
   }
 
-  static parseHexToRgb(hex) {
+  static parseHexToRgb(hex, defaultValue = null) {
     if (hex) {
       if (hex.startsWith('#')) {
         hex = `#${hex}`;
@@ -433,7 +433,7 @@ class ColorPicker extends Widget {
       const rgb = ColorPicker.hexToRgb(hex);
       return `rgb(${rgb.r},${rgb.g},${rgb.b})`;
     }
-    return hex;
+    return defaultValue;
   }
 
 }

@@ -46,13 +46,13 @@ class TopOption extends Widget {
             case 1: {
               this.xlsxSelect.choose().then((file) => {
                 if (file) {
-                  XlsxImport.importXlsx(work, file).then();
+                  XlsxImport.import(work, file).then();
                 }
               });
               break;
             }
             case 2: {
-              XlsxExport.exportXlsx(work)
+              XlsxExport.export(work)
                 .then();
               break;
             }

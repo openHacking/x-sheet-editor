@@ -7,6 +7,7 @@ import { PlainUtils } from '../../utils/PlainUtils';
 import { Cell } from '../../core/table/tablecell/Cell';
 import { LINE_TYPE } from '../../canvas/Line';
 import Download from '../../libs/donwload/Download';
+import { SelectFile } from '../../libs/SelectFile';
 
 function next(i, step = 1) {
   return i + step;
@@ -95,7 +96,7 @@ class XlsxExport {
    * 导出xlsx文件
    * @param work
    */
-  static async exportXlsx(work) {
+  static async export(work) {
     const { sheetView } = work.body;
     const { sheetList } = sheetView;
     // 创建工作薄
@@ -248,7 +249,7 @@ class XlsxExport {
     // 导出XLSX
     const data = await workbook.xlsx.writeBuffer();
     Download(new Blob([data], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      type: SelectFile.ACCEPT.XLSX,
     }), `${work.options.name}.xlsx`);
   }
 
