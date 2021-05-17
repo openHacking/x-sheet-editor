@@ -108,7 +108,7 @@ class Cell {
         break;
       }
       case Cell.CONTENT_TYPE.STRING: {
-        this.text = text;
+        this.text = text.toString();
         break;
       }
     }

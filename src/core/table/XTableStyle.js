@@ -1601,9 +1601,11 @@ class XTableLeftIndexUI extends XTableIndexUI {
         const descent = metrics.actualBoundingBoxDescent;
         const fontWidth = metrics.width;
         const fontHeight = ascent + descent;
-        const fx = (width / 2) - (fontWidth / 2);
-        const fy = y + ((ch / 2) - (fontHeight / 2)) + ascent;
-        draw.fillText(index, fx, fy);
+        if (ch > fontHeight) {
+          const fx = (width / 2) - (fontWidth / 2);
+          const fy = y + ((ch / 2) - (fontHeight / 2)) + ascent;
+          draw.fillText(index, fx, fy);
+        }
       }
     });
     draw.offset(0, 0);
@@ -1705,9 +1707,11 @@ class XTableTopIndexUI extends XTableIndexUI {
         const descent = metrics.actualBoundingBoxDescent;
         const fontWidth = metrics.width;
         const fontHeight = ascent + descent;
-        const fx = x + ((cw / 2) - fontWidth / 2);
-        const fy = ((height / 2) - fontHeight / 2) + ascent;
-        draw.fillText(index, fx, fy);
+        if (cw > fontWidth) {
+          const fx = x + ((cw / 2) - fontWidth / 2);
+          const fy = ((height / 2) - fontHeight / 2) + ascent;
+          draw.fillText(index, fx, fy);
+        }
       }
     });
     draw.offset(0, 0);

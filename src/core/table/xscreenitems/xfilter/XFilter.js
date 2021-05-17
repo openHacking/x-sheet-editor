@@ -14,6 +14,7 @@ import { XDraw } from '../../../../canvas/XDraw';
 import { FilterData } from '../../../../component/filterdata/FilterData';
 import { ElPopUp } from '../../../../component/elpopup/ElPopUp';
 import { ValueItem } from '../../../../component/filterdata/valuefilter/ValueItem';
+import { Cell } from '../../tablecell/Cell';
 
 /**
  * XFilter
@@ -396,7 +397,14 @@ class XFilter extends XScreenCssBorderItem {
     new RectRange(sri, sci, eri, eci).each(xIteratorBuilder, (ri, ci) => {
       const cell = cells.getCellOrMergeCell(ri, ci);
       if (cell && !PlainUtils.isBlank(cell.text)) {
-        items.add(cell.text.trim());
+        switch (cell.contentType) {
+          case Cell.CONTENT_TYPE.STRING:
+            items.add(cell.text.trim());
+            break;
+          case Cell.CONTENT_TYPE.NUMBER:
+            items.add(cell.text.toString().trim());
+            break;
+        }
       }
     });
     // 值筛选

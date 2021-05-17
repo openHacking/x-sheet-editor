@@ -353,6 +353,7 @@ PlainUtils.EMPTY = '';
 PlainUtils.Nul = null;
 PlainUtils.Undef = undefined;
 PlainUtils.noop = () => {};
+PlainUtils.DATA_TYPE = DATA_TYPE;
 
 export {
   PlainUtils,

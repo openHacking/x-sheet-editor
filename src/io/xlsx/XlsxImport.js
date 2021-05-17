@@ -211,10 +211,6 @@ class XlsxImport {
               bottom: {},
             },
           };
-          // 富文本
-          if (richText) {
-            xCell.text = PlainUtils.EMPTY;
-          }
           // 字体属性
           if (font) {
             const { name, bold, size, italic, underline, strike, color = {} } = font;
@@ -231,6 +227,10 @@ class XlsxImport {
             } else if (PlainUtils.isNotUnDef(theme)) {
               xCell.fontAttr.color = XlsxImport.THEME_COLOR[theme];
             }
+          }
+          // 富文本
+          if (richText) {
+            xCell.text = PlainUtils.EMPTY;
           }
           // 背景颜色
           if (fill) {
