@@ -10,7 +10,7 @@ import { PlainUtils } from '../../utils/PlainUtils';
 import { ColorArray } from '../../component/colorpicker/colorarray/ColorArray';
 
 /**
- * XLSX 文件导出
+ * XLSX 文件导入
  */
 class XlsxImport {
 
