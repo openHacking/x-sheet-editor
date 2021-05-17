@@ -223,8 +223,6 @@ class XlsxImport {
             xCell.fontAttr.bold = bold;
             xCell.fontAttr.size = this.fontsize(defaultTable, size);
             xCell.fontAttr.italic = italic;
-            xCell.fontAttr.textWrap = BaseFont.TEXT_WRAP.WORD_WRAP;
-            xCell.fontAttr.direction = BaseFont.TEXT_DIRECTION.HORIZONTAL;
             xCell.fontAttr.underline = underline;
             xCell.fontAttr.strikethrough = strike;
             if (PlainUtils.isNotUnDef(argb)) {
@@ -253,6 +251,7 @@ class XlsxImport {
             const { vertical, horizontal } = alignment;
             xCell.fontAttr.align = horizontal;
             xCell.fontAttr.verticalAlign = vertical;
+            xCell.fontAttr.direction = BaseFont.TEXT_DIRECTION.HORIZONTAL;
             // 垂直旋转
             if (textRotation === 'vertical') {
               xCell.fontAttr.direction = BaseFont.TEXT_DIRECTION.VERTICAL;
@@ -434,18 +433,18 @@ XlsxImport.THEME_COLOR = [
   'rgb(231,230,230)',
   'rgb(68,84,106)',
   'rgb(91,155,213)',
-  'rgb(237,125,49)',
+  'rgb(192, 80, 77)',
   'rgb(165,165,165)',
   'rgb(255,192,0)',
   'rgb(68,144,196)',
-  'rgb(112,173,71)',
+  'rgb(247,150,70)',
 
   'rgb(242,242,242)',
   'rgb(128,128,128)',
   'rgb(208,208,206)',
   'rgb(214,220,218)',
   'rgb(221,235,247)',
-  'rgb(252,228,214)',
+  'rgb(242,220,219)',
   'rgb(237,237,237)',
   'rgb(255,242,204)',
   'rgb(217,225,242)',

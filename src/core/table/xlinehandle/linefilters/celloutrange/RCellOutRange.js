@@ -8,6 +8,12 @@ class RCellOutRange extends CellOutRange {
   run({
     row, col,
   }) {
+    const { table } = this;
+    const { merges } = table;
+    const merge = merges.getFirstIncludes(row, col);
+    if (merge) {
+      return XLineIteratorFilter.RETURN_TYPE.EXEC;
+    }
     return this.master({ row, col }) && this.right({ row, col }) && this.left({ row, col })
       ? XLineIteratorFilter.RETURN_TYPE.EXEC
       : XLineIteratorFilter.RETURN_TYPE.JUMP;
