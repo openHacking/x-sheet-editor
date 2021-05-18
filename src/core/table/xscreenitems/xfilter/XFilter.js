@@ -232,7 +232,7 @@ class XFilter extends XScreenCssBorderItem {
         .setEnd(colLen)
         .setLoop((i) => {
           const cell = cells.getCellOrMergeCell(sri, i);
-          if (PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text)) {
+          if (PlainUtils.isUnDef(cell) || cell.isEmpty()) {
             return false;
           }
           targetRange = targetRange.union(new RectRange(sri, i, sri, i));
@@ -245,7 +245,7 @@ class XFilter extends XScreenCssBorderItem {
         .setEnd(0)
         .setLoop((i) => {
           const cell = cells.getCellOrMergeCell(sri, i);
-          if (PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text)) {
+          if (PlainUtils.isUnDef(cell) || cell.isEmpty()) {
             return false;
           }
           targetRange = targetRange.union(new RectRange(sri, i, sri, i));
@@ -258,7 +258,7 @@ class XFilter extends XScreenCssBorderItem {
         .setEnd(rowLen)
         .setLoop((i) => {
           const cell = cells.getCellOrMergeCell(i, sci);
-          if (PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text)) {
+          if (PlainUtils.isUnDef(cell) || cell.isEmpty()) {
             return false;
           }
           targetRange = targetRange.union(new RectRange(i, sci, i, sci));
@@ -271,7 +271,7 @@ class XFilter extends XScreenCssBorderItem {
         .setEnd(0)
         .setLoop((i) => {
           const cell = cells.getCellOrMergeCell(i, sci);
-          if (PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text)) {
+          if (PlainUtils.isUnDef(cell) || cell.isEmpty()) {
             return false;
           }
           targetRange = targetRange.union(new RectRange(i, sci, i, sci));
@@ -290,7 +290,7 @@ class XFilter extends XScreenCssBorderItem {
             .setEnd(eri)
             .setLoop((j) => {
               const cell = cells.getCellOrMergeCell(j, i);
-              if (!PlainUtils.isUnDef(cell) && !PlainUtils.isBlank(cell.text)) {
+              if (!PlainUtils.isUnDef(cell) && !cell.isEmpty()) {
                 targetRange = targetRange.union(new RectRange(j, i, j, i));
                 emptyCol = false;
               }
@@ -311,7 +311,7 @@ class XFilter extends XScreenCssBorderItem {
             .setEnd(eri)
             .setLoop((j) => {
               const cell = cells.getCellOrMergeCell(j, i);
-              if (!PlainUtils.isUnDef(cell) && !PlainUtils.isBlank(cell.text)) {
+              if (!PlainUtils.isUnDef(cell) && !cell.isEmpty()) {
                 targetRange = targetRange.union(new RectRange(j, i, j, i));
                 emptyCol = false;
               }
@@ -332,7 +332,7 @@ class XFilter extends XScreenCssBorderItem {
             .setEnd(eci)
             .setLoop((j) => {
               const cell = cells.getCellOrMergeCell(i, j);
-              if (!PlainUtils.isUnDef(cell) && !PlainUtils.isBlank(cell.text)) {
+              if (!PlainUtils.isUnDef(cell) && !cell.isEmpty()) {
                 targetRange = targetRange.union(new RectRange(i, j, i, j));
                 emptyRow = false;
               }
@@ -353,7 +353,7 @@ class XFilter extends XScreenCssBorderItem {
             .setEnd(eci)
             .setLoop((j) => {
               const cell = cells.getCellOrMergeCell(i, j);
-              if (!PlainUtils.isUnDef(cell) && !PlainUtils.isBlank(cell.text)) {
+              if (!PlainUtils.isUnDef(cell) && !cell.isEmpty()) {
                 targetRange = targetRange.union(new RectRange(i, j, i, j));
                 emptyRow = false;
               }
@@ -396,13 +396,13 @@ class XFilter extends XScreenCssBorderItem {
     const items = new Set();
     new RectRange(sri, sci, eri, eci).each(xIteratorBuilder, (ri, ci) => {
       const cell = cells.getCellOrMergeCell(ri, ci);
-      if (cell && !PlainUtils.isBlank(cell.text)) {
+      if (cell && !cell.isEmpty()) {
         switch (cell.contentType) {
           case Cell.CONTENT_TYPE.STRING:
-            items.add(cell.text.trim());
+            items.add(cell.toString());
             break;
           case Cell.CONTENT_TYPE.NUMBER:
-            items.add(cell.text.toString().trim());
+            items.add(cell.toString());
             break;
         }
       }
@@ -455,8 +455,7 @@ class XFilter extends XScreenCssBorderItem {
         if (PlainUtils.isEmptyObject(cell)) {
           continue;
         }
-        const { text } = cell;
-        if (PlainUtils.isBlank(text)) {
+        if (cell.isEmpty()) {
           continue;
         }
         const icon = icons[ci];

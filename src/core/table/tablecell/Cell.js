@@ -39,39 +39,39 @@ class Cell {
   }) {
     this.ruler = ruler;
     this.text = text;
-    this.format = 'default';
     this.background = background;
+    this.format = format;
     this.icons = XIcon.newInstances(icons);
     this.borderAttr = new CellBorder(borderAttr);
     this.fontAttr = new CellFont(fontAttr);
     this.contentWidth = contentWidth;
     this.leftSdistWidth = leftSdistWidth;
     this.rightSdistWidth = rightSdistWidth;
-    this.contentType = Cell.CONTENT_TYPE.STRING;
+    this.contentType = contentType;
     this.setContentType(contentType);
-    this.setFormat(format);
   }
 
   convert(text) {
-    const { contentType } = this;
-    switch (contentType) {
-      case Cell.CONTENT_TYPE.NUMBER: {
-        if (PlainUtils.isBlank(text)) {
-          this.text = null;
-        } else {
+    if (PlainUtils.isBlank(text)) {
+      this.contentType = Cell.CONTENT_TYPE.STRING;
+      this.text = PlainUtils.EMPTY;
+    } else {
+      const { contentType } = this;
+      switch (contentType) {
+        case Cell.CONTENT_TYPE.NUMBER: {
           this.text = PlainUtils.parseFloat(text);
+          break;
         }
-        break;
-      }
-      case Cell.CONTENT_TYPE.STRING: {
-        if (PlainUtils.isBlank(text)) {
-          this.text = PlainUtils.EMPTY;
-        } else {
-          this.text = text;
+        case Cell.CONTENT_TYPE.STRING: {
+          this.text = text.toString();
+          break;
         }
-        break;
       }
     }
+  }
+
+  isEmpty() {
+    return PlainUtils.isBlank(this.text);
   }
 
   getFormatText() {
@@ -97,16 +97,16 @@ class Cell {
     return PlainUtils.EMPTY;
   }
 
+  setContentWidth(contentWidth) {
+    this.contentWidth = contentWidth;
+  }
+
   setLeftSdistWidth(leftSdistWidth) {
     this.leftSdistWidth = leftSdistWidth;
   }
 
   setRightSdistWidth(rightSdistWidth) {
     this.rightSdistWidth = rightSdistWidth;
-  }
-
-  setContentWidth(contentWidth) {
-    this.contentWidth = contentWidth;
   }
 
   setIcons(icons) {
@@ -135,19 +135,6 @@ class Cell {
 
   setFormat(format) {
     this.format = format;
-    switch (format) {
-      case 'decimal':
-      case 'eNotation':
-      case 'percentage':
-      case 'rmb':
-      case 'dollar':
-      case 'number':
-        this.setContentType(Cell.CONTENT_TYPE.NUMBER);
-        break;
-      default:
-        this.setContentType(Cell.CONTENT_TYPE.STRING);
-        break;
-    }
   }
 
   setBorderAttr(borderAttr) {
@@ -161,8 +148,28 @@ class Cell {
     });
   }
 
+  toString() {
+    const { text } = this;
+    if (PlainUtils.isBlank(text)) {
+      return PlainUtils.EMPTY;
+    }
+    const { contentType } = this;
+    switch (contentType) {
+      case Cell.CONTENT_TYPE.NUMBER:
+      case Cell.CONTENT_TYPE.STRING: {
+        return this.text;
+      }
+      case Cell.CONTENT_TYPE.RICH_TEXT: {
+        return PlainUtils.EMPTY;
+      }
+    }
+    return PlainUtils.EMPTY;
+  }
+
   toJSON() {
-    const { background, format, text, fontAttr, borderAttr, contentWidth, icons } = this;
+    const {
+      background, format, text, fontAttr, borderAttr, contentWidth, icons,
+    } = this;
     return {
       background, format, text, fontAttr, borderAttr, contentWidth, icons,
     };

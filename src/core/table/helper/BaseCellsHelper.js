@@ -75,7 +75,7 @@ class BaseCellsHelper {
           .setLoop((i) => {
             const merge = merges.getFirstIncludes(ri, i);
             const cell = cells.getCell(ri, i);
-            const blank = PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text);
+            const blank = PlainUtils.isUnDef(cell) || cell.isEmpty();
             if (i === ci) {
               width += cols.getWidth(i);
               return true;
@@ -99,7 +99,7 @@ class BaseCellsHelper {
           .setLoop((i) => {
             const merge = merges.getFirstIncludes(ri, i);
             const cell = cells.getCell(ri, i);
-            const blank = PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text);
+            const blank = PlainUtils.isUnDef(cell) || cell.isEmpty();
             if (blank && PlainUtils.isUnDef(merge)) {
               rightWidth += cols.getWidth(i);
               return true;
@@ -114,7 +114,7 @@ class BaseCellsHelper {
           .setLoop((i) => {
             const merge = merges.getFirstIncludes(ri, i);
             const cell = cells.getCell(ri, i);
-            const blank = PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text);
+            const blank = PlainUtils.isUnDef(cell) || cell.isEmpty();
             if (blank && PlainUtils.isUnDef(merge)) {
               const tmp = cols.getWidth(i);
               leftWidth += tmp;
@@ -137,7 +137,7 @@ class BaseCellsHelper {
           .setLoop((i) => {
             const merge = merges.getFirstIncludes(ri, i);
             const cell = cells.getCell(ri, i);
-            const blank = PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text);
+            const blank = PlainUtils.isUnDef(cell) || cell.isEmpty();
             if (i === ci) {
               width += cols.getWidth(i);
               return true;
@@ -265,7 +265,7 @@ class BaseCellsHelper {
     const { x, y, height, width } = rect;
     const { fontAttr, contentWidth, ruler } = cell;
     const { direction } = fontAttr;
-    const blank = PlainUtils.isUnDef(cell) || PlainUtils.isBlank(cell.text);
+    const blank = PlainUtils.isUnDef(cell) || cell.isEmpty();
     switch (direction) {
       case BaseFont.TEXT_DIRECTION.HORIZONTAL: {
         if (blank === false) {

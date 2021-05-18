@@ -160,10 +160,10 @@ class XTableEdit extends Widget {
       this.cell = cell;
       this.select = selectRange;
       this.show();
-      if (PlainUtils.isBlank(cell.text)) {
+      if (cell.isEmpty()) {
         this.html(PlainUtils.EMPTY);
       } else {
-        this.html(cell.text);
+        this.html(cell.toString());
       }
       this.attr('style', table.getCellCssStyle(sri, sci));
       this.editOffset();
@@ -182,9 +182,9 @@ class XTableEdit extends Widget {
     if (select) {
       const origin = cells.getCellOrNew(select.sri, select.sci);
       const cell = origin.clone();
-      const text = PlainUtils.trim(this.text());
+      const text = this.text();
       this.hide();
-      if (cell.text !== text) {
+      if (cell.toString() !== text) {
         tableDataSnapshot.begin();
         cell.setText(text);
         cellDataProxy.setCell(select.sri, select.sci, cell);

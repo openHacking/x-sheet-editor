@@ -23,7 +23,7 @@ class Cells {
     let empty = true;
     rectRange.each(this.xIteratorBuilder, (ri, ci) => {
       const cell = this.getCell(ri, ci);
-      if (PlainUtils.isNotEmptyObject(cell) && !PlainUtils.isBlank(cell.text)) {
+      if (PlainUtils.isNotEmptyObject(cell) && !cell.isEmpty()) {
         empty = false;
         return false;
       }

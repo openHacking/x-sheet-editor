@@ -28,7 +28,7 @@ class RCellOutRange extends CellOutRange {
     const master = cells.getCell(row, col);
 
     // 是否是空单元格
-    if (PlainUtils.isUnDef(master) || PlainUtils.isBlank(master.text)) {
+    if (PlainUtils.isUnDef(master) || master.isEmpty()) {
       return true;
     }
     // 文字属性检查
@@ -61,7 +61,7 @@ class RCellOutRange extends CellOutRange {
       // 只有next单元格是空时
       // 才允许不绘制边框
       if (direction === BaseFont.TEXT_DIRECTION.ANGLE
-        || PlainUtils.isUnDef(next) || PlainUtils.isBlank(next.text)) {
+        || PlainUtils.isUnDef(next) || next.isEmpty()) {
         return false;
       }
     }
@@ -95,8 +95,7 @@ class RCellOutRange extends CellOutRange {
             return true;
           }
           // 检查空文本单元格
-          const { text } = cell;
-          if (PlainUtils.isBlank(text)) {
+          if (cell.isEmpty()) {
             return true;
           }
           // 检查文本类型
@@ -139,8 +138,8 @@ class RCellOutRange extends CellOutRange {
             // 只有master单元格和
             // next单元格都是空时
             // 才允许不绘制边框
-            const masterBlank = PlainUtils.isUnDef(master) || PlainUtils.isBlank(master.text);
-            const nextBlank = PlainUtils.isUnDef(next) || PlainUtils.isBlank(next.text);
+            const masterBlank = PlainUtils.isUnDef(master) || master.isEmpty();
+            const nextBlank = PlainUtils.isUnDef(next) || next.isEmpty();
             if (direction === BaseFont.TEXT_DIRECTION.ANGLE
               || (masterBlank && nextBlank)) {
               find = false;
@@ -168,8 +167,7 @@ class RCellOutRange extends CellOutRange {
             return true;
           }
           // 检查空文本单元格
-          const { text } = cell;
-          if (PlainUtils.isBlank(text)) {
+          if (cell.isEmpty()) {
             return true;
           }
           // 检查文本类型
@@ -191,8 +189,8 @@ class RCellOutRange extends CellOutRange {
             // 只有master单元格和
             // next单元格都是空时
             // 才允许不绘制边框
-            const masterBlank = PlainUtils.isUnDef(master) || PlainUtils.isBlank(master.text);
-            const nextBlank = PlainUtils.isUnDef(next) || PlainUtils.isBlank(next.text);
+            const masterBlank = PlainUtils.isUnDef(master) || master.isEmpty();
+            const nextBlank = PlainUtils.isUnDef(next) || next.isEmpty();
             if (masterBlank && nextBlank) {
               find = false;
             }
@@ -234,8 +232,7 @@ class RCellOutRange extends CellOutRange {
             return true;
           }
           // 空文本单检查
-          const { text } = cell;
-          if (PlainUtils.isBlank(text)) {
+          if (cell.isEmpty()) {
             return true;
           }
           // 文本属性检查
@@ -277,7 +274,7 @@ class RCellOutRange extends CellOutRange {
           if (width > rightWidth) {
             // 只有master单元格为
             // 空时才允许不绘制边框
-            if (PlainUtils.isUnDef(master) || PlainUtils.isBlank(master.text)) {
+            if (PlainUtils.isUnDef(master) || master.isEmpty()) {
               find = false;
               return false;
             }
@@ -304,8 +301,7 @@ class RCellOutRange extends CellOutRange {
             return true;
           }
           // 空文本单检查
-          const { text } = cell;
-          if (PlainUtils.isBlank(text)) {
+          if (cell.isEmpty()) {
             return true;
           }
           // 文本属性检查
@@ -325,7 +321,7 @@ class RCellOutRange extends CellOutRange {
           if (width > rightWidth) {
             // 只有master单元格为
             // 空时才允许不绘制边框
-            if (PlainUtils.isUnDef(master) || PlainUtils.isBlank(master.text)) {
+            if (PlainUtils.isUnDef(master) || master.isEmpty()) {
               find = false;
             }
           }

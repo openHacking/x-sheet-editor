@@ -910,8 +910,7 @@ class XTableContentUI extends XTableUI {
           max = 0;
         },
         cellsINCallback: (row, col, cell, rect, overflow) => {
-          const { text } = cell;
-          if (PlainUtils.isBlank(text)) {
+          if (cell.isEmpty()) {
             return TEXT_BREAK_LOOP.CONTINUE;
           }
           const { fontAttr } = cell;
@@ -963,8 +962,7 @@ class XTableContentUI extends XTableUI {
           max = 0;
         },
         cellsINCallback: (row, col, cell, rect, overflow) => {
-          const { text } = cell;
-          if (PlainUtils.isBlank(text)) {
+          if (cell.isEmpty()) {
             return TEXT_BREAK_LOOP.CONTINUE;
           }
           const { fontAttr } = cell;
