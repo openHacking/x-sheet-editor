@@ -2,7 +2,7 @@
 import { Workbook } from 'exceljs';
 import { XDraw } from '../../canvas/XDraw';
 import { ColorPicker } from '../../component/colorpicker/ColorPicker';
-import { BaseFont } from '../../canvas/text/BaseFont';
+import { BaseFont } from '../../canvas/font/BaseFont';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { Cell } from '../../core/table/tablecell/Cell';
 import { LINE_TYPE } from '../../canvas/Line';

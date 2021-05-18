@@ -4,8 +4,9 @@ import { Crop } from '../../../Crop';
 import { Angle } from '../../../Angle';
 import { Rect } from '../../../Rect';
 import { DrawResult } from '../../DrawResult';
+import { BaseText } from '../BaseText';
 
-class AngleBoxDraw extends BaseFont {
+class AngleBoxDraw extends BaseText {
 
   constructor({
     draw, ruler, rect, overflow, lineHeight = 4, attr,

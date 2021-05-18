@@ -1,6 +1,6 @@
 import { ScaleAdapter } from './Scale';
-import { BaseFont } from '../../../canvas/text/BaseFont';
-import { DrawFontBuilder } from '../../../canvas/text/font/build/DrawFontBuilder';
+import { BaseFont } from '../../../canvas/font/BaseFont';
+import { DrawTextBuilder } from '../../../canvas/font/text/build/DrawTextBuilder';
 import { Cell } from '../tablecell/Cell';
 
 class TextBuilder {
@@ -40,7 +40,7 @@ class TextBuilder {
       case Cell.CONTENT_TYPE.NUMBER: {
         const size = scaleAdapter.goto(fontAttr.size);
         const padding = scaleAdapter.goto(fontAttr.padding);
-        const builder = new DrawFontBuilder({
+        const builder = new DrawTextBuilder({
           text: formatText, draw, overflow, rect, attr: fontAttr,
         });
         builder.setSize(size);

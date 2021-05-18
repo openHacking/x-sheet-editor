@@ -1,7 +1,7 @@
 /* global FileReader */
 import { Workbook } from 'exceljs';
 import { ColorPicker } from '../../component/colorpicker/ColorPicker';
-import { BaseFont } from '../../canvas/text/BaseFont';
+import { BaseFont } from '../../canvas/font/BaseFont';
 import { XDraw } from '../../canvas/XDraw';
 import { LINE_TYPE } from '../../canvas/Line';
 import { Tab } from '../../core/work/Tab';

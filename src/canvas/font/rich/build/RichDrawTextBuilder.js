@@ -1,6 +1,6 @@
 import { BaseFont } from '../../BaseFont';
 
-class RichDrawFontBuilder {
+class RichDrawTextBuilder {
 
   constructor({
     draw, rich, rect, overflow, attr

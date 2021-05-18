@@ -7,9 +7,8 @@ import { AngleBoxRuler } from '../ruler/AngleBoxRuler';
 import { AngleBarRuler } from '../ruler/AngleBarRuler';
 import { HorizonRuler } from '../ruler/HorizonRuler';
 import { VerticalRuler } from '../ruler/VerticalRuler';
-import { PlainUtils } from '../../../../utils/PlainUtils';
 
-class DrawFontBuilder {
+class DrawTextBuilder {
 
   constructor({
     draw, text, rect, overflow, attr,
@@ -84,5 +83,5 @@ class DrawFontBuilder {
 }
 
 export {
-  DrawFontBuilder,
+  DrawTextBuilder,
 };

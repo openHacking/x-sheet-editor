@@ -19,7 +19,7 @@ import { STYLE_BREAK_LOOP, StyleCellsHelper } from './helper/StyleCellsHelper';
 import { TEXT_BREAK_LOOP, TextCellsHelper } from './helper/TextCellsHelper';
 import { XTableHistoryAreaView } from './XTableHistoryAreaView';
 import { OperateCellsHelper } from './helper/OperateCellsHelper';
-import { BaseFont } from '../../canvas/text/BaseFont';
+import { BaseFont } from '../../canvas/font/BaseFont';
 import { VIEW_MODE, XTableScrollView } from './XTableScrollView';
 import { XFixedMeasure } from './tablebase/XFixedMeasure';
 import { FixedCellIcon } from './cellicon/FixedCellIcon';

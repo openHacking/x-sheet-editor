@@ -1,0 +1,7 @@
+class RichRuler {
+
+}
+
+export {
+  RichRuler,
+};

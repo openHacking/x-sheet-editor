@@ -5,7 +5,7 @@ import { PlainUtils } from '../../utils/PlainUtils';
 import { XSelectItem } from './xscreenitems/xselect/XSelectItem';
 import { XDraw } from '../../canvas/XDraw';
 import { Throttle } from '../../libs/Throttle';
-import { BaseFont } from '../../canvas/text/BaseFont';
+import { BaseFont } from '../../canvas/font/BaseFont';
 
 class XTableEdit extends Widget {
 

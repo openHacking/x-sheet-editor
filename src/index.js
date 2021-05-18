@@ -8,7 +8,7 @@ import { DragPanel } from './component/dragpanel/DragPanel';
 import { ElPopUp } from './component/elpopup/ElPopUp';
 import { PlainUtils } from './utils/PlainUtils';
 import { RectRange } from './core/table/tablebase/RectRange';
-import { BaseFont } from './canvas/text/BaseFont';
+import { BaseFont } from './canvas/font/BaseFont';
 import { XIcon } from './core/table/xicon/XIcon';
 import { XlsxExport } from './io/xlsx/XlsxExport';
 import { ColorPicker } from './component/colorpicker/ColorPicker';

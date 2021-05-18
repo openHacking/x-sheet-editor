@@ -1,7 +1,7 @@
-import { PlainRuler } from '../../PlainRuler';
+import { TextRuler } from '../TextRuler';
 import { BaseFont } from '../../BaseFont';
 
-class VerticalVisual extends PlainRuler {
+class VerticalVisual extends TextRuler {
 
   constructor({
     draw, text, verticalAlign, padding,

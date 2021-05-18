@@ -8,16 +8,8 @@ class BaseFont {
     this.ruler = ruler;
   }
 
-  hasBreak(text) {
-    return text.indexOf('\n') > -1;
-  }
-
   setRuler(ruler) {
     this.ruler = ruler;
-  }
-
-  isBlank(text) {
-    return text === null || text === undefined || text.toString().trim() === '';
   }
 
   getAlignPadding() {

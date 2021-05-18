@@ -1,7 +1,7 @@
-import { PlainRuler } from '../../PlainRuler';
+import { TextRuler } from '../TextRuler';
 import { BaseFont } from '../../BaseFont';
 
-class HorizonVisual extends PlainRuler {
+class HorizonVisual extends TextRuler {
 
   constructor({
     draw, text, align, padding,

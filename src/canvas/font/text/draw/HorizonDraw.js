@@ -1,8 +1,9 @@
 import { BaseFont } from '../../BaseFont';
 import { Crop } from '../../../Crop';
 import { DrawResult } from '../../DrawResult';
+import { BaseText } from '../BaseText';
 
-class HorizonDraw extends BaseFont {
+class HorizonDraw extends BaseText {
 
   constructor({
     draw, ruler, rect, overflow, lineHeight = 4, attr,

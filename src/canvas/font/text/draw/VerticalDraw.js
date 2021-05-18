@@ -1,8 +1,9 @@
 import { BaseFont } from '../../BaseFont';
 import { Crop } from '../../../Crop';
 import { DrawResult } from '../../DrawResult';
+import { BaseText } from '../BaseText';
 
-class VerticalDraw extends BaseFont {
+class VerticalDraw extends BaseText {
 
   constructor({
     draw, ruler, rect, attr,

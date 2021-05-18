@@ -1,6 +1,6 @@
-import { BaseRuler } from './BaseRuler';
+import { BaseRuler } from '../BaseRuler';
 
-class PlainRuler extends BaseRuler {
+class TextRuler extends BaseRuler {
 
   constructor({
     draw, text,
@@ -27,5 +27,5 @@ class PlainRuler extends BaseRuler {
 }
 
 export {
-  PlainRuler,
+  TextRuler,
 };

@@ -1,9 +1,9 @@
 import { BaseRuler } from '../../BaseRuler';
 import { RTCosKit, RTSinKit } from '../../../RTFunction';
-import { PlainRuler } from '../../PlainRuler';
+import { TextRuler } from '../TextRuler';
 import { BaseFont } from '../../BaseFont';
 
-class AngleBoxRuler extends PlainRuler {
+class AngleBoxRuler extends TextRuler {
 
   constructor({
     draw, text, size, angle, rect, overflow, align, verticalAlign,
