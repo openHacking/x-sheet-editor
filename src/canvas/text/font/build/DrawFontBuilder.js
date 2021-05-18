@@ -14,37 +14,11 @@ class DrawFontBuilder {
   constructor({
     draw, text, rect, overflow, attr,
   }) {
-    this.attr = Object.assign({}, {
-      verticalAlign: BaseFont.VERTICAL_ALIGN.center,
-      direction: BaseFont.TEXT_DIRECTION.HORIZONTAL,
-      name: 'Arial',
-      size: 14,
-      color: 'rgb(0,0,0)',
-      underline: false,
-      strikethrough: false,
-      bold: false,
-      italic: false,
-      textWrap: BaseFont.TEXT_WRAP.TRUNCATE,
-      align: BaseFont.ALIGN.left,
-      angle: 0,
-      padding: 8,
-    }, attr);
-    this.draw = draw;
+    this.attr = Object.assign({}, BaseFont.DEFAULT_FONT_ATTR, attr);
     this.text = text;
     this.rect = rect;
+    this.draw = draw;
     this.overflow = overflow;
-  }
-
-  setPadding(padding) {
-    this.attr.padding = padding;
-  }
-
-  setSize(size) {
-    this.attr.size = size;
-  }
-
-  setDirection(direction) {
-    this.attr.direction = direction;
   }
 
   buildFont() {
@@ -95,6 +69,18 @@ class DrawFontBuilder {
         });
     }
     return null;
+  }
+
+  setPadding(padding) {
+    this.attr.padding = padding;
+  }
+
+  setSize(size) {
+    this.attr.size = size;
+  }
+
+  setDirection(direction) {
+    this.attr.direction = direction;
   }
 
 }

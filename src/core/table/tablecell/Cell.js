@@ -27,10 +27,10 @@ class Cell {
     text = PlainUtils.EMPTY,
     background = PlainUtils.Nul,
     format = 'default',
+    ruler = null,
+    fontAttr = {},
     borderAttr = {},
     icons = [],
-    fontAttr = {},
-    ruler = null,
     contentWidth = 0,
     leftSdistWidth = 0,
     rightSdistWidth = 0,
@@ -47,6 +47,24 @@ class Cell {
     this.rightSdistWidth = rightSdistWidth;
     this.contentType = contentType;
     this.convert(text);
+  }
+
+  convert(text) {
+    const { contentType } = this;
+    switch (contentType) {
+      case Cell.CONTENT_TYPE.NUMBER: {
+        if (PlainUtils.isBlank(text)) {
+          this.contentType = Cell.CONTENT_TYPE.STRING;
+        } else {
+          this.text = PlainUtils.parseFloat(text);
+        }
+        break;
+      }
+      case Cell.CONTENT_TYPE.STRING: {
+        this.text = text.toString();
+        break;
+      }
+    }
   }
 
   setContentWidth(contentWidth) {
@@ -76,6 +94,11 @@ class Cell {
     this.ruler = ruler;
   }
 
+  setContentType(type) {
+    this.contentType = type;
+    this.convert(this.text);
+  }
+
   setLeftSdistWidth(leftSdistWidth) {
     this.leftSdistWidth = leftSdistWidth;
   }
@@ -84,34 +107,11 @@ class Cell {
     this.rightSdistWidth = rightSdistWidth;
   }
 
-  setContentType(type) {
-    this.contentType = type;
-    this.convert(this.text);
-  }
-
   clone() {
     const { background, format, text, fontAttr, borderAttr, contentWidth, icons } = this;
     return new Cell({
       background, format, text, fontAttr, borderAttr, contentWidth, icons,
     });
-  }
-
-  convert(text) {
-    const { contentType } = this;
-    switch (contentType) {
-      case Cell.CONTENT_TYPE.NUMBER: {
-        if (PlainUtils.isBlank(text)) {
-          this.contentType = Cell.CONTENT_TYPE.STRING;
-        } else {
-          this.text = PlainUtils.parseFloat(text);
-        }
-        break;
-      }
-      case Cell.CONTENT_TYPE.STRING: {
-        this.text = text.toString();
-        break;
-      }
-    }
   }
 
   toJSON() {
@@ -126,6 +126,7 @@ class Cell {
 Cell.CONTENT_TYPE = {
   NUMBER: 0,
   STRING: 1,
+  RICH_TEXT: 2,
 };
 
 export {

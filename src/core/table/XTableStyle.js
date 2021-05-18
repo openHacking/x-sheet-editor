@@ -14,7 +14,7 @@ import { RectRange } from './tablebase/RectRange';
 import { Cells } from './tablecell/Cells';
 import { Scale, ScaleAdapter } from './tablebase/Scale';
 import { Code } from './tablebase/Code';
-import { Text } from './tablebase/Text';
+import { TextFactory } from './tablebase/TextFactory';
 import { STYLE_BREAK_LOOP, StyleCellsHelper } from './helper/StyleCellsHelper';
 import { TEXT_BREAK_LOOP, TextCellsHelper } from './helper/TextCellsHelper';
 import { XTableHistoryAreaView } from './XTableHistoryAreaView';
@@ -892,7 +892,7 @@ class XTableContentUI extends XTableUI {
     const drawX = this.getDrawX();
     const drawY = this.getDrawY();
     const { table } = this;
-    const { draw, cols, textCellsHelper, textFont } = table;
+    const { draw, cols, textCellsHelper, textFactory } = table;
     // 左边区域
     const lView = scrollView.clone();
     lView.sci = 0;
@@ -922,7 +922,7 @@ class XTableContentUI extends XTableUI {
           if (allowTextAlign && (allowTextWrap || allowDirection)) {
             const size = table.getCellContentBoundOutWidth(row, col);
             if (size === 0 || size > max) {
-              const builder = textFont.getBuilder();
+              const builder = textFactory.getBuilder();
               builder.setDraw(draw);
               builder.setRect(rect);
               builder.setCell(cell);
@@ -975,7 +975,7 @@ class XTableContentUI extends XTableUI {
           if (allowTextAlign && (allowTextWrap || allowDirection)) {
             const size = table.getCellContentBoundOutWidth(row, col);
             if (size === 0 || size > max) {
-              const builder = textFont.getBuilder();
+              const builder = textFactory.getBuilder();
               builder.setDraw(draw);
               builder.setRect(rect);
               builder.setCell(cell);
@@ -1233,13 +1233,13 @@ class XTableContentUI extends XTableUI {
     const drawY = this.getDrawY();
     const { table } = this;
     const {
-      draw, textCellsHelper, textFont,
+      draw, textCellsHelper, textFactory,
     } = table;
     draw.offset(drawX, drawY);
     textCellsHelper.getCellByViewRange({
       view: scrollView,
       cellsINCallback: (row, col, cell, rect, overflow) => {
-        const builder = textFont.getBuilder();
+        const builder = textFactory.getBuilder();
         builder.setDraw(draw);
         builder.setCell(cell);
         builder.setRect(rect);
@@ -1253,7 +1253,7 @@ class XTableContentUI extends XTableUI {
         cell.setRightSdistWidth(result.rightSdist);
       },
       mergeCallback: (row, col, cell, rect) => {
-        const builder = textFont.getBuilder();
+        const builder = textFactory.getBuilder();
         builder.setDraw(draw);
         builder.setRect(rect);
         builder.setCell(cell);
@@ -2731,12 +2731,6 @@ class XTableStyle extends Widget {
     });
     // 绘制资源
     this.draw = new XDraw(this.el);
-    this.textFont = new Text({
-      scaleAdapter: new ScaleAdapter({
-        goto: v => this.scale.goto(v),
-      }),
-      table: this,
-    });
     this.line = new Line(this.draw, {
       bottomShow: (row, col) => {
         const result = bBorderFilter.run({
@@ -2774,6 +2768,12 @@ class XTableStyle extends Widget {
     });
     this.grid = new Grid(this.draw, {
       color: this.settings.table.gridColor,
+    });
+    this.textFactory = new TextFactory({
+      scaleAdapter: new ScaleAdapter({
+        goto: v => XDraw.stylePx(this.scale.goto(v)),
+      }),
+      table: this,
     });
     this.indexGrid = new Grid(this.draw, {
       color: this.index.getGridColor(),

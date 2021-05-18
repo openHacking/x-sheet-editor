@@ -1,5 +1,4 @@
 import { ScaleAdapter } from './Scale';
-import { XDraw } from '../../../canvas/XDraw';
 import { BaseFont } from '../../../canvas/text/BaseFont';
 import XTableFormat from '../XTableFormat';
 import { DrawFontBuilder } from '../../../canvas/text/font/build/DrawFontBuilder';
@@ -29,15 +28,11 @@ class TextBuilder {
   }
 
   build() {
-    const { rect, overflow, row, col, cell, draw, scaleAdapter, table } = this;
+    const {
+      rect, overflow, row, col, cell,
+      draw, scaleAdapter, table,
+    } = this;
     const { format, text, fontAttr, ruler } = cell;
-    const size = XDraw.stylePx(scaleAdapter.goto(fontAttr.size));
-    const padding = XDraw.stylePx(scaleAdapter.goto(fontAttr.padding));
-    const builder = new DrawFontBuilder({
-      text: XTableFormat(format, text), draw, overflow, rect, attr: fontAttr,
-    });
-    builder.setPadding(padding);
-    builder.setSize(size);
     switch (format) {
       case 'decimal':
       case 'eNotation':
@@ -51,16 +46,34 @@ class TextBuilder {
         cell.setContentType(Cell.CONTENT_TYPE.STRING);
         break;
     }
-    if (table.isAngleBarCell(row, col)) {
-      builder.setDirection(BaseFont.TEXT_DIRECTION.ANGLE_BAR);
+    const { contentType } = cell;
+    switch (contentType) {
+      case Cell.CONTENT_TYPE.RICH_TEXT: {
+        // 富文本渲染
+        return null;
+      }
+      case Cell.CONTENT_TYPE.STRING:
+      case Cell.CONTENT_TYPE.NUMBER: {
+        const size = scaleAdapter.goto(fontAttr.size);
+        const padding = scaleAdapter.goto(fontAttr.padding);
+        const builder = new DrawFontBuilder({
+          text: XTableFormat(format, text), draw, overflow, rect, attr: fontAttr,
+        });
+        builder.setSize(size);
+        builder.setPadding(padding);
+        if (table.isAngleBarCell(row, col)) {
+          builder.setDirection(BaseFont.TEXT_DIRECTION.ANGLE_BAR);
+        }
+        const buildFont = builder.buildFont();
+        const buildRuler = builder.buildRuler();
+        const equals = buildRuler.equals(ruler);
+        const diffRuler = equals ? ruler : buildRuler;
+        cell.setRuler(diffRuler);
+        buildFont.setRuler(diffRuler);
+        return buildFont;
+      }
     }
-    const buildFont = builder.buildFont();
-    const buildRuler = builder.buildRuler();
-    const equals = buildRuler.equals(ruler);
-    const diffRuler = equals ? ruler : buildRuler;
-    cell.setRuler(diffRuler);
-    buildFont.setRuler(diffRuler);
-    return buildFont;
+    return null;
   }
 
   setRect(rect) {
@@ -81,7 +94,7 @@ class TextBuilder {
 
 }
 
-class Text {
+class TextFactory {
 
   constructor({
     scaleAdapter = new ScaleAdapter(),
@@ -100,4 +113,4 @@ class Text {
 
 }
 
-export { Text };
+export { TextFactory };
