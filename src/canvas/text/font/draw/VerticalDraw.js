@@ -1,6 +1,6 @@
-import { BaseFont } from '../BaseFont';
-import { Crop } from '../../Crop';
-import { DrawResult } from '../DrawResult';
+import { BaseFont } from '../../BaseFont';
+import { Crop } from '../../../Crop';
+import { DrawResult } from '../../DrawResult';
 
 class VerticalDraw extends BaseFont {
 

@@ -1,7 +1,7 @@
 import { CellOutRange } from './CellOutRange';
 import { XLineIteratorFilter } from '../../XLineIteratorFilter';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
-import { BaseFont } from '../../../../../canvas/font/BaseFont';
+import { BaseFont } from '../../../../../canvas/text/BaseFont';
 
 class LCellOutRange extends CellOutRange {
 

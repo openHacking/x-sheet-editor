@@ -1,6 +1,6 @@
 import { AngleBoxRuler } from './AngleBoxRuler';
-import { BaseFont } from '../BaseFont';
-import { PlainUtils } from '../../../utils/PlainUtils';
+import { BaseFont } from '../../BaseFont';
+import { PlainUtils } from '../../../../utils/PlainUtils';
 
 class AngleBarRuler extends AngleBoxRuler {
 

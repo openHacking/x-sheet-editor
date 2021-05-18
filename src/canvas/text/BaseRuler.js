@@ -22,12 +22,14 @@ class BaseRuler {
   }
 
 }
+
 BaseRuler.USED = {
   DEFAULT_INI: 0,
   TRUNCATE: 1,
   OVER_FLOW: 2,
   TEXT_WRAP: 3,
 };
+
 export {
   BaseRuler,
 };

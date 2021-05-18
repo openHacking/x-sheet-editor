@@ -1,8 +1,8 @@
 import { ScaleAdapter } from './Scale';
 import { XDraw } from '../../../canvas/XDraw';
-import { BaseFont } from '../../../canvas/font/BaseFont';
+import { BaseFont } from '../../../canvas/text/BaseFont';
 import XTableFormat from '../XTableFormat';
-import { DrawFontBuilder } from '../../../canvas/font/build/DrawFontBuilder';
+import { DrawFontBuilder } from '../../../canvas/text/font/build/DrawFontBuilder';
 import { Cell } from '../tablecell/Cell';
 
 class TextBuilder {

@@ -1,6 +1,6 @@
 import { HorizonVisual } from './HorizonVisual';
-import { BaseRuler } from '../BaseRuler';
-import { BaseFont } from '../BaseFont';
+import { BaseRuler } from '../../BaseRuler';
+import { BaseFont } from '../../BaseFont';
 
 class HorizonRuler extends HorizonVisual {
 

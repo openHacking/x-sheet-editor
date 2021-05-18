@@ -1,10 +1,10 @@
-import { BaseFont } from '../BaseFont';
-import { RTCosKit, RTSinKit } from '../../RTFunction';
-import { Rect } from '../../Rect';
-import { Crop } from '../../Crop';
-import { Angle } from '../../Angle';
-import { DrawResult } from '../DrawResult';
-import { PlainUtils } from '../../../utils/PlainUtils';
+import { BaseFont } from '../../BaseFont';
+import { RTCosKit, RTSinKit } from '../../../RTFunction';
+import { Rect } from '../../../Rect';
+import { Crop } from '../../../Crop';
+import { Angle } from '../../../Angle';
+import { DrawResult } from '../../DrawResult';
+import { PlainUtils } from '../../../../utils/PlainUtils';
 
 class AngleBarDraw extends BaseFont {
 

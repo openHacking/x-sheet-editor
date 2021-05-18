@@ -1,4 +1,4 @@
-import { BaseFont } from '../../../canvas/font/BaseFont';
+import { BaseFont } from '../../../canvas/text/BaseFont';
 
 /**
  *  CellFont

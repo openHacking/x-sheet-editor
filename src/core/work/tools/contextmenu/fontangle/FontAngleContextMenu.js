@@ -12,7 +12,7 @@ import { FontAngle4 } from '../icon/fontangle/FontAngle4';
 import { FontAngle5 } from '../icon/fontangle/FontAngle5';
 import { FontAngle6 } from '../icon/fontangle/FontAngle6';
 import { XEvent } from '../../../../../libs/XEvent';
-import { BaseFont } from '../../../../../canvas/font/BaseFont';
+import { BaseFont } from '../../../../../canvas/text/BaseFont';
 
 class FontAngleContextMenu extends ELContextMenu {
 

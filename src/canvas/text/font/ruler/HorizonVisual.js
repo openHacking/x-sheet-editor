@@ -1,5 +1,5 @@
-import { PlainRuler } from '../PlainRuler';
-import { BaseFont } from '../BaseFont';
+import { PlainRuler } from '../../PlainRuler';
+import { BaseFont } from '../../BaseFont';
 
 class HorizonVisual extends PlainRuler {
 

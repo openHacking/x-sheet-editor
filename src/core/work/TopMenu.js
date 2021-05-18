@@ -28,7 +28,7 @@ import { Icon } from './tools/Icon';
 import { Cell } from '../table/tablecell/Cell';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { Scale } from './tools/Scale';
-import { BaseFont } from '../../canvas/font/BaseFont';
+import { BaseFont } from '../../canvas/text/BaseFont';
 import { XSelectItem } from '../table/xscreenitems/xselect/XSelectItem';
 import { XDraw } from '../../canvas/XDraw';
 import { Alert } from '../../component/alert/Alert';

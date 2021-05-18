@@ -35,6 +35,7 @@ class BaseFont {
   }
 
 }
+
 BaseFont.VERTICAL_ALIGN = {
   top: 'top',
   center: 'middle',
@@ -56,6 +57,7 @@ BaseFont.TEXT_DIRECTION = {
   ANGLE: 'angle',
   ANGLE_BAR: 'bar',
 };
+
 export {
   BaseFont,
 };

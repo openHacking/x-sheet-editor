@@ -1,6 +1,6 @@
 import { VerticalVisual } from './VerticalVisual';
-import { BaseRuler } from '../BaseRuler';
-import { BaseFont } from '../BaseFont';
+import { BaseRuler } from '../../BaseRuler';
+import { BaseFont } from '../../BaseFont';
 
 class VerticalRuler extends VerticalVisual {
 

@@ -1,4 +1,4 @@
-import { BaseFont } from '../BaseFont';
+import { BaseFont } from '../../BaseFont';
 import { AngleBoxDraw } from '../draw/AngleBoxDraw';
 import { AngleBarDraw } from '../draw/AngleBarDraw';
 import { HorizonDraw } from '../draw/HorizonDraw';
@@ -7,7 +7,7 @@ import { AngleBoxRuler } from '../ruler/AngleBoxRuler';
 import { AngleBarRuler } from '../ruler/AngleBarRuler';
 import { HorizonRuler } from '../ruler/HorizonRuler';
 import { VerticalRuler } from '../ruler/VerticalRuler';
-import { PlainUtils } from '../../../utils/PlainUtils';
+import { PlainUtils } from '../../../../utils/PlainUtils';
 
 class DrawFontBuilder {
 

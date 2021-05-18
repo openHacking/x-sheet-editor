@@ -1,9 +1,9 @@
-import { BaseFont } from '../BaseFont';
-import { RTCosKit, RTSinKit } from '../../RTFunction';
-import { Crop } from '../../Crop';
-import { Angle } from '../../Angle';
-import { Rect } from '../../Rect';
-import { DrawResult } from '../DrawResult';
+import { BaseFont } from '../../BaseFont';
+import { RTCosKit, RTSinKit } from '../../../RTFunction';
+import { Crop } from '../../../Crop';
+import { Angle } from '../../../Angle';
+import { Rect } from '../../../Rect';
+import { DrawResult } from '../../DrawResult';
 
 class AngleBoxDraw extends BaseFont {
 

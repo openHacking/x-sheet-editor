@@ -36,7 +36,7 @@ import { CellMergeCopyHelper } from './helper/CellMergeCopyHelper';
 import { Clipboard } from '../../libs/Clipboard';
 import { XIcon } from './xicon/XIcon';
 import { XIconBuilder } from './xicon/XIconBuilder';
-import { BaseFont } from '../../canvas/font/BaseFont';
+import { BaseFont } from '../../canvas/text/BaseFont';
 import { XIteratorBuilder } from './iterator/XIteratorBuilder';
 import { RowHeightGroupIndex } from './tablebase/RowHeightGroupIndex';
 
