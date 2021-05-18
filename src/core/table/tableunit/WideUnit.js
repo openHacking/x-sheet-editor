@@ -41,6 +41,7 @@ class WideUnit {
         unit = width;
       }
     }
+    draw.restore();
     this.unit = unit;
     // Firefox 好像不准确😓
     const { type } = PlainUtils.getExplorerInfo();
