@@ -53,6 +53,7 @@ class Format {
   decimal(value) {
     if (PlainUtils.isNumber(value)) {
       const indexOf = value.toString().indexOf('.');
+      // eslint-disable-next-line no-bitwise
       if (~indexOf) {
         return value.toString().substring(0, indexOf + 3);
       }
@@ -63,7 +64,7 @@ class Format {
 
   number(value) {
     if (PlainUtils.isNumber(value)) {
-
+      return PlainUtils.parseFloat(value);
     }
     return value;
   }

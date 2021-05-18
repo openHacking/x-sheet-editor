@@ -49,11 +49,13 @@ class Cell {
     this.rightSdistWidth = rightSdistWidth;
     this.contentType = contentType;
     this.setContentType(contentType);
+    this.setFormat(format);
   }
 
   convert(text) {
     if (PlainUtils.isBlank(text)) {
       this.contentType = Cell.CONTENT_TYPE.STRING;
+      this.format = 'default';
       this.text = PlainUtils.EMPTY;
     } else {
       const { contentType } = this;
@@ -135,6 +137,17 @@ class Cell {
 
   setFormat(format) {
     this.format = format;
+    switch (format) {
+      case 'decimal':
+      case 'eNotation':
+      case 'percentage':
+      case 'rmb':
+      case 'hk':
+      case 'dollar':
+      case 'number':
+        this.setContentType(Cell.CONTENT_TYPE.NUMBER);
+        break;
+    }
   }
 
   setBorderAttr(borderAttr) {
@@ -142,17 +155,24 @@ class Cell {
   }
 
   clone() {
-    const { background, format, text, fontAttr, borderAttr, contentWidth, icons } = this;
+    const {
+      background, format, text, fontAttr,
+      borderAttr, contentWidth, icons,
+      contentType,
+    } = this;
     return new Cell({
-      background, format, text, fontAttr, borderAttr, contentWidth, icons,
+      background,
+      format,
+      text,
+      fontAttr,
+      borderAttr,
+      contentWidth,
+      icons,
+      contentType,
     });
   }
 
   toString() {
-    const { text } = this;
-    if (PlainUtils.isBlank(text)) {
-      return PlainUtils.EMPTY;
-    }
     const { contentType } = this;
     switch (contentType) {
       case Cell.CONTENT_TYPE.NUMBER:

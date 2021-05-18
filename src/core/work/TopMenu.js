@@ -82,7 +82,7 @@ class TopMenu extends Widget {
               rectRange: selectRange,
               callback: (r, c, origin) => {
                 const cell = origin.clone();
-                cell.format = format;
+                cell.setFormat(format);
                 cellDataProxy.setCell(r, c, cell);
               },
             });

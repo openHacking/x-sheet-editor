@@ -396,7 +396,7 @@ class XFilter extends XScreenCssBorderItem {
     const items = new Set();
     new RectRange(sri, sci, eri, eci).each(xIteratorBuilder, (ri, ci) => {
       const cell = cells.getCellOrMergeCell(ri, ci);
-      if (cell && !cell.isEmpty()) {
+      if (!PlainUtils.isUnDef(cell) && !cell.isEmpty()) {
         switch (cell.contentType) {
           case Cell.CONTENT_TYPE.STRING:
             items.add(cell.toString());
