@@ -14,4 +14,6 @@ class RichDrawFontBuilder {
 
   buildFont() {}
 
+  buildRuler() {}
+
 }

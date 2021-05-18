@@ -1,6 +1,5 @@
 import { ScaleAdapter } from './Scale';
 import { BaseFont } from '../../../canvas/text/BaseFont';
-import XTableFormat from '../XTableFormat';
 import { DrawFontBuilder } from '../../../canvas/text/font/build/DrawFontBuilder';
 import { Cell } from '../tablecell/Cell';
 
@@ -28,25 +27,10 @@ class TextBuilder {
   }
 
   build() {
-    const {
-      rect, overflow, row, col, cell,
-      draw, scaleAdapter, table,
-    } = this;
-    const { format, text, fontAttr, ruler } = cell;
-    switch (format) {
-      case 'decimal':
-      case 'eNotation':
-      case 'percentage':
-      case 'rmb':
-      case 'dollar':
-      case 'number':
-        cell.setContentType(Cell.CONTENT_TYPE.NUMBER);
-        break;
-      default:
-        cell.setContentType(Cell.CONTENT_TYPE.STRING);
-        break;
-    }
+    const { rect, overflow, row, col, cell, draw, scaleAdapter, table } = this;
+    const { fontAttr, ruler } = cell;
     const { contentType } = cell;
+    const formatText = cell.getFormatText();
     switch (contentType) {
       case Cell.CONTENT_TYPE.RICH_TEXT: {
         // 富文本渲染
@@ -57,7 +41,7 @@ class TextBuilder {
         const size = scaleAdapter.goto(fontAttr.size);
         const padding = scaleAdapter.goto(fontAttr.padding);
         const builder = new DrawFontBuilder({
-          text: XTableFormat(format, text), draw, overflow, rect, attr: fontAttr,
+          text: formatText, draw, overflow, rect, attr: fontAttr,
         });
         builder.setSize(size);
         builder.setPadding(padding);
