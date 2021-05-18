@@ -80,15 +80,9 @@ class Cell {
     const { format, text, contentType } = this;
     switch (contentType) {
       case Cell.CONTENT_TYPE.STRING: {
-        if (PlainUtils.isBlank(text)) {
-          return PlainUtils.EMPTY;
-        }
         return XTableFormat(format, text);
       }
       case Cell.CONTENT_TYPE.NUMBER: {
-        if (PlainUtils.isBlank(text)) {
-          return PlainUtils.EMPTY;
-        }
         const number = XTableFormat(format, text);
         return number.toString();
       }
