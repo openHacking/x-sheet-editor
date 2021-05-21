@@ -8,11 +8,40 @@ import { Tab } from '../../core/work/Tab';
 import { Sheet } from '../../core/work/Sheet';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { ColorArray } from '../../component/colorpicker/colorarray/ColorArray';
+import { ArgbToFinalRgb, Theme, ThemeXml } from './XlsxTheme';
 
 /**
  * XLSX 文件导入
  */
 class XlsxImport {
+
+  /**
+   * 文件转换ArrayBuffer
+   * @param file
+   * @returns {Promise<ArrayBuffer>}
+   */
+  static async fileToBuffer(file) {
+    return new Promise((resolve) => {
+      let reader = new FileReader();
+      reader.readAsArrayBuffer(file);
+      reader.addEventListener('load', () => {
+        resolve(reader.result);
+      });
+    });
+  }
+
+  /**
+   * 字体大小转换
+   * @param table
+   * @param value
+   */
+  static fontsize(table, value) {
+    const { xTableStyle } = table;
+    const { heightUnit } = xTableStyle;
+    const pixel = heightUnit.getPixel(value);
+    const fontsize = XDraw.srcPx(pixel);
+    return XDraw.ceil(fontsize);
+  }
 
   /**
    * 行高转换
@@ -78,52 +107,6 @@ class XlsxImport {
   }
 
   /**
-   * 字体大小转换
-   * @param table
-   * @param value
-   */
-  static fontsize(table, value) {
-    const { xTableStyle } = table;
-    const { heightUnit } = xTableStyle;
-    const pixel = heightUnit.getPixel(value);
-    const fontsize = XDraw.srcPx(pixel);
-    return XDraw.ceil(fontsize);
-  }
-
-  /**
-   * 文件转换ArrayBuffer
-   * @param file
-   * @returns {Promise<ArrayBuffer>}
-   */
-  static async fileToBuffer(file) {
-    return new Promise((resolve) => {
-      let reader = new FileReader();
-      reader.readAsArrayBuffer(file);
-      reader.addEventListener('load', () => {
-        resolve(reader.result);
-      });
-    });
-  }
-
-  /**
-   * 颜色转换
-   * @param argb
-   * @returns {string|*}
-   */
-  static argbToRgb(argb) {
-    if (argb) {
-      if (argb.startsWith('#')) {
-        if (argb.length === 9) {
-          return `#${argb.substring(3)}`;
-        }
-      } else if (argb.length === 8) {
-        return argb.substring(2);
-      }
-    }
-    return argb;
-  }
-
-  /**
    * 导入XLSX文件
    * @param work
    * @param file
@@ -146,18 +129,20 @@ class XlsxImport {
     // 读取sheet表
     const xSheets = [];
     const { model } = workbook;
-    const { worksheets } = model;
-    worksheets.forEach((worksheet) => {
-      const { name, cols = [], rows = [], merges = [], views = [] } = worksheet;
-      const xCols = {
-        data: [],
-        len: 25,
-      };
+    const { themes, worksheets } = model;
+    worksheets.forEach((worksheet, idx) => {
+      const {
+        merges = [], cols = [], rows = [], name, views = [],
+      } = worksheet;
       const xRows = {
         data: [],
         len: 100,
       };
       const xData = [];
+      const xCols = {
+        data: [],
+        len: 25,
+      };
       const xMerge = {
         merges,
       };
@@ -165,10 +150,19 @@ class XlsxImport {
         showGrid: views[0].showGridLines,
         background: '#ffffff',
       };
+      // 主题颜色
+      const themeXml = themes[`theme${idx + 1}`];
+      let themeList = [];
+      if (themeXml) {
+        const xml = new ThemeXml(themeXml);
+        themeList = xml.getThemeList();
+      }
       // 读取列宽
       const lastIndex = cols.length - 1;
       cols.forEach((col, idx) => {
-        const { min, max, width } = col;
+        const {
+          min, max, width,
+        } = col;
         const colWidth = this.colWidth(defaultTable, width);
         if (min === max || lastIndex === idx) {
           xCols.data[min - 1] = {
@@ -184,7 +178,9 @@ class XlsxImport {
       });
       // 读取行高
       rows.forEach((row) => {
-        const { cells, height, number } = row;
+        const {
+          cells, height, number,
+        } = row;
         const rowIndex = number - 1;
         xRows.data[rowIndex] = {
           height: this.rowHeight(defaultTable, height),
@@ -193,9 +189,13 @@ class XlsxImport {
         const item = [];
         cells.forEach((cell) => {
           // 单元格基本属性
-          const { value = '', address = '', style = {} } = cell;
+          const {
+            value = '', address = '', style = {},
+          } = cell;
           const { richText } = value;
-          const { border, fill, font, alignment } = style;
+          const {
+            border, fill, font, alignment,
+          } = style;
           // 读取列编号
           const colNo = address.replace(number, '');
           const colIndex = PlainUtils.indexAt(colNo);
@@ -213,8 +213,12 @@ class XlsxImport {
           };
           // 字体属性
           if (font) {
-            const { name, bold, size, italic, underline, strike, color = {} } = font;
-            const { theme, argb } = color;
+            const {
+              name, bold, size, italic, underline, strike, color = {},
+            } = font;
+            const {
+              theme, tint, argb,
+            } = color;
             xCell.fontAttr.name = name;
             xCell.fontAttr.bold = bold;
             xCell.fontAttr.size = this.fontsize(defaultTable, size);
@@ -222,10 +226,10 @@ class XlsxImport {
             xCell.fontAttr.underline = underline;
             xCell.fontAttr.strikethrough = strike;
             if (PlainUtils.isNotUnDef(argb)) {
-              const rgb = this.argbToRgb(argb);
+              const rgb = ArgbToFinalRgb(argb);
               xCell.fontAttr.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
             } else if (PlainUtils.isNotUnDef(theme)) {
-              xCell.fontAttr.color = XlsxImport.THEME_COLOR[theme];
+              xCell.fontAttr.color = new Theme(theme, tint, themeList).getFinalRgb();
             }
           }
           // 富文本
@@ -236,19 +240,26 @@ class XlsxImport {
           if (fill) {
             const { fgColor } = fill;
             if (fgColor) {
-              const { theme, argb } = fgColor;
+              const {
+                theme, tint, argb,
+              } = fgColor;
               if (PlainUtils.isNotUnDef(argb)) {
-                const rgb = this.argbToRgb(argb);
+                const rgb = ArgbToFinalRgb(argb);
                 xCell.background = ColorPicker.parseHexToRgb(rgb);
               } else if (PlainUtils.isNotUnDef(theme)) {
-                xCell.background = XlsxImport.THEME_COLOR[theme];
+                xCell.background = new Theme(theme, tint, themeList).getFinalRgb();
               }
             }
           }
           // 对齐方式
           if (alignment) {
-            const { textRotation, wrapText } = alignment;
-            const { vertical, horizontal } = alignment;
+            const {
+              textRotation, wrapText,
+            } = alignment;
+            const {
+              vertical,
+              horizontal,
+            } = alignment;
             xCell.fontAttr.align = horizontal;
             xCell.fontAttr.verticalAlign = vertical;
             xCell.fontAttr.direction = BaseFont.TEXT_DIRECTION.HORIZONTAL;
@@ -269,59 +280,83 @@ class XlsxImport {
           // 单元格边框
           if (border) {
             if (border.right) {
-              const { style, color = {} } = border.right;
-              const { theme, argb } = color;
-              const { widthType, type } = this.borderType(style);
+              const {
+                style, color = {},
+              } = border.right;
+              const {
+                theme, tint, argb,
+              } = color;
+              const {
+                widthType, type,
+              } = this.borderType(style);
               xCell.borderAttr.right.widthType = widthType;
               xCell.borderAttr.right.type = type;
               xCell.borderAttr.right.display = true;
               if (PlainUtils.isNotUnDef(argb)) {
-                const rgb = this.argbToRgb(argb);
+                const rgb = ArgbToFinalRgb(argb);
                 xCell.borderAttr.right.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
               } else if (PlainUtils.isNotUnDef(theme)) {
-                xCell.borderAttr.right.color = XlsxImport.THEME_COLOR[theme];
+                xCell.borderAttr.right.color = new Theme(theme, tint, themeList).getFinalRgb();
               }
             }
             if (border.top) {
-              const { style, color = {} } = border.top;
-              const { theme, argb } = color;
-              const { widthType, type } = this.borderType(style);
+              const {
+                style, color = {},
+              } = border.top;
+              const {
+                theme, tint, argb,
+              } = color;
+              const {
+                widthType, type,
+              } = this.borderType(style);
               xCell.borderAttr.top.display = true;
               xCell.borderAttr.top.type = type;
               xCell.borderAttr.top.widthType = widthType;
               if (PlainUtils.isNotUnDef(argb)) {
-                const rgb = this.argbToRgb(argb);
+                const rgb = ArgbToFinalRgb(argb);
                 xCell.borderAttr.top.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
               } else if (PlainUtils.isNotUnDef(theme)) {
-                xCell.borderAttr.top.color = XlsxImport.THEME_COLOR[theme];
+                xCell.borderAttr.top.color = new Theme(theme, tint, themeList).getFinalRgb();
               }
             }
             if (border.left) {
-              const { style, color = {} } = border.left;
-              const { theme, argb } = color;
-              const { widthType, type } = this.borderType(style);
+              const {
+                style, color = {},
+              } = border.left;
+              const {
+                theme, tint, argb,
+              } = color;
+              const {
+                widthType, type,
+              } = this.borderType(style);
               xCell.borderAttr.left.display = true;
               xCell.borderAttr.left.type = type;
               xCell.borderAttr.left.widthType = widthType;
               if (PlainUtils.isNotUnDef(argb)) {
-                const rgb = this.argbToRgb(argb);
+                const rgb = ArgbToFinalRgb(argb);
                 xCell.borderAttr.left.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
               } else if (PlainUtils.isNotUnDef(theme)) {
-                xCell.borderAttr.left.color = XlsxImport.THEME_COLOR[theme];
+                xCell.borderAttr.left.color = new Theme(theme, tint, themeList).getFinalRgb();
               }
             }
             if (border.bottom) {
-              const { style, color = {} } = border.bottom;
-              const { theme, argb } = color;
-              const { widthType, type } = this.borderType(style);
+              const {
+                style, color = {},
+              } = border.bottom;
+              const {
+                theme, tint, argb,
+              } = color;
+              const {
+                widthType, type,
+              } = this.borderType(style);
               xCell.borderAttr.bottom.display = true;
               xCell.borderAttr.bottom.type = type;
               xCell.borderAttr.bottom.widthType = widthType;
               if (PlainUtils.isNotUnDef(argb)) {
-                const rgb = this.argbToRgb(argb);
+                const rgb = ArgbToFinalRgb(argb);
                 xCell.borderAttr.bottom.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
               } else if (PlainUtils.isNotUnDef(theme)) {
-                xCell.borderAttr.bottom.color = XlsxImport.THEME_COLOR[theme];
+                xCell.borderAttr.bottom.color = new Theme(theme, tint, themeList).getFinalRgb();
               }
             }
           }
@@ -361,140 +396,6 @@ class XlsxImport {
   }
 
 }
-
-XlsxImport.INDEX_COLOR = [
-  '000000',
-  'FFFFFF',
-  'FF0000',
-  '00FF00',
-  '0000FF',
-  'FFFF00',
-  'FF00FF',
-  '00FFFF',
-  '000000',
-  'FFFFFF',
-  'FF0000',
-  '00FF00',
-  '0000FF',
-  'FFFF00',
-  'FF00FF',
-  '00FFFF',
-  '800000',
-  '008000',
-  '000080',
-  '808000',
-  '800080',
-  '008080',
-  'C0C0C0',
-  '808080',
-  '9999FF',
-  '993366',
-  'FFFFCC',
-  'CCFFFF',
-  '660066',
-  'FF8080',
-  '0066CC',
-  'CCCCFF',
-  '000080',
-  'FF00FF',
-  'FFFF00',
-  '00FFFF',
-  '800080',
-  '800000',
-  '008080',
-  '0000FF',
-  '00CCFF',
-  'CCFFFF',
-  'CCFFCC',
-  'FFFF99',
-  '99CCFF',
-  'FF99CC',
-  'CC99FF',
-  'FFCC99',
-  '3366FF',
-  '33CCCC',
-  '99CC00',
-  'FFCC00',
-  'FF9900',
-  'FF6600',
-  '666699',
-  '969696',
-  '003366',
-  '339966',
-  '003300',
-  '333300',
-  '993300',
-  '993366',
-  '333399',
-  '333333',
-];
-XlsxImport.THEME_COLOR = [
-  'rgb(255, 255, 255)',
-  'rgb(0,0,0)',
-  'rgb(231,230,230)',
-  'rgb(68,84,106)',
-  'rgb(91,155,213)',
-  'rgb(237,125,49)',
-  'rgb(165,165,165)',
-  'rgb(255,192,0)',
-  'rgb(68,144,196)',
-  'rgb(112, 173, 71)',
-
-  'rgb(242,242,242)',
-  'rgb(128,128,128)',
-  'rgb(208,208,206)',
-  'rgb(214,220,218)',
-  'rgb(222,235,247)',
-  'rgb(251,229,214)',
-  'rgb(237,237,237)',
-  'rgb(255,242,204)',
-  'rgb(218,227,243)',
-  'rgb(226,240,217)',
-
-  'rgb(217,217,217)',
-  'rgb(89,89,89)',
-  'rgb(175,171,171)',
-  'rgb(173,185,202)',
-  'rgb(189,215,238)',
-  'rgb(248,203,173)',
-  'rgb(219,219,219)',
-  'rgb(255,230,153)',
-  'rgb(180,198,231)',
-  'rgb(197,224,180)',
-
-  'rgb(191,191,191)',
-  'rgb(64,64,64)',
-  'rgb(118,113,113)',
-  'rgb(132,151,176)',
-  'rgb(157,195,230)',
-  'rgb(244,177,131)',
-  'rgb(201,201,201)',
-  'rgb(255, 217, 102)',
-  'rgb(143,170,220)',
-  'rgb(169,208,142)',
-
-  'rgb(166,166,166)',
-  'rgb(38,38,38)',
-  'rgb(59,56,56)',
-  'rgb(51,63,80)',
-  'rgb(46,117,182)',
-  'rgb(197,90,17)',
-  'rgb(124,124,124)',
-  'rgb(191,143,0)',
-  'rgb(47,85,151)',
-  'rgb(84,130,53)',
-
-  'rgb(127,127,127)',
-  'rgb(13,13,13)',
-  'rgb(24,23,23)',
-  'rgb(34,43,53)',
-  'rgb(31,78,121)',
-  'rgb(132,60,11)',
-  'rgb(83,83,83)',
-  'rgb(127,96,0)',
-  'rgb(32,55,100)',
-  'rgb(56,87,35)',
-];
 
 export {
   XlsxImport,
