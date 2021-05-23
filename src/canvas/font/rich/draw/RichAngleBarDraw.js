@@ -1,6 +1,6 @@
-import { BaseFont } from '../../BaseFont';
+import { BaseRich } from '../BaseRich';
 
-class RichAngleBarDraw extends BaseFont {
+class RichAngleBarDraw extends BaseRich {
 
 }
 

@@ -1,4 +1,6 @@
-class BaseRich {
+import { BaseFont } from '../BaseFont';
+
+class BaseRich extends BaseFont {
 
 }
 

@@ -1,6 +1,6 @@
-import { TextRuler } from '../../text/TextRuler';
+import { RichRuler } from '../RichRuler';
 
-class RichHorizonRuler extends TextRuler {
+class RichHorizonRuler extends RichRuler {
 
 }
 

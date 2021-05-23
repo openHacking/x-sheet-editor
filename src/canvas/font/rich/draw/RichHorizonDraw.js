@@ -1,6 +1,6 @@
-import { BaseFont } from '../../BaseFont';
+import { BaseRich } from '../BaseRich';
 
-class RichHorizonDraw extends BaseFont {
+class RichHorizonDraw extends BaseRich {
 
 }
 

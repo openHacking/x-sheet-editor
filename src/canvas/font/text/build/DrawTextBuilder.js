@@ -23,20 +23,20 @@ class DrawTextBuilder {
   buildFont() {
     const { text, attr, draw, rect , overflow } = this;
     switch (attr.direction) {
-      case BaseFont.TEXT_DIRECTION.ANGLE:
-        return new AngleBoxDraw({
-          draw, text, rect, overflow, attr,
-        });
-      case BaseFont.TEXT_DIRECTION.ANGLE_BAR:
-        return new AngleBarDraw({
-          draw, text, rect, overflow, attr,
-        });
       case BaseFont.TEXT_DIRECTION.HORIZONTAL:
         return new HorizonDraw({
           draw, text, rect, overflow, attr,
         });
       case BaseFont.TEXT_DIRECTION.VERTICAL:
         return new VerticalDraw({
+          draw, text, rect, overflow, attr,
+        });
+      case BaseFont.TEXT_DIRECTION.ANGLE:
+        return new AngleBoxDraw({
+          draw, text, rect, overflow, attr,
+        });
+      case BaseFont.TEXT_DIRECTION.ANGLE_BAR:
+        return new AngleBarDraw({
           draw, text, rect, overflow, attr,
         });
     }
@@ -48,14 +48,6 @@ class DrawTextBuilder {
     const { size, align, angle } = attr;
     const { padding, textWrap } = attr;
     switch (attr.direction) {
-      case BaseFont.TEXT_DIRECTION.ANGLE:
-        return new AngleBoxRuler({
-          draw, text, size, angle, rect, overflow, align, textWrap, padding
-        });
-      case BaseFont.TEXT_DIRECTION.ANGLE_BAR:
-        return new AngleBarRuler({
-          draw, text, size, angle, rect, overflow, align, textWrap, padding
-        });
       case BaseFont.TEXT_DIRECTION.HORIZONTAL:
         return new HorizonRuler({
           draw, text, size, rect, overflow, align, textWrap, padding
@@ -63,6 +55,14 @@ class DrawTextBuilder {
       case BaseFont.TEXT_DIRECTION.VERTICAL:
         return new VerticalRuler({
           draw, text, size, rect, overflow, align, textWrap, padding
+        });
+      case BaseFont.TEXT_DIRECTION.ANGLE:
+        return new AngleBoxRuler({
+          draw, text, size, angle, rect, overflow, align, textWrap, padding
+        });
+      case BaseFont.TEXT_DIRECTION.ANGLE_BAR:
+        return new AngleBarRuler({
+          draw, text, size, angle, rect, overflow, align, textWrap, padding
         });
     }
     return null;
