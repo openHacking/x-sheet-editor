@@ -13,7 +13,7 @@ class ColorItem extends Widget {
       icon: null,
     }, options);
     this.icon = this.options.icon;
-    this.color = PlainUtils.deleteBlank(this.options.color);
+    this.color = PlainUtils.blankClear(this.options.color);
     if (this.icon) {
       this.children(this.options.icon);
     }

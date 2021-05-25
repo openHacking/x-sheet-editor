@@ -4,7 +4,8 @@ import { BaseFont } from '../../BaseFont';
 class HorizonVisual extends TextRuler {
 
   constructor({
-    draw, text, align, padding,
+    draw, text,
+    align, padding,
   }) {
     super({ draw, text });
     this.align = align;

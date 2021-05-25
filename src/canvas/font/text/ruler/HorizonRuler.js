@@ -5,7 +5,9 @@ import { BaseFont } from '../../BaseFont';
 class HorizonRuler extends HorizonVisual {
 
   constructor({
-    draw, text, size, rect, overflow, align, textWrap, lineHeight = 8, padding,
+    draw, text, rect, overflow,
+    size, align, textWrap, padding,
+    lineHeight = 8,
   }) {
     super({
       text, draw, align, padding,

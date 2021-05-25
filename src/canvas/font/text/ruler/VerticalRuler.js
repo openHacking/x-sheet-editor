@@ -5,7 +5,9 @@ import { BaseFont } from '../../BaseFont';
 class VerticalRuler extends VerticalVisual {
 
   constructor({
-    draw, text, size, rect, verticalAlign, textWrap, spacing = 6, lineHeight = 8, padding,
+    draw, text, rect,
+    size, verticalAlign, textWrap, padding,
+    spacing = 6, lineHeight = 8,
   }) {
     super({
       draw, text, verticalAlign, padding,

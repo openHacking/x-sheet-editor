@@ -6,8 +6,9 @@ import { BaseFont } from '../../BaseFont';
 class AngleBoxRuler extends TextRuler {
 
   constructor({
-    draw, text, size, angle, rect, overflow, align, verticalAlign,
-    textWrap, lineHeight = 8, padding,
+    draw, text, rect, overflow,
+    size, angle, align, verticalAlign, textWrap, padding,
+    lineHeight = 8,
   }) {
     super({
       draw, text,

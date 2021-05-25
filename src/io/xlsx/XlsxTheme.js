@@ -2,9 +2,10 @@
  * http://ciintelligence.blogspot.com/2012/02/converting-excel-theme-color-and-tint.html
  */
 import { ColorPicker } from '../../component/colorpicker/ColorPicker';
+import { XDraw } from '../../canvas/XDraw';
 import X2JS from '../../libs/xml2json/xml2json';
 
-function ArgbToFinalRgb(argb) {
+function HexRgb(argb) {
   if (argb) {
     if (argb.startsWith('#')) {
       if (argb.length === 9) {
@@ -124,14 +125,17 @@ class Theme {
     this.colorPallate = colorPallate;
   }
 
-  getFinalRgb() {
+  getThemeRgb() {
     const hex = this.colorPallate[this.theme];
     const rgb = ColorPicker.hexToRgb(hex);
     const rgbColor = new RgbColor(rgb.r, rgb.g, rgb.b);
     const hlsColor = new HlsColor().rgbToHls(rgbColor);
     hlsColor.l = this.lumValue(this.tint, hlsColor.l * 255) / 255;
-    const final = new RgbColor().hlsToRgb(hlsColor);
-    return `rgb(${final.r},${final.g},${final.b})`;
+    const result = new RgbColor().hlsToRgb(hlsColor);
+    const r = XDraw.trunc(result.r);
+    const g = XDraw.trunc(result.g);
+    const b = XDraw.trunc(result.b);
+    return `rgb(${r},${g},${b})`;
   }
 
   lumValue(tint, lum) {
@@ -194,5 +198,5 @@ class ThemeXml {
 }
 
 export {
-  Theme, ThemeXml, ArgbToFinalRgb,
+  Theme, ThemeXml, HexRgb,
 };

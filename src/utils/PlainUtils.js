@@ -336,15 +336,25 @@ class PlainUtils {
     return array[0];
   }
 
-  static safeValue(value, defaultValue = '') {
-    return PlainUtils.isUnDef(value) ? defaultValue : value;
-  }
-
-  static deleteBlank(value) {
+  static blankClear(value) {
     if (PlainUtils.isString(value)) {
       return value.replace(/\s*/g, PlainUtils.EMPTY);
     }
     return value;
+  }
+
+  static equals(src, target) {
+    if (PlainUtils.isUnDef(src)) {
+      return false;
+    }
+    if (PlainUtils.isUnDef(target)) {
+      return false;
+    }
+    return JSON.stringify(src) === JSON.stringify(target);
+  }
+
+  static safeValue(value, defaultValue = '') {
+    return PlainUtils.isUnDef(value) ? defaultValue : value;
   }
 
 }

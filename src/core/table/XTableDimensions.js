@@ -1330,8 +1330,8 @@ class XTableDimensions extends Widget {
     // 更新视图
     this.resize();
     // 发送更新通知
-    this.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
     this.trigger(Constant.TABLE_EVENT_TYPE.FIXED_ROW_CHANGE);
+    this.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
   }
 
   /**

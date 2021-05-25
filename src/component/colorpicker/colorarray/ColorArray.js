@@ -135,12 +135,12 @@ class ColorArray extends Widget {
   }
 
   findItemByColor(color) {
-    color = PlainUtils.deleteBlank(color);
+    color = PlainUtils.blankClear(color);
     return this.colors.find(item => item.color === color);
   }
 
   setActiveByColor(color) {
-    color = PlainUtils.deleteBlank(color);
+    color = PlainUtils.blankClear(color);
     this.colors.forEach((item) => {
       if (item.color === color) {
         item.setActive(true);

@@ -5,8 +5,9 @@ import { PlainUtils } from '../../../../utils/PlainUtils';
 class AngleBarRuler extends AngleBoxRuler {
 
   constructor({
-    draw, text, size, angle, rect, overflow, align, verticalAlign,
-    textWrap, lineHeight = 8, padding,
+    draw, text, rect, overflow,
+    size, angle, align, verticalAlign, textWrap, padding,
+    lineHeight = 8,
   }) {
     super({
       draw, text, size, angle, rect, overflow, align, verticalAlign, textWrap, lineHeight, padding,

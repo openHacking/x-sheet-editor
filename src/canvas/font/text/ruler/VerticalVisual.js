@@ -4,7 +4,8 @@ import { BaseFont } from '../../BaseFont';
 class VerticalVisual extends TextRuler {
 
   constructor({
-    draw, text, verticalAlign, padding,
+    draw, text,
+    verticalAlign, padding,
   }) {
     super({ draw, text });
     this.verticalAlign = verticalAlign;

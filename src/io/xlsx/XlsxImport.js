@@ -8,7 +8,7 @@ import { Tab } from '../../core/work/Tab';
 import { Sheet } from '../../core/work/Sheet';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { ColorArray } from '../../component/colorpicker/colorarray/ColorArray';
-import { ArgbToFinalRgb, Theme, ThemeXml } from './XlsxTheme';
+import { HexRgb, Theme, ThemeXml } from './XlsxTheme';
 
 /**
  * XLSX 文件导入
@@ -226,10 +226,10 @@ class XlsxImport {
             xCell.fontAttr.underline = underline;
             xCell.fontAttr.strikethrough = strike;
             if (PlainUtils.isNotUnDef(argb)) {
-              const rgb = ArgbToFinalRgb(argb);
+              const rgb = HexRgb(argb);
               xCell.fontAttr.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
             } else if (PlainUtils.isNotUnDef(theme)) {
-              xCell.fontAttr.color = new Theme(theme, tint, themeList).getFinalRgb();
+              xCell.fontAttr.color = new Theme(theme, tint, themeList).getThemeRgb();
             }
           }
           // 富文本
@@ -244,10 +244,10 @@ class XlsxImport {
                 theme, tint, argb,
               } = fgColor;
               if (PlainUtils.isNotUnDef(argb)) {
-                const rgb = ArgbToFinalRgb(argb);
+                const rgb = HexRgb(argb);
                 xCell.background = ColorPicker.parseHexToRgb(rgb);
               } else if (PlainUtils.isNotUnDef(theme)) {
-                xCell.background = new Theme(theme, tint, themeList).getFinalRgb();
+                xCell.background = new Theme(theme, tint, themeList).getThemeRgb();
               }
             }
           }
@@ -293,10 +293,10 @@ class XlsxImport {
               xCell.borderAttr.right.type = type;
               xCell.borderAttr.right.display = true;
               if (PlainUtils.isNotUnDef(argb)) {
-                const rgb = ArgbToFinalRgb(argb);
+                const rgb = HexRgb(argb);
                 xCell.borderAttr.right.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
               } else if (PlainUtils.isNotUnDef(theme)) {
-                xCell.borderAttr.right.color = new Theme(theme, tint, themeList).getFinalRgb();
+                xCell.borderAttr.right.color = new Theme(theme, tint, themeList).getThemeRgb();
               }
             }
             if (border.top) {
@@ -313,10 +313,10 @@ class XlsxImport {
               xCell.borderAttr.top.type = type;
               xCell.borderAttr.top.widthType = widthType;
               if (PlainUtils.isNotUnDef(argb)) {
-                const rgb = ArgbToFinalRgb(argb);
+                const rgb = HexRgb(argb);
                 xCell.borderAttr.top.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
               } else if (PlainUtils.isNotUnDef(theme)) {
-                xCell.borderAttr.top.color = new Theme(theme, tint, themeList).getFinalRgb();
+                xCell.borderAttr.top.color = new Theme(theme, tint, themeList).getThemeRgb();
               }
             }
             if (border.left) {
@@ -333,10 +333,10 @@ class XlsxImport {
               xCell.borderAttr.left.type = type;
               xCell.borderAttr.left.widthType = widthType;
               if (PlainUtils.isNotUnDef(argb)) {
-                const rgb = ArgbToFinalRgb(argb);
+                const rgb = HexRgb(argb);
                 xCell.borderAttr.left.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
               } else if (PlainUtils.isNotUnDef(theme)) {
-                xCell.borderAttr.left.color = new Theme(theme, tint, themeList).getFinalRgb();
+                xCell.borderAttr.left.color = new Theme(theme, tint, themeList).getThemeRgb();
               }
             }
             if (border.bottom) {
@@ -353,10 +353,10 @@ class XlsxImport {
               xCell.borderAttr.bottom.type = type;
               xCell.borderAttr.bottom.widthType = widthType;
               if (PlainUtils.isNotUnDef(argb)) {
-                const rgb = ArgbToFinalRgb(argb);
+                const rgb = HexRgb(argb);
                 xCell.borderAttr.bottom.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
               } else if (PlainUtils.isNotUnDef(theme)) {
-                xCell.borderAttr.bottom.color = new Theme(theme, tint, themeList).getFinalRgb();
+                xCell.borderAttr.bottom.color = new Theme(theme, tint, themeList).getThemeRgb();
               }
             }
           }
