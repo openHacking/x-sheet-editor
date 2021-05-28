@@ -23,10 +23,15 @@ class LCellOutRange extends CellOutRange {
     row, col,
   }) {
     const { table } = this;
-    const { cells, cols } = table;
+    const { cells, cols, merges } = table;
+    const lastMerge = merges.getFirstIncludes(row, col - 1);
     const last = cells.getCell(row, col - 1);
     const master = cells.getCell(row, col);
 
+    // 是否是合并单元格
+    if (lastMerge) {
+      return true;
+    }
     // 是否是空单元格
     if (PlainUtils.isUnDef(master) || master.isEmpty()) {
       return true;
@@ -82,14 +87,14 @@ class LCellOutRange extends CellOutRange {
         .setBegin(col - 1)
         .setEnd(0)
         .setLoop((i) => {
-          // 是否是空单元格
-          const cell = cells.getCell(row, i);
-          if (PlainUtils.isUnDef(cell)) {
-            return true;
-          }
           // 是否是合并单元格
           const merge = merges.getFirstIncludes(row, i);
           if (PlainUtils.isNotUnDef(merge)) {
+            return false;
+          }
+          // 是否是空单元格
+          const cell = cells.getCell(row, i);
+          if (PlainUtils.isUnDef(cell)) {
             return true;
           }
           // 是否是空文本
@@ -151,14 +156,14 @@ class LCellOutRange extends CellOutRange {
         .setBegin(col - 1)
         .setEnd(0)
         .setLoop((i) => {
-          // 是否是空单元格
-          const cell = cells.getCell(row, i);
-          if (PlainUtils.isUnDef(cell)) {
-            return true;
-          }
           // 是否是合并单元格
           const merge = merges.getFirstIncludes(row, i);
           if (PlainUtils.isNotUnDef(merge)) {
+            return false;
+          }
+          // 是否是空单元格
+          const cell = cells.getCell(row, i);
+          if (PlainUtils.isUnDef(cell)) {
             return true;
           }
           // 是否是空文本
@@ -213,14 +218,14 @@ class LCellOutRange extends CellOutRange {
         .setBegin(col + 1)
         .setEnd(len)
         .setLoop((j) => {
-          // 空单元格检查
-          const cell = cells.getCell(row, j);
-          if (PlainUtils.isUnDef(cell)) {
-            return true;
-          }
           // 合并单元格检查
           const merge = merges.getFirstIncludes(row, j);
           if (PlainUtils.isNotUnDef(merge)) {
+            return false;
+          }
+          // 空单元格检查
+          const cell = cells.getCell(row, j);
+          if (PlainUtils.isUnDef(cell)) {
             return true;
           }
           // 空文本单检查
@@ -285,14 +290,14 @@ class LCellOutRange extends CellOutRange {
         .setBegin(col + 1)
         .setEnd(len)
         .setLoop((j) => {
-          // 空单元格检查
-          const cell = cells.getCell(row, j);
-          if (PlainUtils.isUnDef(cell)) {
-            return true;
-          }
           // 合并单元格检查
           const merge = merges.getFirstIncludes(row, j);
           if (PlainUtils.isNotUnDef(merge)) {
+            return false;
+          }
+          // 空单元格检查
+          const cell = cells.getCell(row, j);
+          if (PlainUtils.isUnDef(cell)) {
             return true;
           }
           // 空文本单检查
