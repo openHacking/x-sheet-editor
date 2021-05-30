@@ -6,6 +6,7 @@ import { PlainUtils } from '../../utils/PlainUtils';
 import { XSelectItem } from '../table/xscreenitems/xselect/XSelectItem';
 import { Throttle } from '../../libs/Throttle';
 import { Cell } from '../table/tablecell/Cell';
+import { AsyncRowIterator } from '../table/iterator/asynchronous/AsyncRowIterator';
 
 class BottomMenu extends Widget {
 
@@ -18,6 +19,9 @@ class BottomMenu extends Widget {
     this.fullScreen = h('div', `${cssPrefix}-bottom-full-screen`);
     this.grid = h('div', `${cssPrefix}-bottom-grid`);
     this.throttle = new Throttle({ time: 800 });
+    // 表格数据迭代器
+    this.asyncRowIterator = null;
+    this.asyncColIterator = null;
     this.children(this.grid);
     this.children(this.fullScreen);
     this.children(this.sum);
@@ -42,15 +46,40 @@ class BottomMenu extends Widget {
     const xSelect = xScreen.findType(XSelectItem);
     const { selectRange } = xSelect;
     if (selectRange) {
+      // 性能杀手(后续优化)
       const { sri, sci, eri, eci } = selectRange;
       let number = 0;
       let total = 0;
-      // 性能杀手(后续优化)
-      xIteratorBuilder.getRowIterator()
+      let finish = () => {
+        if (this.asyncRowIterator.status === AsyncRowIterator.STATUS.FINISH) {
+          if (this.asyncColIterator.status === AsyncRowIterator.STATUS.FINISH) {
+            if (number > 0) {
+              let avg = total / number;
+              this.setNumber(number);
+              this.setAvg(avg.toFixed(2));
+              this.setSum(total.toFixed(2));
+            } else {
+              this.setSum(0);
+              this.setAvg(0);
+              this.setNumber(0);
+            }
+          }
+        }
+      };
+      if (this.asyncRowIterator) {
+        this.asyncRowIterator.stop();
+      }
+      if (this.asyncColIterator) {
+        this.asyncColIterator.stop();
+      }
+      this.setSum('...');
+      this.setAvg('...');
+      this.setNumber('...');
+      this.asyncRowIterator = xIteratorBuilder.getAsyncRowIterator()
         .setBegin(sri)
         .setEnd(eri)
         .setLoop((ri) => {
-          xIteratorBuilder.getColIterator()
+          this.asyncColIterator = xIteratorBuilder.getAsyncColIterator()
             .setBegin(sci)
             .setEnd(eci)
             .setLoop((ci) => {
@@ -69,19 +98,15 @@ class BottomMenu extends Widget {
                 }
               }
             })
+            .setFinish(() => {
+              finish();
+            })
             .execute();
         })
+        .setFinish(() => {
+          finish();
+        })
         .execute();
-      if (number > 0) {
-        let avg = total / number;
-        this.setNumber(number);
-        this.setAvg(avg.toFixed(2));
-        this.setSum(total.toFixed(2));
-      } else {
-        this.setSum(0);
-        this.setAvg(0);
-        this.setNumber(0);
-      }
     } else {
       this.setSum(0);
       this.setAvg(0);

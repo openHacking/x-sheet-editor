@@ -1,4 +1,4 @@
-class BaseIterator {
+class SyncBaseIterator {
 
   constructor() {
     this.finishCallback = () => {};
@@ -6,6 +6,16 @@ class BaseIterator {
     this.nextCallback = () => {};
     this.end = 0;
     this.begin = 0;
+  }
+
+  setBegin(begin) {
+    this.begin = begin;
+    return this;
+  }
+
+  setEnd(end) {
+    this.end = end;
+    return this;
   }
 
   execute() {
@@ -52,18 +62,8 @@ class BaseIterator {
     return this;
   }
 
-  setEnd(end) {
-    this.end = end;
-    return this;
-  }
-
-  setBegin(begin) {
-    this.begin = begin;
-    return this;
-  }
-
 }
 
 export {
-  BaseIterator,
+  SyncBaseIterator,
 };

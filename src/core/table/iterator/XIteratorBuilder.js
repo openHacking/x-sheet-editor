@@ -1,14 +1,24 @@
-import { RowsIterator } from './RowsIterator';
-import { ColsIterator } from './ColsIterator';
+import { SyncRowsIterator } from './synchronous/SyncRowsIterator';
+import { SyncColsIterator } from './synchronous/SyncColsIterator';
+import { AsyncRowIterator } from './asynchronous/AsyncRowIterator';
+import { AsyncColIterator } from './asynchronous/AsyncColIterator';
 
 class XIteratorBuilder {
 
   getRowIterator() {
-    return RowsIterator.getInstance();
+    return SyncRowsIterator.getInstance();
   }
 
   getColIterator() {
-    return ColsIterator.getInstance();
+    return SyncColsIterator.getInstance();
+  }
+
+  getAsyncRowIterator() {
+    return AsyncRowIterator.getInstance();
+  }
+
+  getAsyncColIterator() {
+    return AsyncColIterator.getInstance();
   }
 
 }

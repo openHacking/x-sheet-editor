@@ -1,6 +1,6 @@
-import { BaseIterator } from './BaseIterator';
+import { AsyncBaseIterator } from './AsyncBaseIterator';
 
-class ColsIterator extends BaseIterator {
+class AsyncColIterator extends AsyncBaseIterator {
 
   nextRow() {
     const { begin } = this;
@@ -16,11 +16,11 @@ class ColsIterator extends BaseIterator {
   }
 
   static getInstance() {
-    return new ColsIterator();
+    return new AsyncColIterator();
   }
 
 }
 
 export {
-  ColsIterator,
+  AsyncColIterator,
 };

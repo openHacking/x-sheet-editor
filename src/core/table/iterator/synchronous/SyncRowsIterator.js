@@ -1,11 +1,11 @@
-import { BaseIterator } from './BaseIterator';
+import { SyncBaseIterator } from './SyncBaseIterator';
 
 let fold = [];
 
-class RowsIterator extends BaseIterator {
+class SyncRowsIterator extends SyncBaseIterator {
 
   static getInstance() {
-    return new RowsIterator();
+    return new SyncRowsIterator();
   }
 
   static setFold(value) {
@@ -93,5 +93,5 @@ class RowsIterator extends BaseIterator {
 }
 
 export {
-  RowsIterator,
+  SyncRowsIterator,
 };
