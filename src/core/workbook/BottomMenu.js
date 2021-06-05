@@ -3,10 +3,10 @@ import { Constant, cssPrefix } from '../../const/Constant';
 import { h } from '../../libs/Element';
 import { XEvent } from '../../libs/XEvent';
 import { PlainUtils } from '../../utils/PlainUtils';
-import { XSelectItem } from '../table/xscreenitems/xselect/XSelectItem';
+import { XSelectItem } from '../worktable/xscreenitems/xselect/XSelectItem';
 import { Throttle } from '../../libs/Throttle';
-import { Cell } from '../table/tablecell/Cell';
-import { AsyncRowIterator } from '../table/iterator/asynchronous/AsyncRowIterator';
+import { Cell } from '../worktable/tablecell/Cell';
+import { AsyncRowIterator } from '../worktable/iterator/asynchronous/AsyncRowIterator';
 
 class BottomMenu extends Widget {
 

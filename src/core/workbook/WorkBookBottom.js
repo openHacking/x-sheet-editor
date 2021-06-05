@@ -2,7 +2,7 @@ import { Widget } from '../../libs/Widget';
 import { cssPrefix } from '../../const/Constant';
 import { BottomMenu } from './BottomMenu';
 
-class WorkBottom extends Widget {
+class WorkBookBottom extends Widget {
 
   constructor(work) {
     super(`${cssPrefix}-work-bottom`);
@@ -16,4 +16,4 @@ class WorkBottom extends Widget {
 
 }
 
-export { WorkBottom };
+export { WorkBookBottom };

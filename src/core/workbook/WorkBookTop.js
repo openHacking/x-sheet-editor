@@ -10,7 +10,7 @@ const settings = {
   },
 };
 
-class WorkTop extends Widget {
+class WorkBookTop extends Widget {
 
   constructor(work, options) {
     super(`${cssPrefix}-work-top`);
@@ -31,4 +31,4 @@ class WorkTop extends Widget {
 
 }
 
-export { WorkTop };
+export { WorkBookTop };

@@ -24,7 +24,7 @@ const settings = {
   sheets: [],
 };
 
-class WorkBody extends Widget {
+class WorkBookBody extends Widget {
 
   constructor(work, options) {
     super(`${cssPrefix}-work-body`);
@@ -383,4 +383,4 @@ class WorkBody extends Widget {
 
 }
 
-export { WorkBody };
+export { WorkBookBody };

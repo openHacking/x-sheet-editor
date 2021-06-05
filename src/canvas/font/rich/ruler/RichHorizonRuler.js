@@ -64,9 +64,7 @@ class RichHorizonRuler extends RichRuler {
         fillStyle: attr.color,
         strokeStyle: attr.color,
       });
-      const {
-        width, height, ascent,
-      } = this.textSize(attr.text);
+      const { width, height, ascent } = this.textSize(attr.text);
       textArray.push({
         x: textWidth,
         y: 0,

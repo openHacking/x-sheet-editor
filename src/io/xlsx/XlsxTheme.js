@@ -108,7 +108,7 @@ class RgbColor {
 
 class Theme {
 
-  constructor(theme, tint = 0, colorPallate = [
+  constructor(theme = 0, tint = 0, colorPallate = [
     'FFFFFF',
     '000000',
     'EEECE1',
@@ -120,12 +120,33 @@ class Theme {
     '4BACC6',
     'F79646',
   ]) {
+    this.cacheTheme = {};
     this.tint = tint;
     this.theme = theme;
     this.colorPallate = colorPallate;
   }
 
+  setColorPallate(list) {
+    this.colorPallate = list;
+    this.cacheTheme = {};
+    return this;
+  }
+
+  setTint(tint) {
+    this.tint = tint;
+    return this;
+  }
+
+  setTheme(theme) {
+    this.theme = theme;
+    return this;
+  }
+
   getThemeRgb() {
+    const key = `${this.theme}+${this.tint}`;
+    if (this.cacheTheme[key]) {
+      return this.cacheTheme[key];
+    }
     const hex = this.colorPallate[this.theme];
     const rgb = ColorPicker.hexToRgb(hex);
     const rgbColor = new RgbColor(rgb.r, rgb.g, rgb.b);
@@ -135,7 +156,9 @@ class Theme {
     const r = XDraw.trunc(result.r);
     const g = XDraw.trunc(result.g);
     const b = XDraw.trunc(result.b);
-    return `rgb(${r},${g},${b})`;
+    const final = `rgb(${r},${g},${b})`;
+    this.cacheTheme[key] = final;
+    return final;
   }
 
   lumValue(tint, lum) {

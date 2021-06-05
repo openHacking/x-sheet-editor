@@ -1,5 +1,5 @@
 import { Widget } from '../../libs/Widget';
-import { XTableDimensions } from '../table/XTableDimensions';
+import { XTableDimensions } from '../worktable/XTableDimensions';
 import { cssPrefix } from '../../const/Constant';
 import { PlainUtils } from '../../utils/PlainUtils';
 
