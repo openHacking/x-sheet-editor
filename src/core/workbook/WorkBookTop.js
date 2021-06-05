@@ -1,7 +1,7 @@
 import { Widget } from '../../libs/Widget';
 import { cssPrefix } from '../../const/Constant';
-import { TopMenu } from './TopMenu';
-import { TopOption } from './TopOption';
+import { WorkBookTopMenu } from './WorkBookTopMenu';
+import { WorkBookTopOption } from './WorkBookTopOption';
 import { PlainUtils } from '../../utils/PlainUtils';
 
 const settings = {
@@ -19,8 +19,8 @@ class WorkBookTop extends Widget {
   }
 
   onAttach() {
-    this.option = new TopOption(this, this.options.option);
-    this.toolsMenu = new TopMenu(this, this.options.menu);
+    this.option = new WorkBookTopOption(this, this.options.option);
+    this.toolsMenu = new WorkBookTopMenu(this, this.options.menu);
     if (this.options.option.show) {
       this.attach(this.option);
     }

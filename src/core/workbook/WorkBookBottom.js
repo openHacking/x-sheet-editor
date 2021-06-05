@@ -1,6 +1,6 @@
 import { Widget } from '../../libs/Widget';
 import { cssPrefix } from '../../const/Constant';
-import { BottomMenu } from './BottomMenu';
+import { WorkBookBottomMenu } from './WorkBookBottomMenu';
 
 class WorkBookBottom extends Widget {
 
@@ -10,7 +10,7 @@ class WorkBookBottom extends Widget {
   }
 
   onAttach() {
-    this.bottomMenu = new BottomMenu(this);
+    this.bottomMenu = new WorkBookBottomMenu(this);
     this.attach(this.bottomMenu);
   }
 

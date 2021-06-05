@@ -8,7 +8,7 @@ import { Throttle } from '../../libs/Throttle';
 import { Cell } from '../worktable/tablecell/Cell';
 import { AsyncRowIterator } from '../worktable/iterator/asynchronous/AsyncRowIterator';
 
-class BottomMenu extends Widget {
+class WorkBookBottomMenu extends Widget {
 
   constructor(workBottom) {
     super(`${cssPrefix}-bottom-menu`);
@@ -177,4 +177,4 @@ class BottomMenu extends Widget {
 
 }
 
-export { BottomMenu };
+export { WorkBookBottomMenu };

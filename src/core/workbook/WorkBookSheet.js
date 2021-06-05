@@ -9,7 +9,7 @@ const settings = {
   },
 };
 
-class Sheet extends Widget {
+class WorkBookSheet extends Widget {
 
   constructor(tab, options) {
     super(`${cssPrefix}-sheet`);
@@ -25,4 +25,4 @@ class Sheet extends Widget {
 
 }
 
-export { Sheet };
+export { WorkBookSheet };

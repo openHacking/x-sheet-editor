@@ -39,7 +39,7 @@ import { FontAngle } from './tools/FontAngle';
 import { Divider } from './tools/base/Divider';
 import { ColorArray } from '../../component/colorpicker/colorarray/ColorArray';
 
-class TopMenu extends Widget {
+class WorkBookTopMenu extends Widget {
 
   constructor(workTop) {
     super(`${cssPrefix}-tools-menu`);
@@ -217,6 +217,7 @@ class TopMenu extends Widget {
           const { table } = sheet;
           const { xScreen } = table;
           const operateCellsHelper = table.getOperateCellsHelper();
+          const cells = table.getTableCells();
           const xTableStyle = table.getXTableStyle();
           const { tableDataSnapshot } = table;
           const xSelect = xScreen.findType(XSelectItem);
@@ -251,6 +252,48 @@ class TopMenu extends Widget {
                 break;
             }
             const angleCells = [];
+            const clearEdgeBorder = (ri, ci) => {
+              // 上下边
+              if (ri === rect.sri) {
+                const src = ri - 1;
+                const edgeCell = cells.getCell(src, ci);
+                if (edgeCell) {
+                  const newCell = edgeCell.clone();
+                  const { borderAttr } = newCell;
+                  borderAttr.setBDisplay(false);
+                  cellDataProxy.setCell(src, ci, newCell);
+                }
+              } else if (ri === rect.eri) {
+                const src = ri + 1;
+                const edgeCell = cells.getCell(src, ci);
+                if (edgeCell) {
+                  const newCell = edgeCell.clone();
+                  const { borderAttr } = newCell;
+                  borderAttr.setTDisplay(false);
+                  cellDataProxy.setCell(src, ci, newCell);
+                }
+              }
+              // 左右边
+              if (ci === rect.sci) {
+                const src = ci - 1;
+                const edgeCell = cells.getCell(ri, src);
+                if (edgeCell) {
+                  const newCell = edgeCell.clone();
+                  const { borderAttr } = newCell;
+                  borderAttr.setRDisplay(false);
+                  cellDataProxy.setCell(ri, src, newCell);
+                }
+              } else if (ci === rect.eci) {
+                const src = ci + 1;
+                const edgeCell = cells.getCell(ri, src);
+                if (edgeCell) {
+                  const newCell = edgeCell.clone();
+                  const { borderAttr } = newCell;
+                  borderAttr.setLDisplay(false);
+                  cellDataProxy.setCell(ri, src, newCell);
+                }
+              }
+            };
             switch (borderType) {
               case 'border1':
                 operateCellsHelper.getCellOrNewCellByViewRange({
@@ -644,12 +687,16 @@ class TopMenu extends Widget {
                   rectRange: rect,
                   callback: (ri, ci, cell) => {
                     const newCell = cell.clone();
+                    // 旋转单元格
                     if (xTableStyle.hasAngleCell(ri)) {
                       if (xTableStyle.isAngleBarCell(ri, ci)) {
                         angleCells.push({ ri, ci, newCell });
                         return;
                       }
                     }
+                    // 清除边缘单元格
+                    clearEdgeBorder(ri, ci);
+                    // 清除当前单元格
                     const { borderAttr } = newCell;
                     borderAttr.setAllDisplay(false);
                     cellDataProxy.setCell(ri, ci, newCell);
@@ -657,6 +704,9 @@ class TopMenu extends Widget {
                 });
                 angleCells.forEach((options) => {
                   const { ri, ci, newCell } = options;
+                  // 清除边缘单元格
+                  clearEdgeBorder(ri, ci);
+                  // 清除当前单元格
                   const { borderAttr } = newCell;
                   borderAttr.setAllDisplay(false);
                   cellDataProxy.setCell(ri, ci, newCell);
@@ -945,10 +995,6 @@ class TopMenu extends Widget {
     this.children(this.functions);
   }
 
-  onAttach() {
-    this.bind();
-  }
-
   unbind() {
     const { body } = this.workTop.work;
     XEvent.bind(body);
@@ -973,6 +1019,10 @@ class TopMenu extends Widget {
     XEvent.bind(this.textWrapping);
     XEvent.bind(this.fixed);
     XEvent.bind(this.filter);
+  }
+
+  onAttach() {
+    this.bind();
   }
 
   bind() {
@@ -1843,4 +1893,4 @@ class TopMenu extends Widget {
 
 }
 
-export { TopMenu };
+export { WorkBookTopMenu };

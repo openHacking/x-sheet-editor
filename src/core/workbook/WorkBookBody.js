@@ -9,13 +9,13 @@ import { ScrollBarY } from '../../component/scrollbar/ScrollBarY';
 import { HorizontalLayerElement } from '../../libs/layer/HorizontalLayerElement';
 import { VerticalCenterElement } from '../../libs/layer/center/VerticalCenterElement';
 import { VerticalCenter } from '../../libs/layer/center/VerticalCenter';
-import { SheetView } from './SheetView';
-import { TabView } from './TabView';
+import { WorkBookSheetView } from './WorkBookSheetView';
+import { WorkBookTabView } from './WorkBookTabView';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { XEvent } from '../../libs/XEvent';
 import { h } from '../../libs/Element';
-import { Tab } from './Tab';
-import { Sheet } from './Sheet';
+import { WorkBookTab } from './WorkBookTab';
+import { WorkBookSheet } from './WorkBookSheet';
 import Download from '../../libs/donwload/Download';
 import { Throttle } from '../../libs/Throttle';
 import { XDraw } from '../../canvas/XDraw';
@@ -86,11 +86,11 @@ class WorkBookBody extends Widget {
     this.layerVerticalLayer.children(this.horizontalLayer2Layer);
     this.children(this.layerVerticalLayer);
     // 组件
-    this.sheetView = new SheetView();
-    this.tabView = new TabView({
+    this.sheetView = new WorkBookSheetView();
+    this.tabView = new WorkBookTabView({
       onAdd: () => {
-        const tab = new Tab();
-        const sheet = new Sheet(tab);
+        const tab = new WorkBookTab();
+        const sheet = new WorkBookSheet(tab);
         this.addTabSheet({ tab, sheet });
       },
       onSwitch: (tab) => {
@@ -248,8 +248,8 @@ class WorkBookBody extends Widget {
     for (const item of this.sheets) {
       // eslint-disable-next-line no-restricted-syntax
       const { name } = item;
-      const tab = new Tab(name);
-      const sheet = new Sheet(tab, item);
+      const tab = new WorkBookTab(name);
+      const sheet = new WorkBookSheet(tab, item);
       this.addTabSheet({ tab, sheet });
     }
     if (this.tabSheet.length) {

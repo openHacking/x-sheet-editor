@@ -9,7 +9,7 @@ const settings = {
   onSwitch(tab) { return tab; },
 };
 
-class TabView extends Widget {
+class WorkBookTabView extends Widget {
 
   constructor(options) {
     super(`${cssPrefix}-sheet-switch-tab`);
@@ -112,4 +112,4 @@ class TabView extends Widget {
 
 }
 
-export { TabView };
+export { WorkBookTabView };

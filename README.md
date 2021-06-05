@@ -1,4 +1,4 @@
-## **X-Sheet For Pc Browser**
+## **X-WorkBookSheet For Pc Browser**
 
 ###### `高性能 Web JavaScript 电子表格 `
 
@@ -66,7 +66,7 @@
     <html lang="en">
         <head>
             <meta charset="UTF-8">
-            <title>X-Sheet</title>
+            <title>X-WorkBookSheet</title>
             <link href="XSheet.css" rel="stylesheet">
             <style>
                 * {
