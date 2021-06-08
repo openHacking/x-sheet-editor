@@ -1,4 +1,4 @@
-## **x-sheet for px browser**
+## **x-sheet for pc browser**
 
 ###### `高性能 web javaScript 电子表格 `
 
