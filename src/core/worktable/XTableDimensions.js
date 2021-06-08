@@ -804,6 +804,16 @@ class XTableDimensions extends Widget {
   }
 
   /**
+   * 获取表格数据
+   * @returns {XTableDataItems}
+   */
+  getTableData() {
+    const { xTableStyle } = this;
+    const { xTableData } = xTableStyle;
+    return xTableData;
+  }
+
+  /**
    * 获取表格单元格
    * @returns {Cells}
    */

@@ -1,6 +1,6 @@
 import { XTableDataItem } from './XTableDataItem';
-import { PlainUtils } from '../../utils/PlainUtils';
 import { Cell } from './tablecell/Cell';
+import { PlainUtils } from '../../utils/PlainUtils';
 
 class XTableDataItems {
 
@@ -24,6 +24,29 @@ class XTableDataItems {
     return item;
   }
 
+  split(sri, eri, sci, eci) {
+    const rows = this.items.slice(sri, eri + 1);
+    return rows.map((row) => {
+      if (row) {
+        return row.slice(sci, eci + 1);
+      }
+      return row;
+    });
+  }
+
+  set(ri, ci, item) {
+    const line = this.items[ri] || [];
+    line[ci] = item;
+    this.items[ri] = line;
+  }
+
+  setOrNew(ri, ci, item) {
+    const line = this.items[ri];
+    if (line) {
+      line[ci] = item;
+    }
+  }
+
   wrapAll() {
     const { canWrapAll } = this;
     if (canWrapAll) {
@@ -43,16 +66,6 @@ class XTableDataItems {
     }
   }
 
-  set(ri, ci, item) {
-    const line = this.items[ri] || [];
-    line[ci] = item;
-    this.items[ri] = line;
-  }
-
-  getItems() {
-    return this.items;
-  }
-
   get(ri, ci) {
     const line = this.items[ri];
     return line && line[ci]
@@ -60,11 +73,8 @@ class XTableDataItems {
       : undefined;
   }
 
-  setOrNew(ri, ci, item) {
-    const line = this.items[ri];
-    if (line) {
-      line[ci] = item;
-    }
+  getItems() {
+    return this.items;
   }
 
   getOrNew(ri, ci) {

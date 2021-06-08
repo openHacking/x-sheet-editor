@@ -132,22 +132,11 @@ class XlsxImport {
     const { themes, worksheets } = model;
     worksheets.forEach((worksheet, idx) => {
       const { merges = [], cols = [], rows = [], name, views = [] } = worksheet;
-      const xRows = {
-        data: [],
-        len: 100,
-      };
       const xData = [];
-      const xCols = {
-        data: [],
-        len: 25,
-      };
-      const xMerge = {
-        merges,
-      };
-      const xTable = {
-        showGrid: views[0].showGridLines,
-        background: '#ffffff',
-      };
+      const xRows = { data: [], len: 100 };
+      const xMerge = { merges };
+      const xCols = { data: [], len: 25 };
+      const xTable = { showGrid: views[0].showGridLines, background: '#ffffff' };
       // 主题颜色
       const themeXlsx = new Theme();
       const themeXml = themes[`theme${idx + 1}`];

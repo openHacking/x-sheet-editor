@@ -7,21 +7,25 @@ class TextRuler extends BaseRuler {
   }) {
     super({ draw });
     this.text = text;
-  }
-
-  textBreak() {
-    const { text } = this;
-    return text.split(/\n/);
+    if (this.isBlank()) {
+      this.setUsedType(BaseRuler.USED.EMPTY_TEXT);
+    }
   }
 
   isBlank() {
     const { text } = this;
-    return text === null || text === undefined || text.toString().trim() === '';
+    return text === null || text === undefined
+        || text.toString().trim() === '';
   }
 
   hasBreak() {
     const { text } = this;
     return text.indexOf('\n') > -1;
+  }
+
+  textBreak() {
+    const { text } = this;
+    return text.split(/\n/);
   }
 
 }

@@ -62,7 +62,7 @@
     "webpack-cli": "^3.1.0",
     "webpack-dev-server": "^3.1.14",
     "webpack-merge": "^4.1.4",
-    "worker-loader": "^3.0.8"
+    "worker-loader": "^2.0.0"
   },
   "dependencies": {
     "exceljs": "^4.2.1",

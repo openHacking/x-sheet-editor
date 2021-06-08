@@ -18,7 +18,6 @@ class VerticalRuler extends VerticalVisual {
     this.lineHeight = lineHeight;
     this.size = size;
     this.rect = rect;
-    this.used = BaseRuler.USED.DEFAULT_INI;
 
     // 裁剪文本
     this.truncateTextArray = [];
@@ -99,7 +98,7 @@ class VerticalRuler extends VerticalVisual {
     }
     this.truncateTextArray = textArray;
     this.truncateTextHeight = textHeight;
-    this.used = BaseRuler.USED.TRUNCATE;
+    this.setUsedType(BaseRuler.USED.TRUNCATE);
   }
 
   overflowRuler() {
@@ -181,7 +180,7 @@ class VerticalRuler extends VerticalVisual {
     this.textWrapTextWidth = textWidth;
     this.textWrapTextArray = textArray;
     this.textWrapHeightArray = heightArray;
-    this.used = BaseRuler.USED.TEXT_WRAP;
+    this.setUsedType(BaseRuler.USED.TEXT_WRAP);
   }
 
 }

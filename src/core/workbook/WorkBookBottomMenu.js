@@ -5,8 +5,7 @@ import { XEvent } from '../../libs/XEvent';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { XSelectItem } from '../worktable/xscreenitems/xselect/XSelectItem';
 import { Throttle } from '../../libs/Throttle';
-import { Cell } from '../worktable/tablecell/Cell';
-import { AsyncRowIterator } from '../worktable/iterator/asynchronous/AsyncRowIterator';
+import { TotalTask } from '../../task/TotalTask';
 
 class WorkBookBottomMenu extends Widget {
 
@@ -19,9 +18,8 @@ class WorkBookBottomMenu extends Widget {
     this.fullScreen = h('div', `${cssPrefix}-bottom-full-screen`);
     this.grid = h('div', `${cssPrefix}-bottom-grid`);
     this.throttle = new Throttle({ time: 800 });
+    this.totalTask = new TotalTask();
     // 表格数据迭代器
-    this.asyncRowIterator = null;
-    this.asyncColIterator = null;
     this.children(this.grid);
     this.children(this.fullScreen);
     this.children(this.sum);
@@ -31,87 +29,6 @@ class WorkBookBottomMenu extends Widget {
 
   onAttach() {
     this.bind();
-  }
-
-  computer() {
-    const { workBottom } = this;
-    const { work } = workBottom;
-    const { body } = work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    const { xScreen, xIteratorBuilder } = table;
-    const merges = table.getTableMerges();
-    const cells = table.getTableCells();
-    const xSelect = xScreen.findType(XSelectItem);
-    const { selectRange } = xSelect;
-    if (selectRange) {
-      // 性能杀手(后续优化)
-      const { sri, sci, eri, eci } = selectRange;
-      let number = 0;
-      let total = 0;
-      let finish = () => {
-        if (this.asyncRowIterator.status === AsyncRowIterator.STATUS.FINISH) {
-          if (this.asyncColIterator.status === AsyncRowIterator.STATUS.FINISH) {
-            if (number > 0) {
-              let avg = total / number;
-              this.setNumber(number);
-              this.setAvg(avg.toFixed(2));
-              this.setSum(total.toFixed(2));
-            } else {
-              this.setSum(0);
-              this.setAvg(0);
-              this.setNumber(0);
-            }
-          }
-        }
-      };
-      if (this.asyncRowIterator) {
-        this.asyncRowIterator.stop();
-      }
-      if (this.asyncColIterator) {
-        this.asyncColIterator.stop();
-      }
-      this.setSum('...');
-      this.setAvg('...');
-      this.setNumber('...');
-      this.asyncRowIterator = xIteratorBuilder.getAsyncRowIterator()
-        .setBegin(sri)
-        .setEnd(eri)
-        .setLoop((ri) => {
-          this.asyncColIterator = xIteratorBuilder.getAsyncColIterator()
-            .setBegin(sci)
-            .setEnd(eci)
-            .setLoop((ci) => {
-              const merge = merges.getFirstIncludes(ri, ci);
-              if (merge) {
-                if (merge.sri !== ri || merge.sci !== ci) {
-                  return;
-                }
-              }
-              const cell = cells.getCell(ri, ci);
-              if (cell) {
-                const { text, contentType } = cell;
-                if (contentType === Cell.CONTENT_TYPE.NUMBER) {
-                  number += 1;
-                  total += text;
-                }
-              }
-            })
-            .setFinish(() => {
-              finish();
-            })
-            .execute();
-        })
-        .setFinish(() => {
-          finish();
-        })
-        .execute();
-    } else {
-      this.setSum(0);
-      this.setAvg(0);
-      this.setNumber(0);
-    }
   }
 
   unbind() {
@@ -156,6 +73,32 @@ class WorkBookBottomMenu extends Widget {
       table.settings.table.showGrid = !table.settings.table.showGrid;
       table.render();
     });
+  }
+
+  async computer() {
+    const { totalTask, workBottom } = this;
+    const { work } = workBottom;
+    const { body } = work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const data = table.getTableData();
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    if (selectRange) {
+      this.setSum('...');
+      this.setAvg('...');
+      this.setNumber('...');
+      const { total, avg, number } = await totalTask.execute(selectRange, data);
+      this.setSum(total);
+      this.setAvg(avg);
+      this.setNumber(number);
+    } else {
+      this.setSum(0);
+      this.setAvg(0);
+      this.setNumber(0);
+    }
   }
 
   setSum(val) {

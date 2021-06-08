@@ -18,7 +18,6 @@ class HorizonRuler extends HorizonVisual {
     this.size = size;
     this.rect = rect;
     this.lineHeight = lineHeight;
-    this.used = BaseRuler.USED.DEFAULT_INI;
 
     // 裁剪文本
     this.truncateText = '';
@@ -83,7 +82,7 @@ class HorizonRuler extends HorizonVisual {
     this.truncateTextAscent = ascent;
     this.truncateTextWidth = width;
     this.truncateTextHeight = height;
-    this.used = BaseRuler.USED.TRUNCATE;
+    this.setUsedType(BaseRuler.USED.TRUNCATE);
   }
 
   overflowRuler() {
@@ -94,7 +93,7 @@ class HorizonRuler extends HorizonVisual {
     this.overflowTextAscent = ascent;
     this.overflowTextWidth = width;
     this.overflowTextHeight = height;
-    this.used = BaseRuler.USED.OVER_FLOW;
+    this.setUsedType(BaseRuler.USED.OVER_FLOW);
   }
 
   textWrapRuler() {
@@ -175,7 +174,7 @@ class HorizonRuler extends HorizonVisual {
     }
     this.textWrapTextArray = textArray;
     this.textWrapTextHeight = textHeight;
-    this.used = BaseRuler.USED.TEXT_WRAP;
+    this.setUsedType(BaseRuler.USED.TEXT_WRAP);
   }
 
 }

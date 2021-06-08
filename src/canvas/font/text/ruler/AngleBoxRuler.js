@@ -102,7 +102,7 @@ class AngleBoxRuler extends TextRuler {
     this.overflowTextAscent = ascent;
     this.overflowBlockWidth = blockWidth;
     this.overflowBlockHeight = blockHeight;
-    this.used = BaseRuler.USED.OVER_FLOW;
+    this.setUsedType(BaseRuler.USED.OVER_FLOW);
   }
 
   textWrapRuler() {
@@ -404,7 +404,7 @@ class AngleBoxRuler extends TextRuler {
       this.textWrapTextWidth = maxTextWidth;
       this.textWrapTextHeight = maxTextHeight;
     }
-    this.used = BaseRuler.USED.TEXT_WRAP;
+    this.setUsedType(BaseRuler.USED.TEXT_WRAP);
   }
 
 }
