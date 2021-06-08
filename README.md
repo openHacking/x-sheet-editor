@@ -1,6 +1,6 @@
-## **X-WorkBookSheet For Pc Browser**
+## **x-sheet for px browser**
 
-###### `高性能 Web JavaScript 电子表格 `
+###### `高性能 web javaScript 电子表格 `
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/0710/212501_7fdc3522_1908036.png "screencapture-file-Users-jerry-Desktop-JavaScript-x-sheet-dist-calendar-2019-html-2020-07-10-21_20_41.png")
 
