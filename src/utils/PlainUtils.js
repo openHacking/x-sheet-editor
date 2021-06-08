@@ -353,6 +353,13 @@ class PlainUtils {
     return JSON.stringify(src) === JSON.stringify(target);
   }
 
+  static toFixed(num, fixed) {
+    if (num.toString().indexOf(".") > -1) {
+      return num.toFixed(fixed);
+    }
+    return num;
+  }
+
   static safeValue(value, defaultValue = '') {
     return PlainUtils.isUnDef(value) ? defaultValue : value;
   }

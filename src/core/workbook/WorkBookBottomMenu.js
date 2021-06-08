@@ -91,9 +91,9 @@ class WorkBookBottomMenu extends Widget {
       this.setAvg('...');
       this.setNumber('...');
       const { total, avg, number } = await totalTask.execute(selectRange, data);
-      this.setSum(total);
-      this.setAvg(avg);
-      this.setNumber(number);
+      this.setSum(PlainUtils.toFixed(total, 2));
+      this.setAvg(PlainUtils.toFixed(avg, 2));
+      this.setNumber(PlainUtils.toFixed(number, 2));
     } else {
       this.setSum(0);
       this.setAvg(0);
