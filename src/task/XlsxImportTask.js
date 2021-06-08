@@ -4,6 +4,7 @@ class XlsxImportTask extends BaseTask {
 
   constructor() {
     super();
+    this.worker = null;
   }
 
   async execute() {
@@ -17,5 +18,5 @@ class XlsxImportTask extends BaseTask {
 }
 
 export {
-  XlsxImportTask
-}
+  XlsxImportTask,
+};
