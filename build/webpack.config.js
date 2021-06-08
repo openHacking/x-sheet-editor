@@ -53,7 +53,7 @@ module.exports = {
           loader: 'worker-loader',
           options: {
             inline: true,
-            name: '[name].worker.js'
+            name: '[name].js'
           },
         }, {
             loader: 'babel-loader'

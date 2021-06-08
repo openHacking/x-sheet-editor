@@ -5,7 +5,7 @@ import { XEvent } from '../../libs/XEvent';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { XSelectItem } from '../worktable/xscreenitems/xselect/XSelectItem';
 import { Throttle } from '../../libs/Throttle';
-import { TotalTask } from '../../task/TotalTask';
+import { SumTotalTask } from '../../task/SumTotalTask';
 
 class WorkBookBottomMenu extends Widget {
 
@@ -18,7 +18,7 @@ class WorkBookBottomMenu extends Widget {
     this.fullScreen = h('div', `${cssPrefix}-bottom-full-screen`);
     this.grid = h('div', `${cssPrefix}-bottom-grid`);
     this.throttle = new Throttle({ time: 800 });
-    this.totalTask = new TotalTask();
+    this.totalTask = new SumTotalTask();
     // 表格数据迭代器
     this.children(this.grid);
     this.children(this.fullScreen);
