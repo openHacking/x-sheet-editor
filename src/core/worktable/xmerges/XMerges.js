@@ -61,8 +61,7 @@ class XMerges {
 
   union(view) {
     const { top, right, left, bottom } = view.brink();
-    let find = null;
-    // 上边扫描
+    let find;
     top.each(this.xIteratorBuilder, (ri, ci) => {
       const item = this.getFirstIncludes(ri, ci);
       if (PlainUtils.isUnDef(item)) {
@@ -77,7 +76,6 @@ class XMerges {
     if (find) {
       return this.union(find.union(view));
     }
-    // 右边扫描
     right.each(this.xIteratorBuilder, (ri, ci) => {
       const item = this.getFirstIncludes(ri, ci);
       if (PlainUtils.isUnDef(item)) {
@@ -92,7 +90,6 @@ class XMerges {
     if (find) {
       return this.union(find.union(view));
     }
-    // 左边扫描
     left.each(this.xIteratorBuilder, (ri, ci) => {
       const item = this.getFirstIncludes(ri, ci);
       if (PlainUtils.isUnDef(item)) {
@@ -107,7 +104,6 @@ class XMerges {
     if (find) {
       return this.union(find.union(view));
     }
-    // 底边扫描
     bottom.each(this.xIteratorBuilder, (ri, ci) => {
       const item = this.getFirstIncludes(ri, ci);
       if (PlainUtils.isUnDef(item)) {
