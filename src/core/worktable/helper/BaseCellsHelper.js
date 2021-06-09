@@ -271,7 +271,9 @@ class BaseCellsHelper {
         if (blank === false) {
           const { textWrap } = fontAttr;
           if (textWrap === BaseFont.TEXT_WRAP.OVER_FLOW) {
-            if (contentWidth === 0 || contentWidth > width || (ruler === null || ruler.rect.width !== width)) {
+            if (contentWidth === 0
+                || contentWidth > width
+                || (ruler === null || ruler.rect.width !== width)) {
               const maxWidth = this.getHorizontalMaxWidth(ri, ci, cell);
               return new Rect({
                 x: x + maxWidth.offset, y, width: maxWidth.width, height,

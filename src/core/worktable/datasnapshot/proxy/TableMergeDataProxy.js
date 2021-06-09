@@ -1,5 +1,6 @@
 import { DataProxy } from '../DataProxy';
 import { Constant } from '../../../../const/Constant';
+import { RectRange } from '../../tablebase/RectRange';
 
 class TableMergeDataProxy extends DataProxy {
 
@@ -17,8 +18,9 @@ class TableMergeDataProxy extends DataProxy {
     this.change = true;
     const { snapshot } = this;
     const { merges } = snapshot;
-    merges.getIncludes(merge, merge => this.deleteMerge(merge));
-    merges.add(merge, false);
+    const { lt } = merge.point();
+    merges.getIncludes(lt, merge => this.deleteMerge(merge));
+    merges.add(merge);
   }
 
   $deleteMerge(merge) {

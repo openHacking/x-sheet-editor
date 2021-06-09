@@ -288,6 +288,19 @@ class RectRange {
   }
 
   /**
+   * 方位点
+   * @returns {{rb: RectRange, rt: RectRange, lb: RectRange, lt: RectRange}}
+   */
+  point() {
+    const { sri, eri, sci, eci } = this;
+    const lt = new RectRange(sri, sci, sri, sci);
+    const rt = new RectRange(sri, eci, sri, eci);
+    const lb = new RectRange(eri, sci, eri, sci);
+    const rb = new RectRange(eri, eci, eri, eci);
+    return { lt, rt, lb, rb };
+  }
+
+  /**
    * equals
    * @param {RectRange} other 区域
    * @returns {boolean}

@@ -549,7 +549,7 @@ const settings = {
     gridColor: 'rgb(225,225,225)',
   },
   rows: {
-    len: 1000,
+    len: 1000000,
     height: 30,
     data: [],
   },

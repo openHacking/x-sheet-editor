@@ -5,52 +5,58 @@ import { XMergesNoCol } from './XMergesNoCol';
 import { XMergesRange } from './XMergesRange';
 import { PlainUtils } from '../../../utils/PlainUtils';
 import { RectRange } from '../tablebase/RectRange';
+import { XMergesPool } from './XMergesPool';
 
 class XMerges {
 
   constructor({
-    merges = [],
-    xTableData,
-    xIteratorBuilder,
+    merges = [], xTableData, xIteratorBuilder,
   }) {
     this.xMergesNoRow = new XMergesNoRow();
     this.xMergesNoCol = new XMergesNoCol();
+    this.xMergesPool = new XMergesPool();
     this.xMergesIndex = new XMergesIndex(xTableData);
     this.xMergesItems = new XMergesItems();
     this.xIteratorBuilder = xIteratorBuilder;
     merges.map(merge => RectRange.valueOf(merge)).forEach(view => this.add(view));
   }
 
-  getIncludes(view, notify) {
+  getIncludes(view, cb) {
     view.each(this.xIteratorBuilder, (ri, ci) => {
       const view = this.getFirstIncludes(ri, ci);
       if (view) {
-        notify(view);
+        cb(view);
       }
     });
   }
 
   getFirstIncludes(ri, ci) {
     const point = this.xMergesIndex.get(ri, ci);
-    if (PlainUtils.isUnDef(point)) {
-      return PlainUtils.Undef;
+    if (PlainUtils.isNotUnDef(point)) {
+      const view = this.xMergesItems.get(point);
+      if (PlainUtils.isNotUnDef(view)) {
+        return view.getView();
+      }
     }
-    const view = this.xMergesItems.get(point);
-    if (PlainUtils.isUnDef(view)) {
-      return PlainUtils.Undef;
+    const src = new RectRange(ri, ci, ri, ci);
+    const view = this.xMergesPool.get(src);
+    if (PlainUtils.isNotUnDef(view)) {
+      return view.getView();
     }
-    return this.xMergesItems.get(point).getView();
+    return PlainUtils.Undef;
   }
 
-  add(view) {
-    const sri = this.xMergesNoRow.getNo(view.sri);
-    const sci = this.xMergesNoCol.getNo(view.sci);
-    const eri = this.xMergesNoRow.getNo(view.eri);
-    const eci = this.xMergesNoCol.getNo(view.eci);
-    const point = this.xMergesItems.add(new XMergesRange(sri, sci, eri, eci, view));
-    view.each(this.xIteratorBuilder, (ri, ci) => {
-      this.xMergesIndex.set(ri, ci, point);
+  getAll() {
+    const data = [];
+    this.xMergesItems.getItems().forEach((item) => {
+      if (item) {
+        data.push(item.getView());
+      }
     });
+    this.xMergesPool.getPool().forEach((view) => {
+      data.push(view.getView());
+    });
+    return data;
   }
 
   union(view) {
@@ -119,20 +125,41 @@ class XMerges {
     return view;
   }
 
+  add(view) {
+    const span = view.eri - view.sri;
+    const sri = this.xMergesNoRow.getNo(view.sri);
+    const sci = this.xMergesNoCol.getNo(view.sci);
+    const eri = this.xMergesNoRow.getNo(view.eri);
+    const eci = this.xMergesNoCol.getNo(view.eci);
+    const range = new XMergesRange(sri, sci, eri, eci, view);
+    if (span <= 50000) {
+      const point = this.xMergesItems.add(range);
+      view.each(this.xIteratorBuilder, (ri, ci) => {
+        this.xMergesIndex.set(ri, ci, point);
+      });
+    } else {
+      this.xMergesPool.add(range);
+    }
+  }
+
   delete(view) {
     const point = this.xMergesIndex.get(view.sri, view.sci);
-    view.each(this.xIteratorBuilder, (ri, ci) => {
-      this.xMergesIndex.clear(ri, ci);
-    });
-    this.xMergesItems.clear(point);
+    if (PlainUtils.isNotUnDef(point)) {
+      const full = this.xMergesItems.get(point);
+      if (PlainUtils.isNotUnDef(view)) {
+        const fullView = full.getView();
+        fullView.each(this.xIteratorBuilder, (ri, ci) => { this.xMergesIndex.clear(ri, ci); });
+        this.xMergesItems.clear(point);
+      }
+    } else {
+      this.xMergesPool.delete(view);
+    }
   }
 
   getData() {
     const data = [];
-    this.xMergesItems.getItems().forEach((item) => {
-      if (item) {
-        data.push(item.getView().toString());
-      }
+    this.getAll().forEach((item) => {
+      data.push(item.toString());
     });
     return data;
   }
