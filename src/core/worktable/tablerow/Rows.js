@@ -2,6 +2,7 @@ import { PlainUtils } from '../../../utils/PlainUtils';
 import { ScaleAdapter } from '../tablebase/Scale';
 import { RectRange } from '../tablebase/RectRange';
 import { Row } from './Row';
+import { CacheHeightItems } from './CacheHeightItems';
 
 class Rows {
 
@@ -12,11 +13,12 @@ class Rows {
     xIteratorBuilder,
     data = [],
   }) {
+    this.xIteratorBuilder = xIteratorBuilder;
+    this.cacheItems = new CacheHeightItems();
     this.scaleAdapter = scaleAdapter;
     this.len = len;
     this.data = data;
     this.min = 5;
-    this.xIteratorBuilder = xIteratorBuilder;
     this.height = PlainUtils.minIf(height, this.min);
   }
 
@@ -35,9 +37,9 @@ class Rows {
 
   sectionSumHeight(sri, eri) {
     let total = 0;
-    if (sri > eri) {
-      return total;
-    }
+    if (sri > eri) { return total; }
+    const cache = this.cacheItems.get(sri, eri);
+    if (cache) { return cache; }
     this.xIteratorBuilder.getRowIterator()
       .setBegin(sri)
       .setEnd(eri)
@@ -45,6 +47,7 @@ class Rows {
         total += this.getHeight(i);
       })
       .execute();
+    this.cacheItems.add(sri, eri, total);
     return total;
   }
 
@@ -109,18 +112,19 @@ class Rows {
     return this.height;
   }
 
+  setHeight(ri, height) {
+    const row = this.getOrNew(ri);
+    const { scaleAdapter } = this;
+    row.height = scaleAdapter.back(PlainUtils.minIf(height, this.min));
+    this.cacheItems.clear();
+  }
+
   getData() {
     return this.data;
   }
 
   setData(data) {
     this.data = data;
-  }
-
-  setHeight(ri, height) {
-    const row = this.getOrNew(ri);
-    const { scaleAdapter } = this;
-    row.height = scaleAdapter.back(PlainUtils.minIf(height, this.min));
   }
 
 }

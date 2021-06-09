@@ -354,7 +354,7 @@ class PlainUtils {
   }
 
   static toFixed(num, fixed) {
-    if (num.toString().indexOf(".") > -1) {
+    if (num.toString().indexOf('.') > -1) {
       return num.toFixed(fixed);
     }
     return num;

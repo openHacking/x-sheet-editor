@@ -291,14 +291,12 @@ class TextCellsHelper extends BaseCellsHelper {
     // 计算坐标
     const minSri = Math.min(view.sri, merge.sri);
     const minSci = Math.min(view.sci, merge.sci);
-    let maxSri = Math.max(view.sri, merge.sri);
-    let maxSci = Math.max(view.sci, merge.sci);
-    maxSri -= 1;
-    maxSci -= 1;
+    const maxSri = Math.max(view.sri, merge.sri) - 1;
+    const maxSci = Math.max(view.sci, merge.sci) - 1;
     let x = cols.sectionSumWidth(minSci, maxSci);
     let y = rows.sectionSumHeight(minSri, maxSri);
-    x = view.sci > merge.sci ? x * -1 : x;
-    y = view.sri > merge.sri ? y * -1 : y;
+    x = view.sci > merge.sci ? -x : x;
+    y = view.sri > merge.sri ? -y : y;
     // 计算尺寸
     const height = rows.sectionSumHeight(merge.sri, merge.eri);
     const width = cols.sectionSumWidth(merge.sci, merge.eci);

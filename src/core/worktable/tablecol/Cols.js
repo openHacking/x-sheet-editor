@@ -2,6 +2,7 @@ import { PlainUtils } from '../../../utils/PlainUtils';
 import { ScaleAdapter } from '../tablebase/Scale';
 import { RectRange } from '../tablebase/RectRange';
 import { Col } from './Col';
+import { CacheWidthItems } from './CacheWidthItems';
 
 class Cols {
 
@@ -13,6 +14,7 @@ class Cols {
     xIteratorBuilder,
   }) {
     this.scaleAdapter = scaleAdapter;
+    this.cacheItems = new CacheWidthItems();
     this.len = len;
     this.data = data;
     this.min = 5;
@@ -38,6 +40,8 @@ class Cols {
     if (sci > eci) {
       return total;
     }
+    const cache = this.cacheItems.get(sci, eci);
+    if (cache) { return cache; }
     this.xIteratorBuilder.getColIterator()
       .setBegin(sci)
       .setEnd(eci)
@@ -45,6 +49,7 @@ class Cols {
         total += this.getWidth(i);
       })
       .execute();
+    this.cacheItems.add(sci, eci, total);
     return total;
   }
 
@@ -109,18 +114,19 @@ class Cols {
     return this.width;
   }
 
+  setWidth(i, width) {
+    const col = this.getOrNew(i);
+    const { scaleAdapter } = this;
+    col.width = scaleAdapter.back(PlainUtils.minIf(width, this.min));
+    this.cacheItems.clear();
+  }
+
   getData() {
     return this.data;
   }
 
   setData(data) {
     this.data = data;
-  }
-
-  setWidth(i, width) {
-    const col = this.getOrNew(i);
-    const { scaleAdapter } = this;
-    col.width = scaleAdapter.back(PlainUtils.minIf(width, this.min));
   }
 
 }
