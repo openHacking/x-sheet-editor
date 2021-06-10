@@ -13,7 +13,7 @@ import { XlsxExport } from '../../io/xlsx/XlsxExport';
 import { SelectFile } from '../../libs/SelectFile';
 import { XlsxImport } from '../../io/xlsx/XlsxImport';
 
-class WorkBookTopOption extends Widget {
+class XBookTopOption extends Widget {
 
   constructor(workTop) {
     super(`${cssPrefix}-option`);
@@ -109,4 +109,4 @@ class WorkBookTopOption extends Widget {
 
 }
 
-export { WorkBookTopOption };
+export { XBookTopOption };

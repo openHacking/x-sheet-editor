@@ -9,13 +9,13 @@ import { ScrollBarY } from '../../component/scrollbar/ScrollBarY';
 import { HorizontalLayerElement } from '../../libs/layer/HorizontalLayerElement';
 import { VerticalCenterElement } from '../../libs/layer/center/VerticalCenterElement';
 import { VerticalCenter } from '../../libs/layer/center/VerticalCenter';
-import { WorkBookSheetView } from './WorkBookSheetView';
-import { WorkBookTabView } from './WorkBookTabView';
+import { XWorkSheetView } from './XWorkSheetView';
+import { XWorkTabView } from './XWorkTabView';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { XEvent } from '../../libs/XEvent';
 import { h } from '../../libs/Element';
-import { WorkBookTab } from './WorkBookTab';
-import { WorkBookSheet } from './WorkBookSheet';
+import { XWorkTab } from './XWorkTab';
+import { XWorkSheet } from './XWorkSheet';
 import Download from '../../libs/donwload/Download';
 import { Throttle } from '../../libs/Throttle';
 import { XDraw } from '../../canvas/XDraw';
@@ -24,7 +24,7 @@ const settings = {
   sheets: [],
 };
 
-class WorkBookBody extends Widget {
+class XWorkBody extends Widget {
 
   constructor(work, options) {
     super(`${cssPrefix}-work-body`);
@@ -86,11 +86,11 @@ class WorkBookBody extends Widget {
     this.layerVerticalLayer.children(this.horizontalLayer2Layer);
     this.children(this.layerVerticalLayer);
     // 组件
-    this.sheetView = new WorkBookSheetView();
-    this.tabView = new WorkBookTabView({
+    this.sheetView = new XWorkSheetView();
+    this.tabView = new XWorkTabView({
       onAdd: () => {
-        const tab = new WorkBookTab();
-        const sheet = new WorkBookSheet(tab);
+        const tab = new XWorkTab();
+        const sheet = new XWorkSheet(tab);
         this.addTabSheet({ tab, sheet });
       },
       onSwitch: (tab) => {
@@ -248,8 +248,8 @@ class WorkBookBody extends Widget {
     for (const item of this.sheets) {
       // eslint-disable-next-line no-restricted-syntax
       const { name } = item;
-      const tab = new WorkBookTab(name);
-      const sheet = new WorkBookSheet(tab, item);
+      const tab = new XWorkTab(name);
+      const sheet = new XWorkSheet(tab, item);
       this.addTabSheet({ tab, sheet });
     }
     if (this.tabSheet.length) {
@@ -383,4 +383,4 @@ class WorkBookBody extends Widget {
 
 }
 
-export { WorkBookBody };
+export { XWorkBody };

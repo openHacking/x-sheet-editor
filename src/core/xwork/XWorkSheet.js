@@ -1,5 +1,5 @@
 import { Widget } from '../../libs/Widget';
-import { XTableDimensions } from '../worktable/XTableDimensions';
+import { XTableDimensions } from '../xtable/XTableDimensions';
 import { cssPrefix } from '../../const/Constant';
 import { PlainUtils } from '../../utils/PlainUtils';
 
@@ -9,7 +9,7 @@ const settings = {
   },
 };
 
-class WorkBookSheet extends Widget {
+class XWorkSheet extends Widget {
 
   constructor(tab, options) {
     super(`${cssPrefix}-sheet`);
@@ -25,4 +25,4 @@ class WorkBookSheet extends Widget {
 
 }
 
-export { WorkBookSheet };
+export { XWorkSheet };

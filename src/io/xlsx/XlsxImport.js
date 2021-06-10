@@ -4,8 +4,8 @@ import { ColorPicker } from '../../component/colorpicker/ColorPicker';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { XDraw } from '../../canvas/XDraw';
 import { LINE_TYPE } from '../../canvas/Line';
-import { WorkBookTab } from '../../core/workbook/WorkBookTab';
-import { WorkBookSheet } from '../../core/workbook/WorkBookSheet';
+import { XWorkTab } from '../../core/xwork/XWorkTab';
+import { XWorkSheet } from '../../core/xwork/XWorkSheet';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { ColorArray } from '../../component/colorpicker/colorarray/ColorArray';
 import { HexRgb, Theme, ThemeXml } from './XlsxTheme';
@@ -108,13 +108,13 @@ class XlsxImport {
 
   /**
    * 导入XLSX文件
-   * @param xWorkbook
+   * @param xWork
    * @param file
    * @returns {Promise<void>}
    */
-  static async import(xWorkbook, file) {
+  static async import(xWork, file) {
     // 获取默认的table
-    const defaultSheet = xWorkbook.body.getActiveSheet();
+    const defaultSheet = xWork.body.getActiveSheet();
     const defaultTable = defaultSheet.table;
     // 文件转换
     const buffer = await XlsxImport.fileToBuffer(file);
@@ -122,10 +122,10 @@ class XlsxImport {
     const workbook = new Workbook();
     await workbook.xlsx.load(buffer);
     // work文件属性
-    xWorkbook.options.created = workbook.created;
-    xWorkbook.options.creator = workbook.creator;
-    xWorkbook.options.modified = workbook.modified;
-    xWorkbook.options.lastModifiedBy = workbook.lastModifiedBy;
+    xWork.options.created = workbook.created;
+    xWork.options.creator = workbook.creator;
+    xWork.options.modified = workbook.modified;
+    xWork.options.lastModifiedBy = workbook.lastModifiedBy;
     // 读取sheet表
     const xSheets = [];
     const { model } = workbook;
@@ -334,10 +334,10 @@ class XlsxImport {
       });
     });
     // 绘制sheet表
-    const { body } = xWorkbook;
+    const { body } = xWork;
     xSheets.forEach((xSheet) => {
-      const tab = new WorkBookTab(xSheet.name);
-      const sheet = new WorkBookSheet(tab, xSheet);
+      const tab = new XWorkTab(xSheet.name);
+      const sheet = new XWorkSheet(tab, xSheet);
       body.addTabSheet({
         tab, sheet,
       });

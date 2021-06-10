@@ -1,7 +1,7 @@
 import { Widget } from '../../libs/Widget';
 import { cssPrefix } from '../../const/Constant';
-import { WorkBookTopMenu } from './WorkBookTopMenu';
-import { WorkBookTopOption } from './WorkBookTopOption';
+import { XWorkTopMenu } from './XWorkTopMenu';
+import { XBookTopOption } from './XWorkTopOption';
 import { PlainUtils } from '../../utils/PlainUtils';
 
 const settings = {
@@ -10,7 +10,7 @@ const settings = {
   },
 };
 
-class WorkBookTop extends Widget {
+class XWorkTop extends Widget {
 
   constructor(work, options) {
     super(`${cssPrefix}-work-top`);
@@ -19,8 +19,8 @@ class WorkBookTop extends Widget {
   }
 
   onAttach() {
-    this.option = new WorkBookTopOption(this, this.options.option);
-    this.toolsMenu = new WorkBookTopMenu(this, this.options.menu);
+    this.option = new XBookTopOption(this, this.options.option);
+    this.toolsMenu = new XWorkTopMenu(this, this.options.menu);
     if (this.options.option.show) {
       this.attach(this.option);
     }
@@ -31,4 +31,4 @@ class WorkBookTop extends Widget {
 
 }
 
-export { WorkBookTop };
+export { XWorkTop };

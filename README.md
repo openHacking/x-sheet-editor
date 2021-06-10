@@ -66,7 +66,7 @@
     <html lang="en">
         <head>
             <meta charset="UTF-8">
-            <title>X-WorkBookSheet</title>
+            <title>X-XWorkSheet</title>
             <link href="XSheet.css" rel="stylesheet">
             <style>
                 * {

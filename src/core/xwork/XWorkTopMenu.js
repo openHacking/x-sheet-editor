@@ -25,21 +25,21 @@ import { XEvent } from '../../libs/XEvent';
 import { ElPopUp } from '../../component/elpopup/ElPopUp';
 import { LINE_TYPE } from '../../canvas/Line';
 import { Icon } from './tools/Icon';
-import { Cell } from '../worktable/tablecell/Cell';
+import { Cell } from '../xtable/tablecell/Cell';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { Scale } from './tools/Scale';
 import { BaseFont } from '../../canvas/font/BaseFont';
-import { XSelectItem } from '../worktable/xscreenitems/xselect/XSelectItem';
+import { XSelectItem } from '../xtable/xscreenitems/xselect/XSelectItem';
 import { XDraw } from '../../canvas/XDraw';
 import { Alert } from '../../component/alert/Alert';
-import { XFilter } from '../worktable/xscreenitems/xfilter/XFilter';
-import { XCopyStyle } from '../worktable/xscreenitems/xcopystyle/XCopyStyle';
+import { XFilter } from '../xtable/xscreenitems/xfilter/XFilter';
+import { XCopyStyle } from '../xtable/xscreenitems/xcopystyle/XCopyStyle';
 import { Confirm } from '../../component/confirm/Confirm';
 import { FontAngle } from './tools/FontAngle';
 import { Divider } from './tools/base/Divider';
 import { ColorArray } from '../../component/colorpicker/colorarray/ColorArray';
 
-class WorkBookTopMenu extends Widget {
+class XWorkTopMenu extends Widget {
 
   constructor(workTop) {
     super(`${cssPrefix}-tools-menu`);
@@ -1893,4 +1893,4 @@ class WorkBookTopMenu extends Widget {
 
 }
 
-export { WorkBookTopMenu };
+export { XWorkTopMenu };

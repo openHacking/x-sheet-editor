@@ -1,20 +1,20 @@
 /* global window, document */
 import { cssPrefix, XSheetVersion } from './const/Constant';
-import { WorkBook } from './core/workbook/WorkBook';
+import { XWork } from './core/xwork/XWork';
 import { Widget } from './libs/Widget';
 import { XDraw } from './canvas/XDraw';
 import { h } from './libs/Element';
 import { DragPanel } from './component/dragpanel/DragPanel';
 import { ElPopUp } from './component/elpopup/ElPopUp';
 import { PlainUtils } from './utils/PlainUtils';
-import { RectRange } from './core/worktable/tablebase/RectRange';
+import { RectRange } from './core/xtable/tablebase/RectRange';
 import { BaseFont } from './canvas/font/BaseFont';
-import { XIcon } from './core/worktable/xicon/XIcon';
+import { XIcon } from './core/xtable/xicon/XIcon';
 import { XlsxExport } from './io/xlsx/XlsxExport';
 import { ColorPicker } from './component/colorpicker/ColorPicker';
 import FindDpi from './libs/finddpi/FindDpi';
-import { HeightUnit } from './core/worktable/tableunit/HeightUnit';
-import { WideUnit } from './core/worktable/tableunit/WideUnit';
+import { HeightUnit } from './core/xtable/tableunit/HeightUnit';
+import { WideUnit } from './core/xtable/tableunit/WideUnit';
 import './styles/base.less';
 import './styles/index.less';
 
@@ -50,7 +50,7 @@ class XSheet extends Widget {
     root = h(root);
     root.children(this);
     this.options = PlainUtils.copy({}, settings, options);
-    this.work = new WorkBook(this.options.workConfig);
+    this.work = new XWork(this.options.workConfig);
     this.attach(this.work);
     ElPopUp.setRoot(this);
     DragPanel.setRoot(this);

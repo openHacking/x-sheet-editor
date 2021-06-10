@@ -3,11 +3,11 @@ import { Constant, cssPrefix } from '../../const/Constant';
 import { h } from '../../libs/Element';
 import { XEvent } from '../../libs/XEvent';
 import { PlainUtils } from '../../utils/PlainUtils';
-import { XSelectItem } from '../worktable/xscreenitems/xselect/XSelectItem';
+import { XSelectItem } from '../xtable/xscreenitems/xselect/XSelectItem';
 import { Throttle } from '../../libs/Throttle';
 import { SumTotalTask } from '../../task/SumTotalTask';
 
-class WorkBookBottomMenu extends Widget {
+class XWorkBottomMenu extends Widget {
 
   constructor(workBottom) {
     super(`${cssPrefix}-bottom-menu`);
@@ -120,4 +120,4 @@ class WorkBookBottomMenu extends Widget {
 
 }
 
-export { WorkBookBottomMenu };
+export { XWorkBottomMenu };

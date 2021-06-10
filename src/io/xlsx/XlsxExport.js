@@ -4,7 +4,7 @@ import { XDraw } from '../../canvas/XDraw';
 import { ColorPicker } from '../../component/colorpicker/ColorPicker';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { PlainUtils } from '../../utils/PlainUtils';
-import { Cell } from '../../core/worktable/tablecell/Cell';
+import { Cell } from '../../core/xtable/tablecell/Cell';
 import { LINE_TYPE } from '../../canvas/Line';
 import Download from '../../libs/donwload/Download';
 import { SelectFile } from '../../libs/SelectFile';

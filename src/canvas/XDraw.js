@@ -1,4 +1,5 @@
 /* global window */
+
 let DPR = window.devicePixelRatio || 1;
 let LINE_WIDTH_LOW = Math.round(DPR);
 let LINE_WIDTH_MEDIUM = LINE_WIDTH_LOW + 2;

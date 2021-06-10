@@ -2,9 +2,9 @@ import { Widget } from '../../libs/Widget';
 import { cssPrefix } from '../../const/Constant';
 import { VerticalLayer } from '../../libs/layer/VerticalLayer';
 import { VerticalLayerElement } from '../../libs/layer/VerticalLayerElement';
-import { WorkBookTop } from './WorkBookTop';
-import { WorkBookBody } from './WorkBookBody';
-import { WorkBookBottom } from './WorkBookBottom';
+import { XWorkTop } from './XWorkTop';
+import { XWorkBody } from './XWorkBody';
+import { XWorkBottom } from './XWorkBottom';
 import { PlainUtils } from '../../utils/PlainUtils';
 
 const settings = {
@@ -30,7 +30,7 @@ const settings = {
   },
 };
 
-class WorkBook extends Widget {
+class XWork extends Widget {
 
   constructor(options) {
     super(`${cssPrefix}-work`);
@@ -55,9 +55,9 @@ class WorkBook extends Widget {
     const { options, bodyLayer, topLayer, bottomLayer } = this;
     this.root = element;
     // 组件
-    this.top = new WorkBookTop(this, this.options.top);
-    this.body = new WorkBookBody(this, this.options.body);
-    this.bottom = new WorkBookBottom(this);
+    this.top = new XWorkTop(this, this.options.top);
+    this.body = new XWorkBody(this, this.options.body);
+    this.bottom = new XWorkBottom(this);
     topLayer.attach(this.top);
     if (options.bottom.show) {
       bottomLayer.attach(this.bottom);
@@ -70,4 +70,4 @@ class WorkBook extends Widget {
 
 }
 
-export { WorkBook };
+export { XWork };

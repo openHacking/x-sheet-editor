@@ -1,7 +1,7 @@
 import { Widget } from '../../libs/Widget';
 import { cssPrefix } from '../../const/Constant';
 
-class WorkBookSheetView extends Widget {
+class XWorkSheetView extends Widget {
 
   constructor() {
     super(`${cssPrefix}-sheet-view`);
@@ -42,4 +42,4 @@ class WorkBookSheetView extends Widget {
 
 }
 
-export { WorkBookSheetView };
+export { XWorkSheetView };

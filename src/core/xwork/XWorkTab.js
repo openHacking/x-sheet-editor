@@ -3,7 +3,7 @@ import { cssPrefix } from '../../const/Constant';
 
 let number = 1;
 
-class WorkBookTab extends Widget {
+class XWorkTab extends Widget {
 
   constructor(name = `Sheet${number}`) {
     super(`${cssPrefix}-sheet-tab`);
@@ -18,4 +18,4 @@ class WorkBookTab extends Widget {
 
 }
 
-export { WorkBookTab };
+export { XWorkTab };

@@ -1,8 +1,8 @@
 import { Widget } from '../../libs/Widget';
 import { cssPrefix } from '../../const/Constant';
-import { WorkBookBottomMenu } from './WorkBookBottomMenu';
+import { XWorkBottomMenu } from './XWorkBottomMenu';
 
-class WorkBookBottom extends Widget {
+class XWorkBottom extends Widget {
 
   constructor(work) {
     super(`${cssPrefix}-work-bottom`);
@@ -10,10 +10,10 @@ class WorkBookBottom extends Widget {
   }
 
   onAttach() {
-    this.bottomMenu = new WorkBookBottomMenu(this);
+    this.bottomMenu = new XWorkBottomMenu(this);
     this.attach(this.bottomMenu);
   }
 
 }
 
-export { WorkBookBottom };
+export { XWorkBottom };
