@@ -1,13 +1,13 @@
 /* global FileReader */
 import { Workbook } from 'exceljs';
-import { ColorPicker } from '../../component/colorpicker/ColorPicker';
+import { ColorPicker } from '../../module/colorpicker/ColorPicker';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { XDraw } from '../../canvas/XDraw';
 import { LINE_TYPE } from '../../canvas/Line';
 import { XWorkTab } from '../../core/xwork/XWorkTab';
 import { XWorkSheet } from '../../core/xwork/XWorkSheet';
 import { PlainUtils } from '../../utils/PlainUtils';
-import { ColorArray } from '../../component/colorpicker/colorarray/ColorArray';
+import { ColorArray } from '../../module/colorpicker/colorarray/ColorArray';
 import { HexRgb, Theme, ThemeXml } from './XlsxTheme';
 
 /**

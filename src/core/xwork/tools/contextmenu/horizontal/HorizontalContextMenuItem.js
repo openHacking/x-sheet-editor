@@ -1,4 +1,4 @@
-import { ELContextMenuItem } from '../../../../../component/contextmenu/ELContextMenuItem';
+import { ELContextMenuItem } from '../../../../../module/contextmenu/ELContextMenuItem';
 import { cssPrefix } from '../../../../../const/Constant';
 
 class HorizontalContextMenuItem extends ELContextMenuItem {

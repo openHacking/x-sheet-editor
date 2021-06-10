@@ -1,11 +1,11 @@
-import { ELContextMenu } from '../../../../../../component/contextmenu/ELContextMenu';
+import { ELContextMenu } from '../../../../../../module/contextmenu/ELContextMenu';
 import { cssPrefix, Constant } from '../../../../../../const/Constant';
 import { PlainUtils } from '../../../../../../utils/PlainUtils';
-import { ColorPicker } from '../../../../../../component/colorpicker/ColorPicker';
-import { ColorItem } from '../../../../../../component/colorpicker/colorarray/ColorItem';
+import { ColorPicker } from '../../../../../../module/colorpicker/ColorPicker';
+import { ColorItem } from '../../../../../../module/colorpicker/colorarray/ColorItem';
 import { Icon } from '../../../Icon';
-import { ColorArray } from '../../../../../../component/colorpicker/colorarray/ColorArray';
-import { ELContextMenuDivider } from '../../../../../../component/contextmenu/ELContextMenuDivider';
+import { ColorArray } from '../../../../../../module/colorpicker/colorarray/ColorArray';
+import { ELContextMenuDivider } from '../../../../../../module/contextmenu/ELContextMenuDivider';
 import { BorderColorContextMenuItem } from './BorderColorContextMenuItem';
 import { h } from '../../../../../../libs/Element';
 import { XEvent } from '../../../../../../libs/XEvent';

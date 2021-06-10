@@ -1,4 +1,4 @@
-import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMenu';
+import { ELContextMenu } from '../../../../../module/contextmenu/ELContextMenu';
 import { FontAngleContextMenuItem } from './FontAngleContextMenuItem';
 import { FontAngleDivider } from '../icon/fontangle/FontAngleDivider';
 import { h } from '../../../../../libs/Element';

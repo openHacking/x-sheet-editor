@@ -20,7 +20,8 @@ const DATA_TYPE = {
   AsyncFunction: 11,
   BigInt: 12,
   Symbol: 13,
-  Un: 14,
+  DedicatedWorkerGlobalScope: 14,
+  Un: 0,
 };
 
 class PlainUtils {
@@ -126,6 +127,8 @@ class PlainUtils {
         return DATA_TYPE.BigInt;
       case '[object Symbol]':
         return DATA_TYPE.Symbol;
+      case '[object DedicatedWorkerGlobalScope]':
+        return DATA_TYPE.DedicatedWorkerGlobalScope;
       default:
         return DATA_TYPE.Un;
     }

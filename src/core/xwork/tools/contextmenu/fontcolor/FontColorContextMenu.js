@@ -1,13 +1,13 @@
-import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMenu';
+import { ELContextMenu } from '../../../../../module/contextmenu/ELContextMenu';
 import { cssPrefix, Constant } from '../../../../../const/Constant';
 import { FontColorContextMenuItem } from './FontColorContextMenuItem';
-import { ColorArray } from '../../../../../component/colorpicker/colorarray/ColorArray';
+import { ColorArray } from '../../../../../module/colorpicker/colorarray/ColorArray';
 import { h } from '../../../../../libs/Element';
-import { ColorItem } from '../../../../../component/colorpicker/colorarray/ColorItem';
-import { ELContextMenuDivider } from '../../../../../component/contextmenu/ELContextMenuDivider';
+import { ColorItem } from '../../../../../module/colorpicker/colorarray/ColorItem';
+import { ELContextMenuDivider } from '../../../../../module/contextmenu/ELContextMenuDivider';
 import { Icon } from '../../Icon';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
-import { ColorPicker } from '../../../../../component/colorpicker/ColorPicker';
+import { ColorPicker } from '../../../../../module/colorpicker/ColorPicker';
 import { XEvent } from '../../../../../libs/XEvent';
 
 class FontColorContextMenu extends ELContextMenu {

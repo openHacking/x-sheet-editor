@@ -1,4 +1,4 @@
-import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMenu';
+import { ELContextMenu } from '../../../../../module/contextmenu/ELContextMenu';
 import { cssPrefix, Constant } from '../../../../../const/Constant';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
 import { TextWrappingIcon1 } from '../icon/textwrapping/TextWrappingIcon1';

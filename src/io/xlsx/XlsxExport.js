@@ -1,7 +1,7 @@
 /* global Blob */
 import { Workbook } from 'exceljs';
 import { XDraw } from '../../canvas/XDraw';
-import { ColorPicker } from '../../component/colorpicker/ColorPicker';
+import { ColorPicker } from '../../module/colorpicker/ColorPicker';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { Cell } from '../../core/xtable/tablecell/Cell';

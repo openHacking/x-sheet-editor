@@ -1,8 +1,8 @@
-import { ELContextMenu } from '../../../../../../component/contextmenu/ELContextMenu';
+import { ELContextMenu } from '../../../../../../module/contextmenu/ELContextMenu';
 import { cssPrefix, Constant } from '../../../../../../const/Constant';
 import { PlainUtils } from '../../../../../../utils/PlainUtils';
 import { BorderTypeContextMenuItem } from './BorderTypeContextMenuItem';
-import { ELContextMenuDivider } from '../../../../../../component/contextmenu/ELContextMenuDivider';
+import { ELContextMenuDivider } from '../../../../../../module/contextmenu/ELContextMenuDivider';
 import { h } from '../../../../../../libs/Element';
 import { BorderIcon1 } from '../../icon/border/BorderIcon1';
 import { BorderIcon2 } from '../../icon/border/BorderIcon2';
@@ -20,7 +20,7 @@ import { XEvent } from '../../../../../../libs/XEvent';
 import { BorderColorContextMenu } from '../bordercolor/BorderColorContextMenu';
 import { LineTypeContextMenu } from '../linetype/LineTypeContextMenu';
 import { LINE_TYPE } from '../../../../../../canvas/Line';
-import { ElPopUp } from '../../../../../../component/elpopup/ElPopUp';
+import { ElPopUp } from '../../../../../../module/elpopup/ElPopUp';
 
 class BorderTypeContextMenu extends ELContextMenu {
 

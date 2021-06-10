@@ -1,6 +1,6 @@
 import { h } from '../../../../../libs/Element';
 import { cssPrefix } from '../../../../../const/Constant';
-import { ELContextMenuItem } from '../../../../../component/contextmenu/ELContextMenuItem';
+import { ELContextMenuItem } from '../../../../../module/contextmenu/ELContextMenuItem';
 import { Icon } from '../../Icon';
 
 const pool = [];

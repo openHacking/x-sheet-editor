@@ -1,7 +1,7 @@
 /**
  * http://ciintelligence.blogspot.com/2012/02/converting-excel-theme-color-and-tint.html
  */
-import { ColorPicker } from '../../component/colorpicker/ColorPicker';
+import { ColorPicker } from '../../module/colorpicker/ColorPicker';
 import { XDraw } from '../../canvas/XDraw';
 import X2JS from '../../libs/xml2json/xml2json';
 

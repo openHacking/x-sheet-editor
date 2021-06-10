@@ -1,4 +1,4 @@
-import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMenu';
+import { ELContextMenu } from '../../../../../module/contextmenu/ELContextMenu';
 import { FontAngleValueContextMenuItem } from './FontAngleValueContextMenuItem';
 import { Constant, cssPrefix } from '../../../../../const/Constant';
 import { XEvent } from '../../../../../libs/XEvent';

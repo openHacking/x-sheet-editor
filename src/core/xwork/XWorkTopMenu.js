@@ -22,7 +22,7 @@ import { Fixed } from './tools/Fixed';
 import { Filter } from './tools/Filter';
 import { Functions } from './tools/Functions';
 import { XEvent } from '../../libs/XEvent';
-import { ElPopUp } from '../../component/elpopup/ElPopUp';
+import { ElPopUp } from '../../module/elpopup/ElPopUp';
 import { LINE_TYPE } from '../../canvas/Line';
 import { Icon } from './tools/Icon';
 import { Cell } from '../xtable/tablecell/Cell';
@@ -31,13 +31,13 @@ import { Scale } from './tools/Scale';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { XSelectItem } from '../xtable/xscreenitems/xselect/XSelectItem';
 import { XDraw } from '../../canvas/XDraw';
-import { Alert } from '../../component/alert/Alert';
+import { Alert } from '../../module/alert/Alert';
 import { XFilter } from '../xtable/xscreenitems/xfilter/XFilter';
 import { XCopyStyle } from '../xtable/xscreenitems/xcopystyle/XCopyStyle';
-import { Confirm } from '../../component/confirm/Confirm';
+import { Confirm } from '../../module/confirm/Confirm';
 import { FontAngle } from './tools/FontAngle';
 import { Divider } from './tools/base/Divider';
-import { ColorArray } from '../../component/colorpicker/colorarray/ColorArray';
+import { ColorArray } from '../../module/colorpicker/colorarray/ColorArray';
 
 class XWorkTopMenu extends Widget {
 

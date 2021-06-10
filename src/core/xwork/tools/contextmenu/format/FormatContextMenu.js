@@ -1,7 +1,7 @@
 import { cssPrefix, Constant } from '../../../../../const/Constant';
-import { ELContextMenu } from '../../../../../component/contextmenu/ELContextMenu';
+import { ELContextMenu } from '../../../../../module/contextmenu/ELContextMenu';
 import { FormatContextMenuItem } from './FormatContextMenuItem';
-import { ELContextMenuDivider } from '../../../../../component/contextmenu/ELContextMenuDivider';
+import { ELContextMenuDivider } from '../../../../../module/contextmenu/ELContextMenuDivider';
 import { PlainUtils } from '../../../../../utils/PlainUtils';
 import { XEvent } from '../../../../../libs/XEvent';
 
