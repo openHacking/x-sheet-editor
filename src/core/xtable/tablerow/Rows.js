@@ -2,7 +2,7 @@ import { PlainUtils } from '../../../utils/PlainUtils';
 import { ScaleAdapter } from '../tablebase/Scale';
 import { RectRange } from '../tablebase/RectRange';
 import { Row } from './Row';
-import { CacheHeightItems } from './CacheHeightItems';
+import { CacheHeight } from './CacheHeight';
 
 class Rows {
 
@@ -14,7 +14,7 @@ class Rows {
     data = [],
   }) {
     this.xIteratorBuilder = xIteratorBuilder;
-    this.cacheItems = new CacheHeightItems();
+    this.cacheHeight = new CacheHeight();
     this.scaleAdapter = scaleAdapter;
     this.len = len;
     this.data = data;
@@ -37,9 +37,33 @@ class Rows {
 
   sectionSumHeight(sri, eri) {
     let total = 0;
-    if (sri > eri) { return total; }
-    const cache = this.cacheItems.get(sri, eri);
-    if (cache) { return cache; }
+    if (sri > eri) {
+      return total;
+    }
+    const val = this.cacheHeight.get(sri, eri);
+    if (val) {
+      return val;
+    }
+    const items = this.cacheHeight.getItems(sri);
+    if (items) {
+      if (items.min < eri) {
+        this.xIteratorBuilder.getRowIterator()
+          .setBegin(eri)
+          .setEnd(sri)
+          .setLoop((i) => {
+            const val = items.get(i);
+            if (val) {
+              total += val;
+              return false;
+            }
+            total += this.getHeight(i);
+            return true;
+          })
+          .execute();
+        this.cacheHeight.add(sri, eri, total);
+        return total;
+      }
+    }
     this.xIteratorBuilder.getRowIterator()
       .setBegin(sri)
       .setEnd(eri)
@@ -47,7 +71,7 @@ class Rows {
         total += this.getHeight(i);
       })
       .execute();
-    this.cacheItems.add(sri, eri, total);
+    this.cacheHeight.add(sri, eri, total);
     return total;
   }
 
