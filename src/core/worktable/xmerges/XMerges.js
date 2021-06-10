@@ -60,63 +60,83 @@ class XMerges {
   }
 
   union(view) {
-    const { top, right, left, bottom } = view.brink();
-    let find;
-    top.each(this.xIteratorBuilder, (ri, ci) => {
-      const item = this.getFirstIncludes(ri, ci);
-      if (PlainUtils.isUnDef(item)) {
-        return true;
+    const span = view.eri - view.sri;
+    if (span <= 50000) {
+      const { top, right, left, bottom } = view.brink();
+      let find;
+      top.each(this.xIteratorBuilder, (ri, ci) => {
+        const item = this.getFirstIncludes(ri, ci);
+        if (PlainUtils.isUnDef(item)) {
+          return true;
+        }
+        if (view.contains(item)) {
+          return true;
+        }
+        find = item;
+        return false;
+      });
+      if (find) {
+        return this.union(find.union(view));
       }
-      if (view.contains(item)) {
-        return true;
+      right.each(this.xIteratorBuilder, (ri, ci) => {
+        const item = this.getFirstIncludes(ri, ci);
+        if (PlainUtils.isUnDef(item)) {
+          return true;
+        }
+        if (view.contains(item)) {
+          return true;
+        }
+        find = item;
+        return false;
+      });
+      if (find) {
+        return this.union(find.union(view));
       }
-      find = item;
-      return false;
-    });
-    if (find) {
-      return this.union(find.union(view));
-    }
-    right.each(this.xIteratorBuilder, (ri, ci) => {
-      const item = this.getFirstIncludes(ri, ci);
-      if (PlainUtils.isUnDef(item)) {
-        return true;
+      left.each(this.xIteratorBuilder, (ri, ci) => {
+        const item = this.getFirstIncludes(ri, ci);
+        if (PlainUtils.isUnDef(item)) {
+          return true;
+        }
+        if (view.contains(item)) {
+          return true;
+        }
+        find = item;
+        return false;
+      });
+      if (find) {
+        return this.union(find.union(view));
       }
-      if (view.contains(item)) {
-        return true;
+      bottom.each(this.xIteratorBuilder, (ri, ci) => {
+        const item = this.getFirstIncludes(ri, ci);
+        if (PlainUtils.isUnDef(item)) {
+          return true;
+        }
+        if (view.contains(item)) {
+          return true;
+        }
+        find = item;
+        return false;
+      });
+      if (find) {
+        return this.union(find.union(view));
       }
-      find = item;
-      return false;
-    });
-    if (find) {
-      return this.union(find.union(view));
-    }
-    left.each(this.xIteratorBuilder, (ri, ci) => {
-      const item = this.getFirstIncludes(ri, ci);
-      if (PlainUtils.isUnDef(item)) {
-        return true;
+    } else {
+      let find;
+      let all = this.getAll();
+      for (let i = 0, len = all.length; i <= len; i++) {
+        const item = all[i];
+        if (item) {
+          if (item.intersects(view)) {
+            if (!view.contains(item)) {
+              find = item;
+              break;
+            }
+          }
+        }
       }
-      if (view.contains(item)) {
-        return true;
+      if (find) {
+        return this.union(find.union(view));
       }
-      find = item;
-      return false;
-    });
-    if (find) {
-      return this.union(find.union(view));
-    }
-    bottom.each(this.xIteratorBuilder, (ri, ci) => {
-      const item = this.getFirstIncludes(ri, ci);
-      if (PlainUtils.isUnDef(item)) {
-        return true;
-      }
-      if (view.contains(item)) {
-        return true;
-      }
-      find = item;
-      return false;
-    });
-    if (find) {
-      return this.union(find.union(view));
     }
     return view;
   }
