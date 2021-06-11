@@ -1443,6 +1443,17 @@ class XTableDimensions extends Widget {
   }
 
   /**
+   * 重置缓存
+   */
+  recache() {
+    this.rows.clearCache();
+    this.cols.clearCache();
+    this.rowHeightGroupIndex.clear();
+    this.xTableStyle.rows.clearCache();
+    this.xTableStyle.cols.clearCache();
+  }
+
+  /**
    * 渲染静态界面
    */
   render() {

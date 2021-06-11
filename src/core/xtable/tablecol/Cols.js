@@ -75,6 +75,10 @@ class Cols {
     return total;
   }
 
+  clearCache() {
+    this.cacheWidth.clear();
+  }
+
   rectRangeSumWidth(rectRange) {
     if (!rectRange.equals(RectRange.EMPTY)) {
       return this.sectionSumWidth(rectRange.sci, rectRange.eci);

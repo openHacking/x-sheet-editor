@@ -82,6 +82,10 @@ class Rows {
     return 0;
   }
 
+  clearCache() {
+    this.cacheHeight.clear();
+  }
+
   get(ri) {
     let row = this.data[ri];
     if (row) {
