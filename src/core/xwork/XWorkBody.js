@@ -193,8 +193,8 @@ class XWorkBody extends Widget {
         XDraw.refresh();
         const table = this.getActiveTable();
         if (table) {
-          table.reset();
           table.recache();
+          table.reset();
           this.scrollBarLocal();
           this.scrollBarSize();
           table.resize();
