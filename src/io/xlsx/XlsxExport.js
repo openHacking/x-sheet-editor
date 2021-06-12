@@ -13,6 +13,8 @@ import { XMerges } from '../../core/xtable/xmerges/XMerges';
 import { XTableDataItems } from '../../core/xtable/XTableDataItems';
 import { Rows } from '../../core/xtable/tablerow/Rows';
 import { Cols } from '../../core/xtable/tablecol/Cols';
+import { Cells } from '../../core/xtable/tablecell/Cells';
+import { XIteratorBuilder } from '../../core/xtable/iterator/XIteratorBuilder';
 
 function next(i, step = 1) {
   return i + step;
@@ -73,6 +75,9 @@ class XlsxExport {
       });
       const xCols = new Cols(cols);
       const xRows = new Rows(rows);
+      const xCells = new Cells({
+        xTableData, merges: XMerges,
+      });
       // 创建工作表
       const worksheet = workbook.addWorksheet(name);
       // 默认宽高
@@ -93,21 +98,18 @@ class XlsxExport {
       });
       worksheet.columns = sheetColumns;
       // 处理数据
-      let items = xTableData.getItems();
-      let col = 0;
-      let row = 0;
-      while (items.length > 0) {
-        const item = items.shift();
-        if (item) {
-          const height = this.rowHeight(xRows.getOriginHeight(row));
+      const xIteratorBuilder = new XIteratorBuilder();
+      xIteratorBuilder.getRowIterator()
+        .setBegin(0)
+        .setEnd(last(xRows.len))
+        .setLoop((row) => {
           const workRow = worksheet.getRow(next(row));
-          workRow.height = height;
-          col = 0;
-          while (item.length > 0) {
-            const wrap = xTableData.wrap(item, 0);
-            if (wrap) {
-              const element = item.shift();
-              const cell = element.getCell();
+          workRow.height = this.rowHeight(xRows.getOriginHeight(row));
+          xIteratorBuilder.getColIterator()
+            .setBegin(0)
+            .setEnd(last(xCols.len))
+            .setLoop((col) => {
+              const cell = xCells.getCell(row, col);
               if (cell) {
                 const { contentType, background } = cell;
                 const { text, fontAttr, borderAttr } = cell;
@@ -192,14 +194,10 @@ class XlsxExport {
                   };
                 }
               }
-            } else {
-              item.shift();
-            }
-            col++;
-          }
-        }
-        row++;
-      }
+            })
+            .execute();
+        })
+        .execute();
       // 处理合并
       xMerges.getAll()
         .forEach((xMergeRange) => {
