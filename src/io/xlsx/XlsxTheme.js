@@ -1,9 +1,9 @@
 /**
  * http://ciintelligence.blogspot.com/2012/02/converting-excel-theme-color-and-tint.html
  */
+import * as tXml from 'txml';
 import { ColorPicker } from '../../module/colorpicker/ColorPicker';
 import { XDraw } from '../../canvas/XDraw';
-import X2JS from '../../libs/xml2json/xml2json';
 
 function HexRgb(argb) {
   if (argb) {
@@ -178,36 +178,43 @@ class Theme {
 class ThemeXml {
 
   constructor(xml) {
-    this.x2js = new X2JS();
-    this.x2jsPraseResult = this.x2js.xml_str2json(xml);
+    this.nods = tXml.parse(xml) || [];
   }
 
   getThemeList() {
-    const { theme } = this.x2jsPraseResult;
-    const { themeElements } = theme;
-    const { clrScheme } = themeElements;
+    const { nods } = this;
+    const theme = nods.find(node => node.tagName === 'a:theme');
+    const themeElements = theme.children.find(child => child.tagName === 'a:themeElements');
+    const clrScheme = themeElements.children.find(child => child.tagName === 'a:clrScheme');
     const array = [];
     const sort = [
-      'lt1', 'dk1', 'lt2', 'dk2', 'accent1', 'accent2', 'accent3', 'accent4', 'accent5', 'accent6',
+      'a:lt1', 'a:dk1', 'a:lt2', 'a:dk2', 'a:accent1', 'a:accent2', 'a:accent3', 'a:accent4', 'a:accent5', 'a:accent6',
     ];
-    sort.forEach((key) => {
-      const { sysClr, srgbClr } = clrScheme[key];
+    clrScheme.children.forEach((item) => {
+      const { tagName } = item;
+      const sysClr = item.children.find(child => child.tagName === 'a:sysClr');
       if (sysClr) {
-        const { _lastClr } = sysClr;
-        if (_lastClr) {
-          array.push({
-            key,
-            val: _lastClr,
-          });
+        const { attributes } = sysClr;
+        if (attributes) {
+          const { lastClr } = attributes;
+          if (lastClr) {
+            array.push({
+              key: tagName, val: lastClr,
+            });
+          }
         }
-      }
-      if (srgbClr) {
-        const { _val } = srgbClr;
-        if (_val) {
-          array.push({
-            key,
-            val: _val,
-          });
+      } else {
+        const srgbClr = item.children.find(child => child.tagName === 'a:srgbClr');
+        if (srgbClr) {
+          const { attributes } = srgbClr;
+          if (attributes) {
+            const { val } = attributes;
+            if (val) {
+              array.push({
+                key: tagName, val,
+              });
+            }
+          }
         }
       }
     });

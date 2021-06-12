@@ -6,25 +6,28 @@ import { PlainUtils } from '../../utils/PlainUtils';
 import { XSelectItem } from '../xtable/xscreenitems/xselect/XSelectItem';
 import { Throttle } from '../../libs/Throttle';
 import { SumTotalTask } from '../../task/SumTotalTask';
+import { TaskProgress } from '../../module/taskprogress/TaskProgress';
+import { TaskManage } from '../../task/base/TaskManage';
 
 class XWorkBottomMenu extends Widget {
 
   constructor(workBottom) {
     super(`${cssPrefix}-bottom-menu`);
     this.workBottom = workBottom;
+    this.taskProgress = new TaskProgress(TaskManage);
+    this.number = h('div', `${cssPrefix}-bottom-number`);
     this.sum = h('div', `${cssPrefix}-bottom-sum`);
     this.avg = h('div', `${cssPrefix}-bottom-avg`);
-    this.number = h('div', `${cssPrefix}-bottom-number`);
     this.fullScreen = h('div', `${cssPrefix}-bottom-full-screen`);
     this.grid = h('div', `${cssPrefix}-bottom-grid`);
-    this.throttle = new Throttle({ time: 800 });
     this.totalTask = new SumTotalTask();
-    // 表格数据迭代器
+    this.throttle = new Throttle({ time: 800 });
     this.children(this.grid);
     this.children(this.fullScreen);
     this.children(this.sum);
     this.children(this.avg);
     this.children(this.number);
+    this.children(this.taskProgress);
   }
 
   onAttach() {
@@ -87,9 +90,6 @@ class XWorkBottomMenu extends Widget {
     const xSelect = xScreen.findType(XSelectItem);
     const { selectRange } = xSelect;
     if (selectRange) {
-      this.setSum('...');
-      this.setAvg('...');
-      this.setNumber('...');
       const { total, avg, number } = await totalTask.execute(selectRange, data);
       this.setSum(PlainUtils.toFixed(total, 2));
       this.setAvg(PlainUtils.toFixed(avg, 2));

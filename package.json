@@ -66,6 +66,7 @@
   },
   "dependencies": {
     "exceljs": "^4.2.1",
+    "txml": "^4.0.1",
     "opencollective": "^1.0.3",
     "opencollective-postinstall": "^2.0.2"
   }

@@ -1,4 +1,4 @@
-/* global navigator document window */
+/* global navigator document window self */
 function S4() {
   // eslint-disable-next-line no-bitwise
   return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
@@ -105,6 +105,8 @@ class PlainUtils {
     switch (type) {
       case '[object Null]':
         return DATA_TYPE.Null;
+      case '[object Object]':
+        return DATA_TYPE.Object;
       case '[object Undefined]':
         return DATA_TYPE.Undefined;
       case '[object String]':
@@ -365,6 +367,12 @@ class PlainUtils {
 
   static safeValue(value, defaultValue = '') {
     return PlainUtils.isUnDef(value) ? defaultValue : value;
+  }
+
+  static inWorker() {
+    // eslint-disable-next-line no-restricted-globals
+    const type = PlainUtils.type(self);
+    return type === DATA_TYPE.DedicatedWorkerGlobalScope;
   }
 
 }

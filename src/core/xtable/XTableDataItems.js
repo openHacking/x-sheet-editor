@@ -17,11 +17,33 @@ class XTableDataItems {
     const item = new XTableDataItem();
     if (PlainUtils.isString(ele)) {
       item.setCell(new Cell({ text: ele }));
+    } else if (ele && ele.cell) {
+      console.log(ele.cell);
+      item.setCell(new Cell(ele.cell));
     } else {
       item.setCell(new Cell(ele));
     }
     line[ci] = item;
     return item;
+  }
+
+  wrapAll() {
+    const { canWrapAll } = this;
+    if (canWrapAll) {
+      const { items } = this;
+      this.canWrapAll = false;
+      for (let ri = 0, riLen = items.length; ri < riLen; ri++) {
+        const line = items[ri];
+        if (line) {
+          for (let ci = 0, ciLen = line.length; ci < ciLen; ci++) {
+            const item = line[ci];
+            if (item) {
+              this.wrap(line, ci);
+            }
+          }
+        }
+      }
+    }
   }
 
   split(sri, eri, sci, eci) {
@@ -44,25 +66,6 @@ class XTableDataItems {
     const line = this.items[ri];
     if (line) {
       line[ci] = item;
-    }
-  }
-
-  wrapAll() {
-    const { canWrapAll } = this;
-    if (canWrapAll) {
-      const { items } = this;
-      this.canWrapAll = false;
-      for (let ri = 0, riLen = items.length; ri < riLen; ri++) {
-        const line = items[ri];
-        if (line) {
-          for (let ci = 0, ciLen = line.length; ci < ciLen; ci++) {
-            const item = line[ci];
-            if (item) {
-              this.wrap(line, ci);
-            }
-          }
-        }
-      }
     }
   }
 

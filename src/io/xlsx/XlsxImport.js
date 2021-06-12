@@ -4,11 +4,11 @@ import { ColorPicker } from '../../module/colorpicker/ColorPicker';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { XDraw } from '../../canvas/XDraw';
 import { LINE_TYPE } from '../../canvas/Line';
-import { XWorkTab } from '../../core/xwork/XWorkTab';
-import { XWorkSheet } from '../../core/xwork/XWorkSheet';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { ColorArray } from '../../module/colorpicker/colorarray/ColorArray';
 import { HexRgb, Theme, ThemeXml } from './XlsxTheme';
+import { WideUnit } from '../../core/xtable/tableunit/WideUnit';
+import { HeightUnit } from '../../core/xtable/tableunit/HeightUnit';
 
 /**
  * XLSX 文件导入
@@ -16,118 +16,45 @@ import { HexRgb, Theme, ThemeXml } from './XlsxTheme';
 class XlsxImport {
 
   /**
-   * 文件转换ArrayBuffer
-   * @param file
-   * @returns {Promise<ArrayBuffer>}
+   * XlsxImport
    */
-  static async fileToBuffer(file) {
-    return new Promise((resolve) => {
-      let reader = new FileReader();
-      reader.readAsArrayBuffer(file);
-      reader.addEventListener('load', () => {
-        resolve(reader.result);
-      });
+  constructor({
+    xlsx, dpr, unit, dpi,
+  }) {
+    this.xlsx = xlsx;
+    XDraw.refresh(dpr);
+    this.heightUnit = new HeightUnit({
+      dpi,
+    });
+    this.wideUnit = new WideUnit({
+      unit,
     });
   }
 
   /**
-   * 字体大小转换
-   * @param table
-   * @param value
-   */
-  static fontsize(table, value) {
-    const { xTableStyle } = table;
-    const { heightUnit } = xTableStyle;
-    const pixel = heightUnit.getPixel(value);
-    const fontsize = XDraw.srcPx(pixel);
-    return XDraw.ceil(fontsize);
-  }
-
-  /**
-   * 行高转换
-   * @param table
-   * @param value
-   */
-  static rowHeight(table, value) {
-    const { xTableStyle } = table;
-    const { heightUnit } = xTableStyle;
-    const pixel = heightUnit.getPixel(value);
-    return XDraw.srcPx(pixel);
-  }
-
-  /**
-   * 边框类型转换
-   * @param style
-   */
-  static borderType(style) {
-    switch (style) {
-      case 'thin':
-        return {
-          widthType: XDraw.LINE_WIDTH_TYPE.low,
-          type: LINE_TYPE.SOLID_LINE,
-        };
-      case 'medium':
-        return {
-          widthType: XDraw.LINE_WIDTH_TYPE.medium,
-          type: LINE_TYPE.SOLID_LINE,
-        };
-      case 'thick':
-        return {
-          widthType: XDraw.LINE_WIDTH_TYPE.high,
-          type: LINE_TYPE.SOLID_LINE,
-        };
-      case 'dashDot':
-        return {
-          widthType: XDraw.LINE_WIDTH_TYPE.low,
-          type: LINE_TYPE.POINT_LINE,
-        };
-      case 'dotted':
-        return {
-          widthType: XDraw.LINE_WIDTH_TYPE.low,
-          type: LINE_TYPE.DOTTED_LINE,
-        };
-      case 'double':
-        return {
-          widthType: XDraw.LINE_WIDTH_TYPE.low,
-          type: LINE_TYPE.DOUBLE_LINE,
-        };
-    }
-    return 'thick';
-  }
-
-  /**
-   * 列宽转换
-   * @param table
-   * @param value
-   */
-  static colWidth(table, value) {
-    const { xTableStyle } = table;
-    const { wideUnit } = xTableStyle;
-    return wideUnit.getWidePixel(value);
-  }
-
-  /**
    * 导入XLSX文件
-   * @param xWork
-   * @param file
-   * @returns {Promise<void>}
+   * @returns {Promise<{}>}
    */
-  static async import(xWork, file) {
-    // 获取默认的table
-    const defaultSheet = xWork.body.getActiveSheet();
-    const defaultTable = defaultSheet.table;
+  async import() {
+    const xWorkConfig = {
+      created: '',
+      creator: '',
+      modified: '',
+      lastModifiedBy: '',
+      body: {},
+    };
     // 文件转换
-    const buffer = await XlsxImport.fileToBuffer(file);
+    const buffer = await this.buffer();
     // 读取xlsx文件
     const workbook = new Workbook();
     await workbook.xlsx.load(buffer);
     // work文件属性
-    xWork.options.created = workbook.created;
-    xWork.options.creator = workbook.creator;
-    xWork.options.modified = workbook.modified;
-    xWork.options.lastModifiedBy = workbook.lastModifiedBy;
+    xWorkConfig.created = workbook.created;
+    xWorkConfig.creator = workbook.creator;
+    xWorkConfig.modified = workbook.modified;
+    xWorkConfig.lastModifiedBy = workbook.lastModifiedBy;
     // 读取sheet表
-    const xSheets = [];
+    const sheets = [];
     const { model } = workbook;
     const { themes, worksheets } = model;
     worksheets.forEach((worksheet, idx) => {
@@ -149,7 +76,7 @@ class XlsxImport {
       const lastIndex = cols.length - 1;
       cols.forEach((col, idx) => {
         const { min, max, width } = col;
-        const colWidth = this.colWidth(defaultTable, width);
+        const colWidth = this.colWidth(width);
         if (min === max || lastIndex === idx) {
           xCols.data[min - 1] = {
             width: colWidth,
@@ -167,7 +94,7 @@ class XlsxImport {
         const { cells, height, number } = row;
         const rowIndex = number - 1;
         xRows.data[rowIndex] = {
-          height: this.rowHeight(defaultTable, height),
+          height: this.rowHeight(height),
         };
         // 读取数据
         const item = [];
@@ -196,7 +123,7 @@ class XlsxImport {
             const { name, bold, size, italic, underline, strike, color = {} } = font;
             const { theme, tint, argb } = color;
             xCell.fontAttr.name = name;
-            xCell.fontAttr.size = this.fontsize(defaultTable, size);
+            xCell.fontAttr.size = this.fontSize(size);
             xCell.fontAttr.italic = italic;
             xCell.fontAttr.bold = bold;
             xCell.fontAttr.underline = underline;
@@ -322,7 +249,7 @@ class XlsxImport {
       if (xRows.data.length > xRows.len) {
         xRows.len = xRows.data.length;
       }
-      xSheets.push({
+      sheets.push({
         name,
         tableConfig: {
           table: xTable,
@@ -333,15 +260,90 @@ class XlsxImport {
         },
       });
     });
-    // 绘制sheet表
-    const { body } = xWork;
-    xSheets.forEach((xSheet) => {
-      const tab = new XWorkTab(xSheet.name);
-      const sheet = new XWorkSheet(tab, xSheet);
-      body.addTabSheet({
-        tab, sheet,
+    // 返回配置信息
+    xWorkConfig.body.sheets = sheets;
+    return xWorkConfig;
+  }
+
+  /**
+   * 文件转换Buffer
+   * @returns {Promise<ArrayBuffer>}
+   */
+  async buffer() {
+    return new Promise((resolve) => {
+      let reader = new FileReader();
+      reader.readAsArrayBuffer(this.xlsx);
+      reader.addEventListener('load', () => {
+        resolve(reader.result);
       });
     });
+  }
+
+  /**
+   * 字体大小转换
+   * @param value
+   */
+  fontSize(value) {
+    const pixel = this.heightUnit.getPixel(value);
+    const fontSize = XDraw.srcPx(pixel);
+    return XDraw.ceil(fontSize);
+  }
+
+  /**
+   * 列宽转换
+   * @param value
+   */
+  colWidth(value) {
+    return this.wideUnit.getWidePixel(value);
+  }
+
+  /**
+   * 行高转换
+   * @param value
+   */
+  rowHeight(value) {
+    const pixel = this.heightUnit.getPixel(value);
+    return XDraw.srcPx(pixel);
+  }
+
+  /**
+   * 边框类型转换
+   * @param style
+   */
+  borderType(style) {
+    switch (style) {
+      case 'thin':
+        return {
+          widthType: XDraw.LINE_WIDTH_TYPE.low,
+          type: LINE_TYPE.SOLID_LINE,
+        };
+      case 'medium':
+        return {
+          widthType: XDraw.LINE_WIDTH_TYPE.medium,
+          type: LINE_TYPE.SOLID_LINE,
+        };
+      case 'thick':
+        return {
+          widthType: XDraw.LINE_WIDTH_TYPE.high,
+          type: LINE_TYPE.SOLID_LINE,
+        };
+      case 'dashDot':
+        return {
+          widthType: XDraw.LINE_WIDTH_TYPE.low,
+          type: LINE_TYPE.POINT_LINE,
+        };
+      case 'dotted':
+        return {
+          widthType: XDraw.LINE_WIDTH_TYPE.low,
+          type: LINE_TYPE.DOTTED_LINE,
+        };
+      case 'double':
+        return {
+          widthType: XDraw.LINE_WIDTH_TYPE.low,
+          type: LINE_TYPE.DOUBLE_LINE,
+        };
+    }
+    return 'thick';
   }
 
 }

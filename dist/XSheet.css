@@ -1872,6 +1872,38 @@
   margin-right: 20px;
   font-size: 15px;
 }
+@keyframes animate-positive {
+  0% {
+    width: 0;
+  }
+}
+@keyframes progress-bar-stripes {
+  from {
+    background-position: 40px 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+.x-sheet-xwork-task-progress {
+  width: 150px;
+  height: 15px;
+  float: left;
+  margin-top: 7px;
+  margin-left: 7px;
+}
+.x-sheet-xwork-task-progress-bar {
+  height: 100%;
+  font-size: 12px;
+  line-height: 20px;
+  color: #fff;
+  text-align: center;
+  animation: reverse progress-bar-stripes 0.4s linear infinite, animate-positive 2s;
+  background-color: #5cb85c;
+  transition: width 0.6s ease;
+  background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-size: 40px 40px;
+}
 
 
 /*# sourceMappingURL=XSheet.css.map*/

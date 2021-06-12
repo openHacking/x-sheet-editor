@@ -9,50 +9,65 @@ class WideUnit {
   /**
    * WideUnit
    * @param table
+   * @param unit
    * @param fontName
    * @param fontSize
    * @param fontBold
    * @param fontItalic
    */
-  constructor(table, {
+  constructor({
+    table = null,
+    unit = null,
     fontName = 'Arial',
     fontSize = 10,
     fontBold = false,
     fontItalic = false,
   } = {}) {
-    const { draw, heightUnit } = table;
-    // 字体像素
-    const fontPixel = heightUnit.getPixel(fontSize);
-    const srcPixel = XDraw.srcPx(fontPixel);
-    const sizePixel = XDraw.trunc(srcPixel);
-    // 字体样式
-    const bold = `${fontBold ? 'bold' : ''}`;
-    const italic = `${fontItalic ? 'italic' : ''}`;
-    const style = `${italic} ${bold} ${sizePixel}px ${fontName}`;
-    // 度量字体
-    draw.save();
-    draw.attr({
-      font: style.trim(),
-    });
-    let unit = 0;
-    for (let i = 0; i < 10; i++) {
-      const { width } = draw.measureText(i.toString());
-      if (width > unit) {
-        unit = width;
+    if (PlainUtils.isNotUnDef(unit)) {
+      this.unit = unit;
+    } else {
+      const { draw, heightUnit } = table;
+      // 字体像素
+      const fontPixel = heightUnit.getPixel(fontSize);
+      const srcPixel = XDraw.srcPx(fontPixel);
+      const sizePixel = XDraw.trunc(srcPixel);
+      // 字体样式
+      const bold = `${fontBold ? 'bold' : ''}`;
+      const italic = `${fontItalic ? 'italic' : ''}`;
+      const style = `${italic} ${bold} ${sizePixel}px ${fontName}`;
+      // 度量字体
+      draw.save();
+      draw.attr({
+        font: style.trim(),
+      });
+      let unit = 0;
+      for (let i = 0; i < 10; i++) {
+        const { width } = draw.measureText(i.toString());
+        if (width > unit) {
+          unit = width;
+        }
+      }
+      draw.restore();
+      this.unit = unit;
+      // Firefox 好像不准确😓
+      const { type } = PlainUtils.getExplorerInfo();
+      switch (type) {
+        case 'Firefox':
+          this.unit = XDraw.trunc(unit) + 0.22;
+          break;
+        case 'Chrome':
+          this.unit = unit;
+          break;
       }
     }
-    draw.restore();
-    this.unit = unit;
-    // Firefox 好像不准确😓
-    const { type } = PlainUtils.getExplorerInfo();
-    switch (type) {
-      case 'Firefox':
-        this.unit = XDraw.trunc(unit) + 0.22;
-        break;
-      case 'Chrome':
-        this.unit = unit;
-        break;
-    }
+  }
+
+  /**
+   * 获取当前测量单位
+   * @returns {*}
+   */
+  getUnit() {
+    return this.unit;
   }
 
   /**

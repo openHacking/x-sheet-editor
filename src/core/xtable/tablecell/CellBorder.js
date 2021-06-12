@@ -54,19 +54,19 @@ class CellBorder {
   }
 
   setLDisplay(display) {
-    this.left.display = display;
+    this.left.setDisplay(display);
   }
 
   setTDisplay(display) {
-    this.top.display = display;
+    this.top.setDisplay(display);
   }
 
   setRDisplay(display) {
-    this.right.display = display;
+    this.right.setDisplay(display);
   }
 
   setBDisplay(display) {
-    this.bottom.display = display;
+    this.bottom.setDisplay(display);
   }
 
   setAllColor(color) {
@@ -77,19 +77,19 @@ class CellBorder {
   }
 
   setLColor(color) {
-    this.left.color = color;
+    this.left.setColor(color);
   }
 
   setTColor(color) {
-    this.top.color = color;
+    this.top.setColor(color);
   }
 
   setRColor(color) {
-    this.right.color = color;
+    this.right.setColor(color);
   }
 
   setBColor(color) {
-    this.bottom.color = color;
+    this.bottom.setColor(color);
   }
 
   setAllWidthType(widthType) {
@@ -100,19 +100,19 @@ class CellBorder {
   }
 
   setLWidthType(widthType) {
-    this.left.widthType = widthType;
+    this.left.setWidthType(widthType);
   }
 
   setTWidthType(widthType) {
-    this.top.widthType = widthType;
+    this.top.setWidthType(widthType);
   }
 
   setRWidthType(widthType) {
-    this.right.widthType = widthType;
+    this.right.setWidthType(widthType);
   }
 
   setBWidthType(widthType) {
-    this.bottom.widthType = widthType;
+    this.bottom.setWidthType(widthType);
   }
 
   setAllType(type) {
@@ -123,41 +123,35 @@ class CellBorder {
   }
 
   setLType(type) {
-    this.left.type = type;
+    this.left.setType(type);
   }
 
   setTType(type) {
-    this.top.type = type;
+    this.top.setType(type);
   }
 
   setRType(type) {
-    this.right.type = type;
+    this.right.setType(type);
   }
 
   setBType(type) {
-    this.bottom.type = type;
+    this.bottom.setType(type);
   }
 
   updateMaxIndex() {
     const zIndex = Border.getZIndex();
-    this.bottom.zIndex = zIndex;
-    this.left.zIndex = zIndex;
-    this.top.zIndex = zIndex;
-    this.right.zIndex = zIndex;
+    this.left.setZIndex(zIndex);
+    this.bottom.setZIndex(zIndex);
+    this.top.setZIndex(zIndex);
+    this.right.setZIndex(zIndex);
   }
 
   clone() {
     const {
-      left,
-      top,
-      right,
-      bottom,
+      left, top, right, bottom,
     } = this;
     return new CellBorder({
-      left,
-      top,
-      right,
-      bottom,
+      left, top, right, bottom,
     });
   }
 

@@ -1,5 +1,6 @@
 import { Widget } from '../../libs/Widget';
 import { Constant, cssPrefix } from '../../const/Constant';
+import Download from '../../libs/donwload/Download';
 import { h } from '../../libs/Element';
 import { File } from './options/File';
 import { ForMart } from './options/ForMart';
@@ -9,9 +10,13 @@ import { Update } from './options/Update';
 import { XEvent } from '../../libs/XEvent';
 import { ElPopUp } from '../../module/elpopup/ElPopUp';
 import { Alert } from '../../module/alert/Alert';
-import { XlsxExport } from '../../io/xlsx/XlsxExport';
 import { SelectFile } from '../../libs/SelectFile';
-import { XlsxImport } from '../../io/xlsx/XlsxImport';
+import { XlsxImportTask } from '../../task/XlsxImportTask';
+import { XlsxExportTask } from '../../task/XlsxExportTask';
+import { XDraw } from '../../canvas/XDraw';
+import { Confirm } from '../../module/confirm/Confirm';
+import { XWorkTab } from './XWorkTab';
+import { XWorkSheet } from './XWorkSheet';
 
 class XBookTopOption extends Widget {
 
@@ -26,6 +31,8 @@ class XBookTopOption extends Widget {
     this.rightEle = h('div', `${cssPrefix}-option-right`);
     this.leftEle.children(this.logoEle);
     this.rightEle.children(this.titleEle, this.optionsEle);
+    this.xlsxImportTask = new XlsxImportTask();
+    this.xlsxExportTask = new XlsxExportTask();
     this.children(this.leftEle);
     this.children(this.rightEle);
     this.setTitle(this.title);
@@ -40,22 +47,72 @@ class XBookTopOption extends Widget {
     this.file = new File({
       contextMenu: {
         autoClose: false,
-        onUpdate: (item, menu) => {
-          const { work } = workTop;
+        onUpdate: async (item, menu) => {
           const { type } = item;
+          const { work } = workTop;
+          const { body } = work;
+          const { sheetView } = body;
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          const style = table.getXTableStyle();
+          const { wideUnit, heightUnit } = style;
           switch (type) {
             case 1: {
-              this.xlsxSelect.choose().then((file) => {
-                menu.close();
-                if (file) {
-                  XlsxImport.import(work, file).then();
-                }
-              });
+              const file = await this.xlsxSelect.choose();
+              menu.close();
+              if (file) {
+                const dpr = XDraw.dpr();
+                const unit = wideUnit.getUnit();
+                const dpi = heightUnit.getDpi();
+                const result = await this.xlsxImportTask.execute(file, dpr, unit, dpi);
+                new Confirm({
+                  message: '文件解析完成是否导入?',
+                  ok: () => {
+                    const config = result.data;
+                    const { sheets } = config.body;
+                    sheets.forEach((item) => {
+                      const tab = new XWorkTab(item.name);
+                      const sheet = new XWorkSheet(tab, item);
+                      body.addTabSheet({
+                        tab, sheet,
+                      });
+                    });
+                  },
+                }).open();
+              }
               break;
             }
             case 2: {
               menu.close();
-              XlsxExport.export(work).then();
+              const { sheetList } = sheetView;
+              const sheetItems = [];
+              sheetList.forEach((sheet) => {
+                const { table, tab } = sheet;
+                const { rows, cols, settings } = table;
+                const merges = table.getTableMerges();
+                const cells = table.getTableCells();
+                const item = {
+                  name: tab.name,
+                  tableConfig: {
+                    table: {
+                      showGrid: settings.table.showGrid,
+                      background: settings.table.background,
+                    },
+                    merge: merges.getData(),
+                    rows: rows.getData(),
+                    cols: cols.getData(),
+                    data: cells.getData(),
+                  },
+                };
+                sheetItems.push(item);
+              });
+              const options = work.options;
+              const dpr = XDraw.dpr();
+              const unit = wideUnit.getUnit();
+              const dpi = heightUnit.getDpi();
+              const result = await this.xlsxExportTask.execute(options, sheetItems, dpr, unit, dpi);
+              const file = result.data;
+              Download(file, `${options.name}.xlsx`);
               break;
             }
             case 3: {

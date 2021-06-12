@@ -2635,6 +2635,11 @@ class XTableStyle extends Widget {
     this.xIteratorBuilder = xIteratorBuilder;
     // 表格数据配置
     this.xTableData = new XTableDataItems(this.settings.data);
+    this.merges = new XMerges({
+      ...settings.merge,
+      xTableData: this.xTableData,
+      xIteratorBuilder: this.xIteratorBuilder,
+    });
     this.scale = new Scale();
     this.index = new Code({
       scaleAdapter: new ScaleAdapter({
@@ -2658,18 +2663,13 @@ class XTableStyle extends Widget {
       ...this.settings.cols,
     });
     this.cells = new Cells({
+      merges: this.merges,
       onChange: (ri) => {
         const row = this.rows.getOrNew(ri);
         row.reCkHasAngle = true;
       },
-      table: this,
       xTableData: this.xTableData,
       xIteratorBuilder: this.xIteratorBuilder,
-    });
-    this.merges = new XMerges({
-      ...settings.merge,
-      xIteratorBuilder: this.xIteratorBuilder,
-      xTableData: this.xTableData,
     });
     // 固定区域测量
     this.xFixedMeasure = new XFixedMeasure({
@@ -2791,7 +2791,9 @@ class XTableStyle extends Widget {
     this.xTableFixedBar = new XTableFixedBar(this, settings.xFixedBar);
     // xlsx导出时的尺寸单位
     this.heightUnit = new HeightUnit();
-    this.wideUnit = new WideUnit(this);
+    this.wideUnit = new WideUnit({
+      table: this,
+    });
     this.widthUnit = new WidthUnit(this);
   }
 

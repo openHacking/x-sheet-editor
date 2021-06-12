@@ -320,19 +320,9 @@ class XWorkBody extends Widget {
             showGrid: settings.table.showGrid,
             background: settings.table.background,
           },
-          merge: {
-            merges: merges.getData(),
-          },
-          cols: {
-            len: cols.len,
-            width: cols.width,
-            data: cols.getData(),
-          },
-          rows: {
-            len: rows.len,
-            height: rows.height,
-            data: rows.getData(),
-          },
+          merge: merges.getData(),
+          rows: rows.getData(),
+          cols: cols.getData(),
           data: cells.getData(),
         },
       };
@@ -356,19 +346,9 @@ class XWorkBody extends Widget {
             showGrid: settings.table.showGrid,
             background: settings.table.background,
           },
-          merge: {
-            merges: merges.getData(),
-          },
-          cols: {
-            len: cols.len,
-            width: cols.width,
-            data: cols.getData(),
-          },
-          rows: {
-            len: rows.len,
-            height: rows.height,
-            data: rows.getData(),
-          },
+          merge: merges.getData(),
+          rows: rows.getData(),
+          cols: cols.getData(),
           data: cells.getData(),
         },
       };

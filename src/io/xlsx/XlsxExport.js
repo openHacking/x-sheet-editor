@@ -6,8 +6,15 @@ import { BaseFont } from '../../canvas/font/BaseFont';
 import { PlainUtils } from '../../utils/PlainUtils';
 import { Cell } from '../../core/xtable/tablecell/Cell';
 import { LINE_TYPE } from '../../canvas/Line';
-import Download from '../../libs/donwload/Download';
 import { SelectFile } from '../../libs/SelectFile';
+import { HeightUnit } from '../../core/xtable/tableunit/HeightUnit';
+import { WideUnit } from '../../core/xtable/tableunit/WideUnit';
+import { XMerges } from '../../core/xtable/xmerges/XMerges';
+import { XTableDataItems } from '../../core/xtable/XTableDataItems';
+import { Rows } from '../../core/xtable/tablerow/Rows';
+import { Cols } from '../../core/xtable/tablecol/Cols';
+import { Cells } from '../../core/xtable/tablecell/Cells';
+import { XIteratorBuilder } from '../../core/xtable/iterator/XIteratorBuilder';
 
 function next(i, step = 1) {
   return i + step;
@@ -23,127 +30,86 @@ function last(i, step = 1) {
 class XlsxExport {
 
   /**
-   * 像素行高转换
-   * @param table
-   * @param value
-   * @returns {number}
+   * XlsxExport
+   * @param workOptions
+   * @param sheetList
+   * @param dpr
+   * @param unit
+   * @param dpi
    */
-  static rowHeight(table, value) {
-    const { xTableStyle } = table;
-    const { heightUnit } = xTableStyle;
-    const pixel = XDraw.stylePx(value);
-    return heightUnit.getPoint(pixel);
+  constructor({
+    workOptions, sheetList, dpr, unit, dpi,
+  }) {
+    XDraw.refresh(dpr);
+    this.workOptions = workOptions;
+    this.sheetList = sheetList;
+    this.heightUnit = new HeightUnit({
+      dpi,
+    });
+    this.wideUnit = new WideUnit({
+      unit,
+    });
   }
 
   /**
-   * 字体大小转换
-   * @param table
-   * @param value
-   * @returns {number}
+   * 导出XLSX文件
+   * @returns {Promise<Blob>}
    */
-  static fontsize(table, value) {
-    const { xTableStyle } = table;
-    const { heightUnit } = xTableStyle;
-    const pixel = XDraw.stylePx(value);
-    return heightUnit.getPoint(pixel);
-  }
-
-  /**
-   * 像素列宽转换
-   * @param table
-   * @param value
-   * @returns {number}
-   */
-  static colWidth(table, value) {
-    const { xTableStyle } = table;
-    const { wideUnit } = xTableStyle;
-    return XDraw.dpr() > 1
-      ? wideUnit.getPixelNumber(value + 5)
-      : wideUnit.getPixelNumber(value - 5);
-  }
-
-  /**
-   * 边框类型转换
-   * @param value
-   * @param type
-   * @returns {string}
-   */
-  static borderType(value, type) {
-    switch (type) {
-      case LINE_TYPE.SOLID_LINE: {
-        switch (value) {
-          case XDraw.LINE_WIDTH_TYPE.low:
-            return 'thin';
-          case XDraw.LINE_WIDTH_TYPE.medium:
-            return 'medium';
-          case XDraw.LINE_WIDTH_TYPE.high:
-            return 'thick';
-        }
-        break;
-      }
-      case LINE_TYPE.POINT_LINE:
-        return 'dashDot';
-      case LINE_TYPE.DOTTED_LINE: {
-        return 'dotted';
-      }
-      case LINE_TYPE.DOUBLE_LINE:
-        return 'double';
-    }
-    return 'thick';
-  }
-
-  /**
-   * 导出xlsx文件
-   * @param work
-   */
-  static async export(work) {
-    const { sheetView } = work.body;
-    const { sheetList } = sheetView;
+  async export() {
+    const { workOptions, sheetList } = this;
     // 创建工作薄
     const workbook = new Workbook();
-    workbook.created = work.options.created;
-    workbook.creator = work.options.creator;
-    workbook.modified = work.options.modified;
-    workbook.lastModifiedBy = work.options.lastModifiedBy;
+    workbook.created = workOptions.created;
+    workbook.creator = workOptions.creator;
+    workbook.modified = workOptions.modified;
+    workbook.lastModifiedBy = workOptions.lastModifiedBy;
     // 添加工作表
     sheetList.forEach((sheet) => {
-      const { tab, table } = sheet;
-      const { settings, xIteratorBuilder, rows, cols } = table;
-      const merges = table.getTableMerges();
-      const cells = table.getTableCells();
-      const { xMergesItems } = merges;
+      const { name, tableConfig } = sheet;
+      const { table, data } = tableConfig;
+      const { rows, cols, merge } = tableConfig;
+      // 初始化配置数据
+      const xTableData = new XTableDataItems(data);
+      const xMerges = new XMerges({
+        ...merge, xTableData,
+      });
+      const xCols = new Cols(cols);
+      const xRows = new Rows(rows);
+      const xCells = new Cells({
+        xTableData, merges: XMerges,
+      });
       // 创建工作表
-      const worksheet = workbook.addWorksheet(tab.name);
+      const worksheet = workbook.addWorksheet(name);
       // 默认宽高
-      worksheet.defaultRowHeight = this.rowHeight(table, rows.getOriginDefaultHeight());
-      worksheet.defaultColWidth = this.colWidth(table, cols.getOriginDefaultWidth());
+      worksheet.defaultRowHeight = this.rowHeight(xRows.getOriginDefaultHeight());
+      worksheet.defaultColWidth = this.colWidth(xCols.getOriginDefaultWidth());
       // 是否显示网格
       worksheet.views = [{
-        showGridLines: settings.table.showGrid,
+        showGridLines: table.showGrid,
       }];
       // 处理列宽
       const sheetColumns = [];
-      cols.eachWidth(0, last(cols.len), (col) => {
-        const srcWidth = cols.getOriginWidth(col);
-        const colWidth = this.colWidth(table, srcWidth);
+      xCols.eachWidth(0, last(xCols.len), (col) => {
+        const srcWidth = xCols.getOriginWidth(col);
+        const colWidth = this.colWidth(srcWidth);
         sheetColumns.push({
           width: colWidth,
         });
       });
       worksheet.columns = sheetColumns;
       // 处理数据
+      const xIteratorBuilder = new XIteratorBuilder();
       xIteratorBuilder.getRowIterator()
-        .foldOnOff(false)
         .setBegin(0)
-        .setEnd(last(rows.len))
+        .setEnd(last(xRows.len))
         .setLoop((row) => {
           const workRow = worksheet.getRow(next(row));
-          workRow.height = this.rowHeight(table, rows.getOriginHeight(row));
+          workRow.height = this.rowHeight(xRows.getOriginHeight(row));
           xIteratorBuilder.getColIterator()
             .setBegin(0)
-            .setEnd(last(cols.len))
+            .setEnd(last(xCols.len))
             .setLoop((col) => {
-              const cell = cells.getCell(row, col);
+              const cell = xCells.getCell(row, col);
               if (cell) {
                 const { contentType, background } = cell;
                 const { text, fontAttr, borderAttr } = cell;
@@ -166,7 +132,7 @@ class XlsxExport {
                   color: {
                     argb: ColorPicker.parseRgbToHex(fontAttr.color),
                   },
-                  size: this.fontsize(table, fontAttr.size),
+                  size: this.fontSize(fontAttr.size),
                   italic: fontAttr.italic,
                   bold: fontAttr.bold,
                   underline: fontAttr.underline,
@@ -233,24 +199,77 @@ class XlsxExport {
         })
         .execute();
       // 处理合并
-      xMergesItems.getItems()
+      xMerges.getAll()
         .forEach((xMergeRange) => {
-          if (xMergeRange) {
-            const { sri, sci, eri, eci } = xMergeRange;
-            worksheet.mergeCells(
-              next(sri.no),
-              next(sci.no),
-              next(eri.no),
-              next(eci.no),
-            );
-          }
+          const { sri, sci, eri, eci } = xMergeRange;
+          worksheet.mergeCells(
+            next(sri), next(sci), next(eri), next(eci),
+          );
         });
     });
-    // 导出XLSX
+    // 返回文件信息
     const data = await workbook.xlsx.writeBuffer();
-    Download(new Blob([data], {
+    return new Blob([data], {
       type: SelectFile.ACCEPT.XLSX,
-    }), `${work.options.name}.xlsx`);
+    });
+  }
+
+  /**
+   * 字体大小转换
+   * @param value
+   */
+  fontSize(value) {
+    const pixel = XDraw.stylePx(value);
+    return this.heightUnit.getPoint(pixel);
+  }
+
+  /**
+   * 行高转换
+   * @param value
+   */
+  rowHeight(value) {
+    const pixel = XDraw.stylePx(value);
+    return this.heightUnit.getPoint(pixel);
+  }
+
+  /**
+   * 列宽转换
+   * @param value
+   */
+  colWidth(value) {
+    return XDraw.dpr() > 1
+      ? this.wideUnit.getPixelNumber(value + 5)
+      : this.wideUnit.getPixelNumber(value - 5);
+  }
+
+  /**
+   * 边框类型转换
+   * @param value
+   * @param type
+   * @returns {string}
+   */
+  borderType(value, type) {
+    switch (type) {
+      case LINE_TYPE.SOLID_LINE: {
+        switch (value) {
+          case XDraw.LINE_WIDTH_TYPE.low:
+            return 'thin';
+          case XDraw.LINE_WIDTH_TYPE.medium:
+            return 'medium';
+          case XDraw.LINE_WIDTH_TYPE.high:
+            return 'thick';
+        }
+        break;
+      }
+      case LINE_TYPE.POINT_LINE:
+        return 'dashDot';
+      case LINE_TYPE.DOTTED_LINE: {
+        return 'dotted';
+      }
+      case LINE_TYPE.DOUBLE_LINE:
+        return 'double';
+    }
+    return 'thick';
   }
 
 }

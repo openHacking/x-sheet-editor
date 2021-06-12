@@ -3,23 +3,27 @@ import { ScaleAdapter } from '../tablebase/Scale';
 import { RectRange } from '../tablebase/RectRange';
 import { Row } from './Row';
 import { CacheHeight } from './CacheHeight';
+import { XIteratorBuilder } from '../iterator/XIteratorBuilder';
 
 class Rows {
 
   constructor({
     scaleAdapter = new ScaleAdapter(),
+    xIteratorBuilder = new XIteratorBuilder(),
     len = 10,
-    height = 30,
-    xIteratorBuilder,
     data = [],
-  }) {
+    height = 30,
+  } = {}) {
     this.xIteratorBuilder = xIteratorBuilder;
     this.cacheHeight = new CacheHeight();
     this.scaleAdapter = scaleAdapter;
+    this.min = 5;
     this.len = len;
     this.data = data;
-    this.min = 5;
     this.height = PlainUtils.minIf(height, this.min);
+    if (this.data.length > this.len) {
+      this.len = this.data.length;
+    }
   }
 
   eachHeight(ri, ei, cb, sy = 0) {
@@ -140,19 +144,20 @@ class Rows {
     return this.height;
   }
 
+  getData() {
+    return {
+      min: this.min,
+      len: this.len,
+      data: this.data,
+      height: this.height,
+    };
+  }
+
   setHeight(ri, height) {
     const row = this.getOrNew(ri);
     const { scaleAdapter } = this;
     row.height = scaleAdapter.back(PlainUtils.minIf(height, this.min));
-    this.cacheItems.clear();
-  }
-
-  getData() {
-    return this.data;
-  }
-
-  setData(data) {
-    this.data = data;
+    this.clearCache();
   }
 
 }

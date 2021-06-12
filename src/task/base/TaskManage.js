@@ -1,8 +1,11 @@
+import { Listen } from '../../libs/Listen';
+
 class TaskManage {
 
   constructor() {
     this.sleepTasks = [];
     this.activeTasks = [];
+    this.listen = new Listen();
   }
 
   removeTask(task) {
@@ -18,19 +21,30 @@ class TaskManage {
       apply: (target, that, argumentsList) => {
         this.sleepTasks.splice(index, 1);
         this.activeTasks.push(task);
-        index = this.activeTasks.length;
+        index = this.activeTasks.length - 1;
+        this.listen.execute('taskbegin', task);
         return target.apply(that, argumentsList)
           .then((result) => {
             this.activeTasks.splice(index, 1);
             this.sleepTasks.push(task);
-            index = this.sleepTasks.length;
+            index = this.sleepTasks.length - 1;
+            this.listen.execute('taskend', task);
+            if (this.activeTasks.length === 0) {
+              this.listen.execute('taskfinish', task);
+            }
             return result;
           });
       },
     });
     this.sleepTasks.push(task);
-    index = this.sleepTasks.length;
+    index = this.sleepTasks.length - 1;
     return this;
+  }
+
+  destroy() {
+    this.sleepTasks = [];
+    this.activeTasks = [];
+    this.listen.clear();
   }
 
 }

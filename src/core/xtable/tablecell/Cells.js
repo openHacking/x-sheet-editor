@@ -1,5 +1,9 @@
 import { Cell } from './Cell';
 import { PlainUtils } from '../../../utils/PlainUtils';
+import { XIteratorBuilder } from '../iterator/XIteratorBuilder';
+import { XTableDataItems } from '../XTableDataItems';
+import { XMerges } from '../xmerges/XMerges';
+import { XTableDataItem } from '../XTableDataItem';
 
 /**
  * Cells
@@ -7,14 +11,21 @@ import { PlainUtils } from '../../../utils/PlainUtils';
  */
 class Cells {
 
+  /**
+   * Cells
+   * @param xIteratorBuilder
+   * @param xTableData
+   * @param onChange
+   * @param merges
+   */
   constructor({
+    xIteratorBuilder = new XIteratorBuilder(),
+    xTableData = new XTableDataItems([]),
     onChange = () => {},
-    table,
-    xTableData,
-    xIteratorBuilder,
-  }) {
-    this.table = table;
+    merges = new XMerges(),
+  } = {}) {
     this.xTableData = xTableData;
+    this.merges = merges;
     this.onChange = onChange;
     this.xIteratorBuilder = xIteratorBuilder;
   }
@@ -32,20 +43,6 @@ class Cells {
     return empty;
   }
 
-  setCell(ri, ci, cell) {
-    const item = this.xTableData.get(ri, ci);
-    if (item) {
-      item.setCell(cell);
-      this.onChange(ri, ci);
-    }
-  }
-
-  setCellOrNew(ri, ci, cell) {
-    const item = this.xTableData.getOrNew(ri, ci);
-    item.setCell(cell);
-    this.onChange(ri, ci);
-  }
-
   getCellOrNew(ri, ci) {
     const item = this.xTableData.getOrNew(ri, ci);
     const find = item.getCell();
@@ -58,8 +55,7 @@ class Cells {
   }
 
   getCellOrMergeCell(ri, ci) {
-    const { table } = this;
-    const { merges } = table;
+    const { merges } = this;
     const merge = merges.getFirstIncludes(ri, ci);
     if (merge) {
       return this.getCell(merge.sri, merge.sci);
@@ -76,18 +72,21 @@ class Cells {
   }
 
   getData() {
-    this.xTableData.wrapAll();
-    return this.xTableData.getItems().map((rows) => {
-      if (rows) {
-        return rows.map((item) => {
-          if (item) {
-            return item.getCell();
-          }
-          return null;
-        });
-      }
-      return null;
-    });
+    return this.xTableData.getItems();
+  }
+
+  setCell(ri, ci, cell) {
+    const item = this.xTableData.get(ri, ci);
+    if (item) {
+      item.setCell(cell);
+      this.onChange(ri, ci);
+    }
+  }
+
+  setCellOrNew(ri, ci, cell) {
+    const item = this.xTableData.getOrNew(ri, ci);
+    item.setCell(cell);
+    this.onChange(ri, ci);
   }
 
 }

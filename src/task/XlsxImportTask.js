@@ -6,6 +6,19 @@ class XlsxImportTask extends BaseTask {
   constructor() {
     super();
     this.worker = null;
+    this.notice = null;
+  }
+
+  async execute(file, dpr, unit, dpi) {
+    return new Promise((resolve) => {
+      this.resetTask();
+      this.notice = resolve;
+      const { workerFinish } = this;
+      const finish = workerFinish.bind(this);
+      this.worker = new Worker();
+      this.worker.addEventListener('message', finish);
+      this.worker.postMessage({ file, dpr, unit, dpi });
+    });
   }
 
   resetTask() {
@@ -13,19 +26,11 @@ class XlsxImportTask extends BaseTask {
       this.worker.terminate();
     }
     this.worker = null;
+    this.notice = null;
   }
 
   workerFinish(event) {
-
-  }
-
-  async execute(file) {
-    const { workerFinish } = this;
-    const finish = workerFinish.bind(this);
-    this.resetTask();
-    this.worker = new Worker();
-    this.worker.addEventListener('message', finish);
-    this.worker.postMessage(file);
+    this.notice(event);
   }
 
   destroy() {

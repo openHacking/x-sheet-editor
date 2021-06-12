@@ -32,66 +32,46 @@ class Border {
     display = false,
     type = LINE_TYPE.SOLID_LINE,
   }) {
-    this.$zIndex = zIndex;
-    this.$display = display;
-    this.$color = color;
-    this.$type = type;
+    this.zIndex = zIndex;
+    this.display = display;
+    this.color = color;
+    this.type = type;
     if (width === 1) {
-      this.$widthType = XDraw.LINE_WIDTH_TYPE.low;
+      this.widthType = XDraw.LINE_WIDTH_TYPE.low;
     } else if (width === 2) {
-      this.$widthType = XDraw.LINE_WIDTH_TYPE.medium;
+      this.widthType = XDraw.LINE_WIDTH_TYPE.medium;
     } else if (width === 3) {
-      this.$widthType = XDraw.LINE_WIDTH_TYPE.high;
+      this.widthType = XDraw.LINE_WIDTH_TYPE.high;
     } else {
-      this.$widthType = widthType;
+      this.widthType = widthType;
     }
     if (zIndex > zIndexID) {
       zIndexID = zIndex;
     }
   }
 
-  get display() {
-    return this.$display;
+  setWidthType(value) {
+    this.zIndex = Border.getZIndex();
+    this.widthType = value;
   }
 
-  set display(value) {
-    this.$zIndex = Border.getZIndex();
-    this.$display = value;
+  setColor(value) {
+    this.zIndex = Border.getZIndex();
+    this.color = value;
   }
 
-  get widthType() {
-    return this.$widthType;
+  setDisplay(value) {
+    this.zIndex = Border.getZIndex();
+    this.display = value;
   }
 
-  set widthType(value) {
-    this.$zIndex = Border.getZIndex();
-    this.$widthType = value;
+  setType(value) {
+    this.zIndex = Border.getZIndex();
+    this.type = value;
   }
 
-  get color() {
-    return this.$color;
-  }
-
-  set color(value) {
-    this.$zIndex = Border.getZIndex();
-    this.$color = value;
-  }
-
-  get type() {
-    return this.$type;
-  }
-
-  set type(value) {
-    this.$zIndex = Border.getZIndex();
-    this.$type = value;
-  }
-
-  get zIndex() {
-    return this.$zIndex;
-  }
-
-  set zIndex(value) {
-    this.$zIndex = value;
+  setZIndex(value) {
+    this.zIndex = value;
   }
 
   equal(target) {
@@ -99,15 +79,6 @@ class Border {
     const color = this.color === target.color;
     const type = this.type === target.type;
     return color && widthType && type;
-  }
-
-  toJSON() {
-    const zIndex = this.$zIndex;
-    const display = this.$display;
-    const widthType = this.$widthType;
-    const color = this.$color;
-    const type = this.$type;
-    return { zIndex, display, widthType, color, type };
   }
 
   priority(border) {

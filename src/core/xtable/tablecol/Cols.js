@@ -3,23 +3,27 @@ import { ScaleAdapter } from '../tablebase/Scale';
 import { RectRange } from '../tablebase/RectRange';
 import { Col } from './Col';
 import { CacheWidth } from './CacheWidth';
+import { XIteratorBuilder } from '../iterator/XIteratorBuilder';
 
 class Cols {
 
   constructor({
     scaleAdapter = new ScaleAdapter(),
+    xIteratorBuilder = new XIteratorBuilder(),
     len = 10,
     data = [],
     width = 110,
-    xIteratorBuilder,
-  }) {
+  } = {}) {
+    this.xIteratorBuilder = xIteratorBuilder;
     this.scaleAdapter = scaleAdapter;
     this.cacheWidth = new CacheWidth();
+    this.min = 5;
     this.len = len;
     this.data = data;
-    this.min = 5;
-    this.xIteratorBuilder = xIteratorBuilder;
     this.width = PlainUtils.minIf(width, this.min);
+    if (this.data.length > this.len) {
+      this.len = this.data.length;
+    }
   }
 
   eachWidth(ci, ei, cb, sx = 0) {
@@ -140,19 +144,20 @@ class Cols {
     return this.width;
   }
 
+  getData() {
+    return {
+      min: this.min,
+      len: this.len,
+      data: this.data,
+      width: this.width,
+    };
+  }
+
   setWidth(i, width) {
     const col = this.getOrNew(i);
     const { scaleAdapter } = this;
     col.width = scaleAdapter.back(PlainUtils.minIf(width, this.min));
-    this.cacheItems.clear();
-  }
-
-  getData() {
-    return this.data;
-  }
-
-  setData(data) {
-    this.data = data;
+    this.clearCache();
   }
 
 }

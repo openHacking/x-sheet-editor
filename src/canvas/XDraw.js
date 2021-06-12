@@ -1,6 +1,7 @@
 /* global devicePixelRatio */
+import { PlainUtils } from '../utils/PlainUtils';
 
-let DPR = devicePixelRatio || 1;
+let DPR = PlainUtils.inWorker() ? 1 : devicePixelRatio;
 let LINE_WIDTH_LOW = Math.round(DPR);
 let LINE_WIDTH_MEDIUM = LINE_WIDTH_LOW + 2;
 let LINE_WIDTH_HIGH = LINE_WIDTH_MEDIUM + 2;
@@ -40,8 +41,8 @@ class Base {
     return DPR;
   }
 
-  static refresh() {
-    DPR = devicePixelRatio || 1;
+  static refresh(val = 1) {
+    DPR = PlainUtils.inWorker() ? val : devicePixelRatio;
     LINE_WIDTH_LOW = Math.round(DPR);
     LINE_WIDTH_MEDIUM = LINE_WIDTH_LOW + 2;
     LINE_WIDTH_HIGH = LINE_WIDTH_MEDIUM + 2;
