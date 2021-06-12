@@ -192,6 +192,9 @@ class ThemeXml {
     ];
     clrScheme.children.forEach((item) => {
       const { tagName } = item;
+      if (sort.indexOf(tagName) === -1) {
+        return;
+      }
       const sysClr = item.children.find(child => child.tagName === 'a:sysClr');
       if (sysClr) {
         const { attributes } = sysClr;
