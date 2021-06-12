@@ -11,20 +11,22 @@ class XTableDataItems {
 
   wrap(line, ci) {
     const ele = line[ci];
-    if (ele instanceof XTableDataItem) {
-      return ele;
+    if (ele) {
+      if (ele instanceof XTableDataItem) {
+        return ele;
+      }
+      const item = new XTableDataItem();
+      if (PlainUtils.isString(ele)) {
+        item.setCell(new Cell({ text: ele }));
+      } else if (ele && ele.cell) {
+        item.setCell(new Cell(ele.cell));
+      } else {
+        item.setCell(new Cell(ele));
+      }
+      line[ci] = item;
+      return item;
     }
-    const item = new XTableDataItem();
-    if (PlainUtils.isString(ele)) {
-      item.setCell(new Cell({ text: ele }));
-    } else if (ele && ele.cell) {
-      console.log(ele.cell);
-      item.setCell(new Cell(ele.cell));
-    } else {
-      item.setCell(new Cell(ele));
-    }
-    line[ci] = item;
-    return item;
+    return ele;
   }
 
   wrapAll() {
@@ -60,6 +62,17 @@ class XTableDataItems {
     const line = this.items[ri] || [];
     line[ci] = item;
     this.items[ri] = line;
+  }
+
+  clearRi(ri) {
+    this.items[ri] = null;
+  }
+
+  clearCi(ri, ci) {
+    const row = this.items[ri];
+    if (row) {
+      row[ci] = null;
+    }
   }
 
   setOrNew(ri, ci, item) {
