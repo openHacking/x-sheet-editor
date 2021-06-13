@@ -33,13 +33,13 @@ class XCopyStyle extends XScreenSvgBorderItem {
 
   bind() {
     const { table } = this;
-    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT, () => {
       if (this.display) {
         this.offsetHandle();
         this.borderHandle();
       }
     });
-    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH, () => {
       if (this.display) {
         this.offsetHandle();
         this.borderHandle();

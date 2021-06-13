@@ -1,6 +1,5 @@
 import { DataProxy } from '../DataProxy';
 import { Constant } from '../../../../const/Constant';
-import { RectRange } from '../../tablebase/RectRange';
 
 class TableMergeDataProxy extends DataProxy {
 
@@ -30,14 +29,6 @@ class TableMergeDataProxy extends DataProxy {
     merges.delete(merge);
   }
 
-  deleteMerge(merge) {
-    const { option } = this;
-    const { on } = option;
-    const { deleteMerge } = on;
-    this.$deleteMerge(merge);
-    deleteMerge(merge);
-  }
-
   addMerge(merge) {
     const { option } = this;
     const { on } = option;
@@ -46,13 +37,12 @@ class TableMergeDataProxy extends DataProxy {
     addMerge(merge);
   }
 
-  endNotice() {
-    const { snapshot } = this;
-    const { table } = snapshot;
-    if (this.change) {
-      table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-    }
-    super.endNotice();
+  deleteMerge(merge) {
+    const { option } = this;
+    const { on } = option;
+    const { deleteMerge } = on;
+    this.$deleteMerge(merge);
+    deleteMerge(merge);
   }
 
   goNotice() {
@@ -62,6 +52,15 @@ class TableMergeDataProxy extends DataProxy {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
     }
     super.goNotice();
+  }
+
+  endNotice() {
+    const { snapshot } = this;
+    const { table } = snapshot;
+    if (this.change) {
+      table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+    }
+    super.endNotice();
   }
 
   backNotice() {

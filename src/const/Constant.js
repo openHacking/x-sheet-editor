@@ -23,17 +23,18 @@ Constant.SYSTEM_EVENT_TYPE = {
   VISIBILITY_CHANGE: 'visibilitychange',
 };
 Constant.TABLE_EVENT_TYPE = {
-  CHANGE_HEIGHT: 'changeheight',
-  SELECT_OVER: 'selectover',
+  RENDER: 'render',
+  CHANGE_ROW_HEIGHT: 'changerowheight',
+  CHANGE_COL_WIDTH: 'changecolwidth',
   SCALE_CHANGE: 'scalechange',
   FIXED_CHANGE: 'fixedchange',
+  FIXED_COL_CHANGE: 'fixedcolchange',
   FIXED_ROW_CHANGE: 'fixedrowchange',
+  SELECT_OVER: 'selectover',
   SELECT_DOWN: 'selectdown',
   SELECT_CHANGE: 'selectchange',
   DATA_CHANGE: 'datachange',
-  CHANGE_WIDTH: 'changewidth',
   RESIZE_CHANGE: 'resizechange',
-  RENDER: 'render',
 };
 Constant.FORM_EVENT_TYPE = {
   SEARCH_INPUT_CHANGE: 'searchinputchange',

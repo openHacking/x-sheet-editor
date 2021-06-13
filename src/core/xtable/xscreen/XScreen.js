@@ -46,10 +46,10 @@ class XScreen extends Widget {
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, () => {
       this.setZone();
     });
-    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT, () => {
       this.setZone();
     });
-    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH, () => {
       this.setZone();
     });
   }

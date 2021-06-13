@@ -157,7 +157,6 @@ class Cols {
     const col = this.getOrNew(i);
     const { scaleAdapter } = this;
     col.width = scaleAdapter.back(PlainUtils.minIf(width, this.min));
-    this.clearCache();
   }
 
 }

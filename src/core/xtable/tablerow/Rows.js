@@ -157,7 +157,6 @@ class Rows {
     const row = this.getOrNew(ri);
     const { scaleAdapter } = this;
     row.height = scaleAdapter.back(PlainUtils.minIf(height, this.min));
-    this.clearCache();
   }
 
 }

@@ -30,12 +30,22 @@ class TableRowsDataProxy extends DataProxy {
     setHeight(ri, oldHeight, newHeight);
   }
 
+  goNotice() {
+    const { snapshot } = this;
+    const { table } = snapshot;
+    if (this.change) {
+      table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT);
+    }
+    super.goNotice();
+  }
+
   endNotice() {
     const { snapshot } = this;
     const { table } = snapshot;
     if (this.change) {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT);
+      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT);
     }
     super.endNotice();
   }
@@ -45,19 +55,9 @@ class TableRowsDataProxy extends DataProxy {
     const { table } = snapshot;
     if (this.change) {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT);
+      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT);
     }
     super.backNotice();
-  }
-
-  goNotice() {
-    const { snapshot } = this;
-    const { table } = snapshot;
-    if (this.change) {
-      table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT);
-    }
-    super.goNotice();
   }
 }
 

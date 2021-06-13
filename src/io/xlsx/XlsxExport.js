@@ -55,6 +55,12 @@ class XlsxExport {
    */
   async export() {
     const { workOptions, sheetList } = this;
+    // exceljs 在内存中构建xlsx文件
+    // 使得导出时数据量过大就会
+    // 占用大量内存,导致浏览器崩溃
+    // 暂无处理方法, 再想想办法
+    // TODO .....
+    // .....
     // 创建工作薄
     const workbook = new Workbook();
     workbook.created = workOptions.created;

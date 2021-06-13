@@ -45,12 +45,13 @@ class RichDrawTextBuilder {
 
   buildRuler() {
     const { rich, attr, draw, rect, overflow } = this;
-    const { size, angle } = attr;
+    const { name, size, bold, italic, angle } = attr;
     const { padding, textWrap } = attr;
     switch (attr.direction) {
       case BaseFont.TEXT_DIRECTION.HORIZONTAL:
         return new RichHorizonRuler({
-          draw, rich, size, rect, overflow, textWrap, padding
+          draw, rich, rect, overflow,
+          name, size, bold, italic, padding, textWrap,
         });
       case BaseFont.TEXT_DIRECTION.VERTICAL:
         return new RichVerticalRuler({

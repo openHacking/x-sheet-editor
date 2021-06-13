@@ -1151,6 +1151,8 @@ class XTableDimensions extends Widget {
    * onAttach
    */
   onAttach() {
+    // 绑定表格事件
+    this.bind();
     // 注册焦点元素
     this.focus.register({ target: this });
     // 表格渲染组件
@@ -1172,8 +1174,6 @@ class XTableDimensions extends Widget {
     this.attach(this.yReSizer);
     this.attach(this.dropRowFixed);
     this.attach(this.dropColFixed);
-    // 绑定表格事件
-    this.bind();
     // 注册快捷键
     KeyBoardTabCode.register(this);
   }
@@ -1182,11 +1182,22 @@ class XTableDimensions extends Widget {
    * 事件绑定
    */
   bind() {
-    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      this.resize();
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.FIXED_ROW_CHANGE, () => {
+      this.recache();
     });
-    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
-      this.resize();
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.FIXED_COL_CHANGE, () => {
+      this.recache();
+    });
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT, () => {
+      this.recache();
+      this.render();
+    });
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH, () => {
+      this.recache();
+      this.render();
+    });
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
+      this.render();
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       const { x, y } = this.eventXy(e);
@@ -1202,12 +1213,6 @@ class XTableDimensions extends Widget {
         const info = this.getRiCiByXy(x, y);
         this.xIconsEvent(XIcon.ICON_EVENT_TYPE.MOUSE_DOWN, info, e);
       }
-    });
-    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
-      this.rowHeightGroupIndex.clear();
-    });
-    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.FIXED_ROW_CHANGE, () => {
-      this.rowHeightGroupIndex.clear();
     });
   }
 
@@ -1378,6 +1383,7 @@ class XTableDimensions extends Widget {
     // 更新视图
     this.resize();
     // 发送更新通知
+    this.trigger(Constant.TABLE_EVENT_TYPE.FIXED_COL_CHANGE);
     this.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
   }
 

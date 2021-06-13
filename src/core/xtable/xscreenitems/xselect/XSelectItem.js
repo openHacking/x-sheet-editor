@@ -192,12 +192,12 @@ class XSelectItem extends XScreenCssBorderItem {
     const {
       mousePointer, focus,
     } = table;
-    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT, () => {
       this.offsetHandle();
       this.borderHandle();
       this.cornerHandle();
     });
-    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH, () => {
       this.offsetHandle();
       this.borderHandle();
       this.cornerHandle();

@@ -50,19 +50,23 @@ class DrawTextBuilder {
     switch (attr.direction) {
       case BaseFont.TEXT_DIRECTION.HORIZONTAL:
         return new HorizonRuler({
-          draw, text, size, rect, overflow, align, textWrap, padding
+          draw, text, size, rect, overflow,
+          align, textWrap, padding
         });
       case BaseFont.TEXT_DIRECTION.VERTICAL:
         return new VerticalRuler({
-          draw, text, size, rect, overflow, align, textWrap, padding
+          draw, text, size, rect, overflow,
+          align, textWrap, padding
         });
       case BaseFont.TEXT_DIRECTION.ANGLE:
         return new AngleBoxRuler({
-          draw, text, size, angle, rect, overflow, align, textWrap, padding
+          draw, text, rect, overflow,
+          size, angle, align, textWrap, padding
         });
       case BaseFont.TEXT_DIRECTION.ANGLE_BAR:
         return new AngleBarRuler({
-          draw, text, size, angle, rect, overflow, align, textWrap, padding
+          draw, text,rect, overflow,
+          size, angle, align, textWrap, padding
         });
     }
     return null;

@@ -126,11 +126,11 @@ class XWorkBody extends Widget {
   bind() {
     const exploreInfo = PlainUtils.getExplorerInfo();
     const throttle = new Throttle();
-    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_HEIGHT, () => {
+    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT, () => {
       this.scrollBarLocal();
       this.scrollBarSize();
     });
-    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH, () => {
+    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH, () => {
       this.scrollBarLocal();
       this.scrollBarSize();
     });

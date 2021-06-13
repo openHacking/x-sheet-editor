@@ -1,12 +1,11 @@
 import { RichRuler } from '../RichRuler';
 import { BaseRuler } from '../../BaseRuler';
-import { PlainUtils } from '../../../../utils/PlainUtils';
 
 class RichHorizonRuler extends RichRuler {
 
   constructor({
     draw, rich, rect, overflow,
-    name, size, color, bold, italic, padding, textWrap,
+    name, size, bold, italic, padding, textWrap,
     lineHeight = 8, spacing = 6,
   }) {
     super({
@@ -16,13 +15,12 @@ class RichHorizonRuler extends RichRuler {
     this.overflow = overflow;
     this.name = name;
     this.size = size;
-    this.color = color;
     this.bold = bold;
     this.italic = italic;
     this.padding = padding;
     this.textWrap = textWrap;
-    this.lineHeight = lineHeight;
     this.spacing = spacing;
+    this.lineHeight = lineHeight;
     this.used = BaseRuler.USED.DEFAULT_INI;
 
     // 裁剪文本
@@ -42,7 +40,7 @@ class RichHorizonRuler extends RichRuler {
 
   truncateRuler() {
     if (this.used) { return; }
-    const { size, color, name, bold, italic } = this;
+    const { size, name, bold, italic } = this;
     const { spacing } = this;
     const { draw, rich } = this;
     const textArray = [];
@@ -51,8 +49,8 @@ class RichHorizonRuler extends RichRuler {
     let textHeight = 0;
     for (let i = 0, len = rich.length; i < len; i++) {
       const item = rich[i];
-      const attr = PlainUtils.copy({}, {
-        size, name, bold, italic, color,
+      const attr = Object.assign({
+        size, name, bold, italic,
       }, item);
       const fontItalic = `${attr.italic ? 'italic' : ''}`;
       const fontBold = `${attr.bold ? 'bold' : ''}`;
@@ -61,16 +59,10 @@ class RichHorizonRuler extends RichRuler {
       const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
       draw.attr({
         font: fontStyle.trim(),
-        fillStyle: attr.color,
-        strokeStyle: attr.color,
       });
       const { width, height, ascent } = this.textSize(attr.text);
       textArray.push({
-        x: textWidth,
-        y: 0,
-        width,
-        height,
-        ascent,
+        text: attr.text, x: textWidth, y: 0, width, height, ascent,
       });
       if (textHeight < height) {
         textHeight = height;
@@ -89,7 +81,7 @@ class RichHorizonRuler extends RichRuler {
 
   overflowRuler() {
     if (this.used) { return; }
-    const { size, color, name, bold, italic } = this;
+    const { size, name, bold, italic } = this;
     const { spacing } = this;
     const { draw, rich } = this;
     const textArray = [];
@@ -98,8 +90,8 @@ class RichHorizonRuler extends RichRuler {
     let textHeight = 0;
     for (let i = 0, len = rich.length; i < len; i++) {
       const item = rich[i];
-      const attr = PlainUtils.copy({}, {
-        size, name, bold, italic, color,
+      const attr = Object.assign({
+        size, name, bold, italic,
       }, item);
       const fontItalic = `${attr.italic ? 'italic' : ''}`;
       const fontBold = `${attr.bold ? 'bold' : ''}`;
@@ -108,18 +100,10 @@ class RichHorizonRuler extends RichRuler {
       const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
       draw.attr({
         font: fontStyle.trim(),
-        fillStyle: attr.color,
-        strokeStyle: attr.color,
       });
-      const {
-        width, height, ascent,
-      } = this.textSize(attr.text);
+      const { width, height, ascent } = this.textSize(attr.text);
       textArray.push({
-        x: textWidth,
-        y: 0,
-        width,
-        height,
-        ascent,
+        text: attr.text, x: textWidth, y: 0, width, height, ascent,
       });
       if (textHeight < height) {
         textHeight = height;
@@ -130,15 +114,13 @@ class RichHorizonRuler extends RichRuler {
     if (textWidth > 0) {
       textWidth -= spacing;
     }
-    this.overflowText = textArray;
-    this.overflowTextWidth = textWidth;
-    this.overflowTextHeight = textHeight;
+    this.truncateText = textArray;
+    this.truncateTextWidth = textWidth;
+    this.truncateTextHeight = textHeight;
     this.used = BaseRuler.USED.OVER_FLOW;
   }
 
-  textWrapRuler() {
-
-  }
+  textWrapRuler() {}
 
 }
 

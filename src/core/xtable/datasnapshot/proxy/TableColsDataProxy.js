@@ -28,12 +28,22 @@ class TableColsDataProxy extends DataProxy {
     setWidth(ci, oldWidth, newWidth);
   }
 
+  goNotice() {
+    const { snapshot } = this;
+    const { table } = snapshot;
+    if (this.change) {
+      table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH);
+    }
+    super.goNotice();
+  }
+
   endNotice() {
     const { snapshot } = this;
     const { table } = snapshot;
     if (this.change) {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH);
+      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH);
     }
     super.endNotice();
   }
@@ -43,20 +53,11 @@ class TableColsDataProxy extends DataProxy {
     const { table } = snapshot;
     if (this.change) {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH);
+      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH);
     }
     super.backNotice();
   }
 
-  goNotice() {
-    const { snapshot } = this;
-    const { table } = snapshot;
-    if (this.change) {
-      table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_WIDTH);
-    }
-    super.goNotice();
-  }
 }
 
 export { TableColsDataProxy };

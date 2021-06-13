@@ -54,6 +54,7 @@ class TableCellDataProxy extends DataProxy {
     }
     super.backNotice();
   }
+
 }
 
 export {

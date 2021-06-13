@@ -66,7 +66,7 @@ class TableDataSnapshot {
   }
 
   back() {
-    const { backLayerStack, goLayerStack, table } = this;
+    const { backLayerStack, goLayerStack } = this;
     const layer = backLayerStack.pop();
     for (let i = layer.length - 1; i >= 0; i -= 1) {
       const item = layer[i];
@@ -116,11 +116,10 @@ class TableDataSnapshot {
     this.cellDataProxy.backNotice();
     this.colsDataProxy.backNotice();
     this.rowsDataProxy.backNotice();
-    table.render();
   }
 
   go() {
-    const { backLayerStack, goLayerStack, table } = this;
+    const { backLayerStack, goLayerStack } = this;
     const layer = goLayerStack.pop();
     for (let i = 0, len = layer.length; i < len; i += 1) {
       const item = layer[i];
@@ -170,7 +169,6 @@ class TableDataSnapshot {
     this.cellDataProxy.goNotice();
     this.colsDataProxy.goNotice();
     this.rowsDataProxy.goNotice();
-    table.render();
   }
 
   end() {

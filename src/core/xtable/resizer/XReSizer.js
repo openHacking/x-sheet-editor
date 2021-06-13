@@ -65,7 +65,6 @@ class XReSizer extends Widget {
         tableDataSnapshot.begin();
         colsDataProxy.setWidth(ci, scale.back(newLeft));
         tableDataSnapshot.end();
-        table.resize();
       });
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
