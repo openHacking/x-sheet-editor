@@ -828,9 +828,7 @@ class XTableDimensions extends Widget {
    * @returns {*}
    */
   getScrollTotalHeight() {
-    const {
-      xFixedView,
-    } = this;
+    const { xFixedView } = this;
     const { rows } = this;
     let height;
     if (xFixedView.hasFixedTop()) {
@@ -847,9 +845,7 @@ class XTableDimensions extends Widget {
    * @returns {*}
    */
   getScrollTotalWidth() {
-    const {
-      xFixedView,
-    } = this;
+    const { xFixedView } = this;
     const { cols } = this;
     let width;
     if (xFixedView.hasFixedLeft()) {
@@ -983,9 +979,7 @@ class XTableDimensions extends Widget {
     const { xIconBuilder } = this;
     const style = this.getXTableStyle();
     const cells = this.getTableCells();
-    const {
-      fixedCellIcon, staticCellIcon,
-    } = style;
+    const { fixedCellIcon, staticCellIcon } = style;
     const {
       ri, ci, mri, mci, fx, fy, sx, sy,
     } = info;
@@ -1184,17 +1178,19 @@ class XTableDimensions extends Widget {
   bind() {
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.FIXED_ROW_CHANGE, () => {
       this.recache();
+      this.resize();
     });
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.FIXED_COL_CHANGE, () => {
       this.recache();
+      this.resize();
     });
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT, () => {
       this.recache();
-      this.render();
+      this.resize();
     });
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH, () => {
       this.recache();
-      this.render();
+      this.resize();
     });
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
       this.render();
@@ -1238,9 +1234,7 @@ class XTableDimensions extends Widget {
    * @param x
    */
   scrollX(x) {
-    const {
-      cols, xFixedView, scroll,
-    } = this;
+    const { cols, xFixedView, scroll } = this;
     const fixedView = xFixedView.getFixedView();
     const [
       ci, left, width,
@@ -1290,9 +1284,7 @@ class XTableDimensions extends Widget {
    * @returns {*}
    */
   getTop() {
-    const {
-      rows, xFixedView,
-    } = this;
+    const { rows, xFixedView } = this;
     const fixedView = xFixedView.getFixedView();
     const view = this.getScrollView();
     return rows.sectionSumHeight(fixedView.eri + 1, view.sri - 1);
@@ -1303,9 +1295,7 @@ class XTableDimensions extends Widget {
    * @returns {*}
    */
   getLeft() {
-    const {
-      cols, xFixedView,
-    } = this;
+    const { cols, xFixedView } = this;
     const fixedView = xFixedView.getFixedView();
     const view = this.getScrollView();
     return cols.sectionSumWidth(fixedView.eci + 1, view.sci - 1);
@@ -1317,12 +1307,7 @@ class XTableDimensions extends Widget {
    * @param start
    */
   setFixedRow(end, start = -1) {
-    const {
-      xFixedView,
-      rows,
-      scroll,
-      rowFixed,
-    } = this;
+    const { xFixedView, rows, scroll, rowFixed } = this;
     // 更新视图
     const fixedView = xFixedView.getFixedView();
     fixedView.eri = end;
@@ -1342,8 +1327,6 @@ class XTableDimensions extends Widget {
     // 更新固定条
     rowFixed.fxSri = fixedView.sri;
     rowFixed.fxEri = fixedView.eri;
-    // 更新视图
-    this.resize();
     // 发送更新通知
     this.trigger(Constant.TABLE_EVENT_TYPE.FIXED_ROW_CHANGE);
     this.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
@@ -1355,12 +1338,7 @@ class XTableDimensions extends Widget {
    * @param start
    */
   setFixedCol(end, start = -1) {
-    const {
-      xFixedView,
-      rows,
-      scroll,
-      colFixed,
-    } = this;
+    const { xFixedView, rows, scroll, colFixed } = this;
     // 更新视图
     const fixedView = xFixedView.getFixedView();
     fixedView.eci = end;
@@ -1380,35 +1358,9 @@ class XTableDimensions extends Widget {
     // 跟新固定条
     colFixed.fxSci = fixedView.sci;
     colFixed.fxEci = fixedView.eci;
-    // 更新视图
-    this.resize();
     // 发送更新通知
     this.trigger(Constant.TABLE_EVENT_TYPE.FIXED_COL_CHANGE);
     this.trigger(Constant.TABLE_EVENT_TYPE.FIXED_CHANGE);
-  }
-
-  /**
-   * 设置缩放比
-   */
-  setScale(val = 1) {
-    const {
-      yHeightLight,
-      xHeightLight,
-      xTableStyle,
-      xScreen,
-      scale,
-      rowFixed,
-      colFixed,
-    } = this;
-    this.reset();
-    scale.setValue(val);
-    xScreen.setZone();
-    xHeightLight.offsetHandle();
-    yHeightLight.offsetHandle();
-    rowFixed.setSize();
-    colFixed.setSize();
-    xTableStyle.setScale(val);
-    this.trigger(Constant.TABLE_EVENT_TYPE.SCALE_CHANGE);
   }
 
   /**
@@ -1434,6 +1386,17 @@ class XTableDimensions extends Widget {
   }
 
   /**
+   * 重置缓存
+   */
+  recache() {
+    this.rows.clearCache();
+    this.cols.clearCache();
+    this.rowHeightGroupIndex.clear();
+    this.xTableStyle.rows.clearCache();
+    this.xTableStyle.cols.clearCache();
+  }
+
+  /**
    * 重置界面大小
    */
   resize() {
@@ -1449,14 +1412,22 @@ class XTableDimensions extends Widget {
   }
 
   /**
-   * 重置缓存
+   * 设置缩放比
    */
-  recache() {
-    this.rows.clearCache();
-    this.cols.clearCache();
-    this.rowHeightGroupIndex.clear();
-    this.xTableStyle.rows.clearCache();
-    this.xTableStyle.cols.clearCache();
+  setScale(val = 1) {
+    const {
+      yHeightLight, xHeightLight, xTableStyle, xScreen, scale, rowFixed, colFixed,
+    } = this;
+    this.recache();
+    this.reset();
+    scale.setValue(val);
+    xTableStyle.setScale(val);
+    xScreen.setZone();
+    rowFixed.setSize();
+    colFixed.setSize();
+    xHeightLight.offsetHandle();
+    yHeightLight.offsetHandle();
+    this.trigger(Constant.TABLE_EVENT_TYPE.SCALE_CHANGE);
   }
 
   /**
