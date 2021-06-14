@@ -46,24 +46,27 @@ class RichDrawTextBuilder {
   buildRuler() {
     const { rich, attr, draw, rect, overflow } = this;
     const { name, size, bold, italic, angle } = attr;
-    const { padding, textWrap } = attr;
+    const { align, padding, textWrap } = attr;
     switch (attr.direction) {
       case BaseFont.TEXT_DIRECTION.HORIZONTAL:
         return new RichHorizonRuler({
           draw, rich, rect, overflow,
-          name, size, bold, italic, padding, textWrap,
+          name, size, bold, italic, align, padding, textWrap,
         });
       case BaseFont.TEXT_DIRECTION.VERTICAL:
         return new RichVerticalRuler({
-          draw, rich, size, rect, overflow, textWrap, padding
+          draw, rich, rect, overflow,
+          name, size, bold, italic, align, padding, textWrap,
         });
       case BaseFont.TEXT_DIRECTION.ANGLE:
         return new RichAngleBoxRuler({
-          draw, rich, size, angle, rect, overflow, textWrap, padding
+          draw, rich, rect, overflow,
+          name, size, bold, italic, angle, align, padding, textWrap,
         });
       case BaseFont.TEXT_DIRECTION.ANGLE_BAR:
         return new RichAngleBarRuler({
-          draw, rich, size, angle, rect, overflow, textWrap, padding
+          draw, rich, rect, overflow,
+          name, size, bold, italic, angle, align, padding, textWrap,
         });
     }
     return null;

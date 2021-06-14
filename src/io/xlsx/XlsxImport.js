@@ -9,6 +9,7 @@ import { ColorArray } from '../../module/colorpicker/colorarray/ColorArray';
 import { HexRgb, Theme, ThemeXml } from './XlsxTheme';
 import { WideUnit } from '../../core/xtable/tableunit/WideUnit';
 import { HeightUnit } from '../../core/xtable/tableunit/HeightUnit';
+import { Cell } from '../../core/xtable/tablecell/Cell';
 
 /**
  * XLSX 文件导入
@@ -138,6 +139,20 @@ class XlsxImport {
           // 富文本
           if (richText) {
             xCell.text = PlainUtils.EMPTY;
+            xCell.contentType = Cell.CONTENT_TYPE.STRING;
+          } else {
+            const type = PlainUtils.type(value);
+            switch (type) {
+              case PlainUtils.DATA_TYPE.Number:
+                xCell.contentType = Cell.CONTENT_TYPE.NUMBER;
+                break;
+              case PlainUtils.DATA_TYPE.Date:
+                xCell.contentType = Cell.CONTENT_TYPE.DATE;
+                break;
+              case PlainUtils.DATA_TYPE.String:
+                xCell.contentType = Cell.CONTENT_TYPE.STRING;
+                break;
+            }
           }
           // 背景颜色
           if (fill) {

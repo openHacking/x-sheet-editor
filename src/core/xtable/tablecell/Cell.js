@@ -77,17 +77,23 @@ class Cell {
   }
 
   getFormatText() {
-    const { format, text, contentType } = this;
+    let { format, text, contentType } = this;
     switch (contentType) {
+      case Cell.CONTENT_TYPE.RICH_TEXT: {
+        return PlainUtils.EMPTY;
+      }
+      case Cell.CONTENT_TYPE.DATE: {
+        if (format === 'default') {
+          format = 'date1';
+        }
+        return XTableFormat(format, text);
+      }
       case Cell.CONTENT_TYPE.STRING: {
         return XTableFormat(format, text);
       }
       case Cell.CONTENT_TYPE.NUMBER: {
         const number = XTableFormat(format, text);
         return number.toString();
-      }
-      case Cell.CONTENT_TYPE.RICH_TEXT: {
-        return PlainUtils.EMPTY;
       }
     }
     return PlainUtils.EMPTY;
@@ -167,11 +173,17 @@ class Cell {
   }
 
   toString() {
-    const { contentType } = this;
+    let { format, text, contentType } = this;
     switch (contentType) {
       case Cell.CONTENT_TYPE.NUMBER:
       case Cell.CONTENT_TYPE.STRING: {
-        return this.text;
+        return text;
+      }
+      case Cell.CONTENT_TYPE.DATE: {
+        if (format === 'default') {
+          format = 'date1';
+        }
+        return XTableFormat(format, text);
       }
       case Cell.CONTENT_TYPE.RICH_TEXT: {
         return PlainUtils.EMPTY;
@@ -195,6 +207,7 @@ Cell.CONTENT_TYPE = {
   NUMBER: 0,
   STRING: 1,
   RICH_TEXT: 2,
+  DATE: 3,
 };
 
 export {

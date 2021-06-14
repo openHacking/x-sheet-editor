@@ -16,6 +16,33 @@ class AngleBarRuler extends AngleBoxRuler {
     this.textWrapTextCenterX = 0;
   }
 
+  overflowRuler() {
+    if (this.used) {
+      return;
+    }
+    super.overflowRuler();
+    const { overflowBlockWidth } = this;
+    this.overflowTextCenterX = overflowBlockWidth / 2;
+  }
+
+  textWrapRuler() {
+    if (this.used) {
+      return;
+    }
+    super.textWrapRuler();
+    const { textWrapTextArray, textWrapTextWidth } = this;
+    const head = PlainUtils.arrayHead(textWrapTextArray);
+    const last = PlainUtils.arrayLast(textWrapTextArray);
+    if (head !== last) {
+      const headCenter = head.tx + head.blockWidth / 2;
+      const lastCenter = last.tx + last.blockWidth / 2;
+      const textCenter = lastCenter - headCenter;
+      this.textWrapTextCenterX = headCenter + textCenter / 2;
+    } else {
+      this.textWrapTextCenterX = textWrapTextWidth / 2;
+    }
+  }
+
   equals(other) {
     if (other === null) {
       return false;
@@ -58,33 +85,6 @@ class AngleBarRuler extends AngleBoxRuler {
       }
     }
     return true;
-  }
-
-  overflowRuler() {
-    if (this.used) {
-      return;
-    }
-    super.overflowRuler();
-    const { overflowBlockWidth } = this;
-    this.overflowTextCenterX = overflowBlockWidth / 2;
-  }
-
-  textWrapRuler() {
-    if (this.used) {
-      return;
-    }
-    super.textWrapRuler();
-    const { textWrapTextArray, textWrapTextWidth } = this;
-    const head = PlainUtils.arrayHead(textWrapTextArray);
-    const last = PlainUtils.arrayLast(textWrapTextArray);
-    if (head !== last) {
-      const headCenter = head.tx + head.blockWidth / 2;
-      const lastCenter = last.tx + last.blockWidth / 2;
-      const textCenter = lastCenter - headCenter;
-      this.textWrapTextCenterX = headCenter + textCenter / 2;
-    } else {
-      this.textWrapTextCenterX = textWrapTextWidth / 2;
-    }
   }
 
 }

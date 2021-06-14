@@ -36,50 +36,6 @@ class AngleBoxRuler extends TextRuler {
     this.textWrapTextHeight = 0;
   }
 
-  equals(other) {
-    if (other === null) {
-      return false;
-    }
-    if (other.constructor !== AngleBoxRuler) {
-      return false;
-    }
-    if (other.text !== this.text) {
-      return false;
-    }
-    if (other.size !== this.size) {
-      return false;
-    }
-    if (other.angle !== this.angle) {
-      return false;
-    }
-    if (other.align !== this.align) {
-      return false;
-    }
-    if (other.verticalAlign !== this.verticalAlign) {
-      return false;
-    }
-    if (other.textWrap !== this.textWrap) {
-      return false;
-    }
-    if (other.padding !== this.padding) {
-      return false;
-    }
-    const diffWidth = other.overflow.width !== this.overflow.width;
-    const diffHeight = other.overflow.height !== this.overflow.height;
-    if (diffWidth || diffHeight) {
-      return false;
-    }
-    switch (this.textWrap) {
-      case BaseFont.TEXT_WRAP.WORD_WRAP: {
-        if (other.lineHeight !== this.lineHeight) {
-          return false;
-        }
-        break;
-      }
-    }
-    return true;
-  }
-
   truncateRuler() {
     this.overflowRuler();
   }
@@ -405,6 +361,50 @@ class AngleBoxRuler extends TextRuler {
       this.textWrapTextHeight = maxTextHeight;
     }
     this.setUsedType(BaseRuler.USED.TEXT_WRAP);
+  }
+
+  equals(other) {
+    if (other === null) {
+      return false;
+    }
+    if (other.constructor !== AngleBoxRuler) {
+      return false;
+    }
+    if (other.text !== this.text) {
+      return false;
+    }
+    if (other.size !== this.size) {
+      return false;
+    }
+    if (other.angle !== this.angle) {
+      return false;
+    }
+    if (other.align !== this.align) {
+      return false;
+    }
+    if (other.verticalAlign !== this.verticalAlign) {
+      return false;
+    }
+    if (other.textWrap !== this.textWrap) {
+      return false;
+    }
+    if (other.padding !== this.padding) {
+      return false;
+    }
+    const diffWidth = other.overflow.width !== this.overflow.width;
+    const diffHeight = other.overflow.height !== this.overflow.height;
+    if (diffWidth || diffHeight) {
+      return false;
+    }
+    switch (this.textWrap) {
+      case BaseFont.TEXT_WRAP.WORD_WRAP: {
+        if (other.lineHeight !== this.lineHeight) {
+          return false;
+        }
+        break;
+      }
+    }
+    return true;
   }
 
 }

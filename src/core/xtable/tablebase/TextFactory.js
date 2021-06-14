@@ -37,6 +37,7 @@ class TextBuilder {
         return null;
       }
       case Cell.CONTENT_TYPE.STRING:
+      case Cell.CONTENT_TYPE.DATE:
       case Cell.CONTENT_TYPE.NUMBER: {
         const size = scaleAdapter.goto(fontAttr.size);
         const padding = scaleAdapter.goto(fontAttr.padding);

@@ -36,44 +36,6 @@ class HorizonRuler extends HorizonVisual {
     this.textWrapTextHeight = 0;
   }
 
-  equals(other) {
-    if (other === null) {
-      return false;
-    }
-    if (other.constructor !== HorizonRuler) {
-      return false;
-    }
-    if (other.text !== this.text) {
-      return false;
-    }
-    if (other.align !== this.align) {
-      return false;
-    }
-    if (other.size !== this.size) {
-      return false;
-    }
-    if (other.padding !== this.padding) {
-      return false;
-    }
-    if (other.textWrap !== this.textWrap) {
-      return false;
-    }
-    const diffWidth = other.rect.width !== this.rect.width;
-    const diffHeight = other.rect.height !== this.rect.height;
-    if (diffWidth || diffHeight) {
-      return false;
-    }
-    switch (this.textWrap) {
-      case BaseFont.TEXT_WRAP.WORD_WRAP: {
-        if (other.lineHeight !== this.lineHeight) {
-          return false;
-        }
-        break;
-      }
-    }
-    return true;
-  }
-
   truncateRuler() {
     if (this.used) { return; }
     const { rect } = this;
@@ -100,17 +62,16 @@ class HorizonRuler extends HorizonVisual {
     if (this.used) { return; }
     const { rect, lineHeight } = this;
     const { width } = rect;
-    const textArray = [];
     const alignPadding = this.getAlignPadding();
     const breakArray = this.textBreak();
-    const maxRectWidth = width - (alignPadding * 2);
     const breakLength = breakArray.length;
-    let breakIndex = 0;
+    const maxRectWidth = width - (alignPadding * 2);
+    const textArray = [];
     let textHeight = 0;
+    let breakIndex = 0;
     while (breakIndex < breakLength) {
       const text = breakArray[breakIndex];
       const textLength = text.length;
-      let innerIndex = 0;
       const line = {
         text: '',
         start: 0,
@@ -118,6 +79,7 @@ class HorizonRuler extends HorizonVisual {
         height: 0,
         ascent: 0,
       };
+      let innerIndex = 0;
       while (innerIndex < textLength) {
         const measureText = line.text + text.charAt(innerIndex);
         const measure = this.textSize(measureText);
@@ -175,6 +137,44 @@ class HorizonRuler extends HorizonVisual {
     this.textWrapTextArray = textArray;
     this.textWrapTextHeight = textHeight;
     this.setUsedType(BaseRuler.USED.TEXT_WRAP);
+  }
+
+  equals(other) {
+    if (other === null) {
+      return false;
+    }
+    if (other.constructor !== HorizonRuler) {
+      return false;
+    }
+    if (other.text !== this.text) {
+      return false;
+    }
+    if (other.align !== this.align) {
+      return false;
+    }
+    if (other.size !== this.size) {
+      return false;
+    }
+    if (other.padding !== this.padding) {
+      return false;
+    }
+    if (other.textWrap !== this.textWrap) {
+      return false;
+    }
+    const diffWidth = other.rect.width !== this.rect.width;
+    const diffHeight = other.rect.height !== this.rect.height;
+    if (diffWidth || diffHeight) {
+      return false;
+    }
+    switch (this.textWrap) {
+      case BaseFont.TEXT_WRAP.WORD_WRAP: {
+        if (other.lineHeight !== this.lineHeight) {
+          return false;
+        }
+        break;
+      }
+    }
+    return true;
   }
 
 }

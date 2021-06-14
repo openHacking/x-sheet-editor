@@ -21,6 +21,7 @@ const DATA_TYPE = {
   BigInt: 12,
   Symbol: 13,
   DedicatedWorkerGlobalScope: 14,
+  Date: 15,
   Un: 0,
 };
 
@@ -129,6 +130,8 @@ class PlainUtils {
         return DATA_TYPE.BigInt;
       case '[object Symbol]':
         return DATA_TYPE.Symbol;
+      case '[object Date]':
+        return DATA_TYPE.Date;
       case '[object DedicatedWorkerGlobalScope]':
         return DATA_TYPE.DedicatedWorkerGlobalScope;
       default:

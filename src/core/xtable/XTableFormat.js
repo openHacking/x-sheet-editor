@@ -93,41 +93,36 @@ class Format {
   }
 
   date1(value) {
-    const result = parserToDate(value);
-    if (result) {
-      return DateUtils.dateFormat('yyyy/MM/dd', result);
+    if (value) {
+      return DateUtils.dateFormat('yyyy/MM/dd', value);
     }
     return value;
   }
 
   date2(value) {
-    const result = parserToDate(value);
-    if (result) {
-      return DateUtils.dateFormat('MM月dd日', result);
+    if (value) {
+      return DateUtils.dateFormat('MM月dd日', value);
     }
     return value;
   }
 
   date3(value) {
-    const result = parserToDate(value);
-    if (result) {
-      return DateUtils.dateFormat('yyyy年MM月', result);
+    if (value) {
+      return DateUtils.dateFormat('yyyy年MM月', value);
     }
     return value;
   }
 
   date4(value) {
-    const result = parserToDate(value);
-    if (result) {
-      return DateUtils.dateFormat('yyyy年MM月dd日', result);
+    if (value) {
+      return DateUtils.dateFormat('yyyy年MM月dd日', value);
     }
     return value;
   }
 
   date5(value) {
-    const result = parserToDate(value);
-    if (result) {
-      return DateUtils.dateFormat('yyyy/MM/dd hh:mm:ss', result);
+    if (value) {
+      return DateUtils.dateFormat('yyyy/MM/dd hh:mm:ss', value);
     }
     return value;
   }
