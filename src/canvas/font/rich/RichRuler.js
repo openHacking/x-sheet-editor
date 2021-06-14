@@ -1,4 +1,5 @@
 import { BaseRuler } from '../BaseRuler';
+import { PlainUtils } from '../../../utils/PlainUtils';
 
 class RichRuler extends BaseRuler {
 
@@ -17,6 +18,19 @@ class RichRuler extends BaseRuler {
       }
     }
     return false;
+  }
+
+  isBlank() {
+    if (PlainUtils.isUnDef(this.rich)) {
+      return true;
+    }
+    for (let i = 0, len = this.rich.length; i < len; i++) {
+      const item = this.rich[i];
+      if (item.text) {
+        return false;
+      }
+    }
+    return true;
   }
 
   textBreak(text) {

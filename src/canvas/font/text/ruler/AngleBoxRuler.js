@@ -218,7 +218,6 @@ class AngleBoxRuler extends TextRuler {
         const textLength = text.length;
         const line = {
           text: '',
-          start: 0,
           width: 0,
           height: 0,
           ascent: 0,
@@ -272,7 +271,6 @@ class AngleBoxRuler extends TextRuler {
             line.width = 0;
             line.height = 0;
             line.ascent = 0;
-            line.start = innerIndex;
           } else {
             line.text = measureText;
             line.width = measure.width;

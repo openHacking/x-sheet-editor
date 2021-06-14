@@ -1,6 +1,7 @@
 import { BaseRuler } from '../../BaseRuler';
 import { RichHorizonVisual } from './RichHorizonVisual';
 import { BaseFont } from '../../BaseFont';
+import { RichWrapLine } from './RichWrapLine';
 
 class RichHorizonRuler extends RichHorizonVisual {
 
@@ -137,13 +138,14 @@ class RichHorizonRuler extends RichHorizonVisual {
 
   textWrapRuler() {
     if (this.used) { return; }
+    const { size, name, bold, italic } = this;
     const { draw, rich, rect } = this;
     const { lineHeight, spacing } = this;
-    const { size, name, bold, italic } = this;
     const { width } = rect;
     const alignPadding = this.getAlignPadding();
     const maxRectWidth = width - (alignPadding * 2);
     const textArray = [];
+    const line = new RichWrapLine();
     let textHeight = 0;
     let textOffset = 0;
     for (let i = 0, len = rich.length; i < len; i++) {
@@ -162,74 +164,71 @@ class RichHorizonRuler extends RichHorizonVisual {
       });
       const breakArray = this.textBreak(attr.text);
       const breakLength = breakArray.length;
-      const line = {
-        text: '',
-        start: 0,
-        width: 0,
-        height: 0,
-        ascent: 0,
-      };
       let breakIndex = 0;
       while (breakIndex < breakLength) {
         const text = breakArray[breakIndex];
         const textLength = text.length;
         let innerIndex = 0;
         while (innerIndex < textLength) {
-          const measureText = line.text + text.charAt(innerIndex);
+          const item = line.getOrNew({
+            text: '', style: attr, x: 0, y: 0, ascent: 0,
+          });
+          const measureText = item.text + text.charAt(innerIndex);
           const measure = this.textSize(measureText);
-          if (measure.width + textOffset > maxRectWidth) {
+          const lineWidth = line.width + spacing + measure.width;
+          if (lineWidth > maxRectWidth) {
             if (line.width === 0) {
               textArray.push({
                 tx: textOffset,
                 ty: textHeight,
-                style: attr,
                 text: measureText,
                 width: measure.width,
                 height: measure.height,
-                ascent: measure.ascent,
               });
               innerIndex += 1;
             } else {
               textArray.push({
                 tx: textOffset,
                 ty: textHeight,
-                style: attr,
-                text: line.text,
+                items: line.items,
                 width: line.width,
                 height: line.height,
-                ascent: line.ascent,
               });
             }
             textHeight += measure.height + lineHeight;
             textOffset = 0;
-            line.text = '';
+            line.items = [];
+            line.index = 0;
             line.width = 0;
             line.height = 0;
-            line.ascent = 0;
-            line.start = innerIndex;
           } else {
-            line.text = measureText;
-            line.width = measure.width;
-            line.height = measure.height;
-            line.ascent = measure.ascent;
-            innerIndex += 1;
+            item.text = measureText;
+            item.width = measure.width;
+            item.height = measure.height;
+            item.ascent = measure.ascent;
+            line.width = lineWidth;
+            if (measure.height > line.height) {
+              line.height = measure.height;
+            }
           }
         }
         if (line.width > 0) {
           textArray.push({
-            tx: 0,
+            tx: textOffset,
             ty: textHeight,
-            style: attr,
-            text: line.text,
+            items: line.items,
             width: line.width,
             height: line.height,
-            ascent: line.ascent,
           });
+          textOffset = line.width;
           textHeight += line.height + lineHeight;
-          textOffset += line.width + spacing;
         }
-        breakIndex += 1;
+        if (breakIndex > 0) {
+          textOffset = 0;
+        }
+        breakIndex++;
       }
+      line.increase();
       draw.restore();
     }
     this.textWrapTextArray = textArray;
