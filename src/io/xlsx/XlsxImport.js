@@ -138,8 +138,8 @@ class XlsxImport {
           }
           // 富文本
           if (richText) {
-            xCell.text = PlainUtils.EMPTY;
-            xCell.contentType = Cell.CONTENT_TYPE.STRING;
+            xCell.text = richText;
+            xCell.contentType = Cell.CONTENT_TYPE.RICH_TEXT;
           } else {
             const type = PlainUtils.type(value);
             switch (type) {

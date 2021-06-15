@@ -1,6 +1,7 @@
 import { BaseRich } from '../BaseRich';
 import { DrawResult } from '../../DrawResult';
 import { BaseFont } from '../../BaseFont';
+import { Crop } from '../../../Crop';
 
 class RichHorizonDraw extends BaseRich {
 
@@ -80,11 +81,286 @@ class RichHorizonDraw extends BaseRich {
     draw.line(s, e);
   }
 
-  truncateDraw() {}
+  truncateDraw() {
+    const { draw, ruler, attr } = this;
+    const { rect } = this;
+    const { width, height } = rect;
+    const { underline, strikethrough, align, verticalAlign } = attr;
+    // 文字宽度
+    ruler.truncateRuler();
+    const {
+      truncateText: textArray,
+      truncateTextWidth: textWidth,
+      truncateTextHeight: textHeight,
+    } = ruler;
+    // 填充宽度
+    const verticalAlignPadding = this.getVerticalAlignPadding();
+    const alignPadding = this.getAlignPadding();
+    // 计算文本坐标
+    let bx = rect.x;
+    let by = rect.y;
+    switch (align) {
+      case BaseFont.ALIGN.left:
+        bx += alignPadding;
+        break;
+      case BaseFont.ALIGN.center:
+        bx += width / 2 - textWidth / 2;
+        break;
+      case BaseFont.ALIGN.right:
+        bx += width - textWidth - alignPadding;
+        break;
+    }
+    switch (verticalAlign) {
+      case BaseFont.VERTICAL_ALIGN.top:
+        by += verticalAlignPadding;
+        break;
+      case BaseFont.VERTICAL_ALIGN.center:
+        by += height / 2 - textHeight / 2;
+        break;
+      case BaseFont.VERTICAL_ALIGN.bottom:
+        by += height - textHeight - verticalAlignPadding;
+        break;
+    }
+    // 边界检查
+    const outboundsHeight = textHeight + verticalAlignPadding > height;
+    const outboundsWidth = textWidth + alignPadding > width;
+    if (outboundsHeight || outboundsWidth) {
+      const crop = new Crop({
+        draw,
+        rect,
+      });
+      crop.open();
+      for (let i = 0, len = textArray.length; i < len; i++) {
+        const item = textArray[i];
+        const { text, x, y, ascent, width, height } = item;
+        const tx = bx + x;
+        const ty = by + y;
+        draw.fillText(text, tx, ty + ascent);
+        if (underline) {
+          this.drawingLine('underline', tx, ty, width, height);
+        }
+        if (strikethrough) {
+          this.drawingLine('strike', tx, ty, width, height);
+        }
+      }
+      crop.close();
+    } else {
+      for (let i = 0, len = textArray.length; i < len; i++) {
+        const item = textArray[i];
+        const { text, x, y, ascent, width, height } = item;
+        const tx = bx + x;
+        const ty = by + y;
+        draw.fillText(text, tx, ty + ascent);
+        if (underline) {
+          this.drawingLine('underline', tx, ty, width, height);
+        }
+        if (strikethrough) {
+          this.drawingLine('strike', tx, ty, width, height);
+        }
+      }
+    }
+    return new DrawResult();
+  }
 
-  overflowDraw() {}
+  overflowDraw() {
+    const { draw, ruler, attr } = this;
+    const { rect, overflow } = this;
+    const { width, height } = rect;
+    const { underline, strikethrough, align, verticalAlign } = attr;
+    // 文字宽度
+    ruler.overflowRuler();
+    const {
+      truncateText: textArray,
+      overflowTextWidth: textWidth,
+      overflowTextHeight: textHeight,
+    } = ruler;
+    // 填充宽度
+    const verticalAlignPadding = this.getVerticalAlignPadding();
+    const alignPadding = this.getAlignPadding();
+    // 计算文本坐标
+    let bx = rect.x;
+    let by = rect.y;
+    switch (align) {
+      case BaseFont.ALIGN.left:
+        bx += alignPadding;
+        break;
+      case BaseFont.ALIGN.center:
+        bx += width / 2 - textWidth / 2;
+        break;
+      case BaseFont.ALIGN.right:
+        bx += width - textWidth - alignPadding;
+        break;
+    }
+    switch (verticalAlign) {
+      case BaseFont.VERTICAL_ALIGN.top:
+        by += verticalAlignPadding;
+        break;
+      case BaseFont.VERTICAL_ALIGN.center:
+        by += height / 2 - textHeight / 2;
+        break;
+      case BaseFont.VERTICAL_ALIGN.bottom:
+        by += height - textHeight - verticalAlignPadding;
+        break;
+    }
+    // 边界检查
+    const outboundsHeight = textHeight + verticalAlignPadding > overflow.height;
+    const outboundsWidth = textWidth + alignPadding > overflow.width;
+    let pointOffset = false;
+    if (align === BaseFont.ALIGN.center) {
+      const diff = textWidth / 2 - width / 2;
+      if (diff > 0) {
+        if (overflow.x > rect.x - diff) {
+          pointOffset = true;
+        } else if (overflow.x + overflow.width < rect.x + rect.width + diff) {
+          pointOffset = true;
+        }
+      }
+    }
+    if (outboundsHeight || outboundsWidth || pointOffset) {
+      const crop = new Crop({
+        draw,
+        rect: overflow,
+      });
+      for (let i = 0, len = textArray.length; i < len; i++) {
+        const item = textArray[i];
+        const { text, x, y, ascent, width, height } = item;
+        const tx = bx + x;
+        const ty = by + y;
+        draw.fillText(text, tx, ty + ascent);
+        if (underline) {
+          this.drawingLine('underline', tx, ty, width, height);
+        }
+        if (strikethrough) {
+          this.drawingLine('strike', tx, ty, width, height);
+        }
+      }
+      crop.close();
+    } else {
+      for (let i = 0, len = textArray.length; i < len; i++) {
+        const item = textArray[i];
+        const { text, x, y, ascent, width, height } = item;
+        const tx = bx + x;
+        const ty = by + y;
+        draw.fillText(text, tx, ty + ascent);
+        if (underline) {
+          this.drawingLine('underline', tx, ty, width, height);
+        }
+        if (strikethrough) {
+          this.drawingLine('strike', tx, ty, width, height);
+        }
+      }
+    }
+    return new DrawResult({
+      width: textWidth + alignPadding,
+    });
+  }
 
-  textWrapDraw() {}
+  textWrapDraw() {
+    const { rect, draw, ruler, attr } = this;
+    const { width, height } = rect;
+    const { underline, strikethrough, align, verticalAlign } = attr;
+    // 填充尺寸
+    const verticalAlignPadding = this.getVerticalAlignPadding();
+    const alignPadding = this.getAlignPadding();
+    // 计算文本折行
+    ruler.textWrapRuler();
+    const {
+      textWrapTextArray: textArray,
+      textWrapTextHeight: textHeight,
+    } = ruler;
+    // 边界检查
+    const outboundsHeight = textHeight > height;
+    if (outboundsHeight) {
+      const crop = new Crop({
+        draw,
+        rect,
+      });
+      crop.open();
+      for (let index = 0, textLength = textArray.length; index < textLength; index++) {
+        // 文本信息
+        let item = textArray[index];
+        // 计算文本坐标
+        let bx = rect.x;
+        let by = rect.y;
+        // 对齐方式
+        switch (align) {
+          case BaseFont.ALIGN.left:
+            bx += alignPadding;
+            break;
+          case BaseFont.ALIGN.center:
+            bx += width / 2 - item.width / 2;
+            break;
+          case BaseFont.ALIGN.right:
+            bx += width - item.width - alignPadding;
+            break;
+        }
+        switch (verticalAlign) {
+          case BaseFont.VERTICAL_ALIGN.top:
+            by += verticalAlignPadding;
+            break;
+          case BaseFont.VERTICAL_ALIGN.center:
+            by += height / 2 - textHeight / 2;
+            break;
+          case BaseFont.VERTICAL_ALIGN.bottom:
+            by += height - textHeight - verticalAlignPadding;
+            break;
+        }
+        // 绘制文本
+        const tx = item.tx + bx;
+        const ty = item.ty + by;
+        draw.fillText(item.text, tx, ty + item.ascent);
+        if (underline) {
+          this.drawingLine('underline', tx, ty, item.width, item.height);
+        }
+        if (strikethrough) {
+          this.drawingLine('strike', tx, ty, item.width, item.height);
+        }
+      }
+      crop.close();
+    } else {
+      for (let index = 0, textLength = textArray.length; index < textLength; index++) {
+        // 文本信息
+        let item = textArray[index];
+        // 计算文本坐标
+        let bx = rect.x;
+        let by = rect.y;
+        // 对齐方式
+        switch (align) {
+          case BaseFont.ALIGN.left:
+            bx += alignPadding;
+            break;
+          case BaseFont.ALIGN.center:
+            bx += width / 2 - item.width / 2;
+            break;
+          case BaseFont.ALIGN.right:
+            bx += width - item.width - alignPadding;
+            break;
+        }
+        switch (verticalAlign) {
+          case BaseFont.VERTICAL_ALIGN.top:
+            by += verticalAlignPadding;
+            break;
+          case BaseFont.VERTICAL_ALIGN.center:
+            by += height / 2 - textHeight / 2;
+            break;
+          case BaseFont.VERTICAL_ALIGN.bottom:
+            by += height - textHeight - verticalAlignPadding;
+            break;
+        }
+        // 绘制文本
+        const tx = item.tx + bx;
+        const ty = item.ty + by;
+        draw.fillText(item.text, tx, ty + item.ascent);
+        if (underline) {
+          this.drawingLine('underline', tx, ty, item.width, item.height);
+        }
+        if (strikethrough) {
+          this.drawingLine('strike', tx, ty, item.width, item.height);
+        }
+      }
+    }
+    return new DrawResult();
+  }
 
 }
 

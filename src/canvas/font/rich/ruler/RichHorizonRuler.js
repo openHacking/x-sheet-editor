@@ -2,6 +2,7 @@ import { BaseRuler } from '../../BaseRuler';
 import { RichHorizonVisual } from './RichHorizonVisual';
 import { BaseFont } from '../../BaseFont';
 import { RichWrapLine } from './RichWrapLine';
+import { PlainUtils } from '../../../../utils/PlainUtils';
 
 class RichHorizonRuler extends RichHorizonVisual {
 
@@ -145,7 +146,7 @@ class RichHorizonRuler extends RichHorizonVisual {
     const alignPadding = this.getAlignPadding();
     const maxRectWidth = width - (alignPadding * 2);
     const textArray = [];
-    const line = new RichWrapLine();
+    const wrapLine = new RichWrapLine();
     let textHeight = 0;
     let textOffset = 0;
     for (let i = 0, len = rich.length; i < len; i++) {
@@ -166,70 +167,86 @@ class RichHorizonRuler extends RichHorizonVisual {
       const breakLength = breakArray.length;
       let breakIndex = 0;
       while (breakIndex < breakLength) {
+        if (breakIndex) {
+          const lineItem = wrapLine.getOrNew();
+          lineItem.tx = textOffset;
+          lineItem.ty = textHeight;
+          textArray.push({
+            items: wrapLine.items,
+            width: wrapLine.width,
+            height: wrapLine.height,
+          });
+          textOffset = 0;
+          textHeight += wrapLine.height + lineHeight;
+          wrapLine.reset();
+        }
         const text = breakArray[breakIndex];
         const textLength = text.length;
         let innerIndex = 0;
         while (innerIndex < textLength) {
-          const item = line.getOrNew({
-            text: '', style: attr, x: 0, y: 0, ascent: 0,
-          });
-          const measureText = item.text + text.charAt(innerIndex);
+          const lineItem = wrapLine.getOrNew({ style: attr });
+          const measureText = lineItem.text + text.charAt(innerIndex);
           const measure = this.textSize(measureText);
-          const lineWidth = line.width + spacing + measure.width;
+          const lineWidth = textOffset + spacing + measure.width;
           if (lineWidth > maxRectWidth) {
-            if (line.width === 0) {
+            if (wrapLine.width === 0) {
+              lineItem.tx = textOffset;
+              lineItem.ty = textHeight;
+              lineItem.text = measureText;
+              lineItem.width = measure.width;
+              lineItem.height = measure.height;
+              lineItem.ascent = measure.ascent;
+              wrapLine.width = measure.width;
+              wrapLine.height = measure.height;
               textArray.push({
-                tx: textOffset,
-                ty: textHeight,
-                text: measureText,
-                width: measure.width,
-                height: measure.height,
+                items: wrapLine.items,
+                width: wrapLine.width,
+                height: wrapLine.height,
               });
               innerIndex += 1;
             } else {
+              lineItem.tx = textOffset;
+              lineItem.ty = textHeight;
               textArray.push({
-                tx: textOffset,
-                ty: textHeight,
-                items: line.items,
-                width: line.width,
-                height: line.height,
+                items: wrapLine.items,
+                width: wrapLine.width,
+                height: wrapLine.height,
               });
             }
-            textHeight += measure.height + lineHeight;
+            wrapLine.reset();
             textOffset = 0;
-            line.items = [];
-            line.index = 0;
-            line.width = 0;
-            line.height = 0;
+            textHeight += measure.height + lineHeight;
           } else {
-            item.text = measureText;
-            item.width = measure.width;
-            item.height = measure.height;
-            item.ascent = measure.ascent;
-            line.width = lineWidth;
-            if (measure.height > line.height) {
-              line.height = measure.height;
+            lineItem.text = measureText;
+            lineItem.width = measure.width;
+            lineItem.height = measure.height;
+            lineItem.ascent = measure.ascent;
+            wrapLine.width = lineWidth;
+            if (measure.height > wrapLine.height) {
+              wrapLine.height = measure.height;
             }
+            innerIndex += 1;
           }
         }
-        if (line.width > 0) {
-          textArray.push({
-            tx: textOffset,
-            ty: textHeight,
-            items: line.items,
-            width: line.width,
-            height: line.height,
-          });
-          textOffset = line.width;
-          textHeight += line.height + lineHeight;
+        if (wrapLine.width > 0) {
+          textOffset += wrapLine.width;
+          textHeight += wrapLine.height + lineHeight;
         }
-        if (breakIndex > 0) {
-          textOffset = 0;
-        }
-        breakIndex++;
+        breakIndex += 1;
       }
-      line.increase();
+      wrapLine.increase();
       draw.restore();
+    }
+    if (wrapLine.width > 0) {
+      const lineItem = wrapLine.getOrNew();
+      lineItem.tx = textOffset;
+      lineItem.ty = textHeight;
+      textArray.push({
+        items: wrapLine.items,
+        width: wrapLine.width,
+        height: wrapLine.height,
+      });
+      textHeight += wrapLine.height + lineHeight;
     }
     this.textWrapTextArray = textArray;
     this.textWrapTextHeight = textHeight;
@@ -237,7 +254,13 @@ class RichHorizonRuler extends RichHorizonVisual {
   }
 
   equals(other) {
+    if (other === null) {
+      return false;
+    }
     if (other.constructor !== RichHorizonRuler) {
+      return false;
+    }
+    if (!PlainUtils.equals(this.rich, other.rich)) {
       return false;
     }
     if (other.align !== this.align) {

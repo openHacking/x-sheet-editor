@@ -80,7 +80,7 @@ class Cell {
     let { format, text, contentType } = this;
     switch (contentType) {
       case Cell.CONTENT_TYPE.RICH_TEXT: {
-        return PlainUtils.EMPTY;
+        return text;
       }
       case Cell.CONTENT_TYPE.DATE: {
         if (format === 'default') {

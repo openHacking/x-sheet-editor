@@ -2,6 +2,7 @@ import { ScaleAdapter } from './Scale';
 import { BaseFont } from '../../../canvas/font/BaseFont';
 import { DrawTextBuilder } from '../../../canvas/font/text/build/DrawTextBuilder';
 import { Cell } from '../tablecell/Cell';
+import { RichDrawTextBuilder } from '../../../canvas/font/rich/build/RichDrawTextBuilder';
 
 class TextBuilder {
 
@@ -30,17 +31,30 @@ class TextBuilder {
     const { rect, overflow, row, col, cell, draw, scaleAdapter, table } = this;
     const { fontAttr, ruler } = cell;
     const { contentType } = cell;
+    const size = scaleAdapter.goto(fontAttr.size);
     const formatText = cell.getFormatText();
+    const padding = scaleAdapter.goto(fontAttr.padding);
     switch (contentType) {
       case Cell.CONTENT_TYPE.RICH_TEXT: {
-        // 富文本渲染
-        return null;
+        const builder = new RichDrawTextBuilder({
+          rich: formatText, draw, overflow, rect, attr: fontAttr,
+        });
+        builder.setSize(size);
+        builder.setPadding(padding);
+        if (table.isAngleBarCell(row, col)) {
+          builder.setDirection(BaseFont.TEXT_DIRECTION.ANGLE_BAR);
+        }
+        const buildFont = builder.buildFont();
+        const buildRuler = builder.buildRuler();
+        const equals = buildRuler.equals(ruler);
+        const diffRuler = equals ? ruler : buildRuler;
+        cell.setRuler(diffRuler);
+        buildFont.setRuler(diffRuler);
+        return buildFont;
       }
-      case Cell.CONTENT_TYPE.STRING:
       case Cell.CONTENT_TYPE.DATE:
+      case Cell.CONTENT_TYPE.STRING:
       case Cell.CONTENT_TYPE.NUMBER: {
-        const size = scaleAdapter.goto(fontAttr.size);
-        const padding = scaleAdapter.goto(fontAttr.padding);
         const builder = new DrawTextBuilder({
           text: formatText, draw, overflow, rect, attr: fontAttr,
         });

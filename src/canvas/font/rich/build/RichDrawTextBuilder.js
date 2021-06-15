@@ -44,9 +44,10 @@ class RichDrawTextBuilder {
   }
 
   buildRuler() {
-    const { rich, attr, draw, rect, overflow } = this;
-    const { name, size, bold, italic, angle } = attr;
+    const { attr, draw, rect, overflow } = this;
+    const rich = this.rich.map(item => item);
     const { align, padding, textWrap } = attr;
+    const { name, size, bold, italic, angle } = attr;
     switch (attr.direction) {
       case BaseFont.TEXT_DIRECTION.HORIZONTAL:
         return new RichHorizonRuler({
@@ -72,4 +73,20 @@ class RichDrawTextBuilder {
     return null;
   }
 
+  setPadding(padding) {
+    this.attr.padding = padding;
+  }
+
+  setSize(size) {
+    this.attr.size = size;
+  }
+
+  setDirection(direction) {
+    this.attr.direction = direction;
+  }
+
+}
+
+export {
+  RichDrawTextBuilder
 }
