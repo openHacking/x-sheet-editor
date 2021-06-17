@@ -132,12 +132,12 @@ class Theme {
     return this;
   }
 
-  setTint(tint) {
+  setTint(tint = 0) {
     this.tint = tint;
     return this;
   }
 
-  setTheme(theme) {
+  setTheme(theme = 0) {
     this.theme = theme;
     return this;
   }

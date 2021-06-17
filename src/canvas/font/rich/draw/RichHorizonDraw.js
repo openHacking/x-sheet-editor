@@ -132,31 +132,55 @@ class RichHorizonDraw extends BaseRich {
       crop.open();
       for (let i = 0, len = textArray.length; i < len; i++) {
         const item = textArray[i];
-        const { text, x, y, ascent, width, height } = item;
-        const tx = bx + x;
-        const ty = by + y;
-        draw.fillText(text, tx, ty + ascent);
+        const style = Object.assign({}, attr, item.style);
+        const fontItalic = `${style.italic ? 'italic' : ''}`;
+        const fontBold = `${style.bold ? 'bold' : ''}`;
+        const fontSize = `${style.size}px`;
+        const fontName = `${style.name}`;
+        const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
+        draw.save();
+        draw.attr({
+          font: fontStyle.trim(),
+          fillStyle: style.color,
+          strokeStyle: style.color,
+        });
+        const tx = bx + item.tx;
+        const ty = by + item.ty;
+        draw.fillText(item.text, tx, ty + item.ascent);
         if (underline) {
-          this.drawingLine('underline', tx, ty, width, height);
+          this.drawingLine('underline', tx, ty, item.width, item.height);
         }
         if (strikethrough) {
-          this.drawingLine('strike', tx, ty, width, height);
+          this.drawingLine('strike', tx, ty, item.width, item.height);
         }
+        draw.restore();
       }
       crop.close();
     } else {
       for (let i = 0, len = textArray.length; i < len; i++) {
         const item = textArray[i];
-        const { text, x, y, ascent, width, height } = item;
-        const tx = bx + x;
-        const ty = by + y;
-        draw.fillText(text, tx, ty + ascent);
+        const style = Object.assign({}, attr, item.style);
+        const fontItalic = `${style.italic ? 'italic' : ''}`;
+        const fontBold = `${style.bold ? 'bold' : ''}`;
+        const fontSize = `${style.size}px`;
+        const fontName = `${style.name}`;
+        const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
+        draw.save();
+        draw.attr({
+          font: fontStyle.trim(),
+          fillStyle: style.color,
+          strokeStyle: style.color,
+        });
+        const tx = bx + item.tx;
+        const ty = by + item.ty;
+        draw.fillText(item.text, tx, ty + item.ascent);
         if (underline) {
-          this.drawingLine('underline', tx, ty, width, height);
+          this.drawingLine('underline', tx, ty, item.width, item.height);
         }
         if (strikethrough) {
-          this.drawingLine('strike', tx, ty, width, height);
+          this.drawingLine('strike', tx, ty, item.width, item.height);
         }
+        draw.restore();
       }
     }
     return new DrawResult();
@@ -170,7 +194,7 @@ class RichHorizonDraw extends BaseRich {
     // 文字宽度
     ruler.overflowRuler();
     const {
-      truncateText: textArray,
+      overflowText: textArray,
       overflowTextWidth: textWidth,
       overflowTextHeight: textHeight,
     } = ruler;
@@ -223,31 +247,55 @@ class RichHorizonDraw extends BaseRich {
       });
       for (let i = 0, len = textArray.length; i < len; i++) {
         const item = textArray[i];
-        const { text, x, y, ascent, width, height } = item;
-        const tx = bx + x;
-        const ty = by + y;
-        draw.fillText(text, tx, ty + ascent);
+        const style = Object.assign({}, attr, item.style);
+        const fontItalic = `${style.italic ? 'italic' : ''}`;
+        const fontBold = `${style.bold ? 'bold' : ''}`;
+        const fontSize = `${style.size}px`;
+        const fontName = `${style.name}`;
+        const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
+        draw.save();
+        draw.attr({
+          font: fontStyle.trim(),
+          fillStyle: style.color,
+          strokeStyle: style.color,
+        });
+        const tx = bx + item.tx;
+        const ty = by + item.ty;
+        draw.fillText(item.text, tx, ty + item.ascent);
         if (underline) {
-          this.drawingLine('underline', tx, ty, width, height);
+          this.drawingLine('underline', tx, ty, item.width, item.height);
         }
         if (strikethrough) {
-          this.drawingLine('strike', tx, ty, width, height);
+          this.drawingLine('strike', tx, ty, item.width, item.height);
         }
+        draw.restore();
       }
       crop.close();
     } else {
       for (let i = 0, len = textArray.length; i < len; i++) {
         const item = textArray[i];
-        const { text, x, y, ascent, width, height } = item;
-        const tx = bx + x;
-        const ty = by + y;
-        draw.fillText(text, tx, ty + ascent);
+        const style = Object.assign({}, attr, item.style);
+        const fontItalic = `${style.italic ? 'italic' : ''}`;
+        const fontBold = `${style.bold ? 'bold' : ''}`;
+        const fontSize = `${style.size}px`;
+        const fontName = `${style.name}`;
+        const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
+        draw.save();
+        draw.attr({
+          font: fontStyle.trim(),
+          fillStyle: style.color,
+          strokeStyle: style.color,
+        });
+        const tx = bx + item.tx;
+        const ty = by + item.ty;
+        draw.fillText(item.text, tx, ty + item.ascent);
         if (underline) {
-          this.drawingLine('underline', tx, ty, width, height);
+          this.drawingLine('underline', tx, ty, item.width, item.height);
         }
         if (strikethrough) {
-          this.drawingLine('strike', tx, ty, width, height);
+          this.drawingLine('strike', tx, ty, item.width, item.height);
         }
+        draw.restore();
       }
     }
     return new DrawResult({
@@ -278,7 +326,7 @@ class RichHorizonDraw extends BaseRich {
       crop.open();
       for (let index = 0, textLength = textArray.length; index < textLength; index++) {
         // 文本信息
-        let item = textArray[index];
+        let wrapLine = textArray[index];
         // 计算文本坐标
         let bx = rect.x;
         let by = rect.y;
@@ -288,10 +336,10 @@ class RichHorizonDraw extends BaseRich {
             bx += alignPadding;
             break;
           case BaseFont.ALIGN.center:
-            bx += width / 2 - item.width / 2;
+            bx += width / 2 - wrapLine.width / 2;
             break;
           case BaseFont.ALIGN.right:
-            bx += width - item.width - alignPadding;
+            bx += width - wrapLine.width - alignPadding;
             break;
         }
         switch (verticalAlign) {
@@ -305,22 +353,44 @@ class RichHorizonDraw extends BaseRich {
             by += height - textHeight - verticalAlignPadding;
             break;
         }
-        // 绘制文本
-        const tx = item.tx + bx;
-        const ty = item.ty + by;
-        draw.fillText(item.text, tx, ty + item.ascent);
-        if (underline) {
-          this.drawingLine('underline', tx, ty, item.width, item.height);
-        }
-        if (strikethrough) {
-          this.drawingLine('strike', tx, ty, item.width, item.height);
+        // 子文本
+        let subLength = wrapLine.items.length;
+        let subIndex = 0;
+        while (subIndex < subLength) {
+          // 绘制文本
+          const item = wrapLine.items[subIndex];
+          const style = Object.assign({
+
+          }, attr, item.style);
+          const tx = item.tx + bx;
+          const ty = item.ty + by;
+          const fontItalic = `${style.italic ? 'italic' : ''}`;
+          const fontBold = `${style.bold ? 'bold' : ''}`;
+          const fontSize = `${style.size}px`;
+          const fontName = `${style.name}`;
+          const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
+          draw.save();
+          draw.attr({
+            font: fontStyle.trim(),
+            fillStyle: style.color,
+            strokeStyle: style.color,
+          });
+          draw.fillText(item.text, tx, ty + item.ascent);
+          if (underline) {
+            this.drawingLine('underline', tx, ty, item.width, item.height);
+          }
+          if (strikethrough) {
+            this.drawingLine('strike', tx, ty, item.width, item.height);
+          }
+          draw.restore();
+          subIndex++;
         }
       }
       crop.close();
     } else {
       for (let index = 0, textLength = textArray.length; index < textLength; index++) {
         // 文本信息
-        let item = textArray[index];
+        let wrapLine = textArray[index];
         // 计算文本坐标
         let bx = rect.x;
         let by = rect.y;
@@ -330,10 +400,10 @@ class RichHorizonDraw extends BaseRich {
             bx += alignPadding;
             break;
           case BaseFont.ALIGN.center:
-            bx += width / 2 - item.width / 2;
+            bx += width / 2 - wrapLine.width / 2;
             break;
           case BaseFont.ALIGN.right:
-            bx += width - item.width - alignPadding;
+            bx += width - wrapLine.width - alignPadding;
             break;
         }
         switch (verticalAlign) {
@@ -347,15 +417,35 @@ class RichHorizonDraw extends BaseRich {
             by += height - textHeight - verticalAlignPadding;
             break;
         }
-        // 绘制文本
-        const tx = item.tx + bx;
-        const ty = item.ty + by;
-        draw.fillText(item.text, tx, ty + item.ascent);
-        if (underline) {
-          this.drawingLine('underline', tx, ty, item.width, item.height);
-        }
-        if (strikethrough) {
-          this.drawingLine('strike', tx, ty, item.width, item.height);
+        // 子文本
+        let subLength = wrapLine.items.length;
+        let subIndex = 0;
+        while (subIndex < subLength) {
+          // 绘制文本
+          const item = wrapLine.items[subIndex];
+          const style = Object.assign({}, attr, item.style);
+          const tx = item.tx + bx;
+          const ty = item.ty + by;
+          const fontItalic = `${style.italic ? 'italic' : ''}`;
+          const fontBold = `${style.bold ? 'bold' : ''}`;
+          const fontSize = `${style.size}px`;
+          const fontName = `${style.name}`;
+          const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
+          draw.save();
+          draw.attr({
+            font: fontStyle.trim(),
+            fillStyle: style.color,
+            strokeStyle: style.color,
+          });
+          draw.fillText(item.text, tx, ty + item.ascent);
+          if (underline) {
+            this.drawingLine('underline', tx, ty, item.width, item.height);
+          }
+          if (strikethrough) {
+            this.drawingLine('strike', tx, ty, item.width, item.height);
+          }
+          draw.restore();
+          subIndex++;
         }
       }
     }

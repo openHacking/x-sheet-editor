@@ -138,7 +138,37 @@ class XlsxImport {
           }
           // 富文本
           if (richText) {
-            xCell.text = richText;
+            const rich = [];
+            for (let i = 0, len = richText.length; i < len; i++) {
+              const item = richText[i];
+              const style = {};
+              const { font, text } = item;
+              if (font) {
+                const { size, name, italic, bold } = font;
+                const { underline, strike, color } = font;
+                const { theme, tint, argb } = color;
+                style.size = this.fontSize(size);
+                style.bold = bold;
+                style.name = name;
+                style.italic = italic;
+                style.underline = underline;
+                style.strikethrough = strike;
+                if (PlainUtils.isNotUnDef(argb)) {
+                  const rgb = HexRgb(argb);
+                  style.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
+                } else if (PlainUtils.isNotUnDef(theme)) {
+                  style.color = themeXlsx.setTheme(theme).setTint(tint).getThemeRgb();
+                }
+                rich.push({
+                  text, style,
+                });
+              } else {
+                rich.push({
+                  text, style,
+                });
+              }
+            }
+            xCell.text = rich;
             xCell.contentType = Cell.CONTENT_TYPE.RICH_TEXT;
           } else {
             const type = PlainUtils.type(value);

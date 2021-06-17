@@ -46,41 +46,36 @@ class RichHorizonRuler extends RichHorizonVisual {
   truncateRuler() {
     if (this.used) { return; }
     const { size, name, bold, italic } = this;
-    const { spacing } = this;
-    const { draw, rich } = this;
+    const { draw, rich, spacing } = this;
     const textArray = [];
-    draw.save();
     let textWidth = 0;
     let textHeight = 0;
     for (let i = 0, len = rich.length; i < len; i++) {
       const item = rich[i];
+      const { text, style } = item;
       const attr = Object.assign({
         size, name, bold, italic,
-      }, item);
+      }, style);
       const fontItalic = `${attr.italic ? 'italic' : ''}`;
       const fontBold = `${attr.bold ? 'bold' : ''}`;
       const fontSize = `${attr.size}px`;
       const fontName = `${attr.name}`;
       const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
+      draw.save();
       draw.attr({
         font: fontStyle.trim(),
       });
-      const { width, height, ascent } = this.textSize(attr.text);
+      const { width, height, ascent } = this.textSize(text);
       textArray.push({
-        x: textWidth,
-        y: 0,
-        style: attr,
-        text: attr.text,
-        width,
-        height,
-        ascent,
+        tx: textWidth, ty: 0, style: attr, text, width, height, ascent,
       });
       if (textHeight < height) {
         textHeight = height;
       }
-      textWidth += width + spacing;
+      textWidth += spacing + width;
+      draw.restore();
     }
-    draw.restore();
+    RichWrapLine.wrapAlignBottom(textArray);
     if (textWidth > 0) {
       textWidth -= spacing;
     }
@@ -93,68 +88,62 @@ class RichHorizonRuler extends RichHorizonVisual {
   overflowRuler() {
     if (this.used) { return; }
     const { size, name, bold, italic } = this;
-    const { spacing } = this;
-    const { draw, rich } = this;
+    const { draw, rich, spacing } = this;
     const textArray = [];
-    draw.save();
     let textWidth = 0;
     let textHeight = 0;
     for (let i = 0, len = rich.length; i < len; i++) {
       const item = rich[i];
+      const { text, style } = item;
       const attr = Object.assign({
         size, name, bold, italic,
-      }, item);
+      }, style);
       const fontItalic = `${attr.italic ? 'italic' : ''}`;
       const fontBold = `${attr.bold ? 'bold' : ''}`;
       const fontSize = `${attr.size}px`;
       const fontName = `${attr.name}`;
       const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
+      draw.save();
       draw.attr({
         font: fontStyle.trim(),
       });
-      const { width, height, ascent } = this.textSize(attr.text);
+      const { width, height, ascent } = this.textSize(text);
       textArray.push({
-        x: textWidth,
-        y: 0,
-        style: attr,
-        text: attr.text,
-        width,
-        height,
-        ascent,
+        tx: textWidth, ty: 0, style: attr, text, width, height, ascent,
       });
       if (textHeight < height) {
         textHeight = height;
       }
-      textWidth += width + spacing;
+      textWidth += spacing + width;
+      draw.restore();
     }
-    draw.restore();
+    RichWrapLine.wrapAlignBottom(textArray);
     if (textWidth > 0) {
       textWidth -= spacing;
     }
-    this.truncateText = textArray;
-    this.truncateTextWidth = textWidth;
-    this.truncateTextHeight = textHeight;
+    this.overflowText = textArray;
+    this.overflowTextWidth = textWidth;
+    this.overflowTextHeight = textHeight;
     this.setUsedType(BaseRuler.USED.OVER_FLOW);
   }
 
   textWrapRuler() {
     if (this.used) { return; }
     const { size, name, bold, italic } = this;
-    const { draw, rich, rect } = this;
-    const { lineHeight, spacing } = this;
+    const { draw, rich, rect, spacing } = this;
     const { width } = rect;
+    const { lineHeight } = this;
     const alignPadding = this.getAlignPadding();
     const maxRectWidth = width - (alignPadding * 2);
     const textArray = [];
     const wrapLine = new RichWrapLine();
-    let textHeight = 0;
-    let textOffset = 0;
-    for (let i = 0, len = rich.length; i < len; i++) {
+    for (let i = 0, len = rich.length, eff = len - 1; i < len; i++) {
       const item = rich[i];
+      const { text, style } = item;
       draw.save();
       const attr = Object.assign({
         size, name, bold, italic,
-      }, item);
+      }, style);
       const fontItalic = `${attr.italic ? 'italic' : ''}`;
       const fontBold = `${attr.bold ? 'bold' : ''}`;
       const fontSize = `${attr.size}px`;
@@ -163,39 +152,41 @@ class RichHorizonRuler extends RichHorizonVisual {
       draw.attr({
         font: fontStyle.trim(),
       });
-      const breakArray = this.textBreak(attr.text);
+      const breakArray = this.textBreak(text);
       const breakLength = breakArray.length;
       let breakIndex = 0;
       while (breakIndex < breakLength) {
         if (breakIndex) {
-          const lineItem = wrapLine.getOrNew();
-          lineItem.tx = textOffset;
-          lineItem.ty = textHeight;
+          const lineItem = wrapLine.getOrNewItem();
+          lineItem.tx = wrapLine.offsetX;
+          lineItem.ty = wrapLine.offsetY;
           textArray.push({
             items: wrapLine.items,
             width: wrapLine.width,
             height: wrapLine.height,
           });
-          textOffset = 0;
-          textHeight += wrapLine.height + lineHeight;
-          wrapLine.reset();
+          wrapLine.addOffsetY(lineHeight);
+          wrapLine.addOffsetY(wrapLine.height);
+          wrapLine.resetWrapLine();
         }
         const text = breakArray[breakIndex];
         const textLength = text.length;
         let innerIndex = 0;
         while (innerIndex < textLength) {
-          const lineItem = wrapLine.getOrNew({ style: attr });
+          const lineItem = wrapLine.getOrNewItem({
+            style: attr, text: '',
+          });
           const measureText = lineItem.text + text.charAt(innerIndex);
           const measure = this.textSize(measureText);
-          const lineWidth = textOffset + spacing + measure.width;
+          const lineWidth = wrapLine.offsetX + measure.width;
           if (lineWidth > maxRectWidth) {
             if (wrapLine.width === 0) {
-              lineItem.tx = textOffset;
-              lineItem.ty = textHeight;
+              lineItem.ascent = measure.ascent;
               lineItem.text = measureText;
+              lineItem.tx = wrapLine.offsetX;
+              lineItem.ty = wrapLine.offsetY;
               lineItem.width = measure.width;
               lineItem.height = measure.height;
-              lineItem.ascent = measure.ascent;
               wrapLine.width = measure.width;
               wrapLine.height = measure.height;
               textArray.push({
@@ -205,21 +196,21 @@ class RichHorizonRuler extends RichHorizonVisual {
               });
               innerIndex += 1;
             } else {
-              lineItem.tx = textOffset;
-              lineItem.ty = textHeight;
+              lineItem.tx = wrapLine.offsetX;
+              lineItem.ty = wrapLine.offsetY;
               textArray.push({
                 items: wrapLine.items,
                 width: wrapLine.width,
                 height: wrapLine.height,
               });
             }
-            wrapLine.reset();
-            textOffset = 0;
-            textHeight += measure.height + lineHeight;
+            wrapLine.addOffsetY(lineHeight);
+            wrapLine.addOffsetY(wrapLine.height);
+            wrapLine.resetWrapLine();
           } else {
             lineItem.text = measureText;
-            lineItem.width = measure.width;
             lineItem.height = measure.height;
+            lineItem.width = measure.width;
             lineItem.ascent = measure.ascent;
             wrapLine.width = lineWidth;
             if (measure.height > wrapLine.height) {
@@ -228,28 +219,35 @@ class RichHorizonRuler extends RichHorizonVisual {
             innerIndex += 1;
           }
         }
-        if (wrapLine.width > 0) {
-          textOffset += wrapLine.width;
-          textHeight += wrapLine.height + lineHeight;
-        }
         breakIndex += 1;
       }
-      wrapLine.increase();
+      if (wrapLine.width > 0) {
+        const lineItem = wrapLine.getOrNewItem();
+        lineItem.tx = wrapLine.offsetX;
+        lineItem.ty = wrapLine.offsetY;
+        wrapLine.addWidth(spacing);
+        wrapLine.addOffsetX(spacing);
+        wrapLine.addOffsetX(lineItem.width);
+      }
+      if (i < eff) {
+        wrapLine.nextLineItem();
+      }
       draw.restore();
     }
     if (wrapLine.width > 0) {
-      const lineItem = wrapLine.getOrNew();
-      lineItem.tx = textOffset;
-      lineItem.ty = textHeight;
       textArray.push({
         items: wrapLine.items,
         width: wrapLine.width,
         height: wrapLine.height,
       });
-      textHeight += wrapLine.height + lineHeight;
+      wrapLine.addOffsetY(lineHeight);
+      wrapLine.addOffsetY(wrapLine.height);
+    }
+    if (wrapLine.offsetY > 0) {
+      wrapLine.addOffsetY(-lineHeight);
     }
     this.textWrapTextArray = textArray;
-    this.textWrapTextHeight = textHeight;
+    this.textWrapTextHeight = wrapLine.offsetY;
     this.setUsedType(BaseRuler.USED.TEXT_WRAP);
   }
 
