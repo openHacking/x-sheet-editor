@@ -17,7 +17,10 @@ module.exports = {
             presets: ['@babel/preset-env'],
           }
         },
-        include: [resolve('src'), resolve('test')],
+        include: [
+          resolve('src'),
+          resolve('test')
+        ],
       },
       {
         test: /\.css$/,
