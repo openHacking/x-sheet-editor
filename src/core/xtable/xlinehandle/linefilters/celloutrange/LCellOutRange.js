@@ -10,8 +10,9 @@ class LCellOutRange extends CellOutRange {
   }) {
     const { table } = this;
     const { merges } = table;
-    const merge = merges.getFirstIncludes(row, col);
-    if (merge) {
+    const lastMerge = merges.getFirstIncludes(row, col - 1);
+    const masterMerge = merges.getFirstIncludes(row, col);
+    if (masterMerge || lastMerge) {
       return XLineIteratorFilter.RETURN_TYPE.EXEC;
     }
     return this.master({ row, col }) && this.right({ row, col }) && this.left({ row, col })
@@ -23,15 +24,10 @@ class LCellOutRange extends CellOutRange {
     row, col,
   }) {
     const { table } = this;
-    const { cells, cols, merges } = table;
-    const lastMerge = merges.getFirstIncludes(row, col - 1);
+    const { cells, cols } = table;
     const last = cells.getCell(row, col - 1);
     const master = cells.getCell(row, col);
 
-    // 是否是合并单元格
-    if (lastMerge) {
-      return true;
-    }
     // 是否是空单元格
     if (PlainUtils.isUnDef(master) || master.isEmpty()) {
       return true;
@@ -138,12 +134,8 @@ class LCellOutRange extends CellOutRange {
           // 文本是否越界
           const width = table.getCellContentBoundOutWidth(row, i);
           if (width > leftWidth) {
-            // 只有master单元格为
-            // 空时才允许不绘制边框
-            if (PlainUtils.isUnDef(master) || master.isEmpty()) {
-              find = false;
-              return false;
-            }
+            find = false;
+            return false;
           }
           return true;
         })
@@ -269,15 +261,8 @@ class LCellOutRange extends CellOutRange {
           // 检查文本是否越界
           const width = table.getCellContentBoundOutWidth(row, j);
           if (width > rightWidth) {
-            // 只有master单元格和
-            // last单元格都是空时
-            // 才允许不绘制边框
-            const masterBlank = PlainUtils.isUnDef(master) || master.isEmpty();
-            const nextBlank = PlainUtils.isUnDef(last) || last.isEmpty();
-            if (masterBlank && nextBlank) {
-              find = false;
-              return false;
-            }
+            find = false;
+            return false;
           }
           return true;
         })
