@@ -246,6 +246,7 @@ class RichHorizonDraw extends BaseRich {
         draw,
         rect: overflow,
       });
+      crop.open();
       for (let i = 0, len = textArray.length; i < len; i++) {
         const item = textArray[i];
         const style = PlainUtils.extends({}, attr, item.style);
@@ -254,7 +255,6 @@ class RichHorizonDraw extends BaseRich {
         const fontSize = `${style.size}px`;
         const fontName = `${style.name}`;
         const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
-        console.log(style, item.text);
         draw.save();
         draw.attr({
           font: fontStyle.trim(),
@@ -282,7 +282,6 @@ class RichHorizonDraw extends BaseRich {
         const fontSize = `${style.size}px`;
         const fontName = `${style.name}`;
         const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
-        console.log(style, item.text);
         draw.save();
         draw.attr({
           font: fontStyle.trim(),
