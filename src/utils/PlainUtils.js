@@ -168,6 +168,20 @@ class PlainUtils {
     return JSON.parse(json);
   }
 
+  static extends(target, ...src) {
+    for (let i = 0, len = src.length; i < len; i++) {
+      const item = src[i];
+      // eslint-disable-next-line guard-for-in,no-restricted-syntax
+      for (let key in item) {
+        const value = item[key];
+        if (value) {
+          target[key] = value;
+        }
+      }
+    }
+    return target;
+  }
+
   static sum(objOrAry, cb = value => value) {
     let total = 0;
     let size = 0;

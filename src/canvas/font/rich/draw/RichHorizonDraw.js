@@ -2,6 +2,7 @@ import { BaseRich } from '../BaseRich';
 import { DrawResult } from '../../DrawResult';
 import { BaseFont } from '../../BaseFont';
 import { Crop } from '../../../Crop';
+import { PlainUtils } from '../../../../utils/PlainUtils';
 
 class RichHorizonDraw extends BaseRich {
 
@@ -132,7 +133,7 @@ class RichHorizonDraw extends BaseRich {
       crop.open();
       for (let i = 0, len = textArray.length; i < len; i++) {
         const item = textArray[i];
-        const style = Object.assign({}, attr, item.style);
+        const style = PlainUtils.extends({}, attr, item.style);
         const fontItalic = `${style.italic ? 'italic' : ''}`;
         const fontBold = `${style.bold ? 'bold' : ''}`;
         const fontSize = `${style.size}px`;
@@ -159,7 +160,7 @@ class RichHorizonDraw extends BaseRich {
     } else {
       for (let i = 0, len = textArray.length; i < len; i++) {
         const item = textArray[i];
-        const style = Object.assign({}, attr, item.style);
+        const style = PlainUtils.extends({}, attr, item.style);
         const fontItalic = `${style.italic ? 'italic' : ''}`;
         const fontBold = `${style.bold ? 'bold' : ''}`;
         const fontSize = `${style.size}px`;
@@ -247,12 +248,13 @@ class RichHorizonDraw extends BaseRich {
       });
       for (let i = 0, len = textArray.length; i < len; i++) {
         const item = textArray[i];
-        const style = Object.assign({}, attr, item.style);
+        const style = PlainUtils.extends({}, attr, item.style);
         const fontItalic = `${style.italic ? 'italic' : ''}`;
         const fontBold = `${style.bold ? 'bold' : ''}`;
         const fontSize = `${style.size}px`;
         const fontName = `${style.name}`;
         const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
+        console.log(style, item.text);
         draw.save();
         draw.attr({
           font: fontStyle.trim(),
@@ -274,12 +276,13 @@ class RichHorizonDraw extends BaseRich {
     } else {
       for (let i = 0, len = textArray.length; i < len; i++) {
         const item = textArray[i];
-        const style = Object.assign({}, attr, item.style);
+        const style = PlainUtils.extends({}, attr, item.style);
         const fontItalic = `${style.italic ? 'italic' : ''}`;
         const fontBold = `${style.bold ? 'bold' : ''}`;
         const fontSize = `${style.size}px`;
         const fontName = `${style.name}`;
         const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
+        console.log(style, item.text);
         draw.save();
         draw.attr({
           font: fontStyle.trim(),
@@ -359,9 +362,7 @@ class RichHorizonDraw extends BaseRich {
         while (subIndex < subLength) {
           // 绘制文本
           const item = wrapLine.items[subIndex];
-          const style = Object.assign({
-
-          }, attr, item.style);
+          const style = PlainUtils.extends({}, attr, item.style);
           const tx = item.tx + bx;
           const ty = item.ty + by;
           const fontItalic = `${style.italic ? 'italic' : ''}`;
@@ -423,7 +424,7 @@ class RichHorizonDraw extends BaseRich {
         while (subIndex < subLength) {
           // 绘制文本
           const item = wrapLine.items[subIndex];
-          const style = Object.assign({}, attr, item.style);
+          const style = PlainUtils.extends({}, attr, item.style);
           const tx = item.tx + bx;
           const ty = item.ty + by;
           const fontItalic = `${style.italic ? 'italic' : ''}`;

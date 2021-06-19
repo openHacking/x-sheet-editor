@@ -138,37 +138,33 @@ class XlsxImport {
           }
           // 富文本
           if (richText) {
-            const rich = [];
+            const richFonts = { fonts: [] };
             for (let i = 0, len = richText.length; i < len; i++) {
               const item = richText[i];
-              const style = {};
               const { font, text } = item;
+              const richFont = { text };
               if (font) {
                 const { size, name, italic, bold } = font;
                 const { underline, strike, color } = font;
                 const { theme, tint, argb } = color;
-                style.size = this.fontSize(size);
-                style.bold = bold;
-                style.name = name;
-                style.italic = italic;
-                style.underline = underline;
-                style.strikethrough = strike;
+                richFont.size = this.fontSize(size);
+                richFont.bold = bold;
+                richFont.name = name;
+                richFont.italic = italic;
+                richFont.underline = underline;
+                richFont.strikethrough = strike;
                 if (PlainUtils.isNotUnDef(argb)) {
                   const rgb = HexRgb(argb);
-                  style.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
+                  richFont.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
                 } else if (PlainUtils.isNotUnDef(theme)) {
-                  style.color = themeXlsx.setTheme(theme).setTint(tint).getThemeRgb();
+                  richFont.color = themeXlsx.setTheme(theme).setTint(tint).getThemeRgb();
                 }
-                rich.push({
-                  text, style,
-                });
+                richFonts.fonts.push(richFont);
               } else {
-                rich.push({
-                  text, style,
-                });
+                richFonts.fonts.push(richFont);
               }
             }
-            xCell.text = rich;
+            xCell.text = richFonts;
             xCell.contentType = Cell.CONTENT_TYPE.RICH_TEXT;
           } else {
             const type = PlainUtils.type(value);

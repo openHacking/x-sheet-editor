@@ -43,6 +43,9 @@ class XFilter extends XScreenCssBorderItem {
         activeIcon.ifFilterType = ifFilterType;
         activeIcon.ifFilterValue = ifFilterValue;
         this.filterFoldRow();
+        new Alert({
+          message: '开发人员正在努力施工中....',
+        }).open();
       },
     });
     this.flt = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-lt`);
@@ -77,11 +80,6 @@ class XFilter extends XScreenCssBorderItem {
    */
   bind() {
     const { table } = this;
-    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
-      if (this.display) {
-        this.xFilterOffset();
-      }
-    });
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       if (this.display) {
         ElPopUp.closeAll();
@@ -89,6 +87,11 @@ class XFilter extends XScreenCssBorderItem {
       }
     });
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RENDER, () => {
+      if (this.display) {
+        this.xFilterOffset();
+      }
+    });
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
       if (this.display) {
         this.xFilterOffset();
       }

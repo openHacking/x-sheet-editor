@@ -7,13 +7,14 @@ import {RichHorizonRuler} from "../ruler/RichHorizonRuler";
 import {RichVerticalRuler} from "../ruler/RichVerticalRuler";
 import {RichAngleBoxRuler} from "../ruler/RichAngleBoxRuler";
 import {RichAngleBarRuler} from "../ruler/RichAngleBarRuler";
+import { PlainUtils } from '../../../../utils/PlainUtils';
 
 class RichDrawTextBuilder {
 
   constructor({
     draw, rich, rect, overflow, attr
   }) {
-    this.attr = Object.assign({}, BaseFont.DEFAULT_RICH_ATTR, attr);
+    this.attr = PlainUtils.extends({}, BaseFont.DEFAULT_RICH_ATTR, attr);
     this.rich = rich;
     this.rect = rect;
     this.draw = draw;

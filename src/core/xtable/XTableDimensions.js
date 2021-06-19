@@ -1145,8 +1145,6 @@ class XTableDimensions extends Widget {
    * onAttach
    */
   onAttach() {
-    // 绑定表格事件
-    this.bind();
     // 注册焦点元素
     this.focus.register({ target: this });
     // 表格渲染组件
@@ -1168,6 +1166,8 @@ class XTableDimensions extends Widget {
     this.attach(this.yReSizer);
     this.attach(this.dropRowFixed);
     this.attach(this.dropColFixed);
+    // 绑定表格事件
+    this.bind();
     // 注册快捷键
     KeyBoardTabCode.register(this);
   }

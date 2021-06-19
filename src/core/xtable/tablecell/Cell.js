@@ -3,6 +3,7 @@ import { CellFont } from './CellFont';
 import { CellBorder } from './CellBorder';
 import { XIcon } from '../xicon/XIcon';
 import XTableFormat from '../XTableFormat';
+import { RichFonts } from './RichFonts';
 
 /**
  * Cell
@@ -66,6 +67,10 @@ class Cell {
         }
         case Cell.CONTENT_TYPE.STRING: {
           this.text = text.toString();
+          break;
+        }
+        case Cell.CONTENT_TYPE.RICH_TEXT: {
+          this.text = new RichFonts(text);
           break;
         }
       }

@@ -925,7 +925,7 @@
   display: inline-block;
 }
 .x-sheet-icon-img {
-  background-image: url(../img/sprite.svg?c643fa68a00732dc0ea739e6013c9a0c);
+  background-image: url(../img/sprite.svg?9f6330642b58f54f935dbb31b85a37a6);
   width: 18px;
   height: 18px;
 }
@@ -999,12 +999,12 @@
   background-position: -216px -54px;
 }
 .x-sheet-icon-img.clear-color {
-  background-image: url(../img/material_common_2.svg?21a8c011b47da73c7c0e3a2468fd4c6a);
+  background-image: url(../img/material_common_2.svg?25e2b4a920def2664094d88742b408de);
   background-repeat: no-repeat;
   background-position: 0 -148px;
 }
 .x-sheet-icon-img.plus {
-  background-image: url(../img/material_common_2.svg?21a8c011b47da73c7c0e3a2468fd4c6a);
+  background-image: url(../img/material_common_2.svg?25e2b4a920def2664094d88742b408de);
   background-repeat: no-repeat;
   background-position: 0 -2839px;
 }
@@ -1735,7 +1735,7 @@
   padding: 5px;
 }
 .x-sheet-option-logo {
-  background-image: url(../img/material_common_1.svg?cf5e19a6764d65fc5674b525d13d3d1e);
+  background-image: url(../img/material_common_1.svg?e64c2ae7da8d4e5e45ca9f2f8de76f1c);
   background-repeat: no-repeat;
   background-position: 0 -3910px;
   width: 40px;
@@ -1905,3 +1905,5 @@
   background-size: 40px 40px;
 }
 
+
+/*# sourceMappingURL=XSheet.css.map*/

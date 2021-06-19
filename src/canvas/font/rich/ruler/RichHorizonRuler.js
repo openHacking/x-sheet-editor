@@ -52,15 +52,15 @@ class RichHorizonRuler extends RichHorizonVisual {
     let textHeight = 0;
     for (let i = 0, len = rich.length; i < len; i++) {
       const item = rich[i];
-      const { text, style } = item;
-      const attr = Object.assign({
+      const attr = PlainUtils.extends({
         size, name, bold, italic,
-      }, style);
+      }, item);
       const fontItalic = `${attr.italic ? 'italic' : ''}`;
       const fontBold = `${attr.bold ? 'bold' : ''}`;
       const fontSize = `${attr.size}px`;
       const fontName = `${attr.name}`;
       const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
+      const { text } = attr;
       draw.save();
       draw.attr({
         font: fontStyle.trim(),
@@ -94,15 +94,15 @@ class RichHorizonRuler extends RichHorizonVisual {
     let textHeight = 0;
     for (let i = 0, len = rich.length; i < len; i++) {
       const item = rich[i];
-      const { text, style } = item;
-      const attr = Object.assign({
+      const attr = PlainUtils.extends({
         size, name, bold, italic,
-      }, style);
+      }, item);
       const fontItalic = `${attr.italic ? 'italic' : ''}`;
       const fontBold = `${attr.bold ? 'bold' : ''}`;
       const fontSize = `${attr.size}px`;
       const fontName = `${attr.name}`;
       const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
+      const { text } = attr;
       draw.save();
       draw.attr({
         font: fontStyle.trim(),
@@ -139,16 +139,16 @@ class RichHorizonRuler extends RichHorizonVisual {
     const wrapLine = new RichWrapLine();
     for (let i = 0, len = rich.length, eff = len - 1; i < len; i++) {
       const item = rich[i];
-      const { text, style } = item;
       draw.save();
-      const attr = Object.assign({
+      const attr = PlainUtils.extends({
         size, name, bold, italic,
-      }, style);
+      }, item);
       const fontItalic = `${attr.italic ? 'italic' : ''}`;
       const fontBold = `${attr.bold ? 'bold' : ''}`;
       const fontSize = `${attr.size}px`;
       const fontName = `${attr.name}`;
       const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
+      const { text } = attr;
       draw.attr({
         font: fontStyle.trim(),
       });
