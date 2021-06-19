@@ -18,10 +18,12 @@ class RichFonts {
     });
   }
 
-  setScaleAdapter(scaleAdapter) {
+  plain(option) {
+    const result = [];
     this.fonts.forEach((font) => {
-      font.setScaleAdapter(scaleAdapter);
+      result.push(font.plain(option));
     });
+    return result;
   }
 
 }

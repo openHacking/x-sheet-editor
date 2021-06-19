@@ -36,9 +36,12 @@ class TextBuilder {
     const padding = scaleAdapter.goto(fontAttr.padding);
     switch (contentType) {
       case Cell.CONTENT_TYPE.RICH_TEXT: {
-        formatText.setScaleAdapter(scaleAdapter);
+        const rich = formatText.plain((font) => {
+          font.size = scaleAdapter.goto(font.size);
+          return font;
+        });
         const builder = new RichDrawTextBuilder({
-          rich: formatText.fonts, draw, overflow, rect, attr: fontAttr,
+          rich, draw, overflow, rect, attr: fontAttr,
         });
         builder.setSize(size);
         builder.setPadding(padding);

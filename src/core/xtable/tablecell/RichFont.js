@@ -23,13 +23,8 @@ class RichFont {
     });
   }
 
-  setScaleAdapter(scaleAdapter) {
-    if (this.scaleAdapter !== scaleAdapter) {
-      this.scaleAdapter = scaleAdapter;
-      if (this.size) {
-        this.size = this.scaleAdapter.goto(this.size);
-      }
-    }
+  plain(option = v => v) {
+    return option(this.clone());
   }
 
 }
