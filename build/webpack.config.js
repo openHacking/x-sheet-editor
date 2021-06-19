@@ -39,28 +39,38 @@ module.exports = {
         ],
       },
       {
-        test: /\.(png|svg|jpg|gif)$/,
+        test: /\.(png|svg|jpe?g|gif)$/i,
         use: [
-          'file-loader',
-        ],
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 18192,
+              name: '[name].[ext]?[hash]',
+              esModule: false
+            }
+          }
+        ]
       },
       {
-        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
         use: [
-          'file-loader',
-        ],
+          'file-loader'
+        ]
       },
       {
         test: /\.worker\.js$/,
-        use: [{
-          loader: 'worker-loader',
-          options: {
-            inline: true,
-            name: '[name].js'
+        use: [
+          {
+            loader: 'worker-loader',
+            options: {
+              inline: true,
+              name: '[name].js'
+            },
           },
-        }, {
+          {
             loader: 'babel-loader'
-        }]
+          },
+        ]
       }
     ],
   },

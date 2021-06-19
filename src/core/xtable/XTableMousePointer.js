@@ -1,6 +1,6 @@
-import cell from '../../../assets/svg/cell.png';
-import sResize from '../../../assets/svg/s-resize.png';
-import eResize from '../../../assets/svg/e-resize.png';
+import cell from '../../../assets/img/cell.png';
+import sResize from '../../../assets/img/s-resize.png';
+import eResize from '../../../assets/img/e-resize.png';
 
 class XTableMousePointer {
 
@@ -14,6 +14,14 @@ class XTableMousePointer {
       this.flag = flag;
     }
     return this;
+  }
+
+  free(flag) {
+    if (this.flag === flag) {
+      this.flag = null;
+      return true;
+    }
+    return false;
   }
 
   set(type, token) {
@@ -37,26 +45,18 @@ class XTableMousePointer {
     table.css('cursor', type);
   }
 
-  free(flag) {
-    if (this.flag === flag) {
-      this.flag = null;
-      return true;
-    }
-    return false;
-  }
-
 }
 
 XTableMousePointer.KEYS = {
   cell: 'cell',
+  pointer: 'pointer',
+  default: 'default',
   crosshair: 'crosshair',
   eResize: 'e-resize',
   sResize: 's-resize',
   grab: '-webkit-grab',
-  default: 'default',
   rowResize: 'row-resize',
   colResize: 'col-resize',
-  pointer: 'pointer',
 };
 
 export { XTableMousePointer };
