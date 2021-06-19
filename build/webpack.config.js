@@ -11,12 +11,14 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env'],
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env'],
+            }
           }
-        },
+        ],
         include: [
           resolve('src'),
           resolve('test')
@@ -25,17 +27,35 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          MiniCssExtractPlugin.loader,
-          'style-loader',
-          'css-loader',
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../',
+            }
+          },
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+          },
         ],
       },
       {
         test: /\.less$/,
         use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-          'less-loader',
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '../',
+            }
+          },
+          {
+            loader: 'css-loader',
+          },
+          {
+            loader: 'less-loader',
+          }
         ],
       },
       {
@@ -45,6 +65,7 @@ module.exports = {
             loader: 'url-loader',
             options: {
               limit: 18192,
+              outputPath: 'img',
               name: '[name].[ext]?[hash]',
               esModule: false
             }
@@ -54,7 +75,13 @@ module.exports = {
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/i,
         use: [
-          'file-loader'
+          {
+            loader: 'file-loader',
+            options: {
+              outputPath: 'font',
+              esModule: false
+            }
+          }
         ]
       },
       {
@@ -64,7 +91,7 @@ module.exports = {
             loader: 'worker-loader',
             options: {
               inline: true,
-              name: '[name].js'
+              name: 'js/[name].js'
             },
           },
           {

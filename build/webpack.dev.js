@@ -20,12 +20,12 @@ module.exports = merge(common, {
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
-      filename: '[name].[contenthash].css',
+      filename: 'css/[name].[contenthash].css',
       // chunkFilename: devMode ? '[id].[hash].css' : '[id].css',
     }),
   ],
   output: {
-    filename: '[name].[contenthash].js',
+    filename: 'js/[name].[contenthash].js',
   },
   devServer: {
     host: '127.0.0.1',
