@@ -121,19 +121,21 @@ class XlsxImport {
           };
           // 字体属性
           if (font) {
-            const { name, bold, size, italic, underline, strike, color = {} } = font;
-            const { theme, tint, argb } = color;
+            const { name, bold, size, italic, underline, strike, color } = font;
             xCell.fontAttr.name = name;
             xCell.fontAttr.size = this.fontSize(size);
             xCell.fontAttr.italic = italic;
             xCell.fontAttr.bold = bold;
             xCell.fontAttr.underline = underline;
             xCell.fontAttr.strikethrough = strike;
-            if (PlainUtils.isNotUnDef(argb)) {
-              const rgb = HexRgb(argb);
-              xCell.fontAttr.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
-            } else if (PlainUtils.isNotUnDef(theme)) {
-              xCell.fontAttr.color = themeXlsx.setTheme(theme).setTint(tint).getThemeRgb();
+            if (color) {
+              const { theme, tint, argb } = color;
+              if (PlainUtils.isNotUnDef(argb)) {
+                const rgb = HexRgb(argb);
+                xCell.fontAttr.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
+              } else if (PlainUtils.isNotUnDef(theme)) {
+                xCell.fontAttr.color = themeXlsx.setTheme(theme).setTint(tint).getThemeRgb();
+              }
             }
           }
           // 富文本
@@ -146,18 +148,20 @@ class XlsxImport {
               if (font) {
                 const { size, name, italic, bold } = font;
                 const { underline, strike, color } = font;
-                const { theme, tint, argb } = color;
                 richFont.size = this.fontSize(size);
                 richFont.bold = bold;
                 richFont.name = name;
                 richFont.italic = italic;
                 richFont.underline = underline;
                 richFont.strikethrough = strike;
-                if (PlainUtils.isNotUnDef(argb)) {
-                  const rgb = HexRgb(argb);
-                  richFont.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
-                } else if (PlainUtils.isNotUnDef(theme)) {
-                  richFont.color = themeXlsx.setTheme(theme).setTint(tint).getThemeRgb();
+                if (color) {
+                  const { theme, tint, argb } = color;
+                  if (PlainUtils.isNotUnDef(argb)) {
+                    const rgb = HexRgb(argb);
+                    richFont.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
+                  } else if (PlainUtils.isNotUnDef(theme)) {
+                    richFont.color = themeXlsx.setTheme(theme).setTint(tint).getThemeRgb();
+                  }
                 }
                 richFonts.fonts.push(richFont);
               } else {
@@ -217,63 +221,71 @@ class XlsxImport {
           // 单元格边框
           if (border) {
             if (border.right) {
-              const { style, color = {} } = border.right;
-              const { theme, tint, argb } = color;
+              const { style, color } = border.right;
               const { widthType, type } = this.borderType(style);
               xCell.borderAttr.right.widthType = widthType;
               xCell.borderAttr.right.type = type;
               xCell.borderAttr.right.display = true;
-              if (PlainUtils.isNotUnDef(argb)) {
-                const rgb = HexRgb(argb);
-                xCell.borderAttr.right.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
-              } else if (PlainUtils.isNotUnDef(theme)) {
-                xCell.borderAttr.right.color = themeXlsx.setTheme(theme).setTint(tint)
-                  .getThemeRgb();
+              if (color) {
+                const { theme, tint, argb } = color;
+                if (PlainUtils.isNotUnDef(argb)) {
+                  const rgb = HexRgb(argb);
+                  xCell.borderAttr.right.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
+                } else if (PlainUtils.isNotUnDef(theme)) {
+                  xCell.borderAttr.right.color = themeXlsx.setTheme(theme).setTint(tint)
+                    .getThemeRgb();
+                }
               }
             }
             if (border.top) {
-              const { style, color = {} } = border.top;
-              const { theme, tint, argb } = color;
+              const { style, color } = border.top;
               const { widthType, type } = this.borderType(style);
               xCell.borderAttr.top.display = true;
               xCell.borderAttr.top.type = type;
               xCell.borderAttr.top.widthType = widthType;
-              if (PlainUtils.isNotUnDef(argb)) {
-                const rgb = HexRgb(argb);
-                xCell.borderAttr.top.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
-              } else if (PlainUtils.isNotUnDef(theme)) {
-                xCell.borderAttr.top.color = themeXlsx.setTheme(theme).setTint(tint)
-                  .getThemeRgb();
+              if (color) {
+                const { theme, tint, argb } = color;
+                if (PlainUtils.isNotUnDef(argb)) {
+                  const rgb = HexRgb(argb);
+                  xCell.borderAttr.top.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
+                } else if (PlainUtils.isNotUnDef(theme)) {
+                  xCell.borderAttr.top.color = themeXlsx.setTheme(theme).setTint(tint)
+                    .getThemeRgb();
+                }
               }
             }
             if (border.left) {
-              const { style, color = {} } = border.left;
-              const { theme, tint, argb } = color;
+              const { style, color } = border.left;
               const { widthType, type } = this.borderType(style);
               xCell.borderAttr.left.display = true;
               xCell.borderAttr.left.type = type;
               xCell.borderAttr.left.widthType = widthType;
-              if (PlainUtils.isNotUnDef(argb)) {
-                const rgb = HexRgb(argb);
-                xCell.borderAttr.left.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
-              } else if (PlainUtils.isNotUnDef(theme)) {
-                xCell.borderAttr.left.color = themeXlsx.setTheme(theme).setTint(tint)
-                  .getThemeRgb();
+              if (color) {
+                const { theme, tint, argb } = color;
+                if (PlainUtils.isNotUnDef(argb)) {
+                  const rgb = HexRgb(argb);
+                  xCell.borderAttr.left.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
+                } else if (PlainUtils.isNotUnDef(theme)) {
+                  xCell.borderAttr.left.color = themeXlsx.setTheme(theme).setTint(tint)
+                    .getThemeRgb();
+                }
               }
             }
             if (border.bottom) {
-              const { style, color = {} } = border.bottom;
-              const { theme, tint, argb } = color;
+              const { style, color } = border.bottom;
               const { widthType, type } = this.borderType(style);
               xCell.borderAttr.bottom.display = true;
               xCell.borderAttr.bottom.type = type;
               xCell.borderAttr.bottom.widthType = widthType;
-              if (PlainUtils.isNotUnDef(argb)) {
-                const rgb = HexRgb(argb);
-                xCell.borderAttr.bottom.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
-              } else if (PlainUtils.isNotUnDef(theme)) {
-                xCell.borderAttr.bottom.color = themeXlsx.setTheme(theme).setTint(tint)
-                  .getThemeRgb();
+              if (color) {
+                const { theme, tint, argb } = color;
+                if (PlainUtils.isNotUnDef(argb)) {
+                  const rgb = HexRgb(argb);
+                  xCell.borderAttr.bottom.color = ColorPicker.parseHexToRgb(rgb, ColorArray.BLACK);
+                } else if (PlainUtils.isNotUnDef(theme)) {
+                  xCell.borderAttr.bottom.color = themeXlsx.setTheme(theme).setTint(tint)
+                    .getThemeRgb();
+                }
               }
             }
           }

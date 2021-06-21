@@ -4,6 +4,8 @@
 import * as tXml from 'txml';
 import { ColorPicker } from '../../module/colorpicker/ColorPicker';
 import { XDraw } from '../../canvas/XDraw';
+import { PlainUtils } from '../../utils/PlainUtils';
+import { ColorArray } from '../../module/colorpicker/colorarray/ColorArray';
 
 function HexRgb(argb) {
   if (argb) {
@@ -108,18 +110,7 @@ class RgbColor {
 
 class Theme {
 
-  constructor(theme = 0, tint = 0, colorPallate = [
-    'FFFFFF',
-    '000000',
-    'EEECE1',
-    '1F497D',
-    '4F81BD',
-    'C0504D',
-    '9BBB59',
-    '8064A2',
-    '4BACC6',
-    'F79646',
-  ]) {
+  constructor(theme = 0, tint = 0, colorPallate = []) {
     this.cacheTheme = {};
     this.tint = tint;
     this.theme = theme;
@@ -137,17 +128,15 @@ class Theme {
     return this;
   }
 
-  setTheme(theme = 0) {
-    this.theme = theme;
-    return this;
-  }
-
   getThemeRgb() {
     const key = `${this.theme}+${this.tint}`;
     if (this.cacheTheme[key]) {
       return this.cacheTheme[key];
     }
     const hex = this.colorPallate[this.theme];
+    if (PlainUtils.isUnDef(hex)) {
+      return ColorArray.BLACK;
+    }
     const rgb = ColorPicker.hexToRgb(hex);
     const rgbColor = new RgbColor(rgb.r, rgb.g, rgb.b);
     const hlsColor = new HlsColor().rgbToHls(rgbColor);
@@ -172,6 +161,11 @@ class Theme {
       value = lum * (1.0 - tint) + (255 - 255 * (1.0 - tint));
     }
     return value;
+  }
+
+  setTheme(theme = 0) {
+    this.theme = theme;
+    return this;
   }
 }
 
