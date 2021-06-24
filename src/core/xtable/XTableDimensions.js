@@ -1145,6 +1145,8 @@ class XTableDimensions extends Widget {
    * onAttach
    */
   onAttach() {
+    // 绑定表格事件
+    this.bindCacheClear();
     // 注册焦点元素
     this.focus.register({ target: this });
     // 表格渲染组件
@@ -1166,16 +1168,18 @@ class XTableDimensions extends Widget {
     this.attach(this.yReSizer);
     this.attach(this.dropRowFixed);
     this.attach(this.dropColFixed);
-    // 绑定表格事件
-    this.bind();
+    // 图标事件绑定
+    this.bindIconEvent();
+    // 表格事件绑定
+    this.bindTableEvent();
     // 注册快捷键
     KeyBoardTabCode.register(this);
   }
 
   /**
-   * 事件绑定
+   * 清理缓存
    */
-  bind() {
+  bindCacheClear() {
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.FIXED_ROW_CHANGE, () => {
       this.recache();
       this.resize();
@@ -1192,9 +1196,12 @@ class XTableDimensions extends Widget {
       this.recache();
       this.resize();
     });
-    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
-      this.render();
-    });
+  }
+
+  /**
+   * 图标事件
+   */
+  bindIconEvent() {
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       const { x, y } = this.eventXy(e);
       const info = this.getRiCiByXy(x, y);
@@ -1213,11 +1220,21 @@ class XTableDimensions extends Widget {
   }
 
   /**
+   * 表格事件
+   */
+  bindTableEvent() {
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
+      this.render();
+    });
+  }
+
+  /**
    * 移除事件绑定
    */
   unbind() {
-    this.keyboard.unbind();
+    XEvent.unbind(this);
     this.focus.unbind();
+    this.keyboard.unbind();
   }
 
   /**

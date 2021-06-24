@@ -1,6 +1,6 @@
-import { RichRuler } from '../RichRuler';
+import { RichVerticalVisual } from './RichVerticalVisual';
 
-class RichVerticalRuler extends RichRuler {
+class RichVerticalRuler extends RichVerticalVisual {
 
 }
 

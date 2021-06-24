@@ -26,19 +26,19 @@ class YHeightLight extends Widget {
 
   bind() {
     const { table } = this;
-    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, () => {
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       this.offsetHandle();
     });
-    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT, () => {
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
+      this.offsetHandle();
+    });
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, () => {
       this.offsetHandle();
     });
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH, () => {
       this.offsetHandle();
     });
-    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      this.offsetHandle();
-    });
-    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT, () => {
       this.offsetHandle();
     });
   }

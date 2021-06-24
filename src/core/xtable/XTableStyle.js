@@ -909,15 +909,24 @@ class XTableContentUI extends XTableUI {
         newRow: () => {
           max = 0;
         },
+        mergeCallback: (row) => {
+          const hasRowAngelCell = table.hasAngleCell(row);
+          if (hasRowAngelCell) {
+            return TEXT_BREAK_LOOP.CONTINUE;
+          }
+          return TEXT_BREAK_LOOP.ROW;
+        },
         cellsINCallback: (row, col, cell, rect, overflow) => {
           if (cell.isEmpty()) {
             return TEXT_BREAK_LOOP.CONTINUE;
           }
           const { fontAttr } = cell;
           const { align, textWrap, direction } = fontAttr;
-          const allowTextAlign = align === BaseFont.ALIGN.left || align === BaseFont.ALIGN.center;
-          const allowTextWrap = textWrap === BaseFont.TEXT_WRAP.OVER_FLOW;
+          const allowAlignCenter = align === BaseFont.ALIGN.center;
+          const allowAlignLeft = align === BaseFont.ALIGN.left;
+          const allowTextAlign = allowAlignCenter || allowAlignLeft;
           const allowDirection = direction === BaseFont.TEXT_DIRECTION.ANGLE;
+          const allowTextWrap = textWrap === BaseFont.TEXT_WRAP.OVER_FLOW;
           if (allowTextAlign && (allowTextWrap || allowDirection)) {
             const size = table.getCellContentBoundOutWidth(row, col);
             if (size === 0 || size > max) {
@@ -935,13 +944,12 @@ class XTableContentUI extends XTableUI {
               cell.setRightSdistWidth(result.rightSdist);
             }
           }
-          return table.hasAngleCell(row)
-            ? TEXT_BREAK_LOOP.CONTINUE
-            : TEXT_BREAK_LOOP.ROW;
+          const hasRowAngelCell = table.hasAngleCell(row);
+          if (hasRowAngelCell) {
+            return TEXT_BREAK_LOOP.CONTINUE;
+          }
+          return TEXT_BREAK_LOOP.ROW;
         },
-        mergeCallback: row => (table.hasAngleCell(row)
-          ? TEXT_BREAK_LOOP.CONTINUE
-          : TEXT_BREAK_LOOP.ROW),
       });
       draw.offset(0, 0);
     }
@@ -961,13 +969,22 @@ class XTableContentUI extends XTableUI {
         newRow: () => {
           max = 0;
         },
+        mergeCallback: (row) => {
+          const hasRowAngelCell = table.hasAngleCell(row);
+          if (hasRowAngelCell) {
+            return TEXT_BREAK_LOOP.CONTINUE;
+          }
+          return TEXT_BREAK_LOOP.ROW;
+        },
         cellsINCallback: (row, col, cell, rect, overflow) => {
           if (cell.isEmpty()) {
             return TEXT_BREAK_LOOP.CONTINUE;
           }
           const { fontAttr } = cell;
           const { align, textWrap, direction } = fontAttr;
-          const allowTextAlign = align === BaseFont.ALIGN.right || align === BaseFont.ALIGN.center;
+          const allowAlignCenter = align === BaseFont.ALIGN.center;
+          const allowAlignRight = align === BaseFont.ALIGN.right;
+          const allowTextAlign = allowAlignCenter || allowAlignRight;
           const allowDirection = direction === BaseFont.TEXT_DIRECTION.ANGLE;
           const allowTextWrap = textWrap === BaseFont.TEXT_WRAP.OVER_FLOW;
           if (allowTextAlign && (allowTextWrap || allowDirection)) {
@@ -987,13 +1004,12 @@ class XTableContentUI extends XTableUI {
               cell.setRightSdistWidth(result.rightSdist);
             }
           }
-          return table.hasAngleCell(row)
-            ? TEXT_BREAK_LOOP.CONTINUE
-            : TEXT_BREAK_LOOP.ROW;
+          const hasRowAngelCell = table.hasAngleCell(row);
+          if (hasRowAngelCell) {
+            return TEXT_BREAK_LOOP.CONTINUE;
+          }
+          return TEXT_BREAK_LOOP.ROW;
         },
-        mergeCallback: row => (table.hasAngleCell(row)
-          ? TEXT_BREAK_LOOP.CONTINUE
-          : TEXT_BREAK_LOOP.ROW),
       });
       draw.offset(0, 0);
     }

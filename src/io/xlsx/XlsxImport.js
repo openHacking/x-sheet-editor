@@ -77,16 +77,18 @@ class XlsxImport {
       const lastIndex = cols.length - 1;
       cols.forEach((col, idx) => {
         const { min, max, width } = col;
-        const colWidth = this.colWidth(width);
-        if (min === max || lastIndex === idx) {
-          xCols.data[min - 1] = {
-            width: colWidth,
-          };
-        } else {
-          for (let i = min; i <= max; i++) {
-            xCols.data[i - 1] = {
+        if (width) {
+          const colWidth = this.colWidth(width);
+          if (min === max || lastIndex === idx) {
+            xCols.data[min - 1] = {
               width: colWidth,
             };
+          } else {
+            for (let i = min; i <= max; i++) {
+              xCols.data[i - 1] = {
+                width: colWidth,
+              };
+            }
           }
         }
       });
@@ -94,9 +96,11 @@ class XlsxImport {
       rows.forEach((row) => {
         const { cells, height, number } = row;
         const rowIndex = number - 1;
-        xRows.data[rowIndex] = {
-          height: this.rowHeight(height),
-        };
+        if (height) {
+          xRows.data[rowIndex] = {
+            height: this.rowHeight(height),
+          };
+        }
         // 读取数据
         const item = [];
         cells.forEach((cell) => {
