@@ -37,7 +37,7 @@ class Cell {
     leftSdistWidth = 0,
     rightSdistWidth = 0,
     contentType = Cell.CONTENT_TYPE.STRING,
-  }) {
+  } = {}) {
     this.ruler = ruler;
     this.text = text;
     this.background = background;
