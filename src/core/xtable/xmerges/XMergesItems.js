@@ -24,6 +24,10 @@ class XMergesItems {
     this.recovery.push(point);
   }
 
+  getSizeOf() {
+    return this.items.length;
+  }
+
   getItems() {
     return this.items;
   }

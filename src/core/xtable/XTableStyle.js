@@ -35,7 +35,6 @@ import { XTableDataItems } from './XTableDataItems';
 import { Path } from '../../canvas/Path';
 import { Point } from '../../canvas/Point';
 import { RTCosKit, RTSinKit } from '../../canvas/RTFunction';
-import { WidthUnit } from './tableunit/WidthUnit';
 import { HeightUnit } from './tableunit/HeightUnit';
 import { WideUnit } from './tableunit/WideUnit';
 
@@ -2810,7 +2809,6 @@ class XTableStyle extends Widget {
     this.wideUnit = new WideUnit({
       table: this,
     });
-    this.widthUnit = new WidthUnit(this);
   }
 
   /**

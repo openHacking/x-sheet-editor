@@ -1,51 +1,20 @@
 import { XTableDataItem } from './XTableDataItem';
-import { Cell } from './tablecell/Cell';
-import { PlainUtils } from '../../utils/PlainUtils';
 
 class XTableDataItems {
 
   constructor(items = []) {
     this.items = items;
-    this.canWrapAll = true;
   }
 
   wrap(line, ci) {
-    const ele = line[ci];
-    if (ele) {
-      if (ele instanceof XTableDataItem) {
-        return ele;
-      }
-      const item = new XTableDataItem();
-      if (PlainUtils.isString(ele)) {
-        item.setCell(new Cell({ text: ele }));
-      } else if (ele && ele.cell) {
-        item.setCell(new Cell(ele.cell));
-      } else {
-        item.setCell(new Cell(ele));
-      }
+    let item = line[ci];
+    if (item) {
+      item = item instanceof XTableDataItem
+        ? item : new XTableDataItem(item);
       line[ci] = item;
       return item;
     }
-    return ele;
-  }
-
-  wrapAll() {
-    const { canWrapAll } = this;
-    if (canWrapAll) {
-      const { items } = this;
-      this.canWrapAll = false;
-      for (let ri = 0, riLen = items.length; ri < riLen; ri++) {
-        const line = items[ri];
-        if (line) {
-          for (let ci = 0, ciLen = line.length; ci < ciLen; ci++) {
-            const item = line[ci];
-            if (item) {
-              this.wrap(line, ci);
-            }
-          }
-        }
-      }
-    }
+    return item;
   }
 
   split(sri, eri, sci, eci) {
@@ -62,17 +31,6 @@ class XTableDataItems {
     const line = this.items[ri] || [];
     line[ci] = item;
     this.items[ri] = line;
-  }
-
-  clearRi(ri) {
-    this.items[ri] = null;
-  }
-
-  clearCi(ri, ci) {
-    const row = this.items[ri];
-    if (row) {
-      row[ci] = null;
-    }
   }
 
   setOrNew(ri, ci, item) {

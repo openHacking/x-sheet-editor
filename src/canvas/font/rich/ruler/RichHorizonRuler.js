@@ -1,7 +1,7 @@
 import { BaseRuler } from '../../BaseRuler';
 import { RichHorizonVisual } from './RichHorizonVisual';
 import { BaseFont } from '../../BaseFont';
-import { RichWrapLine } from './RichWrapLine';
+import { RichHorizonWrapLine } from './RichHorizonWrapLine';
 import { PlainUtils } from '../../../../utils/PlainUtils';
 
 class RichHorizonRuler extends RichHorizonVisual {
@@ -75,7 +75,7 @@ class RichHorizonRuler extends RichHorizonVisual {
       textWidth += spacing + width;
       draw.restore();
     }
-    RichWrapLine.wrapAlignBottom(textArray);
+    RichHorizonWrapLine.wrapAlignBottom(textArray);
     if (textWidth > 0) {
       textWidth -= spacing;
     }
@@ -117,7 +117,7 @@ class RichHorizonRuler extends RichHorizonVisual {
       textWidth += spacing + width;
       draw.restore();
     }
-    RichWrapLine.wrapAlignBottom(textArray);
+    RichHorizonWrapLine.wrapAlignBottom(textArray);
     if (textWidth > 0) {
       textWidth -= spacing;
     }
@@ -136,10 +136,9 @@ class RichHorizonRuler extends RichHorizonVisual {
     const alignPadding = this.getAlignPadding();
     const maxRectWidth = width - (alignPadding * 2);
     const textArray = [];
-    const wrapLine = new RichWrapLine();
+    const wrapLine = new RichHorizonWrapLine();
     for (let i = 0, len = rich.length, eff = len - 1; i < len; i++) {
       const item = rich[i];
-      draw.save();
       const attr = PlainUtils.extends({
         size, name, bold, italic,
       }, item);
@@ -149,6 +148,7 @@ class RichHorizonRuler extends RichHorizonVisual {
       const fontName = `${attr.name}`;
       const fontStyle = `${fontItalic} ${fontBold} ${fontSize} ${fontName}`;
       const { text } = attr;
+      draw.save();
       draw.attr({
         font: fontStyle.trim(),
       });
