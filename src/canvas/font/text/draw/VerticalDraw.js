@@ -119,13 +119,13 @@ class VerticalDraw extends BaseText {
         // 计算文本对齐
         switch (align) {
           case BaseFont.ALIGN.left:
-            bx += alignPadding + (size / 2 - item.width / 2);
+            bx += alignPadding;
             break;
           case BaseFont.ALIGN.center:
-            bx += width / 2 - item.width / 2;
+            bx += width / 2 - size / 2;
             break;
           case BaseFont.ALIGN.right:
-            bx += (width - item.width - alignPadding) - (size / 2 - item.width / 2);
+            bx += width - size - alignPadding;
             break;
         }
         switch (verticalAlign) {
@@ -160,13 +160,13 @@ class VerticalDraw extends BaseText {
         // 计算文本对齐
         switch (align) {
           case BaseFont.ALIGN.left:
-            bx += alignPadding + (size / 2 - item.width / 2);
+            bx += alignPadding;
             break;
           case BaseFont.ALIGN.center:
-            bx += width / 2 - item.width / 2;
+            bx += width / 2 - size / 2;
             break;
           case BaseFont.ALIGN.right:
-            bx += (width - item.width - alignPadding) - (size / 2 - item.width / 2);
+            bx += width - size - alignPadding;
             break;
         }
         switch (verticalAlign) {

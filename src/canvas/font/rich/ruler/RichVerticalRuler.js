@@ -2,6 +2,7 @@ import { RichVerticalVisual } from './RichVerticalVisual';
 import { BaseRuler } from '../../BaseRuler';
 import { PlainUtils } from '../../../../utils/PlainUtils';
 import { RichVerticalWrapLine } from './RichVerticalWrapLine';
+import { BaseFont } from '../../BaseFont';
 
 class RichVerticalRuler extends RichVerticalVisual {
 
@@ -208,6 +209,41 @@ class RichVerticalRuler extends RichVerticalVisual {
     this.textWrapTextArray = textArray;
     this.textWrapHeightArray = heightArray;
     this.setUsedType(BaseRuler.USED.TEXT_WRAP);
+  }
+
+  equals(other) {
+    if (other === null) {
+      return false;
+    }
+    if (other.constructor !== RichVerticalRuler) {
+      return false;
+    }
+    if (!PlainUtils.equals(this.rich, other.rich)) {
+      return false;
+    }
+    if (other.align !== this.align) {
+      return false;
+    }
+    if (other.padding !== this.padding) {
+      return false;
+    }
+    if (other.textWrap !== this.textWrap) {
+      return false;
+    }
+    const diffWidth = other.rect.width !== this.rect.width;
+    const diffHeight = other.rect.height !== this.rect.height;
+    if (diffWidth || diffHeight) {
+      return false;
+    }
+    switch (this.textWrap) {
+      case BaseFont.TEXT_WRAP.WORD_WRAP: {
+        if (other.lineHeight !== this.lineHeight) {
+          return false;
+        }
+        break;
+      }
+    }
+    return true;
   }
 
 }
