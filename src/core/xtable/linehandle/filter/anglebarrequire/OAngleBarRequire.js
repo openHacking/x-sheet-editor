@@ -21,7 +21,7 @@ class OAngleBarRequire {
     const topLeft = table.isAngleBarCell(row - 1, col - 1);
     const topRight = table.isAngleBarCell(row - 1, col + 1);
     const bottomLeft = table.isAngleBarCell(row + 1, col - 1);
-    const bottomRight = table.isAngleBarCell(row - 1, col + 1);
+    const bottomRight = table.isAngleBarCell(row + 1, col + 1);
     const included = topLeft || topRight || bottomLeft || bottomRight;
     // 周围是否存在旋转单元格
     return main || around || included
