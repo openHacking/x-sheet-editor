@@ -37,6 +37,7 @@ import { RBorderRequire } from './linehandle/filter/borderrequire/RBorderRequire
 import { TBorderRequire } from './linehandle/filter/borderrequire/TBorderRequire';
 import { BBorderRequire } from './linehandle/filter/borderrequire/BBorderRequire';
 import { LineGenerator } from './linehandle/LineGenerator';
+import { AngleHandle } from './linehandle/handle/AngleHandle';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -782,6 +783,41 @@ class XTableContentUI extends XTableUI {
   }
 
   /**
+   * 加载绘制单元格小图标
+   * @param rect
+   * @param cell
+   * @param view
+   */
+  drawCellXIcon(rect, cell, view) {
+    const { table } = this;
+    const { icons } = cell;
+    const { draw } = table;
+    const x = this.getX();
+    const y = this.getY();
+    rect.x += x;
+    rect.y += y;
+    for (let i = 0; i < icons.length; i += 1) {
+      const icon = icons[i];
+      icon.loadImage({
+        load: () => {
+          if (view.equals(this.getFullScrollView())) {
+            icon.drawIcon({
+              rect,
+              draw,
+            });
+          }
+        },
+        sync: () => {
+          icon.drawIcon({
+            rect,
+            draw,
+          });
+        },
+      });
+    }
+  }
+
+  /**
    * 加载绘制固定小图标
    * @param rect
    * @param ri
@@ -820,41 +856,6 @@ class XTableContentUI extends XTableUI {
   }
 
   /**
-   * 加载绘制单元格小图标
-   * @param rect
-   * @param cell
-   * @param view
-   */
-  drawCellXIcon(rect, cell, view) {
-    const { table } = this;
-    const { icons } = cell;
-    const { draw } = table;
-    const x = this.getX();
-    const y = this.getY();
-    rect.x += x;
-    rect.y += y;
-    for (let i = 0; i < icons.length; i += 1) {
-      const icon = icons[i];
-      icon.loadImage({
-        load: () => {
-          if (view.equals(this.getFullScrollView())) {
-            icon.drawIcon({
-              rect,
-              draw,
-            });
-          }
-        },
-        sync: () => {
-          icon.drawIcon({
-            rect,
-            draw,
-          });
-        },
-      });
-    }
-  }
-
-  /**
    * 绘制单元格图标
    */
   drawXIcon() {
@@ -881,360 +882,6 @@ class XTableContentUI extends XTableUI {
         this.drawCellXIcon(cellRect, cell, scrollView);
       },
     });
-  }
-
-  /**
-   * 绘制越界文本
-   */
-  drawBoundOutXFont() {
-    const scrollView = this.getScrollView();
-    const drawX = this.getDrawX();
-    const drawY = this.getDrawY();
-    const { table } = this;
-    const { draw, cols, textCellsHelper, textFactory } = table;
-    // 左边区域
-    const lView = scrollView.clone();
-    lView.sci = 0;
-    lView.eci = scrollView.sci - 1;
-    if (lView.eci > -1) {
-      let max;
-      draw.offset(drawX, drawY);
-      textCellsHelper.getCellByViewRange({
-        reverseCols: true,
-        view: lView,
-        newCol: (col) => {
-          max += cols.getWidth(col);
-        },
-        newRow: () => {
-          max = 0;
-        },
-        mergeCallback: (row) => {
-          const hasRowAngelCell = table.hasAngleCell(row);
-          if (hasRowAngelCell) {
-            return TEXT_BREAK_LOOP.CONTINUE;
-          }
-          return TEXT_BREAK_LOOP.ROW;
-        },
-        cellsINCallback: (row, col, cell, rect, overflow) => {
-          if (cell.isEmpty()) {
-            return TEXT_BREAK_LOOP.CONTINUE;
-          }
-          const { fontAttr } = cell;
-          const { align, textWrap, direction } = fontAttr;
-          const allowAlignCenter = align === BaseFont.ALIGN.center;
-          const allowAlignLeft = align === BaseFont.ALIGN.left;
-          const allowTextAlign = allowAlignCenter || allowAlignLeft;
-          const allowDirection = direction === BaseFont.TEXT_DIRECTION.ANGLE;
-          const allowTextWrap = textWrap === BaseFont.TEXT_WRAP.OVER_FLOW;
-          if (allowTextAlign && (allowTextWrap || allowDirection)) {
-            const size = table.getCellContentBoundOutWidth(row, col);
-            if (size === 0 || size > max) {
-              const builder = textFactory.getBuilder();
-              builder.setDraw(draw);
-              builder.setRect(rect);
-              builder.setCell(cell);
-              builder.setRow(row);
-              builder.setCol(col);
-              builder.setOverFlow(overflow);
-              const font = builder.build();
-              const result = font.drawingFont();
-              cell.setContentWidth(result.width);
-              cell.setLeftSdistWidth(result.leftSdist);
-              cell.setRightSdistWidth(result.rightSdist);
-            }
-          }
-          const hasRowAngelCell = table.hasAngleCell(row);
-          if (hasRowAngelCell) {
-            return TEXT_BREAK_LOOP.CONTINUE;
-          }
-          return TEXT_BREAK_LOOP.ROW;
-        },
-      });
-      draw.offset(0, 0);
-    }
-    // 右边区域
-    const rView = scrollView.clone();
-    rView.sci = scrollView.eci + 1;
-    rView.eci = cols.len - 1;
-    if (rView.sci < cols.len) {
-      let max;
-      draw.offset(drawX + scrollView.w, drawY);
-      textCellsHelper.getCellByViewRange({
-        startX: scrollView.w,
-        view: rView,
-        newCol: (col) => {
-          max += cols.getWidth(col);
-        },
-        newRow: () => {
-          max = 0;
-        },
-        mergeCallback: (row) => {
-          const hasRowAngelCell = table.hasAngleCell(row);
-          if (hasRowAngelCell) {
-            return TEXT_BREAK_LOOP.CONTINUE;
-          }
-          return TEXT_BREAK_LOOP.ROW;
-        },
-        cellsINCallback: (row, col, cell, rect, overflow) => {
-          if (cell.isEmpty()) {
-            return TEXT_BREAK_LOOP.CONTINUE;
-          }
-          const { fontAttr } = cell;
-          const { align, textWrap, direction } = fontAttr;
-          const allowAlignCenter = align === BaseFont.ALIGN.center;
-          const allowAlignRight = align === BaseFont.ALIGN.right;
-          const allowTextAlign = allowAlignCenter || allowAlignRight;
-          const allowDirection = direction === BaseFont.TEXT_DIRECTION.ANGLE;
-          const allowTextWrap = textWrap === BaseFont.TEXT_WRAP.OVER_FLOW;
-          if (allowTextAlign && (allowTextWrap || allowDirection)) {
-            const size = table.getCellContentBoundOutWidth(row, col);
-            if (size === 0 || size > max) {
-              const builder = textFactory.getBuilder();
-              builder.setDraw(draw);
-              builder.setRect(rect);
-              builder.setCell(cell);
-              builder.setRow(row);
-              builder.setCol(col);
-              builder.setOverFlow(overflow);
-              const font = builder.build();
-              const result = font.drawingFont();
-              cell.setContentWidth(result.width);
-              cell.setLeftSdistWidth(result.leftSdist);
-              cell.setRightSdistWidth(result.rightSdist);
-            }
-          }
-          const hasRowAngelCell = table.hasAngleCell(row);
-          if (hasRowAngelCell) {
-            return TEXT_BREAK_LOOP.CONTINUE;
-          }
-          return TEXT_BREAK_LOOP.ROW;
-        },
-      });
-      draw.offset(0, 0);
-    }
-  }
-
-  /**
-   * 绘制越界边框
-   */
-  drawBoundOutGridBorder() {
-    const scrollView = this.getScrollView();
-    const drawX = this.getDrawX();
-    const drawY = this.getDrawY();
-    const { table } = this;
-    const { draw, cols, line } = table;
-    // 左边区域
-    const lView = scrollView.clone();
-    lView.sci = 0;
-    lView.eci = scrollView.sci - 1;
-    if (lView.eci > -1) {
-      const offset = cols.rectRangeSumWidth(lView);
-      const { bResult } = LineGenerator.run({
-        scrollView: lView,
-        foldOnOff: true,
-        table,
-        model: LineGenerator.MODEL.OUT_L,
-      });
-      draw.offset(drawX - offset, drawY);
-      bResult.tLine.forEach((item) => {
-        const { borderAttr, row, col } = item;
-        const { top } = borderAttr;
-        const { color, widthType, type } = top;
-        line.setType(type);
-        line.setWidthType(widthType);
-        line.setColor(color);
-        line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
-      });
-      bResult.lLine.forEach((item) => {
-        const { borderAttr, row, col } = item;
-        const { left } = borderAttr;
-        const { color, widthType, type } = left;
-        line.setType(type);
-        line.setWidthType(widthType);
-        line.setColor(color);
-        line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
-      });
-      bResult.rLine.forEach((item) => {
-        const { borderAttr, row, col } = item;
-        const { right } = borderAttr;
-        const { color, widthType, type } = right;
-        line.setType(type);
-        line.setWidthType(widthType);
-        line.setColor(color);
-        line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
-      });
-      bResult.bLine.forEach((item) => {
-        const { borderAttr, row, col } = item;
-        const { bottom } = borderAttr;
-        const { color, widthType, type } = bottom;
-        line.setType(type);
-        line.setWidthType(widthType);
-        line.setColor(color);
-        line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
-      });
-      draw.offset(0, 0);
-    }
-    // 右边区域
-    const rView = scrollView.clone();
-    rView.sci = scrollView.eci + 1;
-    rView.eci = cols.len - 1;
-    if (rView.sci < cols.len) {
-      const offset = scrollView.w;
-      const { bResult } = LineGenerator.run({
-        scrollView: rView,
-        foldOnOff: true,
-        table,
-        model: LineGenerator.MODEL.OUT_R,
-      });
-      draw.offset(drawX + offset, drawY);
-      bResult.tLine.forEach((item) => {
-        const { borderAttr, row, col } = item;
-        const { top } = borderAttr;
-        const { color, widthType, type } = top;
-        line.setType(type);
-        line.setWidthType(widthType);
-        line.setColor(color);
-        line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
-      });
-      bResult.lLine.forEach((item) => {
-        const { borderAttr, row, col } = item;
-        const { left } = borderAttr;
-        const { color, widthType, type } = left;
-        line.setType(type);
-        line.setWidthType(widthType);
-        line.setColor(color);
-        line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
-      });
-      bResult.rLine.forEach((item) => {
-        const { borderAttr, row, col } = item;
-        const { right } = borderAttr;
-        const { color, widthType, type } = right;
-        line.setType(type);
-        line.setWidthType(widthType);
-        line.setColor(color);
-        line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
-      });
-      bResult.bLine.forEach((item) => {
-        const { borderAttr, row, col } = item;
-        const { bottom } = borderAttr;
-        const { color, widthType, type } = bottom;
-        line.setType(type);
-        line.setWidthType(widthType);
-        line.setColor(color);
-        line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
-      });
-      draw.offset(0, 0);
-    }
-  }
-
-  /**
-   * 绘制越界背景
-   */
-  drawBoundOutBackground() {
-    const scrollView = this.getScrollView();
-    const drawX = this.getDrawX();
-    const drawY = this.getDrawY();
-    const { table } = this;
-    const { draw, cols, styleCellsHelper } = table;
-    // 左边区域
-    const lView = scrollView.clone();
-    lView.sci = 0;
-    lView.eci = scrollView.sci - 1;
-    if (lView.eci > -1) {
-      let max = 0;
-      draw.offset(drawX, drawY);
-      styleCellsHelper.getCellByViewRange({
-        reverseCols: true,
-        view: lView,
-        newCol: (col) => {
-          max += cols.getWidth(col);
-        },
-        newRow: () => {
-          max = 0;
-        },
-        cellsINCallback: (row, col, cell, rect) => {
-          if (table.hasAngleCell(row)) {
-            if (table.isAngleBarCell(row, col)) {
-              const size = table.getCellStyleBoundOutWidth(row, col);
-              const { fontAttr } = cell;
-              const { angle } = fontAttr;
-              if (size > max && angle > 0) {
-                const { background } = cell;
-                const box = new Box({
-                  draw, background,
-                });
-                const offset = table.getSdistWidth(row, col);
-                const { x, y, width, height } = rect;
-                const tl = new Point(x + offset, y);
-                const tr = new Point(x + width + offset, y);
-                const br = new Point(x + width, y + height);
-                const bl = new Point(x, y + height);
-                const path = new Path({
-                  points: [tl, tr, br, bl],
-                });
-                box.setPath({ path });
-                box.render();
-              }
-            }
-            return STYLE_BREAK_LOOP.CONTINUE;
-          }
-          return STYLE_BREAK_LOOP.ROW;
-        },
-        mergeCallback: row => (table.hasAngleCell(row)
-          ? STYLE_BREAK_LOOP.CONTINUE
-          : STYLE_BREAK_LOOP.ROW),
-      });
-      draw.offset(0, 0);
-    }
-    // 右边区域
-    const rView = scrollView.clone();
-    rView.sci = scrollView.eci + 1;
-    rView.eci = cols.len - 1;
-    if (rView.sci < cols.len) {
-      let max = 0;
-      draw.offset(drawX + scrollView.w, drawY);
-      styleCellsHelper.getCellByViewRange({
-        view: rView,
-        newCol: (col) => {
-          max += cols.getWidth(col);
-        },
-        newRow: () => {
-          max = 0;
-        },
-        cellsINCallback: (row, col, cell, rect) => {
-          if (table.hasAngleCell(row)) {
-            if (table.isAngleBarCell(row, col)) {
-              const size = table.getCellStyleBoundOutWidth(row, col);
-              const { fontAttr } = cell;
-              const { angle } = fontAttr;
-              if (size > max && angle < 0) {
-                const { background } = cell;
-                const box = new Box({
-                  draw, background,
-                });
-                const offset = -table.getSdistWidth(row, col);
-                const { x, y, width, height } = rect;
-                const tl = new Point(x + offset, y);
-                const tr = new Point(x + width + offset, y);
-                const br = new Point(x + width, y + height);
-                const bl = new Point(x, y + height);
-                const path = new Path({
-                  points: [tl, tr, br, bl],
-                });
-                box.setPath({ path });
-                box.render();
-              }
-            }
-            return STYLE_BREAK_LOOP.CONTINUE;
-          }
-          return STYLE_BREAK_LOOP.ROW;
-        },
-        mergeCallback: row => (table.hasAngleCell(row)
-          ? STYLE_BREAK_LOOP.CONTINUE
-          : STYLE_BREAK_LOOP.ROW),
-      });
-      draw.offset(0, 0);
-    }
   }
 
   /**
@@ -1401,7 +1048,7 @@ class XTableContentUI extends XTableUI {
     const drawX = this.getDrawX();
     const drawY = this.getDrawY();
     const {
-      draw, cells, styleCellsHelper,
+      draw, styleCellsHelper,
     } = table;
     draw.offset(drawX, drawY);
     styleCellsHelper.getCellByViewRange({
@@ -1432,42 +1079,410 @@ class XTableContentUI extends XTableUI {
         if (table.hasAngleCell(row)) {
           if (table.isAngleBarCell(row, col)) {
             const { background } = cell;
-            const { fontAttr } = cell;
-            const { angle } = fontAttr;
             const { x, y, width, height } = rect;
             const box = new Box({
               draw, background,
             });
-            const defaultOffset = angle > 0
-              ? table.getSdistWidth(row, col)
-              : -table.getSdistWidth(row, col);
-            const tl = new Point(x, y);
-            const tr = new Point(x + width, y);
+            const lOffset = AngleHandle.lOffset({
+              table, sx: x, row, col,
+            });
+            const rOffset = AngleHandle.rOffset({
+              table, sx: x + width, row, col,
+            });
+            const tl = new Point(lOffset.osx, y);
+            const tr = new Point(rOffset.osx, y);
             const bl = new Point(x, y + height);
             const br = new Point(x + width, y + height);
-            if (table.isAngleBarCell(row, col + 1)) {
-              const next = cells.getCell(row, col + 1);
-              const { fontAttr } = next;
-              const { angle } = fontAttr;
-              const nextOffset = angle > 0
-                ? table.getSdistWidth(row, col + 1)
-                : -table.getSdistWidth(row, col + 1);
-              tl.addX(defaultOffset);
-              tr.addX(nextOffset);
-            } else {
-              tl.addX(defaultOffset);
-              tr.addX(defaultOffset);
-            }
             box.setPath({
               path: new Path({
                 points: [tl, tr, br, bl],
               }),
-            }).render();
+            });
+            box.render();
           }
         }
       },
     });
     draw.offset(0, 0);
+  }
+
+}
+
+class XTableContentOutUI extends XTableContentUI {
+
+  /**
+   * 绘制越界边框
+   */
+  drawBoundOutGridBorder() {
+    const scrollView = this.getScrollView();
+    const drawX = this.getDrawX();
+    const drawY = this.getDrawY();
+    const { table } = this;
+    const { draw, cols, line } = table;
+    // 左边区域
+    const lView = scrollView.clone();
+    lView.sci = 0;
+    lView.eci = scrollView.sci - 1;
+    if (lView.eci > -1) {
+      const offset = cols.rectRangeSumWidth(lView);
+      const { bResult } = LineGenerator.run({
+        scrollView: lView,
+        foldOnOff: true,
+        table,
+        model: LineGenerator.MODEL.OUT_L,
+      });
+      draw.offset(drawX - offset, drawY);
+      bResult.tLine.forEach((item) => {
+        const { borderAttr, row, col } = item;
+        const { top } = borderAttr;
+        const { color, widthType, type } = top;
+        line.setType(type);
+        line.setWidthType(widthType);
+        line.setColor(color);
+        line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+      });
+      bResult.lLine.forEach((item) => {
+        const { borderAttr, row, col } = item;
+        const { left } = borderAttr;
+        const { color, widthType, type } = left;
+        line.setType(type);
+        line.setWidthType(widthType);
+        line.setColor(color);
+        line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+      });
+      bResult.rLine.forEach((item) => {
+        const { borderAttr, row, col } = item;
+        const { right } = borderAttr;
+        const { color, widthType, type } = right;
+        line.setType(type);
+        line.setWidthType(widthType);
+        line.setColor(color);
+        line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+      });
+      bResult.bLine.forEach((item) => {
+        const { borderAttr, row, col } = item;
+        const { bottom } = borderAttr;
+        const { color, widthType, type } = bottom;
+        line.setType(type);
+        line.setWidthType(widthType);
+        line.setColor(color);
+        line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+      });
+      draw.offset(0, 0);
+    }
+    // 右边区域
+    const rView = scrollView.clone();
+    rView.sci = scrollView.eci + 1;
+    rView.eci = cols.len - 1;
+    if (rView.sci < cols.len) {
+      const offset = scrollView.w;
+      const { bResult } = LineGenerator.run({
+        scrollView: rView,
+        foldOnOff: true,
+        table,
+        model: LineGenerator.MODEL.OUT_R,
+      });
+      draw.offset(drawX + offset, drawY);
+      bResult.tLine.forEach((item) => {
+        const { borderAttr, row, col } = item;
+        const { top } = borderAttr;
+        const { color, widthType, type } = top;
+        line.setType(type);
+        line.setWidthType(widthType);
+        line.setColor(color);
+        line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
+      });
+      bResult.lLine.forEach((item) => {
+        const { borderAttr, row, col } = item;
+        const { left } = borderAttr;
+        const { color, widthType, type } = left;
+        line.setType(type);
+        line.setWidthType(widthType);
+        line.setColor(color);
+        line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
+      });
+      bResult.rLine.forEach((item) => {
+        const { borderAttr, row, col } = item;
+        const { right } = borderAttr;
+        const { color, widthType, type } = right;
+        line.setType(type);
+        line.setWidthType(widthType);
+        line.setColor(color);
+        line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
+      });
+      bResult.bLine.forEach((item) => {
+        const { borderAttr, row, col } = item;
+        const { bottom } = borderAttr;
+        const { color, widthType, type } = bottom;
+        line.setType(type);
+        line.setWidthType(widthType);
+        line.setColor(color);
+        line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'bottom');
+      });
+      draw.offset(0, 0);
+    }
+  }
+
+  /**
+   * 绘制越界文本
+   */
+  drawBoundOutXFont() {
+    const scrollView = this.getScrollView();
+    const drawX = this.getDrawX();
+    const drawY = this.getDrawY();
+    const { table } = this;
+    const { draw, cols, textCellsHelper, textFactory } = table;
+    // 左边区域
+    const lView = scrollView.clone();
+    lView.sci = 0;
+    lView.eci = scrollView.sci - 1;
+    if (lView.eci > -1) {
+      let max;
+      draw.offset(drawX, drawY);
+      textCellsHelper.getCellByViewRange({
+        reverseCols: true,
+        view: lView,
+        newCol: (col) => {
+          max += cols.getWidth(col);
+        },
+        newRow: () => {
+          max = 0;
+        },
+        mergeCallback: (row) => {
+          const hasRowAngelCell = table.hasAngleCell(row);
+          if (hasRowAngelCell) {
+            return TEXT_BREAK_LOOP.CONTINUE;
+          }
+          return TEXT_BREAK_LOOP.ROW;
+        },
+        cellsINCallback: (row, col, cell, rect, overflow) => {
+          if (cell.isEmpty()) {
+            return TEXT_BREAK_LOOP.CONTINUE;
+          }
+          const { fontAttr } = cell;
+          const { angle, align, textWrap, direction } = fontAttr;
+          const allowAlignCenter = align === BaseFont.ALIGN.center;
+          const allowAlignLeft = align === BaseFont.ALIGN.left;
+          const allowTextAlign = allowAlignCenter || allowAlignLeft;
+          const allowTextAngle = angle > 0;
+          const allowDirection = direction === BaseFont.TEXT_DIRECTION.ANGLE;
+          const allowTextWrap = textWrap === BaseFont.TEXT_WRAP.OVER_FLOW;
+          if ((allowTextAlign || allowTextAngle) && (allowTextWrap || allowDirection)) {
+            const size = table.getCellContentBoundOutWidth(row, col);
+            if (size === 0 || size > max) {
+              const builder = textFactory.getBuilder();
+              builder.setDraw(draw);
+              builder.setRect(rect);
+              builder.setCell(cell);
+              builder.setRow(row);
+              builder.setCol(col);
+              builder.setOverFlow(overflow);
+              const font = builder.build();
+              const result = font.drawingFont();
+              cell.setContentWidth(result.width);
+              cell.setLeftSdistWidth(result.leftSdist);
+              cell.setRightSdistWidth(result.rightSdist);
+            }
+          }
+          const hasRowAngelCell = table.hasAngleCell(row);
+          if (hasRowAngelCell) {
+            return TEXT_BREAK_LOOP.CONTINUE;
+          }
+          return TEXT_BREAK_LOOP.ROW;
+        },
+      });
+      draw.offset(0, 0);
+    }
+    // 右边区域
+    const rView = scrollView.clone();
+    rView.sci = scrollView.eci + 1;
+    rView.eci = cols.len - 1;
+    if (rView.sci < cols.len) {
+      let max;
+      draw.offset(drawX + scrollView.w, drawY);
+      textCellsHelper.getCellByViewRange({
+        view: rView,
+        newCol: (col) => {
+          max += cols.getWidth(col);
+        },
+        newRow: () => {
+          max = 0;
+        },
+        mergeCallback: (row) => {
+          const hasRowAngelCell = table.hasAngleCell(row);
+          if (hasRowAngelCell) {
+            return TEXT_BREAK_LOOP.CONTINUE;
+          }
+          return TEXT_BREAK_LOOP.ROW;
+        },
+        cellsINCallback: (row, col, cell, rect, overflow) => {
+          if (cell.isEmpty()) {
+            return TEXT_BREAK_LOOP.CONTINUE;
+          }
+          const { fontAttr } = cell;
+          const { angle, align, textWrap, direction } = fontAttr;
+          const allowAlignCenter = align === BaseFont.ALIGN.center;
+          const allowAlignRight = align === BaseFont.ALIGN.right;
+          const allowTextAlign = allowAlignCenter || allowAlignRight;
+          const allowTextAngle = angle < 0;
+          const allowDirection = direction === BaseFont.TEXT_DIRECTION.ANGLE;
+          const allowTextWrap = textWrap === BaseFont.TEXT_WRAP.OVER_FLOW;
+          if ((allowTextAlign || allowTextAngle) && (allowTextWrap || allowDirection)) {
+            const size = table.getCellContentBoundOutWidth(row, col);
+            if (size === 0 || size > max) {
+              const builder = textFactory.getBuilder();
+              builder.setDraw(draw);
+              builder.setRect(rect);
+              builder.setCell(cell);
+              builder.setRow(row);
+              builder.setCol(col);
+              builder.setOverFlow(overflow);
+              const font = builder.build();
+              const result = font.drawingFont();
+              cell.setContentWidth(result.width);
+              cell.setLeftSdistWidth(result.leftSdist);
+              cell.setRightSdistWidth(result.rightSdist);
+            }
+          }
+          const hasRowAngelCell = table.hasAngleCell(row);
+          if (hasRowAngelCell) {
+            return TEXT_BREAK_LOOP.CONTINUE;
+          }
+          return TEXT_BREAK_LOOP.ROW;
+        },
+      });
+      draw.offset(0, 0);
+    }
+  }
+
+  /**
+   * 绘制越界背景
+   */
+  drawBoundOutBackground() {
+    const scrollView = this.getScrollView();
+    const drawX = this.getDrawX();
+    const drawY = this.getDrawY();
+    const { table } = this;
+    const { draw, cols, styleCellsHelper } = table;
+    // 左边区域
+    const lView = scrollView.clone();
+    lView.sci = 0;
+    lView.eci = scrollView.sci - 1;
+    if (lView.eci > -1) {
+      let max = 0;
+      draw.offset(drawX, drawY);
+      styleCellsHelper.getCellByViewRange({
+        reverseCols: true,
+        view: lView,
+        newCol: (col) => {
+          max += cols.getWidth(col);
+        },
+        newRow: () => {
+          max = 0;
+        },
+        mergeCallback: (row) => {
+          const hasRowAngelCell = table.hasAngleCell(row);
+          if (hasRowAngelCell) {
+            return TEXT_BREAK_LOOP.CONTINUE;
+          }
+          return TEXT_BREAK_LOOP.ROW;
+        },
+        cellsINCallback: (row, col, cell, rect) => {
+          if (table.hasAngleCell(row)) {
+            if (table.isAngleBarCell(row, col)) {
+              const size = table.getCellStyleBoundOutWidth(row, col);
+              const { fontAttr } = cell;
+              const { angle } = fontAttr;
+              if (size > max && angle > 0) {
+                const { background } = cell;
+                const { x, y, width, height } = rect;
+                const box = new Box({
+                  draw, background,
+                });
+                const lOffset = AngleHandle.lOffset({
+                  table, sx: x, row, col,
+                });
+                const rOffset = AngleHandle.rOffset({
+                  table, sx: x + width, row, col,
+                });
+                const tl = new Point(lOffset.osx, y);
+                const tr = new Point(rOffset.osx, y);
+                const bl = new Point(x, y + height);
+                const br = new Point(x + width, y + height);
+                box.setPath({
+                  path: new Path({
+                    points: [tl, tr, br, bl],
+                  }),
+                });
+                box.render();
+              }
+            }
+            return STYLE_BREAK_LOOP.CONTINUE;
+          }
+          return STYLE_BREAK_LOOP.ROW;
+        },
+      });
+      draw.offset(0, 0);
+    }
+    // 右边区域
+    const rView = scrollView.clone();
+    rView.sci = scrollView.eci + 1;
+    rView.eci = cols.len - 1;
+    if (rView.sci < cols.len) {
+      let max = 0;
+      draw.offset(drawX + scrollView.w, drawY);
+      styleCellsHelper.getCellByViewRange({
+        view: rView,
+        newCol: (col) => {
+          max += cols.getWidth(col);
+        },
+        newRow: () => {
+          max = 0;
+        },
+        mergeCallback: (row) => {
+          const hasRowAngelCell = table.hasAngleCell(row);
+          if (hasRowAngelCell) {
+            return TEXT_BREAK_LOOP.CONTINUE;
+          }
+          return TEXT_BREAK_LOOP.ROW;
+        },
+        cellsINCallback: (row, col, cell, rect) => {
+          if (table.hasAngleCell(row)) {
+            if (table.isAngleBarCell(row, col)) {
+              const size = table.getCellStyleBoundOutWidth(row, col);
+              const { fontAttr } = cell;
+              const { angle } = fontAttr;
+              if (size > max && angle < 0) {
+                const { background } = cell;
+                const { x, y, width, height } = rect;
+                const box = new Box({
+                  draw, background,
+                });
+                const lOffset = AngleHandle.lOffset({
+                  table, sx: x, row, col,
+                });
+                const rOffset = AngleHandle.rOffset({
+                  table, sx: x + width, row, col,
+                });
+                const tl = new Point(lOffset.osx, y);
+                const tr = new Point(rOffset.osx, y);
+                const bl = new Point(x, y + height);
+                const br = new Point(x + width, y + height);
+                box.setPath({
+                  path: new Path({
+                    points: [tl, tr, br, bl],
+                  }),
+                });
+                box.render();
+              }
+            }
+            return STYLE_BREAK_LOOP.CONTINUE;
+          }
+          return STYLE_BREAK_LOOP.ROW;
+        },
+      });
+      draw.offset(0, 0);
+    }
   }
 
   /**
@@ -1862,7 +1877,7 @@ class XTableFrozenLeftIndex extends XTableLeftIndexUI {
 
 }
 
-class XTableFrozenContent extends XTableContentUI {
+class XTableFrozenContent extends XTableContentOutUI {
 
   getWidth() {
     if (PlainUtils.isNumber(this.width)) {
@@ -2249,7 +2264,7 @@ class XTableTopIndex extends XTableTopIndexUI {
 
 }
 
-class XTableLeft extends XTableContentUI {
+class XTableLeft extends XTableContentOutUI {
 
   getWidth() {
     if (PlainUtils.isNumber(this.width)) {
@@ -2386,7 +2401,7 @@ class XTableLeft extends XTableContentUI {
 
 }
 
-class XTableTop extends XTableContentUI {
+class XTableTop extends XTableContentOutUI {
 
   getWidth() {
     if (PlainUtils.isNumber(this.width)) {
@@ -2523,7 +2538,7 @@ class XTableTop extends XTableContentUI {
 
 }
 
-class XTableContent extends XTableContentUI {
+class XTableContent extends XTableContentOutUI {
 
   getWidth() {
     if (PlainUtils.isNumber(this.width)) {

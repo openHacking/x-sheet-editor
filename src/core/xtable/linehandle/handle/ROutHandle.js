@@ -14,6 +14,7 @@ import { RMergeNullEdge } from '../filter/mergenulledge/RMergeNullEdge';
 import { LBorderRequire } from '../filter/borderrequire/LBorderRequire';
 import { LBorderPriority } from '../filter/borderpriority/LBorderPriority';
 import { LMergeNullEdge } from '../filter/mergenulledge/LMergeNullEdge';
+import { AngleHandle } from './AngleHandle';
 
 class ROutHandle {
 
@@ -27,96 +28,6 @@ class ROutHandle {
     this.tLine = [];
     this.rLine = [];
     this.bLine = [];
-  }
-
-  lOffset({
-    sx, row, col,
-  }) {
-    const { table } = this;
-    const { cells } = table;
-    let osx = sx;
-    let main = cells.getCell(row, col);
-    if (main) {
-      if (main.leftSdistWidth) {
-        osx = sx + main.leftSdistWidth;
-      } else if (main.rightSdistWidth) {
-        osx = sx - main.rightSdistWidth;
-      }
-    }
-    return { osx };
-  }
-
-  bOffset({
-    sx, ex, row, col,
-  }) {
-    const { table } = this;
-    const { cells } = table;
-    let osx = sx;
-    let oex = ex;
-    let next = cells.getCell(row + 1, col);
-    if (next) {
-      if (next.leftSdistWidth) {
-        osx = sx + next.leftSdistWidth;
-        oex = ex + next.leftSdistWidth;
-      } else if (next.rightSdistWidth) {
-        osx = sx - next.rightSdistWidth;
-        oex = ex - next.rightSdistWidth;
-      }
-    }
-    return { osx, oex };
-  }
-
-  tOffset({
-    sx, ex, row, col,
-  }) {
-    const { table } = this;
-    const { cells } = table;
-    let osx = sx;
-    let oex = ex;
-    let main = cells.getCell(row, col);
-    let next = cells.getCell(row, col + 1);
-    if (main) {
-      if (main.leftSdistWidth) {
-        osx = sx + main.leftSdistWidth;
-        oex = ex + main.leftSdistWidth;
-      } else if (main.rightSdistWidth) {
-        osx = sx - main.rightSdistWidth;
-        oex = ex - main.rightSdistWidth;
-      }
-    }
-    if (next) {
-      if (next.leftSdistWidth) {
-        oex = ex + next.leftSdistWidth;
-      } else if (next.rightSdistWidth) {
-        oex = ex - next.rightSdistWidth;
-      }
-    }
-    return { osx, oex };
-  }
-
-  rOffset({
-    sx, row, col,
-  }) {
-    const { table } = this;
-    const { cells } = table;
-    let osx = sx;
-    let main = cells.getCell(row, col);
-    let next = cells.getCell(row, col + 1);
-    if (main) {
-      if (main.leftSdistWidth) {
-        osx = sx + main.leftSdistWidth;
-      } else if (main.rightSdistWidth) {
-        osx = sx - main.rightSdistWidth;
-      }
-    }
-    if (next) {
-      if (next.leftSdistWidth) {
-        osx = sx + next.leftSdistWidth;
-      } else if (next.rightSdistWidth) {
-        osx = sx - next.rightSdistWidth;
-      }
-    }
-    return { osx };
   }
 
   getRItem() {
@@ -150,8 +61,8 @@ class ROutHandle {
         const { borderAttr } = cell;
         item.ey += height;
         const { sx, sy, ex, ey, rLine } = item;
-        const { osx } = this.rOffset({
-          sx, ex, row, col,
+        const { osx } = AngleHandle.rOffset({
+          table, sx, ex, row, col,
         });
         rLine.push({ sx: osx, sy, ex, ey, row, col, borderAttr });
         item.sy = item.ey;
@@ -205,8 +116,8 @@ class ROutHandle {
         const { borderAttr } = cell;
         item.ey += height;
         const { sx, sy, ex, ey, lLine } = item;
-        const { osx } = this.lOffset({
-          sx, ex, row, col,
+        const { osx } = AngleHandle.lOffset({
+          table, sx, ex, row, col,
         });
         lLine.push({ sx: osx, sy, ex, ey, row, col, borderAttr });
         item.sy = item.ey;
@@ -259,8 +170,8 @@ class ROutHandle {
         const { borderAttr } = cell;
         bRow.ex += width;
         const { sx, sy, ex, ey } = bRow;
-        const { osx, oex } = this.bOffset({
-          sx, ex, row, col,
+        const { osx, oex } = AngleHandle.bOffset({
+          table, sx, ex, row, col,
         });
         bLine.push({ sx: osx, sy, ex: oex, ey, row, col, borderAttr });
         bRow.sx = bRow.ex;
@@ -304,8 +215,8 @@ class ROutHandle {
         const { borderAttr } = cell;
         tRow.ex += width;
         const { sx, sy, ex, ey } = tRow;
-        const { osx, oex } = this.tOffset({
-          sx, ex, row, col,
+        const { osx, oex } = AngleHandle.tOffset({
+          table, sx, ex, row, col,
         });
         tLine.push({ sx: osx, sy, ex: oex, ey, row, col, borderAttr });
         tRow.sx = tRow.ex;

@@ -31,10 +31,9 @@ class AngleHandle {
     this.bLine = [];
   }
 
-  bOffset({
-    sx, ex, row, col,
+  static bOffset({
+    table, sx, ex, row, col,
   }) {
-    const { table } = this;
     const { cells } = table;
     let osx = sx;
     let oex = ex;
@@ -67,10 +66,9 @@ class AngleHandle {
     return { osx, oex };
   }
 
-  tOffset({
-    sx, ex, row, col,
+  static tOffset({
+    table, sx, ex, row, col,
   }) {
-    const { table } = this;
     const { cells } = table;
     let osx = sx;
     let oex = ex;
@@ -103,10 +101,9 @@ class AngleHandle {
     return { osx, oex };
   }
 
-  lOffset({
-    sx, row, col,
+  static lOffset({
+    table, sx, row, col,
   }) {
-    const { table } = this;
     const { cells } = table;
     let osx = sx;
     let main = cells.getCell(row, col);
@@ -128,10 +125,9 @@ class AngleHandle {
     return { osx };
   }
 
-  rOffset({
-    sx, row, col,
+  static rOffset({
+    table, sx, row, col,
   }) {
-    const { table } = this;
     const { cells } = table;
     let osx = sx;
     let main = cells.getCell(row, col);
@@ -184,8 +180,8 @@ class AngleHandle {
         const { borderAttr } = cell;
         item.ey += height;
         const { sx, sy, ex, ey, rLine } = item;
-        const { osx } = this.rOffset({
-          sx, ex, row, col,
+        const { osx } = AngleHandle.rOffset({
+          table, sx, ex, row, col,
         });
         rLine.push({
           sx: osx, sy, ex, ey, row, col, borderAttr,
@@ -241,8 +237,8 @@ class AngleHandle {
         const { borderAttr } = cell;
         item.ey += height;
         const { sx, sy, ex, ey, lLine } = item;
-        const { osx } = this.lOffset({
-          sx, ex, row, col,
+        const { osx } = AngleHandle.lOffset({
+          table, sx, ex, row, col,
         });
         lLine.push({
           sx: osx, sy, ex, ey, row, col, borderAttr,
@@ -297,8 +293,8 @@ class AngleHandle {
         const { borderAttr } = cell;
         bRow.ex += width;
         const { sx, sy, ex, ey } = bRow;
-        const { osx, oex } = this.bOffset({
-          sx, ex, row, col,
+        const { osx, oex } = AngleHandle.bOffset({
+          table, sx, ex, row, col,
         });
         bLine.push({
           sx: osx, sy, ex: oex, ey, row, col, borderAttr,
@@ -344,8 +340,8 @@ class AngleHandle {
         const { borderAttr } = cell;
         tRow.ex += width;
         const { sx, sy, ex, ey } = tRow;
-        const { osx, oex } = this.tOffset({
-          sx, ex, row, col,
+        const { osx, oex } = AngleHandle.tOffset({
+          table, sx, ex, row, col,
         });
         tLine.push({
           sx: osx, sy, ex: oex, ey, row, col, borderAttr,
