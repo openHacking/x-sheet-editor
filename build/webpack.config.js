@@ -1,7 +1,7 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const resolve = dir => path.join(__dirname, '..', dir);
+const include = dir => path.join(__dirname, '..', dir);
 
 module.exports = {
   entry: {
@@ -20,8 +20,8 @@ module.exports = {
           }
         ],
         include: [
-          resolve('src'),
-          resolve('test')
+          include('src'),
+          include('test')
         ],
       },
       {
@@ -100,5 +100,27 @@ module.exports = {
         ]
       }
     ],
+  },
+  optimization:  {
+    runtimeChunk: {
+      name: 'runtime',
+    },
+    splitChunks: {
+      minSize: 30,
+      cacheGroups: {
+        default: {
+          name: 'common',
+          chunks: 'all',
+          minChunks: 2,
+          priority: -20
+        },
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendor',
+          chunks: 'all',
+          priority: -10
+        },
+      }
+    }
   },
 };
