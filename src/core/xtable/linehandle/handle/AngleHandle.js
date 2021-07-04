@@ -122,101 +122,6 @@ class AngleHandle {
     return { osx };
   }
 
-  getBItem() {
-    const { bx, by, table } = this;
-    const { cols, rows, cells } = table;
-    const bLine = [];
-    const bRow = {};
-    return new LineIteratorItem({
-      newRow: ({ row, y }) => {
-        const height = rows.getHeight(row);
-        bRow.sx = bx;
-        bRow.sy = by + y + height;
-        bRow.ex = bRow.sx;
-        bRow.ey = bRow.sy;
-      },
-      filter: new LineIteratorFilter({
-        logic: LineIteratorFilter.FILTER_LOGIC.AND,
-        stack: [
-          new AngleBarExist(table),
-          new BAngleBarRequire(table),
-          new BBorderRequire(table),
-          new BBorderPriority(table),
-          new BMergeNullEdge(table),
-        ],
-      }),
-      exec: ({ row, col }) => {
-        const width = cols.getWidth(col);
-        const cell = cells.getCell(row, col);
-        const { borderAttr } = cell;
-        bRow.ex += width;
-        const { sx, sy, ex, ey } = bRow;
-        const { osx, oex } = this.bOffset({
-          sx, ex, row, col,
-        });
-        bLine.push({
-          sx: osx, sy, ex: oex, ey, row, col, borderAttr,
-        });
-        bRow.sx = bRow.ex;
-      },
-      jump: ({ col }) => {
-        const width = cols.getWidth(col);
-        bRow.sx = bRow.ex + width;
-        bRow.ex = bRow.sx;
-      },
-      complete: () => {
-        this.bLine = bLine;
-      },
-    });
-  }
-
-  getTItem() {
-    const { table, bx, by } = this;
-    const { cols, cells } = table;
-    const tLine = [];
-    const tRow = {};
-    return new LineIteratorItem({
-      newRow: ({ y }) => {
-        tRow.sx = bx;
-        tRow.sy = by + y;
-        tRow.ex = tRow.sx;
-        tRow.ey = tRow.sy;
-      },
-      filter: new LineIteratorFilter({
-        logic: LineIteratorFilter.FILTER_LOGIC.AND,
-        stack: [
-          new AngleBarExist(table),
-          new TAngleBarRequire(table),
-          new TBorderRequire(table),
-          new TBorderPriority(table),
-          new TMergeNullEdge(table),
-        ],
-      }),
-      exec: ({ row, col }) => {
-        const width = cols.getWidth(col);
-        const cell = cells.getCell(row, col);
-        const { borderAttr } = cell;
-        tRow.ex += width;
-        const { sx, sy, ex, ey } = tRow;
-        const { osx, oex } = this.tOffset({
-          sx, ex, row, col,
-        });
-        tLine.push({
-          sx: osx, sy, ex: oex, ey, row, col, borderAttr,
-        });
-        tRow.sx = tRow.ex;
-      },
-      jump: ({ col }) => {
-        const width = cols.getWidth(col);
-        tRow.sx = tRow.ex + width;
-        tRow.ex = tRow.sx;
-      },
-      complete: () => {
-        this.tLine = tLine;
-      },
-    });
-  }
-
   getRItem() {
     const { bx, by, table } = this;
     const { cols, rows, cells } = table;
@@ -328,6 +233,101 @@ class AngleHandle {
           }
         }
         this.lLine = lLine;
+      },
+    });
+  }
+
+  getBItem() {
+    const { bx, by, table } = this;
+    const { cols, rows, cells } = table;
+    const bLine = [];
+    const bRow = {};
+    return new LineIteratorItem({
+      newRow: ({ row, y }) => {
+        const height = rows.getHeight(row);
+        bRow.sx = bx;
+        bRow.sy = by + y + height;
+        bRow.ex = bRow.sx;
+        bRow.ey = bRow.sy;
+      },
+      filter: new LineIteratorFilter({
+        logic: LineIteratorFilter.FILTER_LOGIC.AND,
+        stack: [
+          new AngleBarExist(table),
+          new BAngleBarRequire(table),
+          new BBorderRequire(table),
+          new BBorderPriority(table),
+          new BMergeNullEdge(table),
+        ],
+      }),
+      exec: ({ row, col }) => {
+        const width = cols.getWidth(col);
+        const cell = cells.getCell(row, col);
+        const { borderAttr } = cell;
+        bRow.ex += width;
+        const { sx, sy, ex, ey } = bRow;
+        const { osx, oex } = this.bOffset({
+          sx, ex, row, col,
+        });
+        bLine.push({
+          sx: osx, sy, ex: oex, ey, row, col, borderAttr,
+        });
+        bRow.sx = bRow.ex;
+      },
+      jump: ({ col }) => {
+        const width = cols.getWidth(col);
+        bRow.sx = bRow.ex + width;
+        bRow.ex = bRow.sx;
+      },
+      complete: () => {
+        this.bLine = bLine;
+      },
+    });
+  }
+
+  getTItem() {
+    const { table, bx, by } = this;
+    const { cols, cells } = table;
+    const tLine = [];
+    const tRow = {};
+    return new LineIteratorItem({
+      newRow: ({ y }) => {
+        tRow.sx = bx;
+        tRow.sy = by + y;
+        tRow.ex = tRow.sx;
+        tRow.ey = tRow.sy;
+      },
+      filter: new LineIteratorFilter({
+        logic: LineIteratorFilter.FILTER_LOGIC.AND,
+        stack: [
+          new AngleBarExist(table),
+          new TAngleBarRequire(table),
+          new TBorderRequire(table),
+          new TBorderPriority(table),
+          new TMergeNullEdge(table),
+        ],
+      }),
+      exec: ({ row, col }) => {
+        const width = cols.getWidth(col);
+        const cell = cells.getCell(row, col);
+        const { borderAttr } = cell;
+        tRow.ex += width;
+        const { sx, sy, ex, ey } = tRow;
+        const { osx, oex } = this.tOffset({
+          sx, ex, row, col,
+        });
+        tLine.push({
+          sx: osx, sy, ex: oex, ey, row, col, borderAttr,
+        });
+        tRow.sx = tRow.ex;
+      },
+      jump: ({ col }) => {
+        const width = cols.getWidth(col);
+        tRow.sx = tRow.ex + width;
+        tRow.ex = tRow.sx;
+      },
+      complete: () => {
+        this.tLine = tLine;
       },
     });
   }

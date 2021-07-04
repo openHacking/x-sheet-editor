@@ -29,89 +29,94 @@ class LOutHandle {
     this.bLine = [];
   }
 
-  getBItem() {
-    const { bx, by, table } = this;
-    const { cols, rows, cells } = table;
-    const bLine = [];
-    const bRow = {};
-    return new LineIteratorItem({
-      newRow: ({ row, y }) => {
-        const height = rows.getHeight(row);
-        bRow.sx = bx;
-        bRow.sy = by + y + height;
-        bRow.ex = bRow.sx;
-        bRow.ey = bRow.sy;
-      },
-      filter: new LineIteratorFilter({
-        logic: LineIteratorFilter.FILTER_LOGIC.AND,
-        stack: [
-          new AngleBarExist(table),
-          new BBorderRequire(table),
-          new BBorderPriority(table),
-          new BMergeNullEdge(table),
-          new LAngleBarOutRange(table),
-        ],
-      }),
-      exec: ({ row, col }) => {
-        const width = cols.getWidth(col);
-        const cell = cells.getCell(row, col);
-        const { borderAttr } = cell;
-        bRow.ex += width;
-        const { sx, sy, ex, ey } = bRow;
-        bLine.push({ sx, sy, ex, ey, row, col, borderAttr });
-        bRow.sx = bRow.ex;
-      },
-      jump: ({ col }) => {
-        const width = cols.getWidth(col);
-        bRow.sx = bRow.ex + width;
-        bRow.ex = bRow.sx;
-      },
-      complete: () => {
-        this.bLine = bLine;
-      },
-    });
+  lOffset({
+    sx, row, col,
+  }) {
+    const { table } = this;
+    const { cells } = table;
+    let osx = sx;
+    let main = cells.getCell(row, col);
+    if (main) {
+      if (main.leftSdistWidth) {
+        osx = sx + main.leftSdistWidth;
+      } else if (main.rightSdistWidth) {
+        osx = sx - main.rightSdistWidth;
+      }
+    }
+    return { osx };
   }
 
-  getTItem() {
-    const { table, bx, by } = this;
-    const { cols, cells } = table;
-    const tLine = [];
-    const tRow = {};
-    return new LineIteratorItem({
-      newRow: ({ y }) => {
-        tRow.sx = bx;
-        tRow.sy = by + y;
-        tRow.ex = tRow.sx;
-        tRow.ey = tRow.sy;
-      },
-      filter: new LineIteratorFilter({
-        logic: LineIteratorFilter.FILTER_LOGIC.AND,
-        stack: [
-          new AngleBarExist(table),
-          new TBorderRequire(table),
-          new TBorderPriority(table),
-          new TMergeNullEdge(table),
-          new LAngleBarOutRange(table),
-        ],
-      }),
-      exec: ({ row, col }) => {
-        const width = cols.getWidth(col);
-        const cell = cells.getCell(row, col);
-        const { borderAttr } = cell;
-        tRow.ex += width;
-        const { sx, sy, ex, ey } = tRow;
-        tLine.push({ sx, sy, ex, ey, row, col, borderAttr });
-        tRow.sx = tRow.ex;
-      },
-      jump: ({ col }) => {
-        const width = cols.getWidth(col);
-        tRow.sx = tRow.ex + width;
-        tRow.ex = tRow.sx;
-      },
-      complete: () => {
-        this.tLine = tLine;
-      },
-    });
+  bOffset({
+    sx, ex, row, col,
+  }) {
+    const { table } = this;
+    const { cells } = table;
+    let osx = sx;
+    let oex = ex;
+    let next = cells.getCell(row + 1, col);
+    if (next) {
+      if (next.leftSdistWidth) {
+        osx = sx + next.leftSdistWidth;
+        oex = ex + next.leftSdistWidth;
+      } else if (next.rightSdistWidth) {
+        osx = sx - next.rightSdistWidth;
+        oex = ex - next.rightSdistWidth;
+      }
+    }
+    return { osx, oex };
+  }
+
+  tOffset({
+    sx, ex, row, col,
+  }) {
+    const { table } = this;
+    const { cells } = table;
+    let osx = sx;
+    let oex = ex;
+    let main = cells.getCell(row, col);
+    let next = cells.getCell(row, col + 1);
+    if (main) {
+      if (main.leftSdistWidth) {
+        osx = sx + main.leftSdistWidth;
+        oex = ex + main.leftSdistWidth;
+      } else if (main.rightSdistWidth) {
+        osx = sx - main.rightSdistWidth;
+        oex = ex - main.rightSdistWidth;
+      }
+    }
+    if (next) {
+      if (next.leftSdistWidth) {
+        oex = ex + next.leftSdistWidth;
+      } else if (next.rightSdistWidth) {
+        oex = ex - next.rightSdistWidth;
+      }
+    }
+    return { osx, oex };
+  }
+
+  rOffset({
+    sx, row, col,
+  }) {
+    const { table } = this;
+    const { cells } = table;
+    let osx = sx;
+    let main = cells.getCell(row, col);
+    let next = cells.getCell(row, col + 1);
+    if (main) {
+      if (main.leftSdistWidth) {
+        osx = sx + main.leftSdistWidth;
+      } else if (main.rightSdistWidth) {
+        osx = sx - main.rightSdistWidth;
+      }
+    }
+    if (next) {
+      if (next.leftSdistWidth) {
+        osx = sx + next.leftSdistWidth;
+      } else if (next.rightSdistWidth) {
+        osx = sx - next.rightSdistWidth;
+      }
+    }
+    return { osx };
   }
 
   getRItem() {
@@ -145,7 +150,10 @@ class LOutHandle {
         const { borderAttr } = cell;
         item.ey += height;
         const { sx, sy, ex, ey, rLine } = item;
-        rLine.push({ sx, sy, ex, ey, row, col, borderAttr });
+        const { osx } = this.rOffset({
+          sx, ex, row, col,
+        });
+        rLine.push({ sx: osx, sy, ex, ey, row, col, borderAttr });
         item.sy = item.ey;
       },
       jump: ({ row, col }) => {
@@ -197,7 +205,10 @@ class LOutHandle {
         const { borderAttr } = cell;
         item.ey += height;
         const { sx, sy, ex, ey, lLine } = item;
-        lLine.push({ sx, sy, ex, ey, row, col, borderAttr });
+        const { osx } = this.lOffset({
+          sx, ex, row, col,
+        });
+        lLine.push({ sx: osx, sy, ex, ey, row, col, borderAttr });
         item.sy = item.ey;
       },
       jump: ({ row, col }) => {
@@ -215,6 +226,97 @@ class LOutHandle {
           }
         }
         this.lLine = lLine;
+      },
+    });
+  }
+
+  getBItem() {
+    const { bx, by, table } = this;
+    const { cols, rows, cells } = table;
+    const bLine = [];
+    const bRow = {};
+    return new LineIteratorItem({
+      newRow: ({ row, y }) => {
+        const height = rows.getHeight(row);
+        bRow.sx = bx;
+        bRow.sy = by + y + height;
+        bRow.ex = bRow.sx;
+        bRow.ey = bRow.sy;
+      },
+      filter: new LineIteratorFilter({
+        logic: LineIteratorFilter.FILTER_LOGIC.AND,
+        stack: [
+          new AngleBarExist(table),
+          new BBorderRequire(table),
+          new BBorderPriority(table),
+          new BMergeNullEdge(table),
+          new LAngleBarOutRange(table),
+        ],
+      }),
+      exec: ({ row, col }) => {
+        const width = cols.getWidth(col);
+        const cell = cells.getCell(row, col);
+        const { borderAttr } = cell;
+        bRow.ex += width;
+        const { sx, sy, ex, ey } = bRow;
+        const { osx, oex } = this.bOffset({
+          sx, ex, row, col,
+        });
+        bLine.push({ sx: osx, sy, ex: oex, ey, row, col, borderAttr });
+        bRow.sx = bRow.ex;
+      },
+      jump: ({ col }) => {
+        const width = cols.getWidth(col);
+        bRow.sx = bRow.ex + width;
+        bRow.ex = bRow.sx;
+      },
+      complete: () => {
+        this.bLine = bLine;
+      },
+    });
+  }
+
+  getTItem() {
+    const { table, bx, by } = this;
+    const { cols, cells } = table;
+    const tLine = [];
+    const tRow = {};
+    return new LineIteratorItem({
+      newRow: ({ y }) => {
+        tRow.sx = bx;
+        tRow.sy = by + y;
+        tRow.ex = tRow.sx;
+        tRow.ey = tRow.sy;
+      },
+      filter: new LineIteratorFilter({
+        logic: LineIteratorFilter.FILTER_LOGIC.AND,
+        stack: [
+          new AngleBarExist(table),
+          new TBorderRequire(table),
+          new TBorderPriority(table),
+          new TMergeNullEdge(table),
+          new LAngleBarOutRange(table),
+        ],
+      }),
+      exec: ({ row, col }) => {
+        const width = cols.getWidth(col);
+        const cell = cells.getCell(row, col);
+        const { borderAttr } = cell;
+        tRow.ex += width;
+        const { sx, sy, ex, ey } = tRow;
+        const { osx, oex } = this.tOffset({
+          sx, ex, row, col,
+        });
+        tLine.push({ sx: osx, sy, ex: oex, ey, row, col, borderAttr });
+        tRow.sx = tRow.ex;
+      },
+      jump: ({ col }) => {
+        const width = cols.getWidth(col);
+        tRow.sx = tRow.ex + width;
+        tRow.ex = tRow.sx;
+      },
+      complete: () => {
+        this.tLine = tLine;
       },
     });
   }
