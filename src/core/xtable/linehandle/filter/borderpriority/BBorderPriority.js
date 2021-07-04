@@ -19,7 +19,7 @@ class BBorderPriority {
         const { top } = next.borderAttr;
         if (top.display && bottom.display) {
           const result = bottom.priority(top);
-          return result === 1
+          return result === 1 || result === 0
             ? LineIteratorFilter.RETURN_TYPE.EXEC
             : LineIteratorFilter.RETURN_TYPE.JUMP;
         }

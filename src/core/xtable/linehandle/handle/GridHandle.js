@@ -3,8 +3,7 @@ import { LineIteratorItem } from '../LineIteratorItem';
 import { RContentOutRange } from '../filter/contentoutrange/RContentOutRange';
 import { RMergeNullEdge } from '../filter/mergenulledge/RMergeNullEdge';
 import { BMergeNullEdge } from '../filter/mergenulledge/BMergeNullEdge';
-import { BBorderIgnore } from '../filter/borderignore/BBorderIgnore';
-import { RBorderIgnore } from '../filter/borderignore/RBorderIgnore';
+import { RGridIgnore } from '../filter/gridIgnore/RGridIgnore';
 
 class GridHandle {
 
@@ -44,7 +43,7 @@ class GridHandle {
       filter: new LineIteratorFilter({
         logic: LineIteratorFilter.FILTER_LOGIC.AND,
         stack: [
-          new RBorderIgnore(table),
+          new RGridIgnore(table),
           new RMergeNullEdge(table),
           new RContentOutRange(table),
         ],
@@ -94,7 +93,6 @@ class GridHandle {
       filter: new LineIteratorFilter({
         logic: LineIteratorFilter.FILTER_LOGIC.AND,
         stack: [
-          new BBorderIgnore(table),
           new BMergeNullEdge(table),
         ],
       }),

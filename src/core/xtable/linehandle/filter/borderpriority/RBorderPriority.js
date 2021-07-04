@@ -19,7 +19,7 @@ class RBorderPriority {
         const { left } = next.borderAttr;
         if (left.display && right.display) {
           const result = right.priority(left);
-          return result === 1
+          return result === 1 || result === 0
             ? LineIteratorFilter.RETURN_TYPE.EXEC
             : LineIteratorFilter.RETURN_TYPE.JUMP;
         }

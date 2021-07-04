@@ -249,10 +249,10 @@ class BorderHandle {
 
   getItems() {
     return [
-      this.getBItem(),
       this.getTItem(),
-      this.getRItem(),
+      this.getBItem(),
       this.getLItem(),
+      this.getRItem(),
     ];
   }
 

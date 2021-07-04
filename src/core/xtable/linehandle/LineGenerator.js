@@ -25,11 +25,11 @@ class LineGenerator {
         const bLine = new BorderHandle({
           table, bx, by, optimize,
         });
-        const aLine = new AngleHandle({
-          table, bx, by, optimize,
-        });
         const gLine = new GridHandle({
           table, bx, by, getWidth, getHeight,
+        });
+        const aLine = new AngleHandle({
+          table, bx, by, optimize,
         });
         const xIterator = new LineIteratorLoop({
           items: bLine.getItems().concat(gLine.getItems()).concat(aLine.getItems()),
