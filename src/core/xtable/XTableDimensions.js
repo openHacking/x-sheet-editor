@@ -539,7 +539,7 @@ const settings = {
     height: 30,
     width: 50,
     gridColor: 'rgb(193,193,193)',
-    size: 11,
+    size: 12,
     color: 'rgb(0,0,0)',
   },
   table: {
@@ -549,7 +549,7 @@ const settings = {
     gridColor: 'rgb(225,225,225)',
   },
   rows: {
-    len: 1000,
+    len: 1000000,
     height: 30,
     data: [],
   },
