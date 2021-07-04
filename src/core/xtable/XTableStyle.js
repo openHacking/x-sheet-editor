@@ -1560,13 +1560,6 @@ class XTableIndexUI extends XTableUI {
   }
 
   /**
-   * 绘制条件
-   */
-  drawFilter() {
-    return true;
-  }
-
-  /**
    * 渲染界面
    */
   render() {
@@ -1577,6 +1570,13 @@ class XTableIndexUI extends XTableUI {
       this.drawFont();
       this.drawGridBorder();
     }
+  }
+
+  /**
+   * 绘制条件
+   */
+  drawFilter() {
+    return true;
   }
 
 }
