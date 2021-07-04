@@ -13,18 +13,21 @@ class Box {
     path,
   }) {
     this.path = path;
+    return this;
   }
 
   setRect({
     rect,
   }) {
     this.rect = rect;
+    return this;
   }
 
   setBackground({
     color,
   }) {
     this.background = color;
+    return this;
   }
 
   render() {
@@ -34,7 +37,7 @@ class Box {
         fillStyle: background,
       });
       draw.fillRect(rect.x, rect.y, rect.width, rect.height);
-      return;
+      return this;
     }
     if (path && background) {
       draw.attr({
@@ -42,6 +45,7 @@ class Box {
       });
       draw.fillPath(path);
     }
+    return this;
   }
 
 }

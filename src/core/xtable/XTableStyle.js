@@ -1401,7 +1401,7 @@ class XTableContentUI extends XTableUI {
     const drawX = this.getDrawX();
     const drawY = this.getDrawY();
     const {
-      draw, styleCellsHelper,
+      draw, cells, styleCellsHelper,
     } = table;
     draw.offset(drawX, drawY);
     styleCellsHelper.getCellByViewRange({
@@ -1432,24 +1432,37 @@ class XTableContentUI extends XTableUI {
         if (table.hasAngleCell(row)) {
           if (table.isAngleBarCell(row, col)) {
             const { background } = cell;
+            const { fontAttr } = cell;
+            const { angle } = fontAttr;
+            const { x, y, width, height } = rect;
             const box = new Box({
               draw, background,
             });
-            const { fontAttr } = cell;
-            const { angle } = fontAttr;
-            const offset = angle > 0
+            const defaultOffset = angle > 0
               ? table.getSdistWidth(row, col)
               : -table.getSdistWidth(row, col);
-            const { x, y, width, height } = rect;
-            const tl = new Point(x + offset, y);
-            const tr = new Point(x + width + offset, y);
-            const br = new Point(x + width, y + height);
+            const tl = new Point(x, y);
+            const tr = new Point(x + width, y);
             const bl = new Point(x, y + height);
-            const path = new Path({
-              points: [tl, tr, br, bl],
-            });
-            box.setPath({ path });
-            box.render();
+            const br = new Point(x + width, y + height);
+            if (table.isAngleBarCell(row, col + 1)) {
+              const next = cells.getCell(row, col + 1);
+              const { fontAttr } = next;
+              const { angle } = fontAttr;
+              const nextOffset = angle > 0
+                ? table.getSdistWidth(row, col + 1)
+                : -table.getSdistWidth(row, col + 1);
+              tl.addX(defaultOffset);
+              tr.addX(nextOffset);
+            } else {
+              tl.addX(defaultOffset);
+              tr.addX(defaultOffset);
+            }
+            box.setPath({
+              path: new Path({
+                points: [tl, tr, br, bl],
+              }),
+            }).render();
           }
         }
       },

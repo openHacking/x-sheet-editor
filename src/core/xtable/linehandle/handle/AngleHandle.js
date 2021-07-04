@@ -9,14 +9,13 @@ import { RBorderPriority } from '../filter/borderpriority/RBorderPriority';
 import { RMergeNullEdge } from '../filter/mergenulledge/RMergeNullEdge';
 import { LBorderPriority } from '../filter/borderpriority/LBorderPriority';
 import { LMergeNullEdge } from '../filter/mergenulledge/LMergeNullEdge';
-import { BAngleBarRequire } from '../filter/anglebarrequire/BAngleBarRequire';
 import { BBorderRequire } from '../filter/borderrequire/BBorderRequire';
 import { TBorderRequire } from '../filter/borderrequire/TBorderRequire';
-import { TAngleBarRequire } from '../filter/anglebarrequire/TAngleBarRequire';
 import { RAngleBarRequire } from '../filter/anglebarrequire/RAngleBarRequire';
 import { RBorderRequire } from '../filter/borderrequire/RBorderRequire';
 import { LAngleBarRequire } from '../filter/anglebarrequire/LAngleBarRequire';
 import { LBorderRequire } from '../filter/borderrequire/LBorderRequire';
+import { OAngleBarRequire } from '../filter/anglebarrequire/OAngleBarRequire';
 
 class AngleHandle {
 
@@ -32,23 +31,6 @@ class AngleHandle {
     this.bLine = [];
   }
 
-  lOffset({
-    sx, row, col,
-  }) {
-    const { table } = this;
-    const { cells } = table;
-    let osx = sx;
-    let main = cells.getCell(row, col);
-    if (main) {
-      if (main.leftSdistWidth) {
-        osx = sx + main.leftSdistWidth;
-      } else if (main.rightSdistWidth) {
-        osx = sx - main.rightSdistWidth;
-      }
-    }
-    return { osx };
-  }
-
   bOffset({
     sx, ex, row, col,
   }) {
@@ -56,14 +38,30 @@ class AngleHandle {
     const { cells } = table;
     let osx = sx;
     let oex = ex;
-    let next = cells.getCell(row + 1, col);
-    if (next) {
-      if (next.leftSdistWidth) {
-        osx = sx + next.leftSdistWidth;
-        oex = ex + next.leftSdistWidth;
-      } else if (next.rightSdistWidth) {
-        osx = sx - next.rightSdistWidth;
-        oex = ex - next.rightSdistWidth;
+    let bottom = cells.getCell(row + 1, col);
+    let left = cells.getCell(row + 1, col - 1);
+    let right = cells.getCell(row + 1, col + 1);
+    if (left) {
+      if (left.leftSdistWidth) {
+        osx = sx + left.leftSdistWidth;
+      } else if (left.rightSdistWidth) {
+        osx = sx - left.rightSdistWidth;
+      }
+    }
+    if (bottom) {
+      if (bottom.leftSdistWidth) {
+        osx = sx + bottom.leftSdistWidth;
+        oex = ex + bottom.leftSdistWidth;
+      } else if (bottom.rightSdistWidth) {
+        osx = sx - bottom.rightSdistWidth;
+        oex = ex - bottom.rightSdistWidth;
+      }
+    }
+    if (right) {
+      if (right.leftSdistWidth) {
+        oex = ex + right.leftSdistWidth;
+      } else if (right.rightSdistWidth) {
+        oex = ex - right.rightSdistWidth;
       }
     }
     return { osx, oex };
@@ -77,7 +75,15 @@ class AngleHandle {
     let osx = sx;
     let oex = ex;
     let main = cells.getCell(row, col);
+    let last = cells.getCell(row, col - 1);
     let next = cells.getCell(row, col + 1);
+    if (last) {
+      if (last.leftSdistWidth) {
+        osx = sx + last.leftSdistWidth;
+      } else if (last.rightSdistWidth) {
+        osx = sx - last.rightSdistWidth;
+      }
+    }
     if (main) {
       if (main.leftSdistWidth) {
         osx = sx + main.leftSdistWidth;
@@ -95,6 +101,31 @@ class AngleHandle {
       }
     }
     return { osx, oex };
+  }
+
+  lOffset({
+    sx, row, col,
+  }) {
+    const { table } = this;
+    const { cells } = table;
+    let osx = sx;
+    let main = cells.getCell(row, col);
+    let last = cells.getCell(row, col - 1);
+    if (last) {
+      if (last.leftSdistWidth) {
+        osx = sx + last.leftSdistWidth;
+      } else if (last.rightSdistWidth) {
+        osx = sx - last.rightSdistWidth;
+      }
+    }
+    if (main) {
+      if (main.leftSdistWidth) {
+        osx = sx + main.leftSdistWidth;
+      } else if (main.rightSdistWidth) {
+        osx = sx - main.rightSdistWidth;
+      }
+    }
+    return { osx };
   }
 
   rOffset({
@@ -254,7 +285,7 @@ class AngleHandle {
         logic: LineIteratorFilter.FILTER_LOGIC.AND,
         stack: [
           new AngleBarExist(table),
-          new BAngleBarRequire(table),
+          new OAngleBarRequire(table),
           new BBorderRequire(table),
           new BBorderPriority(table),
           new BMergeNullEdge(table),
@@ -301,7 +332,7 @@ class AngleHandle {
         logic: LineIteratorFilter.FILTER_LOGIC.AND,
         stack: [
           new AngleBarExist(table),
-          new TAngleBarRequire(table),
+          new OAngleBarRequire(table),
           new TBorderRequire(table),
           new TBorderPriority(table),
           new TMergeNullEdge(table),
