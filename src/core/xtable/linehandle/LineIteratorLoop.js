@@ -107,7 +107,7 @@ class LineIteratorLoop {
     const { items } = this;
     for (let idx = 0; idx < items.length; idx++) {
       const item = items[idx];
-      const result = item.filter.run({ row, col });
+      const result = item.filter.run({ row, col, x, y });
       switch (result) {
         case LineIteratorFilter.RETURN_TYPE.EXEC:
           item.exec({ row, col, x, y });

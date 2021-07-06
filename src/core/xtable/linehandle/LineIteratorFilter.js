@@ -9,7 +9,7 @@ class LineIteratorFilter {
   }
 
   run({
-    row, col,
+    row, col, x, y,
   }) {
     const { logic, stack } = this;
     let result = LineIteratorFilter.RETURN_TYPE.EXEC;
@@ -19,7 +19,7 @@ class LineIteratorFilter {
         result = LineIteratorFilter.RETURN_TYPE.EXEC;
         for (let i = 0; i < stack.length; i += 1) {
           const filter = stack[i];
-          const returnValue = filter.run({ row, col });
+          const returnValue = filter.run({ row, col, x, y });
           if (returnValue !== LineIteratorFilter.RETURN_TYPE.EXEC) {
             result = LineIteratorFilter.RETURN_TYPE.JUMP;
             active = filter;
@@ -32,7 +32,7 @@ class LineIteratorFilter {
         result = LineIteratorFilter.RETURN_TYPE.JUMP;
         for (let i = 0; i < stack.length; i += 1) {
           const filter = stack[i];
-          const returnValue = filter.run({ row, col });
+          const returnValue = filter.run({ row, col, x, y });
           if (returnValue === LineIteratorFilter.RETURN_TYPE.EXEC) {
             result = LineIteratorFilter.RETURN_TYPE.EXEC;
             active = filter;

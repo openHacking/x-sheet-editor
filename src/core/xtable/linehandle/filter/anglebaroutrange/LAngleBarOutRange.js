@@ -4,16 +4,12 @@ class LAngleBarOutRange {
 
   constructor(table) {
     this.table = table;
-    this.maxWidth = 0;
   }
 
   run({
-    row, col,
+    row, col, x,
   }) {
     const { table } = this;
-    const { cols } = table;
-    const width = cols.getWidth(col);
-    this.maxWidth += width;
     if (!table.isAngleBarCell(row, col)) {
       return LineIteratorFilter.RETURN_TYPE.JUMP;
     }
@@ -25,7 +21,7 @@ class LAngleBarOutRange {
       return LineIteratorFilter.RETURN_TYPE.JUMP;
     }
     const size = table.getCellContentBoundOutWidth(row, col);
-    if (size === 0 || size > this.maxWidth) {
+    if (size === 0 || size > x) {
       return LineIteratorFilter.RETURN_TYPE.EXEC;
     }
     return LineIteratorFilter.RETURN_TYPE.JUMP;
