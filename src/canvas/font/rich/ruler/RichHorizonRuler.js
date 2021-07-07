@@ -242,6 +242,7 @@ class RichHorizonRuler extends RichHorizonVisual {
       });
       wrapLine.addOffsetY(lineHeight);
       wrapLine.addOffsetY(wrapLine.height);
+      wrapLine.resetWrapLine();
     }
     if (wrapLine.offsetY > 0) {
       wrapLine.addOffsetY(-lineHeight);
