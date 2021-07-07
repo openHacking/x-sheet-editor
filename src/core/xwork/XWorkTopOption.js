@@ -15,8 +15,8 @@ import { XlsxImportTask } from '../../task/XlsxImportTask';
 import { XlsxExportTask } from '../../task/XlsxExportTask';
 import { XDraw } from '../../canvas/XDraw';
 import { Confirm } from '../../module/confirm/Confirm';
-import { XWorkTab } from './XWorkTab';
-import { XWorkSheet } from './XWorkSheet';
+import { XWorkTab } from './tabs/XWorkTab';
+import { XWorkSheet } from './sheets/XWorkSheet';
 
 class XBookTopOption extends Widget {
 

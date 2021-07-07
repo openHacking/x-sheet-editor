@@ -80,6 +80,14 @@ class ElPopUp extends Widget {
   }
 
   /**
+   * 设置环绕元素
+   * @param el
+   */
+  setEL(el) {
+    this.options.el = el;
+  }
+
+  /**
    * 计算显示的大小
    */
   elPopUpAutosize() {
@@ -198,14 +206,6 @@ class ElPopUp extends Widget {
   }
 
   /**
-   * 设置环绕元素
-   * @param el
-   */
-  setEL(el) {
-    this.options.el = el;
-  }
-
-  /**
    * 销毁组件
    */
   destroy() {
@@ -253,6 +253,7 @@ class ElPopUp extends Widget {
   }
 
 }
+
 ElPopUp.POPUP_POSTION = {
   TB: Symbol('上下位置'),
   LR: Symbol('左右位置'),
