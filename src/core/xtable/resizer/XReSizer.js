@@ -41,31 +41,33 @@ class XReSizer extends Widget {
     const { colsDataProxy } = tableDataSnapshot;
     const { index } = table;
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      mousePointer.lock(XReSizer);
-      mousePointer.set(XTableMousePointer.KEYS.colResize, XReSizer);
-      const { left, ci } = this.getEventLeft(e);
-      const min = left - cols.getWidth(ci) + cols.min;
-      let { x: mx } = table.eventXy(e);
-      XEvent.mouseMoveUp(document, (e) => {
-        ({ x: mx } = table.eventXy(e));
-        mx -= this.width / 2;
-        mx = Math.ceil(PlainUtils.minIf(mx, min));
-        this.css('left', `${mx}px`);
-        this.lineEl.css('height', `${table.visualHeight()}px`);
-        this.lineEl.show();
-      }, (e) => {
-        mousePointer.free(XReSizer);
-        this.lineEl.hide();
-        this.css('left', `${mx}px`);
-        const { y } = table.eventXy(e);
-        if (y <= 0) {
-          this.hide();
-        }
-        const newLeft = mx - (left - cols.getWidth(ci)) + this.width;
-        tableDataSnapshot.begin();
-        colsDataProxy.setWidth(ci, scale.back(newLeft));
-        tableDataSnapshot.end();
-      });
+      if (!table.isReadOnly()) {
+        mousePointer.lock(XReSizer);
+        mousePointer.set(XTableMousePointer.KEYS.colResize, XReSizer);
+        const { left, ci } = this.getEventLeft(e);
+        const min = left - cols.getWidth(ci) + cols.min;
+        let { x: mx } = table.eventXy(e);
+        XEvent.mouseMoveUp(document, (e) => {
+          ({ x: mx } = table.eventXy(e));
+          mx -= this.width / 2;
+          mx = Math.ceil(PlainUtils.minIf(mx, min));
+          this.css('left', `${mx}px`);
+          this.lineEl.css('height', `${table.visualHeight()}px`);
+          this.lineEl.show();
+        }, (e) => {
+          mousePointer.free(XReSizer);
+          this.lineEl.hide();
+          this.css('left', `${mx}px`);
+          const { y } = table.eventXy(e);
+          if (y <= 0) {
+            this.hide();
+          }
+          const newLeft = mx - (left - cols.getWidth(ci)) + this.width;
+          tableDataSnapshot.begin();
+          colsDataProxy.setWidth(ci, scale.back(newLeft));
+          tableDataSnapshot.end();
+        });
+      }
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       mousePointer.free(XReSizer);

@@ -39,6 +39,7 @@ import { XIconBuilder } from './xicon/XIconBuilder';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { XIteratorBuilder } from './iterator/XIteratorBuilder';
 import { RowHeightGroupIndex } from './tablebase/RowHeightGroupIndex';
+import { Alert } from '../../module/alert/Alert';
 
 class Dimensions {
 
@@ -573,6 +574,7 @@ const settings = {
   merge: {
     merges: [],
   },
+  readOnly: false,
 };
 
 /**
@@ -1474,6 +1476,24 @@ class XTableDimensions extends Widget {
     xFixedView.setFixedView(fixedView);
     xTableStyle.scrolling();
     this.trigger(Constant.SYSTEM_EVENT_TYPE.SCROLL);
+  }
+
+  /**
+   * 表格是否只读
+   * @returns {boolean}
+   */
+  isReadOnly({
+    tips = true,
+  } = {}) {
+    const { settings } = this;
+    const { readOnly } = settings;
+    if (readOnly) {
+      if (tips) {
+        new Alert({ message: '只读模式无法编辑' }).open();
+      }
+      return true;
+    }
+    return false;
   }
 
   /**

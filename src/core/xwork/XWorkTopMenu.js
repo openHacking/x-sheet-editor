@@ -48,46 +48,59 @@ class XWorkTopMenu extends Widget {
     const { body } = this.workTop.work;
     const { sheetView } = body;
 
-    // tools
+    // 普通小工具
     this.undo = new Undo();
     this.redo = new Redo();
+    this.paintFormat = new PaintFormat();
+    this.clearFormat = new ClearFormat();
+    this.fontBold = new FontBold();
+    this.fontItalic = new FontItalic();
+    this.underLine = new UnderLine();
+    this.fontStrike = new FontStrike();
+    this.filter = new Filter();
+    this.merge = new Merge();
+    this.functions = new Functions();
+
+    // 上下文菜单小工具
     this.scale = new Scale({
       contextMenu: {
         onUpdate: (value) => {
-          this.scale.setTitle(`${value}%`);
-          const { body } = this.workTop.work;
-          body.setScale(value / 100);
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          if (!table.isReadOnly()) {
+            this.scale.setTitle(`${value}%`);
+            const { body } = this.workTop.work;
+            body.setScale(value / 100);
+          }
         },
       },
     });
-    this.paintFormat = new PaintFormat();
-    this.clearFormat = new ClearFormat();
     this.format = new Format({
       contextMenu: {
         onUpdate: (format, title) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          const {
-            xScreen,
-          } = table;
-          const operateCellsHelper = table.getOperateCellsHelper();
-          const { tableDataSnapshot } = table;
-          const xSelect = xScreen.findType(XSelectItem);
-          const { selectRange } = xSelect;
-          this.format.setTitle(title);
-          if (selectRange) {
-            tableDataSnapshot.begin();
-            const { cellDataProxy } = tableDataSnapshot;
-            operateCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectRange,
-              callback: (r, c, origin) => {
-                const cell = origin.clone();
-                cell.setFormat(format);
-                cellDataProxy.setCell(r, c, cell);
-              },
-            });
-            tableDataSnapshot.end();
-            table.render();
+          if (!table.isReadOnly()) {
+            const { xScreen } = table;
+            const operateCellsHelper = table.getOperateCellsHelper();
+            const { tableDataSnapshot } = table;
+            const xSelect = xScreen.findType(XSelectItem);
+            const { selectRange } = xSelect;
+            this.format.setTitle(title);
+            if (selectRange) {
+              tableDataSnapshot.begin();
+              const { cellDataProxy } = tableDataSnapshot;
+              operateCellsHelper.getCellOrNewCellByViewRange({
+                rectRange: selectRange,
+                callback: (r, c, origin) => {
+                  const cell = origin.clone();
+                  cell.setFormat(format);
+                  cellDataProxy.setCell(r, c, cell);
+                },
+              });
+              tableDataSnapshot.end();
+              table.render();
+            }
           }
         },
       },
@@ -97,27 +110,27 @@ class XWorkTopMenu extends Widget {
         onUpdate: (type) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          const {
-            xScreen,
-          } = table;
-          const operateCellsHelper = table.getOperateCellsHelper();
-          const { tableDataSnapshot } = table;
-          const xSelect = xScreen.findType(XSelectItem);
-          const { selectRange } = xSelect;
-          this.font.setTitle(type);
-          if (selectRange) {
-            tableDataSnapshot.begin();
-            const { cellDataProxy } = tableDataSnapshot;
-            operateCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectRange,
-              callback: (r, c, origin) => {
-                const cell = origin.clone();
-                cell.fontAttr.name = type;
-                cellDataProxy.setCell(r, c, cell);
-              },
-            });
-            tableDataSnapshot.end();
-            table.render();
+          if (!table.isReadOnly()) {
+            const { xScreen } = table;
+            const operateCellsHelper = table.getOperateCellsHelper();
+            const { tableDataSnapshot } = table;
+            const xSelect = xScreen.findType(XSelectItem);
+            const { selectRange } = xSelect;
+            this.font.setTitle(type);
+            if (selectRange) {
+              tableDataSnapshot.begin();
+              const { cellDataProxy } = tableDataSnapshot;
+              operateCellsHelper.getCellOrNewCellByViewRange({
+                rectRange: selectRange,
+                callback: (r, c, origin) => {
+                  const cell = origin.clone();
+                  cell.fontAttr.name = type;
+                  cellDataProxy.setCell(r, c, cell);
+                },
+              });
+              tableDataSnapshot.end();
+              table.render();
+            }
           }
         },
       },
@@ -127,55 +140,27 @@ class XWorkTopMenu extends Widget {
         onUpdate: (size) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          const { xScreen } = table;
-          const operateCellsHelper = table.getOperateCellsHelper();
-          const { tableDataSnapshot } = table;
-          const xSelect = xScreen.findType(XSelectItem);
-          const { selectRange } = xSelect;
-          this.dprFontSize.setTitle(size);
-          if (selectRange) {
-            tableDataSnapshot.begin();
-            const { cellDataProxy } = tableDataSnapshot;
-            operateCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectRange,
-              callback: (r, c, origin) => {
-                const cell = origin.clone();
-                cell.fontAttr.size = size;
-                cellDataProxy.setCell(r, c, cell);
-              },
-            });
-            tableDataSnapshot.end();
-            table.render();
-          }
-        },
-      },
-    });
-    this.fontColor = new FontColor({
-      contextMenu: {
-        onUpdate: (color) => {
-          const sheet = sheetView.getActiveSheet();
-          const { table } = sheet;
-          const {
-            xScreen,
-          } = table;
-          const operateCellsHelper = table.getOperateCellsHelper();
-          const { tableDataSnapshot } = table;
-          const xSelect = xScreen.findType(XSelectItem);
-          const { selectRange } = xSelect;
-          this.fontColor.setColor(color);
-          if (selectRange) {
-            tableDataSnapshot.begin();
-            const { cellDataProxy } = tableDataSnapshot;
-            operateCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectRange,
-              callback: (r, c, origin) => {
-                const cell = origin.clone();
-                cell.fontAttr.color = color;
-                cellDataProxy.setCell(r, c, cell);
-              },
-            });
-            tableDataSnapshot.end();
-            table.render();
+          if (!table.isReadOnly()) {
+            const { xScreen } = table;
+            const operateCellsHelper = table.getOperateCellsHelper();
+            const { tableDataSnapshot } = table;
+            const xSelect = xScreen.findType(XSelectItem);
+            const { selectRange } = xSelect;
+            this.dprFontSize.setTitle(size);
+            if (selectRange) {
+              tableDataSnapshot.begin();
+              const { cellDataProxy } = tableDataSnapshot;
+              operateCellsHelper.getCellOrNewCellByViewRange({
+                rectRange: selectRange,
+                callback: (r, c, origin) => {
+                  const cell = origin.clone();
+                  cell.fontAttr.size = size;
+                  cellDataProxy.setCell(r, c, cell);
+                },
+              });
+              tableDataSnapshot.end();
+              table.render();
+            }
           }
         },
       },
@@ -185,665 +170,57 @@ class XWorkTopMenu extends Widget {
         onUpdate: (color) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          const {
-            xScreen,
-          } = table;
-          const operateCellsHelper = table.getOperateCellsHelper();
-          const { tableDataSnapshot } = table;
-          const xSelect = xScreen.findType(XSelectItem);
-          const { selectRange } = xSelect;
-          this.fillColor.setColor(color);
-          if (selectRange) {
-            tableDataSnapshot.begin();
-            const { cellDataProxy } = tableDataSnapshot;
-            operateCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectRange,
-              callback: (r, c, origin) => {
-                const cell = origin.clone();
-                cell.background = color;
-                cellDataProxy.setCell(r, c, cell);
-              },
-            });
-            tableDataSnapshot.end();
-            table.render();
-          }
-        },
-      },
-    });
-    this.border = new Border({
-      contextMenu: {
-        onUpdate: (borderType, color, lineType) => {
-          const sheet = sheetView.getActiveSheet();
-          const { table } = sheet;
-          const { xScreen } = table;
-          const operateCellsHelper = table.getOperateCellsHelper();
-          const cells = table.getTableCells();
-          const xTableStyle = table.getXTableStyle();
-          const { tableDataSnapshot } = table;
-          const xSelect = xScreen.findType(XSelectItem);
-          const { selectRange } = xSelect;
-          if (selectRange) {
-            tableDataSnapshot.begin();
-            const { cellDataProxy } = tableDataSnapshot;
-            const rect = selectRange;
-            let widthType = XDraw.LINE_WIDTH_TYPE.low;
-            let type = LINE_TYPE.SOLID_LINE;
-            switch (lineType) {
-              case 'line1':
-                widthType = XDraw.LINE_WIDTH_TYPE.low;
-                type = LINE_TYPE.SOLID_LINE;
-                break;
-              case 'line2':
-                widthType = XDraw.LINE_WIDTH_TYPE.medium;
-                type = LINE_TYPE.SOLID_LINE;
-                break;
-              case 'line3':
-                widthType = XDraw.LINE_WIDTH_TYPE.high;
-                type = LINE_TYPE.SOLID_LINE;
-                break;
-              case 'line4':
-                type = LINE_TYPE.DOTTED_LINE;
-                break;
-              case 'line5':
-                type = LINE_TYPE.POINT_LINE;
-                break;
-              case 'line6':
-                type = LINE_TYPE.DOUBLE_LINE;
-                break;
+          if (!table.isReadOnly()) {
+            const { xScreen } = table;
+            const operateCellsHelper = table.getOperateCellsHelper();
+            const { tableDataSnapshot } = table;
+            const xSelect = xScreen.findType(XSelectItem);
+            const { selectRange } = xSelect;
+            this.fillColor.setColor(color);
+            if (selectRange) {
+              tableDataSnapshot.begin();
+              const { cellDataProxy } = tableDataSnapshot;
+              operateCellsHelper.getCellOrNewCellByViewRange({
+                rectRange: selectRange,
+                callback: (r, c, origin) => {
+                  const cell = origin.clone();
+                  cell.background = color;
+                  cellDataProxy.setCell(r, c, cell);
+                },
+              });
+              tableDataSnapshot.end();
+              table.render();
             }
-            const angleCells = [];
-            const clearEdgeBorder = (ri, ci) => {
-              // 上下边
-              if (ri === rect.sri) {
-                const src = ri - 1;
-                const edgeCell = cells.getCell(src, ci);
-                if (edgeCell) {
-                  const newCell = edgeCell.clone();
-                  const { borderAttr } = newCell;
-                  borderAttr.setBDisplay(false);
-                  cellDataProxy.setCell(src, ci, newCell);
-                }
-              } else if (ri === rect.eri) {
-                const src = ri + 1;
-                const edgeCell = cells.getCell(src, ci);
-                if (edgeCell) {
-                  const newCell = edgeCell.clone();
-                  const { borderAttr } = newCell;
-                  borderAttr.setTDisplay(false);
-                  cellDataProxy.setCell(src, ci, newCell);
-                }
-              }
-              // 左右边
-              if (ci === rect.sci) {
-                const src = ci - 1;
-                const edgeCell = cells.getCell(ri, src);
-                if (edgeCell) {
-                  const newCell = edgeCell.clone();
-                  const { borderAttr } = newCell;
-                  borderAttr.setRDisplay(false);
-                  cellDataProxy.setCell(ri, src, newCell);
-                }
-              } else if (ci === rect.eci) {
-                const src = ci + 1;
-                const edgeCell = cells.getCell(ri, src);
-                if (edgeCell) {
-                  const newCell = edgeCell.clone();
-                  const { borderAttr } = newCell;
-                  borderAttr.setLDisplay(false);
-                  cellDataProxy.setCell(ri, src, newCell);
-                }
-              }
-            };
-            switch (borderType) {
-              case 'border1':
-                operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: rect,
-                  callback: (ri, ci, cell) => {
-                    const newCell = cell.clone();
-                    if (xTableStyle.hasAngleCell(ri)) {
-                      if (xTableStyle.isAngleBarCell(ri, ci)) {
-                        angleCells.push({ ri, ci, newCell });
-                        return;
-                      }
-                    }
-                    const { borderAttr } = newCell;
-                    borderAttr.setAllDisplay(true);
-                    borderAttr.setAllColor(color);
-                    borderAttr.setAllWidthType(widthType);
-                    borderAttr.setAllType(type);
-                    cellDataProxy.setCell(ri, ci, newCell);
-                  },
-                });
-                angleCells.forEach((options) => {
-                  const { ri, ci, newCell } = options;
-                  const { borderAttr } = newCell;
-                  borderAttr.setAllDisplay(true);
-                  borderAttr.setAllColor(color);
-                  borderAttr.setAllWidthType(widthType);
-                  borderAttr.setAllType(type);
-                  cellDataProxy.setCell(ri, ci, newCell);
-                });
-                break;
-              case 'border2':
-                operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: rect,
-                  callback: (ri, ci, cell) => {
-                    const newCell = cell.clone();
-                    if (xTableStyle.hasAngleCell(ri)) {
-                      if (xTableStyle.isAngleBarCell(ri, ci)) {
-                        angleCells.push({ ri, ci, newCell });
-                        return;
-                      }
-                    }
-                    const { borderAttr } = newCell;
-                    if (ri !== rect.sri) {
-                      borderAttr.setTDisplay(true);
-                      borderAttr.setTColor(color);
-                      borderAttr.setTWidthType(widthType);
-                      borderAttr.setTType(type);
-                    }
-                    if (ri !== rect.eri) {
-                      borderAttr.setBDisplay(true);
-                      borderAttr.setBColor(color);
-                      borderAttr.setBWidthType(widthType);
-                      borderAttr.setBType(type);
-                    }
-                    if (ci !== rect.sci) {
-                      borderAttr.setLDisplay(true);
-                      borderAttr.setLColor(color);
-                      borderAttr.setLWidthType(widthType);
-                      borderAttr.setLType(type);
-                    }
-                    if (ci !== rect.eci) {
-                      borderAttr.setRDisplay(true);
-                      borderAttr.setRColor(color);
-                      borderAttr.setRWidthType(widthType);
-                      borderAttr.setRType(type);
-                    }
-                    cellDataProxy.setCell(ri, ci, newCell);
-                  },
-                });
-                angleCells.forEach((options) => {
-                  const { ri, ci, newCell } = options;
-                  const { borderAttr } = newCell;
-                  if (ri !== rect.sri) {
-                    borderAttr.setTDisplay(true);
-                    borderAttr.setTColor(color);
-                    borderAttr.setTWidthType(widthType);
-                    borderAttr.setTType(type);
-                  }
-                  if (ri !== rect.eri) {
-                    borderAttr.setBDisplay(true);
-                    borderAttr.setBColor(color);
-                    borderAttr.setBWidthType(widthType);
-                    borderAttr.setBType(type);
-                  }
-                  if (ci !== rect.sci) {
-                    borderAttr.setLDisplay(true);
-                    borderAttr.setLColor(color);
-                    borderAttr.setLWidthType(widthType);
-                    borderAttr.setLType(type);
-                  }
-                  if (ci !== rect.eci) {
-                    borderAttr.setRDisplay(true);
-                    borderAttr.setRColor(color);
-                    borderAttr.setRWidthType(widthType);
-                    borderAttr.setRType(type);
-                  }
-                  cellDataProxy.setCell(ri, ci, newCell);
-                });
-                break;
-              case 'border3':
-                operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: rect,
-                  callback: (ri, ci, cell) => {
-                    const newCell = cell.clone();
-                    if (xTableStyle.hasAngleCell(ri)) {
-                      if (xTableStyle.isAngleBarCell(ri, ci)) {
-                        angleCells.push({ ri, ci, newCell });
-                        return;
-                      }
-                    }
-                    const { borderAttr } = newCell;
-                    if (ri !== rect.sri) {
-                      borderAttr.setTDisplay(true);
-                      borderAttr.setTColor(color);
-                      borderAttr.setTWidthType(widthType);
-                      borderAttr.setTType(type);
-                    }
-                    if (ri !== rect.eri) {
-                      borderAttr.setBDisplay(true);
-                      borderAttr.setBColor(color);
-                      borderAttr.setBWidthType(widthType);
-                      borderAttr.setBType(type);
-                    }
-                  },
-                });
-                angleCells.forEach((options) => {
-                  const { ri, newCell } = options;
-                  const { borderAttr } = newCell;
-                  if (ri !== rect.sri) {
-                    borderAttr.setTDisplay(true);
-                    borderAttr.setTColor(color);
-                    borderAttr.setTWidthType(widthType);
-                    borderAttr.setTType(type);
-                  }
-                  if (ri !== rect.eri) {
-                    borderAttr.setBDisplay(true);
-                    borderAttr.setBColor(color);
-                    borderAttr.setBWidthType(widthType);
-                    borderAttr.setBType(type);
-                  }
-                });
-                break;
-              case 'border4':
-                operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: rect,
-                  callback: (ri, ci, cell) => {
-                    const newCell = cell.clone();
-                    if (xTableStyle.hasAngleCell(ri)) {
-                      if (xTableStyle.isAngleBarCell(ri, ci)) {
-                        angleCells.push({ ri, ci, newCell });
-                        return;
-                      }
-                    }
-                    const { borderAttr } = newCell;
-                    if (ci !== rect.sci) {
-                      borderAttr.setLDisplay(true);
-                      borderAttr.setLColor(color);
-                      borderAttr.setLWidthType(widthType);
-                      borderAttr.setLType(type);
-                    }
-                    if (ci !== rect.eci) {
-                      borderAttr.setRDisplay(true);
-                      borderAttr.setRColor(color);
-                      borderAttr.setRWidthType(widthType);
-                      borderAttr.setRType(type);
-                    }
-                    cellDataProxy.setCell(ri, ci, newCell);
-                  },
-                });
-                angleCells.forEach((options) => {
-                  const { ri, ci, newCell } = options;
-                  const { borderAttr } = newCell;
-                  if (ci !== rect.sci) {
-                    borderAttr.setLDisplay(true);
-                    borderAttr.setLColor(color);
-                    borderAttr.setLWidthType(widthType);
-                    borderAttr.setLType(type);
-                  }
-                  if (ci !== rect.eci) {
-                    borderAttr.setRDisplay(true);
-                    borderAttr.setRColor(color);
-                    borderAttr.setRWidthType(widthType);
-                    borderAttr.setRType(type);
-                  }
-                  cellDataProxy.setCell(ri, ci, newCell);
-                });
-                break;
-              case 'border5':
-                operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: rect,
-                  callback: (ri, ci, cell) => {
-                    const newCell = cell.clone();
-                    if (xTableStyle.hasAngleCell(ri)) {
-                      if (xTableStyle.isAngleBarCell(ri, ci)) {
-                        angleCells.push({ ri, ci, newCell });
-                        return;
-                      }
-                    }
-                    const { borderAttr } = newCell;
-                    if (ri === rect.sri) {
-                      borderAttr.setTDisplay(true);
-                      borderAttr.setTColor(color);
-                      borderAttr.setTWidthType(widthType);
-                      borderAttr.setTType(type);
-                    }
-                    if (ri === rect.eri) {
-                      borderAttr.setBDisplay(true);
-                      borderAttr.setBColor(color);
-                      borderAttr.setBWidthType(widthType);
-                      borderAttr.setBType(type);
-                    }
-                    if (ci === rect.sci) {
-                      borderAttr.setLDisplay(true);
-                      borderAttr.setLColor(color);
-                      borderAttr.setLWidthType(widthType);
-                      borderAttr.setLType(type);
-                    }
-                    if (ci === rect.eci) {
-                      borderAttr.setRDisplay(true);
-                      borderAttr.setRColor(color);
-                      borderAttr.setRWidthType(widthType);
-                      borderAttr.setRType(type);
-                    }
-                    cellDataProxy.setCell(ri, ci, newCell);
-                  },
-                });
-                angleCells.forEach((options) => {
-                  const { ri, ci, newCell } = options;
-                  const { borderAttr } = newCell;
-                  if (ri === rect.sri) {
-                    borderAttr.setTDisplay(true);
-                    borderAttr.setTColor(color);
-                    borderAttr.setTWidthType(widthType);
-                    borderAttr.setTType(type);
-                  }
-                  if (ri === rect.eri) {
-                    borderAttr.setBDisplay(true);
-                    borderAttr.setBColor(color);
-                    borderAttr.setBWidthType(widthType);
-                    borderAttr.setBType(type);
-                  }
-                  if (ci === rect.sci) {
-                    borderAttr.setLDisplay(true);
-                    borderAttr.setLColor(color);
-                    borderAttr.setLWidthType(widthType);
-                    borderAttr.setLType(type);
-                  }
-                  if (ci === rect.eci) {
-                    borderAttr.setRDisplay(true);
-                    borderAttr.setRColor(color);
-                    borderAttr.setRWidthType(widthType);
-                    borderAttr.setRType(type);
-                  }
-                  cellDataProxy.setCell(ri, ci, newCell);
-                });
-                break;
-              case 'border6':
-                operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: rect,
-                  callback: (ri, ci, cell) => {
-                    const newCell = cell.clone();
-                    if (xTableStyle.hasAngleCell(ri)) {
-                      if (xTableStyle.isAngleBarCell(ri, ci)) {
-                        angleCells.push({ ri, ci, newCell });
-                        return;
-                      }
-                    }
-                    const { borderAttr } = newCell;
-                    if (ci === rect.sci) {
-                      borderAttr.setLDisplay(true);
-                      borderAttr.setLColor(color);
-                      borderAttr.setLWidthType(widthType);
-                      borderAttr.setLType(type);
-                    }
-                    cellDataProxy.setCell(ri, ci, newCell);
-                  },
-                });
-                angleCells.forEach((options) => {
-                  const { ri, ci, newCell } = options;
-                  const { borderAttr } = newCell;
-                  if (ci === rect.sci) {
-                    borderAttr.setLDisplay(true);
-                    borderAttr.setLColor(color);
-                    borderAttr.setLWidthType(widthType);
-                    borderAttr.setLType(type);
-                  }
-                  cellDataProxy.setCell(ri, ci, newCell);
-                });
-                break;
-              case 'border7':
-                operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: rect,
-                  callback: (ri, ci, cell) => {
-                    const newCell = cell.clone();
-                    if (xTableStyle.hasAngleCell(ri)) {
-                      if (xTableStyle.isAngleBarCell(ri, ci)) {
-                        angleCells.push({ ri, ci, newCell });
-                        return;
-                      }
-                    }
-                    const { borderAttr } = newCell;
-                    if (ri === rect.sri) {
-                      borderAttr.setTDisplay(true);
-                      borderAttr.setTColor(color);
-                      borderAttr.setTWidthType(widthType);
-                      borderAttr.setTType(type);
-                    }
-                    cellDataProxy.setCell(ri, ci, newCell);
-                  },
-                });
-                angleCells.forEach((options) => {
-                  const { ri, ci, newCell } = options;
-                  const { borderAttr } = newCell;
-                  if (ri === rect.sri) {
-                    borderAttr.setTDisplay(true);
-                    borderAttr.setTColor(color);
-                    borderAttr.setTWidthType(widthType);
-                    borderAttr.setTType(type);
-                  }
-                  cellDataProxy.setCell(ri, ci, newCell);
-                });
-                break;
-              case 'border8':
-                operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: rect,
-                  callback: (ri, ci, cell) => {
-                    const newCell = cell.clone();
-                    if (xTableStyle.hasAngleCell(ri)) {
-                      if (xTableStyle.isAngleBarCell(ri, ci)) {
-                        angleCells.push({ ri, ci, newCell });
-                        return;
-                      }
-                    }
-                    const { borderAttr } = newCell;
-                    if (ci === rect.eci) {
-                      borderAttr.setRDisplay(true);
-                      borderAttr.setRColor(color);
-                      borderAttr.setRWidthType(widthType);
-                      borderAttr.setRType(type);
-                    }
-                    cellDataProxy.setCell(ri, ci, newCell);
-                  },
-                });
-                angleCells.forEach((options) => {
-                  const { ri, ci, newCell } = options;
-                  const { borderAttr } = newCell;
-                  if (ci === rect.eci) {
-                    borderAttr.setRDisplay(true);
-                    borderAttr.setRColor(color);
-                    borderAttr.setRWidthType(widthType);
-                    borderAttr.setRType(type);
-                  }
-                  cellDataProxy.setCell(ri, ci, newCell);
-                });
-                break;
-              case 'border9':
-                operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: rect,
-                  callback: (ri, ci, cell) => {
-                    const newCell = cell.clone();
-                    if (xTableStyle.hasAngleCell(ri)) {
-                      if (xTableStyle.isAngleBarCell(ri, ci)) {
-                        angleCells.push({ ri, ci, newCell });
-                        return;
-                      }
-                    }
-                    const { borderAttr } = newCell;
-                    if (ri === rect.eri) {
-                      borderAttr.setBDisplay(true);
-                      borderAttr.setBColor(color);
-                      borderAttr.setBWidthType(widthType);
-                      borderAttr.setBType(type);
-                    }
-                    cellDataProxy.setCell(ri, ci, newCell);
-                  },
-                });
-                angleCells.forEach((options) => {
-                  const { ri, ci, newCell } = options;
-                  const { borderAttr } = newCell;
-                  if (ri === rect.eri) {
-                    borderAttr.setBDisplay(true);
-                    borderAttr.setBColor(color);
-                    borderAttr.setBWidthType(widthType);
-                    borderAttr.setBType(type);
-                  }
-                  cellDataProxy.setCell(ri, ci, newCell);
-                });
-                break;
-              case 'border10':
-                operateCellsHelper.getCellOrNewCellByViewRange({
-                  rectRange: rect,
-                  callback: (ri, ci, cell) => {
-                    const newCell = cell.clone();
-                    // 旋转单元格
-                    if (xTableStyle.hasAngleCell(ri)) {
-                      if (xTableStyle.isAngleBarCell(ri, ci)) {
-                        angleCells.push({ ri, ci, newCell });
-                        return;
-                      }
-                    }
-                    // 清除边缘单元格
-                    clearEdgeBorder(ri, ci);
-                    // 清除当前单元格
-                    const { borderAttr } = newCell;
-                    borderAttr.setAllDisplay(false);
-                    cellDataProxy.setCell(ri, ci, newCell);
-                  },
-                });
-                angleCells.forEach((options) => {
-                  const { ri, ci, newCell } = options;
-                  // 清除边缘单元格
-                  clearEdgeBorder(ri, ci);
-                  // 清除当前单元格
-                  const { borderAttr } = newCell;
-                  borderAttr.setAllDisplay(false);
-                  cellDataProxy.setCell(ri, ci, newCell);
-                });
-                break;
+          }
+        },
+      },
+    });
+    this.fontColor = new FontColor({
+      contextMenu: {
+        onUpdate: (color) => {
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          if (!table.isReadOnly()) {
+            const { xScreen } = table;
+            const operateCellsHelper = table.getOperateCellsHelper();
+            const { tableDataSnapshot } = table;
+            const xSelect = xScreen.findType(XSelectItem);
+            const { selectRange } = xSelect;
+            this.fontColor.setColor(color);
+            if (selectRange) {
+              tableDataSnapshot.begin();
+              const { cellDataProxy } = tableDataSnapshot;
+              operateCellsHelper.getCellOrNewCellByViewRange({
+                rectRange: selectRange,
+                callback: (r, c, origin) => {
+                  const cell = origin.clone();
+                  cell.fontAttr.color = color;
+                  cellDataProxy.setCell(r, c, cell);
+                },
+              });
+              tableDataSnapshot.end();
+              table.render();
             }
-            tableDataSnapshot.end();
-            table.render();
-          }
-        },
-      },
-    });
-    this.fontBold = new FontBold();
-    this.fontItalic = new FontItalic();
-    this.underLine = new UnderLine();
-    this.fontStrike = new FontStrike();
-    this.merge = new Merge();
-    this.horizontalAlign = new HorizontalAlign({
-      contextMenu: {
-        onUpdate: (type) => {
-          const sheet = sheetView.getActiveSheet();
-          const { table } = sheet;
-          const {
-            xScreen,
-          } = table;
-          const operateCellsHelper = table.getOperateCellsHelper();
-          const { tableDataSnapshot } = table;
-          const xSelect = xScreen.findType(XSelectItem);
-          const { selectRange } = xSelect;
-          switch (type) {
-            case BaseFont.ALIGN.left:
-              this.horizontalAlign.setIcon(new Icon('align-left'));
-              break;
-            case BaseFont.ALIGN.center:
-              this.horizontalAlign.setIcon(new Icon('align-center'));
-              break;
-            case BaseFont.ALIGN.right:
-              this.horizontalAlign.setIcon(new Icon('align-right'));
-              break;
-            default: break;
-          }
-          if (selectRange) {
-            tableDataSnapshot.begin();
-            const { cellDataProxy } = tableDataSnapshot;
-            operateCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectRange,
-              callback: (r, c, origin) => {
-                const cell = origin.clone();
-                cell.fontAttr.align = type;
-                cellDataProxy.setCell(r, c, cell);
-              },
-            });
-            tableDataSnapshot.end();
-            table.render();
-          }
-        },
-      },
-    });
-    this.verticalAlign = new VerticalAlign({
-      contextMenu: {
-        onUpdate: (type) => {
-          const sheet = sheetView.getActiveSheet();
-          const { table } = sheet;
-          const {
-            xScreen,
-          } = table;
-          const operateCellsHelper = table.getOperateCellsHelper();
-          const { tableDataSnapshot } = table;
-          const xSelect = xScreen.findType(XSelectItem);
-          const { selectRange } = xSelect;
-          switch (type) {
-            case BaseFont.VERTICAL_ALIGN.top:
-              this.verticalAlign.setIcon(new Icon('align-top'));
-              break;
-            case BaseFont.VERTICAL_ALIGN.center:
-              this.verticalAlign.setIcon(new Icon('align-middle'));
-              break;
-            case BaseFont.VERTICAL_ALIGN.bottom:
-              this.verticalAlign.setIcon(new Icon('align-bottom'));
-              break;
-            default: break;
-          }
-          if (selectRange) {
-            tableDataSnapshot.begin();
-            const { cellDataProxy } = tableDataSnapshot;
-            operateCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectRange,
-              callback: (r, c, origin) => {
-                const cell = origin.clone();
-                cell.fontAttr.verticalAlign = type;
-                cellDataProxy.setCell(r, c, cell);
-              },
-            });
-            tableDataSnapshot.end();
-            table.render();
-          }
-        },
-      },
-    });
-    this.textWrapping = new TextWrapping({
-      contextMenu: {
-        onUpdate: (type) => {
-          const sheet = sheetView.getActiveSheet();
-          const { table } = sheet;
-          const {
-            xScreen,
-          } = table;
-          const operateCellsHelper = table.getOperateCellsHelper();
-          const { tableDataSnapshot } = table;
-          const xSelect = xScreen.findType(XSelectItem);
-          const { selectRange } = xSelect;
-          let icon;
-          switch (type) {
-            case BaseFont.TEXT_WRAP.TRUNCATE:
-              icon = new Icon('truncate');
-              break;
-            case BaseFont.TEXT_WRAP.WORD_WRAP:
-              icon = new Icon('text-wrap');
-              break;
-            case BaseFont.TEXT_WRAP.OVER_FLOW:
-              icon = new Icon('overflow');
-              break;
-          }
-          this.textWrapping.setIcon(icon);
-          if (selectRange) {
-            tableDataSnapshot.begin();
-            const { cellDataProxy } = tableDataSnapshot;
-            operateCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectRange,
-              callback: (r, c, origin) => {
-                const cell = origin.clone();
-                cell.fontAttr.textWrap = type;
-                cellDataProxy.setCell(r, c, cell);
-              },
-            });
-            tableDataSnapshot.end();
-            table.render();
           }
         },
       },
@@ -853,117 +230,758 @@ class XWorkTopMenu extends Widget {
         onUpdate: (type) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          const { xScreen } = table;
-          const xSelect = xScreen.findType(XSelectItem);
-          const { selectRange } = xSelect;
-          switch (type) {
-            case 'ROW': {
-              if (this.fixed.rowStatus) {
-                table.setFixedRow(-1);
-              } else if (selectRange) {
-                const scrollView = table.getScrollView();
-                const { sri } = selectRange;
-                if (sri < scrollView.eri - 2 && sri >= scrollView.sri) {
-                  table.setFixedRow(sri);
-                } else {
-                  new Alert({ message: '无法在当前区域内冻结单元格, 请重新选择冻结区域' }).open();
+          if (!table.isReadOnly()) {
+            const { xScreen } = table;
+            const xSelect = xScreen.findType(XSelectItem);
+            const { selectRange } = xSelect;
+            switch (type) {
+              case 'ROW': {
+                if (this.fixed.rowStatus) {
+                  table.setFixedRow(-1);
+                } else if (selectRange) {
+                  const scrollView = table.getScrollView();
+                  const { sri } = selectRange;
+                  if (sri < scrollView.eri - 2 && sri >= scrollView.sri) {
+                    table.setFixedRow(sri);
+                  } else {
+                    new Alert({ message: '无法在当前区域内冻结单元格, 请重新选择冻结区域' }).open();
+                  }
                 }
+                break;
               }
-              break;
-            }
-            case 'COL': {
-              if (this.fixed.colStatus) {
-                table.setFixedCol(-1);
-              } else if (selectRange) {
-                const scrollView = table.getScrollView();
-                const { sci } = selectRange;
-                if (sci < scrollView.eci - 2 && sci >= scrollView.sci) {
-                  table.setFixedCol(sci);
-                } else {
-                  new Alert({ message: '无法在当前区域内冻结单元格, 请重新选择冻结区域' }).open();
+              case 'COL': {
+                if (this.fixed.colStatus) {
+                  table.setFixedCol(-1);
+                } else if (selectRange) {
+                  const scrollView = table.getScrollView();
+                  const { sci } = selectRange;
+                  if (sci < scrollView.eci - 2 && sci >= scrollView.sci) {
+                    table.setFixedCol(sci);
+                  } else {
+                    new Alert({ message: '无法在当前区域内冻结单元格, 请重新选择冻结区域' }).open();
+                  }
                 }
+                break;
               }
-              break;
-            }
-            case 'ROW1': {
-              table.setFixedRow(0, 0);
-              break;
-            }
-            case 'ROW2': {
-              table.setFixedRow(1, 0);
-              break;
-            }
-            case 'COL1': {
-              table.setFixedCol(0, 0);
-              break;
-            }
-            case 'COL2': {
-              table.setFixedCol(1, 0);
+              case 'ROW1': {
+                table.setFixedRow(0, 0);
+                break;
+              }
+              case 'ROW2': {
+                table.setFixedRow(1, 0);
+                break;
+              }
+              case 'COL1': {
+                table.setFixedCol(0, 0);
+                break;
+              }
+              case 'COL2': {
+                table.setFixedCol(1, 0);
+              }
             }
           }
         },
       },
     });
-    this.filter = new Filter();
-    this.functions = new Functions();
+    this.border = new Border({
+      contextMenu: {
+        onUpdate: (borderType, color, lineType) => {
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          if (!table.isReadOnly()) {
+            const { xScreen } = table;
+            const operateCellsHelper = table.getOperateCellsHelper();
+            const cells = table.getTableCells();
+            const xTableStyle = table.getXTableStyle();
+            const { tableDataSnapshot } = table;
+            const xSelect = xScreen.findType(XSelectItem);
+            const { selectRange } = xSelect;
+            if (selectRange) {
+              tableDataSnapshot.begin();
+              const { cellDataProxy } = tableDataSnapshot;
+              const rect = selectRange;
+              let widthType = XDraw.LINE_WIDTH_TYPE.low;
+              let type = LINE_TYPE.SOLID_LINE;
+              switch (lineType) {
+                case 'line1':
+                  widthType = XDraw.LINE_WIDTH_TYPE.low;
+                  type = LINE_TYPE.SOLID_LINE;
+                  break;
+                case 'line2':
+                  widthType = XDraw.LINE_WIDTH_TYPE.medium;
+                  type = LINE_TYPE.SOLID_LINE;
+                  break;
+                case 'line3':
+                  widthType = XDraw.LINE_WIDTH_TYPE.high;
+                  type = LINE_TYPE.SOLID_LINE;
+                  break;
+                case 'line4':
+                  type = LINE_TYPE.DOTTED_LINE;
+                  break;
+                case 'line5':
+                  type = LINE_TYPE.POINT_LINE;
+                  break;
+                case 'line6':
+                  type = LINE_TYPE.DOUBLE_LINE;
+                  break;
+              }
+              const angleCells = [];
+              const clearEdgeBorder = (ri, ci) => {
+                // 上下边
+                if (ri === rect.sri) {
+                  const src = ri - 1;
+                  const edgeCell = cells.getCell(src, ci);
+                  if (edgeCell) {
+                    const newCell = edgeCell.clone();
+                    const { borderAttr } = newCell;
+                    borderAttr.setBDisplay(false);
+                    cellDataProxy.setCell(src, ci, newCell);
+                  }
+                } else if (ri === rect.eri) {
+                  const src = ri + 1;
+                  const edgeCell = cells.getCell(src, ci);
+                  if (edgeCell) {
+                    const newCell = edgeCell.clone();
+                    const { borderAttr } = newCell;
+                    borderAttr.setTDisplay(false);
+                    cellDataProxy.setCell(src, ci, newCell);
+                  }
+                }
+                // 左右边
+                if (ci === rect.sci) {
+                  const src = ci - 1;
+                  const edgeCell = cells.getCell(ri, src);
+                  if (edgeCell) {
+                    const newCell = edgeCell.clone();
+                    const { borderAttr } = newCell;
+                    borderAttr.setRDisplay(false);
+                    cellDataProxy.setCell(ri, src, newCell);
+                  }
+                } else if (ci === rect.eci) {
+                  const src = ci + 1;
+                  const edgeCell = cells.getCell(ri, src);
+                  if (edgeCell) {
+                    const newCell = edgeCell.clone();
+                    const { borderAttr } = newCell;
+                    borderAttr.setLDisplay(false);
+                    cellDataProxy.setCell(ri, src, newCell);
+                  }
+                }
+              };
+              switch (borderType) {
+                case 'border1':
+                  operateCellsHelper.getCellOrNewCellByViewRange({
+                    rectRange: rect,
+                    callback: (ri, ci, cell) => {
+                      const newCell = cell.clone();
+                      if (xTableStyle.hasAngleCell(ri)) {
+                        if (xTableStyle.isAngleBarCell(ri, ci)) {
+                          angleCells.push({ ri, ci, newCell });
+                          return;
+                        }
+                      }
+                      const { borderAttr } = newCell;
+                      borderAttr.setAllDisplay(true);
+                      borderAttr.setAllColor(color);
+                      borderAttr.setAllWidthType(widthType);
+                      borderAttr.setAllType(type);
+                      cellDataProxy.setCell(ri, ci, newCell);
+                    },
+                  });
+                  angleCells.forEach((options) => {
+                    const { ri, ci, newCell } = options;
+                    const { borderAttr } = newCell;
+                    borderAttr.setAllDisplay(true);
+                    borderAttr.setAllColor(color);
+                    borderAttr.setAllWidthType(widthType);
+                    borderAttr.setAllType(type);
+                    cellDataProxy.setCell(ri, ci, newCell);
+                  });
+                  break;
+                case 'border2':
+                  operateCellsHelper.getCellOrNewCellByViewRange({
+                    rectRange: rect,
+                    callback: (ri, ci, cell) => {
+                      const newCell = cell.clone();
+                      if (xTableStyle.hasAngleCell(ri)) {
+                        if (xTableStyle.isAngleBarCell(ri, ci)) {
+                          angleCells.push({ ri, ci, newCell });
+                          return;
+                        }
+                      }
+                      const { borderAttr } = newCell;
+                      if (ri !== rect.sri) {
+                        borderAttr.setTDisplay(true);
+                        borderAttr.setTColor(color);
+                        borderAttr.setTWidthType(widthType);
+                        borderAttr.setTType(type);
+                      }
+                      if (ri !== rect.eri) {
+                        borderAttr.setBDisplay(true);
+                        borderAttr.setBColor(color);
+                        borderAttr.setBWidthType(widthType);
+                        borderAttr.setBType(type);
+                      }
+                      if (ci !== rect.sci) {
+                        borderAttr.setLDisplay(true);
+                        borderAttr.setLColor(color);
+                        borderAttr.setLWidthType(widthType);
+                        borderAttr.setLType(type);
+                      }
+                      if (ci !== rect.eci) {
+                        borderAttr.setRDisplay(true);
+                        borderAttr.setRColor(color);
+                        borderAttr.setRWidthType(widthType);
+                        borderAttr.setRType(type);
+                      }
+                      cellDataProxy.setCell(ri, ci, newCell);
+                    },
+                  });
+                  angleCells.forEach((options) => {
+                    const { ri, ci, newCell } = options;
+                    const { borderAttr } = newCell;
+                    if (ri !== rect.sri) {
+                      borderAttr.setTDisplay(true);
+                      borderAttr.setTColor(color);
+                      borderAttr.setTWidthType(widthType);
+                      borderAttr.setTType(type);
+                    }
+                    if (ri !== rect.eri) {
+                      borderAttr.setBDisplay(true);
+                      borderAttr.setBColor(color);
+                      borderAttr.setBWidthType(widthType);
+                      borderAttr.setBType(type);
+                    }
+                    if (ci !== rect.sci) {
+                      borderAttr.setLDisplay(true);
+                      borderAttr.setLColor(color);
+                      borderAttr.setLWidthType(widthType);
+                      borderAttr.setLType(type);
+                    }
+                    if (ci !== rect.eci) {
+                      borderAttr.setRDisplay(true);
+                      borderAttr.setRColor(color);
+                      borderAttr.setRWidthType(widthType);
+                      borderAttr.setRType(type);
+                    }
+                    cellDataProxy.setCell(ri, ci, newCell);
+                  });
+                  break;
+                case 'border3':
+                  operateCellsHelper.getCellOrNewCellByViewRange({
+                    rectRange: rect,
+                    callback: (ri, ci, cell) => {
+                      const newCell = cell.clone();
+                      if (xTableStyle.hasAngleCell(ri)) {
+                        if (xTableStyle.isAngleBarCell(ri, ci)) {
+                          angleCells.push({ ri, ci, newCell });
+                          return;
+                        }
+                      }
+                      const { borderAttr } = newCell;
+                      if (ri !== rect.sri) {
+                        borderAttr.setTDisplay(true);
+                        borderAttr.setTColor(color);
+                        borderAttr.setTWidthType(widthType);
+                        borderAttr.setTType(type);
+                      }
+                      if (ri !== rect.eri) {
+                        borderAttr.setBDisplay(true);
+                        borderAttr.setBColor(color);
+                        borderAttr.setBWidthType(widthType);
+                        borderAttr.setBType(type);
+                      }
+                    },
+                  });
+                  angleCells.forEach((options) => {
+                    const { ri, newCell } = options;
+                    const { borderAttr } = newCell;
+                    if (ri !== rect.sri) {
+                      borderAttr.setTDisplay(true);
+                      borderAttr.setTColor(color);
+                      borderAttr.setTWidthType(widthType);
+                      borderAttr.setTType(type);
+                    }
+                    if (ri !== rect.eri) {
+                      borderAttr.setBDisplay(true);
+                      borderAttr.setBColor(color);
+                      borderAttr.setBWidthType(widthType);
+                      borderAttr.setBType(type);
+                    }
+                  });
+                  break;
+                case 'border4':
+                  operateCellsHelper.getCellOrNewCellByViewRange({
+                    rectRange: rect,
+                    callback: (ri, ci, cell) => {
+                      const newCell = cell.clone();
+                      if (xTableStyle.hasAngleCell(ri)) {
+                        if (xTableStyle.isAngleBarCell(ri, ci)) {
+                          angleCells.push({ ri, ci, newCell });
+                          return;
+                        }
+                      }
+                      const { borderAttr } = newCell;
+                      if (ci !== rect.sci) {
+                        borderAttr.setLDisplay(true);
+                        borderAttr.setLColor(color);
+                        borderAttr.setLWidthType(widthType);
+                        borderAttr.setLType(type);
+                      }
+                      if (ci !== rect.eci) {
+                        borderAttr.setRDisplay(true);
+                        borderAttr.setRColor(color);
+                        borderAttr.setRWidthType(widthType);
+                        borderAttr.setRType(type);
+                      }
+                      cellDataProxy.setCell(ri, ci, newCell);
+                    },
+                  });
+                  angleCells.forEach((options) => {
+                    const { ri, ci, newCell } = options;
+                    const { borderAttr } = newCell;
+                    if (ci !== rect.sci) {
+                      borderAttr.setLDisplay(true);
+                      borderAttr.setLColor(color);
+                      borderAttr.setLWidthType(widthType);
+                      borderAttr.setLType(type);
+                    }
+                    if (ci !== rect.eci) {
+                      borderAttr.setRDisplay(true);
+                      borderAttr.setRColor(color);
+                      borderAttr.setRWidthType(widthType);
+                      borderAttr.setRType(type);
+                    }
+                    cellDataProxy.setCell(ri, ci, newCell);
+                  });
+                  break;
+                case 'border5':
+                  operateCellsHelper.getCellOrNewCellByViewRange({
+                    rectRange: rect,
+                    callback: (ri, ci, cell) => {
+                      const newCell = cell.clone();
+                      if (xTableStyle.hasAngleCell(ri)) {
+                        if (xTableStyle.isAngleBarCell(ri, ci)) {
+                          angleCells.push({ ri, ci, newCell });
+                          return;
+                        }
+                      }
+                      const { borderAttr } = newCell;
+                      if (ri === rect.sri) {
+                        borderAttr.setTDisplay(true);
+                        borderAttr.setTColor(color);
+                        borderAttr.setTWidthType(widthType);
+                        borderAttr.setTType(type);
+                      }
+                      if (ri === rect.eri) {
+                        borderAttr.setBDisplay(true);
+                        borderAttr.setBColor(color);
+                        borderAttr.setBWidthType(widthType);
+                        borderAttr.setBType(type);
+                      }
+                      if (ci === rect.sci) {
+                        borderAttr.setLDisplay(true);
+                        borderAttr.setLColor(color);
+                        borderAttr.setLWidthType(widthType);
+                        borderAttr.setLType(type);
+                      }
+                      if (ci === rect.eci) {
+                        borderAttr.setRDisplay(true);
+                        borderAttr.setRColor(color);
+                        borderAttr.setRWidthType(widthType);
+                        borderAttr.setRType(type);
+                      }
+                      cellDataProxy.setCell(ri, ci, newCell);
+                    },
+                  });
+                  angleCells.forEach((options) => {
+                    const { ri, ci, newCell } = options;
+                    const { borderAttr } = newCell;
+                    if (ri === rect.sri) {
+                      borderAttr.setTDisplay(true);
+                      borderAttr.setTColor(color);
+                      borderAttr.setTWidthType(widthType);
+                      borderAttr.setTType(type);
+                    }
+                    if (ri === rect.eri) {
+                      borderAttr.setBDisplay(true);
+                      borderAttr.setBColor(color);
+                      borderAttr.setBWidthType(widthType);
+                      borderAttr.setBType(type);
+                    }
+                    if (ci === rect.sci) {
+                      borderAttr.setLDisplay(true);
+                      borderAttr.setLColor(color);
+                      borderAttr.setLWidthType(widthType);
+                      borderAttr.setLType(type);
+                    }
+                    if (ci === rect.eci) {
+                      borderAttr.setRDisplay(true);
+                      borderAttr.setRColor(color);
+                      borderAttr.setRWidthType(widthType);
+                      borderAttr.setRType(type);
+                    }
+                    cellDataProxy.setCell(ri, ci, newCell);
+                  });
+                  break;
+                case 'border6':
+                  operateCellsHelper.getCellOrNewCellByViewRange({
+                    rectRange: rect,
+                    callback: (ri, ci, cell) => {
+                      const newCell = cell.clone();
+                      if (xTableStyle.hasAngleCell(ri)) {
+                        if (xTableStyle.isAngleBarCell(ri, ci)) {
+                          angleCells.push({ ri, ci, newCell });
+                          return;
+                        }
+                      }
+                      const { borderAttr } = newCell;
+                      if (ci === rect.sci) {
+                        borderAttr.setLDisplay(true);
+                        borderAttr.setLColor(color);
+                        borderAttr.setLWidthType(widthType);
+                        borderAttr.setLType(type);
+                      }
+                      cellDataProxy.setCell(ri, ci, newCell);
+                    },
+                  });
+                  angleCells.forEach((options) => {
+                    const { ri, ci, newCell } = options;
+                    const { borderAttr } = newCell;
+                    if (ci === rect.sci) {
+                      borderAttr.setLDisplay(true);
+                      borderAttr.setLColor(color);
+                      borderAttr.setLWidthType(widthType);
+                      borderAttr.setLType(type);
+                    }
+                    cellDataProxy.setCell(ri, ci, newCell);
+                  });
+                  break;
+                case 'border7':
+                  operateCellsHelper.getCellOrNewCellByViewRange({
+                    rectRange: rect,
+                    callback: (ri, ci, cell) => {
+                      const newCell = cell.clone();
+                      if (xTableStyle.hasAngleCell(ri)) {
+                        if (xTableStyle.isAngleBarCell(ri, ci)) {
+                          angleCells.push({ ri, ci, newCell });
+                          return;
+                        }
+                      }
+                      const { borderAttr } = newCell;
+                      if (ri === rect.sri) {
+                        borderAttr.setTDisplay(true);
+                        borderAttr.setTColor(color);
+                        borderAttr.setTWidthType(widthType);
+                        borderAttr.setTType(type);
+                      }
+                      cellDataProxy.setCell(ri, ci, newCell);
+                    },
+                  });
+                  angleCells.forEach((options) => {
+                    const { ri, ci, newCell } = options;
+                    const { borderAttr } = newCell;
+                    if (ri === rect.sri) {
+                      borderAttr.setTDisplay(true);
+                      borderAttr.setTColor(color);
+                      borderAttr.setTWidthType(widthType);
+                      borderAttr.setTType(type);
+                    }
+                    cellDataProxy.setCell(ri, ci, newCell);
+                  });
+                  break;
+                case 'border8':
+                  operateCellsHelper.getCellOrNewCellByViewRange({
+                    rectRange: rect,
+                    callback: (ri, ci, cell) => {
+                      const newCell = cell.clone();
+                      if (xTableStyle.hasAngleCell(ri)) {
+                        if (xTableStyle.isAngleBarCell(ri, ci)) {
+                          angleCells.push({ ri, ci, newCell });
+                          return;
+                        }
+                      }
+                      const { borderAttr } = newCell;
+                      if (ci === rect.eci) {
+                        borderAttr.setRDisplay(true);
+                        borderAttr.setRColor(color);
+                        borderAttr.setRWidthType(widthType);
+                        borderAttr.setRType(type);
+                      }
+                      cellDataProxy.setCell(ri, ci, newCell);
+                    },
+                  });
+                  angleCells.forEach((options) => {
+                    const { ri, ci, newCell } = options;
+                    const { borderAttr } = newCell;
+                    if (ci === rect.eci) {
+                      borderAttr.setRDisplay(true);
+                      borderAttr.setRColor(color);
+                      borderAttr.setRWidthType(widthType);
+                      borderAttr.setRType(type);
+                    }
+                    cellDataProxy.setCell(ri, ci, newCell);
+                  });
+                  break;
+                case 'border9':
+                  operateCellsHelper.getCellOrNewCellByViewRange({
+                    rectRange: rect,
+                    callback: (ri, ci, cell) => {
+                      const newCell = cell.clone();
+                      if (xTableStyle.hasAngleCell(ri)) {
+                        if (xTableStyle.isAngleBarCell(ri, ci)) {
+                          angleCells.push({ ri, ci, newCell });
+                          return;
+                        }
+                      }
+                      const { borderAttr } = newCell;
+                      if (ri === rect.eri) {
+                        borderAttr.setBDisplay(true);
+                        borderAttr.setBColor(color);
+                        borderAttr.setBWidthType(widthType);
+                        borderAttr.setBType(type);
+                      }
+                      cellDataProxy.setCell(ri, ci, newCell);
+                    },
+                  });
+                  angleCells.forEach((options) => {
+                    const { ri, ci, newCell } = options;
+                    const { borderAttr } = newCell;
+                    if (ri === rect.eri) {
+                      borderAttr.setBDisplay(true);
+                      borderAttr.setBColor(color);
+                      borderAttr.setBWidthType(widthType);
+                      borderAttr.setBType(type);
+                    }
+                    cellDataProxy.setCell(ri, ci, newCell);
+                  });
+                  break;
+                case 'border10':
+                  operateCellsHelper.getCellOrNewCellByViewRange({
+                    rectRange: rect,
+                    callback: (ri, ci, cell) => {
+                      const newCell = cell.clone();
+                      // 旋转单元格
+                      if (xTableStyle.hasAngleCell(ri)) {
+                        if (xTableStyle.isAngleBarCell(ri, ci)) {
+                          angleCells.push({ ri, ci, newCell });
+                          return;
+                        }
+                      }
+                      // 清除边缘单元格
+                      clearEdgeBorder(ri, ci);
+                      // 清除当前单元格
+                      const { borderAttr } = newCell;
+                      borderAttr.setAllDisplay(false);
+                      cellDataProxy.setCell(ri, ci, newCell);
+                    },
+                  });
+                  angleCells.forEach((options) => {
+                    const { ri, ci, newCell } = options;
+                    // 清除边缘单元格
+                    clearEdgeBorder(ri, ci);
+                    // 清除当前单元格
+                    const { borderAttr } = newCell;
+                    borderAttr.setAllDisplay(false);
+                    cellDataProxy.setCell(ri, ci, newCell);
+                  });
+                  break;
+              }
+              tableDataSnapshot.end();
+              table.render();
+            }
+          }
+        },
+      },
+    });
+    this.horizontalAlign = new HorizontalAlign({
+      contextMenu: {
+        onUpdate: (type) => {
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          if (!table.isReadOnly()) {
+            const { xScreen } = table;
+            const operateCellsHelper = table.getOperateCellsHelper();
+            const { tableDataSnapshot } = table;
+            const xSelect = xScreen.findType(XSelectItem);
+            const { selectRange } = xSelect;
+            switch (type) {
+              case BaseFont.ALIGN.left:
+                this.horizontalAlign.setIcon(new Icon('align-left'));
+                break;
+              case BaseFont.ALIGN.center:
+                this.horizontalAlign.setIcon(new Icon('align-center'));
+                break;
+              case BaseFont.ALIGN.right:
+                this.horizontalAlign.setIcon(new Icon('align-right'));
+                break;
+              default: break;
+            }
+            if (selectRange) {
+              tableDataSnapshot.begin();
+              const { cellDataProxy } = tableDataSnapshot;
+              operateCellsHelper.getCellOrNewCellByViewRange({
+                rectRange: selectRange,
+                callback: (r, c, origin) => {
+                  const cell = origin.clone();
+                  cell.fontAttr.align = type;
+                  cellDataProxy.setCell(r, c, cell);
+                },
+              });
+              tableDataSnapshot.end();
+              table.render();
+            }
+          }
+        },
+      },
+    });
+    this.verticalAlign = new VerticalAlign({
+      contextMenu: {
+        onUpdate: (type) => {
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          if (!table.isReadOnly()) {
+            const { xScreen } = table;
+            const operateCellsHelper = table.getOperateCellsHelper();
+            const { tableDataSnapshot } = table;
+            const xSelect = xScreen.findType(XSelectItem);
+            const { selectRange } = xSelect;
+            switch (type) {
+              case BaseFont.VERTICAL_ALIGN.top:
+                this.verticalAlign.setIcon(new Icon('align-top'));
+                break;
+              case BaseFont.VERTICAL_ALIGN.center:
+                this.verticalAlign.setIcon(new Icon('align-middle'));
+                break;
+              case BaseFont.VERTICAL_ALIGN.bottom:
+                this.verticalAlign.setIcon(new Icon('align-bottom'));
+                break;
+              default: break;
+            }
+            if (selectRange) {
+              tableDataSnapshot.begin();
+              const { cellDataProxy } = tableDataSnapshot;
+              operateCellsHelper.getCellOrNewCellByViewRange({
+                rectRange: selectRange,
+                callback: (r, c, origin) => {
+                  const cell = origin.clone();
+                  cell.fontAttr.verticalAlign = type;
+                  cellDataProxy.setCell(r, c, cell);
+                },
+              });
+              tableDataSnapshot.end();
+              table.render();
+            }
+          }
+        },
+      },
+    });
     this.fontAngle = new FontAngle({
       contextMenu: {
         onUpdateAngle: (angle) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          const { xScreen } = table;
-          const operateCellsHelper = table.getOperateCellsHelper();
-          const { tableDataSnapshot } = table;
-          const xSelect = xScreen.findType(XSelectItem);
-          const { selectRange } = xSelect;
-          if (selectRange) {
-            tableDataSnapshot.begin();
-            const { cellDataProxy } = tableDataSnapshot;
-            operateCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectRange,
-              callback: (r, c, origin) => {
-                const cell = origin.clone();
-                if (angle === 0) {
-                  cell.fontAttr.angle = angle;
-                  cell.fontAttr.direction = BaseFont.TEXT_DIRECTION.HORIZONTAL;
-                } else {
-                  cell.borderAttr.updateMaxIndex();
-                  cell.fontAttr.angle = angle;
-                  cell.fontAttr.direction = BaseFont.TEXT_DIRECTION.ANGLE;
-                }
-                cellDataProxy.setCell(r, c, cell);
-              },
-            });
-            tableDataSnapshot.end();
-            table.render();
+          if (!table.isReadOnly()) {
+            const { xScreen } = table;
+            const operateCellsHelper = table.getOperateCellsHelper();
+            const { tableDataSnapshot } = table;
+            const xSelect = xScreen.findType(XSelectItem);
+            const { selectRange } = xSelect;
+            if (selectRange) {
+              tableDataSnapshot.begin();
+              const { cellDataProxy } = tableDataSnapshot;
+              operateCellsHelper.getCellOrNewCellByViewRange({
+                rectRange: selectRange,
+                callback: (r, c, origin) => {
+                  const cell = origin.clone();
+                  if (angle === 0) {
+                    cell.fontAttr.angle = angle;
+                    cell.fontAttr.direction = BaseFont.TEXT_DIRECTION.HORIZONTAL;
+                  } else {
+                    cell.borderAttr.updateMaxIndex();
+                    cell.fontAttr.angle = angle;
+                    cell.fontAttr.direction = BaseFont.TEXT_DIRECTION.ANGLE;
+                  }
+                  cellDataProxy.setCell(r, c, cell);
+                },
+              });
+              tableDataSnapshot.end();
+              table.render();
+            }
           }
         },
         onUpdateType: (type) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          const { xScreen } = table;
-          const operateCellsHelper = table.getOperateCellsHelper();
-          const { tableDataSnapshot } = table;
-          const xSelect = xScreen.findType(XSelectItem);
-          const { selectRange } = xSelect;
-          if (selectRange) {
-            tableDataSnapshot.begin();
-            const { cellDataProxy } = tableDataSnapshot;
-            operateCellsHelper.getCellOrNewCellByViewRange({
-              rectRange: selectRange,
-              callback: (r, c, origin) => {
-                const cell = origin.clone();
-                cell.fontAttr.angle = 0;
-                cell.fontAttr.direction = type;
-                cellDataProxy.setCell(r, c, cell);
-              },
-            });
-            tableDataSnapshot.end();
-            table.render();
+          if (!table.isReadOnly()) {
+            const { xScreen } = table;
+            const operateCellsHelper = table.getOperateCellsHelper();
+            const { tableDataSnapshot } = table;
+            const xSelect = xScreen.findType(XSelectItem);
+            const { selectRange } = xSelect;
+            if (selectRange) {
+              tableDataSnapshot.begin();
+              const { cellDataProxy } = tableDataSnapshot;
+              operateCellsHelper.getCellOrNewCellByViewRange({
+                rectRange: selectRange,
+                callback: (r, c, origin) => {
+                  const cell = origin.clone();
+                  cell.fontAttr.angle = 0;
+                  cell.fontAttr.direction = type;
+                  cellDataProxy.setCell(r, c, cell);
+                },
+              });
+              tableDataSnapshot.end();
+              table.render();
+            }
           }
         },
       },
     });
+    this.textWrapping = new TextWrapping({
+      contextMenu: {
+        onUpdate: (type) => {
+          const sheet = sheetView.getActiveSheet();
+          const { table } = sheet;
+          if (!table.isReadOnly()) {
+            const { xScreen } = table;
+            const operateCellsHelper = table.getOperateCellsHelper();
+            const { tableDataSnapshot } = table;
+            const xSelect = xScreen.findType(XSelectItem);
+            const { selectRange } = xSelect;
+            let icon;
+            switch (type) {
+              case BaseFont.TEXT_WRAP.TRUNCATE:
+                icon = new Icon('truncate');
+                break;
+              case BaseFont.TEXT_WRAP.WORD_WRAP:
+                icon = new Icon('text-wrap');
+                break;
+              case BaseFont.TEXT_WRAP.OVER_FLOW:
+                icon = new Icon('overflow');
+                break;
+            }
+            this.textWrapping.setIcon(icon);
+            if (selectRange) {
+              tableDataSnapshot.begin();
+              const { cellDataProxy } = tableDataSnapshot;
+              operateCellsHelper.getCellOrNewCellByViewRange({
+                rectRange: selectRange,
+                callback: (r, c, origin) => {
+                  const cell = origin.clone();
+                  cell.fontAttr.textWrap = type;
+                  cellDataProxy.setCell(r, c, cell);
+                },
+              });
+              tableDataSnapshot.end();
+              table.render();
+            }
+          }
+        },
+      },
+    });
+
+    // 追加到菜单中
     this.children(this.undo);
     this.children(this.redo);
     this.children(new Divider());
@@ -1028,6 +1046,8 @@ class XWorkTopMenu extends Widget {
   bind() {
     const { body } = this.workTop.work;
     const { sheetView } = body;
+
+    // 菜单状态更新
     XEvent.bind(body, Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE, () => {
       this.setStatus();
     });
@@ -1053,6 +1073,272 @@ class XWorkTopMenu extends Widget {
     XEvent.bind(body, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
       this.setFixedStatus();
     });
+
+    // 普通工具栏
+    XEvent.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      if (!table.isReadOnly()) {
+        const { tableDataSnapshot } = table;
+        if (tableDataSnapshot.canBack()) tableDataSnapshot.back();
+      }
+    });
+    XEvent.bind(this.redo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      if (!table.isReadOnly()) {
+        const { tableDataSnapshot } = table;
+        if (tableDataSnapshot.canGo()) tableDataSnapshot.go();
+      }
+    });
+    XEvent.bind(this.paintFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      if (!table.isReadOnly()) {
+        const { xScreen } = table;
+        const xSelect = xScreen.findType(XSelectItem);
+        const { selectRange } = xSelect;
+        if (PlainUtils.isUnDef(selectRange)) {
+          return;
+        }
+        const { cellMergeCopyHelper } = table;
+        const { tableDataSnapshot } = table;
+        const xCopyStyle = xScreen.findType(XCopyStyle);
+        const callback = () => {
+          xCopyStyle.hideCopyStyle();
+          // 清除复制
+          this.paintFormat.active(false);
+          this.paintFormat.removeSheet(sheet);
+          // 复制区域
+          const originViewRange = xCopyStyle.selectRange.clone();
+          const targetViewRange = xSelect.selectRange.clone();
+          const [orSize, ocSize] = originViewRange.size();
+          const [trSize, tcSize] = targetViewRange.size();
+          const rSize = orSize > trSize ? orSize : trSize;
+          const cSize = ocSize > tcSize ? ocSize : tcSize;
+          targetViewRange.eri = targetViewRange.sri + (rSize - 1);
+          targetViewRange.eci = targetViewRange.sci + (cSize - 1);
+          // 开始复制
+          tableDataSnapshot.begin();
+          cellMergeCopyHelper.copyMergeContent({
+            originViewRange,
+            targetViewRange,
+          });
+          cellMergeCopyHelper.copyStylesContent({
+            originViewRange,
+            targetViewRange,
+          });
+          tableDataSnapshot.end();
+          table.render();
+          // 删除事件监听
+          XEvent.unbind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, callback);
+        };
+        if (this.paintFormat.includeSheet(sheet)) {
+          xCopyStyle.hideCopyStyle();
+          this.paintFormat.active(false);
+          this.paintFormat.removeSheet(sheet);
+          XEvent.unbind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, callback);
+        } else {
+          xCopyStyle.showCopyStyle();
+          this.paintFormat.active(true);
+          this.paintFormat.addSheet(sheet);
+          XEvent.bind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, callback);
+        }
+      }
+    });
+    XEvent.bind(this.clearFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      if (!table.isReadOnly()) {
+        const { xScreen } = table;
+        const operateCellsHelper = table.getOperateCellsHelper();
+        const { tableDataSnapshot } = table;
+        const xSelect = xScreen.findType(XSelectItem);
+        const { selectRange } = xSelect;
+        if (selectRange) {
+          tableDataSnapshot.begin();
+          const { cellDataProxy } = tableDataSnapshot;
+          operateCellsHelper.getCellOrNewCellByViewRange({
+            rectRange: selectRange,
+            callback: (r, c, origin) => {
+              const { text } = origin;
+              cellDataProxy.setCell(r, c, new Cell({ text }));
+            },
+          });
+          tableDataSnapshot.end();
+          table.render();
+        }
+      }
+    });
+    XEvent.bind(this.fontBold, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      if (!table.isReadOnly()) {
+        const { xScreen } = table;
+        const operateCellsHelper = table.getOperateCellsHelper();
+        const cells = table.getTableCells();
+        const { tableDataSnapshot } = table;
+        const xSelect = xScreen.findType(XSelectItem);
+        const { selectRange } = xSelect;
+        if (selectRange) {
+          const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+          const bold = !firstCell.fontAttr.bold;
+          tableDataSnapshot.begin();
+          const { cellDataProxy } = tableDataSnapshot;
+          operateCellsHelper.getCellOrNewCellByViewRange({
+            rectRange: selectRange,
+            callback: (r, c, origin) => {
+              const cell = origin.clone();
+              cell.fontAttr.bold = bold;
+              cellDataProxy.setCell(r, c, cell);
+            },
+          });
+          tableDataSnapshot.end();
+          table.render();
+        }
+      }
+    });
+    XEvent.bind(this.fontItalic, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      if (!table.isReadOnly()) {
+        const { xScreen } = table;
+        const operateCellsHelper = table.getOperateCellsHelper();
+        const cells = table.getTableCells();
+        const { tableDataSnapshot } = table;
+        const xSelect = xScreen.findType(XSelectItem);
+        const { selectRange } = xSelect;
+        if (selectRange) {
+          const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+          const italic = !firstCell.fontAttr.italic;
+          tableDataSnapshot.begin();
+          const { cellDataProxy } = tableDataSnapshot;
+          operateCellsHelper.getCellOrNewCellByViewRange({
+            rectRange: selectRange,
+            callback: (r, c, origin) => {
+              const cell = origin.clone();
+              cell.fontAttr.italic = italic;
+              cellDataProxy.setCell(r, c, cell);
+            },
+          });
+          tableDataSnapshot.end();
+          table.render();
+        }
+      }
+    });
+    XEvent.bind(this.underLine, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      const { xScreen } = table;
+      if (!table.isReadOnly()) {
+        const operateCellsHelper = table.getOperateCellsHelper();
+        const cells = table.getTableCells();
+        const { tableDataSnapshot } = table;
+        const xSelect = xScreen.findType(XSelectItem);
+        const { selectRange } = xSelect;
+        if (selectRange) {
+          const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+          const underline = !firstCell.fontAttr.underline;
+          tableDataSnapshot.begin();
+          const { cellDataProxy } = tableDataSnapshot;
+          operateCellsHelper.getCellOrNewCellByViewRange({
+            rectRange: selectRange,
+            callback: (r, c, origin) => {
+              const cell = origin.clone();
+              cell.fontAttr.underline = underline;
+              cellDataProxy.setCell(r, c, cell);
+            },
+          });
+          tableDataSnapshot.end();
+          table.render();
+        }
+      }
+    });
+    XEvent.bind(this.fontStrike, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      const { xScreen } = table;
+      if (!table.isReadOnly()) {
+        const operateCellsHelper = table.getOperateCellsHelper();
+        const cells = table.getTableCells();
+        const { tableDataSnapshot } = table;
+        const xSelect = xScreen.findType(XSelectItem);
+        const { selectRange } = xSelect;
+        if (selectRange) {
+          const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+          const strikethrough = !firstCell.fontAttr.strikethrough;
+          tableDataSnapshot.begin();
+          const { cellDataProxy } = tableDataSnapshot;
+          operateCellsHelper.getCellOrNewCellByViewRange({
+            rectRange: selectRange,
+            callback: (r, c, origin) => {
+              const cell = origin.clone();
+              cell.fontAttr.strikethrough = strikethrough;
+              cellDataProxy.setCell(r, c, cell);
+            },
+          });
+          tableDataSnapshot.end();
+          table.render();
+        }
+      }
+    });
+    XEvent.bind(this.filter, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      if (!table.isReadOnly()) {
+        const { xScreen } = table;
+        const filter = xScreen.findType(XFilter);
+        if (filter.display) {
+          filter.hideFilter();
+          this.filter.active(filter.display);
+        } else {
+          filter.openFilter();
+          this.filter.active(filter.display);
+        }
+      }
+    });
+    XEvent.bind(this.merge, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      if (!table.isReadOnly()) {
+        const { xScreen } = table;
+        const merges = table.getTableMerges();
+        const cells = table.getTableCells();
+        const { tableDataSnapshot } = table;
+        const xSelect = xScreen.findType(XSelectItem);
+        const { selectRange } = xSelect;
+        if (selectRange) {
+          const merge = selectRange.clone();
+          const find = merges.getFirstIncludes(merge.sri, merge.sci);
+          const { mergeDataProxy } = tableDataSnapshot;
+          if (PlainUtils.isNotUnDef(find) && merge.equals(find)) {
+            tableDataSnapshot.begin();
+            mergeDataProxy.deleteMerge(find);
+            tableDataSnapshot.end();
+            table.render();
+          } else if (merge.multiple()) {
+            if (cells.emptyRectRange(merge)) {
+              tableDataSnapshot.begin();
+              mergeDataProxy.addMerge(merge);
+              tableDataSnapshot.end();
+              table.render();
+            } else {
+              new Confirm({
+                message: '非空单元格合并将使用左上角单元格内容',
+                ok: () => {
+                  tableDataSnapshot.begin();
+                  mergeDataProxy.addMerge(merge);
+                  tableDataSnapshot.end();
+                  table.render();
+                },
+              }).open();
+            }
+          }
+        }
+      }
+    });
+
+    // 上下文菜单工具栏
     XEvent.bind(this.scale, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { scale } = this;
       const { scaleContextMenu } = scale;
@@ -1065,95 +1351,6 @@ class XWorkTopMenu extends Widget {
       }
       e.stopPropagation();
       e.preventDefault();
-    });
-    XEvent.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      const { tableDataSnapshot } = table;
-      if (tableDataSnapshot.canBack()) tableDataSnapshot.back();
-    });
-    XEvent.bind(this.redo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      const { tableDataSnapshot } = table;
-      if (tableDataSnapshot.canGo()) tableDataSnapshot.go();
-    });
-    XEvent.bind(this.paintFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      const { xScreen } = table;
-      const xSelect = xScreen.findType(XSelectItem);
-      const { selectRange } = xSelect;
-      if (PlainUtils.isUnDef(selectRange)) {
-        return;
-      }
-      const { cellMergeCopyHelper } = table;
-      const { tableDataSnapshot } = table;
-      const xCopyStyle = xScreen.findType(XCopyStyle);
-      const callback = () => {
-        xCopyStyle.hideCopyStyle();
-        // 清除复制
-        this.paintFormat.active(false);
-        this.paintFormat.removeSheet(sheet);
-        // 复制区域
-        const originViewRange = xCopyStyle.selectRange.clone();
-        const targetViewRange = xSelect.selectRange.clone();
-        const [orSize, ocSize] = originViewRange.size();
-        const [trSize, tcSize] = targetViewRange.size();
-        const rSize = orSize > trSize ? orSize : trSize;
-        const cSize = ocSize > tcSize ? ocSize : tcSize;
-        targetViewRange.eri = targetViewRange.sri + (rSize - 1);
-        targetViewRange.eci = targetViewRange.sci + (cSize - 1);
-        // 开始复制
-        tableDataSnapshot.begin();
-        cellMergeCopyHelper.copyMergeContent({
-          originViewRange,
-          targetViewRange,
-        });
-        cellMergeCopyHelper.copyStylesContent({
-          originViewRange,
-          targetViewRange,
-        });
-        tableDataSnapshot.end();
-        table.render();
-        // 删除事件监听
-        XEvent.unbind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, callback);
-      };
-      if (this.paintFormat.includeSheet(sheet)) {
-        xCopyStyle.hideCopyStyle();
-        this.paintFormat.active(false);
-        this.paintFormat.removeSheet(sheet);
-        XEvent.unbind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, callback);
-      } else {
-        xCopyStyle.showCopyStyle();
-        this.paintFormat.active(true);
-        this.paintFormat.addSheet(sheet);
-        XEvent.bind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, callback);
-      }
-    });
-    XEvent.bind(this.clearFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      const {
-        xScreen,
-      } = table;
-      const operateCellsHelper = table.getOperateCellsHelper();
-      const { tableDataSnapshot } = table;
-      const xSelect = xScreen.findType(XSelectItem);
-      const { selectRange } = xSelect;
-      if (selectRange) {
-        tableDataSnapshot.begin();
-        const { cellDataProxy } = tableDataSnapshot;
-        operateCellsHelper.getCellOrNewCellByViewRange({
-          rectRange: selectRange,
-          callback: (r, c, origin) => {
-            const { text } = origin;
-            cellDataProxy.setCell(r, c, new Cell({ text }));
-          },
-        });
-        tableDataSnapshot.end();
-        table.render();
-      }
     });
     XEvent.bind(this.format, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { format } = this;
@@ -1194,118 +1391,6 @@ class XWorkTopMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
-    XEvent.bind(this.fontBold, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      const {
-        xScreen,
-      } = table;
-      const operateCellsHelper = table.getOperateCellsHelper();
-      const cells = table.getTableCells();
-      const { tableDataSnapshot } = table;
-      const xSelect = xScreen.findType(XSelectItem);
-      const { selectRange } = xSelect;
-      if (selectRange) {
-        const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
-        const bold = !firstCell.fontAttr.bold;
-        tableDataSnapshot.begin();
-        const { cellDataProxy } = tableDataSnapshot;
-        operateCellsHelper.getCellOrNewCellByViewRange({
-          rectRange: selectRange,
-          callback: (r, c, origin) => {
-            const cell = origin.clone();
-            cell.fontAttr.bold = bold;
-            cellDataProxy.setCell(r, c, cell);
-          },
-        });
-        tableDataSnapshot.end();
-        table.render();
-      }
-    });
-    XEvent.bind(this.fontItalic, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      const {
-        xScreen,
-      } = table;
-      const operateCellsHelper = table.getOperateCellsHelper();
-      const cells = table.getTableCells();
-      const { tableDataSnapshot } = table;
-      const xSelect = xScreen.findType(XSelectItem);
-      const { selectRange } = xSelect;
-      if (selectRange) {
-        const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
-        const italic = !firstCell.fontAttr.italic;
-        tableDataSnapshot.begin();
-        const { cellDataProxy } = tableDataSnapshot;
-        operateCellsHelper.getCellOrNewCellByViewRange({
-          rectRange: selectRange,
-          callback: (r, c, origin) => {
-            const cell = origin.clone();
-            cell.fontAttr.italic = italic;
-            cellDataProxy.setCell(r, c, cell);
-          },
-        });
-        tableDataSnapshot.end();
-        table.render();
-      }
-    });
-    XEvent.bind(this.underLine, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      const {
-        xScreen,
-      } = table;
-      const operateCellsHelper = table.getOperateCellsHelper();
-      const cells = table.getTableCells();
-      const { tableDataSnapshot } = table;
-      const xSelect = xScreen.findType(XSelectItem);
-      const { selectRange } = xSelect;
-      if (selectRange) {
-        const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
-        const underline = !firstCell.fontAttr.underline;
-        tableDataSnapshot.begin();
-        const { cellDataProxy } = tableDataSnapshot;
-        operateCellsHelper.getCellOrNewCellByViewRange({
-          rectRange: selectRange,
-          callback: (r, c, origin) => {
-            const cell = origin.clone();
-            cell.fontAttr.underline = underline;
-            cellDataProxy.setCell(r, c, cell);
-          },
-        });
-        tableDataSnapshot.end();
-        table.render();
-      }
-    });
-    XEvent.bind(this.fontStrike, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      const {
-        xScreen,
-      } = table;
-      const operateCellsHelper = table.getOperateCellsHelper();
-      const cells = table.getTableCells();
-      const { tableDataSnapshot } = table;
-      const xSelect = xScreen.findType(XSelectItem);
-      const { selectRange } = xSelect;
-      if (selectRange) {
-        const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
-        const strikethrough = !firstCell.fontAttr.strikethrough;
-        tableDataSnapshot.begin();
-        const { cellDataProxy } = tableDataSnapshot;
-        operateCellsHelper.getCellOrNewCellByViewRange({
-          rectRange: selectRange,
-          callback: (r, c, origin) => {
-            const cell = origin.clone();
-            cell.fontAttr.strikethrough = strikethrough;
-            cellDataProxy.setCell(r, c, cell);
-          },
-        });
-        tableDataSnapshot.end();
-        table.render();
-      }
-    });
     XEvent.bind(this.fontColor, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { fontColor } = this;
       const { fontColorContextMenu } = fontColor;
@@ -1341,48 +1426,6 @@ class XWorkTopMenu extends Widget {
         borderTypeContextMenu.open();
       } else {
         borderTypeContextMenu.close();
-      }
-      e.stopPropagation();
-      e.preventDefault();
-    });
-    XEvent.bind(this.merge, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      const {
-        xScreen,
-      } = table;
-      const merges = table.getTableMerges();
-      const cells = table.getTableCells();
-      const { tableDataSnapshot } = table;
-      const xSelect = xScreen.findType(XSelectItem);
-      const { selectRange } = xSelect;
-      if (selectRange) {
-        const merge = selectRange.clone();
-        const find = merges.getFirstIncludes(merge.sri, merge.sci);
-        const { mergeDataProxy } = tableDataSnapshot;
-        if (PlainUtils.isNotUnDef(find) && merge.equals(find)) {
-          tableDataSnapshot.begin();
-          mergeDataProxy.deleteMerge(find);
-          tableDataSnapshot.end();
-          table.render();
-        } else if (merge.multiple()) {
-          if (cells.emptyRectRange(merge)) {
-            tableDataSnapshot.begin();
-            mergeDataProxy.addMerge(merge);
-            tableDataSnapshot.end();
-            table.render();
-          } else {
-            new Confirm({
-              message: '非空单元格合并将使用左上角单元格内容',
-              ok: () => {
-                tableDataSnapshot.begin();
-                mergeDataProxy.addMerge(merge);
-                tableDataSnapshot.end();
-                table.render();
-              },
-            }).open();
-          }
-        }
       }
       e.stopPropagation();
       e.preventDefault();
@@ -1438,19 +1481,6 @@ class XWorkTopMenu extends Widget {
       }
       e.stopPropagation();
       e.preventDefault();
-    });
-    XEvent.bind(this.filter, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      const { xScreen } = table;
-      const filter = xScreen.findType(XFilter);
-      if (filter.display) {
-        filter.hideFilter();
-        this.filter.active(filter.display);
-      } else {
-        filter.openFilter();
-        this.filter.active(filter.display);
-      }
     });
     XEvent.bind(this.fontAngle, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { fontAngle } = this;

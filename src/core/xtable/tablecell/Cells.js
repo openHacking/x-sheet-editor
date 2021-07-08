@@ -3,7 +3,6 @@ import { PlainUtils } from '../../../utils/PlainUtils';
 import { XIteratorBuilder } from '../iterator/XIteratorBuilder';
 import { XTableDataItems } from '../XTableDataItems';
 import { XMerges } from '../xmerges/XMerges';
-import { XTableDataItem } from '../XTableDataItem';
 
 /**
  * Cells

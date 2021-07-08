@@ -41,31 +41,33 @@ class YReSizer extends Widget {
     const { rowsDataProxy } = tableDataSnapshot;
     const { index } = table;
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      mousePointer.lock(YReSizer);
-      mousePointer.set(XTableMousePointer.KEYS.rowResize, YReSizer);
-      const { top, ri } = this.getEventTop(e);
-      const min = top - rows.getHeight(ri) + rows.min;
-      let { y: my } = table.eventXy(e);
-      XEvent.mouseMoveUp(document, (e) => {
-        ({ y: my } = table.eventXy(e));
-        my -= this.height / 2;
-        my = Math.ceil(PlainUtils.minIf(my, min));
-        this.css('top', `${my}px`);
-        this.lineEl.css('width', `${table.visualWidth()}px`);
-        this.lineEl.show();
-      }, (e) => {
-        mousePointer.free(YReSizer);
-        this.lineEl.hide();
-        this.css('top', `${my}px`);
-        const { x } = table.eventXy(e);
-        if (x <= 0) {
-          this.hide();
-        }
-        const newTop = my - (top - rows.getHeight(ri)) + this.height;
-        tableDataSnapshot.begin();
-        rowsDataProxy.setHeight(ri, scale.back(newTop));
-        tableDataSnapshot.end();
-      });
+      if (!table.isReadOnly()) {
+        mousePointer.lock(YReSizer);
+        mousePointer.set(XTableMousePointer.KEYS.rowResize, YReSizer);
+        const { top, ri } = this.getEventTop(e);
+        const min = top - rows.getHeight(ri) + rows.min;
+        let { y: my } = table.eventXy(e);
+        XEvent.mouseMoveUp(document, (e) => {
+          ({ y: my } = table.eventXy(e));
+          my -= this.height / 2;
+          my = Math.ceil(PlainUtils.minIf(my, min));
+          this.css('top', `${my}px`);
+          this.lineEl.css('width', `${table.visualWidth()}px`);
+          this.lineEl.show();
+        }, (e) => {
+          mousePointer.free(YReSizer);
+          this.lineEl.hide();
+          this.css('top', `${my}px`);
+          const { x } = table.eventXy(e);
+          if (x <= 0) {
+            this.hide();
+          }
+          const newTop = my - (top - rows.getHeight(ri)) + this.height;
+          tableDataSnapshot.begin();
+          rowsDataProxy.setHeight(ri, scale.back(newTop));
+          tableDataSnapshot.end();
+        });
+      }
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       mousePointer.free(YReSizer);

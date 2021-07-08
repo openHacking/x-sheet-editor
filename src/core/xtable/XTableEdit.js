@@ -145,34 +145,6 @@ class XTableEdit extends Widget {
     });
   }
 
-  showEdit() {
-    const { table } = this;
-    const merges = table.getTableMerges();
-    const cells = table.getTableCells();
-    const { xScreen } = table;
-    const xSelect = xScreen.findType(XSelectItem);
-    const { selectRange } = xSelect;
-    if (selectRange) {
-      const { sri, sci } = selectRange;
-      const merge = merges.getFirstIncludes(sri, sci);
-      const cell = cells.getCellOrNew(sri, sci);
-      this.merge = merge;
-      this.cell = cell;
-      this.select = selectRange;
-      this.show();
-      if (cell.isEmpty()) {
-        this.html(PlainUtils.EMPTY);
-      } else {
-        this.html(cell.toString());
-      }
-      this.attr('style', table.getCellCssStyle(sri, sci));
-      this.editOffset();
-      this.throttle.action(() => {
-        PlainUtils.keepLastIndex(this.el);
-      });
-    }
-  }
-
   hideEdit() {
     const { select } = this;
     const { table } = this;
@@ -192,6 +164,36 @@ class XTableEdit extends Widget {
         table.render();
       }
       this.select = null;
+    }
+  }
+
+  showEdit() {
+    const { table } = this;
+    if (!table.isReadOnly()) {
+      const merges = table.getTableMerges();
+      const cells = table.getTableCells();
+      const { xScreen } = table;
+      const xSelect = xScreen.findType(XSelectItem);
+      const { selectRange } = xSelect;
+      if (selectRange) {
+        const { sri, sci } = selectRange;
+        const merge = merges.getFirstIncludes(sri, sci);
+        const cell = cells.getCellOrNew(sri, sci);
+        this.merge = merge;
+        this.cell = cell;
+        this.select = selectRange;
+        this.show();
+        if (cell.isEmpty()) {
+          this.html(PlainUtils.EMPTY);
+        } else {
+          this.html(cell.toString());
+        }
+        this.attr('style', table.getCellCssStyle(sri, sci));
+        this.editOffset();
+        this.throttle.action(() => {
+          PlainUtils.keepLastIndex(this.el);
+        });
+      }
     }
   }
 
