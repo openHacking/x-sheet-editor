@@ -2,19 +2,35 @@ import { PlainUtils } from '../../utils/PlainUtils';
 import { DateUtils } from '../../utils/DateUtils';
 
 function parserToDate(text) {
-  let result = DateUtils.parserToDate(text, 'yyyy/MM/dd hh:mm:ss');
-  if (result) return result;
+  let result = text;
+  if (result instanceof Date) {
+    return result;
+  }
+  result = DateUtils.parserToDate(text, 'yyyy/MM/dd hh:mm:ss');
+  if (result) {
+    return result;
+  }
   result = DateUtils.parserToDate(text, 'yyyy/MM/dd');
-  if (result) return result;
+  if (result) {
+    return result;
+  }
   result = DateUtils.parserToDate(text, 'hh:mm:ss');
-  if (result) return result;
+  if (result) {
+    return result;
+  }
   result = DateUtils.parserToDate(text, 'MM月dd日');
-  if (result) return result;
+  if (result) {
+    return result;
+  }
   result = DateUtils.parserToDate(text, 'yyyy年MM月');
-  if (result) return result;
+  if (result) {
+    return result;
+  }
   result = DateUtils.parserToDate(text, 'yyyy年MM月dd日');
-  if (result) return result;
-  return null;
+  if (result) {
+    return result;
+  }
+  return text;
 }
 
 class Format {
@@ -27,26 +43,11 @@ class Format {
     return value;
   }
 
-  time(value) {
-    const result = parserToDate(value);
-    if (result) {
-      return DateUtils.dateFormat('hh:mm:ss', result);
-    }
-    return value;
-  }
-
   default(value) {
     return value;
   }
 
   text(value) {
-    return value;
-  }
-
-  percentage(value) {
-    if (PlainUtils.isNumber(value)) {
-      return `${value}%`;
-    }
     return value;
   }
 
@@ -78,9 +79,9 @@ class Format {
     return value;
   }
 
-  rmb(value) {
+  percentage(value) {
     if (PlainUtils.isNumber(value)) {
-      return `￥${value}`;
+      return `${value}%`;
     }
     return value;
   }
@@ -92,37 +93,57 @@ class Format {
     return value;
   }
 
+  rmb(value) {
+    if (PlainUtils.isNumber(value)) {
+      return `￥${value}`;
+    }
+    return value;
+  }
+
+  time(value) {
+    const result = parserToDate(value);
+    if (result) {
+      return DateUtils.dateFormat('hh:mm:ss', result);
+    }
+    return value;
+  }
+
   date1(value) {
-    if (value) {
-      return DateUtils.dateFormat('yyyy/MM/dd', value);
+    const result = parserToDate(value);
+    if (result) {
+      return DateUtils.dateFormat('yyyy/MM/dd', result);
     }
     return value;
   }
 
   date2(value) {
-    if (value) {
-      return DateUtils.dateFormat('MM月dd日', value);
+    const result = parserToDate(value);
+    if (result) {
+      return DateUtils.dateFormat('MM月dd日', result);
     }
     return value;
   }
 
   date3(value) {
-    if (value) {
-      return DateUtils.dateFormat('yyyy年MM月', value);
+    const result = parserToDate(value);
+    if (result) {
+      return DateUtils.dateFormat('yyyy年MM月', result);
     }
     return value;
   }
 
   date4(value) {
-    if (value) {
-      return DateUtils.dateFormat('yyyy年MM月dd日', value);
+    const result = parserToDate(value);
+    if (result) {
+      return DateUtils.dateFormat('yyyy年MM月dd日', result);
     }
     return value;
   }
 
   date5(value) {
-    if (value) {
-      return DateUtils.dateFormat('yyyy/MM/dd hh:mm:ss', value);
+    const result = parserToDate(value);
+    if (result) {
+      return DateUtils.dateFormat('yyyy/MM/dd hh:mm:ss', result);
     }
     return value;
   }

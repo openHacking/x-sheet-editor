@@ -142,132 +142,6 @@ class XTableFrozenContent extends Dimensions {
 
 }
 
-class XTableTopIndex extends Dimensions {
-
-  getWidth() {
-    if (PlainUtils.isNumber(this.width)) {
-      return this.width;
-    }
-    const { table } = this;
-    const { xLeft } = table;
-    const { index } = table;
-    const width = table.visualWidth() - (index.getWidth() + xLeft.getWidth());
-    this.width = width;
-    return width;
-  }
-
-  getHeight() {
-    if (PlainUtils.isNumber(this.height)) {
-      return this.height;
-    }
-    const { table } = this;
-    const { index } = table;
-    const height = index.getHeight();
-    this.height = height;
-    return height;
-  }
-
-  getX() {
-    if (PlainUtils.isNumber(this.x)) {
-      return this.x;
-    }
-    const { table } = this;
-    const { xLeft } = table;
-    const { index } = table;
-    const x = index.getWidth() + xLeft.getWidth();
-    this.x = x;
-    return x;
-  }
-
-  getY() {
-    if (PlainUtils.isNumber(this.y)) {
-      return this.y;
-    }
-    const y = 0;
-    this.y = y;
-    return y;
-  }
-
-  getScrollView() {
-    if (PlainUtils.isNotUnDef(this.scrollView)) {
-      return this.scrollView.clone();
-    }
-    const { table } = this;
-    const { index } = table;
-    const { xTableAreaView } = table;
-    const scrollView = xTableAreaView.getScrollView();
-    scrollView.sri = 0;
-    scrollView.eri = 0;
-    scrollView.h = index.getHeight();
-    this.scrollView = scrollView;
-    return scrollView.clone();
-  }
-
-}
-
-class XTableLeftIndex extends Dimensions {
-
-  getWidth() {
-    if (PlainUtils.isNumber(this.width)) {
-      return this.width;
-    }
-    const { table } = this;
-    const { index } = table;
-    const width = index.getWidth();
-    this.width = width;
-    return width;
-  }
-
-  getHeight() {
-    if (PlainUtils.isNumber(this.height)) {
-      return this.height;
-    }
-    const { table } = this;
-    const { xTop } = table;
-    const { index } = table;
-    const height = table.visualHeight() - (index.getHeight() + xTop.getHeight());
-    this.height = height;
-    return height;
-  }
-
-  getX() {
-    if (PlainUtils.isNumber(this.x)) {
-      return this.x;
-    }
-    const x = 0;
-    this.x = x;
-    return x;
-  }
-
-  getY() {
-    if (PlainUtils.isNumber(this.y)) {
-      return this.y;
-    }
-    const { table } = this;
-    const { xTop } = table;
-    const { index } = table;
-    const y = index.getHeight() + xTop.getHeight();
-    this.y = y;
-    return y;
-  }
-
-  getScrollView() {
-    if (PlainUtils.isNotUnDef(this.scrollView)) {
-      return this.scrollView.clone();
-    }
-    const { table } = this;
-    const { xTableAreaView } = table;
-    const { index } = table;
-    const scrollView = xTableAreaView.getScrollView();
-    scrollView.sci = 0;
-    scrollView.eci = 0;
-    scrollView.w = index.getWidth();
-    this.scrollView = scrollView;
-    return scrollView.clone();
-  }
-
-}
-
 class XTableLeft extends Dimensions {
 
   getWidth() {
@@ -402,6 +276,69 @@ class XTableTop extends Dimensions {
 
 }
 
+class XTableLeftIndex extends Dimensions {
+
+  getWidth() {
+    if (PlainUtils.isNumber(this.width)) {
+      return this.width;
+    }
+    const { table } = this;
+    const { index } = table;
+    const width = index.getWidth();
+    this.width = width;
+    return width;
+  }
+
+  getHeight() {
+    if (PlainUtils.isNumber(this.height)) {
+      return this.height;
+    }
+    const { table } = this;
+    const { xTop } = table;
+    const { index } = table;
+    const height = table.visualHeight() - (index.getHeight() + xTop.getHeight());
+    this.height = height;
+    return height;
+  }
+
+  getX() {
+    if (PlainUtils.isNumber(this.x)) {
+      return this.x;
+    }
+    const x = 0;
+    this.x = x;
+    return x;
+  }
+
+  getY() {
+    if (PlainUtils.isNumber(this.y)) {
+      return this.y;
+    }
+    const { table } = this;
+    const { xTop } = table;
+    const { index } = table;
+    const y = index.getHeight() + xTop.getHeight();
+    this.y = y;
+    return y;
+  }
+
+  getScrollView() {
+    if (PlainUtils.isNotUnDef(this.scrollView)) {
+      return this.scrollView.clone();
+    }
+    const { table } = this;
+    const { xTableAreaView } = table;
+    const { index } = table;
+    const scrollView = xTableAreaView.getScrollView();
+    scrollView.sci = 0;
+    scrollView.eci = 0;
+    scrollView.w = index.getWidth();
+    this.scrollView = scrollView;
+    return scrollView.clone();
+  }
+
+}
+
 class XTableContent extends Dimensions {
 
   getWidth() {
@@ -465,20 +402,109 @@ class XTableContent extends Dimensions {
 
 }
 
+class XTableTopIndex extends Dimensions {
+
+  getWidth() {
+    if (PlainUtils.isNumber(this.width)) {
+      return this.width;
+    }
+    const { table } = this;
+    const { xLeft } = table;
+    const { index } = table;
+    const width = table.visualWidth() - (index.getWidth() + xLeft.getWidth());
+    this.width = width;
+    return width;
+  }
+
+  getHeight() {
+    if (PlainUtils.isNumber(this.height)) {
+      return this.height;
+    }
+    const { table } = this;
+    const { index } = table;
+    const height = index.getHeight();
+    this.height = height;
+    return height;
+  }
+
+  getX() {
+    if (PlainUtils.isNumber(this.x)) {
+      return this.x;
+    }
+    const { table } = this;
+    const { xLeft } = table;
+    const { index } = table;
+    const x = index.getWidth() + xLeft.getWidth();
+    this.x = x;
+    return x;
+  }
+
+  getY() {
+    if (PlainUtils.isNumber(this.y)) {
+      return this.y;
+    }
+    const y = 0;
+    this.y = y;
+    return y;
+  }
+
+  getScrollView() {
+    if (PlainUtils.isNotUnDef(this.scrollView)) {
+      return this.scrollView.clone();
+    }
+    const { table } = this;
+    const { index } = table;
+    const { xTableAreaView } = table;
+    const scrollView = xTableAreaView.getScrollView();
+    scrollView.sri = 0;
+    scrollView.eri = 0;
+    scrollView.h = index.getHeight();
+    this.scrollView = scrollView;
+    return scrollView.clone();
+  }
+
+}
+
 // ================================= 快捷键 =================================
 
-class KeyBoardTabCode {
+class KeyBoardCode {
 
   static register(table) {
-    const {
-      keyboard, xTableScrollView, cols, rows, xScreen, edit,
-    } = table;
+    KeyBoardCode.tab(table);
+    KeyBoardCode.crtC(table);
+    KeyBoardCode.ctrV(table);
+    KeyBoardCode.downArrow(table);
+    KeyBoardCode.upArrow(table);
+    KeyBoardCode.rightArrow(table);
+    KeyBoardCode.leftArrow(table);
+    KeyBoardCode.downArrow(table);
+  }
+
+  static crtC(table) {
+    const { keyboard } = table;
+    keyboard.register({
+      keyCode: -1,
+      target: table,
+    });
+  }
+
+  static ctrV(table) {
+    const { keyboard } = table;
+    keyboard.register({
+      keyCode: -1,
+      target: table,
+    });
+  }
+
+  static tab(table) {
+    const { keyboard, xTableScrollView } = table;
+    const { cols, rows, xScreen, edit } = table;
     const xSelect = xScreen.findType(XSelectItem);
     const merges = table.getTableMerges();
     let $tabNext = null;
     keyboard.register({
-      target: table,
       keyCode: 9,
+      target: table,
       callback: () => {
         edit.hideEdit();
         const scrollView = xTableScrollView.getScrollView();
@@ -528,6 +554,38 @@ class KeyBoardTabCode {
           edit.hideEdit();
         }
       },
+    });
+  }
+
+  static rightArrow(table) {
+    const { keyboard } = table;
+    keyboard.register({
+      keyCode: -1,
+      target: table,
+    });
+  }
+
+  static leftArrow(table) {
+    const { keyboard } = table;
+    keyboard.register({
+      keyCode: -1,
+      target: table,
+    });
+  }
+
+  static upArrow(table) {
+    const { keyboard } = table;
+    keyboard.register({
+      keyCode: -1,
+      target: table,
+    });
+  }
+
+  static downArrow(table) {
+    const { keyboard } = table;
+    keyboard.register({
+      keyCode: -1,
+      target: table,
     });
   }
 
@@ -598,7 +656,6 @@ class XTableDimensions extends Widget {
     // 行列迭代器
     this.xIteratorBuilder = new XIteratorBuilder();
     // 表格数据配置
-    this.scale = new Scale();
     this.index = new Code({
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.cssPx(this.scale.goto(v)),
@@ -619,6 +676,7 @@ class XTableDimensions extends Widget {
       xIteratorBuilder: this.xIteratorBuilder,
       ...this.settings.rows,
     });
+    this.scale = new Scale();
     // 冻结视图坐标
     this.xFixedView = new XFixedView(this.settings.xFixedView);
     this.xFixedMeasure = new XFixedMeasure({
@@ -683,18 +741,13 @@ class XTableDimensions extends Widget {
     this.colFixed = new ColFixed(this);
     this.dropColFixed = new DropColFixed(this);
     this.dropRowFixed = new DropRowFixed(this);
-    // 单元格辅助类
-    this.cellMergeCopyHelper = new CellMergeCopyHelper(this);
     // 粘贴板
     this.clipboard = new Clipboard({
-      filter: () => {
-        const { focus } = this;
-        const { activate } = focus;
-        const { target } = activate;
-        return target === this;
-      },
+      filter: () => {},
       paste: () => {},
     });
+    // 单元格辅助类
+    this.cellMergeCopyHelper = new CellMergeCopyHelper(this);
     // 表格行高索引
     this.rowHeightGroupIndex = new RowHeightGroupIndex({
       rows: this.rows,
@@ -1175,7 +1228,7 @@ class XTableDimensions extends Widget {
     // 表格事件绑定
     this.bindTableEvent();
     // 注册快捷键
-    KeyBoardTabCode.register(this);
+    KeyBoardCode.register(this);
   }
 
   /**
