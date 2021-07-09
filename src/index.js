@@ -40,6 +40,9 @@ const settings = {
   },
 };
 
+/**
+ * XSheet
+ */
 class XSheet extends Widget {
   constructor(selectors, options) {
     super(`${cssPrefix}`);
