@@ -1,5 +1,6 @@
 import { XSelectItem } from '../../xtable/xscreenitems/xselect/XSelectItem';
 import { XTableEdit } from '../../xtable/XTableEdit';
+import { XSelectPath } from '../../xtable/xscreenitems/xselect/XSelectPath';
 
 function tab({ table, body, response }) {
   const { xTableScrollView } = table;
@@ -11,14 +12,16 @@ function tab({ table, body, response }) {
     let scrollView = xTableScrollView.getScrollView();
     let cLen = cols.len - 1;
     let rLen = rows.len - 1;
-    let { masterRow, selectRange } = xSelect;
+    let { selectPath, selectRange } = xSelect;
     let clone = selectRange.clone();
     let { sri, sci } = clone;
+    selectPath.set({ sri, sci, mode: XSelectPath.MODE.LR });
     // 当前区域是否是合并单元格
     let merge = merges.getFirstIncludes(sri, sci);
     if (merge) {
       sci = merge.eci;
     }
+    // 是否超过最大行数列数
     if (sri >= rLen) {
       if (sci >= cLen) {
         return;
@@ -27,8 +30,9 @@ function tab({ table, body, response }) {
     if (sci >= cLen) {
       sri += 1;
       sci = 0;
+      selectPath.set({ sri, set: true });
     } else {
-      sri = masterRow;
+      sri = selectPath.dri;
       sci += 1;
     }
     clone.sri = sri;
@@ -41,7 +45,6 @@ function tab({ table, body, response }) {
       xSelect.setRange(merge);
     } else {
       xSelect.setRange(clone);
-      xSelect.setMasterRiCi(clone);
     }
     // 是否超过视图区域
     let minCi = scrollView.sci;
@@ -128,16 +131,17 @@ function arrowUp({ table, body, response }) {
       return;
     }
     let scrollView = xTableScrollView.getScrollView();
-    let { masterCol, selectRange } = xSelect;
+    let { selectPath, selectRange } = xSelect;
     let clone = selectRange.clone();
-    let { sri } = clone;
+    let { sri, sci } = clone;
+    selectPath.set({ sri, sci, mode: XSelectPath.MODE.TB });
     sri -= 1;
     // 是否超过最小行数
     if (sri < 0) {
       return;
     }
-    clone.sci = masterCol;
-    clone.eci = masterCol;
+    clone.sci = selectPath.dci;
+    clone.eci = selectPath.dci;
     clone.sri = sri;
     clone.eri = sri;
     // 目标区域是否是合并单元格
@@ -146,7 +150,6 @@ function arrowUp({ table, body, response }) {
       xSelect.setRange(merge);
     } else {
       xSelect.setRange(clone);
-      xSelect.setMasterRiCi(clone);
     }
     // 是否超过视图区域
     let minRi = scrollView.sri;
@@ -170,10 +173,11 @@ function arrowDown({ table, body, response }) {
       return;
     }
     let scrollView = xTableScrollView.getScrollView();
-    let { masterCol, selectRange } = xSelect;
+    let { selectPath, selectRange } = xSelect;
     let rLen = rows.len - 1;
     let clone = selectRange.clone();
     let { sri, sci } = clone;
+    selectPath.set({ sri, sci, mode: XSelectPath.MODE.TB });
     // 当前区域是否是合并单元格
     let merge = merges.getFirstIncludes(sri, sci);
     if (merge) {
@@ -184,8 +188,8 @@ function arrowDown({ table, body, response }) {
     if (sri > rLen) {
       return;
     }
-    clone.sci = masterCol;
-    clone.eci = masterCol;
+    clone.sci = selectPath.dci;
+    clone.eci = selectPath.dci;
     clone.sri = sri;
     clone.eri = sri;
     // 目标区域是否是合并单元格
@@ -194,7 +198,6 @@ function arrowDown({ table, body, response }) {
       xSelect.setRange(merge);
     } else {
       xSelect.setRange(clone);
-      xSelect.setMasterRiCi(clone);
     }
     // 是否超过视图区域
     let maxRi = scrollView.eri - 1;
@@ -218,16 +221,17 @@ function arrowLeft({ table, body, response }) {
       return;
     }
     let scrollView = xTableScrollView.getScrollView();
-    let { masterRow, selectRange } = xSelect;
+    let { selectPath, selectRange } = xSelect;
     let clone = selectRange.clone();
-    let { sci } = clone;
+    let { sri, sci } = clone;
+    selectPath.set({ sri, sci, mode: XSelectPath.MODE.LR });
     sci -= 1;
     // 是否超过最小列数
     if (sci < 0) {
       return;
     }
-    clone.sri = masterRow;
-    clone.eri = masterRow;
+    clone.sri = selectPath.dri;
+    clone.eri = selectPath.dri;
     clone.sci = sci;
     clone.eci = sci;
     // 目标区域是否是合并单元格
@@ -236,7 +240,6 @@ function arrowLeft({ table, body, response }) {
       xSelect.setRange(merge);
     } else {
       xSelect.setRange(clone);
-      xSelect.setMasterRiCi(clone);
     }
     // 是否超过视图区域
     let minCi = scrollView.sci;
@@ -260,10 +263,11 @@ function arrowRight({ table, body, response }) {
       return;
     }
     let scrollView = xTableScrollView.getScrollView();
-    let { masterRow, selectRange } = xSelect;
+    let { selectPath, selectRange } = xSelect;
     let clone = selectRange.clone();
     let cLen = cols.len - 1;
     let { sci, sri } = clone;
+    selectPath.set({ sri, sci, mode: XSelectPath.MODE.LR });
     // 当前区域是否是合并单元格
     let merge = merges.getFirstIncludes(sri, sci);
     if (merge) {
@@ -274,8 +278,8 @@ function arrowRight({ table, body, response }) {
     if (sci > cLen) {
       return;
     }
-    clone.sri = masterRow;
-    clone.eri = masterRow;
+    clone.sri = selectPath.dri;
+    clone.eri = selectPath.dri;
     clone.sci = sci;
     clone.eci = sci;
     // 目标区域是否是合并单元格
@@ -284,7 +288,6 @@ function arrowRight({ table, body, response }) {
       xSelect.setRange(merge);
     } else {
       xSelect.setRange(clone);
-      xSelect.setMasterRiCi(clone);
     }
     // 是否超过视图区域
     let maxCi = scrollView.eci - 1;

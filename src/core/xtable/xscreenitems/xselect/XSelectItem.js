@@ -6,6 +6,7 @@ import { RectRange } from '../../tablebase/RectRange';
 import { Widget } from '../../../../libs/Widget';
 import { XTableMousePointer } from '../../XTableMousePointer';
 import { RANGE_OVER_GO } from '../../xscreen/item/viewborder/XScreenStyleBorderItem';
+import { XSelectPath } from './XSelectPath';
 
 const SELECT_LOCAL = {
   LT: Symbol('LT'),
@@ -34,9 +35,8 @@ class XSelectItem extends XScreenCssBorderItem {
     this.downRange = null;
     this.moveRange = null;
     this.selectRange = null;
-    // 主行/主列
-    this.masterRow = null;
-    this.masterCol = null;
+    // 用户选择的路径
+    this.selectPath = new XSelectPath();
     // 上下左右四个区域阴影
     this.ltElem = new Widget(`${cssPrefix}-x-select-area`);
     this.brElem = new Widget(`${cssPrefix}-x-select-area`);
@@ -84,31 +84,27 @@ class XSelectItem extends XScreenCssBorderItem {
     if (ri === -1 && ci === -1) {
       this.downRange = new RectRange(0, 0, rows.len - 1, cols.len - 1);
       this.selectRange = this.downRange;
-      this.masterRow = this.selectRange.sri;
-      this.masterCol = this.selectRange.sci;
+      this.selectPath.clear();
       this.selectLocal = SELECT_LOCAL.LT;
       return;
     }
     if (ri === -1) {
       this.downRange = new RectRange(0, ci, rows.len - 1, ci);
       this.selectRange = this.downRange;
-      this.masterRow = this.selectRange.sri;
-      this.masterCol = this.selectRange.sci;
+      this.selectPath.clear();
       this.selectLocal = SELECT_LOCAL.T;
       return;
     }
     if (ci === -1) {
       this.downRange = new RectRange(ri, 0, ri, cols.len - 1);
       this.selectRange = this.downRange;
-      this.masterRow = this.selectRange.sri;
-      this.masterCol = this.selectRange.sci;
+      this.selectPath.clear();
       this.selectLocal = SELECT_LOCAL.L;
       return;
     }
     this.downRange = merges.getFirstIncludes(ri, ci) || new RectRange(ri, ci, ri, ci);
     this.selectRange = this.downRange;
-    this.masterRow = this.selectRange.sri;
-    this.masterCol = this.selectRange.sci;
+    this.selectPath.clear();
     this.selectLocal = SELECT_LOCAL.BR;
   }
 
@@ -134,8 +130,7 @@ class XSelectItem extends XScreenCssBorderItem {
       const rect = downRange.union(new RectRange(0, 0, rows.len - 1, cols.len - 1));
       this.moveRange = downRange.union(rect);
       this.selectRange = this.moveRange;
-      this.masterRow = this.selectRange.sri;
-      this.masterCol = this.selectRange.sci;
+      this.selectPath.clear();
       this.selectLocal = SELECT_LOCAL.LT;
       return;
     }
@@ -143,8 +138,7 @@ class XSelectItem extends XScreenCssBorderItem {
       const rect = downRange.union(new RectRange(ri, 0, ri, 0));
       this.moveRange = downRange.union(rect);
       this.selectRange = this.moveRange;
-      this.masterRow = this.selectRange.sri;
-      this.masterCol = this.selectRange.sci;
+      this.selectPath.clear();
       this.selectLocal = SELECT_LOCAL.L;
       return;
     }
@@ -152,16 +146,14 @@ class XSelectItem extends XScreenCssBorderItem {
       const rect = downRange.union(new RectRange(0, ci, 0, ci));
       this.moveRange = downRange.union(rect);
       this.selectRange = this.moveRange;
-      this.masterRow = this.selectRange.sri;
-      this.masterCol = this.selectRange.sci;
+      this.selectPath.clear();
       this.selectLocal = SELECT_LOCAL.T;
       return;
     }
     const rect = downRange.union(new RectRange(ri, ci, ri, ci));
     this.moveRange = merges.union(rect);
     this.selectRange = this.moveRange;
-    this.masterRow = this.selectRange.sri;
-    this.masterCol = this.selectRange.sci;
+    this.selectPath.clear();
     this.selectLocal = SELECT_LOCAL.BR;
   }
 
@@ -629,19 +621,6 @@ class XSelectItem extends XScreenCssBorderItem {
     this.borderHandle();
     this.cornerHandle();
     table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
-  }
-
-  /**
-   * 设置主行号和列号
-   * @param range
-   */
-  setMasterRiCi(range) {
-    if (range.sri === range.eri) {
-      this.masterRow = range.sri;
-    }
-    if (range.sci === range.eci) {
-      this.masterCol = range.sci;
-    }
   }
 
   /**
