@@ -87,11 +87,24 @@ function controlV({ table, body, response }) {
 }
 
 function pageUp({ table, body, response }) {
-  response[67] = () => {};
+  const { xTableScrollView } = table;
+  response[33] = () => {
+    let scrollView = xTableScrollView.getScrollView();
+    const diff = scrollView.eri - scrollView.sri;
+    table.scrollRi(scrollView.sri - diff);
+    body.scrollBarSize();
+    body.scrollBarLocal();
+  };
 }
 
 function pageDown({ table, body, response }) {
-  response[67] = () => {};
+  const { xTableScrollView } = table;
+  response[34] = () => {
+    let scrollView = xTableScrollView.getScrollView();
+    table.scrollRi(scrollView.eri);
+    body.scrollBarSize();
+    body.scrollBarLocal();
+  };
 }
 
 function arrowUp({ table, body, response }) {

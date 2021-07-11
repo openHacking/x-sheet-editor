@@ -17,6 +17,7 @@ import { HeightUnit } from './core/xtable/tableunit/HeightUnit';
 import { WideUnit } from './core/xtable/tableunit/WideUnit';
 import './styles/base.less';
 import './styles/index.less';
+import { XTableFocus } from './core/xtable/XTableFocus';
 
 const settings = {
   workConfig: {
@@ -44,6 +45,12 @@ const settings = {
  * XSheet
  */
 class XSheet extends Widget {
+
+  /**
+   * XSheet
+   * @param selectors
+   * @param options
+   */
   constructor(selectors, options) {
     super(`${cssPrefix}`);
     let root = selectors;
@@ -57,6 +64,7 @@ class XSheet extends Widget {
     this.attach(this.work);
     ElPopUp.setRoot(this);
     DragPanel.setRoot(this);
+    XTableFocus.setRoot(this);
   }
 }
 

@@ -74,7 +74,7 @@ class XTableFocus {
     });
   }
 
-  register(target) {
+  register({ target }) {
     const callback = (event) => {
       const exist = this.include(Element.wrap(event.target));
       if (exist) {

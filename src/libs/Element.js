@@ -440,6 +440,15 @@ class Element {
     this.html('');
   }
 
+  /**
+   * 相等比较
+   * @param other
+   * @returns {boolean}
+   */
+  equals(other) {
+    return this.el === other.el;
+  }
+
 }
 
 const h = (tag, className = '') => new Element(tag, className);

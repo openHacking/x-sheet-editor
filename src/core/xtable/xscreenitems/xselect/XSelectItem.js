@@ -173,10 +173,10 @@ class XSelectItem extends XScreenCssBorderItem {
     const { table } = this;
     this.bind();
     this.hide();
-    table.focus.register(this.ltCorner);
-    table.focus.register(this.lCorner);
-    table.focus.register(this.tCorner);
-    table.focus.register(this.brCorner);
+    table.focus.register({ target: this.ltCorner });
+    table.focus.register({ target: this.lCorner });
+    table.focus.register({ target: this.tCorner });
+    table.focus.register({ target: this.brCorner });
   }
 
   /**
