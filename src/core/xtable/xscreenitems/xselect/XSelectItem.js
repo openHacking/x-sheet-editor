@@ -622,17 +622,9 @@ class XSelectItem extends XScreenCssBorderItem {
    * @param range
    */
   setRange(range) {
-    const { masterRow, masterCol, table } = this;
+    const { table } = this;
     this.selectRange = range;
     this.selectLocal = SELECT_LOCAL.BR;
-    if (this.selectRange.sri > masterRow
-      || this.selectRange.eri < masterRow) {
-      this.masterRow = this.selectRange.sri;
-    }
-    if (this.selectRange.sci > masterCol
-      || this.selectRange.eci < masterCol) {
-      this.masterCol = this.selectRange.sci;
-    }
     this.offsetHandle();
     this.borderHandle();
     this.cornerHandle();

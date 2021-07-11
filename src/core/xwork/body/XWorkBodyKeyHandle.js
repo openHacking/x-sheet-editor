@@ -129,7 +129,7 @@ function arrowUp({ table, body, response }) {
     let scrollView = xTableScrollView.getScrollView();
     let { masterCol, selectRange } = xSelect;
     let clone = selectRange.clone();
-    let { sri, sci } = clone;
+    let { sri } = clone;
     sri -= 1;
     // 是否超过最小行数
     if (sri < 0) {
@@ -140,7 +140,7 @@ function arrowUp({ table, body, response }) {
     clone.sri = sri;
     clone.eri = sri;
     // 目标区域是否是合并单元格
-    let merge = merges.getFirstIncludes(sri, sci);
+    let merge = merges.getFirstIncludes(clone.sri, clone.sci);
     if (merge) {
       xSelect.setRange(merge);
     } else {
@@ -187,7 +187,7 @@ function arrowDown({ table, body, response }) {
     clone.sri = sri;
     clone.eri = sri;
     // 目标区域是否是合并单元格
-    merge = merges.getFirstIncludes(sri, sci);
+    merge = merges.getFirstIncludes(clone.sri, clone.sci);
     if (merge) {
       xSelect.setRange(merge);
     } else {
@@ -217,7 +217,7 @@ function arrowLeft({ table, body, response }) {
     let scrollView = xTableScrollView.getScrollView();
     let { masterRow, selectRange } = xSelect;
     let clone = selectRange.clone();
-    let { sci, sri } = clone;
+    let { sci } = clone;
     sci -= 1;
     // 是否超过最小列数
     if (sci < 0) {
@@ -228,7 +228,7 @@ function arrowLeft({ table, body, response }) {
     clone.sci = sci;
     clone.eci = sci;
     // 目标区域是否是合并单元格
-    let merge = merges.getFirstIncludes(sri, sci);
+    let merge = merges.getFirstIncludes(clone.sri, clone.sci);
     if (merge) {
       xSelect.setRange(merge);
     } else {
@@ -275,7 +275,7 @@ function arrowRight({ table, body, response }) {
     clone.sci = sci;
     clone.eci = sci;
     // 目标区域是否是合并单元格
-    merge = merges.getFirstIncludes(sri, sci);
+    merge = merges.getFirstIncludes(clone.sri, clone.sci);
     if (merge) {
       xSelect.setRange(merge);
     } else {
