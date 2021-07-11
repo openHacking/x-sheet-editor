@@ -14,12 +14,13 @@ class Cell {
   /**
    * Cell
    * @param text
+   * @param readOnly
    * @param background
    * @param format
-   * @param fontAttr
    * @param ruler
-   * @param icons
+   * @param fontAttr
    * @param borderAttr
+   * @param icons
    * @param contentWidth
    * @param leftSdistWidth
    * @param rightSdistWidth
@@ -27,6 +28,7 @@ class Cell {
    */
   constructor({
     text = PlainUtils.EMPTY,
+    readOnly = false,
     background = PlainUtils.Nul,
     format = 'default',
     ruler = null,
@@ -39,6 +41,7 @@ class Cell {
     contentType = Cell.CONTENT_TYPE.STRING,
   } = {}) {
     this.ruler = ruler;
+    this.readOnly = readOnly;
     this.text = text;
     this.background = background;
     this.format = format;
@@ -51,6 +54,54 @@ class Cell {
     this.contentType = contentType;
     this.setContentType(contentType);
     this.setFormat(format);
+  }
+
+  setContentWidth(contentWidth) {
+    this.contentWidth = contentWidth;
+  }
+
+  setLeftSdistWidth(leftSdistWidth) {
+    this.leftSdistWidth = leftSdistWidth;
+  }
+
+  setRightSdistWidth(rightSdistWidth) {
+    this.rightSdistWidth = rightSdistWidth;
+  }
+
+  setFontAttr(fontAttr) {
+    this.fontAttr = fontAttr;
+  }
+
+  getFormatText() {
+    let { format, text, contentType } = this;
+    switch (contentType) {
+      case Cell.CONTENT_TYPE.RICH_TEXT: {
+        return text;
+      }
+      case Cell.CONTENT_TYPE.DATE: {
+        if (format === 'default') {
+          format = 'date1';
+        }
+        return XTableFormat(format, text);
+      }
+      case Cell.CONTENT_TYPE.STRING: {
+        return XTableFormat(format, text);
+      }
+      case Cell.CONTENT_TYPE.NUMBER: {
+        const number = XTableFormat(format, text);
+        return number.toString();
+      }
+    }
+    return PlainUtils.EMPTY;
+  }
+
+  setIcons(icons) {
+    this.icons = icons;
+  }
+
+  setContentType(type) {
+    this.contentType = type;
+    this.convert(this.text);
   }
 
   convert(text) {
@@ -81,52 +132,8 @@ class Cell {
     return PlainUtils.isBlank(this.text);
   }
 
-  getFormatText() {
-    let { format, text, contentType } = this;
-    switch (contentType) {
-      case Cell.CONTENT_TYPE.RICH_TEXT: {
-        return text;
-      }
-      case Cell.CONTENT_TYPE.DATE: {
-        if (format === 'default') {
-          format = 'date1';
-        }
-        return XTableFormat(format, text);
-      }
-      case Cell.CONTENT_TYPE.STRING: {
-        return XTableFormat(format, text);
-      }
-      case Cell.CONTENT_TYPE.NUMBER: {
-        const number = XTableFormat(format, text);
-        return number.toString();
-      }
-    }
-    return PlainUtils.EMPTY;
-  }
-
-  setContentWidth(contentWidth) {
-    this.contentWidth = contentWidth;
-  }
-
-  setLeftSdistWidth(leftSdistWidth) {
-    this.leftSdistWidth = leftSdistWidth;
-  }
-
-  setRightSdistWidth(rightSdistWidth) {
-    this.rightSdistWidth = rightSdistWidth;
-  }
-
-  setIcons(icons) {
-    this.icons = icons;
-  }
-
-  setFontAttr(fontAttr) {
-    this.fontAttr = fontAttr;
-  }
-
-  setContentType(type) {
-    this.contentType = type;
-    this.convert(this.text);
+  isReadOnly() {
+    return this.readOnly;
   }
 
   setText(text) {

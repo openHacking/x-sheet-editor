@@ -2,107 +2,98 @@
 import { Constant } from '../../const/Constant';
 import { XEvent } from '../../libs/XEvent';
 import { Element } from '../../libs/Element';
+import { PlainUtils } from '../../utils/PlainUtils';
+
+let root = PlainUtils.Nul;
+let instance = PlainUtils.Nul;
 
 class XTableFocus {
 
-  constructor(table) {
-    this.table = table;
-    this.pool = [];
-    this.activate = {};
-    this.xTableFocusDownHandle = () => {
-      this.activate = {};
-    };
-    this.bind();
+  static getInstance() {
+    if (instance) {
+      return instance;
+    }
+    instance = new XTableFocus();
+    return instance;
   }
 
-  remove(target) {
-    if (!(target instanceof Element)) {
-      throw new TypeError(' error type not Element ');
-    }
-    const pool = [];
-    for (let i = 0; i < this.pool.length; i += 1) {
-      const item = this.pool[i];
-      if (item.target.el !== target.el) {
-        pool.push(item);
-      }
-    }
-    this.pool = pool;
+  static setRoot(element) {
+    root = element;
+  }
+
+  constructor() {
+    this.activate = {};
+    this.items = [];
+    this.handle = () => {
+      this.activate = {};
+    };
   }
 
   unbind() {
-    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN,
-      this.xTableFocusDownHandle, true);
+    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.handle, true);
+    this.items.forEach((item) => {
+      const { target, callback } = item;
+      XEvent.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, callback);
+    });
   }
 
   bind() {
-    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN,
-      this.xTableFocusDownHandle, true);
+    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.handle, true);
   }
 
-  add(item) {
-    // 是否是Element
-    if (!(item.target instanceof Element)) {
-      return false;
+  include(el) {
+    while (!el.equals(root)) {
+      const find = this.exist(el);
+      if (find) {
+        return find;
+      }
+      el = el.parent();
     }
-    // 是否已经注册
-    const find = this.findByNode(item.target);
-    if (find) {
-      return false;
-    }
-    // 记录注册的元素
-    this.pool.push(item);
-    if (item.focus) {
-      this.activate = this.pool[this.pool.length - 1];
-    }
-    return true;
+    return null;
   }
 
-  register({
-    attr = {},
-    target,
-    stop = false,
-    focus = false,
-  }) {
-    if (this.add({
-      attr, target, focus, stop,
-    })) {
-      XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-        const alike = this.findByChild(e.target);
-        if (alike) {
-          this.activate = alike;
-          if (stop) {
-            e.stopPropagation();
-          }
-        } else {
-          this.activate = null;
-        }
-      });
-    }
-  }
-
-  findByNode(el) {
-    for (let i = 0; i < this.pool.length; i += 1) {
-      const item = this.pool[i];
-      if (item.target.el === el) {
+  exist(el) {
+    for (let i = 0, len = this.items.length; i < len; i += 1) {
+      const item = this.items[i];
+      const { target } = item;
+      if (target.equals(el)) {
         return item;
       }
     }
     return null;
   }
 
-  findByChild(el) {
-    const { table } = this;
-    const root = table.el.parentNode;
-    while (el !== root) {
-      const find = this.findByNode(el);
-      if (find) {
-        return find;
+  remove(el) {
+    this.items = this.items.filter((item) => {
+      const { target, callback } = item;
+      const equals = target.equals(el);
+      if (equals) {
+        XEvent.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, callback);
       }
-      el = el.parentNode;
-    }
-    return null;
+      return equals;
+    });
+  }
+
+  register(target) {
+    const callback = (event) => {
+      const exist = this.include(Element.wrap(event.target));
+      if (exist) {
+        this.activate = exist;
+      } else {
+        this.activate = null;
+      }
+    };
+    this.items.push({ target, callback });
+    XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, callback);
+  }
+
+  destroy() {
+    this.unbind();
+    this.items = [];
   }
 
 }
 
-export { XTableFocus };
+export {
+  XTableFocus,
+};

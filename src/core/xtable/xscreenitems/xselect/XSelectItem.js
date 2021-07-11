@@ -31,24 +31,27 @@ class XSelectItem extends XScreenCssBorderItem {
     // 当前显示的操作按钮
     this.activeCorner = null;
     // 用户选中的区域
-    this.selectRange = null;
     this.downRange = null;
     this.moveRange = null;
+    this.selectRange = null;
+    // 主行/主列
+    this.masterRow = null;
+    this.masterCol = null;
     // 上下左右四个区域阴影
     this.ltElem = new Widget(`${cssPrefix}-x-select-area`);
     this.brElem = new Widget(`${cssPrefix}-x-select-area`);
     this.lElem = new Widget(`${cssPrefix}-x-select-area`);
     this.tElem = new Widget(`${cssPrefix}-x-select-area`);
-    // 上下左右高亮区域
-    this.ltHighLight = new Widget(`${cssPrefix}-x-select-high-light`);
-    this.lHighLight = new Widget(`${cssPrefix}-x-select-high-light`);
-    this.tHighLight = new Widget(`${cssPrefix}-x-select-high-light`);
-    this.brHighLight = new Widget(`${cssPrefix}-x-select-high-light`);
     // 上下左右4个操作按钮
     this.ltCorner = new Widget(`${cssPrefix}-x-select-corner`);
     this.lCorner = new Widget(`${cssPrefix}-x-select-corner`);
     this.tCorner = new Widget(`${cssPrefix}-x-select-corner`);
     this.brCorner = new Widget(`${cssPrefix}-x-select-corner`);
+    // 上下左右高亮区域
+    this.ltHighLight = new Widget(`${cssPrefix}-x-select-high-light`);
+    this.lHighLight = new Widget(`${cssPrefix}-x-select-high-light`);
+    this.tHighLight = new Widget(`${cssPrefix}-x-select-high-light`);
+    this.brHighLight = new Widget(`${cssPrefix}-x-select-high-light`);
     // 添加区域阴影
     this.blt.before(this.ltElem);
     this.bl.before(this.lElem);
@@ -69,15 +72,54 @@ class XSelectItem extends XScreenCssBorderItem {
   }
 
   /**
+   * 鼠标按下的区域
+   * @param x
+   * @param y
+   */
+  downHandle(x, y) {
+    const { table } = this;
+    const { rows, cols } = table;
+    const { ri, ci } = table.getRiCiByXy(x, y);
+    const merges = table.getTableMerges();
+    if (ri === -1 && ci === -1) {
+      this.downRange = new RectRange(0, 0, rows.len - 1, cols.len - 1);
+      this.selectRange = this.downRange;
+      this.masterRow = this.selectRange.sri;
+      this.masterCol = this.selectRange.sci;
+      this.selectLocal = SELECT_LOCAL.LT;
+      return;
+    }
+    if (ri === -1) {
+      this.downRange = new RectRange(0, ci, rows.len - 1, ci);
+      this.selectRange = this.downRange;
+      this.masterRow = this.selectRange.sri;
+      this.masterCol = this.selectRange.sci;
+      this.selectLocal = SELECT_LOCAL.T;
+      return;
+    }
+    if (ci === -1) {
+      this.downRange = new RectRange(ri, 0, ri, cols.len - 1);
+      this.selectRange = this.downRange;
+      this.masterRow = this.selectRange.sri;
+      this.masterCol = this.selectRange.sci;
+      this.selectLocal = SELECT_LOCAL.L;
+      return;
+    }
+    this.downRange = merges.getFirstIncludes(ri, ci) || new RectRange(ri, ci, ri, ci);
+    this.selectRange = this.downRange;
+    this.masterRow = this.selectRange.sri;
+    this.masterCol = this.selectRange.sci;
+    this.selectLocal = SELECT_LOCAL.BR;
+  }
+
+  /**
    * 鼠标移动的区域
    * @param x
    * @param y
    */
   moveHandle(x, y) {
     const { table } = this;
-    const {
-      rows, cols,
-    } = table;
+    const { rows, cols } = table;
     const { downRange, selectLocal } = this;
     const merges = table.getTableMerges();
     const viewRange = table.getScrollView();
@@ -92,6 +134,8 @@ class XSelectItem extends XScreenCssBorderItem {
       const rect = downRange.union(new RectRange(0, 0, rows.len - 1, cols.len - 1));
       this.moveRange = downRange.union(rect);
       this.selectRange = this.moveRange;
+      this.masterRow = this.selectRange.sri;
+      this.masterCol = this.selectRange.sci;
       this.selectLocal = SELECT_LOCAL.LT;
       return;
     }
@@ -99,6 +143,8 @@ class XSelectItem extends XScreenCssBorderItem {
       const rect = downRange.union(new RectRange(ri, 0, ri, 0));
       this.moveRange = downRange.union(rect);
       this.selectRange = this.moveRange;
+      this.masterRow = this.selectRange.sri;
+      this.masterCol = this.selectRange.sci;
       this.selectLocal = SELECT_LOCAL.L;
       return;
     }
@@ -106,59 +152,16 @@ class XSelectItem extends XScreenCssBorderItem {
       const rect = downRange.union(new RectRange(0, ci, 0, ci));
       this.moveRange = downRange.union(rect);
       this.selectRange = this.moveRange;
+      this.masterRow = this.selectRange.sri;
+      this.masterCol = this.selectRange.sci;
       this.selectLocal = SELECT_LOCAL.T;
       return;
     }
     const rect = downRange.union(new RectRange(ri, ci, ri, ci));
     this.moveRange = merges.union(rect);
     this.selectRange = this.moveRange;
-    this.selectLocal = SELECT_LOCAL.BR;
-  }
-
-  /**
-   * 更新用户选中
-   * 的区域
-   * @param range
-   */
-  setRange(range) {
-    this.selectRange = range;
-    this.selectLocal = SELECT_LOCAL.BR;
-    this.offsetHandle();
-    this.borderHandle();
-    this.cornerHandle();
-  }
-
-  /**
-   * 鼠标按下的区域
-   * @param x
-   * @param y
-   */
-  downHandle(x, y) {
-    const { table } = this;
-    const { rows, cols } = table;
-    const merges = table.getTableMerges();
-    const { ri, ci } = table.getRiCiByXy(x, y);
-    if (ri === -1 && ci === -1) {
-      this.downRange = new RectRange(0, 0, rows.len - 1, cols.len - 1);
-      this.selectRange = this.downRange;
-      this.selectLocal = SELECT_LOCAL.LT;
-      return;
-    }
-    if (ri === -1) {
-      this.downRange = new RectRange(0, ci, rows.len - 1, ci);
-      this.selectRange = this.downRange;
-      this.selectLocal = SELECT_LOCAL.T;
-      return;
-    }
-    if (ci === -1) {
-      this.downRange = new RectRange(ri, 0, ri, cols.len - 1);
-      this.selectRange = this.downRange;
-      this.selectLocal = SELECT_LOCAL.L;
-      return;
-    }
-    this.downRange = merges.getFirstIncludes(ri, ci)
-      || new RectRange(ri, ci, ri, ci);
-    this.selectRange = this.downRange;
+    this.masterRow = this.selectRange.sri;
+    this.masterCol = this.selectRange.sci;
     this.selectLocal = SELECT_LOCAL.BR;
   }
 
@@ -170,10 +173,10 @@ class XSelectItem extends XScreenCssBorderItem {
     const { table } = this;
     this.bind();
     this.hide();
-    table.focus.register({ target: this.ltCorner });
-    table.focus.register({ target: this.lCorner });
-    table.focus.register({ target: this.tCorner });
-    table.focus.register({ target: this.brCorner });
+    table.focus.register(this.ltCorner);
+    table.focus.register(this.lCorner);
+    table.focus.register(this.tCorner);
+    table.focus.register(this.brCorner);
   }
 
   /**
@@ -189,9 +192,7 @@ class XSelectItem extends XScreenCssBorderItem {
    */
   bind() {
     const { table } = this;
-    const {
-      mousePointer, focus,
-    } = table;
+    const { mousePointer, focus } = table;
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT, () => {
       this.offsetHandle();
       this.borderHandle();
@@ -613,6 +614,29 @@ class XSelectItem extends XScreenCssBorderItem {
         }
       }
     }
+  }
+
+  /**
+   * 更新用户选中
+   * 的区域
+   * @param range
+   */
+  setRange(range) {
+    const { masterRow, masterCol, table } = this;
+    this.selectRange = range;
+    this.selectLocal = SELECT_LOCAL.BR;
+    if (this.selectRange.sri > masterRow
+      || this.selectRange.eri < masterRow) {
+      this.masterRow = this.selectRange.sri;
+    }
+    if (this.selectRange.sci > masterCol
+      || this.selectRange.eci < masterCol) {
+      this.masterCol = this.selectRange.sci;
+    }
+    this.offsetHandle();
+    this.borderHandle();
+    this.cornerHandle();
+    table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
   }
 
   /**

@@ -12,6 +12,7 @@ module.exports = {
     "no-continue": 0,
     "object-curly-newline": 0,
     "padded-blocks": 0,
-    "prefer-destructuring": 0
+    "prefer-destructuring": 0,
+    "no-restricted-syntax": 0,
   }
 };

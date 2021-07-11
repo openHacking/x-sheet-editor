@@ -142,73 +142,6 @@ class XTableFrozenContent extends Dimensions {
 
 }
 
-class XTableLeft extends Dimensions {
-
-  getWidth() {
-    if (PlainUtils.isNumber(this.width)) {
-      return this.width;
-    }
-    const { table } = this;
-    const { xFixedMeasure } = table;
-    const width = xFixedMeasure.getWidth();
-    this.width = width;
-    return width;
-  }
-
-  getHeight() {
-    if (PlainUtils.isNumber(this.height)) {
-      return this.height;
-    }
-    const { table } = this;
-    const { xTop } = table;
-    const { index } = table;
-    const height = table.visualHeight() - (index.getHeight() + xTop.getHeight());
-    this.height = height;
-    return height;
-  }
-
-  getX() {
-    if (PlainUtils.isNumber(this.x)) {
-      return this.x;
-    }
-    const { table } = this;
-    const { index } = table;
-    const x = index.getWidth();
-    this.x = x;
-    return x;
-  }
-
-  getY() {
-    if (PlainUtils.isNumber(this.y)) {
-      return this.y;
-    }
-    const { table } = this;
-    const { xTop } = table;
-    const { index } = table;
-    const y = index.getHeight() + xTop.getHeight();
-    this.y = y;
-    return y;
-  }
-
-  getScrollView() {
-    if (PlainUtils.isNotUnDef(this.scrollView)) {
-      return this.scrollView.clone();
-    }
-    const { table } = this;
-    const { xFixedView } = table;
-    const { cols } = table;
-    const { xTableAreaView } = table;
-    const scrollView = xTableAreaView.getScrollView();
-    const fixedView = xFixedView.getFixedView();
-    scrollView.sci = fixedView.sci;
-    scrollView.eci = fixedView.eci;
-    scrollView.w = cols.sectionSumWidth(scrollView.sci, scrollView.eci);
-    this.scrollView = scrollView;
-    return scrollView.clone();
-  }
-
-}
-
 class XTableTop extends Dimensions {
 
   getWidth() {
@@ -270,6 +203,73 @@ class XTableTop extends Dimensions {
     scrollView.sri = fixedView.sri;
     scrollView.eri = fixedView.eri;
     scrollView.h = rows.sectionSumHeight(scrollView.sri, scrollView.eri);
+    this.scrollView = scrollView;
+    return scrollView.clone();
+  }
+
+}
+
+class XTableLeft extends Dimensions {
+
+  getWidth() {
+    if (PlainUtils.isNumber(this.width)) {
+      return this.width;
+    }
+    const { table } = this;
+    const { xFixedMeasure } = table;
+    const width = xFixedMeasure.getWidth();
+    this.width = width;
+    return width;
+  }
+
+  getHeight() {
+    if (PlainUtils.isNumber(this.height)) {
+      return this.height;
+    }
+    const { table } = this;
+    const { xTop } = table;
+    const { index } = table;
+    const height = table.visualHeight() - (index.getHeight() + xTop.getHeight());
+    this.height = height;
+    return height;
+  }
+
+  getX() {
+    if (PlainUtils.isNumber(this.x)) {
+      return this.x;
+    }
+    const { table } = this;
+    const { index } = table;
+    const x = index.getWidth();
+    this.x = x;
+    return x;
+  }
+
+  getY() {
+    if (PlainUtils.isNumber(this.y)) {
+      return this.y;
+    }
+    const { table } = this;
+    const { xTop } = table;
+    const { index } = table;
+    const y = index.getHeight() + xTop.getHeight();
+    this.y = y;
+    return y;
+  }
+
+  getScrollView() {
+    if (PlainUtils.isNotUnDef(this.scrollView)) {
+      return this.scrollView.clone();
+    }
+    const { table } = this;
+    const { xFixedView } = table;
+    const { cols } = table;
+    const { xTableAreaView } = table;
+    const scrollView = xTableAreaView.getScrollView();
+    const fixedView = xFixedView.getFixedView();
+    scrollView.sci = fixedView.sci;
+    scrollView.eci = fixedView.eci;
+    scrollView.w = cols.sectionSumWidth(scrollView.sci, scrollView.eci);
     this.scrollView = scrollView;
     return scrollView.clone();
   }
@@ -465,132 +465,6 @@ class XTableTopIndex extends Dimensions {
 
 }
 
-// ================================= 快捷键 =================================
-
-class KeyBoardCode {
-
-  static register(table) {
-    KeyBoardCode.tab(table);
-    KeyBoardCode.crtC(table);
-    KeyBoardCode.ctrV(table);
-    KeyBoardCode.downArrow(table);
-    KeyBoardCode.upArrow(table);
-    KeyBoardCode.rightArrow(table);
-    KeyBoardCode.leftArrow(table);
-    KeyBoardCode.downArrow(table);
-  }
-
-  static crtC(table) {
-    const { keyboard } = table;
-    keyboard.register({
-      keyCode: -1,
-      target: table,
-    });
-  }
-
-  static ctrV(table) {
-    const { keyboard } = table;
-    keyboard.register({
-      keyCode: -1,
-      target: table,
-    });
-  }
-
-  static tab(table) {
-    const { keyboard, xTableScrollView } = table;
-    const { cols, rows, xScreen, edit } = table;
-    const xSelect = xScreen.findType(XSelectItem);
-    const merges = table.getTableMerges();
-    let $tabNext = null;
-    keyboard.register({
-      keyCode: 9,
-      target: table,
-      callback: () => {
-        edit.hideEdit();
-        const scrollView = xTableScrollView.getScrollView();
-        const { selectRange } = xSelect;
-        const { tabNext } = selectRange;
-        const selectRangeClone = selectRange.clone();
-        if (!tabNext) {
-          const { sri, sci } = selectRangeClone;
-          $tabNext = { sri, sci };
-        }
-        const cLen = cols.len - 1;
-        const rLen = rows.len - 1;
-        let { sri, sci } = $tabNext;
-        const srcMerges = merges.getFirstIncludes(sri, sci);
-        if (srcMerges) {
-          sci = srcMerges.eci;
-        }
-        if (sci >= cLen && sri >= rLen) {
-          return;
-        }
-        if (sci >= cLen) {
-          sri += 1;
-          sci = 0;
-        } else {
-          sci += 1;
-        }
-        $tabNext.sri = sri;
-        $tabNext.sci = sci;
-        let eri = sri;
-        let eci = sci;
-        const targetMerges = merges.getFirstIncludes(sri, sci);
-        if (targetMerges) {
-          sri = targetMerges.sri;
-          sci = targetMerges.sci;
-          eri = targetMerges.eri;
-          eci = targetMerges.eci;
-        }
-        selectRangeClone.tabNext = true;
-        selectRangeClone.sri = sri;
-        selectRangeClone.sci = sci;
-        selectRangeClone.eri = eri;
-        selectRangeClone.eci = eci;
-        xSelect.setRange(selectRangeClone);
-        if (scrollView.intersects(selectRangeClone)) {
-          edit.showEdit();
-        } else {
-          edit.hideEdit();
-        }
-      },
-    });
-  }
-
-  static rightArrow(table) {
-    const { keyboard } = table;
-    keyboard.register({
-      keyCode: -1,
-      target: table,
-    });
-  }
-
-  static leftArrow(table) {
-    const { keyboard } = table;
-    keyboard.register({
-      keyCode: -1,
-      target: table,
-    });
-  }
-
-  static upArrow(table) {
-    const { keyboard } = table;
-    keyboard.register({
-      keyCode: -1,
-      target: table,
-    });
-  }
-
-  static downArrow(table) {
-    const { keyboard } = table;
-    keyboard.register({
-      keyCode: -1,
-      target: table,
-    });
-  }
-
-}
-
 // ================================= XTable ================================
 
 const settings = {
@@ -728,9 +602,9 @@ class XTableDimensions extends Widget {
     this.xTop = new XTableTop(this);
     this.xContent = new XTableContent(this);
     // table组件
-    this.focus = new XTableFocus(this);
-    this.mousePointer = new XTableMousePointer(this);
+    this.focus = XTableFocus.getInstance();
     this.keyboard = new XTableKeyboard(this);
+    this.mousePointer = new XTableMousePointer(this);
     this.xScreen = new XScreen(this);
     this.xReSizer = new XReSizer(this);
     this.yReSizer = new YReSizer(this);
@@ -754,6 +628,38 @@ class XTableDimensions extends Widget {
       xFixedView: this.xFixedView,
       xIteratorBuilder: this.xIteratorBuilder,
     });
+  }
+
+  /**
+   * 滚动列区间
+   * @param min
+   * @param max
+   * @param initS
+   * @param initV
+   * @param ifv
+   * @param getV
+   * @return {(*|number)[]}
+   */
+  colsReduceIf(min, max, initS, initV, ifv, getV) {
+    let s = initS;
+    let v = initV;
+    let ci = min;
+    this.xIteratorBuilder.getColIterator()
+      .setBegin(ci)
+      .setEnd(max - 1)
+      .setLoop((i) => {
+        if (s >= ifv) {
+          return false;
+        }
+        v = getV(i);
+        s += v;
+        return true;
+      })
+      .setFinish((i) => {
+        ci = i;
+      })
+      .execute();
+    return [ci, s, v];
   }
 
   /**
@@ -785,49 +691,7 @@ class XTableDimensions extends Widget {
         ri = i;
       })
       .execute();
-    return [ri, s - v, v];
-  }
-
-  /**
-   * 滚动列区间
-   * @param min
-   * @param max
-   * @param initS
-   * @param initV
-   * @param ifv
-   * @param getV
-   * @return {(*|number)[]}
-   */
-  colsReduceIf(min, max, initS, initV, ifv, getV) {
-    let s = initS;
-    let v = initV;
-    let ri = min;
-    this.xIteratorBuilder.getColIterator()
-      .setBegin(ri)
-      .setEnd(max - 1)
-      .setLoop((i) => {
-        if (s >= ifv) {
-          return false;
-        }
-        v = getV(i);
-        s += v;
-        return true;
-      })
-      .setFinish((i) => {
-        ri = i;
-      })
-      .execute();
-    return [ri, s - v, v];
-  }
-
-  /**
-   * 单元辅助实例
-   * @returns {OperateCellsHelper}
-   */
-  getOperateCellsHelper() {
-    const { xTableStyle } = this;
-    const { operateCellsHelper } = xTableStyle;
-    return operateCellsHelper;
+    return [ri, s, v];
   }
 
   /**
@@ -841,12 +705,13 @@ class XTableDimensions extends Widget {
   }
 
   /**
-   * 获取表格渲染对象
-   * @returns {XTableStyle}
+   * 单元辅助实例
+   * @returns {OperateCellsHelper}
    */
-  getXTableStyle() {
+  getOperateCellsHelper() {
     const { xTableStyle } = this;
-    return xTableStyle;
+    const { operateCellsHelper } = xTableStyle;
+    return operateCellsHelper;
   }
 
   /**
@@ -856,6 +721,15 @@ class XTableDimensions extends Widget {
     const { xTableStyle } = this;
     const { merges } = xTableStyle;
     return merges;
+  }
+
+  /**
+   * 获取表格渲染对象
+   * @returns {XTableStyle}
+   */
+  getXTableStyle() {
+    const { xTableStyle } = this;
+    return xTableStyle;
   }
 
   /**
@@ -1203,7 +1077,7 @@ class XTableDimensions extends Widget {
     // 绑定表格事件
     this.bindCacheClear();
     // 注册焦点元素
-    this.focus.register({ target: this });
+    this.focus.register(this);
     // 表格渲染组件
     const { xTableStyle } = this;
     this.attach(xTableStyle);
@@ -1227,8 +1101,6 @@ class XTableDimensions extends Widget {
     this.bindIconEvent();
     // 表格事件绑定
     this.bindTableEvent();
-    // 注册快捷键
-    KeyBoardCode.register(this);
   }
 
   /**
@@ -1287,9 +1159,8 @@ class XTableDimensions extends Widget {
    * 移除事件绑定
    */
   unbind() {
+    this.focus.remove(this);
     XEvent.unbind(this);
-    this.focus.unbind();
-    this.keyboard.unbind();
   }
 
   /**
@@ -1309,21 +1180,22 @@ class XTableDimensions extends Widget {
     const { cols, xFixedView, scroll } = this;
     const fixedView = xFixedView.getFixedView();
     const [
-      ci, left, width,
+      ci, left,
     ] = this.colsReduceIf(fixedView.eci + 1, cols.len, 0, 0, x, i => cols.getWidth(i));
-    let x1 = left;
-    if (x > 0) x1 += width;
-    let type;
-    if (scroll.x > x1) {
-      type = SCROLL_TYPE.H_LEFT;
-    } else if (scroll.x < x1) {
-      type = SCROLL_TYPE.H_RIGHT;
+    // 记录滚动方向
+    if (scroll.x > left) {
+      scroll.x = left;
+      scroll.ci = ci;
+      scroll.type = SCROLL_TYPE.H_LEFT;
+      this.scrolling();
+      scroll.type = SCROLL_TYPE.UN;
+    } else if (scroll.x < left) {
+      scroll.x = left;
+      scroll.ci = ci;
+      scroll.type = SCROLL_TYPE.H_RIGHT;
+      this.scrolling();
+      scroll.type = SCROLL_TYPE.UN;
     }
-    scroll.type = type;
-    scroll.ci = ci;
-    scroll.x = x1;
-    this.scrolling();
-    scroll.type = SCROLL_TYPE.UN;
   }
 
   /**
@@ -1334,21 +1206,66 @@ class XTableDimensions extends Widget {
     const { rows, scroll, rowHeightGroupIndex } = this;
     const find = rowHeightGroupIndex.get(y);
     const [
-      ri, top, height,
+      ri, top,
     ] = this.rowsReduceIf(find.ri, rows.len, find.top, 0, y, i => rows.getHeight(i));
-    let y1 = top;
-    if (y > 0) y1 += height;
-    let type;
-    if (scroll.y > y1) {
-      type = SCROLL_TYPE.V_TOP;
-    } else if (scroll.y < y1) {
-      type = SCROLL_TYPE.V_BOTTOM;
+    // 记录滚动方向
+    if (scroll.y > top) {
+      scroll.type = SCROLL_TYPE.V_TOP;
+      scroll.y = top;
+      scroll.ri = ri;
+      this.scrolling();
+      scroll.type = SCROLL_TYPE.UN;
+    } else if (scroll.y < top) {
+      scroll.type = SCROLL_TYPE.V_BOTTOM;
+      scroll.y = top;
+      scroll.ri = ri;
+      this.scrolling();
+      scroll.type = SCROLL_TYPE.UN;
     }
-    scroll.type = type;
-    scroll.ri = ri;
-    scroll.y = y1;
-    this.scrolling();
-    scroll.type = SCROLL_TYPE.UN;
+  }
+
+  /**
+   * 滚动到指定行
+   */
+  scrollRi(ri) {
+    const { rows, scroll } = this;
+    const top = rows.sectionSumHeight(0, ri);
+    // 记录滚动方向
+    if (scroll.y > top) {
+      scroll.type = SCROLL_TYPE.V_TOP;
+      scroll.y = top;
+      scroll.ri = ri;
+      this.scrolling();
+      scroll.type = SCROLL_TYPE.UN;
+    } else if (scroll.y < top) {
+      scroll.type = SCROLL_TYPE.V_BOTTOM;
+      scroll.y = top;
+      scroll.ri = ri;
+      this.scrolling();
+      scroll.type = SCROLL_TYPE.UN;
+    }
+  }
+
+  /**
+   * 滚动到指定列
+   */
+  scrollCi(ci) {
+    const { cols, scroll } = this;
+    const left = cols.sectionSumWidth(0, ci);
+    // 记录滚动方向
+    if (scroll.x > left) {
+      scroll.x = left;
+      scroll.ci = ci;
+      scroll.type = SCROLL_TYPE.H_LEFT;
+      this.scrolling();
+      scroll.type = SCROLL_TYPE.UN;
+    } else if (scroll.x < left) {
+      scroll.x = left;
+      scroll.ci = ci;
+      scroll.type = SCROLL_TYPE.H_RIGHT;
+      this.scrolling();
+      scroll.type = SCROLL_TYPE.UN;
+    }
   }
 
   /**
@@ -1484,25 +1401,6 @@ class XTableDimensions extends Widget {
   }
 
   /**
-   * 设置缩放比
-   */
-  setScale(val = 1) {
-    const {
-      yHeightLight, xHeightLight, xTableStyle, xScreen, scale, rowFixed, colFixed,
-    } = this;
-    this.recache();
-    this.reset();
-    scale.setValue(val);
-    xTableStyle.setScale(val);
-    xScreen.setZone();
-    rowFixed.setSize();
-    colFixed.setSize();
-    xHeightLight.offsetHandle();
-    yHeightLight.offsetHandle();
-    this.trigger(Constant.TABLE_EVENT_TYPE.SCALE_CHANGE);
-  }
-
-  /**
    * 渲染静态界面
    */
   render() {
@@ -1515,9 +1413,7 @@ class XTableDimensions extends Widget {
    * 渲染滚动界面
    */
   scrolling() {
-    const {
-      xTableStyle, xFixedView, scroll,
-    } = this;
+    const { xTableStyle, xFixedView, scroll } = this;
     const fixedView = xFixedView.getFixedView();
     if (!xFixedView.hasFixedTop()) {
       fixedView.sri = scroll.ri;
@@ -1532,14 +1428,57 @@ class XTableDimensions extends Widget {
   }
 
   /**
+   * 设置缩放比
+   */
+  setScale(val = 1) {
+    const { yHeightLight, xHeightLight, xTableStyle } = this;
+    const { xScreen, scale, rowFixed, colFixed } = this;
+    this.recache();
+    this.reset();
+    scale.setValue(val);
+    xTableStyle.setScale(val);
+    xScreen.setZone();
+    rowFixed.setSize();
+    colFixed.setSize();
+    xHeightLight.offsetHandle();
+    yHeightLight.offsetHandle();
+    this.trigger(Constant.TABLE_EVENT_TYPE.SCALE_CHANGE);
+  }
+
+  /**
    * 表格是否只读
    * @returns {boolean}
    */
   isReadOnly({
     tips = true,
   } = {}) {
-    const { settings } = this;
-    const { readOnly } = settings;
+    let { settings, xScreen } = this;
+    let xSelect = xScreen.findType(XSelectItem);
+    let helper = this.getOperateCellsHelper();
+    let { selectRange } = xSelect;
+    // 表格是否只读
+    let { readOnly } = settings;
+    if (readOnly) {
+      if (tips) {
+        new Alert({ message: '只读模式无法编辑' }).open();
+      }
+      return true;
+    }
+    // 选择的区域是否存在只读
+    if (selectRange) {
+      helper.getCellByViewRange({
+        rectRange: selectRange,
+        callback: (r, c, cell) => {
+          if (cell) {
+            if (cell.isReadOnly()) {
+              readOnly = true;
+              return false;
+            }
+          }
+          return true;
+        },
+      });
+    }
     if (readOnly) {
       if (tips) {
         new Alert({ message: '只读模式无法编辑' }).open();
@@ -1563,6 +1502,7 @@ class XTableDimensions extends Widget {
     this.edit.destroy();
     this.rowFixed.destroy();
     this.colFixed.destroy();
+    this.keyboard.destroy();
   }
 
 }

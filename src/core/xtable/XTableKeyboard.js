@@ -7,36 +7,41 @@ class XTableKeyboard {
   constructor(table) {
     const { focus } = table;
     this.table = table;
-    this.pool = [];
-    this.xTableKeyBoardDownHandle = (e) => {
+    this.items = [];
+    this.handle = (event) => {
       const { activate } = focus;
-      const { keyCode } = e;
+      const { keyCode } = event;
       if (activate) {
         const { target } = activate;
         const find = this.find(target);
-        if (find && find.keyCode === keyCode) {
-          find.callback();
+        if (find) {
+          const { response } = find;
+          const handle = response[keyCode];
+          if (handle) {
+            handle();
+          }
         }
       }
-      if (keyCode === 9) {
-        e.preventDefault();
+      if (event.keyCode === 9) {
+        // tab键 阻止浏览器默认行为
+        event.preventDefault();
       }
     };
     this.bind();
   }
 
-  unbind() {
-    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.KEY_DOWN, this.xTableKeyBoardDownHandle);
+  bind() {
+    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.KEY_DOWN, this.handle);
   }
 
-  bind() {
-    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.KEY_DOWN, this.xTableKeyBoardDownHandle);
+  unbind() {
+    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.KEY_DOWN, this.handle);
   }
 
   find(el) {
-    const { pool } = this;
-    for (let i = 0; i < pool.length; i += 1) {
-      const item = pool[i];
+    const { items } = this;
+    for (let i = 0, len = items.length; i < len; i += 1) {
+      const item = items[i];
       const { target } = item;
       if (target === el) {
         return item;
@@ -46,9 +51,16 @@ class XTableKeyboard {
   }
 
   register({
-    target, keyCode, callback,
+    target = null,
+    response = {},
   }) {
-    this.pool.push({ target, keyCode, callback });
+    this.items.push({
+      target, response,
+    });
+  }
+
+  destroy() {
+    this.unbind();
   }
 
 }

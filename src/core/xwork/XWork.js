@@ -2,9 +2,9 @@ import { Widget } from '../../libs/Widget';
 import { cssPrefix } from '../../const/Constant';
 import { VerticalLayer } from '../../libs/layer/VerticalLayer';
 import { VerticalLayerElement } from '../../libs/layer/VerticalLayerElement';
-import { XWorkTop } from './XWorkTop';
-import { XWorkBody } from './XWorkBody';
-import { XWorkBottom } from './XWorkBottom';
+import { XWorkTop } from './top/XWorkTop';
+import { XWorkBody } from './body/XWorkBody';
+import { XWorkBottom } from './bottom/XWorkBottom';
 import { PlainUtils } from '../../utils/PlainUtils';
 
 const settings = {
