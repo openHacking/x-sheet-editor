@@ -90,8 +90,12 @@ function pageUp({ table, body, response }) {
   const { xTableScrollView } = table;
   response[33] = () => {
     let scrollView = xTableScrollView.getScrollView();
-    const diff = scrollView.eri - scrollView.sri;
-    table.scrollRi(scrollView.sri - diff);
+    let { eri, sri } = scrollView;
+    let curDiff = eri - sri;
+    let value = sri - curDiff;
+    let minDiff = 0;
+    let scroll = value <= minDiff ? minDiff : value;
+    table.scrollRi(scroll);
     body.scrollBarSize();
     body.scrollBarLocal();
   };
@@ -101,7 +105,12 @@ function pageDown({ table, body, response }) {
   const { xTableScrollView } = table;
   response[34] = () => {
     let scrollView = xTableScrollView.getScrollView();
-    table.scrollRi(scrollView.eri);
+    let { maxRi } = xTableScrollView.getScrollMaxRiCi();
+    let { eri, sri } = scrollView;
+    let curDiff = eri - sri;
+    let value = sri + curDiff;
+    let scroll = value > maxRi ? maxRi : value;
+    table.scrollRi(scroll);
     body.scrollBarSize();
     body.scrollBarLocal();
   };

@@ -14,5 +14,6 @@ module.exports = {
     "padded-blocks": 0,
     "prefer-destructuring": 0,
     "no-restricted-syntax": 0,
+    "no-nested-ternary": 0
   }
 };

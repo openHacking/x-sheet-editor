@@ -99,6 +99,39 @@ class XTableScrollView {
     return new RectRange(ri, ci, eri, eci);
   }
 
+  /**
+   * 获取最大滚动区域
+   */
+  getScrollMaxRiCi() {
+    const {
+      rows, cols, xIteratorBuilder, getHeight, getWidth,
+    } = this;
+    let [width, height] = [0, 0];
+    let [sri, sci] = [0, 0];
+    // 行
+    xIteratorBuilder.getRowIterator()
+      .setBegin(rows.len - 1)
+      .setEnd(0)
+      .setLoop((i) => {
+        height += rows.getHeight(i);
+        sri = i;
+        return height < getHeight();
+      })
+      .execute();
+    // 列
+    xIteratorBuilder.getColIterator()
+      .setBegin(cols.len - 1)
+      .setEnd(0)
+      .setLoop((j) => {
+        width += cols.getWidth(j);
+        sci = j;
+        return width < getWidth();
+      })
+      .execute();
+    // 滚动视图最大行列号
+    return { maxRi: sri + 1, maxCi: sci + 1 };
+  }
+
 }
 
 export {

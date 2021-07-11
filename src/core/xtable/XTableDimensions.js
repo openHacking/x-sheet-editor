@@ -1229,9 +1229,6 @@ class XTableDimensions extends Widget {
    */
   scrollRi(ri) {
     const { rows, scroll } = this;
-    if (ri < 0 || ri > rows.len) {
-      return;
-    }
     const top = rows.sectionSumHeight(0, ri);
     // 记录滚动方向
     if (scroll.y > top) {
@@ -1254,9 +1251,6 @@ class XTableDimensions extends Widget {
    */
   scrollCi(ci) {
     const { cols, scroll } = this;
-    if (ci < 0 || ci > cols.len) {
-      return;
-    }
     const left = cols.sectionSumWidth(0, ci);
     // 记录滚动方向
     if (scroll.x > left) {
