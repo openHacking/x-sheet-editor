@@ -617,7 +617,7 @@ class XSelectItem extends XScreenCssBorderItem {
   }
 
   /**
-   * 更新用户选中
+   * 设置用户选中
    * 的区域
    * @param range
    */
@@ -629,6 +629,19 @@ class XSelectItem extends XScreenCssBorderItem {
     this.borderHandle();
     this.cornerHandle();
     table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
+  }
+
+  /**
+   * 设置主行号和列号
+   * @param range
+   */
+  setMasterRiCi(range) {
+    if (range.sri === range.eri) {
+      this.masterRow = range.sri;
+    }
+    if (range.sci === range.eci) {
+      this.masterCol = range.sci;
+    }
   }
 
   /**

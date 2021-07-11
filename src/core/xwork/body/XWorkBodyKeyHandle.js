@@ -41,6 +41,7 @@ function tab({ table, body, response }) {
       xSelect.setRange(merge);
     } else {
       xSelect.setRange(clone);
+      xSelect.setMasterRiCi(clone);
     }
     // 是否超过视图区域
     let minCi = scrollView.sci;
@@ -145,6 +146,7 @@ function arrowUp({ table, body, response }) {
       xSelect.setRange(merge);
     } else {
       xSelect.setRange(clone);
+      xSelect.setMasterRiCi(clone);
     }
     // 是否超过视图区域
     let minRi = scrollView.sri;
@@ -192,6 +194,7 @@ function arrowDown({ table, body, response }) {
       xSelect.setRange(merge);
     } else {
       xSelect.setRange(clone);
+      xSelect.setMasterRiCi(clone);
     }
     // 是否超过视图区域
     let maxRi = scrollView.eri - 1;
@@ -233,6 +236,7 @@ function arrowLeft({ table, body, response }) {
       xSelect.setRange(merge);
     } else {
       xSelect.setRange(clone);
+      xSelect.setMasterRiCi(clone);
     }
     // 是否超过视图区域
     let minCi = scrollView.sci;
@@ -280,6 +284,7 @@ function arrowRight({ table, body, response }) {
       xSelect.setRange(merge);
     } else {
       xSelect.setRange(clone);
+      xSelect.setMasterRiCi(clone);
     }
     // 是否超过视图区域
     let maxCi = scrollView.eci - 1;
