@@ -1,4 +1,5 @@
 import { XSelectItem } from '../../xtable/xscreenitems/xselect/XSelectItem';
+import { XTableEdit } from '../../xtable/XTableEdit';
 
 function tab({ table, body, response }) {
   const { xTableScrollView } = table;
@@ -117,10 +118,14 @@ function pageDown({ table, body, response }) {
 }
 
 function arrowUp({ table, body, response }) {
-  const { xScreen, xTableScrollView } = table;
+  const { xTableScrollView } = table;
+  const { edit, xScreen } = table;
   const merges = table.getTableMerges();
   const xSelect = xScreen.findType(XSelectItem);
   response[38] = () => {
+    if (edit.mode === XTableEdit.MODE.SHOW) {
+      return;
+    }
     let scrollView = xTableScrollView.getScrollView();
     let { masterCol, selectRange } = xSelect;
     let clone = selectRange.clone();
@@ -155,10 +160,13 @@ function arrowUp({ table, body, response }) {
 
 function arrowDown({ table, body, response }) {
   const { xTableScrollView } = table;
-  const { rows, xScreen } = table;
+  const { edit, rows, xScreen } = table;
   const merges = table.getTableMerges();
   const xSelect = xScreen.findType(XSelectItem);
   response[40] = () => {
+    if (edit.mode === XTableEdit.MODE.SHOW) {
+      return;
+    }
     let scrollView = xTableScrollView.getScrollView();
     let { masterCol, selectRange } = xSelect;
     let rLen = rows.len - 1;
@@ -198,10 +206,14 @@ function arrowDown({ table, body, response }) {
 }
 
 function arrowLeft({ table, body, response }) {
-  const { xScreen, xTableScrollView } = table;
+  const { xTableScrollView } = table;
+  const { edit, xScreen } = table;
   const merges = table.getTableMerges();
   const xSelect = xScreen.findType(XSelectItem);
   response[37] = () => {
+    if (edit.mode === XTableEdit.MODE.SHOW) {
+      return;
+    }
     let scrollView = xTableScrollView.getScrollView();
     let { masterRow, selectRange } = xSelect;
     let clone = selectRange.clone();
@@ -235,11 +247,14 @@ function arrowLeft({ table, body, response }) {
 }
 
 function arrowRight({ table, body, response }) {
-  const { cols, xScreen } = table;
   const { xTableScrollView } = table;
+  const { edit, cols, xScreen } = table;
   const merges = table.getTableMerges();
   const xSelect = xScreen.findType(XSelectItem);
   response[39] = () => {
+    if (edit.mode === XTableEdit.MODE.SHOW) {
+      return;
+    }
     let scrollView = xTableScrollView.getScrollView();
     let { masterRow, selectRange } = xSelect;
     let clone = selectRange.clone();

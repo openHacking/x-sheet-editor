@@ -12,9 +12,10 @@ class XTableEdit extends Widget {
   constructor(table) {
     super(`${cssPrefix}-table-edit`);
     this.table = table;
+    this.select = null;
     this.cell = null;
     this.merge = null;
-    this.select = null;
+    this.mode = XTableEdit.MODE.HIDE;
     this.throttle = new Throttle({ time: 100 });
     this.attr('contenteditable', true);
     this.html(PlainUtils.EMPTY);
@@ -155,6 +156,7 @@ class XTableEdit extends Widget {
       const origin = cells.getCellOrNew(select.sri, select.sci);
       const cell = origin.clone();
       const text = this.text();
+      this.mode = XTableEdit.MODE.HIDE;
       this.hide();
       if (cell.toString() !== text) {
         tableDataSnapshot.begin();
@@ -182,6 +184,7 @@ class XTableEdit extends Widget {
         this.merge = merge;
         this.cell = cell;
         this.select = selectRange;
+        this.mode = XTableEdit.MODE.SHOW;
         this.show();
         if (cell.isEmpty()) {
           this.html(PlainUtils.EMPTY);
@@ -213,6 +216,11 @@ class XTableEdit extends Widget {
   }
 
 }
+
+XTableEdit.MODE = {
+  SHOW: Symbol('显示'),
+  HIDE: Symbol('隐藏'),
+};
 
 export {
   XTableEdit,
