@@ -3,8 +3,6 @@ import { BorderHandle } from './handle/BorderHandle';
 import { GridHandle } from './handle/GridHandle';
 import { LineIteratorLoop } from './LineIteratorLoop';
 import { IndexHandle } from './handle/IndexHandle';
-import { LOutHandle } from './handle/LOutHandle';
-import { ROutHandle } from './handle/ROutHandle';
 import { AngleHandle } from './handle/AngleHandle';
 
 class LineGenerator {
@@ -77,36 +75,20 @@ class LineGenerator {
           gResult,
         };
       }
-      case LineGenerator.MODEL.OUT_L: {
-        const bLine = new LOutHandle({
-          table, bx, by,
+      case LineGenerator.MODEL.ANGLE: {
+        const aLine = new AngleHandle({
+          table, bx, by, optimize,
         });
         const xIterator = new LineIteratorLoop({
-          items: bLine.getItems(),
-          foldOnOff,
           table,
+          foldOnOff,
+          items: aLine.getItems(),
           view: scrollView,
         });
         xIterator.run();
-        const bResult = bLine.getResult();
+        const aResult = aLine.getResult();
         return {
-          bResult,
-        };
-      }
-      case LineGenerator.MODEL.OUT_R: {
-        const bLine = new ROutHandle({
-          table, bx, by,
-        });
-        const xIterator = new LineIteratorLoop({
-          items: bLine.getItems(),
-          foldOnOff,
-          table,
-          view: scrollView,
-        });
-        xIterator.run();
-        const bResult = bLine.getResult();
-        return {
-          bResult,
+          aResult,
         };
       }
       case LineGenerator.MODEL.BORDER: {
@@ -137,8 +119,7 @@ class LineGenerator {
 
 LineGenerator.MODEL = {
   ALL: 3,
-  OUT_L: 5,
-  OUT_R: 6,
+  ANGLE: 5,
   GRID: 2,
   INDEX: 4,
   BORDER: 1,

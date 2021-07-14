@@ -16,6 +16,8 @@ import { RBorderRequire } from '../filter/borderrequire/RBorderRequire';
 import { LAngleBarRequire } from '../filter/anglebarrequire/LAngleBarRequire';
 import { LBorderRequire } from '../filter/borderrequire/LBorderRequire';
 import { OAngleBarRequire } from '../filter/anglebarrequire/OAngleBarRequire';
+import { Rect } from '../../../../canvas/Rect';
+import { Sdist } from '../../../../canvas/Sdist';
 
 class AngleHandle {
 
@@ -34,33 +36,63 @@ class AngleHandle {
   static bOffset({
     table, sx, ex, row, col,
   }) {
-    const { cells } = table;
+    const { cells, cols, rows } = table;
     let osx = sx;
     let oex = ex;
-    let bottom = cells.getCell(row + 1, col);
     let left = cells.getCell(row + 1, col - 1);
+    let bottom = cells.getCell(row + 1, col);
     let right = cells.getCell(row + 1, col + 1);
     if (left) {
-      if (left.leftSdistWidth) {
-        osx = sx + left.leftSdistWidth;
-      } else if (left.rightSdistWidth) {
-        osx = sx - left.rightSdistWidth;
+      const { fontAttr } = left;
+      const sdist = new Sdist({
+        rect: new Rect({
+          width: cols.getWidth(col - 1),
+          height: rows.getHeight(row + 1),
+        }),
+        angle: fontAttr.angle,
+      });
+      const lSdist = sdist.getLeft();
+      const rSdist = sdist.getRight();
+      if (lSdist) {
+        osx = sx + lSdist;
+      } else if (rSdist) {
+        osx = sx - rSdist;
       }
     }
     if (bottom) {
-      if (bottom.leftSdistWidth) {
-        osx = sx + bottom.leftSdistWidth;
-        oex = ex + bottom.leftSdistWidth;
-      } else if (bottom.rightSdistWidth) {
-        osx = sx - bottom.rightSdistWidth;
-        oex = ex - bottom.rightSdistWidth;
+      const { fontAttr } = bottom;
+      const sdist = new Sdist({
+        rect: new Rect({
+          width: cols.getWidth(col),
+          height: rows.getHeight(row + 1),
+        }),
+        angle: fontAttr.angle,
+      });
+      const lSdist = sdist.getLeft();
+      const rSdist = sdist.getRight();
+      if (lSdist) {
+        osx = sx + lSdist;
+        oex = ex + lSdist;
+      } else if (rSdist) {
+        osx = sx - rSdist;
+        oex = ex - rSdist;
       }
     }
     if (right) {
-      if (right.leftSdistWidth) {
-        oex = ex + right.leftSdistWidth;
-      } else if (right.rightSdistWidth) {
-        oex = ex - right.rightSdistWidth;
+      const { fontAttr } = right;
+      const sdist = new Sdist({
+        rect: new Rect({
+          width: cols.getWidth(col + 1),
+          height: rows.getHeight(row + 1),
+        }),
+        angle: fontAttr.angle,
+      });
+      const lSdist = sdist.getLeft();
+      const rSdist = sdist.getRight();
+      if (lSdist) {
+        oex = ex + lSdist;
+      } else if (rSdist) {
+        oex = ex - rSdist;
       }
     }
     return { osx, oex };
@@ -69,33 +101,63 @@ class AngleHandle {
   static tOffset({
     table, sx, ex, row, col,
   }) {
-    const { cells } = table;
+    const { cells, cols, rows } = table;
     let osx = sx;
     let oex = ex;
-    let main = cells.getCell(row, col);
     let last = cells.getCell(row, col - 1);
+    let main = cells.getCell(row, col);
     let next = cells.getCell(row, col + 1);
     if (last) {
-      if (last.leftSdistWidth) {
-        osx = sx + last.leftSdistWidth;
-      } else if (last.rightSdistWidth) {
-        osx = sx - last.rightSdistWidth;
+      const { fontAttr } = last;
+      const sdist = new Sdist({
+        rect: new Rect({
+          width: cols.getWidth(col - 1),
+          height: rows.getHeight(row),
+        }),
+        angle: fontAttr.angle,
+      });
+      const lSdist = sdist.getLeft();
+      const rSdist = sdist.getRight();
+      if (lSdist) {
+        osx = sx + lSdist;
+      } else if (rSdist) {
+        osx = sx - rSdist;
       }
     }
     if (main) {
-      if (main.leftSdistWidth) {
-        osx = sx + main.leftSdistWidth;
-        oex = ex + main.leftSdistWidth;
-      } else if (main.rightSdistWidth) {
-        osx = sx - main.rightSdistWidth;
-        oex = ex - main.rightSdistWidth;
+      const { fontAttr } = main;
+      const sdist = new Sdist({
+        rect: new Rect({
+          width: cols.getWidth(col),
+          height: rows.getHeight(row),
+        }),
+        angle: fontAttr.angle,
+      });
+      const lSdist = sdist.getLeft();
+      const rSdist = sdist.getRight();
+      if (lSdist) {
+        osx = sx + lSdist;
+        oex = ex + lSdist;
+      } else if (rSdist) {
+        osx = sx - rSdist;
+        oex = ex - rSdist;
       }
     }
     if (next) {
-      if (next.leftSdistWidth) {
-        oex = ex + next.leftSdistWidth;
-      } else if (next.rightSdistWidth) {
-        oex = ex - next.rightSdistWidth;
+      const { fontAttr } = next;
+      const sdist = new Sdist({
+        rect: new Rect({
+          width: cols.getWidth(col + 1),
+          height: rows.getHeight(row),
+        }),
+        angle: fontAttr.angle,
+      });
+      const lSdist = sdist.getLeft();
+      const rSdist = sdist.getRight();
+      if (lSdist) {
+        oex = ex + lSdist;
+      } else if (rSdist) {
+        oex = ex - rSdist;
       }
     }
     return { osx, oex };
@@ -104,22 +166,42 @@ class AngleHandle {
   static lOffset({
     table, sx, row, col,
   }) {
-    const { cells } = table;
+    const { cells, cols, rows } = table;
     let osx = sx;
-    let main = cells.getCell(row, col);
     let last = cells.getCell(row, col - 1);
+    let main = cells.getCell(row, col);
     if (last) {
-      if (last.leftSdistWidth) {
-        osx = sx + last.leftSdistWidth;
-      } else if (last.rightSdistWidth) {
-        osx = sx - last.rightSdistWidth;
+      const { fontAttr } = last;
+      const sdist = new Sdist({
+        rect: new Rect({
+          width: cols.getWidth(col - 1),
+          height: rows.getHeight(row),
+        }),
+        angle: fontAttr.angle,
+      });
+      const lSdist = sdist.getLeft();
+      const rSdist = sdist.getRight();
+      if (lSdist) {
+        osx = sx + lSdist;
+      } else if (rSdist) {
+        osx = sx - rSdist;
       }
     }
     if (main) {
-      if (main.leftSdistWidth) {
-        osx = sx + main.leftSdistWidth;
-      } else if (main.rightSdistWidth) {
-        osx = sx - main.rightSdistWidth;
+      const { fontAttr } = main;
+      const sdist = new Sdist({
+        rect: new Rect({
+          width: cols.getWidth(col),
+          height: rows.getHeight(row),
+        }),
+        angle: fontAttr.angle,
+      });
+      const lSdist = sdist.getLeft();
+      const rSdist = sdist.getRight();
+      if (lSdist) {
+        osx = sx + lSdist;
+      } else if (rSdist) {
+        osx = sx - rSdist;
       }
     }
     return { osx };
@@ -128,22 +210,42 @@ class AngleHandle {
   static rOffset({
     table, sx, row, col,
   }) {
-    const { cells } = table;
+    const { cells, cols, rows } = table;
     let osx = sx;
     let main = cells.getCell(row, col);
     let next = cells.getCell(row, col + 1);
     if (main) {
-      if (main.leftSdistWidth) {
-        osx = sx + main.leftSdistWidth;
-      } else if (main.rightSdistWidth) {
-        osx = sx - main.rightSdistWidth;
+      const { fontAttr } = main;
+      const sdist = new Sdist({
+        rect: new Rect({
+          width: cols.getWidth(col),
+          height: rows.getHeight(row),
+        }),
+        angle: fontAttr.angle,
+      });
+      const lSdist = sdist.getLeft();
+      const rSdist = sdist.getRight();
+      if (lSdist) {
+        osx = sx + lSdist;
+      } else if (rSdist) {
+        osx = sx - rSdist;
       }
     }
     if (next) {
-      if (next.leftSdistWidth) {
-        osx = sx + next.leftSdistWidth;
-      } else if (next.rightSdistWidth) {
-        osx = sx - next.rightSdistWidth;
+      const { fontAttr } = next;
+      const sdist = new Sdist({
+        rect: new Rect({
+          width: cols.getWidth(col + 1),
+          height: rows.getHeight(row),
+        }),
+        angle: fontAttr.angle,
+      });
+      const lSdist = sdist.getLeft();
+      const rSdist = sdist.getRight();
+      if (lSdist) {
+        osx = sx + lSdist;
+      } else if (rSdist) {
+        osx = sx - rSdist;
       }
     }
     return { osx };

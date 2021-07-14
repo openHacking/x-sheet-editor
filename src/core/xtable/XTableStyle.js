@@ -1056,28 +1056,6 @@ class XTableContentUI extends XTableUI {
       cellsINCallback: (row, col, cell, rect) => {
         if (table.hasAngleCell(row)) {
           if (table.isAngleBarCell(row, col)) {
-            return;
-          }
-        }
-        const { background } = cell;
-        const box = new Box({
-          draw, background, rect,
-        });
-        box.render();
-      },
-      mergeCallback: (row, col, cell, rect) => {
-        const { background } = cell;
-        const box = new Box({
-          draw, rect, background,
-        });
-        box.render();
-      },
-    });
-    styleCellsHelper.getCellByViewRange({
-      view: scrollView,
-      cellsINCallback: (row, col, cell, rect) => {
-        if (table.hasAngleCell(row)) {
-          if (table.isAngleBarCell(row, col)) {
             const { background } = cell;
             const { x, y, width, height } = rect;
             const box = new Box({
@@ -1098,9 +1076,22 @@ class XTableContentUI extends XTableUI {
                 points: [tl, tr, br, bl],
               }),
             });
-            box.render();
+            box.renderPath();
+            return;
           }
         }
+        const { background } = cell;
+        const box = new Box({
+          draw, background, rect,
+        });
+        box.renderRect();
+      },
+      mergeCallback: (row, col, cell, rect) => {
+        const { background } = cell;
+        const box = new Box({
+          draw, rect, background,
+        });
+        box.renderRect();
       },
     });
     draw.offset(0, 0);
@@ -1125,14 +1116,14 @@ class XTableContentOutUI extends XTableContentUI {
     lView.eci = borderView.sci - 1;
     if (lView.eci > -1) {
       const offset = cols.rectRangeSumWidth(lView);
-      const { bResult } = LineGenerator.run({
+      const { aResult } = LineGenerator.run({
+        table,
         scrollView: lView,
         foldOnOff: true,
-        table,
-        model: LineGenerator.MODEL.OUT_L,
+        model: LineGenerator.MODEL.ANGLE,
       });
       draw.offset(drawX - offset, drawY);
-      bResult.tLine.forEach((item) => {
+      aResult.tLine.forEach((item) => {
         const { borderAttr, row, col } = item;
         const { top } = borderAttr;
         const { color, widthType, type } = top;
@@ -1141,7 +1132,7 @@ class XTableContentOutUI extends XTableContentUI {
         line.setColor(color);
         line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
       });
-      bResult.lLine.forEach((item) => {
+      aResult.lLine.forEach((item) => {
         const { borderAttr, row, col } = item;
         const { left } = borderAttr;
         const { color, widthType, type } = left;
@@ -1150,7 +1141,7 @@ class XTableContentOutUI extends XTableContentUI {
         line.setColor(color);
         line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
       });
-      bResult.rLine.forEach((item) => {
+      aResult.rLine.forEach((item) => {
         const { borderAttr, row, col } = item;
         const { right } = borderAttr;
         const { color, widthType, type } = right;
@@ -1159,7 +1150,7 @@ class XTableContentOutUI extends XTableContentUI {
         line.setColor(color);
         line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
       });
-      bResult.bLine.forEach((item) => {
+      aResult.bLine.forEach((item) => {
         const { borderAttr, row, col } = item;
         const { bottom } = borderAttr;
         const { color, widthType, type } = bottom;
@@ -1176,14 +1167,14 @@ class XTableContentOutUI extends XTableContentUI {
     rView.eci = cols.len - 1;
     if (rView.sci < cols.len) {
       const offset = borderView.w;
-      const { bResult } = LineGenerator.run({
+      const { aResult } = LineGenerator.run({
         scrollView: rView,
         foldOnOff: true,
         table,
-        model: LineGenerator.MODEL.OUT_R,
+        model: LineGenerator.MODEL.ANGLE,
       });
       draw.offset(drawX + offset, drawY);
-      bResult.tLine.forEach((item) => {
+      aResult.tLine.forEach((item) => {
         const { borderAttr, row, col } = item;
         const { top } = borderAttr;
         const { color, widthType, type } = top;
@@ -1192,7 +1183,7 @@ class XTableContentOutUI extends XTableContentUI {
         line.setColor(color);
         line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'top');
       });
-      bResult.lLine.forEach((item) => {
+      aResult.lLine.forEach((item) => {
         const { borderAttr, row, col } = item;
         const { left } = borderAttr;
         const { color, widthType, type } = left;
@@ -1201,7 +1192,7 @@ class XTableContentOutUI extends XTableContentUI {
         line.setColor(color);
         line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'left');
       });
-      bResult.rLine.forEach((item) => {
+      aResult.rLine.forEach((item) => {
         const { borderAttr, row, col } = item;
         const { right } = borderAttr;
         const { color, widthType, type } = right;
@@ -1210,7 +1201,7 @@ class XTableContentOutUI extends XTableContentUI {
         line.setColor(color);
         line.tiltingLine(item.sx, item.sy, item.ex, item.ey, row, col, 'right');
       });
-      bResult.bLine.forEach((item) => {
+      aResult.bLine.forEach((item) => {
         const { borderAttr, row, col } = item;
         const { bottom } = borderAttr;
         const { color, widthType, type } = bottom;
@@ -1369,17 +1360,10 @@ class XTableContentOutUI extends XTableContentUI {
     lView.sci = 0;
     lView.eci = scrollView.sci - 1;
     if (lView.eci > -1) {
-      let max = 0;
       draw.offset(drawX, drawY);
       styleCellsHelper.getCellByViewRange({
-        reverseCols: true,
         view: lView,
-        newCol: (col) => {
-          max += cols.getWidth(col);
-        },
-        newRow: () => {
-          max = 0;
-        },
+        reverseCols: true,
         mergeCallback: (row) => {
           const hasRowAngelCell = table.hasAngleCell(row);
           if (hasRowAngelCell) {
@@ -1390,32 +1374,27 @@ class XTableContentOutUI extends XTableContentUI {
         cellsINCallback: (row, col, cell, rect) => {
           if (table.hasAngleCell(row)) {
             if (table.isAngleBarCell(row, col)) {
-              const size = table.getCellStyleBoundOutWidth(row, col);
-              const { fontAttr } = cell;
-              const { angle } = fontAttr;
-              if (size > max && angle > 0) {
-                const { background } = cell;
-                const { x, y, width, height } = rect;
-                const box = new Box({
-                  draw, background,
-                });
-                const lOffset = AngleHandle.lOffset({
-                  table, sx: x, row, col,
-                });
-                const rOffset = AngleHandle.rOffset({
-                  table, sx: x + width, row, col,
-                });
-                const tl = new Point(lOffset.osx, y);
-                const tr = new Point(rOffset.osx, y);
-                const bl = new Point(x, y + height);
-                const br = new Point(x + width, y + height);
-                box.setPath({
-                  path: new Path({
-                    points: [tl, tr, br, bl],
-                  }),
-                });
-                box.render();
-              }
+              const { background } = cell;
+              const { x, y, width, height } = rect;
+              const box = new Box({
+                draw, background,
+              });
+              const lOffset = AngleHandle.lOffset({
+                table, sx: x, row, col,
+              });
+              const rOffset = AngleHandle.rOffset({
+                table, sx: x + width, row, col,
+              });
+              const tl = new Point(lOffset.osx, y);
+              const tr = new Point(rOffset.osx, y);
+              const bl = new Point(x, y + height);
+              const br = new Point(x + width, y + height);
+              box.setPath({
+                path: new Path({
+                  points: [tl, tr, br, bl],
+                }),
+              });
+              box.renderPath();
             }
             return STYLE_BREAK_LOOP.CONTINUE;
           }
@@ -1429,16 +1408,9 @@ class XTableContentOutUI extends XTableContentUI {
     rView.sci = scrollView.eci + 1;
     rView.eci = cols.len - 1;
     if (rView.sci < cols.len) {
-      let max = 0;
       draw.offset(drawX + scrollView.w, drawY);
       styleCellsHelper.getCellByViewRange({
         view: rView,
-        newCol: (col) => {
-          max += cols.getWidth(col);
-        },
-        newRow: () => {
-          max = 0;
-        },
         mergeCallback: (row) => {
           const hasRowAngelCell = table.hasAngleCell(row);
           if (hasRowAngelCell) {
@@ -1449,32 +1421,27 @@ class XTableContentOutUI extends XTableContentUI {
         cellsINCallback: (row, col, cell, rect) => {
           if (table.hasAngleCell(row)) {
             if (table.isAngleBarCell(row, col)) {
-              const size = table.getCellStyleBoundOutWidth(row, col);
-              const { fontAttr } = cell;
-              const { angle } = fontAttr;
-              if (size > max && angle < 0) {
-                const { background } = cell;
-                const { x, y, width, height } = rect;
-                const box = new Box({
-                  draw, background,
-                });
-                const lOffset = AngleHandle.lOffset({
-                  table, sx: x, row, col,
-                });
-                const rOffset = AngleHandle.rOffset({
-                  table, sx: x + width, row, col,
-                });
-                const tl = new Point(lOffset.osx, y);
-                const tr = new Point(rOffset.osx, y);
-                const bl = new Point(x, y + height);
-                const br = new Point(x + width, y + height);
-                box.setPath({
-                  path: new Path({
-                    points: [tl, tr, br, bl],
-                  }),
-                });
-                box.render();
-              }
+              const { background } = cell;
+              const { x, y, width, height } = rect;
+              const box = new Box({
+                draw, background,
+              });
+              const lOffset = AngleHandle.lOffset({
+                table, sx: x, row, col,
+              });
+              const rOffset = AngleHandle.rOffset({
+                table, sx: x + width, row, col,
+              });
+              const tl = new Point(lOffset.osx, y);
+              const tr = new Point(rOffset.osx, y);
+              const bl = new Point(x, y + height);
+              const br = new Point(x + width, y + height);
+              box.setPath({
+                path: new Path({
+                  points: [tl, tr, br, bl],
+                }),
+              });
+              box.renderPath();
             }
             return STYLE_BREAK_LOOP.CONTINUE;
           }
