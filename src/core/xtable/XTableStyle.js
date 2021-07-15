@@ -909,8 +909,6 @@ class XTableContentUI extends XTableUI {
         const font = builder.build();
         const result = font.drawingFont();
         cell.setContentWidth(result.width);
-        cell.setLeftSdistWidth(result.leftSdist);
-        cell.setRightSdistWidth(result.rightSdist);
       },
       mergeCallback: (row, col, cell, rect) => {
         const builder = textFactory.getBuilder();
@@ -923,8 +921,6 @@ class XTableContentUI extends XTableUI {
         const font = builder.build();
         const result = font.drawingFont();
         cell.setContentWidth(result.width);
-        cell.setLeftSdistWidth(result.leftSdist);
-        cell.setRightSdistWidth(result.rightSdist);
       },
     });
     draw.offset(0, 0);
@@ -1271,8 +1267,6 @@ class XTableContentOutUI extends XTableContentUI {
               const font = builder.build();
               const result = font.drawingFont();
               cell.setContentWidth(result.width);
-              cell.setLeftSdistWidth(result.leftSdist);
-              cell.setRightSdistWidth(result.rightSdist);
             }
           }
           const hasRowAngelCell = table.hasAngleCell(row);
@@ -1331,8 +1325,6 @@ class XTableContentOutUI extends XTableContentUI {
               const font = builder.build();
               const result = font.drawingFont();
               cell.setContentWidth(result.width);
-              cell.setLeftSdistWidth(result.leftSdist);
-              cell.setRightSdistWidth(result.rightSdist);
             }
           }
           const hasRowAngelCell = table.hasAngleCell(row);
@@ -2840,36 +2832,6 @@ class XTableStyle extends Widget {
       }
     }
     return boundOutWidth;
-  }
-
-  /**
-   * 获取单元格斜率宽度
-   * @param row
-   * @param col
-   */
-  getSdistWidth(row, col) {
-    const { cells } = this;
-    const cell = cells.getCell(row, col);
-    if (PlainUtils.isUnDef(cell)) {
-      return 0;
-    }
-    if (cell.leftSdistWidth > 0) {
-      return cell.leftSdistWidth;
-    }
-    if (cell.rightSdistWidth > 0) {
-      return cell.rightSdistWidth;
-    }
-    const { rows } = this;
-    const { fontAttr } = cell;
-    const { angle } = fontAttr;
-    const tilt = RTSinKit.tilt({
-      inverse: rows.getHeight(row),
-      angle,
-    });
-    return RTCosKit.nearby({
-      tilt,
-      angle,
-    });
   }
 
   /**

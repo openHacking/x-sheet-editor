@@ -22,8 +22,6 @@ class Cell {
    * @param borderAttr
    * @param icons
    * @param contentWidth
-   * @param leftSdistWidth
-   * @param rightSdistWidth
    * @param contentType
    */
   constructor({
@@ -36,8 +34,6 @@ class Cell {
     borderAttr = {},
     icons = [],
     contentWidth = 0,
-    leftSdistWidth = 0,
-    rightSdistWidth = 0,
     contentType = Cell.CONTENT_TYPE.STRING,
   } = {}) {
     this.ruler = ruler;
@@ -49,8 +45,6 @@ class Cell {
     this.borderAttr = new CellBorder(borderAttr);
     this.fontAttr = new CellFont(fontAttr);
     this.contentWidth = contentWidth;
-    this.leftSdistWidth = leftSdistWidth;
-    this.rightSdistWidth = rightSdistWidth;
     this.contentType = contentType;
     this.setContentType(contentType);
     this.setFormat(format);
@@ -58,14 +52,6 @@ class Cell {
 
   setContentWidth(contentWidth) {
     this.contentWidth = contentWidth;
-  }
-
-  setLeftSdistWidth(leftSdistWidth) {
-    this.leftSdistWidth = leftSdistWidth;
-  }
-
-  setRightSdistWidth(rightSdistWidth) {
-    this.rightSdistWidth = rightSdistWidth;
   }
 
   setFontAttr(fontAttr) {
@@ -139,8 +125,6 @@ class Cell {
   setText(text) {
     this.convert(text);
     this.setContentWidth(0);
-    this.setLeftSdistWidth(0);
-    this.setRightSdistWidth(0);
   }
 
   setRuler(ruler) {
