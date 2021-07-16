@@ -1451,11 +1451,10 @@ class XTableDimensions extends Widget {
    */
   isReadOnly({
     tips = true,
+    view = null,
   } = {}) {
     let { settings, xScreen } = this;
-    let xSelect = xScreen.findType(XSelectItem);
     let helper = this.getOperateCellsHelper();
-    let { selectRange } = xSelect;
     // 表格是否只读
     let { readOnly } = settings;
     if (readOnly) {
@@ -1464,10 +1463,27 @@ class XTableDimensions extends Widget {
       }
       return true;
     }
-    // 选择的区域是否存在只读
-    if (selectRange) {
+    // 选择区域是否只读
+    if (view === null) {
+      let xSelect = xScreen.findType(XSelectItem);
+      let { selectRange } = xSelect;
+      if (selectRange) {
+        helper.getCellByViewRange({
+          rectRange: selectRange,
+          callback: (r, c, cell) => {
+            if (cell) {
+              if (cell.isReadOnly()) {
+                readOnly = true;
+                return false;
+              }
+            }
+            return true;
+          },
+        });
+      }
+    } else {
       helper.getCellByViewRange({
-        rectRange: selectRange,
+        rectRange: view,
         callback: (r, c, cell) => {
           if (cell) {
             if (cell.isReadOnly()) {
@@ -1486,6 +1502,60 @@ class XTableDimensions extends Widget {
       return true;
     }
     return false;
+  }
+
+  /**
+   * 删除指定列
+   * @param ci
+   */
+  removeCol(ci) {
+    const { xTableStyle } = this;
+    xTableStyle.removeCol(ci);
+  }
+
+  /**
+   * 删除指定行
+   * @param ri
+   */
+  removeRow(ri) {
+    const { xTableStyle } = this;
+    xTableStyle.removeCol(ri);
+  }
+
+  /**
+   * 插入到指定列之后
+   * @param ci
+   */
+  insertColAfter(ci) {
+    const { xTableStyle } = this;
+    xTableStyle.insertColAfter(ci);
+  }
+
+  /**
+   * 插入到指定行之后
+   * @param ri
+   */
+  insertRowAfter(ri) {
+    const { xTableStyle } = this;
+    xTableStyle.insertRowAfter(ri);
+  }
+
+  /**
+   * 插入到指定列之前
+   * @param ci
+   */
+  insertColBefore(ci) {
+    const { xTableStyle } = this;
+    xTableStyle.insertColBefore(ci);
+  }
+
+  /**
+   * 插入到指定行之前
+   * @param ri
+   */
+  insertRowBefore(ri) {
+    const { xTableStyle } = this;
+    xTableStyle.insertRowBefore(ri);
   }
 
   /**

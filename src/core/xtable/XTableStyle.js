@@ -28,7 +28,6 @@ import { XMerges } from './xmerges/XMerges';
 import { XTableDataItems } from './XTableDataItems';
 import { Path } from '../../canvas/Path';
 import { Point } from '../../canvas/Point';
-import { RTCosKit, RTSinKit } from '../../canvas/RTFunction';
 import { HeightUnit } from './tableunit/HeightUnit';
 import { WideUnit } from './tableunit/WideUnit';
 import { LineIteratorFilter } from './linehandle/LineIteratorFilter';
@@ -3071,6 +3070,84 @@ class XTableStyle extends Widget {
     const lessZero = fontAttr.angle < 0 && fontAttr.angle > -90;
     const moreZero = fontAttr.angle > 0 && fontAttr.angle < 90;
     return (lessZero || moreZero) && borderAttr.isDisplay();
+  }
+
+  /**
+   * 删除指定列
+   * @param ci
+   */
+  removeCol(ci) {
+    const { cols, merges, xTableData } = this;
+    const { xMergesNoCol } = merges;
+    cols.removeCol(ci);
+    xTableData.removeCol(ci);
+    xMergesNoCol.removeCol(ci);
+    this.render();
+  }
+
+  /**
+   * 删除指定行
+   * @param ri
+   */
+  removeRow(ri) {
+    const { rows, merges, xTableData } = this;
+    const { xMergesNoRow } = merges;
+    rows.removeRow(ri);
+    xTableData.removeRow(ri);
+    xMergesNoRow.removeRow(ri);
+    this.render();
+  }
+
+  /**
+   * 插入到指定列之后
+   * @param ci
+   */
+  insertColAfter(ci) {
+    const { cols, merges, xTableData } = this;
+    const { xMergesNoCol } = merges;
+    cols.insertColAfter(ci);
+    xTableData.insertColAfter(ci);
+    xMergesNoCol.insertColAfter(ci);
+    this.render();
+  }
+
+  /**
+   * 插入到指定行之后
+   * @param ri
+   */
+  insertRowAfter(ri) {
+    const { rows, merges, xTableData } = this;
+    const { xMergesNoRow } = merges;
+    rows.insertRowAfter(ri);
+    xTableData.insertRowAfter(ri);
+    xMergesNoRow.insertRowAfter(ri);
+    this.render();
+  }
+
+  /**
+   * 插入到指定列之前
+   * @param ci
+   */
+  insertColBefore(ci) {
+    const { cols, merges, xTableData } = this;
+    const { xMergesNoCol } = merges;
+    cols.insertColBefore(ci);
+    xTableData.insertColBefore(ci);
+    xMergesNoCol.insertColBefore(ci);
+    this.render();
+  }
+
+  /**
+   * 插入到指定行之前
+   * @param ri
+   */
+  insertRowBefore(ri) {
+    const { rows, merges, xTableData } = this;
+    const { xMergesNoRow } = merges;
+    rows.insertRowBefore(ri);
+    xTableData.insertRowBefore(ri);
+    xMergesNoRow.insertRowBefore(ri);
+    this.render();
   }
 
 }

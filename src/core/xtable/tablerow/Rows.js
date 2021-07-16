@@ -159,6 +159,26 @@ class Rows {
     row.height = scaleAdapter.back(PlainUtils.minIf(height, this.min));
   }
 
+  removeRow(ri) {
+    this.data.splice(ri, 1);
+  }
+
+  insertRowAfter(ri) {
+    const next = ri + 1;
+    this.data[next] = {};
+    if (this.data.length > this.len) {
+      this.len = this.data.length;
+    }
+  }
+
+  insertRowBefore(ri) {
+    const last = ri - 1;
+    this.data[last] = {};
+    if (this.data.length > this.len) {
+      this.len = this.data.length;
+    }
+  }
+
 }
 
 export { Rows };

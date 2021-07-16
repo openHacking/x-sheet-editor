@@ -101,25 +101,27 @@ class XAutoFillItem extends XScreenCssBorderItem {
       xSelect.lCorner,
       xSelect.brCorner,
     ], Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
-      if (!table.isReadOnly()) {
-        mousePointer.lock(XAutoFillItem);
-        mousePointer.set(XTableMousePointer.KEYS.crosshair, XAutoFillItem);
-        const { x, y } = table.eventXy(e1);
-        this.display = true;
+      mousePointer.lock(XAutoFillItem);
+      mousePointer.set(XTableMousePointer.KEYS.crosshair, XAutoFillItem);
+      const { x, y } = table.eventXy(e1);
+      this.display = true;
+      this.rangeHandle(x, y);
+      this.offsetHandle();
+      this.borderHandle();
+      XEvent.mouseMoveUp(document, (e2) => {
+        const { x, y } = table.eventXy(e2);
         this.rangeHandle(x, y);
         this.offsetHandle();
         this.borderHandle();
-        XEvent.mouseMoveUp(document, (e2) => {
-          const { x, y } = table.eventXy(e2);
-          this.rangeHandle(x, y);
-          this.offsetHandle();
-          this.borderHandle();
-        }, () => {
-          this.display = false;
-          mousePointer.free(XAutoFillItem);
+      }, () => {
+        this.display = false;
+        mousePointer.free(XAutoFillItem);
+        const { autoFillRange } = this;
+        if (!table.isReadOnly({
+          view: autoFillRange,
+        })) {
           this.autoFill();
           this.hide();
-          const { autoFillRange } = this;
           if (!autoFillRange.equals(RectRange.EMPTY)) {
             const { selectRange } = xSelect;
             xSelect.setRange(selectRange.union(autoFillRange));
@@ -127,8 +129,10 @@ class XAutoFillItem extends XScreenCssBorderItem {
             autoFillType.setEL(activeCorner);
             autoFillType.open();
           }
-        });
-      }
+        } else {
+          this.hide();
+        }
+      });
     });
   }
 

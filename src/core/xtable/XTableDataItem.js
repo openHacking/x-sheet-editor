@@ -14,14 +14,6 @@ class XTableDataItem {
     }
   }
 
-  setCell(cell) {
-    this.cell = cell;
-  }
-
-  setMergeId(mergeId) {
-    this.mergeId = mergeId;
-  }
-
   getCell() {
     const { cell } = this;
     if (cell instanceof Cell) {
@@ -39,6 +31,23 @@ class XTableDataItem {
 
   getMergeId() {
     return this.mergeId;
+  }
+
+  setCell(cell) {
+    this.cell = cell;
+    return this;
+  }
+
+  setMergeId(mergeId) {
+    this.mergeId = mergeId;
+    return this;
+  }
+
+  clone() {
+    return new XTableDataItem({
+      mergeId: this.mergeId,
+      cell: this.cell,
+    });
   }
 
 }

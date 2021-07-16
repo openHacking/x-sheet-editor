@@ -6,6 +6,7 @@ import { XEvent } from '../../../libs/XEvent';
 import { PlainUtils } from '../../../utils/PlainUtils';
 import { XTableMousePointer } from '../XTableMousePointer';
 import { RowFixed } from '../tablefixed/RowFixed';
+import { RectRange } from '../tablebase/RectRange';
 
 class YReSizer extends Widget {
 
@@ -27,11 +28,6 @@ class YReSizer extends Widget {
     this.table.focus.register({ target: this });
   }
 
-  unbind() {
-    const { table } = this;
-    XEvent.unbind(table);
-  }
-
   bind() {
     const { table } = this;
     const {
@@ -39,35 +35,37 @@ class YReSizer extends Widget {
     } = table;
     const { tableDataSnapshot } = table;
     const { rowsDataProxy } = tableDataSnapshot;
-    const { index } = table;
+    const { index, cols } = table;
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      if (!table.isReadOnly()) {
-        mousePointer.lock(YReSizer);
-        mousePointer.set(XTableMousePointer.KEYS.rowResize, YReSizer);
-        const { top, ri } = this.getEventTop(e);
-        const min = top - rows.getHeight(ri) + rows.min;
-        let { y: my } = table.eventXy(e);
-        XEvent.mouseMoveUp(document, (e) => {
-          ({ y: my } = table.eventXy(e));
-          my -= this.height / 2;
-          my = Math.ceil(PlainUtils.minIf(my, min));
-          this.css('top', `${my}px`);
-          this.lineEl.css('width', `${table.visualWidth()}px`);
-          this.lineEl.show();
-        }, (e) => {
-          mousePointer.free(YReSizer);
-          this.lineEl.hide();
-          this.css('top', `${my}px`);
-          const { x } = table.eventXy(e);
-          if (x <= 0) {
-            this.hide();
-          }
+      mousePointer.lock(YReSizer);
+      mousePointer.set(XTableMousePointer.KEYS.rowResize, YReSizer);
+      const { top, ri } = this.getEventTop(e);
+      const min = top - rows.getHeight(ri) + rows.min;
+      let { y: my } = table.eventXy(e);
+      XEvent.mouseMoveUp(document, (e) => {
+        ({ y: my } = table.eventXy(e));
+        my -= this.height / 2;
+        my = Math.ceil(PlainUtils.minIf(my, min));
+        this.css('top', `${my}px`);
+        this.lineEl.css('width', `${table.visualWidth()}px`);
+        this.lineEl.show();
+      }, (e) => {
+        mousePointer.free(YReSizer);
+        this.lineEl.hide();
+        this.css('top', `${my}px`);
+        const { x } = table.eventXy(e);
+        if (x <= 0) {
+          this.hide();
+        }
+        if (!table.isReadOnly({
+          view: new RectRange(ri, 0, ri, cols.len),
+        })) {
           const newTop = my - (top - rows.getHeight(ri)) + this.height;
           tableDataSnapshot.begin();
           rowsDataProxy.setHeight(ri, scale.back(newTop));
           tableDataSnapshot.end();
-        });
-      }
+        }
+      });
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       mousePointer.free(YReSizer);
@@ -108,6 +106,11 @@ class YReSizer extends Widget {
         this.hide();
       }
     });
+  }
+
+  unbind() {
+    const { table } = this;
+    XEvent.unbind(table);
   }
 
   getEventTop(event) {

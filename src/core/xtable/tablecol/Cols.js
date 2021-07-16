@@ -159,6 +159,26 @@ class Cols {
     col.width = scaleAdapter.back(PlainUtils.minIf(width, this.min));
   }
 
+  removeCol(ci) {
+    this.data.splice(ci, 1);
+  }
+
+  insertColAfter(ci) {
+    const next = ci + 1;
+    this.data[next] = {};
+    if (this.data.length > this.len) {
+      this.len = this.data.length;
+    }
+  }
+
+  insertColBefore(ci) {
+    const last = ci - 1;
+    this.data[last] = {};
+    if (this.data.length > this.len) {
+      this.len = this.data.length;
+    }
+  }
+
 }
 
 export { Cols };
