@@ -1108,19 +1108,15 @@ class XTableDimensions extends Widget {
    */
   bindCacheClear() {
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.FIXED_ROW_CHANGE, () => {
-      this.recache();
       this.resize();
     });
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.FIXED_COL_CHANGE, () => {
-      this.recache();
       this.resize();
     });
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT, () => {
-      this.recache();
       this.resize();
     });
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH, () => {
-      this.recache();
       this.resize();
     });
   }
@@ -1392,6 +1388,7 @@ class XTableDimensions extends Widget {
     const {
       xTableStyle, xScreen, rowFixed, colFixed,
     } = this;
+    this.recache();
     this.reset();
     xScreen.setZone();
     rowFixed.setSize();
@@ -1509,8 +1506,11 @@ class XTableDimensions extends Widget {
    * @param ci
    */
   removeCol(ci) {
-    const { xTableStyle } = this;
+    const { cols, xTableStyle } = this;
     xTableStyle.removeCol(ci);
+    cols.removeCol();
+    this.resize();
+    this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_COL);
   }
 
   /**
@@ -1518,8 +1518,11 @@ class XTableDimensions extends Widget {
    * @param ri
    */
   removeRow(ri) {
-    const { xTableStyle } = this;
-    xTableStyle.removeCol(ri);
+    const { rows, xTableStyle } = this;
+    xTableStyle.removeRow(ri);
+    rows.removeRow();
+    this.resize();
+    this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_ROW);
   }
 
   /**
@@ -1527,8 +1530,11 @@ class XTableDimensions extends Widget {
    * @param ci
    */
   insertColAfter(ci) {
-    const { xTableStyle } = this;
+    const { cols, xTableStyle } = this;
     xTableStyle.insertColAfter(ci);
+    cols.insertColAfter();
+    this.resize();
+    this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_COL);
   }
 
   /**
@@ -1536,8 +1542,11 @@ class XTableDimensions extends Widget {
    * @param ri
    */
   insertRowAfter(ri) {
-    const { xTableStyle } = this;
+    const { rows, xTableStyle } = this;
     xTableStyle.insertRowAfter(ri);
+    rows.insertRowAfter();
+    this.resize();
+    this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW);
   }
 
   /**
@@ -1545,8 +1554,11 @@ class XTableDimensions extends Widget {
    * @param ci
    */
   insertColBefore(ci) {
-    const { xTableStyle } = this;
+    const { cols, xTableStyle } = this;
     xTableStyle.insertColBefore(ci);
+    cols.insertColBefore();
+    this.resize();
+    this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_COL);
   }
 
   /**
@@ -1554,8 +1566,11 @@ class XTableDimensions extends Widget {
    * @param ri
    */
   insertRowBefore(ri) {
-    const { xTableStyle } = this;
+    const { rows, xTableStyle } = this;
     xTableStyle.insertRowBefore(ri);
+    rows.insertRowBefore();
+    this.resize();
+    this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW);
   }
 
   /**

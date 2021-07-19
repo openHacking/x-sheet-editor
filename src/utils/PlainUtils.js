@@ -392,6 +392,10 @@ class PlainUtils {
     return type === DATA_TYPE.DedicatedWorkerGlobalScope;
   }
 
+  static if(condition, establish, otherwise) {
+    return condition ? establish() : otherwise();
+  }
+
 }
 
 PlainUtils.EMPTY = '';

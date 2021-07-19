@@ -117,9 +117,9 @@ class XTableDataItems {
           newSubItems[i] = { mergeId };
         }
       }
-      this.items.splice(ri - 1, 0, newSubItems);
+      this.items.splice(ri, 0, newSubItems);
     } else {
-      this.items.splice(ri - 1, 0, []);
+      this.items.splice(ri, 0, []);
     }
   }
 
@@ -130,9 +130,9 @@ class XTableDataItems {
         const item = subItems[ci];
         if (item) {
           const { mergeId } = item;
-          subItems.splice(ci - 1, 0, { mergeId });
+          subItems.splice(ci, 0, { mergeId });
         } else {
-          subItems.splice(ci - 1, 0, {});
+          subItems.splice(ci, 0, {});
         }
       }
     }

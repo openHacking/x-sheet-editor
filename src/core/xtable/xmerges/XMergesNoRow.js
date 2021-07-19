@@ -12,36 +12,30 @@ class XMergesNoRow {
     return this.nos[no];
   }
 
-  removeRow(ri) {
-    this.nos.splice(ri, 1);
-    for (let i = ri, len = this.nos.length; i < len; i++) {
-      let item = this.nos[i];
+  syncNo() {
+    const { nos } = this;
+    for (let i = 0, len = nos.length; i < len; i++) {
+      let item = nos[i];
       if (item) {
-        item.setNo(item.no - 1);
+        item.setNo(i);
       }
     }
+  }
+
+  removeRow(ri) {
+    this.nos.splice(ri, 1);
+    this.syncNo();
   }
 
   insertRowAfter(ri) {
     const next = ri + 1;
-    this.nos.splice(next, 0, new XMergesNo(next));
-    for (let i = next + 1, len = this.nos.length; i < len; i++) {
-      let item = this.nos[i];
-      if (item) {
-        item.setNo(item.no + 1);
-      }
-    }
+    this.nos.splice(next, 0, new XMergesNo());
+    this.syncNo();
   }
 
   insertRowBefore(ri) {
-    const last = ri - 1;
-    this.nos.splice(last, 0, new XMergesNo(last));
-    for (let i = last + 1, len = this.nos.length; i < len; i++) {
-      let item = this.nos[i];
-      if (item) {
-        item.setNo(item.no + 1);
-      }
-    }
+    this.nos.splice(ri, 0, new XMergesNo());
+    this.syncNo();
   }
 
 }

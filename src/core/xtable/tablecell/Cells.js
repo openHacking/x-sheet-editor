@@ -43,6 +43,12 @@ class Cells {
   }
 
   getCellOrNew(ri, ci) {
+    if (ri < 0) {
+      throw new TypeError(`错误的行号${ri}`);
+    }
+    if (ci < 0) {
+      throw new TypeError(`错误的列号${ci}`);
+    }
     const item = this.xTableData.getOrNew(ri, ci);
     const find = item.getCell();
     if (find) {
@@ -75,6 +81,12 @@ class Cells {
   }
 
   setCell(ri, ci, cell) {
+    if (ri < 0) {
+      throw new TypeError(`错误的行号${ri}`);
+    }
+    if (ci < 0) {
+      throw new TypeError(`错误的列号${ci}`);
+    }
     const item = this.xTableData.get(ri, ci);
     if (item) {
       item.setCell(cell);
@@ -83,6 +95,12 @@ class Cells {
   }
 
   setCellOrNew(ri, ci, cell) {
+    if (ri < 0) {
+      throw new TypeError(`错误的行号${ri}`);
+    }
+    if (ci < 0) {
+      throw new TypeError(`错误的列号${ci}`);
+    }
     const item = this.xTableData.getOrNew(ri, ci);
     item.setCell(cell);
     this.onChange(ri, ci);

@@ -3026,6 +3026,9 @@ class XTableStyle extends Widget {
    */
   hasAngleCell(row) {
     const { rows } = this;
+    if (row < 0) {
+      return false;
+    }
     const rowObject = rows.getOrNew(row);
     if (rowObject.reCkHasAngle === false) {
       return rowObject.hasAngelCell;
@@ -3082,7 +3085,6 @@ class XTableStyle extends Widget {
     cols.removeCol(ci);
     xTableData.removeCol(ci);
     xMergesNoCol.removeCol(ci);
-    this.render();
   }
 
   /**
@@ -3095,7 +3097,6 @@ class XTableStyle extends Widget {
     rows.removeRow(ri);
     xTableData.removeRow(ri);
     xMergesNoRow.removeRow(ri);
-    this.render();
   }
 
   /**
@@ -3108,7 +3109,6 @@ class XTableStyle extends Widget {
     cols.insertColAfter(ci);
     xTableData.insertColAfter(ci);
     xMergesNoCol.insertColAfter(ci);
-    this.render();
   }
 
   /**
@@ -3121,7 +3121,6 @@ class XTableStyle extends Widget {
     rows.insertRowAfter(ri);
     xTableData.insertRowAfter(ri);
     xMergesNoRow.insertRowAfter(ri);
-    this.render();
   }
 
   /**
@@ -3134,7 +3133,6 @@ class XTableStyle extends Widget {
     cols.insertColBefore(ci);
     xTableData.insertColBefore(ci);
     xMergesNoCol.insertColBefore(ci);
-    this.render();
   }
 
   /**
@@ -3147,7 +3145,6 @@ class XTableStyle extends Widget {
     rows.insertRowBefore(ri);
     xTableData.insertRowBefore(ri);
     xMergesNoRow.insertRowBefore(ri);
-    this.render();
   }
 
 }

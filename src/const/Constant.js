@@ -35,6 +35,10 @@ Constant.TABLE_EVENT_TYPE = {
   SELECT_CHANGE: 'selectchange',
   DATA_CHANGE: 'datachange',
   RESIZE_CHANGE: 'resizechange',
+  REMOVE_ROW: 'removerow',
+  REMOVE_COL: 'removecol',
+  ADD_NEW_ROW: 'addnewrow',
+  ADD_NEW_COL: 'addnewcol',
 };
 Constant.FORM_EVENT_TYPE = {
   SEARCH_INPUT_CHANGE: 'searchinputchange',

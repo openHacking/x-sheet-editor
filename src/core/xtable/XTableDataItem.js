@@ -6,8 +6,8 @@ class XTableDataItem {
   constructor(options) {
     if (options) {
       const { cell, mergeId } = options;
-      this.cell = cell || options;
-      this.mergeId = mergeId || undefined;
+      this.cell = PlainUtils.safeValue(cell, options);
+      this.mergeId = PlainUtils.safeValue(mergeId, undefined);
     } else {
       this.cell = undefined;
       this.mergeId = undefined;

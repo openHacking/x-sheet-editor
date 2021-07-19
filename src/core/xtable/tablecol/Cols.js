@@ -26,6 +26,81 @@ class Cols {
     }
   }
 
+  clearCache() {
+    this.cacheWidth.clear();
+  }
+
+  setWidth(ci, width) {
+    const col = this.getOrNew(ci);
+    const { scaleAdapter } = this;
+    col.width = scaleAdapter.back(PlainUtils.minIf(width, this.min));
+  }
+
+  removeCol(ci) {
+    const { data } = this;
+    if (PlainUtils.isNotUnDef(ci)) {
+      if (data[ci]) {
+        data.splice(ci, 1);
+      }
+    }
+    this.len--;
+  }
+
+  insertColAfter(ci) {
+    const { data } = this;
+    if (PlainUtils.isNotUnDef(ci)) {
+      if (data[ci]) {
+        data.splice(ci + 1, 0, {});
+      }
+    }
+    this.len++;
+  }
+
+  insertColBefore(ci) {
+    const { data } = this;
+    if (PlainUtils.isNotUnDef(ci)) {
+      if (data[ci]) {
+        data.splice(ci, 0, {});
+      }
+    }
+    this.len++;
+  }
+
+  getOrNew(ci) {
+    const col = this.get(ci);
+    if (col) {
+      return col;
+    }
+    if (ci < 0) {
+      throw new TypeError(`错误的列号${ci}`);
+    }
+    this.data[ci] = new Col(ci, {
+      width: this.width,
+    });
+    return this.data[ci];
+  }
+
+  get(ci) {
+    let col = this.data[ci];
+    if (col) {
+      if (col instanceof Col) {
+        return col;
+      }
+      col = new Col(ci, col);
+      this.data[ci] = col;
+    }
+    return col;
+  }
+
+  getData() {
+    return {
+      min: this.min,
+      len: this.len,
+      data: this.data,
+      width: this.width,
+    };
+  }
+
   eachWidth(ci, ei, cb, sx = 0) {
     let x = sx;
     this.xIteratorBuilder.getColIterator()
@@ -79,38 +154,11 @@ class Cols {
     return total;
   }
 
-  clearCache() {
-    this.cacheWidth.clear();
-  }
-
   rectRangeSumWidth(rectRange) {
     if (!rectRange.equals(RectRange.EMPTY)) {
       return this.sectionSumWidth(rectRange.sci, rectRange.eci);
     }
     return 0;
-  }
-
-  get(ci) {
-    let col = this.data[ci];
-    if (col) {
-      if (col instanceof Col) {
-        return col;
-      }
-      col = new Col(ci, col);
-      this.data[ci] = col;
-    }
-    return col;
-  }
-
-  getOrNew(ci) {
-    const col = this.get(ci);
-    if (col) {
-      return col;
-    }
-    this.data[ci] = new Col(ci, {
-      width: this.width,
-    });
-    return this.data[ci];
   }
 
   getMinWidth() {
@@ -119,6 +167,9 @@ class Cols {
   }
 
   getWidth(ci) {
+    if (ci < 0) {
+      return 0;
+    }
     const { scaleAdapter } = this;
     const col = this.data[ci];
     if (col && col.width) {
@@ -133,6 +184,9 @@ class Cols {
   }
 
   getOriginWidth(ci) {
+    if (ci < 0) {
+      return 0;
+    }
     const col = this.data[ci];
     if (col && col.width) {
       return col.width;
@@ -142,41 +196,6 @@ class Cols {
 
   getOriginDefaultWidth() {
     return this.width;
-  }
-
-  getData() {
-    return {
-      min: this.min,
-      len: this.len,
-      data: this.data,
-      width: this.width,
-    };
-  }
-
-  setWidth(i, width) {
-    const col = this.getOrNew(i);
-    const { scaleAdapter } = this;
-    col.width = scaleAdapter.back(PlainUtils.minIf(width, this.min));
-  }
-
-  removeCol(ci) {
-    this.data.splice(ci, 1);
-  }
-
-  insertColAfter(ci) {
-    const next = ci + 1;
-    this.data[next] = {};
-    if (this.data.length > this.len) {
-      this.len = this.data.length;
-    }
-  }
-
-  insertColBefore(ci) {
-    const last = ci - 1;
-    this.data[last] = {};
-    if (this.data.length > this.len) {
-      this.len = this.data.length;
-    }
   }
 
 }

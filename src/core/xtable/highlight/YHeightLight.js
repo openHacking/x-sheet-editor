@@ -35,6 +35,9 @@ class YHeightLight extends Widget {
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, () => {
       this.offsetHandle();
     });
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
+      this.offsetHandle();
+    });
     XEvent.bind(table, Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH, () => {
       this.offsetHandle();
     });

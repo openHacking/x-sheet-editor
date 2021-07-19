@@ -1,6 +1,6 @@
 class XMergesNo {
 
-  constructor(no) {
+  constructor(no = 0) {
     this.no = no;
   }
 
