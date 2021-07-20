@@ -4,7 +4,8 @@ class RowsInsertDataRecord {
     ri = 0,
     type = RowsInsertDataRecord.TYPE.AFTER,
   }) {
-
+    this.ri = ri;
+    this.type = type;
   }
 
 }
