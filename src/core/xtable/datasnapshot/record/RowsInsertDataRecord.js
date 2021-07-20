@@ -1,11 +1,13 @@
 class RowsInsertDataRecord {
 
   constructor({
+    subItems = [],
     ri = 0,
     type = RowsInsertDataRecord.TYPE.AFTER,
   }) {
-    this.ri = ri;
     this.type = type;
+    this.ri = ri;
+    this.subItems = subItems;
   }
 
 }
