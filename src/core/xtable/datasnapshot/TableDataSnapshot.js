@@ -1,12 +1,11 @@
 import { TableCellDataProxy } from './proxy/TableCellDataProxy';
 import { CellDataRecord } from './record/CellDataRecord';
 import { MERGE_RECORD_TYPE, MergeDataRecord } from './record/MergeDataRecord';
-import { ChartDataRecord } from './record/ChartDataRecord';
 import { TableMergeDataProxy } from './proxy/TableMergeDataProxy';
-import { TableColsDataProxy } from './proxy/TableColsDataProxy';
-import { ColsDataRecord } from './record/ColsDataRecord';
-import { TableRowsDataProxy } from './proxy/TableRowsDataProxy';
-import { RowsDataRecord } from './record/RowsDataRecord';
+import { ColsWidthDataRecord } from './record/ColsWidthDataRecord';
+import { RowsHeightDataRecord } from './record/RowsHeightDataRecord';
+import { TableColsWidthDataProxy } from './proxy/TableColsWidthDataProxy';
+import { TableRowsHeightDataProxy } from './proxy/TableRowsHeightDataProxy';
 
 class TableDataSnapshot {
 
@@ -45,21 +44,21 @@ class TableDataSnapshot {
         },
       },
     });
-    this.colsDataProxy = new TableColsDataProxy(this, {
+    this.colsWidthDataProxy = new TableColsWidthDataProxy(this, {
       on: {
         setWidth: (ci, oldWidth, newWidth) => {
           if (this.record === false) return;
           const { recordLayer } = this;
-          recordLayer.push(new ColsDataRecord({ ci, oldWidth, newWidth }));
+          recordLayer.push(new ColsWidthDataRecord({ ci, oldWidth, newWidth }));
         },
       },
     });
-    this.rowsDataProxy = new TableRowsDataProxy(this, {
+    this.rowsHeightDataProxy = new TableRowsHeightDataProxy(this, {
       on: {
         setHeight: (ri, oldHeight, newHeight) => {
           if (this.record === false) return;
           const { recordLayer } = this;
-          recordLayer.push(new RowsDataRecord({ ri, oldHeight, newHeight }));
+          recordLayer.push(new RowsHeightDataRecord({ ri, oldHeight, newHeight }));
         },
       },
     });
@@ -94,28 +93,23 @@ class TableDataSnapshot {
         }
         continue;
       }
-      // 图表元素
-      if (item instanceof ChartDataRecord) {
-        // TODO...
-        // ...
-      }
       //  列宽元素
-      if (item instanceof ColsDataRecord) {
+      if (item instanceof ColsWidthDataRecord) {
         const { ci, oldWidth } = item;
-        this.colsDataProxy.$setWidth(ci, oldWidth);
+        this.colsWidthDataProxy.$setWidth(ci, oldWidth);
         continue;
       }
       // 行高元素
-      if (item instanceof RowsDataRecord) {
+      if (item instanceof RowsHeightDataRecord) {
         const { ri, oldHeight } = item;
-        this.rowsDataProxy.$setHeight(ri, oldHeight);
+        this.rowsHeightDataProxy.$setHeight(ri, oldHeight);
       }
     }
     goLayerStack.push(layer);
     this.mergeDataProxy.backNotice();
     this.cellDataProxy.backNotice();
-    this.colsDataProxy.backNotice();
-    this.rowsDataProxy.backNotice();
+    this.colsWidthDataProxy.backNotice();
+    this.rowsHeightDataProxy.backNotice();
   }
 
   go() {
@@ -147,28 +141,23 @@ class TableDataSnapshot {
         }
         continue;
       }
-      // 图表元素
-      if (item instanceof ChartDataRecord) {
-        // TODO...
-        // ...
-      }
       //  列宽元素
-      if (item instanceof ColsDataRecord) {
+      if (item instanceof ColsWidthDataRecord) {
         const { ci, newWidth } = item;
-        this.colsDataProxy.$setWidth(ci, newWidth);
+        this.colsWidthDataProxy.$setWidth(ci, newWidth);
         continue;
       }
       // 行高元素
-      if (item instanceof RowsDataRecord) {
+      if (item instanceof RowsHeightDataRecord) {
         const { ri, newHeight } = item;
-        this.rowsDataProxy.$setHeight(ri, newHeight);
+        this.rowsHeightDataProxy.$setHeight(ri, newHeight);
       }
     }
     backLayerStack.push(layer);
     this.mergeDataProxy.goNotice();
     this.cellDataProxy.goNotice();
-    this.colsDataProxy.goNotice();
-    this.rowsDataProxy.goNotice();
+    this.colsWidthDataProxy.goNotice();
+    this.rowsHeightDataProxy.goNotice();
   }
 
   end() {
@@ -180,8 +169,8 @@ class TableDataSnapshot {
     this.recordLayer = [];
     this.mergeDataProxy.endNotice();
     this.cellDataProxy.endNotice();
-    this.colsDataProxy.endNotice();
-    this.rowsDataProxy.endNotice();
+    this.colsWidthDataProxy.endNotice();
+    this.rowsHeightDataProxy.endNotice();
   }
 
   begin() {

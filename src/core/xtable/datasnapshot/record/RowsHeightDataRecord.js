@@ -1,4 +1,4 @@
-class RowsDataRecord {
+class RowsHeightDataRecord {
   constructor({ ri, oldHeight, newHeight }) {
     this.ri = ri;
     this.oldHeight = oldHeight;
@@ -6,4 +6,4 @@ class RowsDataRecord {
   }
 }
 
-export { RowsDataRecord };
+export { RowsHeightDataRecord };

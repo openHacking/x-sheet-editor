@@ -1,0 +1,7 @@
+class RowsInsertDataRecord {
+
+}
+
+export {
+  RowsInsertDataRecord,
+};

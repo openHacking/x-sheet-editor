@@ -1,4 +1,4 @@
-class ColsDataRecord {
+class ColsWidthDataRecord {
   constructor({ ci, oldWidth, newWidth }) {
     this.ci = ci;
     this.oldWidth = oldWidth;
@@ -6,4 +6,4 @@ class ColsDataRecord {
   }
 }
 
-export { ColsDataRecord };
+export { ColsWidthDataRecord };

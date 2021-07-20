@@ -1,0 +1,7 @@
+class ColsInsertDataRecord {
+
+}
+
+export {
+  ColsInsertDataRecord,
+};

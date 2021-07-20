@@ -1,33 +1,31 @@
 import { DataProxy } from '../DataProxy';
 import { Constant } from '../../../../const/Constant';
 
-class TableRowsDataProxy extends DataProxy {
+class TableColsWidthDataProxy extends DataProxy {
 
   constructor(snapshot, option = {
-    on: {
-      setHeight() {},
-    },
+    on: { setWidth() {} },
   }) {
     super();
     this.snapshot = snapshot;
     this.option = option;
   }
 
-  $setHeight(ri, height) {
+  $setWidth(ci, width) {
     this.change = true;
     const { snapshot } = this;
-    const { rows } = snapshot;
-    rows.setHeight(ri, height);
+    const { cols } = snapshot;
+    cols.setWidth(ci, width);
   }
 
-  setHeight(ri, newHeight) {
+  setWidth(ci, newWidth) {
     const { option, snapshot } = this;
     const { on } = option;
-    const { setHeight } = on;
-    const { rows } = snapshot;
-    const oldHeight = rows.getHeight(ri);
-    this.$setHeight(ri, newHeight);
-    setHeight(ri, oldHeight, newHeight);
+    const { setWidth } = on;
+    const { cols } = snapshot;
+    const oldWidth = cols.getWidth(ci);
+    this.$setWidth(ci, newWidth);
+    setWidth(ci, oldWidth, newWidth);
   }
 
   goNotice() {
@@ -35,7 +33,7 @@ class TableRowsDataProxy extends DataProxy {
     const { table } = snapshot;
     if (this.change) {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT);
+      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH);
     }
     super.goNotice();
   }
@@ -45,7 +43,7 @@ class TableRowsDataProxy extends DataProxy {
     const { table } = snapshot;
     if (this.change) {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT);
+      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH);
     }
     super.endNotice();
   }
@@ -55,10 +53,11 @@ class TableRowsDataProxy extends DataProxy {
     const { table } = snapshot;
     if (this.change) {
       table.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT);
+      table.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH);
     }
     super.backNotice();
   }
+
 }
 
-export { TableRowsDataProxy };
+export { TableColsWidthDataProxy };

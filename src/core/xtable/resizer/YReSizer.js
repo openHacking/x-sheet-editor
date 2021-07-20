@@ -34,7 +34,7 @@ class YReSizer extends Widget {
       scale, rows, mousePointer, focus, xFixedView,
     } = table;
     const { tableDataSnapshot } = table;
-    const { rowsDataProxy } = tableDataSnapshot;
+    const { rowsHeightDataProxy } = tableDataSnapshot;
     const { index, cols } = table;
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       mousePointer.lock(YReSizer);
@@ -62,7 +62,7 @@ class YReSizer extends Widget {
         })) {
           const newTop = my - (top - rows.getHeight(ri)) + this.height;
           tableDataSnapshot.begin();
-          rowsDataProxy.setHeight(ri, scale.back(newTop));
+          rowsHeightDataProxy.setHeight(ri, scale.back(newTop));
           tableDataSnapshot.end();
         }
       });
