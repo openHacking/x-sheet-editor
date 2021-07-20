@@ -1,0 +1,7 @@
+class TableRowsRemoveDataProxy {
+
+}
+
+export {
+  TableRowsRemoveDataProxy,
+};

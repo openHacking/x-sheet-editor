@@ -1,0 +1,7 @@
+class TableColsInsertDataProxy {
+
+}
+
+export {
+  TableColsInsertDataProxy,
+};

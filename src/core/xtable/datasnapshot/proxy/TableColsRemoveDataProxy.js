@@ -1,0 +1,7 @@
+class TableColsRemoveDataProxy {
+
+}
+
+export {
+  TableColsRemoveDataProxy,
+};
