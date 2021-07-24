@@ -5,6 +5,7 @@ import { Col } from './Col';
 import { CacheWidth } from './CacheWidth';
 import { XIteratorBuilder } from '../iterator/XIteratorBuilder';
 import { Snapshot } from '../snapshot/Snapshot';
+import { Listen } from '../../../libs/Listen';
 
 class Cols {
 
@@ -20,6 +21,7 @@ class Cols {
     this.snapshot = snapshot;
     this.scaleAdapter = scaleAdapter;
     this.cacheWidth = new CacheWidth();
+    this.listen = new Listen();
     this.min = 5;
     this.len = len;
     this.data = data;
@@ -38,15 +40,17 @@ class Cols {
   }
 
   setWidth(ci, width) {
-    let { scaleAdapter, snapshot } = this;
+    let { listen, scaleAdapter, snapshot } = this;
     let col = this.getOrNew(ci);
     let oldValue = col.width;
     let action = {
       undo: () => {
         col.width = oldValue;
+        listen.execute('changeWidth', col);
       },
       redo: () => {
         col.width = scaleAdapter.back(PlainUtils.minIf(width, this.min));
+        listen.execute('changeWidth', col);
       },
     };
     action.redo();
@@ -54,7 +58,7 @@ class Cols {
   }
 
   insertColAfter(ci) {
-    let { data, snapshot } = this;
+    let { listen, data, snapshot } = this;
     let action = {
       undo: () => {
         if (PlainUtils.isNotUnDef(ci)) {
@@ -63,6 +67,7 @@ class Cols {
           }
         }
         this.len--;
+        listen.execute('insertColAfter', ci);
       },
       redo: () => {
         if (PlainUtils.isNotUnDef(ci)) {
@@ -71,6 +76,7 @@ class Cols {
           }
         }
         this.len++;
+        listen.execute('insertColAfter', ci);
       },
     };
     action.redo();
@@ -78,7 +84,7 @@ class Cols {
   }
 
   insertColBefore(ci) {
-    let { data, snapshot } = this;
+    let { listen, data, snapshot } = this;
     let action = {
       undo: () => {
         if (PlainUtils.isNotUnDef(ci)) {
@@ -87,6 +93,7 @@ class Cols {
           }
         }
         this.len--;
+        listen.execute('insertColBefore', ci);
       },
       redo: () => {
         if (PlainUtils.isNotUnDef(ci)) {
@@ -95,6 +102,7 @@ class Cols {
           }
         }
         this.len++;
+        listen.execute('insertColBefore', ci);
       },
     };
     action.redo();
@@ -102,7 +110,7 @@ class Cols {
   }
 
   removeCol(ci) {
-    let { data, snapshot } = this;
+    let { listen, data, snapshot } = this;
     let oldValue;
     let action = {
       undo: () => {
@@ -112,6 +120,7 @@ class Cols {
           }
         }
         this.len++;
+        listen.execute('removeCol', ci);
       },
       redo: () => {
         if (PlainUtils.isNotUnDef(ci)) {
@@ -120,6 +129,7 @@ class Cols {
           }
         }
         this.len--;
+        listen.execute('removeCol', ci);
       },
     };
     action.redo();

@@ -8,6 +8,7 @@ import { RectRange } from '../tablebase/RectRange';
 import { XTableDataItems } from '../XTableDataItems';
 import { XIteratorBuilder } from '../iterator/XIteratorBuilder';
 import { Snapshot } from '../snapshot/Snapshot';
+import { Listen } from '../../../libs/Listen';
 
 class XMerges {
 
@@ -26,6 +27,7 @@ class XMerges {
     this.xMergesItems = new XMergesItems();
     this.xMergesIndex = new XMergesIndex(xTableData);
     this.snapshot = snapshot;
+    this.listen = new Listen();
     this.xIteratorBuilder = xIteratorBuilder;
     merges.map(merge => RectRange.valueOf(merge)).forEach(view => this.add(view));
   }
@@ -77,26 +79,30 @@ class XMerges {
   }
 
   add(view) {
-    let { snapshot } = this;
+    let { listen, snapshot } = this;
     let action = {
       undo: () => {
         this.shift(view);
+        listen.execute('add', view);
       },
       redo: () => {
         this.push(view);
+        listen.execute('add', view);
       },
     };
     snapshot.addAction(action);
   }
 
   delete(view) {
-    let { snapshot } = this;
+    let { listen, snapshot } = this;
     let action = {
       undo: () => {
         this.push(view);
+        listen.execute('delete', view);
       },
       redo: () => {
         this.shift(view);
+        listen.execute('delete', view);
       },
     };
     snapshot.addAction(action);

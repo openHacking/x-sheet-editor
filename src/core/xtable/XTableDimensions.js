@@ -626,6 +626,44 @@ class XTableDimensions extends Widget {
       xFixedView: this.xFixedView,
       xIteratorBuilder: this.xIteratorBuilder,
     });
+    // 单元格数据变更监听
+    this.getTableMerges().listen.registerListen('remove', () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+    });
+    this.getTableMerges().listen.registerListen('add', () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+    });
+    this.getTableCells().listen.registerListen('change', () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+    });
+    // 列数据变更监听
+    this.cols.listen.registerListen('changeWidth', () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+      this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH);
+    });
+    this.cols.listen.registerListen('removeRow', () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_ROW);
+    });
+    this.cols.listen.registerListen('insertRowAfter', () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW);
+    });
+    this.cols.listen.registerListen('insertRowBefore', () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW);
+    });
+    // 行数据变更监听
+    this.rows.listen.registerListen('changeHeight', () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+      this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT);
+    });
+    this.rows.listen.registerListen('removeCol', () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_COL);
+    });
+    this.rows.listen.registerListen('insertColAfter', () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_COL);
+    });
+    this.rows.listen.registerListen('insertColBefore', () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_COL);
+    });
   }
 
   /**
@@ -1102,6 +1140,14 @@ class XTableDimensions extends Widget {
   }
 
   /**
+   * 移除事件绑定
+   */
+  unbind() {
+    this.focus.remove(this);
+    XEvent.unbind(this);
+  }
+
+  /**
    * 清理缓存
    */
   bindCacheClear() {
@@ -1147,14 +1193,6 @@ class XTableDimensions extends Widget {
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
       this.render();
     });
-  }
-
-  /**
-   * 移除事件绑定
-   */
-  unbind() {
-    this.focus.remove(this);
-    XEvent.unbind(this);
   }
 
   /**
@@ -1508,7 +1546,6 @@ class XTableDimensions extends Widget {
     xTableStyle.insertColAfter(ci);
     cols.insertColAfter();
     this.resize();
-    this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_COL);
   }
 
   /**
@@ -1520,7 +1557,6 @@ class XTableDimensions extends Widget {
     xTableStyle.insertRowAfter(ri);
     rows.insertRowAfter();
     this.resize();
-    this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW);
   }
 
   /**
@@ -1532,7 +1568,6 @@ class XTableDimensions extends Widget {
     xTableStyle.insertColBefore(ci);
     cols.insertColBefore();
     this.resize();
-    this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_COL);
   }
 
   /**
@@ -1544,7 +1579,6 @@ class XTableDimensions extends Widget {
     xTableStyle.insertRowBefore(ri);
     rows.insertRowBefore();
     this.resize();
-    this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW);
   }
 
   /**
@@ -1556,7 +1590,6 @@ class XTableDimensions extends Widget {
     xTableStyle.removeCol(ci);
     cols.removeCol();
     this.resize();
-    this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_COL);
   }
 
   /**
@@ -1568,7 +1601,6 @@ class XTableDimensions extends Widget {
     xTableStyle.removeRow(ri);
     rows.removeRow();
     this.resize();
-    this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_ROW);
   }
 
   /**

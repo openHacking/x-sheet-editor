@@ -5,6 +5,7 @@ import { Row } from './Row';
 import { CacheHeight } from './CacheHeight';
 import { XIteratorBuilder } from '../iterator/XIteratorBuilder';
 import { Snapshot } from '../snapshot/Snapshot';
+import { Listen } from '../../../libs/Listen';
 
 class Rows {
 
@@ -20,9 +21,10 @@ class Rows {
     this.snapshot = snapshot;
     this.scaleAdapter = scaleAdapter;
     this.cacheHeight = new CacheHeight();
-    this.data = data;
+    this.listen = new Listen();
     this.min = 5;
     this.len = len;
+    this.data = data;
     this.height = PlainUtils.minIf(height, this.min);
     if (this.data.length > this.len) {
       this.len = this.data.length;
@@ -38,15 +40,17 @@ class Rows {
   }
 
   setHeight(ri, height) {
-    let { scaleAdapter, snapshot } = this;
+    let { listen, scaleAdapter, snapshot } = this;
     let row = this.getOrNew(ri);
     let oldValue = row.height;
     let action = {
       undo: () => {
         row.height = oldValue;
+        listen.execute('changeHeight', row);
       },
       redo: () => {
         row.height = scaleAdapter.back(PlainUtils.minIf(height, this.min));
+        listen.execute('changeHeight', row);
       },
     };
     action.redo();
@@ -54,7 +58,7 @@ class Rows {
   }
 
   insertRowAfter(ri) {
-    let { data, snapshot } = this;
+    let { listen, data, snapshot } = this;
     let action = {
       undo: () => {
         if (PlainUtils.isNotUnDef(ri)) {
@@ -63,6 +67,7 @@ class Rows {
           }
         }
         this.len--;
+        listen.execute('insertRowAfter', ri);
       },
       redo: () => {
         if (PlainUtils.isNotUnDef(ri)) {
@@ -71,6 +76,7 @@ class Rows {
           }
         }
         this.len++;
+        listen.execute('insertRowAfter', ri);
       },
     };
     action.redo();
@@ -78,7 +84,7 @@ class Rows {
   }
 
   insertRowBefore(ri) {
-    let { data, snapshot } = this;
+    let { listen, data, snapshot } = this;
     let action = {
       undo: () => {
         if (PlainUtils.isNotUnDef(ri)) {
@@ -87,6 +93,7 @@ class Rows {
           }
         }
         this.len--;
+        listen.execute('insertRowBefore', ri);
       },
       redo: () => {
         if (PlainUtils.isNotUnDef(ri)) {
@@ -95,6 +102,7 @@ class Rows {
           }
         }
         this.len++;
+        listen.execute('insertRowBefore', ri);
       },
     };
     action.redo();
@@ -102,7 +110,7 @@ class Rows {
   }
 
   removeRow(ri) {
-    let { data, snapshot } = this;
+    let { listen, data, snapshot } = this;
     let oldValue;
     let action = {
       undo: () => {
@@ -112,6 +120,7 @@ class Rows {
           }
         }
         this.len++;
+        listen.execute('removeRow', ri);
       },
       redo: () => {
         if (PlainUtils.isNotUnDef(ri)) {
@@ -120,6 +129,7 @@ class Rows {
           }
         }
         this.len--;
+        listen.execute('removeRow', ri);
       },
     };
     action.redo();

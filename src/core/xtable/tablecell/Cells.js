@@ -4,20 +4,20 @@ import { XIteratorBuilder } from '../iterator/XIteratorBuilder';
 import { XTableDataItems } from '../XTableDataItems';
 import { XMerges } from '../xmerges/XMerges';
 import { Snapshot } from '../snapshot/Snapshot';
+import { Listen } from '../../../libs/Listen';
 
 class Cells {
 
   constructor({
     xIteratorBuilder = new XIteratorBuilder(),
-    snapshot = new Snapshot(),
     xTableData = new XTableDataItems([]),
     merges = new XMerges(),
-    onChange = () => {},
+    snapshot = new Snapshot(),
   } = {}) {
     this.xTableData = xTableData;
+    this.listen = new Listen();
     this.merges = merges;
     this.snapshot = snapshot;
-    this.onChange = onChange;
     this.xIteratorBuilder = xIteratorBuilder;
   }
 
@@ -75,18 +75,22 @@ class Cells {
     if (ci < 0) {
       throw new TypeError(`错误的列号${ci}`);
     }
-    let { snapshot, xTableData } = this;
+    let { listen, snapshot, xTableData } = this;
     let item = xTableData.get(ri, ci);
     if (item) {
       let oldValue = item.getCell();
       let action = {
         undo: () => {
           item.setCell(oldValue);
-          this.onChange(ri, ci);
+          listen.execute('change', {
+            ri, ci, oldValue,
+          });
         },
         redo: () => {
           item.setCell(cell);
-          this.onChange(ri, ci);
+          listen.execute('change', {
+            ri, ci, oldValue,
+          });
         },
       };
       action.redo();
@@ -101,17 +105,21 @@ class Cells {
     if (ci < 0) {
       throw new TypeError(`错误的列号${ci}`);
     }
-    let { snapshot, xTableData } = this;
+    let { listen, snapshot, xTableData } = this;
     const item = xTableData.getOrNew(ri, ci);
     let oldValue = item.getCell();
     let action = {
       undo: () => {
         item.setCell(oldValue);
-        this.onChange(ri, ci);
+        listen.execute('change', {
+          ri, ci, oldValue,
+        });
       },
       redo: () => {
         item.setCell(cell);
-        this.onChange(ri, ci);
+        listen.execute('change', {
+          ri, ci, oldValue,
+        });
       },
     };
     action.redo();

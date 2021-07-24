@@ -2654,14 +2654,6 @@ class XTableStyle extends Widget {
       }),
       ...this.settings.index,
     });
-    this.rows = new Rows({
-      xIteratorBuilder: this.xIteratorBuilder,
-      snapshot: this.snapshot,
-      scaleAdapter: new ScaleAdapter({
-        goto: v => XDraw.stylePx(this.scale.goto(v)),
-      }),
-      ...this.settings.rows,
-    });
     this.cols = new Cols({
       xIteratorBuilder: this.xIteratorBuilder,
       snapshot: this.snapshot,
@@ -2671,15 +2663,19 @@ class XTableStyle extends Widget {
       }),
       ...this.settings.cols,
     });
+    this.rows = new Rows({
+      xIteratorBuilder: this.xIteratorBuilder,
+      snapshot: this.snapshot,
+      scaleAdapter: new ScaleAdapter({
+        goto: v => XDraw.stylePx(this.scale.goto(v)),
+      }),
+      ...this.settings.rows,
+    });
     this.cells = new Cells({
       xIteratorBuilder: this.xIteratorBuilder,
       merges: this.merges,
       snapshot: this.snapshot,
       xTableData: this.xTableData,
-      onChange: (ri) => {
-        const row = this.rows.getOrNew(ri);
-        row.reCkHasAngle = true;
-      },
     });
     // 固定区域测量
     this.xFixedMeasure = new XFixedMeasure({
@@ -2745,9 +2741,6 @@ class XTableStyle extends Widget {
       }),
       table: this,
     });
-    this.indexGrid = new Grid(this.draw, {
-      color: this.index.getGridColor(),
-    });
     this.line = new Line(this.draw, {
       bottomShow: (row, col) => {
         const result = bBorderFilter.run({
@@ -2786,6 +2779,9 @@ class XTableStyle extends Widget {
     this.grid = new Grid(this.draw, {
       color: this.settings.table.gridColor,
     });
+    this.indexGrid = new Grid(this.draw, {
+      color: this.index.getGridColor(),
+    });
     // 冻结内容
     this.xLeftFrozenIndex = new XTableFrozenLeftIndex(this);
     this.xTopFrozenIndex = new XTableFrozenTopIndex(this);
@@ -2803,6 +2799,12 @@ class XTableStyle extends Widget {
     this.heightUnit = new HeightUnit();
     this.wideUnit = new WideUnit({
       table: this,
+    });
+    // 单元格数据变更监听
+    this.cells.listen.registerListen('change', (event) => {
+      const { ri } = event;
+      const row = this.rows.getOrNew(ri);
+      row.reCkHasAngle = true;
     });
   }
 
