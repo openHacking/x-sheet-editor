@@ -73,7 +73,9 @@ class XlsxExport {
       const { table, data } = tableConfig;
       const { rows, cols, merge } = tableConfig;
       // 初始化配置数据
-      const xTableData = new XTableDataItems(data);
+      const xTableData = new XTableDataItems({
+        items: data,
+      });
       const xMerges = new XMerges({
         ...merge, xTableData,
       });
@@ -115,6 +117,7 @@ class XlsxExport {
               const element = item.shift();
               const cell = element.getCell();
               if (cell) {
+                debugger;
                 const { contentType, background } = cell;
                 const { text, fontAttr, borderAttr } = cell;
                 const { top, right, left, bottom } = borderAttr;

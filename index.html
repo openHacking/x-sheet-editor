@@ -17,7 +17,20 @@
 <body id="dome"></body>
 <script>
   const dome = document.getElementById('dome');
-  const xSheet = new XSheet(dome);
+  const xSheet = new XSheet(dome, {
+    workConfig: {
+      name: 'x-sheet',
+      body: {
+        sheets: [{
+          tableConfig: {
+            data: [
+              [{text: "1212", custom: { type: "select" }}]
+            ]
+          },
+        }],
+      },
+    },
+  });
   XSheet.XEvent.bind(xSheet, XSheet.Constant.TABLE_EVENT_TYPE.EDIT_START, (e) => {
     console.log("开始编辑", e);
   });
