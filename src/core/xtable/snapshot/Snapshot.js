@@ -58,13 +58,13 @@ class Snapshot {
   /**
    * 关闭快照
    */
-  close() {
+  close(event) {
     if (this.layer.length) {
       this.undoStack.push(this.layer);
     }
     this.layer = [];
     this.apply = false;
-    this.listen.execute('change');
+    this.listen.execute('change', event);
   }
 
   /**

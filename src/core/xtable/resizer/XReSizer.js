@@ -62,7 +62,9 @@ class XReSizer extends Widget {
           const newLeft = mx - (left - cols.getWidth(ci)) + this.width;
           snapshot.open();
           cols.setWidth(ci, scale.back(newLeft));
-          snapshot.close();
+          snapshot.close({
+            type: Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH,
+          });
         }
       });
     });

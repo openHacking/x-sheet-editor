@@ -625,47 +625,35 @@ class XTableDimensions extends Widget {
       xFixedView: this.xFixedView,
       xIteratorBuilder: this.xIteratorBuilder,
     });
-    // 单元格数据变更监听
-    this.getTableMerges().listen.registerListen('remove', () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-    });
-    this.getTableMerges().listen.registerListen('add', () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-    });
-    this.getTableCells().listen.registerListen('change', () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-    });
-    // 列数据变更监听
-    this.cols.listen.registerListen('changeWidth', () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-      this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH);
-    });
-    this.cols.listen.registerListen('removeRow', () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_ROW);
-    });
-    this.cols.listen.registerListen('insertRowAfter', () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW);
-    });
-    this.cols.listen.registerListen('insertRowBefore', () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW);
-    });
-    // 行数据变更监听
-    this.rows.listen.registerListen('changeHeight', () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-      this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT);
-    });
-    this.rows.listen.registerListen('removeCol', () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_COL);
-    });
-    this.rows.listen.registerListen('insertColAfter', () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_COL);
-    });
-    this.rows.listen.registerListen('insertColBefore', () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_COL);
-    });
-    // 数据快照变化
-    this.snapshot.listen.registerListen('change', () => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+    // 数据变更监听
+    this.snapshot.listen.registerListen('change', (event) => {
+      if (event) {
+        const { type } = event;
+        switch (type) {
+          case Constant.TABLE_EVENT_TYPE.DATA_CHANGE:
+            this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+            break;
+          case Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW:
+            this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW);
+            break;
+          case Constant.TABLE_EVENT_TYPE.REMOVE_ROW:
+            this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_ROW);
+            break;
+          case Constant.TABLE_EVENT_TYPE.ADD_NEW_COL:
+            this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_COL);
+            break;
+          case Constant.TABLE_EVENT_TYPE.REMOVE_COL:
+            this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_COL);
+            break;
+          case Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH:
+            this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH);
+            break;
+          case Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT:
+            this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT);
+            break;
+        }
+      }
+      this.trigger(Constant.TABLE_EVENT_TYPE.SNAPSHOT_CHANGE);
     });
   }
 
@@ -1154,21 +1142,18 @@ class XTableDimensions extends Widget {
    * 清理缓存
    */
   bindCacheClear() {
-    // 插入新行/列
-    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW, () => {
-      this.resize();
-    });
-    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.ADD_NEW_COL, () => {
-      this.resize();
-    });
-    // 固定表格区域
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.FIXED_ROW_CHANGE, () => {
       this.resize();
     });
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.FIXED_COL_CHANGE, () => {
       this.resize();
     });
-    // 列宽/行高变化
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW, () => {
+      this.resize();
+    });
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.ADD_NEW_COL, () => {
+      this.resize();
+    });
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT, () => {
       this.resize();
     });
@@ -1202,7 +1187,7 @@ class XTableDimensions extends Widget {
    * 表格事件
    */
   bindTableEvent() {
-    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.SNAPSHOT_CHANGE, () => {
       this.render();
     });
   }

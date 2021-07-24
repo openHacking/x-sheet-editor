@@ -160,8 +160,10 @@ class XTableEdit extends Widget {
       if (cell.toString() !== text) {
         snapshot.open();
         cell.setText(text);
-        cells.setCell(select.sri, select.sci, cell);
-        snapshot.close();
+        cells.setCellOrNew(select.sri, select.sci, cell);
+        snapshot.close({
+          type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+        });
         table.render();
       }
       this.select = null;

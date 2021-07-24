@@ -98,7 +98,9 @@ class XWorkTopMenu extends Widget {
                   cells.setCell(r, c, cell);
                 },
               });
-              snapshot.close();
+              snapshot.close({
+                type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+              });
               table.render();
             }
           }
@@ -128,7 +130,9 @@ class XWorkTopMenu extends Widget {
                   cells.setCell(r, c, cell);
                 },
               });
-              snapshot.close();
+              snapshot.close({
+                type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+              });
               table.render();
             }
           }
@@ -158,7 +162,9 @@ class XWorkTopMenu extends Widget {
                   cells.setCell(r, c, cell);
                 },
               });
-              snapshot.close();
+              snapshot.close({
+                type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+              });
               table.render();
             }
           }
@@ -188,7 +194,9 @@ class XWorkTopMenu extends Widget {
                   cells.setCell(r, c, cell);
                 },
               });
-              snapshot.close();
+              snapshot.close({
+                type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+              });
               table.render();
             }
           }
@@ -218,7 +226,9 @@ class XWorkTopMenu extends Widget {
                   cells.setCell(r, c, cell);
                 },
               });
-              snapshot.close();
+              snapshot.close({
+                type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+              });
               table.render();
             }
           }
@@ -297,7 +307,6 @@ class XWorkTopMenu extends Widget {
             const xSelect = xScreen.findType(XSelectItem);
             const { selectRange } = xSelect;
             if (selectRange) {
-              snapshot.open();
               const rect = selectRange;
               let widthType = XDraw.LINE_WIDTH_TYPE.low;
               let type = LINE_TYPE.SOLID_LINE;
@@ -367,6 +376,7 @@ class XWorkTopMenu extends Widget {
                   }
                 }
               };
+              snapshot.open();
               switch (borderType) {
                 case 'border1':
                   operateCellsHelper.getCellOrNewCellByViewRange({
@@ -786,7 +796,9 @@ class XWorkTopMenu extends Widget {
                   });
                   break;
               }
-              snapshot.close();
+              snapshot.close({
+                type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+              });
               table.render();
             }
           }
@@ -827,7 +839,9 @@ class XWorkTopMenu extends Widget {
                   cells.setCell(r, c, cell);
                 },
               });
-              snapshot.close();
+              snapshot.close({
+                type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+              });
               table.render();
             }
           }
@@ -868,7 +882,9 @@ class XWorkTopMenu extends Widget {
                   cells.setCell(r, c, cell);
                 },
               });
-              snapshot.close();
+              snapshot.close({
+                type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+              });
               table.render();
             }
           }
@@ -904,7 +920,9 @@ class XWorkTopMenu extends Widget {
                   cells.setCell(r, c, cell);
                 },
               });
-              snapshot.close();
+              snapshot.close({
+                type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+              });
               table.render();
             }
           }
@@ -972,7 +990,9 @@ class XWorkTopMenu extends Widget {
                   cells.setCell(r, c, cell);
                 },
               });
-              snapshot.close();
+              snapshot.close({
+                type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+              });
               table.render();
             }
           }
@@ -1047,17 +1067,17 @@ class XWorkTopMenu extends Widget {
     const { sheetView } = body;
 
     // 菜单状态更新
-    XEvent.bind(body, Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE, () => {
-      this.setAllStatus();
-    });
-    XEvent.bind(body, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, () => {
-      this.setAllStatus();
-    });
-    XEvent.bind(body, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
+    XEvent.bind(body, Constant.TABLE_EVENT_TYPE.SNAPSHOT_CHANGE, () => {
       this.setAllStatus();
     });
     XEvent.bind(body, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
       this.setFixedStatus();
+    });
+    XEvent.bind(body, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, () => {
+      this.setAllStatus();
+    });
+    XEvent.bind(body, Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE, () => {
+      this.setAllStatus();
     });
 
     // 普通工具栏
@@ -1114,7 +1134,9 @@ class XWorkTopMenu extends Widget {
             originViewRange,
             targetViewRange,
           });
-          snapshot.close();
+          snapshot.close({
+            type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+          });
           table.render();
           // 删除事件监听
           XEvent.unbind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, callback);
@@ -1151,7 +1173,9 @@ class XWorkTopMenu extends Widget {
               cells.setCell(r, c, new Cell({ text }));
             },
           });
-          snapshot.close();
+          snapshot.close({
+            type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+          });
           table.render();
         }
       }
@@ -1178,7 +1202,9 @@ class XWorkTopMenu extends Widget {
               cells.setCell(r, c, cell);
             },
           });
-          snapshot.close();
+          snapshot.close({
+            type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+          });
           table.render();
         }
       }
@@ -1295,13 +1321,17 @@ class XWorkTopMenu extends Widget {
           if (PlainUtils.isNotUnDef(find) && merge.equals(find)) {
             snapshot.open();
             merges.delete(find);
-            snapshot.close();
+            snapshot.close({
+              type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+            });
             table.render();
           } else if (merge.multiple()) {
             if (cells.emptyRectRange(merge)) {
               snapshot.open();
               merges.add(merge);
-              snapshot.close();
+              snapshot.close({
+                type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+              });
               table.render();
             } else {
               new Confirm({
@@ -1309,7 +1339,9 @@ class XWorkTopMenu extends Widget {
                 ok: () => {
                   snapshot.open();
                   merges.add(merge);
-                  snapshot.close();
+                  snapshot.close({
+                    type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+                  });
                   table.render();
                 },
               }).open();

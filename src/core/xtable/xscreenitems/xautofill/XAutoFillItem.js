@@ -356,7 +356,9 @@ class XAutoFillItem extends XScreenCssBorderItem {
       originViewRange: autoFillRange.union(xSelect.selectRange),
       direction: moveDirection,
     });
-    snapshot.close();
+    snapshot.close({
+      type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+    });
     table.render();
   }
 
@@ -372,7 +374,9 @@ class XAutoFillItem extends XScreenCssBorderItem {
     this.splitMerge();
     this.fillMerge();
     this.fillCellIN();
-    snapshot.close();
+    snapshot.close({
+      type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+    });
     options.onAfterAutoFill();
     table.render();
   }

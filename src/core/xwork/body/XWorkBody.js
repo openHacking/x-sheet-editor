@@ -127,6 +127,30 @@ class XWorkBody extends Widget {
   bind() {
     const exploreInfo = PlainUtils.getExplorerInfo();
     const throttle = new Throttle();
+    XEvent.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
+      throttle.action(() => {
+        XDraw.refresh();
+        const table = this.getActiveTable();
+        if (table) {
+          table.recache();
+          table.reset();
+          this.scrollBarLocal();
+          this.scrollBarSize();
+          table.resize();
+        }
+      });
+    });
+    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.SNAPSHOT_CHANGE, () => {
+      this.scrollBarLocal();
+      this.scrollBarSize();
+    });
+    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
+      const table = this.getActiveTable();
+      if (table) {
+        this.scrollBarLocal();
+        this.scrollBarSize();
+      }
+    });
     XEvent.bind(this.sheetView, Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (e) => {
       const sheet = this.sheetView.getActiveSheet();
       if (PlainUtils.isUnDef(sheet)) return;
@@ -161,62 +185,6 @@ class XWorkBody extends Widget {
         e.stopPropagation();
       }
       e.preventDefault();
-    });
-    XEvent.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
-      throttle.action(() => {
-        XDraw.refresh();
-        const table = this.getActiveTable();
-        if (table) {
-          table.recache();
-          table.reset();
-          this.scrollBarLocal();
-          this.scrollBarSize();
-          table.resize();
-        }
-      });
-    });
-    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW, () => {
-      this.scrollBarLocal();
-      this.scrollBarSize();
-    });
-    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.ADD_NEW_COL, () => {
-      this.scrollBarLocal();
-      this.scrollBarSize();
-    });
-    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.REMOVE_ROW, () => {
-      this.scrollBarLocal();
-      this.scrollBarSize();
-    });
-    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.REMOVE_COL, () => {
-      this.scrollBarLocal();
-      this.scrollBarSize();
-    });
-    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT, () => {
-      this.scrollBarLocal();
-      this.scrollBarSize();
-    });
-    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH, () => {
-      this.scrollBarLocal();
-      this.scrollBarSize();
-    });
-    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
-      const table = this.getActiveTable();
-      if (table) {
-        this.scrollBarLocal();
-        this.scrollBarSize();
-      }
-    });
-    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, (e) => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-      e.stopPropagation();
-    });
-    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.SELECT_CHANGE, (e) => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_CHANGE);
-      e.stopPropagation();
-    });
-    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, (e) => {
-      this.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN, this);
-      e.stopPropagation();
     });
   }
 

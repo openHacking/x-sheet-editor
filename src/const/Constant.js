@@ -1,6 +1,6 @@
-const Constant = {};
 const cssPrefix = 'x-sheet';
 const XSheetVersion = `${cssPrefix} 1.0.0-develop`;
+const Constant = {};
 Constant.WORK_BODY_EVENT_TYPE = {
   CHANGE_ACTIVE: 'changeactive',
 };
@@ -24,9 +24,14 @@ Constant.SYSTEM_EVENT_TYPE = {
 };
 Constant.TABLE_EVENT_TYPE = {
   RENDER: 'render',
+  SNAPSHOT_CHANGE: 'snapshotchange',
   CHANGE_ROW_HEIGHT: 'changerowheight',
   CHANGE_COL_WIDTH: 'changecolwidth',
   SCALE_CHANGE: 'scalechange',
+  REMOVE_ROW: 'removerow',
+  REMOVE_COL: 'removecol',
+  ADD_NEW_ROW: 'addnewrow',
+  ADD_NEW_COL: 'addnewcol',
   FIXED_CHANGE: 'fixedchange',
   FIXED_COL_CHANGE: 'fixedcolchange',
   FIXED_ROW_CHANGE: 'fixedrowchange',
@@ -35,10 +40,6 @@ Constant.TABLE_EVENT_TYPE = {
   SELECT_CHANGE: 'selectchange',
   DATA_CHANGE: 'datachange',
   RESIZE_CHANGE: 'resizechange',
-  REMOVE_ROW: 'removerow',
-  REMOVE_COL: 'removecol',
-  ADD_NEW_ROW: 'addnewrow',
-  ADD_NEW_COL: 'addnewcol',
 };
 Constant.FORM_EVENT_TYPE = {
   SEARCH_INPUT_CHANGE: 'searchinputchange',
@@ -47,6 +48,6 @@ Constant.FORM_EVENT_TYPE = {
 };
 export {
   XSheetVersion,
-  cssPrefix,
   Constant,
+  cssPrefix,
 };

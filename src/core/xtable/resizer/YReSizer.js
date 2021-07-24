@@ -60,7 +60,9 @@ class YReSizer extends Widget {
           const newTop = my - (top - rows.getHeight(ri)) + this.height;
           snapshot.open();
           rows.setHeight(ri, scale.back(newTop));
-          snapshot.close();
+          snapshot.close({
+            type: Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT,
+          });
         }
       });
     });
