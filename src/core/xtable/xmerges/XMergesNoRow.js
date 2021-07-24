@@ -23,8 +23,8 @@ class XMergesNoRow {
         this.syncNo();
       },
     };
-    action.redo();
     snapshot.addAction(action);
+    action.redo();
   }
 
   getNo(no) {
@@ -57,8 +57,8 @@ class XMergesNoRow {
         this.syncNo();
       },
     };
-    action.redo();
     snapshot.addAction(action);
+    action.redo();
   }
 
   insertRowBefore(ri) {
@@ -73,8 +73,8 @@ class XMergesNoRow {
         this.syncNo();
       },
     };
-    action.redo();
     snapshot.addAction(action);
+    action.redo();
   }
 
 }

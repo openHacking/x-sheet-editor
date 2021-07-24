@@ -93,8 +93,8 @@ class Cells {
           });
         },
       };
-      action.redo();
       snapshot.addAction(action);
+      action.redo();
     }
   }
 
@@ -122,8 +122,8 @@ class Cells {
         });
       },
     };
-    action.redo();
     snapshot.addAction(action);
+    action.redo();
   }
 
   getData() {

@@ -91,6 +91,7 @@ class XMerges {
       },
     };
     snapshot.addAction(action);
+    action.redo();
   }
 
   delete(view) {
@@ -106,6 +107,7 @@ class XMerges {
       },
     };
     snapshot.addAction(action);
+    action.redo();
   }
 
   getAll() {

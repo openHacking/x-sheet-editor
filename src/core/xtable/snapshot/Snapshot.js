@@ -1,6 +1,8 @@
 /**
  * 数据快照
  */
+import { Listen } from '../../../libs/Listen';
+
 class Snapshot {
 
   /**
@@ -15,6 +17,8 @@ class Snapshot {
     this.layer = [];
     // 启用记录
     this.apply = false;
+    // 数据监听
+    this.listen = new Listen();
   }
 
   /**
@@ -27,6 +31,7 @@ class Snapshot {
       action.undo();
     }
     this.redoStack.push(layer);
+    this.listen.execute('change');
   }
 
   /**
@@ -39,6 +44,7 @@ class Snapshot {
       action.redo();
     }
     this.undoStack.push(layer);
+    this.listen.execute('change');
   }
 
   /**
@@ -58,6 +64,7 @@ class Snapshot {
     }
     this.layer = [];
     this.apply = false;
+    this.listen.execute('change');
   }
 
   /**

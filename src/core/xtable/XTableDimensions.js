@@ -31,7 +31,6 @@ import { DropColFixed } from './tablefixed/drop/DropColFixed';
 import { XFixedMeasure } from './tablebase/XFixedMeasure';
 import { XFixedView } from './tablebase/XFixedView';
 import { XFilter } from './xscreenitems/xfilter/XFilter';
-import { TableDataSnapshot } from './datasnapshot/TableDataSnapshot';
 import { CellMergeCopyHelper } from './helper/CellMergeCopyHelper';
 import { Clipboard } from '../../libs/Clipboard';
 import { XIcon } from './xicon/XIcon';
@@ -664,6 +663,10 @@ class XTableDimensions extends Widget {
     this.rows.listen.registerListen('insertColBefore', () => {
       this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_COL);
     });
+    // 数据快照变化
+    this.snapshot.listen.registerListen('change', () => {
+      this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+    });
   }
 
   /**
@@ -1151,12 +1154,21 @@ class XTableDimensions extends Widget {
    * 清理缓存
    */
   bindCacheClear() {
+    // 插入新行/列
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW, () => {
+      this.resize();
+    });
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.ADD_NEW_COL, () => {
+      this.resize();
+    });
+    // 固定表格区域
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.FIXED_ROW_CHANGE, () => {
       this.resize();
     });
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.FIXED_COL_CHANGE, () => {
       this.resize();
     });
+    // 列宽/行高变化
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT, () => {
       this.resize();
     });

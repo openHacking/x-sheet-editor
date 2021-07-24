@@ -1048,26 +1048,13 @@ class XWorkTopMenu extends Widget {
 
     // 菜单状态更新
     XEvent.bind(body, Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE, () => {
-      this.setStatus();
+      this.setAllStatus();
     });
     XEvent.bind(body, Constant.TABLE_EVENT_TYPE.SELECT_DOWN, () => {
-      this.setFormatStatus();
-      this.setFontStatus();
-      this.setFontSizeStatus();
-      this.setFontBoldStatus();
-      this.setFontItalicStatus();
-      this.setUnderLineStatus();
-      this.setFontStrikeStatus();
-      this.setBorderStatus();
-      this.setFontColorStatus();
-      this.setFillColorStatus();
-      this.setHorizontalAlignStatus();
-      this.setVerticalAlignStatus();
-      this.setTextWrappingStatus();
-      this.setFontAngleStatus();
+      this.setAllStatus();
     });
     XEvent.bind(body, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
-      this.setStatus();
+      this.setAllStatus();
     });
     XEvent.bind(body, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
       this.setFixedStatus();
@@ -1491,27 +1478,27 @@ class XWorkTopMenu extends Widget {
     });
   }
 
-  setStatus() {
+  setAllStatus() {
+    this.setHorizontalAlignStatus();
+    this.setVerticalAlignStatus();
+    this.setTextWrappingStatus();
     this.setUndoStatus();
     this.setRedoStatus();
     this.setScaleStatus();
     this.setPaintFormatStatus();
     this.setFormatStatus();
     this.setFontStatus();
-    this.setFontSizeStatus();
-    this.setFontBoldStatus();
-    this.setFontItalicStatus();
-    this.setUnderLineStatus();
-    this.setBorderStatus();
-    this.setFontStrikeStatus();
-    this.setFontColorStatus();
-    this.setFillColorStatus();
-    this.setHorizontalAlignStatus();
-    this.setVerticalAlignStatus();
-    this.setTextWrappingStatus();
     this.setFixedStatus();
+    this.setUnderLineStatus();
+    this.setFontSizeStatus();
     this.setFilterStatus();
+    this.setFontBoldStatus();
+    this.setFontStrikeStatus();
     this.setFontAngleStatus();
+    this.setFontItalicStatus();
+    this.setBorderStatus();
+    this.setFillColorStatus();
+    this.setFontColorStatus();
   }
 
   setHorizontalAlignStatus() {

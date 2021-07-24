@@ -53,8 +53,8 @@ class Rows {
         listen.execute('changeHeight', row);
       },
     };
-    action.redo();
     snapshot.addAction(action);
+    action.redo();
   }
 
   insertRowAfter(ri) {
@@ -79,8 +79,8 @@ class Rows {
         listen.execute('insertRowAfter', ri);
       },
     };
-    action.redo();
     snapshot.addAction(action);
+    action.redo();
   }
 
   insertRowBefore(ri) {
@@ -105,8 +105,8 @@ class Rows {
         listen.execute('insertRowBefore', ri);
       },
     };
-    action.redo();
     snapshot.addAction(action);
+    action.redo();
   }
 
   removeRow(ri) {
@@ -132,8 +132,8 @@ class Rows {
         listen.execute('removeRow', ri);
       },
     };
-    action.redo();
     snapshot.addAction(action);
+    action.redo();
   }
 
   rectRangeSumHeight(rectRange) {

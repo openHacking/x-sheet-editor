@@ -23,8 +23,8 @@ class XMergesNoCol {
         this.syncNo();
       },
     };
-    action.redo();
     snapshot.addAction(action);
+    action.redo();
   }
 
   getNo(ci) {
@@ -57,8 +57,8 @@ class XMergesNoCol {
         this.syncNo();
       },
     };
-    action.redo();
     snapshot.addAction(action);
+    action.redo();
   }
 
   insertColBefore(ci) {
@@ -73,8 +73,8 @@ class XMergesNoCol {
         this.syncNo();
       },
     };
-    action.redo();
     snapshot.addAction(action);
+    action.redo();
   }
 
 }

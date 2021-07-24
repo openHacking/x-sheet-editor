@@ -1,7 +1,0 @@
-class TableColsInsertDataProxy {
-
-}
-
-export {
-  TableColsInsertDataProxy,
-};

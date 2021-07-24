@@ -53,8 +53,8 @@ class Cols {
         listen.execute('changeWidth', col);
       },
     };
-    action.redo();
     snapshot.addAction(action);
+    action.redo();
   }
 
   insertColAfter(ci) {
@@ -79,8 +79,8 @@ class Cols {
         listen.execute('insertColAfter', ci);
       },
     };
-    action.redo();
     snapshot.addAction(action);
+    action.redo();
   }
 
   insertColBefore(ci) {
@@ -105,8 +105,8 @@ class Cols {
         listen.execute('insertColBefore', ci);
       },
     };
-    action.redo();
     snapshot.addAction(action);
+    action.redo();
   }
 
   removeCol(ci) {
@@ -132,8 +132,8 @@ class Cols {
         listen.execute('removeCol', ci);
       },
     };
-    action.redo();
     snapshot.addAction(action);
+    action.redo();
   }
 
   sectionSumWidth(sci, eci) {

@@ -431,7 +431,7 @@ class CellMergeCopyHelper extends BaseCellsHelper {
         const src = cells.getCell(ori, oci);
         if (src) {
           const target = src.clone();
-          cells.setCell(tri, tci, target);
+          cells.setCellOrNew(tri, tci, target);
         }
       },
     });
@@ -465,10 +465,10 @@ class CellMergeCopyHelper extends BaseCellsHelper {
         newMerge.each(xIteratorBuilder, (ri, ci) => {
           const merge = merges.getFirstIncludes(ri, ci);
           if (merge) {
-            merges.deleteMerge(merge);
+            merges.delete(merge);
           }
         });
-        merges.addMerge(newMerge);
+        merges.add(newMerge);
       },
     });
     copy.executeCopy();
@@ -490,7 +490,7 @@ class CellMergeCopyHelper extends BaseCellsHelper {
           const target = cells.getCellOrNew(tri, tci);
           const clone = src.clone();
           clone.text = target.text;
-          cells.setCell(tri, tci, clone);
+          cells.setCellOrNew(tri, tci, clone);
         }
       },
     });
@@ -518,7 +518,7 @@ class CellMergeCopyHelper extends BaseCellsHelper {
         const cell = cells.getCellOrNew(ri, ci);
         const clone = cell.clone();
         clone.text = `${index}`;
-        cells.setCell(ri, ci, clone);
+        cells.setCellOrNew(ri, ci, clone);
       },
     });
     serialize.executeSerialize();

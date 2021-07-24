@@ -59,7 +59,7 @@ class YReSizer extends Widget {
         })) {
           const newTop = my - (top - rows.getHeight(ri)) + this.height;
           snapshot.open();
-          cols.setHeight(ri, scale.back(newTop));
+          rows.setHeight(ri, scale.back(newTop));
           snapshot.close();
         }
       });

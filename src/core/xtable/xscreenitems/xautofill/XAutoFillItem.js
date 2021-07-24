@@ -34,106 +34,31 @@ class XAutoFillItem extends XScreenCssBorderItem {
     this.setBorderType('dashed');
   }
 
-  onAdd() {
-    this.bind();
-    this.hide();
+  borderHandle() {
+    const { xScreen, autoFillRange, display } = this;
+    if (display === false || autoFillRange.equals(RectRange.EMPTY)) {
+      this.hideBorder();
+    } else {
+      const xSelect = xScreen.findType(XSelectItem);
+      const { selectRange } = xSelect;
+      const unionRange = selectRange.union(autoFillRange);
+      this.showBorder(unionRange);
+    }
   }
 
-  unbind() {
-    const { xScreen } = this;
-    const xSelect = xScreen.findType(XSelectItem);
-    XEvent.bind([
-      xSelect.ltCorner,
-      xSelect.tCorner,
-      xSelect.lCorner,
-      xSelect.brCorner,
-    ]);
-    XEvent.bind([
-      xSelect.ltCorner,
-      xSelect.tCorner,
-      xSelect.lCorner,
-      xSelect.brCorner,
-    ]);
-    XEvent.bind([
-      xSelect.ltCorner,
-      xSelect.tCorner,
-      xSelect.lCorner,
-      xSelect.brCorner,
-    ]);
-  }
-
-  bind() {
-    const { table, xScreen } = this;
-    const { mousePointer } = table;
-    const xSelect = xScreen.findType(XSelectItem);
-    const autoFillType = new AutoFillType({
-      onUpdate: (menu) => {
-        const { value } = menu;
-        switch (value) {
-          case AutoFillTypeMenu.FILL_TYPE.SERIALIZE:
-            this.serialize();
-            break;
-          case AutoFillTypeMenu.FILL_TYPE.FILLING:
-            break;
-        }
-      },
-    });
-    XEvent.bind([
-      xSelect.ltCorner,
-      xSelect.tCorner,
-      xSelect.lCorner,
-      xSelect.brCorner,
-    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
-      mousePointer.free(XAutoFillItem);
-    });
-    XEvent.bind([
-      xSelect.ltCorner,
-      xSelect.tCorner,
-      xSelect.lCorner,
-      xSelect.brCorner,
-    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
-      mousePointer.lock(XAutoFillItem);
-      mousePointer.set(XTableMousePointer.KEYS.crosshair, XAutoFillItem);
-    });
-    XEvent.bind([
-      xSelect.ltCorner,
-      xSelect.tCorner,
-      xSelect.lCorner,
-      xSelect.brCorner,
-    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
-      mousePointer.lock(XAutoFillItem);
-      mousePointer.set(XTableMousePointer.KEYS.crosshair, XAutoFillItem);
-      const { x, y } = table.eventXy(e1);
-      this.display = true;
-      this.rangeHandle(x, y);
-      this.offsetHandle();
-      this.borderHandle();
-      XEvent.mouseMoveUp(document, (e2) => {
-        const { x, y } = table.eventXy(e2);
-        this.rangeHandle(x, y);
-        this.offsetHandle();
-        this.borderHandle();
-      }, () => {
-        this.display = false;
-        mousePointer.free(XAutoFillItem);
-        const { autoFillRange } = this;
-        if (!table.isReadOnly({
-          view: autoFillRange,
-        })) {
-          this.autoFill();
-          this.hide();
-          if (!autoFillRange.equals(RectRange.EMPTY)) {
-            const { selectRange } = xSelect;
-            xSelect.setRange(selectRange.union(autoFillRange));
-            const { activeCorner } = xSelect;
-            autoFillType.setEL(activeCorner);
-            autoFillType.open();
-          }
-        } else {
-          this.hide();
-        }
-      });
-    });
+  offsetHandle() {
+    const { xScreen, autoFillRange, display } = this;
+    if (display === false || autoFillRange.equals(RectRange.EMPTY)) {
+      this.hide();
+    } else {
+      const xSelect = xScreen.findType(XSelectItem);
+      const { selectRange } = xSelect;
+      const unionRange = selectRange.union(autoFillRange);
+      this.show();
+      this.setDisplay(unionRange);
+      this.setSizer(unionRange);
+      this.setLocal(unionRange);
+    }
   }
 
   rangeHandle(x, y) {
@@ -320,31 +245,106 @@ class XAutoFillItem extends XScreenCssBorderItem {
     this.moveDirection = moveDirection;
   }
 
-  borderHandle() {
-    const { xScreen, autoFillRange, display } = this;
-    if (display === false || autoFillRange.equals(RectRange.EMPTY)) {
-      this.hideBorder();
-    } else {
-      const xSelect = xScreen.findType(XSelectItem);
-      const { selectRange } = xSelect;
-      const unionRange = selectRange.union(autoFillRange);
-      this.showBorder(unionRange);
-    }
+  onAdd() {
+    this.bind();
+    this.hide();
   }
 
-  offsetHandle() {
-    const { xScreen, autoFillRange, display } = this;
-    if (display === false || autoFillRange.equals(RectRange.EMPTY)) {
-      this.hide();
-    } else {
-      const xSelect = xScreen.findType(XSelectItem);
-      const { selectRange } = xSelect;
-      const unionRange = selectRange.union(autoFillRange);
-      this.show();
-      this.setDisplay(unionRange);
-      this.setSizer(unionRange);
-      this.setLocal(unionRange);
-    }
+  unbind() {
+    const { xScreen } = this;
+    const xSelect = xScreen.findType(XSelectItem);
+    XEvent.bind([
+      xSelect.ltCorner,
+      xSelect.tCorner,
+      xSelect.lCorner,
+      xSelect.brCorner,
+    ]);
+    XEvent.bind([
+      xSelect.ltCorner,
+      xSelect.tCorner,
+      xSelect.lCorner,
+      xSelect.brCorner,
+    ]);
+    XEvent.bind([
+      xSelect.ltCorner,
+      xSelect.tCorner,
+      xSelect.lCorner,
+      xSelect.brCorner,
+    ]);
+  }
+
+  bind() {
+    const { table, xScreen } = this;
+    const { mousePointer } = table;
+    const xSelect = xScreen.findType(XSelectItem);
+    const autoFillType = new AutoFillType({
+      onUpdate: (menu) => {
+        const { value } = menu;
+        switch (value) {
+          case AutoFillTypeMenu.FILL_TYPE.SERIALIZE:
+            this.serialize();
+            break;
+          case AutoFillTypeMenu.FILL_TYPE.FILLING:
+            break;
+        }
+      },
+    });
+    XEvent.bind([
+      xSelect.ltCorner,
+      xSelect.tCorner,
+      xSelect.lCorner,
+      xSelect.brCorner,
+    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
+      mousePointer.free(XAutoFillItem);
+    });
+    XEvent.bind([
+      xSelect.ltCorner,
+      xSelect.tCorner,
+      xSelect.lCorner,
+      xSelect.brCorner,
+    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
+      mousePointer.lock(XAutoFillItem);
+      mousePointer.set(XTableMousePointer.KEYS.crosshair, XAutoFillItem);
+    });
+    XEvent.bind([
+      xSelect.ltCorner,
+      xSelect.tCorner,
+      xSelect.lCorner,
+      xSelect.brCorner,
+    ], Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
+      mousePointer.lock(XAutoFillItem);
+      mousePointer.set(XTableMousePointer.KEYS.crosshair, XAutoFillItem);
+      const { x, y } = table.eventXy(e1);
+      this.display = true;
+      this.rangeHandle(x, y);
+      this.offsetHandle();
+      this.borderHandle();
+      XEvent.mouseMoveUp(document, (e2) => {
+        const { x, y } = table.eventXy(e2);
+        this.rangeHandle(x, y);
+        this.offsetHandle();
+        this.borderHandle();
+      }, () => {
+        this.display = false;
+        mousePointer.free(XAutoFillItem);
+        const { autoFillRange } = this;
+        if (!table.isReadOnly({
+          view: autoFillRange,
+        })) {
+          this.autoFill();
+          this.hide();
+          if (!autoFillRange.equals(RectRange.EMPTY)) {
+            const { selectRange } = xSelect;
+            xSelect.setRange(selectRange.union(autoFillRange));
+            const { activeCorner } = xSelect;
+            autoFillType.setEL(activeCorner);
+            autoFillType.open();
+          }
+        } else {
+          this.hide();
+        }
+      });
+    });
   }
 
   serialize() {
@@ -401,7 +401,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
     const { table, autoFillRange } = this;
     const merges = table.getTableMerges();
     merges.getIncludes(autoFillRange, (merge) => {
-      merges.deleteMerge(merge);
+      merges.delete(merge);
     });
   }
 
