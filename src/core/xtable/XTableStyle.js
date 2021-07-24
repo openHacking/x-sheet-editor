@@ -2640,7 +2640,10 @@ class XTableStyle extends Widget {
     // 数据快照
     this.snapshot = snapshot;
     // 表格数据配置
-    this.xTableData = new XTableDataItems(this.settings.data);
+    this.xTableData = new XTableDataItems({
+      snapshot: this.snapshot,
+      items: this.settings.data,
+    });
     this.merges = new XMerges({
       xIteratorBuilder: this.xIteratorBuilder,
       snapshot: this.snapshot,

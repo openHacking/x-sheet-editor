@@ -1535,68 +1535,110 @@ class XTableDimensions extends Widget {
   }
 
   /**
-   * 插入到指定列之后
-   * @param ci
-   */
-  insertColAfter(ci) {
-    const { cols, xTableStyle } = this;
-    xTableStyle.insertColAfter(ci);
-    cols.insertColAfter();
-    this.resize();
-  }
-
-  /**
-   * 插入到指定行之后
+   * 删除指定行
    * @param ri
+   * @param number
    */
-  insertRowAfter(ri) {
-    const { rows, xTableStyle } = this;
-    xTableStyle.insertRowAfter(ri);
-    rows.insertRowAfter();
-    this.resize();
-  }
-
-  /**
-   * 插入到指定列之前
-   * @param ci
-   */
-  insertColBefore(ci) {
-    const { cols, xTableStyle } = this;
-    xTableStyle.insertColBefore(ci);
-    cols.insertColBefore();
-    this.resize();
-  }
-
-  /**
-   * 插入到指定行之前
-   * @param ri
-   */
-  insertRowBefore(ri) {
-    const { rows, xTableStyle } = this;
-    xTableStyle.insertRowBefore(ri);
-    rows.insertRowBefore();
+  removeRow(ri, number = 1) {
+    const { snapshot, rows, xTableStyle } = this;
+    snapshot.open();
+    for (let i = 0; i < number; i++) {
+      xTableStyle.removeRow(ri);
+      rows.removeRow();
+    }
+    snapshot.close({
+      type: Constant.TABLE_EVENT_TYPE.REMOVE_ROW,
+    });
     this.resize();
   }
 
   /**
    * 删除指定列
    * @param ci
+   * @param number
    */
-  removeCol(ci) {
-    const { cols, xTableStyle } = this;
-    xTableStyle.removeCol(ci);
-    cols.removeCol();
+  removeCol(ci, number = 1) {
+    const { snapshot, cols, xTableStyle } = this;
+    snapshot.open();
+    for (let i = 0; i < number; i++) {
+      xTableStyle.removeCol(ci);
+      cols.removeCol();
+    }
+    snapshot.close({
+      type: Constant.TABLE_EVENT_TYPE.REMOVE_COL,
+    });
     this.resize();
   }
 
   /**
-   * 删除指定行
-   * @param ri
+   * 插入到指定列之后
+   * @param ci
+   * @param number
    */
-  removeRow(ri) {
-    const { rows, xTableStyle } = this;
-    xTableStyle.removeRow(ri);
-    rows.removeRow();
+  insertColAfter(ci, number = 1) {
+    const { snapshot, cols, xTableStyle } = this;
+    snapshot.open();
+    for (let i = 0; i < number; i++) {
+      xTableStyle.insertColAfter(ci);
+      cols.insertColAfter();
+    }
+    snapshot.close({
+      type: Constant.TABLE_EVENT_TYPE.ADD_NEW_COL,
+    });
+    this.resize();
+  }
+
+  /**
+   * 插入到指定行之后
+   * @param ri
+   * @param number
+   */
+  insertRowAfter(ri, number = 1) {
+    const { snapshot, rows, xTableStyle } = this;
+    snapshot.open();
+    for (let i = 0; i < number; i++) {
+      xTableStyle.insertRowAfter(ri);
+      rows.insertRowAfter();
+    }
+    snapshot.close({
+      type: Constant.TABLE_EVENT_TYPE.ADD_NEW_COL,
+    });
+    this.resize();
+  }
+
+  /**
+   * 插入到指定列之前
+   * @param ci
+   * @param number
+   */
+  insertColBefore(ci, number = 1) {
+    const { snapshot, cols, xTableStyle } = this;
+    snapshot.open();
+    for (let i = 0; i < number; i++) {
+      xTableStyle.insertColBefore(ci);
+      cols.insertColBefore();
+    }
+    snapshot.close({
+      type: Constant.TABLE_EVENT_TYPE.ADD_NEW_COL,
+    });
+    this.resize();
+  }
+
+  /**
+   * 插入到指定行之前
+   * @param ri
+   * @param number
+   */
+  insertRowBefore(ri, number = 1) {
+    const { snapshot, rows, xTableStyle } = this;
+    snapshot.open();
+    for (let i = 0; i < number; i++) {
+      xTableStyle.insertRowBefore(ri);
+      rows.insertRowBefore();
+    }
+    snapshot.close({
+      type: Constant.TABLE_EVENT_TYPE.ADD_NEW_COL,
+    });
     this.resize();
   }
 

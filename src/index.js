@@ -1,5 +1,5 @@
 /* global window, document */
-import { cssPrefix, XSheetVersion } from './const/Constant';
+import { Constant, cssPrefix, XSheetVersion } from './const/Constant';
 import { XWork } from './core/xwork/XWork';
 import { Widget } from './libs/Widget';
 import { XDraw } from './canvas/XDraw';
@@ -18,6 +18,8 @@ import { WideUnit } from './core/xtable/tableunit/WideUnit';
 import './styles/base.less';
 import './styles/index.less';
 import { XTableFocus } from './core/xtable/XTableFocus';
+import { XEvent } from './libs/XEvent';
+import { XlsxImport } from './io/xlsx/XlsxImport';
 
 const settings = {
   workConfig: {
@@ -78,7 +80,10 @@ XSheet.FindDpi = FindDpi;
 XSheet.WideUnit = WideUnit;
 XSheet.HeightUnit = HeightUnit;
 XSheet.ColorPicker = ColorPicker;
+XSheet.XEvent = XEvent;
+XSheet.Constant = Constant;
 XSheet.XlsxExport = XlsxExport;
+XSheet.XlsxImport = XlsxImport;
 
 if (window) {
   window.XSheet = XSheet;

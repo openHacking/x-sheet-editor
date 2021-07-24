@@ -14,7 +14,10 @@ class Snapshot {
     // 反撤销
     this.redoStack = [];
     // 当前记录层
-    this.layer = [];
+    this.layer = {
+      event: '',
+      data: [],
+    };
     // 启用记录
     this.apply = false;
     // 数据监听
@@ -26,12 +29,12 @@ class Snapshot {
    */
   undo() {
     const layer = this.undoStack.pop();
-    for (let i = 0, len = layer.length; i < len; i++) {
-      const action = layer[i];
+    for (let i = 0, len = layer.data.length; i < len; i++) {
+      const action = layer.data[i];
       action.undo();
     }
     this.redoStack.push(layer);
-    this.listen.execute('change');
+    this.listen.execute('change', layer.event);
   }
 
   /**
@@ -39,19 +42,22 @@ class Snapshot {
    */
   redo() {
     const layer = this.redoStack.pop();
-    for (let i = 0, len = layer.length; i < len; i++) {
-      const action = layer[i];
+    for (let i = 0, len = layer.data.length; i < len; i++) {
+      const action = layer.data[i];
       action.redo();
     }
     this.undoStack.push(layer);
-    this.listen.execute('change');
+    this.listen.execute('change', layer.event);
   }
 
   /**
    * 打开快照
    */
   open() {
-    this.layer = [];
+    this.layer = {
+      event: '',
+      data: [],
+    };
     this.apply = true;
   }
 
@@ -59,10 +65,14 @@ class Snapshot {
    * 关闭快照
    */
   close(event) {
-    if (this.layer.length) {
+    if (this.layer.data.length) {
+      this.layer.event = event;
       this.undoStack.push(this.layer);
     }
-    this.layer = [];
+    this.layer = {
+      event: '',
+      data: [],
+    };
     this.apply = false;
     this.listen.execute('change', event);
   }
@@ -92,7 +102,7 @@ class Snapshot {
     redo: () => {},
   }) {
     if (this.apply) {
-      this.layer.push(action);
+      this.layer.data.push(action);
     }
   }
 }

@@ -140,7 +140,27 @@ class XWorkBody extends Widget {
         }
       });
     });
-    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.SNAPSHOT_CHANGE, () => {
+    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH, () => {
+      this.scrollBarLocal();
+      this.scrollBarSize();
+    });
+    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT, () => {
+      this.scrollBarLocal();
+      this.scrollBarSize();
+    });
+    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.REMOVE_ROW, () => {
+      this.scrollBarLocal();
+      this.scrollBarSize();
+    });
+    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.REMOVE_COL, () => {
+      this.scrollBarLocal();
+      this.scrollBarSize();
+    });
+    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW, () => {
+      this.scrollBarLocal();
+      this.scrollBarSize();
+    });
+    XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.ADD_NEW_COL, () => {
       this.scrollBarLocal();
       this.scrollBarSize();
     });
@@ -189,8 +209,8 @@ class XWorkBody extends Widget {
   }
 
   unbind() {
-    XEvent.unbind(this.sheetView);
     XEvent.unbind(window);
+    XEvent.unbind(this.sheetView);
   }
 
   addTabSheet({ tab, sheet }) {

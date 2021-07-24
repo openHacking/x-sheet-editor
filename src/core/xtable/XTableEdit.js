@@ -16,7 +16,9 @@ class XTableEdit extends Widget {
     this.cell = null;
     this.merge = null;
     this.mode = XTableEdit.MODE.HIDE;
-    this.throttle = new Throttle({ time: 100 });
+    this.throttle = new Throttle({
+      time: 100,
+    });
     this.attr('contenteditable', true);
     this.html(PlainUtils.EMPTY);
   }
@@ -117,31 +119,48 @@ class XTableEdit extends Widget {
     const { xScreen } = table;
     const xSelect = xScreen.findType(XSelectItem);
     const merges = table.getTableMerges();
-    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (e) => {
-      e.stopPropagation();
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (event) => {
+      event.stopPropagation();
     });
-    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      e.stopPropagation();
-    });
-    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.INPUT, () => {
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.INPUT, (event) => {
       const { cell } = this;
       const { fontAttr } = cell;
       const { align } = fontAttr;
       if (align === BaseFont.ALIGN.center) {
         this.editOffset();
       }
+      table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_INPUT, {
+        event,
+        table,
+        edit: this,
+      });
     });
-    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      this.hideEdit();
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (event) => {
+      event.stopPropagation();
     });
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
       this.hideEdit();
     });
-    XEvent.mouseDoubleClick(table, () => {
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (event) => {
+      if (this.mode === XTableEdit.MODE.SHOW) {
+        this.hideEdit();
+        table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_FINISH, {
+          event,
+          table,
+          edit: this,
+        });
+      }
+    });
+    XEvent.mouseDoubleClick(table, (event) => {
       const { selectRange } = xSelect;
       const { sri, sci } = selectRange;
       if (!selectRange.multiple() || merges.getFirstIncludes(sri, sci)) {
         this.showEdit();
+        table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_START, {
+          event,
+          table,
+          edit: this,
+        });
       }
     });
   }
