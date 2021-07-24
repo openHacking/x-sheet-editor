@@ -4,26 +4,33 @@ import { RectRange } from '../tablebase/RectRange';
 import { Row } from './Row';
 import { CacheHeight } from './CacheHeight';
 import { XIteratorBuilder } from '../iterator/XIteratorBuilder';
+import { Snapshot } from '../snapshot/Snapshot';
 
 class Rows {
 
   constructor({
-    scaleAdapter = new ScaleAdapter(),
     xIteratorBuilder = new XIteratorBuilder(),
+    snapshot = new Snapshot(),
+    scaleAdapter = new ScaleAdapter(),
     len = 10,
     data = [],
     height = 30,
   } = {}) {
     this.xIteratorBuilder = xIteratorBuilder;
-    this.cacheHeight = new CacheHeight();
+    this.snapshot = snapshot;
     this.scaleAdapter = scaleAdapter;
+    this.cacheHeight = new CacheHeight();
+    this.data = data;
     this.min = 5;
     this.len = len;
-    this.data = data;
     this.height = PlainUtils.minIf(height, this.min);
     if (this.data.length > this.len) {
       this.len = this.data.length;
     }
+  }
+
+  getOriginDefaultHeight() {
+    return this.height;
   }
 
   clearCache() {
@@ -31,124 +38,99 @@ class Rows {
   }
 
   setHeight(ri, height) {
-    const row = this.getOrNew(ri);
-    const { scaleAdapter } = this;
-    row.height = scaleAdapter.back(PlainUtils.minIf(height, this.min));
-  }
-
-  removeRow(ri) {
-    const { data } = this;
-    if (PlainUtils.isNotUnDef(ri)) {
-      if (data[ri]) {
-        data.splice(ri, 1);
-      }
-    }
-    this.len--;
+    let { scaleAdapter, snapshot } = this;
+    let row = this.getOrNew(ri);
+    let oldValue = row.height;
+    let action = {
+      undo: () => {
+        row.height = oldValue;
+      },
+      redo: () => {
+        row.height = scaleAdapter.back(PlainUtils.minIf(height, this.min));
+      },
+    };
+    action.redo();
+    snapshot.addAction(action);
   }
 
   insertRowAfter(ri) {
-    const { data } = this;
-    if (PlainUtils.isNotUnDef(ri)) {
-      if (data[ri]) {
-        data.splice(ri + 1, 0, {});
-      }
-    }
-    this.len++;
+    let { data, snapshot } = this;
+    let action = {
+      undo: () => {
+        if (PlainUtils.isNotUnDef(ri)) {
+          if (data[ri]) {
+            data.splice(ri + 1, 1);
+          }
+        }
+        this.len--;
+      },
+      redo: () => {
+        if (PlainUtils.isNotUnDef(ri)) {
+          if (data[ri]) {
+            data.splice(ri + 1, 0, {});
+          }
+        }
+        this.len++;
+      },
+    };
+    action.redo();
+    snapshot.addAction(action);
   }
 
   insertRowBefore(ri) {
-    const { data } = this;
-    if (PlainUtils.isNotUnDef(ri)) {
-      if (data[ri]) {
-        data.splice(ri, 0, {});
-      }
-    }
-    this.len++;
-  }
-
-  getOrNew(ri) {
-    const row = this.get(ri);
-    if (row) {
-      return row;
-    }
-    if (ri < 0) {
-      throw new TypeError(`错误的行号${ri}`);
-    }
-    this.data[ri] = new Row(ri, {
-      height: this.height,
-    });
-    return this.data[ri];
-  }
-
-  get(ri) {
-    let row = this.data[ri];
-    if (row) {
-      if (row instanceof Row) {
-        return row;
-      }
-      row = new Row(ri, row);
-      this.data[ri] = row;
-    }
-    return row;
-  }
-
-  getData() {
-    return {
-      min: this.min,
-      len: this.len,
-      data: this.data,
-      height: this.height,
+    let { data, snapshot } = this;
+    let action = {
+      undo: () => {
+        if (PlainUtils.isNotUnDef(ri)) {
+          if (data[ri]) {
+            data.splice(ri, 1);
+          }
+        }
+        this.len--;
+      },
+      redo: () => {
+        if (PlainUtils.isNotUnDef(ri)) {
+          if (data[ri]) {
+            data.splice(ri, 0, {});
+          }
+        }
+        this.len++;
+      },
     };
+    action.redo();
+    snapshot.addAction(action);
   }
 
-  getMinHeight() {
-    const { scaleAdapter } = this;
-    return scaleAdapter.goto(this.min);
+  removeRow(ri) {
+    let { data, snapshot } = this;
+    let oldValue;
+    let action = {
+      undo: () => {
+        if (PlainUtils.isNotUnDef(ri)) {
+          if (data[ri] && oldValue) {
+            data.splice(ri, 0, oldValue);
+          }
+        }
+        this.len++;
+      },
+      redo: () => {
+        if (PlainUtils.isNotUnDef(ri)) {
+          if (data[ri]) {
+            oldValue = data.splice(ri, 1);
+          }
+        }
+        this.len--;
+      },
+    };
+    action.redo();
+    snapshot.addAction(action);
   }
 
-  getHeight(ri) {
-    if (ri < 0) {
-      return 0;
+  rectRangeSumHeight(rectRange) {
+    if (!rectRange.equals(RectRange.EMPTY)) {
+      return this.sectionSumHeight(rectRange.sri, rectRange.eri);
     }
-    const { scaleAdapter } = this;
-    const row = this.get(ri);
-    if (row && row.height) {
-      return scaleAdapter.goto(row.height);
-    }
-    return scaleAdapter.goto(this.height);
-  }
-
-  getDefaultHeight() {
-    const { scaleAdapter } = this;
-    return scaleAdapter.goto(this.height);
-  }
-
-  getOriginHeight(ri) {
-    if (ri < 0) {
-      return 0;
-    }
-    const row = this.get(ri);
-    if (row && row.height) {
-      return row.height;
-    }
-    return this.height;
-  }
-
-  getOriginDefaultHeight() {
-    return this.height;
-  }
-
-  eachHeight(ri, ei, cb, sy = 0) {
-    let y = sy;
-    this.xIteratorBuilder.getRowIterator()
-      .setBegin(ri)
-      .setEnd(ei)
-      .setLoop((i) => {
-        const rowHeight = this.getHeight(i);
-        cb(i, rowHeight, y);
-        y += rowHeight;
-      })
-      .execute();
+    return 0;
   }
 
   sectionSumHeight(sri, eri) {
@@ -191,11 +173,85 @@ class Rows {
     return total;
   }
 
-  rectRangeSumHeight(rectRange) {
-    if (!rectRange.equals(RectRange.EMPTY)) {
-      return this.sectionSumHeight(rectRange.sri, rectRange.eri);
+  get(ri) {
+    let row = this.data[ri];
+    if (row) {
+      if (row instanceof Row) {
+        return row;
+      }
+      row = new Row(ri, row);
+      this.data[ri] = row;
     }
-    return 0;
+    return row;
+  }
+
+  getOrNew(ri) {
+    const row = this.get(ri);
+    if (row) {
+      return row;
+    }
+    if (ri < 0) {
+      throw new TypeError(`错误的行号${ri}`);
+    }
+    this.data[ri] = new Row(ri, {
+      height: this.height,
+    });
+    return this.data[ri];
+  }
+
+  getMinHeight() {
+    const { scaleAdapter } = this;
+    return scaleAdapter.goto(this.min);
+  }
+
+  getHeight(ri) {
+    if (ri < 0) {
+      return 0;
+    }
+    const { scaleAdapter } = this;
+    const row = this.get(ri);
+    if (row && row.height) {
+      return scaleAdapter.goto(row.height);
+    }
+    return scaleAdapter.goto(this.height);
+  }
+
+  getDefaultHeight() {
+    const { scaleAdapter } = this;
+    return scaleAdapter.goto(this.height);
+  }
+
+  getOriginHeight(ri) {
+    if (ri < 0) {
+      return 0;
+    }
+    const row = this.get(ri);
+    if (row && row.height) {
+      return row.height;
+    }
+    return this.height;
+  }
+
+  eachHeight(ri, ei, cb, sy = 0) {
+    let y = sy;
+    this.xIteratorBuilder.getRowIterator()
+      .setBegin(ri)
+      .setEnd(ei)
+      .setLoop((i) => {
+        const rowHeight = this.getHeight(i);
+        cb(i, rowHeight, y);
+        y += rowHeight;
+      })
+      .execute();
+  }
+
+  getData() {
+    return {
+      min: this.min,
+      len: this.len,
+      data: this.data,
+      height: this.height,
+    };
   }
 
 }

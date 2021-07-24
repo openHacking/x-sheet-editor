@@ -11,15 +11,12 @@ module.exports = merge(common, {
   plugins: [
     new CleanWebpackPlugin(['dist']),
     new ProgressBarWebpackPlugin(),
-    //  you should know that the HtmlWebpackPlugin by default will generate its own index.html
     new HtmlWebpackPlugin({
       favicon: './assets/img/logo.ico',
-      template: './index.html',
       title: 'x-sheet',
+      template: './index.html',
     }),
     new MiniCssExtractPlugin({
-      // Options similar to the same options in webpackOptions.output
-      // both options are optional
       filename: 'css/[name].[contenthash].css',
       // chunkFilename: devMode ? '[id].[hash].css' : '[id].css',
     }),

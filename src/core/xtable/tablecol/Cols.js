@@ -4,17 +4,20 @@ import { RectRange } from '../tablebase/RectRange';
 import { Col } from './Col';
 import { CacheWidth } from './CacheWidth';
 import { XIteratorBuilder } from '../iterator/XIteratorBuilder';
+import { Snapshot } from '../snapshot/Snapshot';
 
 class Cols {
 
   constructor({
-    scaleAdapter = new ScaleAdapter(),
     xIteratorBuilder = new XIteratorBuilder(),
+    snapshot = new Snapshot(),
+    scaleAdapter = new ScaleAdapter(),
     len = 10,
     data = [],
     width = 110,
   } = {}) {
     this.xIteratorBuilder = xIteratorBuilder;
+    this.snapshot = snapshot;
     this.scaleAdapter = scaleAdapter;
     this.cacheWidth = new CacheWidth();
     this.min = 5;
@@ -26,92 +29,101 @@ class Cols {
     }
   }
 
+  getOriginDefaultWidth() {
+    return this.width;
+  }
+
   clearCache() {
     this.cacheWidth.clear();
   }
 
   setWidth(ci, width) {
-    const col = this.getOrNew(ci);
-    const { scaleAdapter } = this;
-    col.width = scaleAdapter.back(PlainUtils.minIf(width, this.min));
-  }
-
-  removeCol(ci) {
-    const { data } = this;
-    if (PlainUtils.isNotUnDef(ci)) {
-      if (data[ci]) {
-        data.splice(ci, 1);
-      }
-    }
-    this.len--;
+    let { scaleAdapter, snapshot } = this;
+    let col = this.getOrNew(ci);
+    let oldValue = col.width;
+    let action = {
+      undo: () => {
+        col.width = oldValue;
+      },
+      redo: () => {
+        col.width = scaleAdapter.back(PlainUtils.minIf(width, this.min));
+      },
+    };
+    action.redo();
+    snapshot.addAction(action);
   }
 
   insertColAfter(ci) {
-    const { data } = this;
-    if (PlainUtils.isNotUnDef(ci)) {
-      if (data[ci]) {
-        data.splice(ci + 1, 0, {});
-      }
-    }
-    this.len++;
+    let { data, snapshot } = this;
+    let action = {
+      undo: () => {
+        if (PlainUtils.isNotUnDef(ci)) {
+          if (data[ci]) {
+            data.splice(ci + 1, 1);
+          }
+        }
+        this.len--;
+      },
+      redo: () => {
+        if (PlainUtils.isNotUnDef(ci)) {
+          if (data[ci]) {
+            data.splice(ci + 1, 0, {});
+          }
+        }
+        this.len++;
+      },
+    };
+    action.redo();
+    snapshot.addAction(action);
   }
 
   insertColBefore(ci) {
-    const { data } = this;
-    if (PlainUtils.isNotUnDef(ci)) {
-      if (data[ci]) {
-        data.splice(ci, 0, {});
-      }
-    }
-    this.len++;
-  }
-
-  getOrNew(ci) {
-    const col = this.get(ci);
-    if (col) {
-      return col;
-    }
-    if (ci < 0) {
-      throw new TypeError(`错误的列号${ci}`);
-    }
-    this.data[ci] = new Col(ci, {
-      width: this.width,
-    });
-    return this.data[ci];
-  }
-
-  get(ci) {
-    let col = this.data[ci];
-    if (col) {
-      if (col instanceof Col) {
-        return col;
-      }
-      col = new Col(ci, col);
-      this.data[ci] = col;
-    }
-    return col;
-  }
-
-  getData() {
-    return {
-      min: this.min,
-      len: this.len,
-      data: this.data,
-      width: this.width,
+    let { data, snapshot } = this;
+    let action = {
+      undo: () => {
+        if (PlainUtils.isNotUnDef(ci)) {
+          if (data[ci]) {
+            data.splice(ci, 1);
+          }
+        }
+        this.len--;
+      },
+      redo: () => {
+        if (PlainUtils.isNotUnDef(ci)) {
+          if (data[ci]) {
+            data.splice(ci, 0, {});
+          }
+        }
+        this.len++;
+      },
     };
+    action.redo();
+    snapshot.addAction(action);
   }
 
-  eachWidth(ci, ei, cb, sx = 0) {
-    let x = sx;
-    this.xIteratorBuilder.getColIterator()
-      .setBegin(ci)
-      .setEnd(ei)
-      .setLoop((i) => {
-        const colWidth = this.getWidth(i);
-        cb(i, colWidth, x);
-        x += colWidth;
-      })
-      .execute();
+  removeCol(ci) {
+    let { data, snapshot } = this;
+    let oldValue;
+    let action = {
+      undo: () => {
+        if (PlainUtils.isNotUnDef(ci)) {
+          if (data[ci] && oldValue) {
+            data.splice(ci, 0, oldValue);
+          }
+        }
+        this.len++;
+      },
+      redo: () => {
+        if (PlainUtils.isNotUnDef(ci)) {
+          if (data[ci]) {
+            oldValue = data.splice(ci, 1);
+          }
+        }
+        this.len--;
+      },
+    };
+    action.redo();
+    snapshot.addAction(action);
   }
 
   sectionSumWidth(sci, eci) {
@@ -161,6 +173,32 @@ class Cols {
     return 0;
   }
 
+  get(ci) {
+    let col = this.data[ci];
+    if (col) {
+      if (col instanceof Col) {
+        return col;
+      }
+      col = new Col(ci, col);
+      this.data[ci] = col;
+    }
+    return col;
+  }
+
+  getOrNew(ci) {
+    const col = this.get(ci);
+    if (col) {
+      return col;
+    }
+    if (ci < 0) {
+      throw new TypeError(`错误的列号${ci}`);
+    }
+    this.data[ci] = new Col(ci, {
+      width: this.width,
+    });
+    return this.data[ci];
+  }
+
   getMinWidth() {
     const { scaleAdapter } = this;
     return scaleAdapter.goto(this.min);
@@ -194,8 +232,26 @@ class Cols {
     return this.width;
   }
 
-  getOriginDefaultWidth() {
-    return this.width;
+  eachWidth(ci, ei, cb, sx = 0) {
+    let x = sx;
+    this.xIteratorBuilder.getColIterator()
+      .setBegin(ci)
+      .setEnd(ei)
+      .setLoop((i) => {
+        const colWidth = this.getWidth(i);
+        cb(i, colWidth, x);
+        x += colWidth;
+      })
+      .execute();
+  }
+
+  getData() {
+    return {
+      min: this.min,
+      len: this.len,
+      data: this.data,
+      width: this.width,
+    };
   }
 
 }

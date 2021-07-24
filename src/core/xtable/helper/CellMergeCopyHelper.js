@@ -393,10 +393,6 @@ class CellMergeCopyHelper extends BaseCellsHelper {
     return this.table.xTableStyle;
   }
 
-  getTableDataSnapshot() {
-    return this.table.tableDataSnapshot;
-  }
-
   getXTableAreaView() {
     return this.table.xTableAreaView;
   }
@@ -426,9 +422,7 @@ class CellMergeCopyHelper extends BaseCellsHelper {
   }) {
     const { table } = this;
     const { xIteratorBuilder } = table;
-    const tableDataSnapshot = this.getTableDataSnapshot();
     const cells = this.getCells();
-    const { cellDataProxy } = tableDataSnapshot;
     const copy = new CopyCellIN({
       originViewRange,
       targetViewRange,
@@ -437,7 +431,7 @@ class CellMergeCopyHelper extends BaseCellsHelper {
         const src = cells.getCell(ori, oci);
         if (src) {
           const target = src.clone();
-          cellDataProxy.setCell(tri, tci, target);
+          cells.setCell(tri, tci, target);
         }
       },
     });
@@ -449,9 +443,7 @@ class CellMergeCopyHelper extends BaseCellsHelper {
   }) {
     const { table } = this;
     const { xIteratorBuilder } = table;
-    const tableDataSnapshot = this.getTableDataSnapshot();
     const merges = this.getMerges();
-    const { mergeDataProxy } = tableDataSnapshot;
     const copy = new CopyMerge({
       originViewRange,
       targetViewRange,
@@ -473,10 +465,10 @@ class CellMergeCopyHelper extends BaseCellsHelper {
         newMerge.each(xIteratorBuilder, (ri, ci) => {
           const merge = merges.getFirstIncludes(ri, ci);
           if (merge) {
-            mergeDataProxy.deleteMerge(merge);
+            merges.deleteMerge(merge);
           }
         });
-        mergeDataProxy.addMerge(newMerge);
+        merges.addMerge(newMerge);
       },
     });
     copy.executeCopy();
@@ -487,9 +479,7 @@ class CellMergeCopyHelper extends BaseCellsHelper {
   }) {
     const { table } = this;
     const { xIteratorBuilder } = table;
-    const tableDataSnapshot = this.getTableDataSnapshot();
     const cells = this.getCells();
-    const { cellDataProxy } = tableDataSnapshot;
     const copy = new CopyCellIN({
       originViewRange,
       targetViewRange,
@@ -500,7 +490,7 @@ class CellMergeCopyHelper extends BaseCellsHelper {
           const target = cells.getCellOrNew(tri, tci);
           const clone = src.clone();
           clone.text = target.text;
-          cellDataProxy.setCell(tri, tci, clone);
+          cells.setCell(tri, tci, clone);
         }
       },
     });
@@ -512,9 +502,7 @@ class CellMergeCopyHelper extends BaseCellsHelper {
   }) {
     const { table } = this;
     const { xIteratorBuilder } = table;
-    const tableDataSnapshot = this.getTableDataSnapshot();
     const cells = this.getCells();
-    const { cellDataProxy } = tableDataSnapshot;
     const serialize = new Serialize({
       originViewRange,
       direction,
@@ -530,7 +518,7 @@ class CellMergeCopyHelper extends BaseCellsHelper {
         const cell = cells.getCellOrNew(ri, ci);
         const clone = cell.clone();
         clone.text = `${index}`;
-        cellDataProxy.setCell(ri, ci, clone);
+        cells.setCell(ri, ci, clone);
       },
     });
     serialize.executeSerialize();

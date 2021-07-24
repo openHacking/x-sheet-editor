@@ -149,9 +149,8 @@ class XTableEdit extends Widget {
   hideEdit() {
     const { select } = this;
     const { table } = this;
+    const { snapshot } = table;
     const cells = table.getTableCells();
-    const { tableDataSnapshot } = table;
-    const { cellDataProxy } = tableDataSnapshot;
     if (select) {
       const origin = cells.getCellOrNew(select.sri, select.sci);
       const cell = origin.clone();
@@ -159,10 +158,10 @@ class XTableEdit extends Widget {
       this.mode = XTableEdit.MODE.HIDE;
       this.hide();
       if (cell.toString() !== text) {
-        tableDataSnapshot.begin();
+        snapshot.open();
         cell.setText(text);
-        cellDataProxy.setCell(select.sri, select.sci, cell);
-        tableDataSnapshot.end();
+        cells.setCell(select.sri, select.sci, cell);
+        snapshot.close();
         table.render();
       }
       this.select = null;

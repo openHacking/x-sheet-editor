@@ -3,28 +3,20 @@ import { PlainUtils } from '../../../utils/PlainUtils';
 import { XIteratorBuilder } from '../iterator/XIteratorBuilder';
 import { XTableDataItems } from '../XTableDataItems';
 import { XMerges } from '../xmerges/XMerges';
+import { Snapshot } from '../snapshot/Snapshot';
 
-/**
- * Cells
- * @author jerry
- */
 class Cells {
 
-  /**
-   * Cells
-   * @param xIteratorBuilder
-   * @param xTableData
-   * @param onChange
-   * @param merges
-   */
   constructor({
     xIteratorBuilder = new XIteratorBuilder(),
+    snapshot = new Snapshot(),
     xTableData = new XTableDataItems([]),
-    onChange = () => {},
     merges = new XMerges(),
+    onChange = () => {},
   } = {}) {
     this.xTableData = xTableData;
     this.merges = merges;
+    this.snapshot = snapshot;
     this.onChange = onChange;
     this.xIteratorBuilder = xIteratorBuilder;
   }
@@ -76,10 +68,6 @@ class Cells {
     return null;
   }
 
-  getData() {
-    return this.xTableData.getItems();
-  }
-
   setCell(ri, ci, cell) {
     if (ri < 0) {
       throw new TypeError(`错误的行号${ri}`);
@@ -87,10 +75,22 @@ class Cells {
     if (ci < 0) {
       throw new TypeError(`错误的列号${ci}`);
     }
-    const item = this.xTableData.get(ri, ci);
+    let { snapshot, xTableData } = this;
+    let item = xTableData.get(ri, ci);
     if (item) {
-      item.setCell(cell);
-      this.onChange(ri, ci);
+      let oldValue = item.getCell();
+      let action = {
+        undo: () => {
+          item.setCell(oldValue);
+          this.onChange(ri, ci);
+        },
+        redo: () => {
+          item.setCell(cell);
+          this.onChange(ri, ci);
+        },
+      };
+      action.redo();
+      snapshot.addAction(action);
     }
   }
 
@@ -101,9 +101,25 @@ class Cells {
     if (ci < 0) {
       throw new TypeError(`错误的列号${ci}`);
     }
-    const item = this.xTableData.getOrNew(ri, ci);
-    item.setCell(cell);
-    this.onChange(ri, ci);
+    let { snapshot, xTableData } = this;
+    const item = xTableData.getOrNew(ri, ci);
+    let oldValue = item.getCell();
+    let action = {
+      undo: () => {
+        item.setCell(oldValue);
+        this.onChange(ri, ci);
+      },
+      redo: () => {
+        item.setCell(cell);
+        this.onChange(ri, ci);
+      },
+    };
+    action.redo();
+    snapshot.addAction(action);
+  }
+
+  getData() {
+    return this.xTableData.getItems();
   }
 
 }

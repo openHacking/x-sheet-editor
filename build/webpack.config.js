@@ -1,7 +1,7 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const include = dir => path.join(__dirname, '..', dir);
+const resolve = dir => path.resolve(__dirname, '..', dir);
 
 module.exports = {
   entry: {
@@ -21,8 +21,7 @@ module.exports = {
           }
         ],
         include: [
-          include('src'),
-          include('test')
+          resolve('src')
         ],
       },
       {

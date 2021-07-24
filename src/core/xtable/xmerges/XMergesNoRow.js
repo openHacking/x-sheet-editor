@@ -1,9 +1,30 @@
 import { XMergesNo } from './XMergesNo';
+import { Snapshot } from '../snapshot/Snapshot';
 
 class XMergesNoRow {
 
-  constructor() {
+  constructor({
+    snapshot = new Snapshot(),
+  }) {
     this.nos = [];
+    this.snapshot = snapshot;
+  }
+
+  removeRow(ri) {
+    let { snapshot } = this;
+    let oldValue;
+    let action = {
+      undo: () => {
+        this.nos.splice(ri, 0, oldValue);
+        this.syncNo();
+      },
+      redo: () => {
+        oldValue = this.nos.splice(ri, 1);
+        this.syncNo();
+      },
+    };
+    action.redo();
+    snapshot.addAction(action);
   }
 
   getNo(no) {
@@ -22,20 +43,38 @@ class XMergesNoRow {
     }
   }
 
-  removeRow(ri) {
-    this.nos.splice(ri, 1);
-    this.syncNo();
-  }
-
   insertRowAfter(ri) {
-    const next = ri + 1;
-    this.nos.splice(next, 0, new XMergesNo());
-    this.syncNo();
+    let { snapshot } = this;
+    let action = {
+      undo: () => {
+        const next = ri + 1;
+        this.nos.splice(next, 1);
+        this.syncNo();
+      },
+      redo: () => {
+        const next = ri + 1;
+        this.nos.splice(next, 0, new XMergesNo());
+        this.syncNo();
+      },
+    };
+    action.redo();
+    snapshot.addAction(action);
   }
 
   insertRowBefore(ri) {
-    this.nos.splice(ri, 0, new XMergesNo());
-    this.syncNo();
+    let { snapshot } = this;
+    let action = {
+      undo: () => {
+        this.nos.splice(ri, 1);
+        this.syncNo();
+      },
+      redo: () => {
+        this.nos.splice(ri, 0, new XMergesNo());
+        this.syncNo();
+      },
+    };
+    action.redo();
+    snapshot.addAction(action);
   }
 
 }

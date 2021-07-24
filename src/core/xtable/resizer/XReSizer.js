@@ -33,8 +33,7 @@ class XReSizer extends Widget {
     const {
       scale, cols, mousePointer, focus, xFixedView,
     } = table;
-    const { tableDataSnapshot } = table;
-    const { colsWidthDataProxy } = tableDataSnapshot;
+    const { snapshot } = table;
     const { rows, index } = table;
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       mousePointer.lock(XReSizer);
@@ -61,9 +60,9 @@ class XReSizer extends Widget {
           view: new RectRange(0, ci, rows.len, ci),
         })) {
           const newLeft = mx - (left - cols.getWidth(ci)) + this.width;
-          tableDataSnapshot.begin();
-          colsWidthDataProxy.setWidth(ci, scale.back(newLeft));
-          tableDataSnapshot.end();
+          snapshot.open();
+          cols.setWidth(ci, scale.back(newLeft));
+          snapshot.close();
         }
       });
     });

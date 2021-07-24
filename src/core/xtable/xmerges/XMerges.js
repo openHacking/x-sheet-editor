@@ -7,18 +7,25 @@ import { PlainUtils } from '../../../utils/PlainUtils';
 import { RectRange } from '../tablebase/RectRange';
 import { XTableDataItems } from '../XTableDataItems';
 import { XIteratorBuilder } from '../iterator/XIteratorBuilder';
+import { Snapshot } from '../snapshot/Snapshot';
 
 class XMerges {
 
   constructor({
-    merges = [],
     xTableData = new XTableDataItems([]),
+    snapshot = new Snapshot(),
     xIteratorBuilder = new XIteratorBuilder(),
+    merges = [],
   } = {}) {
-    this.xMergesNoRow = new XMergesNoRow();
-    this.xMergesNoCol = new XMergesNoCol();
+    this.xMergesNoRow = new XMergesNoRow({
+      snapshot,
+    });
+    this.xMergesNoCol = new XMergesNoCol({
+      snapshot,
+    });
     this.xMergesItems = new XMergesItems();
     this.xMergesIndex = new XMergesIndex(xTableData);
+    this.snapshot = snapshot;
     this.xIteratorBuilder = xIteratorBuilder;
     merges.map(merge => RectRange.valueOf(merge)).forEach(view => this.add(view));
   }
@@ -43,7 +50,21 @@ class XMerges {
     return PlainUtils.Undef;
   }
 
-  delete(view) {
+  push(view) {
+    let { xMergesItems, xIteratorBuilder, xMergesIndex } = this;
+    let { xMergesNoRow, xMergesNoCol } = this;
+    let sri = xMergesNoRow.getNo(view.sri);
+    let sci = xMergesNoCol.getNo(view.sci);
+    let eri = xMergesNoRow.getNo(view.eri);
+    let eci = xMergesNoCol.getNo(view.eci);
+    let range = new XMergesRange(sri, sci, eri, eci, view);
+    let point = xMergesItems.add(range);
+    view.each(xIteratorBuilder, (ri, ci) => {
+      xMergesIndex.set(ri, ci, point);
+    });
+  }
+
+  shift(view) {
     const point = this.xMergesIndex.get(view.sri, view.sci);
     if (PlainUtils.isNotUnDef(point)) {
       const full = this.xMergesItems.get(point);
@@ -55,6 +76,32 @@ class XMerges {
     }
   }
 
+  add(view) {
+    let { snapshot } = this;
+    let action = {
+      undo: () => {
+        this.shift(view);
+      },
+      redo: () => {
+        this.push(view);
+      },
+    };
+    snapshot.addAction(action);
+  }
+
+  delete(view) {
+    let { snapshot } = this;
+    let action = {
+      undo: () => {
+        this.push(view);
+      },
+      redo: () => {
+        this.shift(view);
+      },
+    };
+    snapshot.addAction(action);
+  }
+
   getAll() {
     const data = [];
     this.xMergesItems.getItems().forEach((item) => {
@@ -63,18 +110,6 @@ class XMerges {
       }
     });
     return data;
-  }
-
-  add(view) {
-    const sri = this.xMergesNoRow.getNo(view.sri);
-    const sci = this.xMergesNoCol.getNo(view.sci);
-    const eri = this.xMergesNoRow.getNo(view.eri);
-    const eci = this.xMergesNoCol.getNo(view.eci);
-    const range = new XMergesRange(sri, sci, eri, eci, view);
-    const point = this.xMergesItems.add(range);
-    view.each(this.xIteratorBuilder, (ri, ci) => {
-      this.xMergesIndex.set(ri, ci, point);
-    });
   }
 
   union(view) {

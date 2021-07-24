@@ -1,9 +1,30 @@
 import { XMergesNo } from './XMergesNo';
+import { Snapshot } from '../snapshot/Snapshot';
 
 class XMergesNoCol {
 
-  constructor() {
+  constructor({
+    snapshot = new Snapshot(),
+  }) {
     this.nos = [];
+    this.snapshot = snapshot;
+  }
+
+  removeCol(ci) {
+    let { snapshot } = this;
+    let oldValue;
+    let action = {
+      undo: () => {
+        this.nos.splice(ci, 0, oldValue);
+        this.syncNo();
+      },
+      redo: () => {
+        this.nos.splice(ci, 1);
+        this.syncNo();
+      },
+    };
+    action.redo();
+    snapshot.addAction(action);
   }
 
   getNo(ci) {
@@ -22,20 +43,38 @@ class XMergesNoCol {
     }
   }
 
-  removeCol(ci) {
-    this.nos.splice(ci, 1);
-    this.syncNo();
-  }
-
   insertColAfter(ci) {
-    const next = ci + 1;
-    this.nos.splice(next, 0, new XMergesNo());
-    this.syncNo();
+    let { snapshot } = this;
+    let action = {
+      undo: () => {
+        const next = ci + 1;
+        this.nos.splice(next, 1);
+        this.syncNo();
+      },
+      redo: () => {
+        const next = ci + 1;
+        this.nos.splice(next, 0, new XMergesNo());
+        this.syncNo();
+      },
+    };
+    action.redo();
+    snapshot.addAction(action);
   }
 
   insertColBefore(ci) {
-    this.nos.splice(ci, 0, new XMergesNo());
-    this.syncNo();
+    let { snapshot } = this;
+    let action = {
+      undo: () => {
+        this.nos.splice(ci, 1);
+        this.syncNo();
+      },
+      redo: () => {
+        this.nos.splice(ci, 0, new XMergesNo());
+        this.syncNo();
+      },
+    };
+    action.redo();
+    snapshot.addAction(action);
   }
 
 }

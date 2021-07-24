@@ -2611,6 +2611,7 @@ class XTableStyle extends Widget {
    * xTableScrollView
    * @param xTableScrollView
    * @param settings
+   * @param snapshot
    * @param xFixedView
    * @param xIteratorBuilder
    * @param scroll
@@ -2618,6 +2619,7 @@ class XTableStyle extends Widget {
   constructor({
     xTableScrollView,
     settings,
+    snapshot,
     scroll,
     xFixedView,
     xIteratorBuilder,
@@ -2635,12 +2637,15 @@ class XTableStyle extends Widget {
     this.optimizeEnable = true;
     // 迭代器
     this.xIteratorBuilder = xIteratorBuilder;
+    // 数据快照
+    this.snapshot = snapshot;
     // 表格数据配置
     this.xTableData = new XTableDataItems(this.settings.data);
     this.merges = new XMerges({
-      ...settings.merge,
-      xTableData: this.xTableData,
       xIteratorBuilder: this.xIteratorBuilder,
+      snapshot: this.snapshot,
+      xTableData: this.xTableData,
+      ...settings.merge,
     });
     this.scale = new Scale();
     this.index = new Code({
@@ -2650,28 +2655,31 @@ class XTableStyle extends Widget {
       ...this.settings.index,
     });
     this.rows = new Rows({
+      xIteratorBuilder: this.xIteratorBuilder,
+      snapshot: this.snapshot,
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.stylePx(this.scale.goto(v)),
       }),
-      xIteratorBuilder: this.xIteratorBuilder,
       ...this.settings.rows,
     });
     this.cols = new Cols({
+      xIteratorBuilder: this.xIteratorBuilder,
+      snapshot: this.snapshot,
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.stylePx(this.scale.goto(v)),
         back: v => this.scale.back(v),
       }),
-      xIteratorBuilder: this.xIteratorBuilder,
       ...this.settings.cols,
     });
     this.cells = new Cells({
+      xIteratorBuilder: this.xIteratorBuilder,
       merges: this.merges,
+      snapshot: this.snapshot,
+      xTableData: this.xTableData,
       onChange: (ri) => {
         const row = this.rows.getOrNew(ri);
         row.reCkHasAngle = true;
       },
-      xTableData: this.xTableData,
-      xIteratorBuilder: this.xIteratorBuilder,
     });
     // 固定区域测量
     this.xFixedMeasure = new XFixedMeasure({

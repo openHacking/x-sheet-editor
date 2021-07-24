@@ -25,12 +25,7 @@
   },
   "scripts": {
     "dev": "webpack-dev-server --open --config build/webpack.dev.js",
-    "build": "webpack --config build/webpack.prod.js",
-    "build-locale": "webpack --config build/webpack.locale.js",
-    "lint": "./node_modules/eslint/bin/eslint.js src",
-    "test": "nyc ./node_modules/mocha/bin/mocha --require @babel/register test/*",
-    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov -t 31ecdb12-8ecb-46f7-a486-65c2516307dd",
-    "postinstall": "opencollective-postinstall"
+    "build": "webpack --config build/webpack.prod.js"
   },
   "keywords": [
     "web",
@@ -55,10 +50,6 @@
     "less": "^3.8.1",
     "less-loader": "^4.1.0",
     "mini-css-extract-plugin": "^0.4.4",
-    "mocha": "^5.2.0",
-    "nyc": "^13.3.0",
-    "opencollective": "^1.0.3",
-    "opencollective-postinstall": "^2.0.2",
     "progress-bar-webpack-plugin": "^2.1.0",
     "style-loader": "^0.23.0",
     "url-loader": "^4.1.1",

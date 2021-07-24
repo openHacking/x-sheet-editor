@@ -40,6 +40,7 @@ import { BaseFont } from '../../canvas/font/BaseFont';
 import { XIteratorBuilder } from './iterator/XIteratorBuilder';
 import { RowHeightGroupIndex } from './tablebase/RowHeightGroupIndex';
 import { Alert } from '../../module/alert/Alert';
+import { Snapshot } from './snapshot/Snapshot';
 
 class Dimensions {
 
@@ -529,6 +530,8 @@ class XTableDimensions extends Widget {
     this.xIconBuilder = new XIconBuilder();
     // 行列迭代器
     this.xIteratorBuilder = new XIteratorBuilder();
+    // 数据快照
+    this.snapshot = new Snapshot();
     // 表格数据配置
     this.index = new Code({
       scaleAdapter: new ScaleAdapter({
@@ -540,6 +543,7 @@ class XTableDimensions extends Widget {
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.cssPx(this.scale.goto(v)),
       }),
+      snapshot: this.snapshot,
       xIteratorBuilder: this.xIteratorBuilder,
       ...this.settings.cols,
     });
@@ -547,6 +551,7 @@ class XTableDimensions extends Widget {
       scaleAdapter: new ScaleAdapter({
         goto: v => XDraw.cssPx(this.scale.goto(v)),
       }),
+      snapshot: this.snapshot,
       xIteratorBuilder: this.xIteratorBuilder,
       ...this.settings.rows,
     });
@@ -578,21 +583,14 @@ class XTableDimensions extends Widget {
       cols: this.cols,
       scroll: this.scroll,
     });
-    // 表格界面
+    // 表格界面绘制
     this.xTableStyle = new XTableStyle({
       xTableScrollView: this.xTableScrollView,
-      scroll: this.scroll,
       xIteratorBuilder: this.xIteratorBuilder,
+      scroll: this.scroll,
+      snapshot: this.snapshot,
       settings: this.settings,
       xFixedView: this.xFixedView,
-    });
-    // 数据快照
-    this.tableDataSnapshot = new TableDataSnapshot({
-      merges: this.getTableMerges(),
-      cells: this.getTableCells(),
-      table: this,
-      cols: this.cols,
-      rows: this.rows,
     });
     // table区域
     this.xTableFrozenContent = new XTableFrozenContent(this);
@@ -1502,30 +1500,6 @@ class XTableDimensions extends Widget {
   }
 
   /**
-   * 删除指定列
-   * @param ci
-   */
-  removeCol(ci) {
-    const { cols, xTableStyle } = this;
-    xTableStyle.removeCol(ci);
-    cols.removeCol();
-    this.resize();
-    this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_COL);
-  }
-
-  /**
-   * 删除指定行
-   * @param ri
-   */
-  removeRow(ri) {
-    const { rows, xTableStyle } = this;
-    xTableStyle.removeRow(ri);
-    rows.removeRow();
-    this.resize();
-    this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_ROW);
-  }
-
-  /**
    * 插入到指定列之后
    * @param ci
    */
@@ -1571,6 +1545,30 @@ class XTableDimensions extends Widget {
     rows.insertRowBefore();
     this.resize();
     this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW);
+  }
+
+  /**
+   * 删除指定列
+   * @param ci
+   */
+  removeCol(ci) {
+    const { cols, xTableStyle } = this;
+    xTableStyle.removeCol(ci);
+    cols.removeCol();
+    this.resize();
+    this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_COL);
+  }
+
+  /**
+   * 删除指定行
+   * @param ri
+   */
+  removeRow(ri) {
+    const { rows, xTableStyle } = this;
+    xTableStyle.removeRow(ri);
+    rows.removeRow();
+    this.resize();
+    this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_ROW);
   }
 
   /**
