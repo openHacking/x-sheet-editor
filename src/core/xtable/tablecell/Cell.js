@@ -23,6 +23,7 @@ class Cell {
    * @param icons
    * @param contentWidth
    * @param contentType
+   * @param custom
    */
   constructor({
     text = PlainUtils.EMPTY,
@@ -35,17 +36,19 @@ class Cell {
     icons = [],
     contentWidth = 0,
     contentType = Cell.CONTENT_TYPE.STRING,
+    custom = {},
   } = {}) {
     this.ruler = ruler;
     this.readOnly = readOnly;
     this.text = text;
     this.background = background;
     this.format = format;
+    this.custom = custom;
+    this.contentWidth = contentWidth;
+    this.contentType = contentType;
     this.icons = XIcon.newInstances(icons);
     this.borderAttr = new CellBorder(borderAttr);
     this.fontAttr = new CellFont(fontAttr);
-    this.contentWidth = contentWidth;
-    this.contentType = contentType;
     this.setContentType(contentType);
     this.setFormat(format);
   }
@@ -154,7 +157,7 @@ class Cell {
     const {
       background, format, text, fontAttr,
       borderAttr, contentWidth, icons,
-      contentType,
+      contentType, custom,
     } = this;
     return new Cell({
       background,
@@ -165,6 +168,7 @@ class Cell {
       contentWidth,
       icons,
       contentType,
+      custom,
     });
   }
 
