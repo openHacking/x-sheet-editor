@@ -10,7 +10,7 @@ class Cells {
 
   constructor({
     xIteratorBuilder = new XIteratorBuilder(),
-    xTableData = new XTableDataItems([]),
+    xTableData = new XTableDataItems(),
     merges = new XMerges(),
     snapshot = new Snapshot(),
   } = {}) {

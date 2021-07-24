@@ -13,7 +13,7 @@ import { Listen } from '../../../libs/Listen';
 class XMerges {
 
   constructor({
-    xTableData = new XTableDataItems([]),
+    xTableData = new XTableDataItems(),
     snapshot = new Snapshot(),
     xIteratorBuilder = new XIteratorBuilder(),
     merges = [],

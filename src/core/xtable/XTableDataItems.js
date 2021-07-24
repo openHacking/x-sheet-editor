@@ -6,7 +6,7 @@ class XTableDataItems {
   constructor({
     snapshot = new Snapshot(),
     items = [],
-  }) {
+  } = {}) {
     this.items = items;
     this.snapshot = snapshot;
   }
