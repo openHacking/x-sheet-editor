@@ -62,7 +62,7 @@ class Rows {
     let action = {
       undo: () => {
         if (PlainUtils.isNotUnDef(ri)) {
-          if (data[ri]) {
+          if (ri <= data.length) {
             data.splice(ri + 1, 1);
           }
         }
@@ -71,7 +71,7 @@ class Rows {
       },
       redo: () => {
         if (PlainUtils.isNotUnDef(ri)) {
-          if (data[ri]) {
+          if (ri <= data.length) {
             data.splice(ri + 1, 0, {});
           }
         }
@@ -88,7 +88,7 @@ class Rows {
     let action = {
       undo: () => {
         if (PlainUtils.isNotUnDef(ri)) {
-          if (data[ri]) {
+          if (ri <= data.length) {
             data.splice(ri, 1);
           }
         }
@@ -97,7 +97,7 @@ class Rows {
       },
       redo: () => {
         if (PlainUtils.isNotUnDef(ri)) {
-          if (data[ri]) {
+          if (ri <= data.length) {
             data.splice(ri, 0, {});
           }
         }
@@ -115,7 +115,7 @@ class Rows {
     let action = {
       undo: () => {
         if (PlainUtils.isNotUnDef(ri)) {
-          if (data[ri] && oldValue) {
+          if (ri <= data.length || oldValue) {
             data.splice(ri, 0, oldValue);
           }
         }
@@ -124,7 +124,7 @@ class Rows {
       },
       redo: () => {
         if (PlainUtils.isNotUnDef(ri)) {
-          if (data[ri]) {
+          if (ri <= data.length) {
             oldValue = data.splice(ri, 1);
           }
         }

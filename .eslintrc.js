@@ -1,7 +1,6 @@
 module.exports = {
   "extends": "airbnb-base",
   "rules": {
-    'no-debugger': "off",
     "import/prefer-default-export":  0,
     "no-param-reassign": 0,
     "no-plusplus": 0,

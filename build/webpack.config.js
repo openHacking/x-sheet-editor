@@ -20,9 +20,7 @@ module.exports = {
             }
           }
         ],
-        include: [
-          resolve('src')
-        ],
+        include: resolve("src")
       },
       {
         test: /\.css$/,

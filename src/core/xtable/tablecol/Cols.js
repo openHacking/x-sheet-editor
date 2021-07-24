@@ -62,7 +62,7 @@ class Cols {
     let action = {
       undo: () => {
         if (PlainUtils.isNotUnDef(ci)) {
-          if (data[ci]) {
+          if (ci <= data.length) {
             data.splice(ci + 1, 1);
           }
         }
@@ -71,7 +71,7 @@ class Cols {
       },
       redo: () => {
         if (PlainUtils.isNotUnDef(ci)) {
-          if (data[ci]) {
+          if (ci <= data.length) {
             data.splice(ci + 1, 0, {});
           }
         }
@@ -88,7 +88,7 @@ class Cols {
     let action = {
       undo: () => {
         if (PlainUtils.isNotUnDef(ci)) {
-          if (data[ci]) {
+          if (ci <= data.length) {
             data.splice(ci, 1);
           }
         }
@@ -97,7 +97,7 @@ class Cols {
       },
       redo: () => {
         if (PlainUtils.isNotUnDef(ci)) {
-          if (data[ci]) {
+          if (ci <= data.length) {
             data.splice(ci, 0, {});
           }
         }
@@ -115,7 +115,7 @@ class Cols {
     let action = {
       undo: () => {
         if (PlainUtils.isNotUnDef(ci)) {
-          if (data[ci] && oldValue) {
+          if (ci <= data.length || oldValue) {
             data.splice(ci, 0, oldValue);
           }
         }
@@ -124,7 +124,7 @@ class Cols {
       },
       redo: () => {
         if (PlainUtils.isNotUnDef(ci)) {
-          if (data[ci]) {
+          if (ci <= data.length) {
             oldValue = data.splice(ci, 1);
           }
         }
