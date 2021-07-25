@@ -9,10 +9,12 @@ class Alert extends Widget {
   constructor({
     title = '提示',
     message = '',
+    closeDestroy = true,
   } = {}) {
     super(`${cssPrefix}-alert`);
     this.title = title;
     this.message = message;
+    this.closeDestroy = closeDestroy;
     // 创建 UI
     this.closeEle = h('div', `${cssPrefix}-alert-close`);
     this.titleEle = h('div', `${cssPrefix}-alert-title`);
@@ -64,9 +66,11 @@ class Alert extends Widget {
   }
 
   close() {
-    const { dragPanel } = this;
+    const { closeDestroy, dragPanel } = this;
     dragPanel.close();
-    this.destroy();
+    if (closeDestroy) {
+      this.destroy();
+    }
     return this;
   }
 

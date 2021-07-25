@@ -12,6 +12,8 @@ class ScrollBarY extends Widget {
     super(`${cssPrefix}-scroll-bar-y`);
     this.option = PlainUtils.copy({
       style: {},
+      last: () => 0,
+      next: () => 0,
       scroll: to => to,
     }, option);
     this.lastBut = h('div', `${cssPrefix}-scroll-bar-y-last-but`);
@@ -33,6 +35,41 @@ class ScrollBarY extends Widget {
     this.viewPortHeight = 0;
     this.isHide = true;
     this.css(this.option.style);
+  }
+
+  unbind() {
+    XEvent.unbind(this.block);
+  }
+
+  bind() {
+    XEvent.bind(this.block, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
+      if (evt1.button !== 0) return;
+      const downEventXy = this.eventXy(evt1, this.block);
+      XEvent.mouseMoveUp(h(document), (evt2) => {
+        // 计算移动的距离
+        const moveEventXy = this.eventXy(evt2, this.content);
+        let top = moveEventXy.y - downEventXy.y;
+        if (top < 0) top = 0;
+        if (top > this.maxBlockTop) top = this.maxBlockTop;
+        // 计算滑动的距离
+        top = this.computeScrollTo(top);
+        this.scrollMove(top);
+      });
+    });
+    XEvent.bind(this.nextBut, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      XEvent.mouseHold(document, () => {
+        this.option.next();
+      });
+    });
+    XEvent.bind(this.lastBut, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      XEvent.mouseHold(document, () => {
+        this.option.last();
+      });
+    });
+  }
+
+  onAttach() {
+    this.bind();
   }
 
   setSize(viewPortHeight, contentHeight) {
@@ -59,33 +96,9 @@ class ScrollBarY extends Widget {
     }
   }
 
-  onAttach() {
-    this.bind();
-  }
-
-  unbind() {
-    XEvent.unbind(this.block);
-  }
-
-  bind() {
-    XEvent.bind(this.block, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
-      if (evt1.button !== 0) return;
-      const downEventXy = this.eventXy(evt1, this.block);
-      XEvent.mouseMoveUp(h(document), (evt2) => {
-        // 计算移动的距离
-        const moveEventXy = this.eventXy(evt2, this.content);
-        let top = moveEventXy.y - downEventXy.y;
-        if (top < 0) top = 0;
-        if (top > this.maxBlockTop) top = this.maxBlockTop;
-        // 计算滑动的距离
-        this.blockTop = top;
-        this.scrollTo = this.computeScrollTo(this.blockTop);
-        this.block.css('top', `${top}px`);
-        this.option.scroll(this.scrollTo);
-        evt2.stopPropagation();
-        evt2.preventDefault();
-      });
-    });
+  scrollMove(move) {
+    this.setLocal(move);
+    this.option.scroll(this.scrollTo);
   }
 
   setLocal(move) {
@@ -98,11 +111,6 @@ class ScrollBarY extends Widget {
       this.scrollTo = to;
       this.block.css('top', `${this.blockTop}px`);
     }
-  }
-
-  scrollMove(move) {
-    this.setLocal(move);
-    this.option.scroll(this.scrollTo);
   }
 
   computeScrollTo(move) {

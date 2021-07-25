@@ -1,3 +1,4 @@
+/* global document */
 import { Widget } from '../../libs/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
 import { XEvent } from '../../libs/XEvent';
@@ -6,6 +7,7 @@ import { XSelectItem } from './xscreenitems/xselect/XSelectItem';
 import { XDraw } from '../../canvas/XDraw';
 import { Throttle } from '../../libs/Throttle';
 import { BaseFont } from '../../canvas/font/BaseFont';
+import { Cell } from './tablecell/Cell';
 
 class XTableEdit extends Widget {
 
@@ -24,8 +26,10 @@ class XTableEdit extends Widget {
   }
 
   onAttach() {
+    const { table } = this;
     this.bind();
     this.hide();
+    table.focus.register({ target: this });
   }
 
   editOffset() {
@@ -116,9 +120,9 @@ class XTableEdit extends Widget {
 
   bind() {
     const { table } = this;
-    const { xScreen } = table;
-    const xSelect = xScreen.findType(XSelectItem);
+    const { keyboard, xScreen } = table;
     const merges = table.getTableMerges();
+    const xSelect = xScreen.findType(XSelectItem);
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (event) => {
       event.stopPropagation();
     });
@@ -146,12 +150,21 @@ class XTableEdit extends Widget {
         this.hideEdit(event);
       }
     });
-    XEvent.mouseDoubleClick(table, (event) => {
+    XEvent.mouseDoubleDown(table, (event) => {
       const { selectRange } = xSelect;
       const { sri, sci } = selectRange;
       if (!selectRange.multiple() || merges.getFirstIncludes(sri, sci)) {
         this.showEdit(event);
       }
+    });
+    keyboard.register({
+      target: this,
+      response: [{
+        keyCode: keyCode => keyCode === 1813,
+        handle: () => {
+          this.insertLineBreak();
+        },
+      }],
     });
   }
 
@@ -201,14 +214,29 @@ class XTableEdit extends Widget {
         this.select = selectRange;
         this.mode = XTableEdit.MODE.SHOW;
         this.show();
-        if (cell.isEmpty()) {
-          this.html(PlainUtils.EMPTY);
-        } else {
-          this.html(cell.toString());
-        }
         this.attr('style', table.getCellCssStyle(sri, sci));
         this.editOffset();
+        if (cell.isEmpty()) {
+          this.text(PlainUtils.EMPTY);
+        } else {
+          const { contentType } = cell;
+          switch (contentType) {
+            case Cell.CONTENT_TYPE.RICH_TEXT: {
+              // TODO ...
+              //
+              break;
+            }
+            case Cell.CONTENT_TYPE.DATE:
+            case Cell.CONTENT_TYPE.NUMBER:
+            case Cell.CONTENT_TYPE.STRING: {
+              const text = cell.toString();
+              this.text(text);
+              break;
+            }
+          }
+        }
         this.throttle.action(() => {
+          this.focus();
           PlainUtils.keepLastIndex(this.el);
         });
         table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_START, {
@@ -228,6 +256,22 @@ class XTableEdit extends Widget {
       'max-height': '0px',
     });
     return super.show();
+  }
+
+  insertLineBreak() {
+    const { cell } = this;
+    const { contentType } = cell;
+    switch (contentType) {
+      case Cell.CONTENT_TYPE.RICH_TEXT: {
+        break;
+      }
+      case Cell.CONTENT_TYPE.DATE:
+      case Cell.CONTENT_TYPE.NUMBER:
+      case Cell.CONTENT_TYPE.STRING: {
+        document.execCommand('insertHTML', false, '<br>');
+        break;
+      }
+    }
   }
 
   destroy() {

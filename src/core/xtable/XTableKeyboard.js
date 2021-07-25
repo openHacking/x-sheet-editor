@@ -1,6 +1,7 @@
 /* global document */
 import { XEvent } from '../../libs/XEvent';
 import { Constant } from '../../const/Constant';
+import { PlainUtils } from '../../utils/PlainUtils';
 
 class XTableKeyboard {
 
@@ -8,35 +9,42 @@ class XTableKeyboard {
     const { focus } = table;
     this.table = table;
     this.items = [];
-    this.handle = (event) => {
+    this.keyCode = '';
+    this.downHandle = (event) => {
       const { activate } = focus;
       const { keyCode } = event;
+      if (!`${this.keyCode}`.includes(`${keyCode}`)) {
+        this.keyCode = `${this.keyCode}${keyCode}`;
+      }
       if (activate) {
         const { target } = activate;
         const find = this.find(target);
         if (find) {
           const { response } = find;
+          const flagCode = PlainUtils.parseInt(this.keyCode);
           response.forEach((item) => {
-            if (item.keyCode(keyCode, event)) {
+            if (item.keyCode(flagCode, event)) {
               item.handle(event);
             }
           });
         }
       }
-      if (event.keyCode === 9) {
-        // tab键 阻止浏览器默认行为
-        event.preventDefault();
-      }
+    };
+    this.upHandle = (event) => {
+      const { keyCode } = event;
+      this.keyCode = `${this.keyCode}`.replace(`${keyCode}`, '');
     };
     this.bind();
   }
 
   bind() {
-    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.KEY_DOWN, this.handle);
+    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.KEY_DOWN, this.downHandle);
+    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.KEY_UP, this.upHandle);
   }
 
   unbind() {
-    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.KEY_DOWN, this.handle);
+    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.KEY_DOWN, this.downHandle);
+    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.KEY_DOWN, this.upHandle);
   }
 
   find(el) {

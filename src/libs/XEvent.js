@@ -85,7 +85,7 @@ class XEvent {
     return target;
   }
 
-  static mouseDoubleClick(target, doubleFunc = () => {}) {
+  static mouseDoubleDown(target, doubleFunc = () => {}) {
     let last = 0;
     let x = 0;
     let y = 0;
@@ -107,16 +107,29 @@ class XEvent {
     return target;
   }
 
+  static mouseHold(target, holdFunc = () => {}, endFunc = () => {}) {
+    let xEvtUp = (evt) => {
+      clearInterval(handle);
+      XEvent.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);
+      endFunc(evt);
+    };
+    let handle = setInterval(() => {
+      holdFunc();
+    }, 150);
+    holdFunc();
+    XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);
+  };
+
   static mouseMoveUp(target, moveFunc = () => {}, upFunc = () => {}) {
     const xEvtMove = (evt) => {
       moveFunc(evt);
-      evt.stopPropagation();
+      evt.preventDefault();
     };
     const xEvtUp = (evt) => {
       XEvent.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, xEvtMove, true);
       XEvent.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);
       upFunc(evt);
-      evt.stopPropagation();
+      evt.preventDefault();
     };
     XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, xEvtMove, true);
     XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);

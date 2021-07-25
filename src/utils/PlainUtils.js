@@ -254,17 +254,9 @@ class PlainUtils {
   }
 
   static keepLastIndex(obj) {
-    if (window.getSelection) {
-      obj.focus();
-      const range = window.getSelection();
-      range.selectAllChildren(obj);
-      range.collapseToEnd();
-    } else if (document.selection) {
-      const range = document.selection.createRange();
-      range.moveToElementText(obj);
-      range.collapse(false);
-      range.select();
-    }
+    const range = window.getSelection();
+    range.selectAllChildren(obj);
+    range.collapseToEnd();
   }
 
   static trim(s) {

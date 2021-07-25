@@ -12,6 +12,8 @@ class ScrollBarX extends Widget {
     super(`${cssPrefix}-scroll-bar-x`);
     this.option = PlainUtils.copy({
       style: {},
+      last: () => 0,
+      next: () => 0,
       scroll: to => to,
     }, option);
     this.lastBut = h('div', `${cssPrefix}-scroll-bar-x-last-but`);
@@ -33,6 +35,39 @@ class ScrollBarX extends Widget {
     this.viewPortWidth = 0;
     this.isHide = true;
     this.css(this.option.style);
+  }
+
+  unbind() {
+    XEvent.unbind(this.block);
+    XEvent.unbind(this.nextBut);
+    XEvent.unbind(this.lastBut);
+  }
+
+  bind() {
+    XEvent.bind(this.block, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
+      if (evt1.button !== 0) return;
+      const downEventXy = this.eventXy(evt1, this.block);
+      XEvent.mouseMoveUp(h(document), (evt2) => {
+        // 计算移动的距离
+        const moveEventXy = this.eventXy(evt2, this.content);
+        let left = moveEventXy.x - downEventXy.x;
+        if (left < 0) left = 0;
+        if (left > this.maxBlockLeft) left = this.maxBlockLeft;
+        // 计算滑动的距离
+        left = this.computeScrollTo(left);
+        this.scrollMove(left);
+      });
+    });
+    XEvent.bind(this.nextBut, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      XEvent.mouseHold(document, () => {
+        this.option.next();
+      });
+    });
+    XEvent.bind(this.lastBut, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      XEvent.mouseHold(document, () => {
+        this.option.last();
+      });
+    });
   }
 
   onAttach() {
@@ -61,33 +96,6 @@ class ScrollBarX extends Widget {
       this.hide();
       this.option.scroll(0);
     }
-  }
-
-  unbind() {
-    XEvent.unbind(this.block);
-  }
-
-  bind() {
-    XEvent.bind(this.block, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
-      if (evt1.button !== 0) return;
-      const downEventXy = this.eventXy(evt1, this.block);
-      XEvent.mouseMoveUp(h(document), (evt2) => {
-        // 计算移动的距离
-        const moveEventXy = this.eventXy(evt2, this.content);
-        let left = moveEventXy.x - downEventXy.x;
-        if (left < 0) left = 0;
-        if (left > this.maxBlockLeft) left = this.maxBlockLeft;
-        // 计算滑动的距离
-        this.blockLeft = left;
-        this.scrollTo = this.computeScrollTo(this.blockLeft);
-        this.block.css('left', `${left}px`);
-        this.option.scroll(this.scrollTo);
-        evt2.stopPropagation();
-        evt2.preventDefault();
-      });
-      evt1.stopPropagation();
-      evt1.preventDefault();
-    });
   }
 
   scrollMove(move) {

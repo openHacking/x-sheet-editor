@@ -612,7 +612,9 @@ class XTableDimensions extends Widget {
     this.colFixed = new ColFixed(this);
     this.dropColFixed = new DropColFixed(this);
     this.dropRowFixed = new DropRowFixed(this);
-    this.readOnlyAlert = new Alert();
+    this.readOnlyAlert = new Alert({
+      closeDestroy: false,
+    });
     // 粘贴板
     this.clipboard = new Clipboard({
       filter: () => {},

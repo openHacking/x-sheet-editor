@@ -103,11 +103,55 @@ class XWorkBody extends Widget {
         const sheet = this.sheetView.getActiveSheet();
         sheet.table.scrollY(move);
       },
+      next: () => {
+        const sheet = this.sheetView.getActiveSheet();
+        if (PlainUtils.isUnDef(sheet)) return;
+        const { table } = sheet;
+        const scrollView = table.getScrollView();
+        const { sri } = scrollView;
+        const { rows } = table;
+        const { scrollTo } = this.scrollBarY;
+        const height = rows.getHeight(sri + 1);
+        this.scrollBarY.scrollMove(scrollTo + height);
+      },
+      last: () => {
+        const sheet = this.sheetView.getActiveSheet();
+        if (PlainUtils.isUnDef(sheet)) return;
+        const { table } = sheet;
+        const scrollView = table.getScrollView();
+        const { sri } = scrollView;
+        const { rows } = table;
+        const { scrollTo } = this.scrollBarY;
+        const height = rows.getHeight(sri - 1);
+        this.scrollBarY.scrollMove(scrollTo - height);
+      },
     });
     this.scrollBarX = new ScrollBarX({
       scroll: (move) => {
         const sheet = this.sheetView.getActiveSheet();
         sheet.table.scrollX(move);
+      },
+      next: () => {
+        const sheet = this.sheetView.getActiveSheet();
+        if (PlainUtils.isUnDef(sheet)) return;
+        const { table } = sheet;
+        const scrollView = table.getScrollView();
+        const { sci } = scrollView;
+        const { cols } = table;
+        const { scrollTo } = this.scrollBarX;
+        const width = cols.getWidth(sci + 1);
+        this.scrollBarX.scrollMove(scrollTo + width);
+      },
+      last: () => {
+        const sheet = this.sheetView.getActiveSheet();
+        if (PlainUtils.isUnDef(sheet)) return;
+        const { table } = sheet;
+        const scrollView = table.getScrollView();
+        const { sci } = scrollView;
+        const { cols } = table;
+        const { scrollTo } = this.scrollBarX;
+        const width = cols.getWidth(sci - 1);
+        this.scrollBarX.scrollMove(scrollTo - width);
       },
     });
   }
@@ -175,9 +219,7 @@ class XWorkBody extends Widget {
       const sheet = this.sheetView.getActiveSheet();
       if (PlainUtils.isUnDef(sheet)) return;
       const { table } = sheet;
-      const {
-        scroll, rows,
-      } = table;
+      const { scroll, rows } = table;
       const scrollView = table.getScrollView();
       const { scrollTo } = this.scrollBarY;
       const { deltaY } = e;
