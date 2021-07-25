@@ -16,10 +16,11 @@ class XTableKeyboard {
         const find = this.find(target);
         if (find) {
           const { response } = find;
-          const handle = response[keyCode];
-          if (handle) {
-            handle();
-          }
+          response.forEach((item) => {
+            if (item.keyCode(keyCode, event)) {
+              item.handle(event);
+            }
+          });
         }
       }
       if (event.keyCode === 9) {
@@ -51,8 +52,7 @@ class XTableKeyboard {
   }
 
   register({
-    target = null,
-    response = {},
+    target = null, response = [],
   }) {
     this.items.push({
       target, response,

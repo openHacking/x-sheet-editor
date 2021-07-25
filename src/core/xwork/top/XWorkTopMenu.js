@@ -948,7 +948,7 @@ class XWorkTopMenu extends Widget {
                   cells.setCell(r, c, cell);
                 },
               });
-              snapshot.end();
+              snapshot.close();
               table.render();
             }
           }
@@ -1222,7 +1222,7 @@ class XWorkTopMenu extends Widget {
         if (selectRange) {
           const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
           const italic = !firstCell.fontAttr.italic;
-          snapshot.begin();
+          snapshot.open();
           operateCellsHelper.getCellOrNewCellByViewRange({
             rectRange: selectRange,
             callback: (r, c, origin) => {
@@ -1231,7 +1231,7 @@ class XWorkTopMenu extends Widget {
               cells.setCell(r, c, cell);
             },
           });
-          snapshot.end();
+          snapshot.close();
           table.render();
         }
       }
@@ -1258,7 +1258,7 @@ class XWorkTopMenu extends Widget {
               cells.setCell(r, c, cell);
             },
           });
-          snapshot.end();
+          snapshot.close();
           table.render();
         }
       }
@@ -1285,7 +1285,7 @@ class XWorkTopMenu extends Widget {
               cells.setCell(r, c, cell);
             },
           });
-          snapshot.end();
+          snapshot.close();
           table.render();
         }
       }

@@ -7,160 +7,161 @@ function tab({ table, body, response }) {
   const { cols, rows, xScreen, edit } = table;
   const xSelect = xScreen.findType(XSelectItem);
   const merges = table.getTableMerges();
-  response[9] = () => {
-    edit.hideEdit();
-    let scrollView = xTableScrollView.getScrollView();
-    let cLen = cols.len - 1;
-    let rLen = rows.len - 1;
-    let { selectPath, selectRange } = xSelect;
-    let clone = selectRange.clone();
-    let { sri, sci } = clone;
-    selectPath.set({ sri, sci, mode: XSelectPath.MODE.LR });
-    // 当前区域是否是合并单元格
-    let merge = merges.getFirstIncludes(sri, sci);
-    if (merge) {
-      sci = merge.eci;
-    }
-    // 是否超过最大行数列数
-    if (sri >= rLen) {
-      if (sci >= cLen) {
-        return;
+  response.push({
+    keyCode: keyCode => keyCode === 9,
+    handle: () => {
+      edit.hideEdit();
+      let scrollView = xTableScrollView.getScrollView();
+      let cLen = cols.len - 1;
+      let rLen = rows.len - 1;
+      let { selectPath, selectRange } = xSelect;
+      let clone = selectRange.clone();
+      let { sri, sci } = clone;
+      selectPath.set({ sri, sci, mode: XSelectPath.MODE.LR });
+      // 当前区域是否是合并单元格
+      let merge = merges.getFirstIncludes(sri, sci);
+      if (merge) {
+        sci = merge.eci;
       }
-    }
-    if (sci >= cLen) {
-      sri += 1;
-      sci = 0;
-      selectPath.set({ sri, set: true });
-    } else {
-      sri = selectPath.dri;
-      sci += 1;
-    }
-    clone.sri = sri;
-    clone.sci = sci;
-    clone.eri = sri;
-    clone.eci = sci;
-    // 目标区域是否是合并单元格
-    merge = merges.getFirstIncludes(sri, sci);
-    if (merge) {
-      xSelect.setRange(merge);
-    } else {
-      xSelect.setRange(clone);
-    }
-    // 是否超过视图区域
-    let minCi = scrollView.sci;
-    let minRi = scrollView.sri;
-    let maxCi = scrollView.eci - 1;
-    let maxRi = scrollView.eri - 1;
-    if (sci > maxCi) {
-      let diff = sci - maxCi;
-      let next = scrollView.sci + diff;
-      table.scrollCi(next);
-      body.scrollBarSize();
-      body.scrollBarLocal();
-    }
-    if (sri > maxRi) {
-      let diff = sri - maxRi;
-      let next = scrollView.sri + diff;
-      table.scrollRi(next);
-      body.scrollBarSize();
-      body.scrollBarLocal();
-    }
-    if (sci < minCi) {
-      let diff = minCi - sci;
-      let last = scrollView.sci - diff;
-      table.scrollCi(last);
-      body.scrollBarSize();
-      body.scrollBarLocal();
-    }
-    if (sri < minRi) {
-      let diff = minRi - sri;
-      let last = scrollView.sri - diff;
-      table.scrollRi(last);
-      body.scrollBarSize();
-      body.scrollBarLocal();
-    }
-    edit.showEdit();
-  };
+      // 是否超过最大行数列数
+      if (sri >= rLen) {
+        if (sci >= cLen) {
+          return;
+        }
+      }
+      if (sci >= cLen) {
+        sri += 1;
+        sci = 0;
+        selectPath.set({ sri, set: true });
+      } else {
+        sri = selectPath.dri;
+        sci += 1;
+      }
+      clone.sri = sri;
+      clone.sci = sci;
+      clone.eri = sri;
+      clone.eci = sci;
+      // 目标区域是否是合并单元格
+      merge = merges.getFirstIncludes(sri, sci);
+      if (merge) {
+        xSelect.setRange(merge);
+      } else {
+        xSelect.setRange(clone);
+      }
+      // 是否超过视图区域
+      let minCi = scrollView.sci;
+      let minRi = scrollView.sri;
+      let maxCi = scrollView.eci - 1;
+      let maxRi = scrollView.eri - 1;
+      if (sci > maxCi) {
+        let diff = sci - maxCi;
+        let next = scrollView.sci + diff;
+        table.scrollCi(next);
+        body.scrollBarSize();
+        body.scrollBarLocal();
+      }
+      if (sri > maxRi) {
+        let diff = sri - maxRi;
+        let next = scrollView.sri + diff;
+        table.scrollRi(next);
+        body.scrollBarSize();
+        body.scrollBarLocal();
+      }
+      if (sci < minCi) {
+        let diff = minCi - sci;
+        let last = scrollView.sci - diff;
+        table.scrollCi(last);
+        body.scrollBarSize();
+        body.scrollBarLocal();
+      }
+      if (sri < minRi) {
+        let diff = minRi - sri;
+        let last = scrollView.sri - diff;
+        table.scrollRi(last);
+        body.scrollBarSize();
+        body.scrollBarLocal();
+      }
+      edit.showEdit();
+    },
+  });
 }
 
-function controlC({ table, body, response }) {
-  response[67] = () => {};
+function showEdit({ table, response }) {
+  const { edit, xScreen } = table;
+  const merges = table.getTableMerges();
+  const xSelect = xScreen.findType(XSelectItem);
+  response.push({
+    keyCode: keyCode => (keyCode >= 48 && keyCode <= 57) || (keyCode >= 65 && keyCode <= 90),
+    handle: (event) => {
+      if (edit.mode === XTableEdit.MODE.HIDE) {
+        let { selectRange } = xSelect;
+        if (selectRange) {
+          let clone = selectRange.clone();
+          let { sri, sci } = clone;
+          clone.sri = sri;
+          clone.sci = sci;
+          clone.eri = sri;
+          clone.eci = sci;
+          // 目标区域是否是合并单元格
+          let merge = merges.getFirstIncludes(clone.sri, clone.sci);
+          if (merge) {
+            xSelect.setRange(merge);
+          } else {
+            xSelect.setRange(clone);
+          }
+          edit.showEdit(event);
+        }
+      }
+    },
+  });
 }
 
-function controlV({ table, body, response }) {
-  response[86] = () => {};
-}
-
-function pageUp({ table, body, response }) {
-  const { xTableScrollView } = table;
-  response[33] = () => {
-    let scrollView = xTableScrollView.getScrollView();
-    let { eri, sri } = scrollView;
-    let curDiff = eri - sri;
-    let value = sri - curDiff;
-    let minDiff = 0;
-    let scroll = value <= minDiff ? minDiff : value;
-    table.scrollRi(scroll);
-    body.scrollBarSize();
-    body.scrollBarLocal();
-  };
+function hideEdit({ table, response }) {
+  const { edit } = table;
+  response.push({
+    keyCode: keyCode => keyCode === 27,
+    handle: (event) => {
+      if (edit.mode === XTableEdit.MODE.SHOW) {
+        edit.hideEdit(event);
+      }
+    },
+  });
 }
 
 function pageDown({ table, body, response }) {
   const { xTableScrollView } = table;
-  response[34] = () => {
-    let scrollView = xTableScrollView.getScrollView();
-    let { maxRi } = xTableScrollView.getScrollMaxRiCi();
-    let { eri, sri } = scrollView;
-    let curDiff = eri - sri;
-    let value = sri + curDiff;
-    let scroll = value > maxRi ? maxRi : value;
-    table.scrollRi(scroll);
-    body.scrollBarSize();
-    body.scrollBarLocal();
-  };
-}
-
-function arrowUp({ table, body, response }) {
-  const { xTableScrollView } = table;
-  const { edit, xScreen } = table;
-  const merges = table.getTableMerges();
-  const xSelect = xScreen.findType(XSelectItem);
-  response[38] = () => {
-    if (edit.mode === XTableEdit.MODE.SHOW) {
-      return;
-    }
-    let scrollView = xTableScrollView.getScrollView();
-    let { selectPath, selectRange } = xSelect;
-    let clone = selectRange.clone();
-    let { sri, sci } = clone;
-    selectPath.set({ sri, sci, mode: XSelectPath.MODE.TB });
-    sri -= 1;
-    // 是否超过最小行数
-    if (sri < 0) {
-      return;
-    }
-    clone.sci = selectPath.dci;
-    clone.eci = selectPath.dci;
-    clone.sri = sri;
-    clone.eri = sri;
-    // 目标区域是否是合并单元格
-    let merge = merges.getFirstIncludes(clone.sri, clone.sci);
-    if (merge) {
-      xSelect.setRange(merge);
-    } else {
-      xSelect.setRange(clone);
-    }
-    // 是否超过视图区域
-    let minRi = scrollView.sri;
-    if (sri < minRi) {
-      let diff = minRi - sri;
-      let last = scrollView.sri - diff;
-      table.scrollRi(last);
+  response.push({
+    keyCode: keyCode => keyCode === 34,
+    handle: () => {
+      let scrollView = xTableScrollView.getScrollView();
+      let { maxRi } = xTableScrollView.getScrollMaxRiCi();
+      let { eri, sri } = scrollView;
+      let curDiff = eri - sri;
+      let value = sri + curDiff;
+      let scroll = value > maxRi ? maxRi : value;
+      table.scrollRi(scroll);
       body.scrollBarSize();
       body.scrollBarLocal();
-    }
-  };
+    },
+  });
+}
+
+function pageUp({ table, body, response }) {
+  const { xTableScrollView } = table;
+  response.push({
+    keyCode: keyCode => keyCode === 33,
+    handle: () => {
+      let scrollView = xTableScrollView.getScrollView();
+      let { eri, sri } = scrollView;
+      let curDiff = eri - sri;
+      let value = sri - curDiff;
+      let minDiff = 0;
+      let scroll = value <= minDiff ? minDiff : value;
+      table.scrollRi(scroll);
+      body.scrollBarSize();
+      body.scrollBarLocal();
+    },
+  });
 }
 
 function arrowDown({ table, body, response }) {
@@ -168,47 +169,95 @@ function arrowDown({ table, body, response }) {
   const { edit, rows, xScreen } = table;
   const merges = table.getTableMerges();
   const xSelect = xScreen.findType(XSelectItem);
-  response[40] = () => {
-    if (edit.mode === XTableEdit.MODE.SHOW) {
-      return;
-    }
-    let scrollView = xTableScrollView.getScrollView();
-    let { selectPath, selectRange } = xSelect;
-    let rLen = rows.len - 1;
-    let clone = selectRange.clone();
-    let { sri, sci } = clone;
-    selectPath.set({ sri, sci, mode: XSelectPath.MODE.TB });
-    // 当前区域是否是合并单元格
-    let merge = merges.getFirstIncludes(sri, sci);
-    if (merge) {
-      sri = merge.eri;
-    }
-    sri += 1;
-    // 是否超过最大行数
-    if (sri > rLen) {
-      return;
-    }
-    clone.sci = selectPath.dci;
-    clone.eci = selectPath.dci;
-    clone.sri = sri;
-    clone.eri = sri;
-    // 目标区域是否是合并单元格
-    merge = merges.getFirstIncludes(clone.sri, clone.sci);
-    if (merge) {
-      xSelect.setRange(merge);
-    } else {
-      xSelect.setRange(clone);
-    }
-    // 是否超过视图区域
-    let maxRi = scrollView.eri - 1;
-    if (sri > maxRi) {
-      let diff = sri - maxRi;
-      let next = scrollView.sri + diff;
-      table.scrollRi(next);
-      body.scrollBarSize();
-      body.scrollBarLocal();
-    }
-  };
+  response.push({
+    keyCode: keyCode => keyCode === 40,
+    handle: () => {
+      if (edit.mode === XTableEdit.MODE.SHOW) {
+        return;
+      }
+      let scrollView = xTableScrollView.getScrollView();
+      let { selectPath, selectRange } = xSelect;
+      let rLen = rows.len - 1;
+      let clone = selectRange.clone();
+      let { sri, sci } = clone;
+      selectPath.set({ sri, sci, mode: XSelectPath.MODE.TB });
+      // 当前区域是否是合并单元格
+      let merge = merges.getFirstIncludes(sri, sci);
+      if (merge) {
+        sri = merge.eri;
+      }
+      sri += 1;
+      // 是否超过最大行数
+      if (sri > rLen) {
+        return;
+      }
+      clone.sci = selectPath.dci;
+      clone.eci = selectPath.dci;
+      clone.sri = sri;
+      clone.eri = sri;
+      // 目标区域是否是合并单元格
+      merge = merges.getFirstIncludes(clone.sri, clone.sci);
+      if (merge) {
+        xSelect.setRange(merge);
+      } else {
+        xSelect.setRange(clone);
+      }
+      // 是否超过视图区域
+      let maxRi = scrollView.eri - 1;
+      if (sri > maxRi) {
+        let diff = sri - maxRi;
+        let next = scrollView.sri + diff;
+        table.scrollRi(next);
+        body.scrollBarSize();
+        body.scrollBarLocal();
+      }
+    },
+  });
+}
+
+function arrowUp({ table, body, response }) {
+  const { xTableScrollView } = table;
+  const { edit, xScreen } = table;
+  const merges = table.getTableMerges();
+  const xSelect = xScreen.findType(XSelectItem);
+  response.push({
+    keyCode: keyCode => keyCode === 38,
+    handle: () => {
+      if (edit.mode === XTableEdit.MODE.SHOW) {
+        return;
+      }
+      let scrollView = xTableScrollView.getScrollView();
+      let { selectPath, selectRange } = xSelect;
+      let clone = selectRange.clone();
+      let { sri, sci } = clone;
+      selectPath.set({ sri, sci, mode: XSelectPath.MODE.TB });
+      sri -= 1;
+      // 是否超过最小行数
+      if (sri < 0) {
+        return;
+      }
+      clone.sci = selectPath.dci;
+      clone.eci = selectPath.dci;
+      clone.sri = sri;
+      clone.eri = sri;
+      // 目标区域是否是合并单元格
+      let merge = merges.getFirstIncludes(clone.sri, clone.sci);
+      if (merge) {
+        xSelect.setRange(merge);
+      } else {
+        xSelect.setRange(clone);
+      }
+      // 是否超过视图区域
+      let minRi = scrollView.sri;
+      if (sri < minRi) {
+        let diff = minRi - sri;
+        let last = scrollView.sri - diff;
+        table.scrollRi(last);
+        body.scrollBarSize();
+        body.scrollBarLocal();
+      }
+    },
+  });
 }
 
 function arrowLeft({ table, body, response }) {
@@ -216,41 +265,44 @@ function arrowLeft({ table, body, response }) {
   const { edit, xScreen } = table;
   const merges = table.getTableMerges();
   const xSelect = xScreen.findType(XSelectItem);
-  response[37] = () => {
-    if (edit.mode === XTableEdit.MODE.SHOW) {
-      return;
-    }
-    let scrollView = xTableScrollView.getScrollView();
-    let { selectPath, selectRange } = xSelect;
-    let clone = selectRange.clone();
-    let { sri, sci } = clone;
-    selectPath.set({ sri, sci, mode: XSelectPath.MODE.LR });
-    sci -= 1;
-    // 是否超过最小列数
-    if (sci < 0) {
-      return;
-    }
-    clone.sri = selectPath.dri;
-    clone.eri = selectPath.dri;
-    clone.sci = sci;
-    clone.eci = sci;
-    // 目标区域是否是合并单元格
-    let merge = merges.getFirstIncludes(clone.sri, clone.sci);
-    if (merge) {
-      xSelect.setRange(merge);
-    } else {
-      xSelect.setRange(clone);
-    }
-    // 是否超过视图区域
-    let minCi = scrollView.sci;
-    if (sci < minCi) {
-      let diff = minCi - sci;
-      let last = scrollView.sci - diff;
-      table.scrollCi(last);
-      body.scrollBarSize();
-      body.scrollBarLocal();
-    }
-  };
+  response.push({
+    keyCode: keyCode => keyCode === 37,
+    handle: () => {
+      if (edit.mode === XTableEdit.MODE.SHOW) {
+        return;
+      }
+      let scrollView = xTableScrollView.getScrollView();
+      let { selectPath, selectRange } = xSelect;
+      let clone = selectRange.clone();
+      let { sri, sci } = clone;
+      selectPath.set({ sri, sci, mode: XSelectPath.MODE.LR });
+      sci -= 1;
+      // 是否超过最小列数
+      if (sci < 0) {
+        return;
+      }
+      clone.sri = selectPath.dri;
+      clone.eri = selectPath.dri;
+      clone.sci = sci;
+      clone.eci = sci;
+      // 目标区域是否是合并单元格
+      let merge = merges.getFirstIncludes(clone.sri, clone.sci);
+      if (merge) {
+        xSelect.setRange(merge);
+      } else {
+        xSelect.setRange(clone);
+      }
+      // 是否超过视图区域
+      let minCi = scrollView.sci;
+      if (sci < minCi) {
+        let diff = minCi - sci;
+        let last = scrollView.sci - diff;
+        table.scrollCi(last);
+        body.scrollBarSize();
+        body.scrollBarLocal();
+      }
+    },
+  });
 }
 
 function arrowRight({ table, body, response }) {
@@ -258,47 +310,50 @@ function arrowRight({ table, body, response }) {
   const { edit, cols, xScreen } = table;
   const merges = table.getTableMerges();
   const xSelect = xScreen.findType(XSelectItem);
-  response[39] = () => {
-    if (edit.mode === XTableEdit.MODE.SHOW) {
-      return;
-    }
-    let scrollView = xTableScrollView.getScrollView();
-    let { selectPath, selectRange } = xSelect;
-    let clone = selectRange.clone();
-    let cLen = cols.len - 1;
-    let { sci, sri } = clone;
-    selectPath.set({ sri, sci, mode: XSelectPath.MODE.LR });
-    // 当前区域是否是合并单元格
-    let merge = merges.getFirstIncludes(sri, sci);
-    if (merge) {
-      sci = merge.eci;
-    }
-    sci += 1;
-    // 是否超过最大列数
-    if (sci > cLen) {
-      return;
-    }
-    clone.sri = selectPath.dri;
-    clone.eri = selectPath.dri;
-    clone.sci = sci;
-    clone.eci = sci;
-    // 目标区域是否是合并单元格
-    merge = merges.getFirstIncludes(clone.sri, clone.sci);
-    if (merge) {
-      xSelect.setRange(merge);
-    } else {
-      xSelect.setRange(clone);
-    }
-    // 是否超过视图区域
-    let maxCi = scrollView.eci - 1;
-    if (sci > maxCi) {
-      let diff = sci - maxCi;
-      let next = scrollView.sci + diff;
-      table.scrollCi(next);
-      body.scrollBarSize();
-      body.scrollBarLocal();
-    }
-  };
+  response.push({
+    keyCode: keyCode => keyCode === 39,
+    handle: () => {
+      if (edit.mode === XTableEdit.MODE.SHOW) {
+        return;
+      }
+      let scrollView = xTableScrollView.getScrollView();
+      let { selectPath, selectRange } = xSelect;
+      let clone = selectRange.clone();
+      let cLen = cols.len - 1;
+      let { sci, sri } = clone;
+      selectPath.set({ sri, sci, mode: XSelectPath.MODE.LR });
+      // 当前区域是否是合并单元格
+      let merge = merges.getFirstIncludes(sri, sci);
+      if (merge) {
+        sci = merge.eci;
+      }
+      sci += 1;
+      // 是否超过最大列数
+      if (sci > cLen) {
+        return;
+      }
+      clone.sri = selectPath.dri;
+      clone.eri = selectPath.dri;
+      clone.sci = sci;
+      clone.eci = sci;
+      // 目标区域是否是合并单元格
+      merge = merges.getFirstIncludes(clone.sri, clone.sci);
+      if (merge) {
+        xSelect.setRange(merge);
+      } else {
+        xSelect.setRange(clone);
+      }
+      // 是否超过视图区域
+      let maxCi = scrollView.eci - 1;
+      if (sci > maxCi) {
+        let diff = sci - maxCi;
+        let next = scrollView.sci + diff;
+        table.scrollCi(next);
+        body.scrollBarSize();
+        body.scrollBarLocal();
+      }
+    },
+  });
 }
 
 class XWorkBodyKeyHandle {
@@ -307,12 +362,12 @@ class XWorkBodyKeyHandle {
     table, body,
   }) {
     const { keyboard } = table;
-    const response = {};
+    const response = [];
+    showEdit({ table, body, response });
+    hideEdit({ table, body, response });
     tab({ table, body, response });
-    controlC({ table, body, response });
-    controlV({ table, body, response });
-    pageUp({ table, body, response });
     pageDown({ table, body, response });
+    pageUp({ table, body, response });
     arrowLeft({ table, body, response });
     arrowUp({ table, body, response });
     arrowDown({ table, body, response });

@@ -143,29 +143,19 @@ class XTableEdit extends Widget {
     });
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (event) => {
       if (this.mode === XTableEdit.MODE.SHOW) {
-        this.hideEdit();
-        table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_FINISH, {
-          event,
-          table,
-          edit: this,
-        });
+        this.hideEdit(event);
       }
     });
     XEvent.mouseDoubleClick(table, (event) => {
       const { selectRange } = xSelect;
       const { sri, sci } = selectRange;
       if (!selectRange.multiple() || merges.getFirstIncludes(sri, sci)) {
-        this.showEdit();
-        table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_START, {
-          event,
-          table,
-          edit: this,
-        });
+        this.showEdit(event);
       }
     });
   }
 
-  hideEdit() {
+  hideEdit(event) {
     const { select } = this;
     const { table } = this;
     const { snapshot } = table;
@@ -186,10 +176,15 @@ class XTableEdit extends Widget {
         table.render();
       }
       this.select = null;
+      table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_FINISH, {
+        event,
+        table,
+        edit: this,
+      });
     }
   }
 
-  showEdit() {
+  showEdit(event) {
     const { table } = this;
     if (!table.isReadOnly()) {
       const merges = table.getTableMerges();
@@ -215,6 +210,11 @@ class XTableEdit extends Widget {
         this.editOffset();
         this.throttle.action(() => {
           PlainUtils.keepLastIndex(this.el);
+        });
+        table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_START, {
+          event,
+          table,
+          edit: this,
         });
       }
     }
