@@ -213,9 +213,6 @@ class XTableEdit extends Widget {
         this.cell = cell;
         this.select = selectRange;
         this.mode = XTableEdit.MODE.SHOW;
-        this.show();
-        this.attr('style', table.getCellCssStyle(sri, sci));
-        this.editOffset();
         if (cell.isEmpty()) {
           this.text(PlainUtils.EMPTY);
         } else {
@@ -224,6 +221,8 @@ class XTableEdit extends Widget {
             case Cell.CONTENT_TYPE.RICH_TEXT: {
               // TODO ...
               //
+              this.text(PlainUtils.EMPTY);
+              this.show();
               break;
             }
             case Cell.CONTENT_TYPE.DATE:
@@ -231,10 +230,13 @@ class XTableEdit extends Widget {
             case Cell.CONTENT_TYPE.STRING: {
               const text = cell.toString();
               this.text(text);
+              this.attr('style', table.getCellCssStyle(sri, sci));
+              this.show();
               break;
             }
           }
         }
+        this.editOffset();
         this.throttle.action(() => {
           this.focus();
           PlainUtils.keepLastIndex(this.el);
