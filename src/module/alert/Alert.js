@@ -9,8 +9,10 @@ class Alert extends Widget {
   constructor({
     title = '提示',
     message = '',
-  }) {
+  } = {}) {
     super(`${cssPrefix}-alert`);
+    this.title = title;
+    this.message = message;
     // 创建 UI
     this.closeEle = h('div', `${cssPrefix}-alert-close`);
     this.titleEle = h('div', `${cssPrefix}-alert-title`);
@@ -31,9 +33,15 @@ class Alert extends Widget {
     this.dragPanel = new DragPanel().children(this);
   }
 
-  unbind() {
-    const { okEle } = this;
-    XEvent.unbind(okEle);
+  setTitle(title) {
+    this.titleEle.html(title);
+    return this;
+  }
+
+  setMessage(message) {
+    this.message = message;
+    this.contentEle.html(message);
+    return this;
   }
 
   bind() {
@@ -43,16 +51,23 @@ class Alert extends Widget {
     });
   }
 
+  unbind() {
+    const { okEle } = this;
+    XEvent.unbind(okEle);
+  }
+
   open() {
     const { dragPanel } = this;
     dragPanel.open();
     this.bind();
+    return this;
   }
 
   close() {
     const { dragPanel } = this;
     dragPanel.close();
     this.destroy();
+    return this;
   }
 
   destroy() {

@@ -1084,18 +1084,14 @@ class XWorkTopMenu extends Widget {
     XEvent.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      if (!table.isReadOnly()) {
-        const { snapshot } = table;
-        if (snapshot.canUndo()) snapshot.undo();
-      }
+      const { snapshot } = table;
+      if (snapshot.canUndo()) snapshot.undo();
     });
     XEvent.bind(this.redo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      if (!table.isReadOnly()) {
-        const { snapshot } = table;
-        if (snapshot.canRedo()) snapshot.redo();
-      }
+      const { snapshot } = table;
+      if (snapshot.canRedo()) snapshot.redo();
     });
     XEvent.bind(this.paintFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();

@@ -612,6 +612,7 @@ class XTableDimensions extends Widget {
     this.colFixed = new ColFixed(this);
     this.dropColFixed = new DropColFixed(this);
     this.dropRowFixed = new DropRowFixed(this);
+    this.readOnlyAlert = new Alert();
     // 粘贴板
     this.clipboard = new Clipboard({
       filter: () => {},
@@ -1483,13 +1484,13 @@ class XTableDimensions extends Widget {
     tips = true,
     view = null,
   } = {}) {
-    let { settings, xScreen } = this;
+    let { readOnlyAlert, settings, xScreen } = this;
     let helper = this.getOperateCellsHelper();
     // 表格是否只读
     let { readOnly } = settings;
     if (readOnly) {
       if (tips) {
-        new Alert({ message: '只读模式无法编辑' }).open();
+        readOnlyAlert.setMessage('只读模式无法编辑').open();
       }
       return true;
     }
@@ -1527,7 +1528,7 @@ class XTableDimensions extends Widget {
     }
     if (readOnly) {
       if (tips) {
-        new Alert({ message: '只读模式无法编辑' }).open();
+        readOnlyAlert.setMessage('只读模式无法编辑').open();
       }
       return true;
     }

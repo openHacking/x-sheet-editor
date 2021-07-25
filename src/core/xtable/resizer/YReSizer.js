@@ -54,16 +54,12 @@ class YReSizer extends Widget {
         if (x <= 0) {
           this.hide();
         }
-        if (!table.isReadOnly({
-          view: new RectRange(ri, 0, ri, cols.len),
-        })) {
-          const newTop = my - (top - rows.getHeight(ri)) + this.height;
-          snapshot.open();
-          rows.setHeight(ri, scale.back(newTop));
-          snapshot.close({
-            type: Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT,
-          });
-        }
+        const newTop = my - (top - rows.getHeight(ri)) + this.height;
+        snapshot.open();
+        rows.setHeight(ri, scale.back(newTop));
+        snapshot.close({
+          type: Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT,
+        });
       });
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {

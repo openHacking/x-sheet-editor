@@ -56,16 +56,12 @@ class XReSizer extends Widget {
         if (y <= 0) {
           this.hide();
         }
-        if (!table.isReadOnly({
-          view: new RectRange(0, ci, rows.len, ci),
-        })) {
-          const newLeft = mx - (left - cols.getWidth(ci)) + this.width;
-          snapshot.open();
-          cols.setWidth(ci, scale.back(newLeft));
-          snapshot.close({
-            type: Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH,
-          });
-        }
+        const newLeft = mx - (left - cols.getWidth(ci)) + this.width;
+        snapshot.open();
+        cols.setWidth(ci, scale.back(newLeft));
+        snapshot.close({
+          type: Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH,
+        });
       });
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
