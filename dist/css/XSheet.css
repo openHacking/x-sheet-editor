@@ -742,6 +742,7 @@
   overflow-wrap: break-word;
   overflow-y: auto;
   overflow-x: hidden;
+  user-select: auto;
 }
 .x-sheet-table-y-height-light {
   width: 100px;

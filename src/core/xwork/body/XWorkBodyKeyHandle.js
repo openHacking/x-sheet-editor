@@ -204,10 +204,13 @@ function hideEdit({ table, response }) {
 }
 
 function pageDown({ table, body, response }) {
-  const { xTableScrollView } = table;
+  const { xTableScrollView, xScreen, rows } = table;
+  const xSelect = xScreen.findType(XSelectItem);
+  const merges = table.getTableMerges();
   response.push({
     keyCode: keyCode => keyCode === 34,
     handle: () => {
+      // 滚动到指定行
       let scrollView = xTableScrollView.getScrollView();
       let { maxRi } = xTableScrollView.getScrollMaxRiCi();
       let { eri, sri } = scrollView;
@@ -217,15 +220,38 @@ function pageDown({ table, body, response }) {
       table.scrollRi(scroll);
       body.scrollBarSize();
       body.scrollBarLocal();
+      // 焦点框跟随
+      let newScrollView = xTableScrollView.getScrollView();
+      let { selectRange } = xSelect;
+      if (selectRange) {
+        let diffSri = selectRange.sri - scrollView.sri;
+        let clone = selectRange.clone();
+        clone.sri = newScrollView.sri + diffSri;
+        clone.eri = clone.sri;
+        // 最大行高度
+        if (clone.sri > rows.len) {
+          return;
+        }
+        // 目标区域是否是合并单元格
+        let merge = merges.getFirstIncludes(clone.sri, clone.sci);
+        if (merge) {
+          xSelect.setRange(merge);
+        } else {
+          xSelect.setRange(clone);
+        }
+      }
     },
   });
 }
 
 function pageUp({ table, body, response }) {
-  const { xTableScrollView } = table;
+  const { xTableScrollView, xScreen } = table;
+  const xSelect = xScreen.findType(XSelectItem);
+  const merges = table.getTableMerges();
   response.push({
     keyCode: keyCode => keyCode === 33,
     handle: () => {
+      // 滚动到指定行
       let scrollView = xTableScrollView.getScrollView();
       let { eri, sri } = scrollView;
       let curDiff = eri - sri;
@@ -235,6 +261,22 @@ function pageUp({ table, body, response }) {
       table.scrollRi(scroll);
       body.scrollBarSize();
       body.scrollBarLocal();
+      // 焦点框跟随
+      let newScrollView = xTableScrollView.getScrollView();
+      let { selectRange } = xSelect;
+      if (selectRange) {
+        let diffSri = selectRange.sri - scrollView.sri;
+        let clone = selectRange.clone();
+        clone.sri = newScrollView.sri + diffSri;
+        clone.eri = clone.sri;
+        // 目标区域是否是合并单元格
+        let merge = merges.getFirstIncludes(clone.sri, clone.sci);
+        if (merge) {
+          xSelect.setRange(merge);
+        } else {
+          xSelect.setRange(clone);
+        }
+      }
     },
   });
 }
