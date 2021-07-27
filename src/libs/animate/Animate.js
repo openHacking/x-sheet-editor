@@ -2,7 +2,7 @@
 // eslint-disable-next-line max-len
 /* global requestAnimationFrame webkitRequestAnimationFrame cancelAnimationFrame webkitCancelAnimationFrame */
 
-import { PlainUtils } from '../../utils/PlainUtils';
+import { SheetUtils } from '../../utils/SheetUtils';
 
 const REQUEST = requestAnimationFrame || webkitRequestAnimationFrame;
 const CANCEL = cancelAnimationFrame || webkitCancelAnimationFrame;
@@ -23,7 +23,7 @@ const TWEEN = {
 
 class Animate {
   constructor(option) {
-    this.option = PlainUtils.copy({
+    this.option = SheetUtils.copy({
       loop: false,
       begin: 0,
       end: 0,

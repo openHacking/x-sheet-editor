@@ -5,7 +5,7 @@ import { VerticalLayerElement } from '../../libs/layer/VerticalLayerElement';
 import { XWorkTop } from './top/XWorkTop';
 import { XWorkBody } from './body/XWorkBody';
 import { XWorkBottom } from './bottom/XWorkBottom';
-import { PlainUtils } from '../../utils/PlainUtils';
+import { SheetUtils } from '../../utils/SheetUtils';
 
 const settings = {
   created: new Date(),
@@ -34,7 +34,7 @@ class XWork extends Widget {
 
   constructor(options) {
     super(`${cssPrefix}-work`);
-    this.options = PlainUtils.copy({}, settings, options);
+    this.options = SheetUtils.copy({}, settings, options);
     this.root = null;
     // 布局
     this.topLayer = new VerticalLayerElement();

@@ -1,5 +1,5 @@
 /* global Image console */
-import { PlainUtils } from '../../../utils/PlainUtils';
+import { SheetUtils } from '../../../utils/SheetUtils';
 import { XDraw } from '../../../canvas/XDraw';
 import { Rect } from '../../../canvas/Rect';
 import { XIconOffset } from './XIconOffset';
@@ -47,7 +47,7 @@ class XIcon {
     vertical = XIcon.ICON_VERTICAL.CENTER,
     horizontal = XIcon.ICON_HORIZONTAL.RIGHT,
     type = XIcon.ICON_TYPE.image,
-    image = PlainUtils.Nul,
+    image = SheetUtils.Nul,
     focus = null,
     height = 16,
     width = 16,

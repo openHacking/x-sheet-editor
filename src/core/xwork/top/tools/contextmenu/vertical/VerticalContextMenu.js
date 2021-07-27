@@ -1,6 +1,6 @@
 import { ELContextMenu } from '../../../../../../module/contextmenu/ELContextMenu';
 import { cssPrefix, Constant } from '../../../../../../const/Constant';
-import { PlainUtils } from '../../../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../../../utils/SheetUtils';
 import { h } from '../../../../../../libs/Element';
 import { VerticalContextMenuItem } from './VerticalContextMenuItem';
 import { VerticalIcon1 } from '../icon/vertical/VerticalIcon1';
@@ -12,7 +12,7 @@ import { BaseFont } from '../../../../../../canvas/font/BaseFont';
 class VerticalContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-vertical-type-context-menu`, PlainUtils.copy({
+    super(`${cssPrefix}-vertical-type-context-menu`, SheetUtils.copy({
       onUpdate: () => {},
     }, options));
     this.verticalIcon1 = new VerticalIcon1();

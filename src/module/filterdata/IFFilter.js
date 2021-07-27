@@ -4,7 +4,7 @@ import { h } from '../../libs/Element';
 import { Select } from '../form/select/Select';
 import { XEvent } from '../../libs/XEvent';
 import { PlainInput } from '../form/input/PlainInput';
-import { PlainUtils } from '../../utils/PlainUtils';
+import { SheetUtils } from '../../utils/SheetUtils';
 
 /**
  * IFFilter
@@ -18,7 +18,7 @@ class IFFilter extends ELContextMenuItem {
     super(`${cssPrefix}-filter-data-menu-item ${cssPrefix}-if-filter`);
     this.status = false;
     this.type = IFFilter.IF_TYPE.NOT;
-    this.value = PlainUtils.EMPTY;
+    this.value = SheetUtils.EMPTY;
     // 标题
     this.titleEle = h('div', `${cssPrefix}-if-filter-title`);
     this.titleTextEle = h('span', `${cssPrefix}-if-filter-title-text`);
@@ -70,8 +70,8 @@ class IFFilter extends ELContextMenuItem {
    * @param value
    */
   setValue(value) {
-    if (PlainUtils.isBlank(value)) {
-      value = PlainUtils.EMPTY;
+    if (SheetUtils.isBlank(value)) {
+      value = SheetUtils.EMPTY;
     }
     this.valueInput.setValue(value);
   }
@@ -118,7 +118,7 @@ class IFFilter extends ELContextMenuItem {
    * @param type
    */
   setType(type) {
-    if (PlainUtils.isBlank(type)) {
+    if (SheetUtils.isBlank(type)) {
       type = IFFilter.IF_TYPE.NOT;
     }
     this.selectEle.setSelect(type);

@@ -1,6 +1,6 @@
 import { ELContextMenu } from '../../../../../../module/contextmenu/ELContextMenu';
 import { cssPrefix, Constant } from '../../../../../../const/Constant';
-import { PlainUtils } from '../../../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../../../utils/SheetUtils';
 import { h } from '../../../../../../libs/Element';
 import { HorizontalIcon1 } from '../icon/horizontal/HorizontalIcon1';
 import { HorizontalIcon2 } from '../icon/horizontal/HorizontalIcon2';
@@ -12,7 +12,7 @@ import { BaseFont } from '../../../../../../canvas/font/BaseFont';
 class HorizontalContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-horizontal-type-context-menu`, PlainUtils.copy({
+    super(`${cssPrefix}-horizontal-type-context-menu`, SheetUtils.copy({
       onUpdate: () => {},
     }, options));
     this.horizontalIcon1 = new HorizontalIcon1();

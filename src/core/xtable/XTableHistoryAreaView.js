@@ -1,4 +1,4 @@
-import { PlainUtils } from '../../utils/PlainUtils';
+import { SheetUtils } from '../../utils/SheetUtils';
 import { SCROLL_TYPE } from './tablebase/Scroll';
 import { XTableAreaView } from './XTableAreaView';
 
@@ -47,7 +47,7 @@ class XTableHistoryAreaView extends XTableAreaView {
    * @returns {null|RectRange}
    */
   getLastScrollView() {
-    if (PlainUtils.isNotUnDef(this.lastScrollView)) {
+    if (SheetUtils.isNotUnDef(this.lastScrollView)) {
       return this.lastScrollView.clone();
     }
     return null;
@@ -58,7 +58,7 @@ class XTableHistoryAreaView extends XTableAreaView {
    * @returns {null|RectRange}
    */
   getLeaveView() {
-    if (PlainUtils.isNotUnDef(this.leaveView)) {
+    if (SheetUtils.isNotUnDef(this.leaveView)) {
       return this.leaveView.clone();
     }
     const lastScrollView = this.getLastScrollView();
@@ -81,7 +81,7 @@ class XTableHistoryAreaView extends XTableAreaView {
    * @returns {null|RectRange}
    */
   getEnterView() {
-    if (PlainUtils.isNotUnDef(this.enterView)) {
+    if (SheetUtils.isNotUnDef(this.enterView)) {
       return this.enterView.clone();
     }
     const lastScrollView = this.getLastScrollView();
@@ -104,7 +104,7 @@ class XTableHistoryAreaView extends XTableAreaView {
    * @returns {null|RectRange}
    */
   getScrollEnterView() {
-    if (PlainUtils.isNotUnDef(this.scrollEnterView)) {
+    if (SheetUtils.isNotUnDef(this.scrollEnterView)) {
       return this.scrollEnterView.clone();
     }
     const { cols, rows, scroll } = this;

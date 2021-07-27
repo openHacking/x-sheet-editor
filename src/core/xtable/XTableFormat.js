@@ -1,4 +1,4 @@
-import { PlainUtils } from '../../utils/PlainUtils';
+import { SheetUtils } from '../../utils/SheetUtils';
 import { DateUtils } from '../../utils/DateUtils';
 
 function parserToDate(text) {
@@ -36,8 +36,8 @@ function parserToDate(text) {
 class Format {
 
   eNotation(value) {
-    if (PlainUtils.isNumber(value)) {
-      const number = PlainUtils.parseFloat(value);
+    if (SheetUtils.isNumber(value)) {
+      const number = SheetUtils.parseFloat(value);
       return number.toExponential(2);
     }
     return value;
@@ -52,7 +52,7 @@ class Format {
   }
 
   decimal(value) {
-    if (PlainUtils.isNumber(value)) {
+    if (SheetUtils.isNumber(value)) {
       const indexOf = value.toString().indexOf('.');
       // eslint-disable-next-line no-bitwise
       if (~indexOf) {
@@ -64,37 +64,37 @@ class Format {
   }
 
   number(value) {
-    if (PlainUtils.isNumber(value)) {
-      return PlainUtils.parseFloat(value);
+    if (SheetUtils.isNumber(value)) {
+      return SheetUtils.parseFloat(value);
     }
     return value;
   }
 
   fraction(value) {
-    if (PlainUtils.isFraction(value)) {
+    if (SheetUtils.isFraction(value)) {
       const left = value.split('/')[0];
       const right = value.split('/')[1];
-      return PlainUtils.parseInt(left) / PlainUtils.parseInt(right);
+      return SheetUtils.parseInt(left) / SheetUtils.parseInt(right);
     }
     return value;
   }
 
   percentage(value) {
-    if (PlainUtils.isNumber(value)) {
+    if (SheetUtils.isNumber(value)) {
       return `${value}%`;
     }
     return value;
   }
 
   hk(value) {
-    if (PlainUtils.isNumber(value)) {
+    if (SheetUtils.isNumber(value)) {
       return `HK${value}`;
     }
     return value;
   }
 
   rmb(value) {
-    if (PlainUtils.isNumber(value)) {
+    if (SheetUtils.isNumber(value)) {
       return `￥${value}`;
     }
     return value;
@@ -149,7 +149,7 @@ class Format {
   }
 
   dollar(value) {
-    if (PlainUtils.isNumber(value)) {
+    if (SheetUtils.isNumber(value)) {
       return `$${value}`;
     }
     return value;

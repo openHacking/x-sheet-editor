@@ -1,4 +1,4 @@
-import { PlainUtils } from '../../../utils/PlainUtils';
+import { SheetUtils } from '../../../utils/SheetUtils';
 import { Rect } from '../../../canvas/Rect';
 import { RTCosKit, RTSinKit } from '../../../canvas/RTFunction';
 import { BaseFont } from '../../../canvas/font/BaseFont';
@@ -75,12 +75,12 @@ class BaseCellsHelper {
           .setLoop((i) => {
             const merge = merges.getFirstIncludes(ri, i);
             const cell = cells.getCell(ri, i);
-            const blank = PlainUtils.isUnDef(cell) || cell.isEmpty();
+            const blank = SheetUtils.isUnDef(cell) || cell.isEmpty();
             if (i === ci) {
               width += cols.getWidth(i);
               return true;
             }
-            if (blank && PlainUtils.isUnDef(merge)) {
+            if (blank && SheetUtils.isUnDef(merge)) {
               width += cols.getWidth(i);
               return true;
             }
@@ -99,8 +99,8 @@ class BaseCellsHelper {
           .setLoop((i) => {
             const merge = merges.getFirstIncludes(ri, i);
             const cell = cells.getCell(ri, i);
-            const blank = PlainUtils.isUnDef(cell) || cell.isEmpty();
-            if (blank && PlainUtils.isUnDef(merge)) {
+            const blank = SheetUtils.isUnDef(cell) || cell.isEmpty();
+            if (blank && SheetUtils.isUnDef(merge)) {
               rightWidth += cols.getWidth(i);
               return true;
             }
@@ -114,8 +114,8 @@ class BaseCellsHelper {
           .setLoop((i) => {
             const merge = merges.getFirstIncludes(ri, i);
             const cell = cells.getCell(ri, i);
-            const blank = PlainUtils.isUnDef(cell) || cell.isEmpty();
-            if (blank && PlainUtils.isUnDef(merge)) {
+            const blank = SheetUtils.isUnDef(cell) || cell.isEmpty();
+            if (blank && SheetUtils.isUnDef(merge)) {
               const tmp = cols.getWidth(i);
               leftWidth += tmp;
               offset -= tmp;
@@ -137,12 +137,12 @@ class BaseCellsHelper {
           .setLoop((i) => {
             const merge = merges.getFirstIncludes(ri, i);
             const cell = cells.getCell(ri, i);
-            const blank = PlainUtils.isUnDef(cell) || cell.isEmpty();
+            const blank = SheetUtils.isUnDef(cell) || cell.isEmpty();
             if (i === ci) {
               width += cols.getWidth(i);
               return true;
             }
-            if (blank && PlainUtils.isUnDef(merge)) {
+            if (blank && SheetUtils.isUnDef(merge)) {
               const tmp = cols.getWidth(i);
               width += tmp;
               offset -= tmp;
@@ -265,7 +265,7 @@ class BaseCellsHelper {
     const { x, y, height, width } = rect;
     const { fontAttr, contentWidth, ruler } = cell;
     const { direction } = fontAttr;
-    const blank = PlainUtils.isUnDef(cell) || cell.isEmpty();
+    const blank = SheetUtils.isUnDef(cell) || cell.isEmpty();
     switch (direction) {
       case BaseFont.TEXT_DIRECTION.HORIZONTAL: {
         if (blank === false) {

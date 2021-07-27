@@ -2,12 +2,12 @@ import { Widget } from '../../../libs/Widget';
 import { Constant, cssPrefix } from '../../../const/Constant';
 import { h } from '../../../libs/Element';
 import { XEvent } from '../../../libs/XEvent';
-import { PlainUtils } from '../../../utils/PlainUtils';
+import { SheetUtils } from '../../../utils/SheetUtils';
 import { XSelectItem } from '../../xtable/xscreenitems/xselect/XSelectItem';
 import { Throttle } from '../../../libs/Throttle';
-import { SumTotalTask } from '../../../task/SumTotalTask';
+import { SumTotalTask } from '../../../tasks/SumTotalTask';
 import { TaskProgress } from '../../../module/taskprogress/TaskProgress';
-import { TaskManage } from '../../../task/base/TaskManage';
+import { TaskManage } from '../../../tasks/base/TaskManage';
 
 class XWorkBottomMenu extends Widget {
 
@@ -61,10 +61,10 @@ class XWorkBottomMenu extends Widget {
       });
     });
     XEvent.bind(fullScreen, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      if (PlainUtils.isFull()) {
-        PlainUtils.exitFullscreen();
+      if (SheetUtils.isFull()) {
+        SheetUtils.exitFullscreen();
       } else {
-        PlainUtils.fullScreen(work.root);
+        SheetUtils.fullScreen(work.root);
       }
     });
   }
@@ -91,9 +91,9 @@ class XWorkBottomMenu extends Widget {
     const { selectRange } = xSelect;
     if (selectRange) {
       const { total, avg, number } = await totalTask.execute(selectRange, data);
-      this.setSum(PlainUtils.toFixed(total, 2));
-      this.setAvg(PlainUtils.toFixed(avg, 2));
-      this.setNumber(PlainUtils.toFixed(number, 2));
+      this.setSum(SheetUtils.toFixed(total, 2));
+      this.setAvg(SheetUtils.toFixed(avg, 2));
+      this.setNumber(SheetUtils.toFixed(number, 2));
     } else {
       this.setSum(0);
       this.setAvg(0);

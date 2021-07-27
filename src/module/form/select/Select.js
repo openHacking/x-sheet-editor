@@ -5,7 +5,7 @@ import { h } from '../../../libs/Element';
 import { ELContextMenuDivider } from '../../contextmenu/ELContextMenuDivider';
 import { SelectContextMenu } from './SelectContextMenu';
 import { SelectContextMenuItem } from './SelectContextMenuItem';
-import { PlainUtils } from '../../../utils/PlainUtils';
+import { SheetUtils } from '../../../utils/SheetUtils';
 
 /**
  * Select
@@ -17,7 +17,7 @@ class Select extends Widget {
    */
   constructor() {
     super(`${cssPrefix}-form-select`);
-    this.selectValue = PlainUtils.Nul;
+    this.selectValue = SheetUtils.Nul;
     // 文本和图标
     this.selectText = h('div', `${cssPrefix}-form-select-text`);
     this.selectIcon = h('div', `${cssPrefix}-form-select-icon`);

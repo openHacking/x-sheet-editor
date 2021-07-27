@@ -3,12 +3,12 @@ import { Constant, cssPrefix } from '../../../../../../const/Constant';
 import { ELContextMenuDivider } from '../../../../../../module/contextmenu/ELContextMenuDivider';
 import { FixedContextMenuItem } from './FixedContextMenuItem';
 import { XEvent } from '../../../../../../libs/XEvent';
-import { PlainUtils } from '../../../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../../../utils/SheetUtils';
 
 class FixedContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-fixed-context-menu`, PlainUtils.copy({
+    super(`${cssPrefix}-fixed-context-menu`, SheetUtils.copy({
       onUpdate: () => {
       },
     }, options));

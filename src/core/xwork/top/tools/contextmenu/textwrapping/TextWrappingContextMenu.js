@@ -1,6 +1,6 @@
 import { ELContextMenu } from '../../../../../../module/contextmenu/ELContextMenu';
 import { cssPrefix, Constant } from '../../../../../../const/Constant';
-import { PlainUtils } from '../../../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../../../utils/SheetUtils';
 import { TextWrappingIcon1 } from '../icon/textwrapping/TextWrappingIcon1';
 import { TextWrappingIcon2 } from '../icon/textwrapping/TextWrappingIcon2';
 import { TextWrappingIcon3 } from '../icon/textwrapping/TextWrappingIcon3';
@@ -12,7 +12,7 @@ import { BaseFont } from '../../../../../../canvas/font/BaseFont';
 class TextWrappingContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-text-wrapping-context-menu`, PlainUtils.copy({
+    super(`${cssPrefix}-text-wrapping-context-menu`, SheetUtils.copy({
       onUpdate: () => {},
     }, options));
     this.textWrappingIcon1 = new TextWrappingIcon1();

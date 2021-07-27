@@ -1,6 +1,6 @@
 import { Widget } from '../../../../libs/Widget';
 import { cssPrefix } from '../../../../const/Constant';
-import { PlainUtils } from '../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../utils/SheetUtils';
 
 let number = 0;
 let include = [];
@@ -24,7 +24,7 @@ class XWorkTab extends Widget {
   }
 
   getCheckName(name) {
-    if (PlainUtils.isUnDef(name)) {
+    if (SheetUtils.isUnDef(name)) {
       name = this.getName();
     }
     while (include.indexOf(name) > -1) {

@@ -1,13 +1,13 @@
 import { ELContextMenu } from '../../../../../../module/contextmenu/ELContextMenu';
 import { Constant, cssPrefix } from '../../../../../../const/Constant';
-import { PlainUtils } from '../../../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../../../utils/SheetUtils';
 import { ScaleContextMenuItem } from './ScaleContextMenuItem';
 import { XEvent } from '../../../../../../libs/XEvent';
 
 class ScaleContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-scale-context-menu`, PlainUtils.copy({
+    super(`${cssPrefix}-scale-context-menu`, SheetUtils.copy({
       onUpdate: () => {},
     }, options));
     this.items = [

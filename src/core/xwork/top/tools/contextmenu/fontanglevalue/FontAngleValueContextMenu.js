@@ -2,12 +2,12 @@ import { ELContextMenu } from '../../../../../../module/contextmenu/ELContextMen
 import { FontAngleValueContextMenuItem } from './FontAngleValueContextMenuItem';
 import { Constant, cssPrefix } from '../../../../../../const/Constant';
 import { XEvent } from '../../../../../../libs/XEvent';
-import { PlainUtils } from '../../../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../../../utils/SheetUtils';
 
 class FontAngleValueContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-font-angle-value-context-menu`, PlainUtils.copy({
+    super(`${cssPrefix}-font-angle-value-context-menu`, SheetUtils.copy({
       onUpdate: () => {},
     }, options));
     this.items = [

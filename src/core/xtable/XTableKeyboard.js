@@ -1,7 +1,7 @@
 /* global document */
 import { XEvent } from '../../libs/XEvent';
 import { Constant } from '../../const/Constant';
-import { PlainUtils } from '../../utils/PlainUtils';
+import { SheetUtils } from '../../utils/SheetUtils';
 
 class XTableKeyboard {
 
@@ -21,7 +21,7 @@ class XTableKeyboard {
         const find = this.find(target);
         if (find) {
           const { response } = find;
-          const flagCode = PlainUtils.parseInt(this.keyCode);
+          const flagCode = SheetUtils.parseInt(this.keyCode);
           response.forEach((item) => {
             if (item.keyCode(flagCode, event)) {
               item.handle(event);

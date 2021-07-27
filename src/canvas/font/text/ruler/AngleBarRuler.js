@@ -1,6 +1,6 @@
 import { AngleBoxRuler } from './AngleBoxRuler';
 import { BaseFont } from '../../BaseFont';
-import { PlainUtils } from '../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../utils/SheetUtils';
 
 class AngleBarRuler extends AngleBoxRuler {
 
@@ -31,8 +31,8 @@ class AngleBarRuler extends AngleBoxRuler {
     }
     super.textWrapRuler();
     const { textWrapTextArray, textWrapTextWidth } = this;
-    const head = PlainUtils.arrayHead(textWrapTextArray);
-    const last = PlainUtils.arrayLast(textWrapTextArray);
+    const head = SheetUtils.arrayHead(textWrapTextArray);
+    const last = SheetUtils.arrayLast(textWrapTextArray);
     if (head !== last) {
       const headCenter = head.tx + head.blockWidth / 2;
       const lastCenter = last.tx + last.blockWidth / 2;

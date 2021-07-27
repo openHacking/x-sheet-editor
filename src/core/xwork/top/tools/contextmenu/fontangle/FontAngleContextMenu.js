@@ -4,7 +4,7 @@ import { FontAngleDivider } from '../icon/fontangle/FontAngleDivider';
 import { h } from '../../../../../../libs/Element';
 import { FontAngleValue } from '../../FontAngleValue';
 import { Constant, cssPrefix } from '../../../../../../const/Constant';
-import { PlainUtils } from '../../../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../../../utils/SheetUtils';
 import { FontAngle1 } from '../icon/fontangle/FontAngle1';
 import { FontAngle2 } from '../icon/fontangle/FontAngle2';
 import { FontAngle3 } from '../icon/fontangle/FontAngle3';
@@ -17,7 +17,7 @@ import { BaseFont } from '../../../../../../canvas/font/BaseFont';
 class FontAngleContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-font-angle-context-menu`, PlainUtils.copy({
+    super(`${cssPrefix}-font-angle-context-menu`, SheetUtils.copy({
       onUpdateAngle: () => {},
       onUpdateType: () => {},
     }, options));
@@ -82,7 +82,7 @@ class FontAngleContextMenu extends ELContextMenu {
   }
 
   setValue(value) {
-    if (!PlainUtils.isNumber(value)) {
+    if (!SheetUtils.isNumber(value)) {
       value = 0;
     }
     this.input.setValue(value);

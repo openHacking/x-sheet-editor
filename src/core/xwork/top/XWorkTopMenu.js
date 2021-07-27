@@ -26,7 +26,7 @@ import { ElPopUp } from '../../../module/elpopup/ElPopUp';
 import { LINE_TYPE } from '../../../canvas/Line';
 import { Icon } from './tools/Icon';
 import { Cell } from '../../xtable/tablecell/Cell';
-import { PlainUtils } from '../../../utils/PlainUtils';
+import { SheetUtils } from '../../../utils/SheetUtils';
 import { Scale } from './tools/Scale';
 import { BaseFont } from '../../../canvas/font/BaseFont';
 import { XSelectItem } from '../../xtable/xscreenitems/xselect/XSelectItem';
@@ -1100,7 +1100,7 @@ class XWorkTopMenu extends Widget {
         const { xScreen } = table;
         const xSelect = xScreen.findType(XSelectItem);
         const { selectRange } = xSelect;
-        if (PlainUtils.isUnDef(selectRange)) {
+        if (SheetUtils.isUnDef(selectRange)) {
           return;
         }
         const { cellMergeCopyHelper } = table;
@@ -1314,7 +1314,7 @@ class XWorkTopMenu extends Widget {
         if (selectRange) {
           const merge = selectRange.clone();
           const find = merges.getFirstIncludes(merge.sri, merge.sci);
-          if (PlainUtils.isNotUnDef(find) && merge.equals(find)) {
+          if (SheetUtils.isNotUnDef(find) && merge.equals(find)) {
             snapshot.open();
             merges.delete(find);
             snapshot.close({

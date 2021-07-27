@@ -6,7 +6,7 @@ import { XDraw } from './canvas/XDraw';
 import { h } from './libs/Element';
 import { DragPanel } from './module/dragpanel/DragPanel';
 import { ElPopUp } from './module/elpopup/ElPopUp';
-import { PlainUtils } from './utils/PlainUtils';
+import { SheetUtils } from './utils/SheetUtils';
 import { RectRange } from './core/xtable/tablebase/RectRange';
 import { BaseFont } from './canvas/font/BaseFont';
 import { XIcon } from './core/xtable/xicon/XIcon';
@@ -15,8 +15,8 @@ import { ColorPicker } from './module/colorpicker/ColorPicker';
 import FindDpi from './libs/finddpi/FindDpi';
 import { HeightUnit } from './core/xtable/tableunit/HeightUnit';
 import { WideUnit } from './core/xtable/tableunit/WideUnit';
-import './styles/base.less';
-import './styles/index.less';
+import './style/base.less';
+import './style/index.less';
 import { XTableFocus } from './core/xtable/XTableFocus';
 import { XEvent } from './libs/XEvent';
 import { XlsxImport } from './io/xlsx/XlsxImport';
@@ -61,7 +61,7 @@ class XSheet extends Widget {
     }
     root = h(root);
     root.children(this);
-    this.options = PlainUtils.copy({}, settings, options);
+    this.options = SheetUtils.copy({}, settings, options);
     this.work = new XWork(this.options.workConfig);
     this.attach(this.work);
     ElPopUp.setRoot(this);
@@ -71,7 +71,7 @@ class XSheet extends Widget {
 }
 
 XSheet.version = XSheetVersion;
-XSheet.PlainUtils = PlainUtils;
+XSheet.PlainUtils = SheetUtils;
 XSheet.XDraw = XDraw;
 XSheet.XIcon = XIcon;
 XSheet.RectRange = RectRange;

@@ -5,7 +5,7 @@ import { h } from '../../../../../../libs/Element';
 import { ColorItem } from '../../../../../../module/colorpicker/colorarray/ColorItem';
 import { ELContextMenuDivider } from '../../../../../../module/contextmenu/ELContextMenuDivider';
 import { Icon } from '../../Icon';
-import { PlainUtils } from '../../../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../../../utils/SheetUtils';
 
 import { FillColorContextMenuItem } from './FillColorContextMenuItem';
 import { ColorPicker } from '../../../../../../module/colorpicker/ColorPicker';
@@ -14,7 +14,7 @@ import { XEvent } from '../../../../../../libs/XEvent';
 class FillColorContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-font-color-context-menu`, PlainUtils.copy({
+    super(`${cssPrefix}-font-color-context-menu`, SheetUtils.copy({
       onUpdate: () => {},
     }, options));
     this.colorPicker = new ColorPicker({

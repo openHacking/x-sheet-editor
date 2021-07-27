@@ -35,7 +35,7 @@ class TextBuilder {
     const formatText = cell.getFormatText();
     const padding = scaleAdapter.goto(fontAttr.padding);
     switch (contentType) {
-      case Cell.CONTENT_TYPE.RICH_TEXT: {
+      case Cell.TYPE.RICH_TEXT: {
         const rich = formatText.plain((font) => {
           font.size = scaleAdapter.goto(font.size);
           return font;
@@ -56,9 +56,9 @@ class TextBuilder {
         buildFont.setRuler(diffRuler);
         return buildFont;
       }
-      case Cell.CONTENT_TYPE.DATE:
-      case Cell.CONTENT_TYPE.STRING:
-      case Cell.CONTENT_TYPE.NUMBER: {
+      case Cell.TYPE.DATE:
+      case Cell.TYPE.STRING:
+      case Cell.TYPE.NUMBER: {
         const builder = new DrawTextBuilder({
           text: formatText, draw, overflow, rect, attr: fontAttr,
         });

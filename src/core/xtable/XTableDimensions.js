@@ -1,4 +1,4 @@
-import { PlainUtils } from '../../utils/PlainUtils';
+import { SheetUtils } from '../../utils/SheetUtils';
 import { Code } from './tablebase/Code';
 import { Rows } from './tablerow/Rows';
 import { Cols } from './tablecol/Cols';
@@ -83,7 +83,7 @@ class Dimensions {
 class XTableFrozenContent extends Dimensions {
 
   getWidth() {
-    if (PlainUtils.isNumber(this.width)) {
+    if (SheetUtils.isNumber(this.width)) {
       return this.width;
     }
     const { table } = this;
@@ -94,7 +94,7 @@ class XTableFrozenContent extends Dimensions {
   }
 
   getHeight() {
-    if (PlainUtils.isNumber(this.height)) {
+    if (SheetUtils.isNumber(this.height)) {
       return this.height;
     }
     const { table } = this;
@@ -105,7 +105,7 @@ class XTableFrozenContent extends Dimensions {
   }
 
   getX() {
-    if (PlainUtils.isNumber(this.x)) {
+    if (SheetUtils.isNumber(this.x)) {
       return this.x;
     }
     const { table } = this;
@@ -116,7 +116,7 @@ class XTableFrozenContent extends Dimensions {
   }
 
   getY() {
-    if (PlainUtils.isNumber(this.y)) {
+    if (SheetUtils.isNumber(this.y)) {
       return this.y;
     }
     const { table } = this;
@@ -127,7 +127,7 @@ class XTableFrozenContent extends Dimensions {
   }
 
   getScrollView() {
-    if (PlainUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isNotUnDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -145,7 +145,7 @@ class XTableFrozenContent extends Dimensions {
 class XTableTop extends Dimensions {
 
   getWidth() {
-    if (PlainUtils.isNumber(this.width)) {
+    if (SheetUtils.isNumber(this.width)) {
       return this.width;
     }
     const { table } = this;
@@ -157,7 +157,7 @@ class XTableTop extends Dimensions {
   }
 
   getHeight() {
-    if (PlainUtils.isNumber(this.height)) {
+    if (SheetUtils.isNumber(this.height)) {
       return this.height;
     }
     const { table } = this;
@@ -168,7 +168,7 @@ class XTableTop extends Dimensions {
   }
 
   getX() {
-    if (PlainUtils.isNumber(this.x)) {
+    if (SheetUtils.isNumber(this.x)) {
       return this.x;
     }
     const { table } = this;
@@ -180,7 +180,7 @@ class XTableTop extends Dimensions {
   }
 
   getY() {
-    if (PlainUtils.isNumber(this.y)) {
+    if (SheetUtils.isNumber(this.y)) {
       return this.y;
     }
     const { table } = this;
@@ -191,7 +191,7 @@ class XTableTop extends Dimensions {
   }
 
   getScrollView() {
-    if (PlainUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isNotUnDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -212,7 +212,7 @@ class XTableTop extends Dimensions {
 class XTableLeft extends Dimensions {
 
   getWidth() {
-    if (PlainUtils.isNumber(this.width)) {
+    if (SheetUtils.isNumber(this.width)) {
       return this.width;
     }
     const { table } = this;
@@ -223,7 +223,7 @@ class XTableLeft extends Dimensions {
   }
 
   getHeight() {
-    if (PlainUtils.isNumber(this.height)) {
+    if (SheetUtils.isNumber(this.height)) {
       return this.height;
     }
     const { table } = this;
@@ -235,7 +235,7 @@ class XTableLeft extends Dimensions {
   }
 
   getX() {
-    if (PlainUtils.isNumber(this.x)) {
+    if (SheetUtils.isNumber(this.x)) {
       return this.x;
     }
     const { table } = this;
@@ -246,7 +246,7 @@ class XTableLeft extends Dimensions {
   }
 
   getY() {
-    if (PlainUtils.isNumber(this.y)) {
+    if (SheetUtils.isNumber(this.y)) {
       return this.y;
     }
     const { table } = this;
@@ -258,7 +258,7 @@ class XTableLeft extends Dimensions {
   }
 
   getScrollView() {
-    if (PlainUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isNotUnDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -279,7 +279,7 @@ class XTableLeft extends Dimensions {
 class XTableLeftIndex extends Dimensions {
 
   getWidth() {
-    if (PlainUtils.isNumber(this.width)) {
+    if (SheetUtils.isNumber(this.width)) {
       return this.width;
     }
     const { table } = this;
@@ -290,7 +290,7 @@ class XTableLeftIndex extends Dimensions {
   }
 
   getHeight() {
-    if (PlainUtils.isNumber(this.height)) {
+    if (SheetUtils.isNumber(this.height)) {
       return this.height;
     }
     const { table } = this;
@@ -302,7 +302,7 @@ class XTableLeftIndex extends Dimensions {
   }
 
   getX() {
-    if (PlainUtils.isNumber(this.x)) {
+    if (SheetUtils.isNumber(this.x)) {
       return this.x;
     }
     const x = 0;
@@ -311,7 +311,7 @@ class XTableLeftIndex extends Dimensions {
   }
 
   getY() {
-    if (PlainUtils.isNumber(this.y)) {
+    if (SheetUtils.isNumber(this.y)) {
       return this.y;
     }
     const { table } = this;
@@ -323,7 +323,7 @@ class XTableLeftIndex extends Dimensions {
   }
 
   getScrollView() {
-    if (PlainUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isNotUnDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -342,7 +342,7 @@ class XTableLeftIndex extends Dimensions {
 class XTableContent extends Dimensions {
 
   getWidth() {
-    if (PlainUtils.isNumber(this.width)) {
+    if (SheetUtils.isNumber(this.width)) {
       return this.width;
     }
     const { table } = this;
@@ -354,7 +354,7 @@ class XTableContent extends Dimensions {
   }
 
   getHeight() {
-    if (PlainUtils.isNumber(this.height)) {
+    if (SheetUtils.isNumber(this.height)) {
       return this.height;
     }
     const { table } = this;
@@ -366,7 +366,7 @@ class XTableContent extends Dimensions {
   }
 
   getX() {
-    if (PlainUtils.isNumber(this.x)) {
+    if (SheetUtils.isNumber(this.x)) {
       return this.x;
     }
     const { table } = this;
@@ -378,7 +378,7 @@ class XTableContent extends Dimensions {
   }
 
   getY() {
-    if (PlainUtils.isNumber(this.y)) {
+    if (SheetUtils.isNumber(this.y)) {
       return this.y;
     }
     const { table } = this;
@@ -390,7 +390,7 @@ class XTableContent extends Dimensions {
   }
 
   getScrollView() {
-    if (PlainUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isNotUnDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -405,7 +405,7 @@ class XTableContent extends Dimensions {
 class XTableTopIndex extends Dimensions {
 
   getWidth() {
-    if (PlainUtils.isNumber(this.width)) {
+    if (SheetUtils.isNumber(this.width)) {
       return this.width;
     }
     const { table } = this;
@@ -417,7 +417,7 @@ class XTableTopIndex extends Dimensions {
   }
 
   getHeight() {
-    if (PlainUtils.isNumber(this.height)) {
+    if (SheetUtils.isNumber(this.height)) {
       return this.height;
     }
     const { table } = this;
@@ -428,7 +428,7 @@ class XTableTopIndex extends Dimensions {
   }
 
   getX() {
-    if (PlainUtils.isNumber(this.x)) {
+    if (SheetUtils.isNumber(this.x)) {
       return this.x;
     }
     const { table } = this;
@@ -440,7 +440,7 @@ class XTableTopIndex extends Dimensions {
   }
 
   getY() {
-    if (PlainUtils.isNumber(this.y)) {
+    if (SheetUtils.isNumber(this.y)) {
       return this.y;
     }
     const y = 0;
@@ -449,7 +449,7 @@ class XTableTopIndex extends Dimensions {
   }
 
   getScrollView() {
-    if (PlainUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isNotUnDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -521,7 +521,7 @@ class XTableDimensions extends Widget {
   constructor(options) {
     super(`${cssPrefix}-table`);
     // 表格设置
-    this.settings = PlainUtils.copy({}, settings, options);
+    this.settings = SheetUtils.copy({}, settings, options);
     // 视口区域大小
     this.visualHeightCache = null;
     this.visualWidthCache = null;
@@ -907,7 +907,7 @@ class XTableDimensions extends Widget {
    * @return {*}
    */
   visualWidth() {
-    if (PlainUtils.isNumber(this.visualWidthCache)) {
+    if (SheetUtils.isNumber(this.visualWidthCache)) {
       return this.visualWidthCache;
     }
     const width = this.box().width;
@@ -920,7 +920,7 @@ class XTableDimensions extends Widget {
    * @return {*}
    */
   visualHeight() {
-    if (PlainUtils.isNumber(this.visualHeightCache)) {
+    if (SheetUtils.isNumber(this.visualHeightCache)) {
       return this.visualHeightCache;
     }
     const height = this.box().height;

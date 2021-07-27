@@ -1,5 +1,5 @@
 import { BaseRuler } from '../BaseRuler';
-import { PlainUtils } from '../../../utils/PlainUtils';
+import { SheetUtils } from '../../../utils/SheetUtils';
 
 class RichRuler extends BaseRuler {
 
@@ -21,7 +21,7 @@ class RichRuler extends BaseRuler {
   }
 
   isBlank() {
-    if (PlainUtils.isUnDef(this.rich)) {
+    if (SheetUtils.isUnDef(this.rich)) {
       return true;
     }
     for (let i = 0, len = this.rich.length; i < len; i++) {

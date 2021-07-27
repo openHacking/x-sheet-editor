@@ -4,7 +4,7 @@ import { Rect } from '../../../Rect';
 import { Crop } from '../../../Crop';
 import { Angle } from '../../../Angle';
 import { DrawResult } from '../../DrawResult';
-import { PlainUtils } from '../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../utils/SheetUtils';
 import { BaseText } from '../BaseText';
 
 class AngleBarDraw extends BaseText {
@@ -398,8 +398,8 @@ class AngleBarDraw extends BaseText {
     // 文本的仰角范围
     if (angle > 0) {
       // 相对偏移量
-      const head = PlainUtils.arrayHead(textArray);
-      const last = PlainUtils.arrayLast(textArray);
+      const head = SheetUtils.arrayHead(textArray);
+      const last = SheetUtils.arrayLast(textArray);
       let rtx = x;
       let rty = y;
       switch (verticalAlign) {
@@ -534,8 +534,8 @@ class AngleBarDraw extends BaseText {
       });
     }
     // 相对偏移量
-    const head = PlainUtils.arrayHead(textArray);
-    const last = PlainUtils.arrayLast(textArray);
+    const head = SheetUtils.arrayHead(textArray);
+    const last = SheetUtils.arrayLast(textArray);
     let rtx = x;
     let rty = y;
     switch (verticalAlign) {

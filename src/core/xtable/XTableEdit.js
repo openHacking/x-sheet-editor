@@ -2,7 +2,7 @@
 import { Widget } from '../../libs/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
 import { XEvent } from '../../libs/XEvent';
-import { PlainUtils } from '../../utils/PlainUtils';
+import { SheetUtils } from '../../utils/SheetUtils';
 import { XSelectItem } from './xscreenitems/xselect/XSelectItem';
 import { XDraw } from '../../canvas/XDraw';
 import { Throttle } from '../../libs/Throttle';
@@ -22,7 +22,7 @@ class XTableEdit extends Widget {
       time: 100,
     });
     this.attr('contenteditable', true);
-    this.html(PlainUtils.EMPTY);
+    this.html(SheetUtils.EMPTY);
   }
 
   onAttach() {
@@ -105,19 +105,6 @@ class XTableEdit extends Widget {
     }
   }
 
-  unbind() {
-    const { table } = this;
-    const { xScreen } = table;
-    const xSelect = xScreen.findType(XSelectItem);
-    XEvent.bind(table);
-    XEvent.unbind([
-      xSelect.lt,
-      xSelect.t,
-      xSelect.l,
-      xSelect.br,
-    ]);
-  }
-
   bind() {
     const { table } = this;
     const { keyboard, xScreen } = table;
@@ -168,6 +155,19 @@ class XTableEdit extends Widget {
     });
   }
 
+  unbind() {
+    const { table } = this;
+    const { xScreen } = table;
+    const xSelect = xScreen.findType(XSelectItem);
+    XEvent.bind(table);
+    XEvent.unbind([
+      xSelect.lt,
+      xSelect.t,
+      xSelect.l,
+      xSelect.br,
+    ]);
+  }
+
   hideEdit(event) {
     const { select } = this;
     const { table } = this;
@@ -214,19 +214,19 @@ class XTableEdit extends Widget {
         this.select = selectRange;
         this.mode = XTableEdit.MODE.SHOW;
         if (cell.isEmpty()) {
-          this.text(PlainUtils.EMPTY);
+          this.text(SheetUtils.EMPTY);
         } else {
           const { contentType } = cell;
           switch (contentType) {
-            case Cell.CONTENT_TYPE.RICH_TEXT: {
+            case Cell.TYPE.RICH_TEXT: {
               // TODO ...
               //
-              this.text(PlainUtils.EMPTY);
+              this.text(SheetUtils.EMPTY);
               break;
             }
-            case Cell.CONTENT_TYPE.DATE:
-            case Cell.CONTENT_TYPE.NUMBER:
-            case Cell.CONTENT_TYPE.STRING: {
+            case Cell.TYPE.DATE:
+            case Cell.TYPE.NUMBER:
+            case Cell.TYPE.STRING: {
               const text = cell.toString();
               const style = table.getCellCssStyle(sri, sci);
               this.attr('style', style);
@@ -239,7 +239,7 @@ class XTableEdit extends Widget {
         this.editOffset();
         this.throttle.action(() => {
           this.focus();
-          PlainUtils.keepLastIndex(this.el);
+          SheetUtils.keepLastIndex(this.el);
         });
         table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_START, {
           event,
@@ -264,12 +264,12 @@ class XTableEdit extends Widget {
     const { cell } = this;
     const { contentType } = cell;
     switch (contentType) {
-      case Cell.CONTENT_TYPE.RICH_TEXT: {
+      case Cell.TYPE.RICH_TEXT: {
         break;
       }
-      case Cell.CONTENT_TYPE.DATE:
-      case Cell.CONTENT_TYPE.NUMBER:
-      case Cell.CONTENT_TYPE.STRING: {
+      case Cell.TYPE.DATE:
+      case Cell.TYPE.NUMBER:
+      case Cell.TYPE.STRING: {
         document.execCommand('insertHTML', false, '<br>');
         break;
       }

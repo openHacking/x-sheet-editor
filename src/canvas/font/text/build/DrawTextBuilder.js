@@ -7,14 +7,14 @@ import { AngleBoxRuler } from '../ruler/AngleBoxRuler';
 import { AngleBarRuler } from '../ruler/AngleBarRuler';
 import { HorizonRuler } from '../ruler/HorizonRuler';
 import { VerticalRuler } from '../ruler/VerticalRuler';
-import { PlainUtils } from '../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../utils/SheetUtils';
 
 class DrawTextBuilder {
 
   constructor({
     draw, text, rect, overflow, attr,
   }) {
-    this.attr = PlainUtils.extends({}, BaseFont.DEFAULT_FONT_ATTR, attr);
+    this.attr = SheetUtils.extends({}, BaseFont.DEFAULT_FONT_ATTR, attr);
     this.text = text;
     this.rect = rect;
     this.draw = draw;

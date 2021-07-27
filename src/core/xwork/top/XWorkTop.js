@@ -2,7 +2,7 @@ import { Widget } from '../../../libs/Widget';
 import { cssPrefix } from '../../../const/Constant';
 import { XWorkTopMenu } from './XWorkTopMenu';
 import { XBookTopOption } from './XWorkTopOption';
-import { PlainUtils } from '../../../utils/PlainUtils';
+import { SheetUtils } from '../../../utils/SheetUtils';
 
 const settings = {
   option: {
@@ -14,7 +14,7 @@ class XWorkTop extends Widget {
 
   constructor(work, options) {
     super(`${cssPrefix}-work-top`);
-    this.options = PlainUtils.copy({}, settings, options);
+    this.options = SheetUtils.copy({}, settings, options);
     this.work = work;
   }
 

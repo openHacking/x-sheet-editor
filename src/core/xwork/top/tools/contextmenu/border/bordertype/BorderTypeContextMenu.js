@@ -1,6 +1,6 @@
 import { ELContextMenu } from '../../../../../../../module/contextmenu/ELContextMenu';
 import { cssPrefix, Constant } from '../../../../../../../const/Constant';
-import { PlainUtils } from '../../../../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../../../../utils/SheetUtils';
 import { BorderTypeContextMenuItem } from './BorderTypeContextMenuItem';
 import { ELContextMenuDivider } from '../../../../../../../module/contextmenu/ELContextMenuDivider';
 import { h } from '../../../../../../../libs/Element';
@@ -25,7 +25,7 @@ import { ElPopUp } from '../../../../../../../module/elpopup/ElPopUp';
 class BorderTypeContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-border-type-context-menu`, PlainUtils.copy({
+    super(`${cssPrefix}-border-type-context-menu`, SheetUtils.copy({
       onUpdate: () => {},
     }, options));
     this.type = LINE_TYPE.SOLID_LINE;
@@ -71,7 +71,7 @@ class BorderTypeContextMenu extends ELContextMenu {
     this.addItem(new ELContextMenuDivider());
     this.addItem(this.borderColorAndType);
     // 边框颜色菜单
-    this.borderColorContextMenu = new BorderColorContextMenu(PlainUtils.copy({
+    this.borderColorContextMenu = new BorderColorContextMenu(SheetUtils.copy({
       el: this.borderColor,
     }, {
       onUpdate: (color) => {
@@ -80,7 +80,7 @@ class BorderTypeContextMenu extends ELContextMenu {
       },
     }));
     // 边框类型
-    this.lineTypeContextMenu = new LineTypeContextMenu(PlainUtils.copy({
+    this.lineTypeContextMenu = new LineTypeContextMenu(SheetUtils.copy({
       el: this.borderType,
     }, {
       onUpdate: (type) => {

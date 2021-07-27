@@ -4,13 +4,13 @@ import { cssPrefix, Constant } from '../../const/Constant';
 import { Widget } from '../../libs/Widget';
 import { DragPanel } from '../dragpanel/DragPanel';
 import { XEvent } from '../../libs/XEvent';
-import { PlainUtils } from '../../utils/PlainUtils';
+import { SheetUtils } from '../../utils/SheetUtils';
 
 class ColorPicker extends Widget {
 
   constructor(options) {
     super(`${cssPrefix}-color-picker`);
-    this.options = PlainUtils.copy({
+    this.options = SheetUtils.copy({
       selectCb: () => {},
     }, options);
     // 拖拽组件
@@ -297,7 +297,7 @@ class ColorPicker extends Widget {
   }
 
   static isDark(rgb) {
-    if (PlainUtils.isString(rgb)) {
+    if (SheetUtils.isString(rgb)) {
       if (this.isHex(rgb)) {
         const v = ColorPicker.hexToRgb(rgb);
         rgb = `rgb(${v.r}, ${v.g}, ${v.b})`;

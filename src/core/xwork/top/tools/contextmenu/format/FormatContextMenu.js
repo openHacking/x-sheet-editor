@@ -2,13 +2,13 @@ import { cssPrefix, Constant } from '../../../../../../const/Constant';
 import { ELContextMenu } from '../../../../../../module/contextmenu/ELContextMenu';
 import { FormatContextMenuItem } from './FormatContextMenuItem';
 import { ELContextMenuDivider } from '../../../../../../module/contextmenu/ELContextMenuDivider';
-import { PlainUtils } from '../../../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../../../utils/SheetUtils';
 import { XEvent } from '../../../../../../libs/XEvent';
 
 class FormatContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-format-context-menu`, PlainUtils.copy({
+    super(`${cssPrefix}-format-context-menu`, SheetUtils.copy({
       onUpdate: () => {},
     }, options));
     this.items = [

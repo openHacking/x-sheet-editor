@@ -3,14 +3,14 @@ import { Widget } from '../../libs/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
 import { h } from '../../libs/Element';
 
-import { PlainUtils } from '../../utils/PlainUtils';
+import { SheetUtils } from '../../utils/SheetUtils';
 import { XEvent } from '../../libs/XEvent';
 
 class ScrollBarY extends Widget {
 
   constructor(option) {
     super(`${cssPrefix}-scroll-bar-y`);
-    this.option = PlainUtils.copy({
+    this.option = SheetUtils.copy({
       style: {},
       last: () => 0,
       next: () => 0,

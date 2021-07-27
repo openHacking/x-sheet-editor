@@ -1,6 +1,6 @@
 import { Widget } from '../../../libs/Widget';
 import { cssPrefix } from '../../../const/Constant';
-import { PlainUtils } from '../../../utils/PlainUtils';
+import { SheetUtils } from '../../../utils/SheetUtils';
 import { Icon } from '../../../core/xwork/top/tools/Icon';
 import { ColorPicker } from '../ColorPicker';
 
@@ -8,12 +8,12 @@ class ColorItem extends Widget {
 
   constructor(options) {
     super(`${cssPrefix}-color-array-item`);
-    this.options = PlainUtils.copy({
+    this.options = SheetUtils.copy({
       color: null,
       icon: null,
     }, options);
     this.icon = this.options.icon;
-    this.color = PlainUtils.blankClear(this.options.color);
+    this.color = SheetUtils.blankClear(this.options.color);
     if (this.icon) {
       this.children(this.options.icon);
     }

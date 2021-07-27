@@ -3,7 +3,7 @@ import { Widget } from '../../../libs/Widget';
 import { cssPrefix, Constant } from '../../../const/Constant';
 import { h } from '../../../libs/Element';
 import { XEvent } from '../../../libs/XEvent';
-import { PlainUtils } from '../../../utils/PlainUtils';
+import { SheetUtils } from '../../../utils/SheetUtils';
 import { XTableMousePointer } from '../XTableMousePointer';
 import { RowFixed } from '../tablefixed/RowFixed';
 
@@ -41,7 +41,7 @@ class YReSizer extends Widget {
       XEvent.mouseMoveUp(document, (e) => {
         ({ y: my } = table.eventXy(e));
         my -= this.height / 2;
-        my = Math.ceil(PlainUtils.minIf(my, min));
+        my = Math.ceil(SheetUtils.minIf(my, min));
         this.css('top', `${my}px`);
         this.lineEl.css('width', `${table.visualWidth()}px`);
         this.lineEl.show();

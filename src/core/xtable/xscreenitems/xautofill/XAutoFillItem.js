@@ -4,7 +4,7 @@ import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBo
 import { Widget } from '../../../../libs/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
-import { PlainUtils } from '../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../utils/SheetUtils';
 import { XEvent } from '../../../../libs/XEvent';
 import { XTableMousePointer } from '../../XTableMousePointer';
 import { AutoFillType } from '../../../../module/autofilltype/AutoFillType';
@@ -15,7 +15,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
 
   constructor(table, options = {}) {
     super({ table });
-    this.options = PlainUtils.copy({
+    this.options = SheetUtils.copy({
       mergeForceSplit: false,
       onBeforeAutoFill: () => {},
       onAfterAutoFill: () => {},
@@ -73,7 +73,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
 
     const merge = merges.getFirstIncludes(sri, sci);
     const zone = SELECT_LOCAL.BR !== selectLocal;
-    const hasFull = zone || PlainUtils.isNotUnDef(merge);
+    const hasFull = zone || SheetUtils.isNotUnDef(merge);
     const [rSize, cSize] = selectRange.size();
 
     let originSRi = ri;
@@ -92,7 +92,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
     }
 
     let autoFillRange = RectRange.EMPTY;
-    let moveDirection = PlainUtils.Undef;
+    let moveDirection = SheetUtils.Undef;
 
     // 选择区域
     if (originSRi < sri || ri > eri) {

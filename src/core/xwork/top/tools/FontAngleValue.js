@@ -2,7 +2,7 @@ import { Constant, cssPrefix } from '../../../../const/Constant';
 import { DropInputItem } from './base/DropInputItem';
 import { XEvent } from '../../../../libs/XEvent';
 import { FontAngleValueContextMenu } from './contextmenu/fontanglevalue/FontAngleValueContextMenu';
-import { PlainUtils } from '../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../utils/SheetUtils';
 
 class FontAngleValue extends DropInputItem {
 
@@ -40,7 +40,7 @@ class FontAngleValue extends DropInputItem {
       }
     });
     XEvent.bind(input, Constant.SYSTEM_EVENT_TYPE.CHANGE, () => {
-      const target = PlainUtils.parseInt(input.val());
+      const target = SheetUtils.parseInt(input.val());
       this.value = target;
       this.onChange(target);
     });

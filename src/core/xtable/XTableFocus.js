@@ -2,10 +2,10 @@
 import { Constant } from '../../const/Constant';
 import { XEvent } from '../../libs/XEvent';
 import { Element } from '../../libs/Element';
-import { PlainUtils } from '../../utils/PlainUtils';
+import { SheetUtils } from '../../utils/SheetUtils';
 
-let root = PlainUtils.Nul;
-let instance = PlainUtils.Nul;
+let root = SheetUtils.Nul;
+let instance = SheetUtils.Nul;
 
 class XTableFocus {
 

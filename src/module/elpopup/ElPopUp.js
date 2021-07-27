@@ -2,10 +2,10 @@
 import { Widget } from '../../libs/Widget';
 import { Constant, cssPrefix } from '../../const/Constant';
 import { h } from '../../libs/Element';
-import { PlainUtils } from '../../utils/PlainUtils';
+import { SheetUtils } from '../../utils/SheetUtils';
 import { XEvent } from '../../libs/XEvent';
 
-let root = PlainUtils.Nul;
+let root = SheetUtils.Nul;
 let instances = [];
 
 /**
@@ -21,13 +21,13 @@ class ElPopUp extends Widget {
    */
   constructor(options) {
     super(`${cssPrefix}-el-pop-up`);
-    this.options = PlainUtils.copy({
-      el: PlainUtils.Nul,
+    this.options = SheetUtils.copy({
+      el: SheetUtils.Nul,
       autoWidth: false,
       autoHeight: false,
       position: ElPopUp.POPUP_POSTION.TB,
     }, options);
-    this.direction = PlainUtils.Undef;
+    this.direction = SheetUtils.Undef;
     this.status = false;
     this.location = 0;
     this.spaces = 0;
@@ -135,7 +135,7 @@ class ElPopUp extends Widget {
     const elBox = el.box();
     const winWidth = window.innerWidth;
     const winHeight = window.innerHeight;
-    this.direction = PlainUtils.Undef;
+    this.direction = SheetUtils.Undef;
     this.spaces = 0;
     this.location = 0;
     switch (position) {

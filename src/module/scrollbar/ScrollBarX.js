@@ -2,7 +2,7 @@
 import { Widget } from '../../libs/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
 import { h } from '../../libs/Element';
-import { PlainUtils } from '../../utils/PlainUtils';
+import { SheetUtils } from '../../utils/SheetUtils';
 
 import { XEvent } from '../../libs/XEvent';
 
@@ -10,7 +10,7 @@ class ScrollBarX extends Widget {
 
   constructor(option) {
     super(`${cssPrefix}-scroll-bar-x`);
-    this.option = PlainUtils.copy({
+    this.option = SheetUtils.copy({
       style: {},
       last: () => 0,
       next: () => 0,

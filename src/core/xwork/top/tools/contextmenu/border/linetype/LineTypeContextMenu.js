@@ -1,5 +1,5 @@
 import { ELContextMenu } from '../../../../../../../module/contextmenu/ELContextMenu';
-import { PlainUtils } from '../../../../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../../../../utils/SheetUtils';
 import { cssPrefix, Constant } from '../../../../../../../const/Constant';
 import { LineTypeContextMenuItem } from './LineTypeContextMenuItem';
 import { XEvent } from '../../../../../../../libs/XEvent';
@@ -7,7 +7,7 @@ import { XEvent } from '../../../../../../../libs/XEvent';
 class LineTypeContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-line-type-context-menu`, PlainUtils.copy({
+    super(`${cssPrefix}-line-type-context-menu`, SheetUtils.copy({
       onUpdate: () => {},
     }, options));
     this.items = [

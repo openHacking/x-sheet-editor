@@ -1,5 +1,5 @@
 /* global document MouseEvent CustomEvent window */
-import { PlainUtils } from '../utils/PlainUtils';
+import { SheetUtils } from '../utils/SheetUtils';
 
 /**
  * Element
@@ -10,7 +10,7 @@ class Element {
    * 包装元素
    */
   static wrap(args) {
-    if (PlainUtils.isArray(args)) {
+    if (SheetUtils.isArray(args)) {
       const elements = [];
       args.forEach((item) => {
         if (item instanceof Element) {

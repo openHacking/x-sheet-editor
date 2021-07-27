@@ -1,6 +1,6 @@
 import { ELContextMenu } from '../../../../../../../module/contextmenu/ELContextMenu';
 import { cssPrefix, Constant } from '../../../../../../../const/Constant';
-import { PlainUtils } from '../../../../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../../../../utils/SheetUtils';
 import { ColorPicker } from '../../../../../../../module/colorpicker/ColorPicker';
 import { ColorItem } from '../../../../../../../module/colorpicker/colorarray/ColorItem';
 import { Icon } from '../../../Icon';
@@ -13,7 +13,7 @@ import { XEvent } from '../../../../../../../libs/XEvent';
 class BorderColorContextMenu extends ELContextMenu {
 
   constructor(options = {}) {
-    super(`${cssPrefix}-border-color-context-menu`, PlainUtils.copy({
+    super(`${cssPrefix}-border-color-context-menu`, SheetUtils.copy({
       onUpdate: () => {},
     }, options));
     this.colorPicker = new ColorPicker({

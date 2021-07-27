@@ -1,6 +1,6 @@
 import { RichVerticalVisual } from './RichVerticalVisual';
 import { BaseRuler } from '../../BaseRuler';
-import { PlainUtils } from '../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../utils/SheetUtils';
 import { RichVerticalWrapLine } from './RichVerticalWrapLine';
 import { BaseFont } from '../../BaseFont';
 
@@ -46,7 +46,7 @@ class RichVerticalRuler extends RichVerticalVisual {
     let textHeight = 0;
     for (let i = 0, len = rich.length; i < len; i++) {
       const item = rich[i];
-      const attr = PlainUtils.extends({
+      const attr = SheetUtils.extends({
         size, name, bold, italic,
       }, item);
       const fontItalic = `${attr.italic ? 'italic' : ''}`;
@@ -106,7 +106,7 @@ class RichVerticalRuler extends RichVerticalVisual {
     const wrapLine = new RichVerticalWrapLine();
     for (let i = 0, len = rich.length, eff = len - 1; i < len; i++) {
       const item = rich[i];
-      const attr = PlainUtils.extends({
+      const attr = SheetUtils.extends({
         size, name, bold, italic,
       }, item);
       const fontItalic = `${attr.italic ? 'italic' : ''}`;
@@ -218,7 +218,7 @@ class RichVerticalRuler extends RichVerticalVisual {
     if (other.constructor !== RichVerticalRuler) {
       return false;
     }
-    if (!PlainUtils.equals(this.rich, other.rich)) {
+    if (!SheetUtils.equals(this.rich, other.rich)) {
       return false;
     }
     if (other.align !== this.align) {

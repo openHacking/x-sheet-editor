@@ -1,7 +1,7 @@
 import { Widget } from '../../../../libs/Widget';
 import { cssPrefix, Constant } from '../../../../const/Constant';
 import { h } from '../../../../libs/Element';
-import { PlainUtils } from '../../../../utils/PlainUtils';
+import { SheetUtils } from '../../../../utils/SheetUtils';
 import { XEvent } from '../../../../libs/XEvent';
 
 const settings = {
@@ -25,7 +25,7 @@ class XWorkTabView extends Widget {
       this.content,
       this.plus,
     ]);
-    this.options = PlainUtils.copy({}, settings, options);
+    this.options = SheetUtils.copy({}, settings, options);
     this.left = null;
     this.tabList = [];
   }

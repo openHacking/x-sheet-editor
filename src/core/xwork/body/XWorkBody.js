@@ -11,7 +11,7 @@ import { VerticalCenterElement } from '../../../libs/layer/center/VerticalCenter
 import { VerticalCenter } from '../../../libs/layer/center/VerticalCenter';
 import { XWorkSheetView } from './sheets/XWorkSheetView';
 import { XWorkTabView } from './tabs/XWorkTabView';
-import { PlainUtils } from '../../../utils/PlainUtils';
+import { SheetUtils } from '../../../utils/SheetUtils';
 import { XEvent } from '../../../libs/XEvent';
 import { h } from '../../../libs/Element';
 import { XWorkTab } from './tabs/XWorkTab';
@@ -30,7 +30,7 @@ class XWorkBody extends Widget {
   constructor(work, options) {
     super(`${cssPrefix}-work-body`);
     this.work = work;
-    this.options = PlainUtils.copy({}, settings, options);
+    this.options = SheetUtils.copy({}, settings, options);
     this.sheets = this.options.sheets;
     this.tabSheet = [];
     this.activeIndex = -1;
@@ -105,7 +105,7 @@ class XWorkBody extends Widget {
       },
       next: () => {
         const sheet = this.sheetView.getActiveSheet();
-        if (PlainUtils.isUnDef(sheet)) return;
+        if (SheetUtils.isUnDef(sheet)) return;
         const { table } = sheet;
         const scrollView = table.getScrollView();
         const { sri } = scrollView;
@@ -116,7 +116,7 @@ class XWorkBody extends Widget {
       },
       last: () => {
         const sheet = this.sheetView.getActiveSheet();
-        if (PlainUtils.isUnDef(sheet)) return;
+        if (SheetUtils.isUnDef(sheet)) return;
         const { table } = sheet;
         const scrollView = table.getScrollView();
         const { sri } = scrollView;
@@ -133,7 +133,7 @@ class XWorkBody extends Widget {
       },
       next: () => {
         const sheet = this.sheetView.getActiveSheet();
-        if (PlainUtils.isUnDef(sheet)) return;
+        if (SheetUtils.isUnDef(sheet)) return;
         const { table } = sheet;
         const scrollView = table.getScrollView();
         const { sci } = scrollView;
@@ -144,7 +144,7 @@ class XWorkBody extends Widget {
       },
       last: () => {
         const sheet = this.sheetView.getActiveSheet();
-        if (PlainUtils.isUnDef(sheet)) return;
+        if (SheetUtils.isUnDef(sheet)) return;
         const { table } = sheet;
         const scrollView = table.getScrollView();
         const { sci } = scrollView;
@@ -169,7 +169,7 @@ class XWorkBody extends Widget {
   }
 
   bind() {
-    const exploreInfo = PlainUtils.getExplorerInfo();
+    const exploreInfo = SheetUtils.getExplorerInfo();
     const throttle = new Throttle();
     XEvent.bind(window, Constant.SYSTEM_EVENT_TYPE.RESIZE, () => {
       throttle.action(() => {
@@ -230,7 +230,7 @@ class XWorkBody extends Widget {
     });
     XEvent.bind(this.sheetView, Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (e) => {
       const sheet = this.sheetView.getActiveSheet();
-      if (PlainUtils.isUnDef(sheet)) return;
+      if (SheetUtils.isUnDef(sheet)) return;
       const { table } = sheet;
       const { scroll, rows } = table;
       const scrollView = table.getScrollView();
