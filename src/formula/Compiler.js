@@ -4,6 +4,16 @@
 class Tokenizer {
 
   /**
+   * Tokenizer
+   * @param syntaxCheck
+   */
+  constructor({
+    syntaxCheck = true,
+  } = {}) {
+    this.syntaxCheck = syntaxCheck;
+  }
+
+  /**
    * 词法分析
    * @param input
    * @returns {*[]}
@@ -11,11 +21,11 @@ class Tokenizer {
   lexical(input) {
     let OPERATOR = /^(\+|-|\*|\/|%|>|<|,|\^|=|&|!|:|>=|<=|<>)$/;
     let NUMBERS = /[0-9.]/;
-    let LETTERS = /[a-z0-9$]/i;
+    let LETTERS = /[a-z0-9_$]/i;
     // 文本字符长度
     let { length } = input;
     // 函数调用记录
-    let callStack = [];
+    let bracketsStack = [];
     // 当前的字符索引
     let current = 0;
     // 处理的字符数组
@@ -48,22 +58,20 @@ class Tokenizer {
       }
       // 记录括号
       if (char === '(') {
-        if (callStack.length) {
-          tokens.push({
-            type: 'function',
-            value: '(',
-          });
-        } else {
-          tokens.push({
-            type: 'brackets',
-            value: '(',
-          });
-        }
+        tokens.push({
+          type: 'brackets',
+          value: '(',
+        });
+        bracketsStack.push({
+          type: 'brackets',
+          value: '(',
+        });
         current++;
         continue;
       }
       if (char === ')') {
-        if (callStack.length) {
+        const brackets = bracketsStack.pop();
+        if (brackets.type === 'function') {
           tokens.push({
             type: 'function',
             value: ')',
@@ -74,7 +82,6 @@ class Tokenizer {
             value: ')',
           });
         }
-        callStack.pop();
         current++;
         continue;
       }
@@ -193,11 +200,19 @@ class Tokenizer {
         }
         // 是否为函数名称
         if (char === '(') {
-          callStack.push(char);
           tokens.push({
             type: 'function',
             value: result,
           });
+          tokens.push({
+            type: 'function',
+            value: '(',
+          });
+          bracketsStack.push({
+            type: 'function',
+            value: '(',
+          });
+          current++;
         } else {
           tokens.push({
             type: 'operand',
@@ -210,6 +225,159 @@ class Tokenizer {
       throw new TypeError(`无法识别的token ${char} `);
     }
     // 返回处理结果
+    if (this.syntaxCheck) {
+      return this.syntax(tokens);
+    }
+    return tokens;
+  }
+
+  /**
+   * 语法校验
+   * @param tokens
+   */
+  syntax(tokens) {
+    // 单引号对校验
+    let sQuotesStack = [];
+    // 双引号对校验
+    let dQuotesStack = [];
+    // 函数闭合标签校验
+    let callStack = [];
+    // 数组闭合标签校验
+    let arrayStack = [];
+    // 当前的字符索引
+    let current = 0;
+    // tokens长度
+    let { length } = tokens;
+    // 检查运算符
+    let checkOperator = (target) => {
+      let token = tokens[current];
+      switch (target.type) {
+        case 'function':
+        case 'brackets':
+        case 'string':
+        case 'number':
+        case 'operand': {
+          return;
+        }
+        case 'array': {
+          if (token.value === ',') {
+            return;
+          }
+          if (token.value === '=') {
+            return;
+          }
+          if (token.value === '<>') {
+            return;
+          }
+          break;
+        }
+      }
+      throw TypeError(`错误表达式: ${token.value} 附近的 ${target.value}`);
+    };
+    // 检查数字和字符
+    let checkSNValue = (target, dir) => {
+      let token = tokens[current];
+      switch (target.type) {
+        case 'array': {
+          if (dir === 'last' && target.value === '{') { return; }
+          if (dir === 'next' && target.value === '}') { return; }
+          break;
+        }
+        case 'brackets':
+        case 'function': {
+          if (dir === 'last' && target.value === '(') { return; }
+          if (dir === 'next' && target.value === ')') { return; }
+          break;
+        }
+        case 'operator': {
+          return;
+        }
+      }
+      throw TypeError(`错误表达式: ${token.value} 附近的 ${target.value}`);
+    };
+    // 循环处理所有token
+    while (current < length) {
+      // 当前处理的token
+      let token = tokens[current];
+      let { type, value } = token;
+      // 处理单引号
+      if (type === "'") {
+        if (sQuotesStack.length) {
+          sQuotesStack.pop();
+        } else {
+          sQuotesStack.push("'");
+        }
+      }
+      // 处理双引号
+      if (type === '"') {
+        if (dQuotesStack.length) {
+          dQuotesStack.pop();
+        } else {
+          dQuotesStack.push('"');
+        }
+      }
+      // 处理字符
+      if (type === 'string') {
+        let last = tokens[current - 1];
+        let next = tokens[current + 1];
+        if (last) {
+          checkSNValue(last, 'last');
+        }
+        if (next) {
+          checkSNValue(next, 'next');
+        }
+      }
+      // 处理数字
+      if (type === 'number') {
+        let last = tokens[current - 1];
+        let next = tokens[current + 1];
+        if (last) {
+          checkSNValue(last, 'last');
+        }
+        if (next) {
+          checkSNValue(next, 'next');
+        }
+      }
+      // 处理数组
+      if (type === 'array') {
+        if (value === '{') {
+          arrayStack.push(token);
+        }
+        if (value === '}') {
+          arrayStack.pop();
+        }
+      }
+      // 处理函数调用
+      if (type === 'function') {
+        if (value === '(') {
+          callStack.push(token);
+        }
+        if (value === ')') {
+          callStack.pop();
+        }
+      }
+      // 处理运算符号
+      if (type === 'operator') {
+        let last = tokens[current - 1];
+        let next = tokens[current + 1];
+        checkOperator(last, 'last');
+        checkOperator(next, 'next');
+      }
+      current++;
+    }
+    // 闭合标签检查
+    if (arrayStack.length) {
+      throw new TypeError('数组缺少闭合标签');
+    }
+    if (callStack.length) {
+      throw new TypeError('函数缺少闭合标签');
+    }
+    if (sQuotesStack.length) {
+      throw new TypeError('单引号缺少闭合标签');
+    }
+    if (dQuotesStack.length) {
+      throw new TypeError('双引号缺少闭合标签');
+    }
     return tokens;
   }
 }
@@ -674,7 +842,7 @@ class Compiler {
 class EvalFunctions {
 
   /**
-   * 运行函数注册
+   * EvalFunctions
    */
   constructor() {
     this.functions = {};

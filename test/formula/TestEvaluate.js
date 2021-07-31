@@ -4,8 +4,8 @@ import { Evaluate, Functions } from '../../src/formula/Compiler.js';
 Functions.register("SUM", (...args) => {
   return args.reduce((a, b) => a + b);
 });
-Functions.register("TEST", (...args) => {
-  return 1
+Functions.register("TEST", (number) => {
+  return number
 });
 
 // 运行公式
@@ -15,7 +15,8 @@ const evaluateExprs = {
   case3: '{1, 2 + 3}',
   case4: '{1, {2 > 1, 4 * (1+2), 6, SUM(1, 1) / 2}, 2 + 3}',
   case5: '{}',
-  case6: 'TEST() + 1'
+  case6: '{TEST(10) + 1',
+  case7: '2^2'
 };
 
 // 公式运行
