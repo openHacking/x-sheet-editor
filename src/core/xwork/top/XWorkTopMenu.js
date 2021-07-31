@@ -1081,18 +1081,6 @@ class XWorkTopMenu extends Widget {
     });
 
     // 普通工具栏
-    XEvent.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      const { snapshot } = table;
-      if (snapshot.canUndo()) snapshot.undo();
-    });
-    XEvent.bind(this.redo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      const { snapshot } = table;
-      if (snapshot.canRedo()) snapshot.redo();
-    });
     XEvent.bind(this.paintFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
@@ -1205,6 +1193,78 @@ class XWorkTopMenu extends Widget {
         }
       }
     });
+    XEvent.bind(this.filter, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      if (!table.isReadOnly()) {
+        const { xScreen } = table;
+        const filter = xScreen.findType(XFilter);
+        if (filter.display) {
+          filter.hideFilter();
+          this.filter.active(filter.display);
+        } else {
+          filter.openFilter();
+          this.filter.active(filter.display);
+        }
+      }
+    });
+    XEvent.bind(this.undo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      const { snapshot } = table;
+      if (snapshot.canUndo()) snapshot.undo();
+    });
+    XEvent.bind(this.merge, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      if (!table.isReadOnly()) {
+        const merges = table.getTableMerges();
+        const cells = table.getTableCells();
+        const { xScreen } = table;
+        const { snapshot } = table;
+        const xSelect = xScreen.findType(XSelectItem);
+        const { selectRange } = xSelect;
+        if (selectRange) {
+          const merge = selectRange.clone();
+          const find = merges.getFirstIncludes(merge.sri, merge.sci);
+          if (SheetUtils.isNotUnDef(find) && merge.equals(find)) {
+            snapshot.open();
+            merges.delete(find);
+            snapshot.close({
+              type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+            });
+            table.render();
+          } else if (merge.multiple()) {
+            if (cells.emptyRectRange(merge)) {
+              snapshot.open();
+              merges.add(merge);
+              snapshot.close({
+                type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+              });
+              table.render();
+            } else {
+              new Confirm({
+                message: '非空单元格合并将使用左上角单元格内容',
+                ok: () => {
+                  snapshot.open();
+                  merges.add(merge);
+                  snapshot.close({
+                    type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+                  });
+                  table.render();
+                },
+              }).open();
+            }
+          }
+        }
+      }
+    });
+    XEvent.bind(this.redo, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      const { snapshot } = table;
+      if (snapshot.canRedo()) snapshot.redo();
+    });
     XEvent.bind(this.fontItalic, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
@@ -1283,66 +1343,6 @@ class XWorkTopMenu extends Widget {
           });
           snapshot.close();
           table.render();
-        }
-      }
-    });
-    XEvent.bind(this.filter, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      if (!table.isReadOnly()) {
-        const { xScreen } = table;
-        const filter = xScreen.findType(XFilter);
-        if (filter.display) {
-          filter.hideFilter();
-          this.filter.active(filter.display);
-        } else {
-          filter.openFilter();
-          this.filter.active(filter.display);
-        }
-      }
-    });
-    XEvent.bind(this.merge, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      if (!table.isReadOnly()) {
-        const merges = table.getTableMerges();
-        const cells = table.getTableCells();
-        const { xScreen } = table;
-        const { snapshot } = table;
-        const xSelect = xScreen.findType(XSelectItem);
-        const { selectRange } = xSelect;
-        if (selectRange) {
-          const merge = selectRange.clone();
-          const find = merges.getFirstIncludes(merge.sri, merge.sci);
-          if (SheetUtils.isNotUnDef(find) && merge.equals(find)) {
-            snapshot.open();
-            merges.delete(find);
-            snapshot.close({
-              type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
-            });
-            table.render();
-          } else if (merge.multiple()) {
-            if (cells.emptyRectRange(merge)) {
-              snapshot.open();
-              merges.add(merge);
-              snapshot.close({
-                type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
-              });
-              table.render();
-            } else {
-              new Confirm({
-                message: '非空单元格合并将使用左上角单元格内容',
-                ok: () => {
-                  snapshot.open();
-                  merges.add(merge);
-                  snapshot.close({
-                    type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
-                  });
-                  table.render();
-                },
-              }).open();
-            }
-          }
         }
       }
     });

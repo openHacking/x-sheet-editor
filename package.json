@@ -8,20 +8,12 @@
     "dist",
     "src"
   ],
+  "type": "module",
   "author": "jerry <195658469@qq.com>",
   "license": "MOZILLA PUBLIC LICENSE",
   "repository": {
     "type": "gitee",
     "url": "https://gitee.com/eigi/x-sheet"
-  },
-  "nyc": {
-    "all": true,
-    "include": [
-      "src/core/*.js"
-    ],
-    "exclude": [
-      "**/*.spec.js"
-    ]
   },
   "scripts": {
     "dev": "webpack-dev-server --open --config build/webpack.dev.js",

@@ -41,8 +41,14 @@ class BaseEdit extends Widget {
    * 编辑器定位
    */
   offsetEdit() {
-    const { table, cell } = this;
-    const { xHeightLight, yHeightLight } = table;
+    const {
+      table,
+      cell,
+    } = this;
+    const {
+      xHeightLight,
+      yHeightLight,
+    } = table;
     const { fontAttr } = cell;
     const { align } = fontAttr;
     const height = yHeightLight.getHeight();
