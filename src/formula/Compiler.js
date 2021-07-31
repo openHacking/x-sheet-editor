@@ -401,9 +401,10 @@ class Compiler {
         break;
       }
       if (value === '}') {
-        const operator = this.opNew[type];
         const token = this.popGroup();
-        this.writer.writeOp(`${operator} ${token.number}`);
+        const { type, number } = token;
+        const operator = this.opNew[type];
+        this.writer.writeOp(`${operator} ${number}`);
         this.compileIfge();
         break;
       }
@@ -533,36 +534,39 @@ class Compiler {
    * 编译函数调用
    */
   compileFunction() {
-    this.compileTerm();
+    this.compilePush();
     while (!this.eofToken()) {
       const token = this.nextToken();
       const { type, value } = token;
       if (type !== 'function') {
-        this.backToken();
+        if (type !== 'brackets') {
+          this.backToken();
+          break;
+        }
+        if (value === ')') {
+          const token = this.popGroup();
+          const { type, value, number } = token;
+          const operator = this.opCell[type];
+          this.writer.writeOp(`${operator} ${value} ${number}`);
+        }
+        if (value === '(') {
+          this.compileComma();
+        }
         break;
       }
-      let operator = this.opCell[type];
       this.addGroup(token);
-      this.compileTerm();
-      this.popGroup();
-      this.writer.writeOp(`${operator} ${value} ${token.number}`);
+      this.compilePush();
     }
   }
 
   /**
-   * compileTerm
+   * compilePush
    */
-  compileTerm() {
+  compilePush() {
     if (!this.eofToken()) {
       const token = this.nextToken();
       const { writer } = this;
       switch (token.type) {
-        case 'brackets': {
-          if (token.value === '(') {
-            this.compileComma();
-          }
-          break;
-        }
         case 'string': {
           this.increaseGroup();
           writer.writePush(`"${token.value}"`);
