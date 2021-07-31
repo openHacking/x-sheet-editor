@@ -14,6 +14,8 @@ class Tokenizer {
     let LETTERS = /[a-z0-9$]/i;
     // 文本字符长度
     let { length } = input;
+    // 函数调用记录
+    let callStack = [];
     // 当前的字符索引
     let current = 0;
     // 处理的字符数组
@@ -46,23 +48,42 @@ class Tokenizer {
       }
       // 记录括号
       if (char === '(') {
-        tokens.push({
-          type: 'brackets',
-          value: '(',
-        });
+        if (callStack.length) {
+          tokens.push({
+            type: 'function',
+            value: '(',
+          });
+        } else {
+          tokens.push({
+            type: 'brackets',
+            value: '(',
+          });
+        }
         current++;
         continue;
       }
       if (char === ')') {
-        tokens.push({
-          type: 'brackets',
-          value: ')',
-        });
+        if (callStack.length) {
+          tokens.push({
+            type: 'function',
+            value: ')',
+          });
+        } else {
+          tokens.push({
+            type: 'brackets',
+            value: ')',
+          });
+        }
+        callStack.pop();
         current++;
         continue;
       }
       // 记录数组
       if (char === '{') {
+        tokens.push({
+          type: 'array',
+          value: 'array',
+        });
         tokens.push({
           type: 'array',
           value: '{',
@@ -172,6 +193,7 @@ class Tokenizer {
         }
         // 是否为函数名称
         if (char === '(') {
+          callStack.push(char);
           tokens.push({
             type: 'function',
             value: result,
@@ -250,10 +272,8 @@ class Compiler {
     this.tokens = tokens;
     this.groupStack = [];
     this.index = -1;
+    this.ignore = [','];
     // 运算符
-    this.opComma = {
-      ',': 'comma',
-    };
     this.opIf = {
       '>': 'ifge',
       '<': 'ifgt',
@@ -358,61 +378,28 @@ class Compiler {
   }
 
   /**
+   * 忽略的Token
+   * @returns {*}
+   */
+  isSkipNextToken() {
+    if (!this.eofToken()) {
+      const { ignore } = this;
+      this.nextToken();
+      const { token } = this;
+      this.backToken();
+      const { value } = token;
+      return ignore.includes(value);
+    }
+    return false;
+  }
+
+  /**
    * 编译表达式
    */
   compile() {
     const { writer } = this;
-    while (!this.eofToken()) {
-      this.compileComma();
-    }
-    return writer.getInstruct();
-  }
-
-  /**
-   * 编译逗号
-   */
-  compileComma() {
-    this.compileArray();
-    while (!this.eofToken()) {
-      const token = this.nextToken();
-      const { type, value } = token;
-      if (type !== 'operator') {
-        this.backToken();
-        break;
-      }
-      if (!this.opComma[value]) {
-        this.backToken();
-        break;
-      }
-      this.compileArray();
-    }
-  }
-
-  /**
-   * 编译数组创建
-   */
-  compileArray() {
     this.compileIfge();
-    while (!this.eofToken()) {
-      const token = this.nextToken();
-      const { type, value } = token;
-      if (type !== 'array') {
-        this.backToken();
-        break;
-      }
-      if (value === '}') {
-        const token = this.popGroup();
-        const { type, number } = token;
-        const operator = this.opNew[type];
-        this.writer.writeOp(`${operator} ${number}`);
-        this.compileIfge();
-        break;
-      }
-      if (value === '{') {
-        this.addGroup(token);
-        this.compileComma();
-      }
-    }
+    return writer.getInstruct();
   }
 
   /**
@@ -511,7 +498,7 @@ class Compiler {
    * 编译跨Sheet引用运算
    */
   compileRel() {
-    this.compileFunction();
+    this.compileArray();
     while (!this.eofToken()) {
       const token = this.nextToken();
       const { type, value } = token;
@@ -524,9 +511,48 @@ class Compiler {
         break;
       }
       let operator = this.opRel[value];
-      this.compileFunction();
+      this.compileArray();
       this.reduceGroup();
       this.writer.writeOp(operator);
+    }
+  }
+
+  /**
+   * 编译数组创建
+   */
+  compileArray() {
+    this.compileFunction();
+    while (!this.eofToken()) {
+      const token = this.nextToken();
+      const { type, value } = token;
+      if (type !== 'array') {
+        this.backToken();
+        break;
+      }
+      // 返回跳过 } 标记
+      if (value === '}') {
+        this.backToken();
+        break;
+      }
+      this.addGroup(token);
+      // 跳过当前 {  标记
+      this.nextToken();
+      // 处理数组中的子元素
+      this.compileIfge();
+      // 下一个是忽略的标记
+      // 则继续处理
+      while (this.isSkipNextToken()) {
+        this.nextToken();
+        this.compileIfge();
+      }
+      // 记录数组需要
+      // 操作的元素数量
+      this.popGroup();
+      const { number } = token;
+      const operator = this.opNew[type];
+      this.writer.writeOp(`${operator} ${number}`);
+      // 跳过闭合标签 }
+      this.nextToken();
     }
   }
 
@@ -539,23 +565,33 @@ class Compiler {
       const token = this.nextToken();
       const { type, value } = token;
       if (type !== 'function') {
-        if (type !== 'brackets') {
-          this.backToken();
-          break;
-        }
-        if (value === ')') {
-          const token = this.popGroup();
-          const { type, value, number } = token;
-          const operator = this.opCell[type];
-          this.writer.writeOp(`${operator} ${value} ${number}`);
-        }
-        if (value === '(') {
-          this.compileComma();
-        }
+        this.backToken();
+        break;
+      }
+      // 返回跳过 ) 标记
+      if (value === ')') {
+        this.backToken();
         break;
       }
       this.addGroup(token);
-      this.compilePush();
+      // 跳过当前 (  标记
+      this.nextToken();
+      // 处理函数的参数列表
+      this.compileIfge();
+      // 下一个是忽略的标记
+      // 则继续处理
+      while (this.isSkipNextToken()) {
+        this.nextToken();
+        this.compileIfge();
+      }
+      // 记录函数需要
+      // 操作的元素数量
+      this.popGroup();
+      const { number } = token;
+      const operator = this.opCell[type];
+      this.writer.writeOp(`${operator} ${value} ${number}`);
+      // 跳过闭合标签 )
+      this.nextToken();
     }
   }
 
@@ -566,28 +602,41 @@ class Compiler {
     if (!this.eofToken()) {
       const token = this.nextToken();
       const { writer } = this;
-      switch (token.type) {
+      const { type, value } = token;
+      switch (type) {
+        case 'brackets': {
+          if (value === '(') {
+            this.compileIfge();
+            // 下一个是忽略的标记
+            // 则继续处理
+            while (this.isSkipNextToken()) {
+              this.nextToken();
+              this.compileIfge();
+            }
+            // 跳过闭合标签 )
+            this.nextToken();
+          }
+          return;
+        }
         case 'string': {
           this.increaseGroup();
-          writer.writePush(`"${token.value}"`);
-          break;
+          writer.writePush(`"${value}"`);
+          return;
         }
         case 'number':
         case 'operand': {
           this.increaseGroup();
-          writer.writePush(token.value);
-          break;
+          writer.writePush(value);
+          return;
         }
         case 'array':
         case 'function': {
           this.increaseGroup();
           this.backToken();
-          break;
-        }
-        default: {
-          this.backToken();
+          return;
         }
       }
+      this.backToken();
     }
   }
 }

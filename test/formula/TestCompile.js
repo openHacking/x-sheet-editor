@@ -2,7 +2,7 @@ import { Compile } from '../../src/formula/Compiler.js';
 
 // 测试公式
 const compileExprs = {
-   case1: 'IF(COUNTIF(A$2:A2 C3:C5,A4)>1,"重复","不重复")',
+   // case1: 'IF(COUNTIF(A$2:A2 C3:C5,A4)>1,"重复","不重复")',
   //  case2: 'IF(SUM(A3:B3:C3:D4,F5)<>1,"YES", "NO")',
   //  case3: 'DATEDIF(A2,TODAY(),"y")',
   //  case4: 'TEXT(MID(A2,7,8),"0-00-00")',
@@ -29,6 +29,7 @@ const compileExprs = {
   // case25: '{{1+1>20} + 2}',
   // case26: 'SUM(1,2,3) + 3',
   // case27: '{1, {2>1, 4, 6, SUM(1,1)}, 2 + 3}'
+  case28: '{1, {2 > 1, 4 * (1+2), 6, SUM(1, 1) / 2}, 2 + 3}'
 }
 
 // 公式编译
