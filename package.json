@@ -8,7 +8,6 @@
     "dist",
     "src"
   ],
-  "type": "module",
   "author": "jerry <195658469@qq.com>",
   "license": "MOZILLA PUBLIC LICENSE",
   "repository": {

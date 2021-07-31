@@ -603,6 +603,22 @@ class Compiler {
       const token = this.nextToken();
       const { writer } = this;
       const { type, value } = token;
+      // 推送操作数
+      // 递增函数/数组的参数数量(有的话)
+      switch (type) {
+        case 'string': {
+          this.increaseGroup();
+          writer.writePush(`"${value}"`);
+          return;
+        }
+        case 'number':
+        case 'operand': {
+          this.increaseGroup();
+          writer.writePush(value);
+          return;
+        }
+      }
+      // 处理括号计算
       switch (type) {
         case 'brackets': {
           if (value === '(') {
@@ -618,25 +634,35 @@ class Compiler {
           }
           return;
         }
-        case 'string': {
-          this.increaseGroup();
-          writer.writePush(`"${value}"`);
+      }
+      // 递增函数/数组的参数数量(有的话)
+      switch (type) {
+        case 'array': {
+          // {} 这种清空不需要增加参数数量
+          if (value !== '}') {
+            this.increaseGroup();
+          }
+          this.backToken();
           return;
         }
-        case 'number':
-        case 'operand': {
-          this.increaseGroup();
-          writer.writePush(value);
-          return;
-        }
-        case 'array':
         case 'function': {
-          this.increaseGroup();
+          // func() 这种清空不需要增加参数数量
+          if (value !== ')') {
+            this.increaseGroup();
+          }
           this.backToken();
           return;
         }
       }
-      this.backToken();
+      // 过滤掉运算符
+      switch (type) {
+        case 'operator': {
+          this.backToken();
+          return;
+        }
+      }
+      // 无法识别的token
+      throw new TypeError(`无法识别的token ${type} ${value} `);
     }
   }
 }

@@ -1066,6 +1066,46 @@ class XWorkTopMenu extends Widget {
     const { body } = this.workTop.work;
     const { sheetView } = body;
 
+    // 样式复制回调
+    const paintFormatCallback = () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      const { cellMergeCopyHelper } = table;
+      const { xScreen } = table;
+      const { snapshot } = table;
+      const xSelect = xScreen.findType(XSelectItem);
+      const xCopyStyle = xScreen.findType(XCopyStyle);
+      xCopyStyle.hideCopyStyle();
+      // 清除复制
+      this.paintFormat.active(false);
+      this.paintFormat.removeSheet(sheet);
+      // 复制区域
+      const originViewRange = xCopyStyle.selectRange.clone();
+      const targetViewRange = xSelect.selectRange.clone();
+      const [orSize, ocSize] = originViewRange.size();
+      const [trSize, tcSize] = targetViewRange.size();
+      const rSize = orSize > trSize ? orSize : trSize;
+      const cSize = ocSize > tcSize ? ocSize : tcSize;
+      targetViewRange.eri = targetViewRange.sri + (rSize - 1);
+      targetViewRange.eci = targetViewRange.sci + (cSize - 1);
+      // 开始复制
+      snapshot.open();
+      cellMergeCopyHelper.copyMergeContent({
+        originViewRange,
+        targetViewRange,
+      });
+      cellMergeCopyHelper.copyStylesContent({
+        originViewRange,
+        targetViewRange,
+      });
+      snapshot.close({
+        type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+      });
+      table.render();
+      // 删除事件监听
+      XEvent.unbind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, paintFormatCallback);
+    };
+
     // 菜单状态更新
     XEvent.bind(body, Constant.TABLE_EVENT_TYPE.SNAPSHOT_CHANGE, () => {
       this.setAllStatus();
@@ -1091,50 +1131,17 @@ class XWorkTopMenu extends Widget {
         if (SheetUtils.isUnDef(selectRange)) {
           return;
         }
-        const { cellMergeCopyHelper } = table;
-        const { snapshot } = table;
         const xCopyStyle = xScreen.findType(XCopyStyle);
-        const callback = () => {
-          xCopyStyle.hideCopyStyle();
-          // 清除复制
-          this.paintFormat.active(false);
-          this.paintFormat.removeSheet(sheet);
-          // 复制区域
-          const originViewRange = xCopyStyle.selectRange.clone();
-          const targetViewRange = xSelect.selectRange.clone();
-          const [orSize, ocSize] = originViewRange.size();
-          const [trSize, tcSize] = targetViewRange.size();
-          const rSize = orSize > trSize ? orSize : trSize;
-          const cSize = ocSize > tcSize ? ocSize : tcSize;
-          targetViewRange.eri = targetViewRange.sri + (rSize - 1);
-          targetViewRange.eci = targetViewRange.sci + (cSize - 1);
-          // 开始复制
-          snapshot.open();
-          cellMergeCopyHelper.copyMergeContent({
-            originViewRange,
-            targetViewRange,
-          });
-          cellMergeCopyHelper.copyStylesContent({
-            originViewRange,
-            targetViewRange,
-          });
-          snapshot.close({
-            type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
-          });
-          table.render();
-          // 删除事件监听
-          XEvent.unbind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, callback);
-        };
         if (this.paintFormat.includeSheet(sheet)) {
           xCopyStyle.hideCopyStyle();
           this.paintFormat.active(false);
           this.paintFormat.removeSheet(sheet);
-          XEvent.unbind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, callback);
+          XEvent.unbind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, paintFormatCallback);
         } else {
           xCopyStyle.showCopyStyle();
           this.paintFormat.active(true);
           this.paintFormat.addSheet(sheet);
-          XEvent.bind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, callback);
+          XEvent.bind(table, Constant.TABLE_EVENT_TYPE.SELECT_OVER, paintFormatCallback);
         }
       }
     });
