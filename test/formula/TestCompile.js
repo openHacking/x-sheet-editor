@@ -26,11 +26,10 @@ const compileExprs = {
   case22: 'INDEX(A:A,SMALL(IF(ISNUMBER(FIND($B$1,$A$1:$A$6)),ROW($A$1:$A$6),100),ROW(A1)))&""',
   case23: 'LOOKUP(99,FIND(B$2,TEXT(COUNTIF(C$1:C1,A$1:A$7),";;"&A$1:A$7&REPT(B$2,A$1:A$7=""))),A$1:A$7)&""',
   case24: '{1+1}',
-  case25: '{{1+1>20} + 2}',
+  case25: '{1 + 2}',
   case26: 'SUM(1,2,3) + 3',
   case27: '{1, {2>1, 4, 6, SUM(1,1)}, 2 + 3}',
   case28: '{1, {2 > 1, 4 * (1+2), 6, SUM(1, 1) / 2}, 2 + 3}',
-  case29: '{6+1+5+6+7{},7,9,3}',
 }
 
 // 公式编译

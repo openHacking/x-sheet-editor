@@ -71,7 +71,7 @@ class Tokenizer {
       }
       if (char === ')') {
         const brackets = bracketsStack.pop();
-        if (brackets.type === 'function') {
+        if (brackets && brackets.type === 'function') {
           tokens.push({
             type: 'function',
             value: ')',
@@ -232,7 +232,7 @@ class Tokenizer {
   }
 
   /**
-   * 语法校验
+   * 语法分析
    * @param tokens
    */
   syntax(tokens) {
@@ -244,16 +244,225 @@ class Tokenizer {
     let callStack = [];
     // 数组闭合标签校验
     let arrayStack = [];
+    // 括号闭合标签校验
+    let bracketsStack = [];
     // 当前的字符索引
     let current = 0;
     // tokens长度
     let { length } = tokens;
-    // 检查运算符
-    let checkOperator = (target) => {
+    // 忽略的数组token
+    let ignoreArray = (token) => {
+      if (token.type === 'array') {
+        return token.value === 'array';
+      }
+      return false;
+    };
+    // 忽略的函数token
+    let ignoreFunc = (token) => {
+      if (token.type === 'function') {
+        return token.value !== '(' && token.value !== ')';
+      }
+      return false;
+    };
+    // 跳过忽略的元素
+    let skipIgnoreToken = (dir, index) => {
+      if (dir === 'last') {
+        while (index >= 0) {
+          let token = tokens[index];
+          if (ignoreFunc(token)) {
+            index--;
+            continue;
+          }
+          if (ignoreArray(token)) {
+            index--;
+            continue;
+          }
+          return token;
+        }
+      }
+      if (dir === 'next') {
+        while (index < length) {
+          let token = tokens[index];
+          if (ignoreFunc(token)) {
+            index++;
+            continue;
+          }
+          if (ignoreArray(token)) {
+            index++;
+            continue;
+          }
+          return token;
+        }
+      }
+      return null;
+    };
+    // 检查数组
+    let checkArray = (dir, target) => {
       let token = tokens[current];
+      let local = dir === 'last' ? '前面' : '后面';
+      if (token.value === '{') {
+        if (dir === 'last') {
+          switch (target.type) {
+            case 'array': {
+              if (target.value === '{') {
+                return;
+              }
+              break;
+            }
+            case 'function': {
+              if (target.value === '(') {
+                return;
+              }
+              break;
+            }
+            case 'brackets': {
+              if (target.value === '(') {
+                return;
+              }
+              break;
+            }
+            case 'operator': {
+              if (target.value === ',') {
+                return;
+              }
+              return;
+            }
+          }
+        }
+        if (dir === 'next') {
+          switch (target.type) {
+            case 'string':
+            case 'array':
+            case 'number':
+            case 'operand': {
+              return;
+            }
+            case 'function': {
+              if (target.value === '(') {
+                return;
+              }
+              break;
+            }
+            case 'brackets': {
+              if (target.value === '(') {
+                return;
+              }
+              break;
+            }
+          }
+        }
+      }
+      if (token.value === '}') {
+        if (dir === 'last') {
+          switch (target.type) {
+            case 'number':
+            case 'string':
+            case 'array':
+            case 'operand': {
+              return;
+            }
+            case 'function': {
+              if (target.value === ')') {
+                return;
+              }
+              break;
+            }
+            case 'brackets': {
+              if (target.value === ')') {
+                return;
+              }
+              break;
+            }
+          }
+        }
+        if (dir === 'next') {
+          switch (target.type) {
+            case 'array': {
+              if (target.value === '}') {
+                return;
+              }
+              break;
+            }
+            case 'function': {
+              if (target.value === ')') {
+                return;
+              }
+              break;
+            }
+            case 'brackets': {
+              if (target.value === ')') {
+                return;
+              }
+              break;
+            }
+            case 'operator': {
+              if (target.value === ',') {
+                return;
+              }
+              return;
+            }
+          }
+        }
+      }
+      throw TypeError(`错误表达式 ${token.value} ${local} ${target.value}`);
+    };
+    // 检查数字和字符
+    let checkValue = (dir, target) => {
+      let token = tokens[current];
+      let local = dir === 'last' ? '前面' : '后面';
       switch (target.type) {
-        case 'function':
+        case 'array': {
+          if (dir === 'last') {
+            if (target.value === '{') {
+              return;
+            }
+          }
+          if (dir === 'next') {
+            if (target.value === '}') {
+              return;
+            }
+          }
+          break;
+        }
+        case 'brackets': {
+          if (dir === 'last') {
+            if (target.value === '(') {
+              return;
+            }
+          }
+          if (dir === 'next') {
+            if (target.value === ')') {
+              return;
+            }
+          }
+          break;
+        }
+        case 'function': {
+          if (dir === 'last') {
+            if (target.value === '(') {
+              return;
+            }
+          }
+          if (dir === 'next') {
+            if (target.value === ')') {
+              return;
+            }
+          }
+          break;
+        }
+        case 'operator': {
+          return;
+        }
+      }
+      throw TypeError(`错误表达式 ${token.value} ${local} ${target.value}`);
+    };
+    // 检查运算符
+    let checkOperator = (dir, target) => {
+      let token = tokens[current];
+      let local = dir === 'last' ? '前面' : '后面';
+      switch (target.type) {
         case 'brackets':
+        case 'function':
         case 'string':
         case 'number':
         case 'operand': {
@@ -263,42 +472,131 @@ class Tokenizer {
           if (token.value === ',') {
             return;
           }
-          if (token.value === '=') {
-            return;
-          }
-          if (token.value === '<>') {
-            return;
-          }
           break;
         }
       }
-      throw TypeError(`错误表达式: ${token.value} 附近的 ${target.value}`);
+      throw TypeError(`错误表达式 ${token.value} ${local} ${target.value}`);
     };
-    // 检查数字和字符
-    let checkSNValue = (target, dir) => {
+    // 检查函数
+    let checkFunction = (dir, target) => {
       let token = tokens[current];
-      switch (target.type) {
-        case 'array': {
-          if (dir === 'last' && target.value === '{') { return; }
-          if (dir === 'next' && target.value === '}') { return; }
-          break;
+      let local = dir === 'last' ? '前面' : '后面';
+      if (token.value === '(') {
+        if (dir === 'last') {
+          switch (target.type) {
+            case 'array': {
+              if (target.value === '{') {
+                return;
+              }
+              break;
+            }
+            case 'function': {
+              if (target.value === '(') {
+                return;
+              }
+              break;
+            }
+            case 'brackets': {
+              if (target.value === '(') {
+                return;
+              }
+              break;
+            }
+            case 'operator': {
+              return;
+            }
+          }
         }
-        case 'brackets':
-        case 'function': {
-          if (dir === 'last' && target.value === '(') { return; }
-          if (dir === 'next' && target.value === ')') { return; }
-          break;
-        }
-        case 'operator': {
-          return;
+        if (dir === 'next') {
+          switch (target.type) {
+            case 'function':
+            case 'string':
+            case 'number':
+            case 'operand': {
+              return;
+            }
+            case 'array': {
+              if (target.value === '{') {
+                return;
+              }
+              break;
+            }
+            case 'brackets': {
+              if (target.value === '(') {
+                return;
+              }
+              break;
+            }
+          }
         }
       }
-      throw TypeError(`错误表达式: ${token.value} 附近的 ${target.value}`);
+      if (token.value === ')') {
+        if (dir === 'last') {
+          switch (target.type) {
+            case 'function':
+            case 'number':
+            case 'string':
+            case 'operand': {
+              return;
+            }
+            case 'array': {
+              if (target.value === '}') {
+                return;
+              }
+              break;
+            }
+            case 'brackets': {
+              if (target.value === ')') {
+                return;
+              }
+              break;
+            }
+          }
+        }
+        if (dir === 'next') {
+          switch (target.type) {
+            case 'array': {
+              if (target.value === '}') {
+                return;
+              }
+              break;
+            }
+            case 'function': {
+              if (target.value === ')') {
+                return;
+              }
+              break;
+            }
+            case 'brackets': {
+              if (target.value === ')') {
+                return;
+              }
+              break;
+            }
+            case 'operator': {
+              if (target.value === ',') {
+                return;
+              }
+              return;
+            }
+          }
+        }
+      }
+      throw TypeError(`错误表达式 ${token.value} ${local} ${target.value}`);
     };
     // 循环处理所有token
     while (current < length) {
       // 当前处理的token
       let token = tokens[current];
+      // 跳过忽略token
+      if (ignoreArray(token)) {
+        current++;
+        continue;
+      }
+      if (ignoreFunc(token)) {
+        current++;
+        continue;
+      }
       let { type, value } = token;
       // 处理单引号
       if (type === "'") {
@@ -318,24 +616,24 @@ class Tokenizer {
       }
       // 处理字符
       if (type === 'string') {
-        let last = tokens[current - 1];
-        let next = tokens[current + 1];
+        let last = skipIgnoreToken('last', current - 1);
+        let next = skipIgnoreToken('next', current + 1);
         if (last) {
-          checkSNValue(last, 'last');
+          checkValue('last', last);
         }
         if (next) {
-          checkSNValue(next, 'next');
+          checkValue('next', next);
         }
       }
       // 处理数字
       if (type === 'number') {
-        let last = tokens[current - 1];
-        let next = tokens[current + 1];
+        let last = skipIgnoreToken('last', current - 1);
+        let next = skipIgnoreToken('next', current + 1);
         if (last) {
-          checkSNValue(last, 'last');
+          checkValue('last', last);
         }
         if (next) {
-          checkSNValue(next, 'next');
+          checkValue('next', next);
         }
       }
       // 处理数组
@@ -344,7 +642,18 @@ class Tokenizer {
           arrayStack.push(token);
         }
         if (value === '}') {
+          if (arrayStack.length === 0) {
+            throw new TypeError('数组缺少闭合标签');
+          }
           arrayStack.pop();
+        }
+        let last = skipIgnoreToken('last', current - 1);
+        let next = skipIgnoreToken('next', current + 1);
+        if (last) {
+          checkArray('last', last);
+        }
+        if (next) {
+          checkArray('next', next);
         }
       }
       // 处理函数调用
@@ -355,14 +664,44 @@ class Tokenizer {
         if (value === ')') {
           callStack.pop();
         }
+        let last = skipIgnoreToken('last', current - 1);
+        let next = skipIgnoreToken('next', current + 1);
+        if (last) {
+          checkFunction('last', last);
+        }
+        if (next) {
+          checkFunction('next', next);
+        }
       }
       // 处理运算符号
       if (type === 'operator') {
-        let last = tokens[current - 1];
-        let next = tokens[current + 1];
-        checkOperator(last, 'last');
-        checkOperator(next, 'next');
+        let last = skipIgnoreToken('last', current - 1);
+        let next = skipIgnoreToken('next', current + 1);
+        // 运算符需要两边都有操作数
+        if (last) {
+          checkOperator('last', last);
+        } else {
+          throw TypeError(`错误表达式: ${token.value} 错误`);
+        }
+        if (next) {
+          checkOperator('next', next);
+        } else {
+          throw TypeError(`错误表达式: ${token.value} 错误`);
+        }
       }
+      // 处理括号
+      if (type === 'brackets') {
+        if (value === '(') {
+          bracketsStack.push(token);
+        }
+        if (value === ')') {
+          if (bracketsStack.length === 0) {
+            throw new TypeError('括号缺少闭合标签');
+          }
+          bracketsStack.pop();
+        }
+      }
+      // 处理下一个字符
       current++;
     }
     // 闭合标签检查
@@ -377,6 +716,9 @@ class Tokenizer {
     }
     if (dQuotesStack.length) {
       throw new TypeError('双引号缺少闭合标签');
+    }
+    if (bracketsStack.length) {
+      throw new TypeError('括号缺少闭合标签');
     }
     return tokens;
   }
@@ -567,6 +909,10 @@ class Compiler {
   compile() {
     const { writer } = this;
     this.compileIfge();
+    while (this.isSkipNextToken()) {
+      this.nextToken();
+      this.compileIfge();
+    }
     return writer.getInstruct();
   }
 
@@ -1109,7 +1455,7 @@ class Evaluation {
   }
 
   /**
-   *跨sheet引用运算
+   * 跨sheet引用运算
    */
   rel() {
     // TODO ...
