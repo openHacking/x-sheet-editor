@@ -1,7 +1,7 @@
-import { Widget } from '../../../libs/Widget';
+import { Widget } from '../../../lib/Widget';
 import { cssPrefix } from '../../../const/Constant';
 import { SheetUtils } from '../../../utils/SheetUtils';
-import { Icon } from '../../../core/xwork/top/tools/Icon';
+import { Icon } from '../../../core/xwork/head/tools/Icon';
 import { ColorPicker } from '../ColorPicker';
 
 class ColorItem extends Widget {

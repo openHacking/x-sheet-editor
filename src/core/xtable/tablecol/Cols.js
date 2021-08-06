@@ -5,7 +5,7 @@ import { Col } from './Col';
 import { CacheWidth } from './CacheWidth';
 import { XIteratorBuilder } from '../iterator/XIteratorBuilder';
 import { Snapshot } from '../snapshot/Snapshot';
-import { Listen } from '../../../libs/Listen';
+import { Listen } from '../../../lib/Listen';
 
 class Cols {
 

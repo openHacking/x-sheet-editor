@@ -2,58 +2,164 @@ import { SheetUtils } from '../../../utils/SheetUtils';
 import { CellFont } from './CellFont';
 import { CellBorder } from './CellBorder';
 import { XIcon } from '../xicon/XIcon';
-import XTableFormat from '../XTableFormat';
+import XTableFormat from '../XTableTextFormat';
+import { Compile, Instruct } from '../../../formula/Compiler';
 import { RichFonts } from './RichFonts';
 
 /**
- * Cell
- * @author jerry
+ * 单元格
  */
 class Cell {
 
   /**
    * Cell
-   * @param text
-   * @param readOnly
    * @param background
+   * @param readOnly
    * @param format
+   * @param text
+   * @param richText
    * @param ruler
-   * @param fontAttr
-   * @param borderAttr
-   * @param icons
    * @param custom
+   * @param icons
+   * @param borderAttr
+   * @param fontAttr
+   * @param formula
    * @param contentWidth
    * @param contentHeight
    * @param contentType
    */
   constructor({
-    text = SheetUtils.EMPTY,
-    ruler = null,
-    readOnly = false,
-    format = 'default',
-    custom = {},
     background = SheetUtils.Nul,
+    readOnly = false,
+    formula = null,
     icons = [],
+    format = 'default',
+    text = SheetUtils.EMPTY,
+    richText = SheetUtils.EMPTY,
+    ruler = null,
+    custom = {},
     borderAttr = {},
     fontAttr = {},
     contentWidth = 0,
     contentHeight = 0,
     contentType = Cell.TYPE.STRING,
   } = {}) {
-    this.fontAttr = new CellFont(fontAttr);
+    // 单元格图标
     this.icons = XIcon.newInstances(icons);
-    this.borderAttr = new CellBorder(borderAttr);
+    // 背景颜色
     this.background = background;
-    this.contentType = contentType;
-    this.ruler = ruler;
-    this.readOnly = readOnly;
-    this.text = text;
-    this.format = format;
+    // 自定义属性
     this.custom = custom;
-    this.contentWidth = contentWidth;
+    // 字体测量尺子
+    this.ruler = ruler;
+    // 单元格是否只读
+    this.readOnly = readOnly;
+    // 格式化类型
+    this.format = format;
+    // 内容类型
+    this.contentType = contentType;
+    // 单元格公式
+    this.formula = formula;
+    // 公式指令
+    this.formulaInstruct = null;
+    // 文本内容
+    this.text = text;
+    // 富文本内容
+    this.richText = new RichFonts(richText);
+    // 格式化后的内容
+    this.formatText = null;
+    // 公式计算后的内容
+    this.formulaText = null;
+    // 内容的高度
     this.contentHeight = contentHeight;
-    this.setContentType(contentType);
-    this.setFormat(format);
+    // 内容的宽度
+    this.contentWidth = contentWidth;
+    // 字体属性
+    this.fontAttr = new CellFont(fontAttr);
+    // 边框属性
+    this.borderAttr = new CellBorder(borderAttr);
+  }
+
+  /**
+   * 获取格式后的文本
+   * @returns {string|*}
+   */
+  getFormatText() {
+    let { contentType, formulaInstruct, format, formula } = this;
+    let { text, formulaText, formatText } = this;
+    // 优先获取公式值
+    if (formula) {
+      if (!formulaText) {
+        if (formulaInstruct) {
+          formulaText = Instruct(formulaInstruct);
+          this.formulaText = formulaText;
+        } else {
+          formulaInstruct = Compile(formula);
+          this.formulaInstruct = formulaInstruct;
+          formulaText = Instruct(formulaInstruct);
+        }
+      }
+      if (format) {
+        // 有缓存直接读取缓存
+        if (!formatText) {
+          formatText = XTableFormat(format, formulaText);
+          this.formatText = formatText;
+        }
+      }
+      return formatText;
+    }
+    // 格式化文本
+    switch (contentType) {
+      case Cell.TYPE.STRING:
+      case Cell.TYPE.NUMBER:
+      case Cell.TYPE.DATE_TIME: {
+        if (format) {
+          if (!formatText) {
+            this.formatText = XTableFormat(format, text);
+            return this.formatText;
+          }
+        }
+        return formatText;
+      }
+    }
+    // 默认返回
+    return SheetUtils.EMPTY;
+  }
+
+  /**
+   * 获取计算后的文本
+   * @returns {string|*}
+   */
+  getComputeText() {
+    let { formula, formulaInstruct, contentType } = this;
+    let { richText, formulaText, text } = this;
+    // 优先获取公式值
+    if (formula) {
+      if (!formulaText) {
+        if (formulaInstruct) {
+          formulaText = Instruct(formulaInstruct);
+          this.formulaText = formulaText;
+        } else {
+          formulaInstruct = Compile(formula);
+          this.formulaInstruct = formulaInstruct;
+          formulaText = Instruct(formulaInstruct);
+        }
+      }
+      return formulaText;
+    }
+    // 读取不同类型
+    switch (contentType) {
+      case Cell.TYPE.STRING:
+      case Cell.TYPE.NUMBER:
+      case Cell.TYPE.DATE_TIME: {
+        return text;
+      }
+      case Cell.TYPE.RICH_TEXT: {
+        return richText;
+      }
+    }
+    // 默认返回
+    return SheetUtils.EMPTY;
   }
 
   /**
@@ -65,47 +171,13 @@ class Cell {
   }
 
   /**
-   * 字体属性
-   * @param fontAttr
+   * 设置格式化类型
+   * @param format
    */
-  setFontAttr(fontAttr) {
-    this.fontAttr = fontAttr;
-  }
-
-  /**
-   * 获取格式化文本
-   * @returns {string|*}
-   */
-  getFormatText() {
-    let { format, text, contentType } = this;
-    switch (contentType) {
-      case Cell.TYPE.RICH_TEXT: {
-        return text;
-      }
-      case Cell.TYPE.DATE: {
-        if (format === 'default') {
-          format = 'date1';
-        }
-        return XTableFormat(format, text);
-      }
-      case Cell.TYPE.STRING: {
-        return XTableFormat(format, text);
-      }
-      case Cell.TYPE.NUMBER: {
-        const number = XTableFormat(format, text);
-        return number.toString();
-      }
-    }
-    return SheetUtils.EMPTY;
-  }
-
-  /**
-   * 设置内容类型
-   * @param type
-   */
-  setContentType(type) {
-    this.contentType = type;
-    this.convert(this.text);
+  setFormat(format) {
+    this.format = format;
+    this.formatText = null;
+    this.setContentWidth(0);
   }
 
   /**
@@ -113,7 +185,38 @@ class Cell {
    * @param text
    */
   setText(text) {
-    this.convert(text);
+    this.text = text;
+    this.formatText = null;
+    this.richText = null;
+    this.formulaText = null;
+    this.formula = null;
+    this.formulaInstruct = null;
+    this.setContentWidth(0);
+  }
+
+  /**
+   * 设置富文本
+   */
+  setRichText(text) {
+    this.text = null;
+    this.formatText = null;
+    this.richText = text;
+    this.formulaText = null;
+    this.formula = null;
+    this.formulaInstruct = null;
+    this.setContentWidth(0);
+  }
+
+  /**
+   * 设置公式
+   */
+  setFormula(formula) {
+    this.text = null;
+    this.formatText = null;
+    this.richText = null;
+    this.formulaText = null;
+    this.formula = formula;
+    this.formulaInstruct = null;
     this.setContentWidth(0);
   }
 
@@ -126,38 +229,19 @@ class Cell {
   }
 
   /**
-   * 设置格式化类型
-   * @param format
+   * 设置内容类型
+   * @param type
    */
-  setFormat(format) {
-    this.format = format;
-    switch (format) {
-      case 'decimal':
-      case 'eNotation':
-      case 'percentage':
-      case 'rmb':
-      case 'hk':
-      case 'dollar':
-      case 'number':
-        this.setContentType(Cell.TYPE.NUMBER);
-        break;
-    }
+  setContentType(type) {
+    this.contentType = type;
   }
 
   /**
-   * 内容宽度
-   * @param contentWidth
+   * 公式是否存在
+   * @returns {*}
    */
-  setContentWidth(contentWidth) {
-    this.contentWidth = contentWidth;
-  }
-
-  /**
-   * 内容宽度
-   * @param contentHeight
-   */
-  setContentHeight(contentHeight) {
-    this.contentHeight = contentHeight;
+  hasFormula() {
+    return SheetUtils.isNotUnDef(this.formula);
   }
 
   /**
@@ -173,43 +257,23 @@ class Cell {
    * @returns {boolean}
    */
   isEmpty() {
-    return SheetUtils.isBlank(this.text);
+    return SheetUtils.isBlank(this.getComputeText());
   }
 
   /**
-   * 内容类型转换
-   * @param text
+   * 字体属性
+   * @param attr
    */
-  convert(text) {
-    if (SheetUtils.isBlank(text)) {
-      this.contentType = Cell.TYPE.STRING;
-      this.format = 'default';
-      this.text = SheetUtils.EMPTY;
-    } else {
-      const { contentType } = this;
-      switch (contentType) {
-        case Cell.TYPE.NUMBER: {
-          this.text = SheetUtils.parseFloat(text);
-          break;
-        }
-        case Cell.TYPE.STRING: {
-          this.text = text.toString();
-          break;
-        }
-        case Cell.TYPE.RICH_TEXT: {
-          this.text = new RichFonts(text);
-          break;
-        }
-      }
-    }
+  setFontAttr(attr) {
+    this.fontAttr = attr;
   }
 
   /**
    * 设置边框类型
-   * @param borderAttr
+   * @param attr
    */
-  setBorderAttr(borderAttr) {
-    this.borderAttr = borderAttr;
+  setBorderAttr(attr) {
+    this.borderAttr = attr;
   }
 
   /**
@@ -262,23 +326,23 @@ class Cell {
    * @returns {string|*}
    */
   toString() {
-    let { format, text, contentType } = this;
-    switch (contentType) {
-      case Cell.TYPE.NUMBER:
-      case Cell.TYPE.STRING: {
-        return text;
-      }
-      case Cell.TYPE.DATE: {
-        if (format === 'default') {
-          format = 'date1';
-        }
-        return XTableFormat(format, text);
-      }
-      case Cell.TYPE.RICH_TEXT: {
-        return SheetUtils.EMPTY;
-      }
-    }
-    return SheetUtils.EMPTY;
+    return this.getFormatText();
+  }
+
+  /**
+   * 内容宽度
+   * @param width
+   */
+  setContentWidth(width) {
+    this.contentWidth = width;
+  }
+
+  /**
+   * 内容宽度
+   * @param height
+   */
+  setContentHeight(height) {
+    this.contentHeight = height;
   }
 
 }
@@ -291,12 +355,10 @@ Cell.TYPE = {
   NUMBER: 0,
   // 字符
   STRING: 1,
-  // 日期
-  DATE: 3,
   // 富文本
   RICH_TEXT: 2,
-  // 表达式
-  EXPRESSION: 4,
+  // 日期
+  DATE_TIME: 3,
 };
 
 export {

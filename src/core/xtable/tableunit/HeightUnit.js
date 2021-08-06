@@ -1,4 +1,4 @@
-import FindDpi from '../../../libs/finddpi/FindDpi';
+import FindDpi from '../../../lib/finddpi/FindDpi';
 import { SheetUtils } from '../../../utils/SheetUtils';
 
 /**

@@ -1,11 +1,11 @@
 /* global document */
 import { SELECT_LOCAL, XSelectItem } from '../xselect/XSelectItem';
 import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBorderItem';
-import { Widget } from '../../../../libs/Widget';
+import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
 import { SheetUtils } from '../../../../utils/SheetUtils';
-import { XEvent } from '../../../../libs/XEvent';
+import { XEvent } from '../../../../lib/XEvent';
 import { XTableMousePointer } from '../../XTableMousePointer';
 import { AutoFillType } from '../../../../module/autofilltype/AutoFillType';
 import { Serialize } from '../../helper/CellMergeCopyHelper';

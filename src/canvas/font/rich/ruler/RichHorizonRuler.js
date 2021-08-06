@@ -12,10 +12,7 @@ class RichHorizonRuler extends RichHorizonVisual {
     lineHeight = 8, spacing = 0,
   }) {
     super({
-      draw,
-      rich,
-      padding,
-      align,
+      draw, rich, padding, align,
     });
     this.rect = rect;
     this.overflow = overflow;

@@ -1,5 +1,5 @@
 import { XSelectItem } from '../../xtable/xscreenitems/xselect/XSelectItem';
-import { XTableEdit } from '../../xtable/XTableEdit';
+import { XTableTextEdit } from '../../xtable/XTableTextEdit';
 import { XSelectPath } from '../../xtable/xscreenitems/xselect/XSelectPath';
 
 function enter({ table, body, response }) {
@@ -10,7 +10,7 @@ function enter({ table, body, response }) {
   response.push({
     keyCode: keyCode => keyCode === 13,
     handle: (event) => {
-      if (edit.mode === XTableEdit.MODE.SHOW) {
+      if (edit.mode === XTableTextEdit.MODE.SHOW) {
         edit.hideEdit(event);
       }
       let scrollView = xTableScrollView.getScrollView();
@@ -170,7 +170,7 @@ function showEdit({ table, response }) {
   response.push({
     keyCode: keyCode => (keyCode >= 48 && keyCode <= 57) || (keyCode >= 65 && keyCode <= 90),
     handle: (event) => {
-      if (edit.mode === XTableEdit.MODE.HIDE) {
+      if (edit.mode === XTableTextEdit.MODE.HIDE) {
         let { selectRange } = xSelect;
         if (selectRange) {
           let clone = selectRange.clone();
@@ -198,7 +198,7 @@ function hideEdit({ table, response }) {
   response.push({
     keyCode: keyCode => keyCode === 27,
     handle: (event) => {
-      if (edit.mode === XTableEdit.MODE.SHOW) {
+      if (edit.mode === XTableTextEdit.MODE.SHOW) {
         edit.hideEdit(event);
       }
     },
@@ -291,7 +291,7 @@ function arrowDown({ table, body, response }) {
   response.push({
     keyCode: keyCode => keyCode === 40,
     handle: () => {
-      if (edit.mode === XTableEdit.MODE.SHOW) {
+      if (edit.mode === XTableTextEdit.MODE.SHOW) {
         return;
       }
       let scrollView = xTableScrollView.getScrollView();
@@ -344,7 +344,7 @@ function arrowUp({ table, body, response }) {
   response.push({
     keyCode: keyCode => keyCode === 38,
     handle: () => {
-      if (edit.mode === XTableEdit.MODE.SHOW) {
+      if (edit.mode === XTableTextEdit.MODE.SHOW) {
         return;
       }
       let scrollView = xTableScrollView.getScrollView();
@@ -389,7 +389,7 @@ function arrowLeft({ table, body, response }) {
   response.push({
     keyCode: keyCode => keyCode === 37,
     handle: () => {
-      if (edit.mode === XTableEdit.MODE.SHOW) {
+      if (edit.mode === XTableTextEdit.MODE.SHOW) {
         return;
       }
       let scrollView = xTableScrollView.getScrollView();
@@ -434,7 +434,7 @@ function arrowRight({ table, body, response }) {
   response.push({
     keyCode: keyCode => keyCode === 39,
     handle: () => {
-      if (edit.mode === XTableEdit.MODE.SHOW) {
+      if (edit.mode === XTableTextEdit.MODE.SHOW) {
         return;
       }
       let scrollView = xTableScrollView.getScrollView();

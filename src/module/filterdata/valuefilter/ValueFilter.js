@@ -1,9 +1,9 @@
 import { ELContextMenuItem } from '../../contextmenu/ELContextMenuItem';
 import { Constant, cssPrefix } from '../../../const/Constant';
-import { h } from '../../../libs/Element';
+import { h } from '../../../lib/Element';
 import { SearchInput } from '../../form/input/SearchInput';
-import { w } from '../../../libs/Widget';
-import { XEvent } from '../../../libs/XEvent';
+import { w } from '../../../lib/Widget';
+import { XEvent } from '../../../lib/XEvent';
 import { SheetUtils } from '../../../utils/SheetUtils';
 
 /**

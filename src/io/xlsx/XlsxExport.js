@@ -6,7 +6,7 @@ import { BaseFont } from '../../canvas/font/BaseFont';
 import { SheetUtils } from '../../utils/SheetUtils';
 import { Cell } from '../../core/xtable/tablecell/Cell';
 import { LINE_TYPE } from '../../canvas/Line';
-import { SelectFile } from '../../libs/SelectFile';
+import { SelectFile } from '../../lib/SelectFile';
 import { HeightUnit } from '../../core/xtable/tableunit/HeightUnit';
 import { WideUnit } from '../../core/xtable/tableunit/WideUnit';
 import { XMerges } from '../../core/xtable/xmerges/XMerges';

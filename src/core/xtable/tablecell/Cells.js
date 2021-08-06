@@ -4,7 +4,7 @@ import { XIteratorBuilder } from '../iterator/XIteratorBuilder';
 import { XTableDataItems } from '../XTableDataItems';
 import { XMerges } from '../xmerges/XMerges';
 import { Snapshot } from '../snapshot/Snapshot';
-import { Listen } from '../../../libs/Listen';
+import { Listen } from '../../../lib/Listen';
 
 class Cells {
 

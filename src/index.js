@@ -1,9 +1,9 @@
 /* global window, document */
 import { Constant, cssPrefix, XSheetVersion } from './const/Constant';
 import { XWork } from './core/xwork/XWork';
-import { Widget } from './libs/Widget';
+import { Widget } from './lib/Widget';
 import { XDraw } from './canvas/XDraw';
-import { h } from './libs/Element';
+import { h } from './lib/Element';
 import { DragPanel } from './module/dragpanel/DragPanel';
 import { ElPopUp } from './module/elpopup/ElPopUp';
 import { SheetUtils } from './utils/SheetUtils';
@@ -12,13 +12,13 @@ import { BaseFont } from './canvas/font/BaseFont';
 import { XIcon } from './core/xtable/xicon/XIcon';
 import { XlsxExport } from './io/xlsx/XlsxExport';
 import { ColorPicker } from './module/colorpicker/ColorPicker';
-import FindDpi from './libs/finddpi/FindDpi';
+import FindDpi from './lib/finddpi/FindDpi';
 import { HeightUnit } from './core/xtable/tableunit/HeightUnit';
 import { WideUnit } from './core/xtable/tableunit/WideUnit';
 import './style/base.less';
 import './style/index.less';
-import { XTableFocus } from './core/xtable/XTableFocus';
-import { XEvent } from './libs/XEvent';
+import { XTableWidgetFocus } from './core/xtable/XTableWidgetFocus';
+import { XEvent } from './lib/XEvent';
 import { XlsxImport } from './io/xlsx/XlsxImport';
 
 const settings = {
@@ -66,7 +66,7 @@ class XSheet extends Widget {
     this.attach(this.work);
     ElPopUp.setRoot(this);
     DragPanel.setRoot(this);
-    XTableFocus.setRoot(this);
+    XTableWidgetFocus.setRoot(this);
   }
 }
 

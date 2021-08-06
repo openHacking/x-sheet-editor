@@ -1,5 +1,5 @@
 import { cssPrefix } from '../../const/Constant';
-import { Widget } from '../../libs/Widget';
+import { Widget } from '../../lib/Widget';
 import { ElPopUp } from '../elpopup/ElPopUp';
 import { SheetUtils } from '../../utils/SheetUtils';
 

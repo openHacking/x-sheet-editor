@@ -1,9 +1,9 @@
 /* global document */
-import { h } from '../../libs/Element';
+import { h } from '../../lib/Element';
 import { cssPrefix, Constant } from '../../const/Constant';
-import { Widget } from '../../libs/Widget';
+import { Widget } from '../../lib/Widget';
 import { DragPanel } from '../dragpanel/DragPanel';
-import { XEvent } from '../../libs/XEvent';
+import { XEvent } from '../../lib/XEvent';
 import { SheetUtils } from '../../utils/SheetUtils';
 
 class ColorPicker extends Widget {

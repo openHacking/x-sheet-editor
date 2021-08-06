@@ -1,8 +1,8 @@
 /* global document */
-import { Widget } from '../../../libs/Widget';
+import { Widget } from '../../../lib/Widget';
 import { cssPrefix, Constant } from '../../../const/Constant';
-import { h } from '../../../libs/Element';
-import { XEvent } from '../../../libs/XEvent';
+import { h } from '../../../lib/Element';
+import { XEvent } from '../../../lib/XEvent';
 import { SheetUtils } from '../../../utils/SheetUtils';
 import { XTableMousePointer } from '../XTableMousePointer';
 import { ColFixed } from '../tablefixed/ColFixed';

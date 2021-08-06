@@ -1,4 +1,4 @@
-import { Widget } from '../../../../libs/Widget';
+import { Widget } from '../../../../lib/Widget';
 import { XTableDimensions } from '../../../xtable/XTableDimensions';
 import { cssPrefix } from '../../../../const/Constant';
 import { SheetUtils } from '../../../../utils/SheetUtils';

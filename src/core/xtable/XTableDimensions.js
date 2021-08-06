@@ -3,9 +3,9 @@ import { Code } from './tablebase/Code';
 import { Rows } from './tablerow/Rows';
 import { Cols } from './tablecol/Cols';
 import { Scroll, SCROLL_TYPE } from './tablebase/Scroll';
-import { Widget } from '../../libs/Widget';
+import { Widget } from '../../lib/Widget';
 import { Constant, cssPrefix } from '../../const/Constant';
-import { XEvent } from '../../libs/XEvent';
+import { XEvent } from '../../lib/XEvent';
 import { Scale, ScaleAdapter } from './tablebase/Scale';
 import { XTableMousePointer } from './XTableMousePointer';
 import { XTableKeyboard } from './XTableKeyboard';
@@ -13,13 +13,13 @@ import { XReSizer } from './resizer/XReSizer';
 import { YReSizer } from './resizer/YReSizer';
 import { XHeightLight } from './highlight/XHeightLight';
 import { YHeightLight } from './highlight/YHeightLight';
-import { XTableFocus } from './XTableFocus';
+import { XTableWidgetFocus } from './XTableWidgetFocus';
 import { XDraw } from '../../canvas/XDraw';
 import { RectRange } from './tablebase/RectRange';
 import { XTableScrollView } from './XTableScrollView';
 import { XTableAreaView } from './XTableAreaView';
-import { XTableEdit } from './XTableEdit';
-import { XTableStyle } from './XTableStyle';
+import { XTableTextEdit } from './XTableTextEdit';
+import { XTableDrawUIStyle } from './XTableDrawUIStyle';
 import { XScreen } from './xscreen/XScreen';
 import { XSelectItem } from './xscreenitems/xselect/XSelectItem';
 import { XAutoFillItem } from './xscreenitems/xautofill/XAutoFillItem';
@@ -32,7 +32,7 @@ import { XFixedMeasure } from './tablebase/XFixedMeasure';
 import { XFixedView } from './tablebase/XFixedView';
 import { XFilter } from './xscreenitems/xfilter/XFilter';
 import { CellMergeCopyHelper } from './helper/CellMergeCopyHelper';
-import { Clipboard } from '../../libs/Clipboard';
+import { Clipboard } from '../../lib/Clipboard';
 import { XIcon } from './xicon/XIcon';
 import { XIconBuilder } from './xicon/XIconBuilder';
 import { BaseFont } from '../../canvas/font/BaseFont';
@@ -583,7 +583,7 @@ class XTableDimensions extends Widget {
       scroll: this.scroll,
     });
     // 表格界面绘制
-    this.xTableStyle = new XTableStyle({
+    this.xTableStyle = new XTableDrawUIStyle({
       xTableScrollView: this.xTableScrollView,
       xIteratorBuilder: this.xIteratorBuilder,
       scroll: this.scroll,
@@ -599,7 +599,7 @@ class XTableDimensions extends Widget {
     this.xTop = new XTableTop(this);
     this.xContent = new XTableContent(this);
     // table组件
-    this.focus = XTableFocus.getInstance();
+    this.focus = XTableWidgetFocus.getInstance();
     this.keyboard = new XTableKeyboard(this);
     this.mousePointer = new XTableMousePointer(this);
     this.xScreen = new XScreen(this);
@@ -607,7 +607,7 @@ class XTableDimensions extends Widget {
     this.yReSizer = new YReSizer(this);
     this.xHeightLight = new XHeightLight(this);
     this.yHeightLight = new YHeightLight(this);
-    this.edit = new XTableEdit(this);
+    this.edit = new XTableTextEdit(this);
     this.rowFixed = new RowFixed(this);
     this.colFixed = new ColFixed(this);
     this.dropColFixed = new DropColFixed(this);
@@ -629,35 +629,36 @@ class XTableDimensions extends Widget {
       xIteratorBuilder: this.xIteratorBuilder,
     });
     // 数据变更监听
-    this.snapshot.listen.registerListen('change', (event) => {
-      if (event) {
-        const { type } = event;
-        switch (type) {
-          case Constant.TABLE_EVENT_TYPE.DATA_CHANGE:
-            this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-            break;
-          case Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW:
-            this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW);
-            break;
-          case Constant.TABLE_EVENT_TYPE.REMOVE_ROW:
-            this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_ROW);
-            break;
-          case Constant.TABLE_EVENT_TYPE.ADD_NEW_COL:
-            this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_COL);
-            break;
-          case Constant.TABLE_EVENT_TYPE.REMOVE_COL:
-            this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_COL);
-            break;
-          case Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH:
-            this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH);
-            break;
-          case Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT:
-            this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT);
-            break;
+    this.snapshot.listen
+      .registerListen('change', (event) => {
+        if (event) {
+          const { type } = event;
+          switch (type) {
+            case Constant.TABLE_EVENT_TYPE.DATA_CHANGE:
+              this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+              break;
+            case Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW:
+              this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW);
+              break;
+            case Constant.TABLE_EVENT_TYPE.REMOVE_ROW:
+              this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_ROW);
+              break;
+            case Constant.TABLE_EVENT_TYPE.ADD_NEW_COL:
+              this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_COL);
+              break;
+            case Constant.TABLE_EVENT_TYPE.REMOVE_COL:
+              this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_COL);
+              break;
+            case Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH:
+              this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH);
+              break;
+            case Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT:
+              this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT);
+              break;
+          }
         }
-      }
-      this.trigger(Constant.TABLE_EVENT_TYPE.SNAPSHOT_CHANGE);
-    });
+        this.trigger(Constant.TABLE_EVENT_TYPE.SNAPSHOT_CHANGE);
+      });
   }
 
   /**
@@ -755,7 +756,7 @@ class XTableDimensions extends Widget {
 
   /**
    * 获取表格渲染对象
-   * @returns {XTableStyle}
+   * @returns {XTableDrawUIStyle}
    */
   getXTableStyle() {
     const { xTableStyle } = this;

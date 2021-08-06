@@ -15,8 +15,10 @@ const evaluateExprs = {
   case3: '{1, 2 + 3}',
   case4: '{1, {2 > 1, 4 * (1+2), 6, SUM(1, 1) / 2}, 2 + 3}',
   case5: '{}',
-  case7: '2^2',
-  case6: '{TEST(10) + 1}',
+  case6: '2^2',
+  case7: '{TEST(10) + 1}',
+  case8: '{SUM(10,2) / 6, {}, A3}',
+  case9: '1+3',
 };
 
 // 公式运行

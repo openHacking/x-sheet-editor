@@ -8,8 +8,8 @@ import { SheetUtils } from '../../utils/SheetUtils';
 import { ColorArray } from '../../module/colorpicker/colorarray/ColorArray';
 import { HexRgb, Theme, ThemeXml } from './XlsxTheme';
 import { WideUnit } from '../../core/xtable/tableunit/WideUnit';
-import { HeightUnit } from '../../core/xtable/tableunit/HeightUnit';
 import { Cell } from '../../core/xtable/tablecell/Cell';
+import { HeightUnit } from '../../core/xtable/tableunit/HeightUnit';
 
 /**
  * XLSX 文件导入
@@ -117,8 +117,8 @@ class XlsxImport {
             text: value,
             fontAttr: {},
             borderAttr: {
-              top: {},
               right: {},
+              top: {},
               left: {},
               bottom: {},
             },
@@ -126,9 +126,9 @@ class XlsxImport {
           // 字体属性
           if (font) {
             const { name, bold, size, italic, underline, strike, color } = font;
+            xCell.fontAttr.italic = italic;
             xCell.fontAttr.name = name;
             xCell.fontAttr.size = this.fontSize(size || 12);
-            xCell.fontAttr.italic = italic;
             xCell.fontAttr.bold = bold;
             xCell.fontAttr.underline = underline;
             xCell.fontAttr.strikethrough = strike;
@@ -144,7 +144,9 @@ class XlsxImport {
           }
           // 富文本
           if (richText) {
-            const richFonts = { fonts: [] };
+            const richFonts = {
+              fonts: [],
+            };
             for (let i = 0, len = richText.length; i < len; i++) {
               const item = richText[i];
               const { font, text } = item;
@@ -172,7 +174,7 @@ class XlsxImport {
                 richFonts.fonts.push(richFont);
               }
             }
-            xCell.text = richFonts;
+            xCell.richText = richFonts;
             xCell.contentType = Cell.TYPE.RICH_TEXT;
           } else {
             const type = SheetUtils.type(value);
@@ -181,45 +183,11 @@ class XlsxImport {
                 xCell.contentType = Cell.TYPE.NUMBER;
                 break;
               case SheetUtils.DATA_TYPE.Date:
-                xCell.contentType = Cell.TYPE.DATE;
+                xCell.contentType = Cell.TYPE.DATE_TIME;
                 break;
               case SheetUtils.DATA_TYPE.String:
                 xCell.contentType = Cell.TYPE.STRING;
                 break;
-            }
-          }
-          // 背景颜色
-          if (fill) {
-            const { fgColor } = fill;
-            if (SheetUtils.isNotUnDef(fgColor)) {
-              const { theme, tint, argb } = fgColor;
-              if (SheetUtils.isNotUnDef(argb)) {
-                const rgb = HexRgb(argb);
-                xCell.background = ColorPicker.parseHexToRgb(rgb);
-              } else if (SheetUtils.isNotUnDef(theme)) {
-                xCell.background = themeXlsx.setTheme(theme).setTint(tint).getThemeRgb();
-              }
-            }
-          }
-          // 对齐方式
-          if (alignment) {
-            const { textRotation, wrapText } = alignment;
-            const { vertical, horizontal } = alignment;
-            xCell.fontAttr.align = horizontal;
-            xCell.fontAttr.verticalAlign = vertical;
-            xCell.fontAttr.direction = BaseFont.TEXT_DIRECTION.HORIZONTAL;
-            // 自动换行
-            if (wrapText) {
-              xCell.fontAttr.textWrap = BaseFont.TEXT_WRAP.WORD_WRAP;
-            } else {
-              xCell.fontAttr.textWrap = BaseFont.TEXT_WRAP.OVER_FLOW;
-            }
-            // 垂直旋转
-            if (textRotation === 'vertical') {
-              xCell.fontAttr.direction = BaseFont.TEXT_DIRECTION.VERTICAL;
-            } else if (textRotation) {
-              xCell.fontAttr.direction = BaseFont.TEXT_DIRECTION.ANGLE;
-              xCell.fontAttr.angle = alignment.textRotation;
             }
           }
           // 单元格边框
@@ -291,6 +259,40 @@ class XlsxImport {
                     .getThemeRgb();
                 }
               }
+            }
+          }
+          // 背景颜色
+          if (fill) {
+            const { fgColor } = fill;
+            if (SheetUtils.isNotUnDef(fgColor)) {
+              const { theme, tint, argb } = fgColor;
+              if (SheetUtils.isNotUnDef(argb)) {
+                const rgb = HexRgb(argb);
+                xCell.background = ColorPicker.parseHexToRgb(rgb);
+              } else if (SheetUtils.isNotUnDef(theme)) {
+                xCell.background = themeXlsx.setTheme(theme).setTint(tint).getThemeRgb();
+              }
+            }
+          }
+          // 对齐方式
+          if (alignment) {
+            const { textRotation, wrapText } = alignment;
+            const { vertical, horizontal } = alignment;
+            xCell.fontAttr.align = horizontal;
+            xCell.fontAttr.verticalAlign = vertical;
+            xCell.fontAttr.direction = BaseFont.TEXT_DIRECTION.HORIZONTAL;
+            // 自动换行
+            if (wrapText) {
+              xCell.fontAttr.textWrap = BaseFont.TEXT_WRAP.WORD_WRAP;
+            } else {
+              xCell.fontAttr.textWrap = BaseFont.TEXT_WRAP.OVER_FLOW;
+            }
+            // 垂直旋转
+            if (textRotation === 'vertical') {
+              xCell.fontAttr.direction = BaseFont.TEXT_DIRECTION.VERTICAL;
+            } else if (textRotation) {
+              xCell.fontAttr.direction = BaseFont.TEXT_DIRECTION.ANGLE;
+              xCell.fontAttr.angle = alignment.textRotation;
             }
           }
           // 添加单元格

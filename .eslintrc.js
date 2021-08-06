@@ -16,6 +16,7 @@ module.exports = {
     "no-restricted-syntax": "off",
     "no-nested-ternary": "off",
     "no-constant-condition": "off",
+    "no-lonely-if": "off",
     "no-restricted-properties": "off"
   }
 };

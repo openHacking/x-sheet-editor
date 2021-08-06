@@ -1,9 +1,9 @@
 /* global document */
-import { Widget } from '../../libs/Widget';
+import { Widget } from '../../lib/Widget';
 import { cssPrefix, Constant } from '../../const/Constant';
-import { XEvent } from '../../libs/XEvent';
+import { XEvent } from '../../lib/XEvent';
 
-import { h } from '../../libs/Element';
+import { h } from '../../lib/Element';
 import { SheetUtils } from '../../utils/SheetUtils';
 
 let root = SheetUtils.Undef;

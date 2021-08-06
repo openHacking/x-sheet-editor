@@ -1,9 +1,9 @@
 /* global window document */
-import { Widget } from '../../libs/Widget';
+import { Widget } from '../../lib/Widget';
 import { Constant, cssPrefix } from '../../const/Constant';
-import { h } from '../../libs/Element';
+import { h } from '../../lib/Element';
 import { SheetUtils } from '../../utils/SheetUtils';
-import { XEvent } from '../../libs/XEvent';
+import { XEvent } from '../../lib/XEvent';
 
 let root = SheetUtils.Nul;
 let instances = [];

@@ -1,23 +1,23 @@
 /* global window */
-import { Widget } from '../../../libs/Widget';
+import { Widget } from '../../../lib/Widget';
 import { cssPrefix, Constant, XSheetVersion } from '../../../const/Constant';
-import { VerticalLayer } from '../../../libs/layer/VerticalLayer';
-import { HorizontalLayer } from '../../../libs/layer/HorizontalLayer';
-import { VerticalLayerElement } from '../../../libs/layer/VerticalLayerElement';
+import { VerticalLayer } from '../../../lib/layer/VerticalLayer';
+import { HorizontalLayer } from '../../../lib/layer/HorizontalLayer';
+import { VerticalLayerElement } from '../../../lib/layer/VerticalLayerElement';
 import { ScrollBarX } from '../../../module/scrollbar/ScrollBarX';
 import { ScrollBarY } from '../../../module/scrollbar/ScrollBarY';
-import { HorizontalLayerElement } from '../../../libs/layer/HorizontalLayerElement';
-import { VerticalCenterElement } from '../../../libs/layer/center/VerticalCenterElement';
-import { VerticalCenter } from '../../../libs/layer/center/VerticalCenter';
+import { HorizontalLayerElement } from '../../../lib/layer/HorizontalLayerElement';
+import { VerticalCenterElement } from '../../../lib/layer/center/VerticalCenterElement';
+import { VerticalCenter } from '../../../lib/layer/center/VerticalCenter';
 import { XWorkSheetView } from './sheets/XWorkSheetView';
 import { XWorkTabView } from './tabs/XWorkTabView';
 import { SheetUtils } from '../../../utils/SheetUtils';
-import { XEvent } from '../../../libs/XEvent';
-import { h } from '../../../libs/Element';
+import { XEvent } from '../../../lib/XEvent';
+import { h } from '../../../lib/Element';
 import { XWorkTab } from './tabs/XWorkTab';
 import { XWorkSheet } from './sheets/XWorkSheet';
-import Download from '../../../libs/donwload/Download';
-import { Throttle } from '../../../libs/Throttle';
+import Download from '../../../lib/donwload/Download';
+import { Throttle } from '../../../lib/Throttle';
 import { XDraw } from '../../../canvas/XDraw';
 import { XWorkBodyKeyHandle } from './XWorkBodyKeyHandle';
 

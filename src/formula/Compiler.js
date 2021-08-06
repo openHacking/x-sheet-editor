@@ -1,4 +1,109 @@
 /**
+ * 运行函数注册
+ * @type {{}}
+ */
+class EvalFunctions {
+
+  /**
+   * EvalFunctions
+   */
+  constructor() {
+    this.functions = {};
+  }
+
+  /**
+   * 删除函数
+   * @param name
+   */
+  remove(name) {
+    delete this.functions[name];
+  }
+
+  /**
+   * 获取函数
+   * @param name
+   * @returns {*}
+   */
+  getFunction(name) {
+    return this.functions[name.toLocaleString()];
+  }
+
+  /**
+   * 注册函数
+   * @param name
+   * @param func
+   */
+  register(name, func) {
+    this.functions[name.toLocaleString()] = func;
+  }
+}
+
+/**
+ * 函数注册
+ * @type {EvalFunctions}
+ */
+const Functions = new EvalFunctions();
+
+/**
+ * 指令序列
+ */
+class Assembly {
+
+  /**
+   * Assembly
+   */
+  constructor() {
+    this.assembly = '';
+  }
+
+  /**
+   * 获取指令详情
+   * @returns {string}
+   */
+  getInstruct() {
+    let { assembly } = this;
+    let flag = '\r\n';
+    while (assembly.endsWith(flag)) {
+      let { length } = assembly;
+      assembly = assembly.substring(0, length - flag.length);
+    }
+    return assembly;
+  }
+
+  /**
+   * 写入操作数
+   * @param value
+   */
+  writeOperand(value) {
+    this.assembly += `OPush ${value}\r\n`;
+  }
+
+  /**
+   * 写入运算符
+   * @param op
+   */
+  writeOperator(op) {
+    this.assembly += `${op}\r\n`;
+  }
+
+  /**
+   * 写入操作数
+   * @param value
+   */
+  writeString(value) {
+    this.assembly += `SPush ${value}\r\n`;
+  }
+
+  /**
+   * 写入操作数
+   * @param value
+   */
+  writeNumber(value) {
+    this.assembly += `NPush ${value}\r\n`;
+  }
+}
+
+/**
  * 词法分析
  */
 class Tokenizer {
@@ -603,7 +708,10 @@ class Tokenizer {
         if (sQuotesStack.length) {
           sQuotesStack.pop();
         } else {
-          sQuotesStack.push("'");
+          // 双引号中嵌套单引号
+          if (!dQuotesStack.length) {
+            sQuotesStack.push("'");
+          }
         }
       }
       // 处理双引号
@@ -611,7 +719,10 @@ class Tokenizer {
         if (dQuotesStack.length) {
           dQuotesStack.pop();
         } else {
-          dQuotesStack.push('"');
+          // 单引号中嵌套双引号
+          if (!sQuotesStack.length) {
+            dQuotesStack.push('"');
+          }
         }
       }
       // 处理字符
@@ -725,49 +836,6 @@ class Tokenizer {
 }
 
 /**
- * 指令集
- */
-class Assembly {
-
-  /**
-   * Assembly
-   */
-  constructor() {
-    this.assembly = '';
-  }
-
-  /**
-   * 写入操作数
-   * @param digit
-   */
-  writePush(digit) {
-    this.assembly += `push ${digit}\r\n`;
-  }
-
-  /**
-   * 写入运算符
-   * @param op
-   */
-  writeOp(op) {
-    this.assembly += `${op}\r\n`;
-  }
-
-  /**
-   * 获取指令详情
-   * @returns {string}
-   */
-  getInstruct() {
-    let { assembly } = this;
-    let flag = '\r\n';
-    while (assembly.endsWith(flag)) {
-      let { length } = assembly;
-      assembly = assembly.substring(0, length - flag.length);
-    }
-    return assembly;
-  }
-}
-
-/**
  * 编译表达式
  */
 class Compiler {
@@ -777,7 +845,9 @@ class Compiler {
    * @param tokens
    * @param writer
    */
-  constructor(tokens, writer) {
+  constructor({
+    tokens, writer,
+  } = {}) {
     this.writer = writer;
     this.tokens = tokens;
     this.groupStack = [];
@@ -935,7 +1005,7 @@ class Compiler {
       let operator = this.opIf[value];
       this.compileAdd();
       this.reduceGroup();
-      this.writer.writeOp(operator);
+      this.writer.writeOperator(operator);
     }
   }
 
@@ -958,7 +1028,7 @@ class Compiler {
       let operator = this.opAdd[value];
       this.compileMul();
       this.reduceGroup();
-      this.writer.writeOp(operator);
+      this.writer.writeOperator(operator);
     }
   }
 
@@ -981,7 +1051,7 @@ class Compiler {
       let operator = this.opMul[value];
       this.compileCommon();
       this.reduceGroup();
-      this.writer.writeOp(operator);
+      this.writer.writeOperator(operator);
     }
   }
 
@@ -1004,7 +1074,7 @@ class Compiler {
       let operator = this.opCommon[value];
       this.compileRel();
       this.reduceGroup();
-      this.writer.writeOp(operator);
+      this.writer.writeOperator(operator);
     }
   }
 
@@ -1027,7 +1097,7 @@ class Compiler {
       let operator = this.opRel[value];
       this.compileArray();
       this.reduceGroup();
-      this.writer.writeOp(operator);
+      this.writer.writeOperator(operator);
     }
   }
 
@@ -1064,7 +1134,7 @@ class Compiler {
       this.popGroup();
       const { number } = token;
       const operator = this.opNew[type];
-      this.writer.writeOp(`${operator} ${number}`);
+      this.writer.writeOperator(`${operator} ${number}`);
       // 跳过闭合标签 }
       this.nextToken();
     }
@@ -1074,7 +1144,7 @@ class Compiler {
    * 编译函数调用
    */
   compileFunction() {
-    this.compilePush();
+    this.compilePushValue();
     while (!this.eofToken()) {
       const token = this.nextToken();
       const { type, value } = token;
@@ -1103,16 +1173,16 @@ class Compiler {
       this.popGroup();
       const { number } = token;
       const operator = this.opCell[type];
-      this.writer.writeOp(`${operator} ${value} ${number}`);
+      this.writer.writeOperator(`${operator} ${value} ${number}`);
       // 跳过闭合标签 )
       this.nextToken();
     }
   }
 
   /**
-   * compilePush
+   * compilePushValue
    */
-  compilePush() {
+  compilePushValue() {
     if (!this.eofToken()) {
       const token = this.nextToken();
       const { writer } = this;
@@ -1122,13 +1192,17 @@ class Compiler {
       switch (type) {
         case 'string': {
           this.increaseGroup();
-          writer.writePush(`"${value}"`);
+          writer.writeString(`${value}`);
           return;
         }
-        case 'number':
+        case 'number': {
+          this.increaseGroup();
+          writer.writeNumber(`${value}`);
+          return;
+        }
         case 'operand': {
           this.increaseGroup();
-          writer.writePush(value);
+          writer.writeOperand(value);
           return;
         }
       }
@@ -1182,52 +1256,6 @@ class Compiler {
 }
 
 /**
- * 运行函数注册
- * @type {{}}
- */
-class EvalFunctions {
-
-  /**
-   * EvalFunctions
-   */
-  constructor() {
-    this.functions = {};
-  }
-
-  /**
-   * 删除函数
-   * @param name
-   */
-  remove(name) {
-    delete this.functions[name];
-  }
-
-  /**
-   * 获取函数
-   * @param name
-   * @returns {*}
-   */
-  getFunction(name) {
-    return this.functions[name.toLocaleString()];
-  }
-
-  /**
-   * 注册函数
-   * @param name
-   * @param func
-   */
-  register(name, func) {
-    this.functions[name.toLocaleString()] = func;
-  }
-}
-
-/**
- * 函数注册
- * @type {EvalFunctions}
- */
-const Functions = new EvalFunctions();
-
-/**
  * 运行表达式
  */
 class Evaluation {
@@ -1245,9 +1273,11 @@ class Evaluation {
    * 运行表达式
    */
   eval() {
-    const pushRegexp = /^push/;
-    const invoke = /^invoke/;
     const newArray = /^newarray/;
+    const invoke = /^invoke/;
+    const pushSRegexp = /^SPush/;
+    const pushNRegexp = /^NPush/;
+    const pushORegexp = /^OPush/;
     const { instruct } = this;
     instruct.forEach((name) => {
       switch (name) {
@@ -1315,10 +1345,11 @@ class Evaluation {
           this.common();
           break;
         }
-        default:
-          if (pushRegexp.test(name)) {
-            const value = name.split(' ')[1];
-            this.push(value);
+        default: {
+          if (newArray.test(name)) {
+            const group = name.split(' ');
+            const index = group[1];
+            this.array(index);
             break;
           }
           if (invoke.test(name)) {
@@ -1328,12 +1359,22 @@ class Evaluation {
             this.invoke(func, index);
             break;
           }
-          if (newArray.test(name)) {
-            const group = name.split(' ');
-            const index = group[1];
-            this.array(index);
+          if (pushSRegexp.test(name)) {
+            const value = name.split(' ')[1];
+            this.pushS(value);
             break;
           }
+          if (pushNRegexp.test(name)) {
+            const value = name.split(' ')[1];
+            this.pushN(value);
+            break;
+          }
+          if (pushORegexp.test(name)) {
+            const value = name.split(' ')[1];
+            this.pushO(value);
+            break;
+          }
+        }
       }
     });
     return this.memory.pop();
@@ -1343,8 +1384,25 @@ class Evaluation {
    * 推送操作数
    * @param value
    */
-  push(value) {
-    this.memory.push(parseFloat(value));
+  pushS(value) {
+    this.memory.push(value);
+  }
+
+  /**
+   * 推送操作数
+   * @param value
+   */
+  pushN(value) {
+    value = parseFloat(value);
+    this.memory.push(value);
+  }
+
+  /**
+   * 推送操作数
+   * @param value
+   */
+  pushO(value) {
+    this.memory.push(value);
   }
 
   /**
@@ -1527,21 +1585,34 @@ class Evaluation {
  * @constructor
  */
 const Compile = (input) => {
+  if (input.startsWith('=')) {
+    input = input.substring(1);
+  }
   const tokenizer = new Tokenizer();
-  const assembly = new Assembly();
+  const writer = new Assembly();
   const tokens = tokenizer.lexical(input);
-  const compiler = new Compiler(tokens, assembly);
+  const compiler = new Compiler({
+    writer, tokens,
+  });
   return compiler.compile();
+};
+
+/**
+ * 运行指令
+ * @param inst
+ * @returns {*}
+ * @constructor
+ */
+const Instruct = (inst) => {
+  const evaluation = new Evaluation(inst);
+  return evaluation.eval();
 };
 
 /**
  * 编译运行
  * @constructor
  */
-const Evaluate = (input) => {
-  const evaluation = new Evaluation(Compile(input));
-  return evaluation.eval();
-};
+const Evaluate = input => Instruct(Compile(input));
 
 export {
   Tokenizer,
@@ -1549,5 +1620,6 @@ export {
   Assembly,
   Compile,
   Evaluate,
+  Instruct,
   Functions,
 };
