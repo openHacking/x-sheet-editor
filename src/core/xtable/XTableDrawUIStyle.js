@@ -17,7 +17,7 @@ import { Code } from './tablebase/Code';
 import { TextFactory } from './tablebase/TextFactory';
 import { STYLE_BREAK_LOOP, StyleCellsHelper } from './helper/StyleCellsHelper';
 import { TEXT_BREAK_LOOP, TextCellsHelper } from './helper/TextCellsHelper';
-import { XTableRecordAreaView } from './XTableRecordAreaView';
+import { XTableRECAreaView } from './XTableRECAreaView';
 import { OperateCellsHelper } from './helper/OperateCellsHelper';
 import { BaseFont } from '../../canvas/font/BaseFont';
 import { VIEW_MODE, XTableScrollView } from './XTableScrollView';
@@ -2701,7 +2701,7 @@ class XTableDrawUIStyle extends Widget {
       cols: this.cols,
     });
     // 表格视图区域
-    this.xTableAreaView = new XTableRecordAreaView({
+    this.xTableAreaView = new XTableRECAreaView({
       xTableScrollView,
       scroll: this.scroll,
       rows: this.rows,

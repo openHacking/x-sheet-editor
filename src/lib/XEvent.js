@@ -96,7 +96,7 @@ class XEvent {
     }, 150);
     holdFunc();
     XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);
-  };
+  }
 
   static mouseMoveUp(target, moveFunc = () => {}, upFunc = () => {}) {
     const xEvtMove = (evt) => {
@@ -138,14 +138,12 @@ XEvent.WrapFuncion = {
         lastPageY = pageY;
         lastTime = current;
       }
-    }
+    };
   },
-  mouseClick: (callback) => {
-    return function (event) {
-      callback(event);
-    }
-  }
-}
+  mouseClick: callback => function (event) {
+    callback(event);
+  },
+};
 
 export {
   XEvent,

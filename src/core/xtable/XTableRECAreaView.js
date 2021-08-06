@@ -3,12 +3,12 @@ import { SCROLL_TYPE } from './tablebase/Scroll';
 import { XTableAreaView } from './XTableAreaView';
 
 /**
- * XTableRecordAreaView
+ * XTableRECAreaView
  */
-class XTableRecordAreaView extends XTableAreaView {
+class XTableRECAreaView extends XTableAreaView {
 
   /**
-   * XTableRecordAreaView
+   * XTableRECAreaView
    * @param xTableScrollView
    * @param rows
    * @param cols
@@ -153,5 +153,5 @@ class XTableRecordAreaView extends XTableAreaView {
 }
 
 export {
-  XTableRecordAreaView,
+  XTableRECAreaView,
 };
