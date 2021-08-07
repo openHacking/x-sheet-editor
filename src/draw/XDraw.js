@@ -55,9 +55,7 @@ class Base {
   }
 
   attr(options) {
-    // eslint-disable-next-line guard-for-in,no-restricted-syntax
     for (const key in options) {
-      // eslint-disable-next-line no-prototype-builtins
       if (options.hasOwnProperty(key)) {
         let value = options[key];
         if (typeof value === 'string' || value instanceof String) {

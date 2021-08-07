@@ -248,19 +248,19 @@ class XTableTextEdit extends Widget {
         } else {
           const { contentType } = cell;
           switch (contentType) {
-            case Cell.TYPE.RICH_TEXT: {
-              // TODO ...
-              //
-              this.text(SheetUtils.EMPTY);
-              break;
-            }
-            case Cell.TYPE.DATE:
             case Cell.TYPE.NUMBER:
-            case Cell.TYPE.STRING: {
+            case Cell.TYPE.STRING:
+            case Cell.TYPE.DATE_TIME: {
               const text = cell.toString();
               const style = table.getCellCssStyle(sri, sci);
               this.attr('style', style);
               this.text(text);
+              break;
+            }
+            case Cell.TYPE.RICH_TEXT: {
+              // TODO ...
+              //
+              this.text(SheetUtils.EMPTY);
               break;
             }
           }

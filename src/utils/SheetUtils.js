@@ -171,11 +171,12 @@ class SheetUtils {
   static extends(target, ...src) {
     for (let i = 0, len = src.length; i < len; i++) {
       const item = src[i];
-      // eslint-disable-next-line guard-for-in,no-restricted-syntax
       for (let key in item) {
-        const value = item[key];
-        if (value) {
-          target[key] = value;
+        if (item.hasOwnProperty(key)) {
+          const value = item[key];
+          if (value) {
+            target[key] = value;
+          }
         }
       }
     }
@@ -386,6 +387,10 @@ class SheetUtils {
 
   static if(condition, establish, otherwise) {
     return condition ? establish() : otherwise();
+  }
+
+  static clearBlank(str) {
+    return str.replace(/\s/g, '');
   }
 
 }

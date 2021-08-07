@@ -17,6 +17,8 @@ module.exports = {
     "no-nested-ternary": "off",
     "no-constant-condition": "off",
     "no-lonely-if": "off",
+    "no-prototype-builtins": "off",
+    "guard-for-in": "off",
     "no-restricted-properties": "off"
   }
 };

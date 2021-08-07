@@ -214,11 +214,11 @@ class RichEdit extends StyleEdit {
 
   /**
    * 富文本转Html
-   * @param rich
+   * @param text
    * @constructor
    */
-  richTextToHtml(rich) {
-    const { fonts } = rich;
+  richTextToHtml(text) {
+    const { fonts } = text;
     const textBreak = /\n/;
     const items = [];
     const empty = [this.EMPTY];
@@ -278,18 +278,34 @@ class RichEdit extends StyleEdit {
         const style = { ...parent };
         switch (tagName) {
           case 'u': {
+            style.underline = true;
             break;
           }
           case 'i': {
+            style.italic = true;
             break;
           }
           case 'b': {
+            style.bold = true;
             break;
           }
           case 'font': {
+            const size = ele.attr('size');
+            const name = ele.attr('face');
+            const color = ele.attr('color');
+            if (size) {
+              style.size = SheetUtils.parseInt(size);
+            }
+            if (name) {
+              style.name = name;
+            }
+            if (color) {
+              style.color = color;
+            }
             break;
           }
           case 'strike': {
+            style.strikethrough = true;
             break;
           }
         }
@@ -317,12 +333,64 @@ class RichEdit extends StyleEdit {
  */
 class FormulaEdit extends RichEdit {
 
+  /**
+   * 公式转html
+   * @param text
+   */
+  formulaTextToHtml(text) {}
+
+  /**
+   * html转公式
+   * @param html
+   */
+  htmlToFormulaText(html) {}
+
 }
 
 /**
  * TableEdit
  */
 class TableEdit extends FormulaEdit {
+
+  /**
+   * 文本转html
+   * @param cell
+   */
+  textToHtml(cell) {
+    let { text, background, fontAttr } = cell;
+    let { align, size, color } = fontAttr;
+    let { bold, italic, name } = fontAttr;
+    let fontSize = XDraw.cssPx(this.scale.goto(size));
+    let textAlign = 'left';
+    switch (align) {
+      case BaseFont.ALIGN.left:
+        textAlign = 'left';
+        break;
+      case BaseFont.ALIGN.center:
+        textAlign = 'center';
+        break;
+      case BaseFont.ALIGN.right:
+        textAlign = 'right';
+        break;
+    }
+    const css = SheetUtils.clearBlank(`
+      text-align:${textAlign};
+      color: ${color};
+      background:${background};
+      font-style: ${italic ? 'italic' : 'initial'};
+      font-weight: ${bold ? 'bold' : 'initial'};
+      font-size: ${XDraw.cssPx(fontSize)}px;
+      font-family: ${name};
+    `);
+  }
+
+  /**
+   * html转文本
+   * @param html
+   */
+  htmlToText(html) {
+
+  }
 
 }
 
