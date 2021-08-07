@@ -1,8 +1,8 @@
-import { Widget } from '../../../lib/Widget';
-import { Constant, cssPrefix } from '../../../const/Constant';
-import { BaseFont } from '../../../draw/font/BaseFont';
-import { XDraw } from '../../../draw/XDraw';
-import { Throttle } from '../../../lib/Throttle';
+import { Widget } from '../../../../lib/Widget';
+import { Constant, cssPrefix } from '../../../../const/Constant';
+import { BaseFont } from '../../../../draw/font/BaseFont';
+import { XDraw } from '../../../../draw/XDraw';
+import { Throttle } from '../../../../lib/Throttle';
 
 /**
  * BaseEdit
@@ -13,33 +13,25 @@ class BaseEdit extends Widget {
    * BaseEdit
    * @param table
    */
-  constructor({
-    table,
-  }) {
+  constructor(table) {
     super(`${cssPrefix}-table-edit`);
-    this.EMPTY = '<p><br /></p>';
+    this.activeCell = null;
+    this.selectRange = null;
     this.table = table;
+    this.EMPTY = '<p><br /></p>';
     this.throttle = new Throttle({
       time: 100,
     });
-    this.hide();
-  }
-
-  /**
-   * 添加键盘事件
-   */
-  onAttach() {
-    const { table } = this;
-    table.focus.register({ target: this });
+    this.attr('contenteditable', true);
   }
 
   /**
    * 编辑器定位
    */
   local() {
-    const { table, cell } = this;
+    const { table, activeCell } = this;
     const { xHeightLight, yHeightLight } = table;
-    const { fontAttr } = cell;
+    const { fontAttr } = activeCell;
     const { align } = fontAttr;
     const left = xHeightLight.getLeft() + table.getIndexWidth();
     const top = yHeightLight.getTop() + table.getIndexHeight();
@@ -116,7 +108,7 @@ class BaseEdit extends Widget {
     this.mode = BaseEdit.MODE.SHOW;
     this.show();
     this.local();
-    table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_FINISH,event);
+    table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_FINISH, event);
     return this;
   }
 
@@ -130,14 +122,6 @@ class BaseEdit extends Widget {
     this.hide();
     table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_START, event);
     return this;
-  }
-
-  /**
-   * 销毁编辑器
-   */
-  destroy() {
-    super.destroy();
-    this.unbind();
   }
 
 }

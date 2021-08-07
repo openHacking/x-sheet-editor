@@ -1,6 +1,6 @@
 import { XSelectItem } from '../../xtable/xscreenitems/xselect/XSelectItem';
-import { XTableTextEdit } from '../../xtable/XTableTextEdit';
 import { XSelectPath } from '../../xtable/xscreenitems/xselect/XSelectPath';
+import { BaseEdit } from '../../xtable/tableedit/base/BaseEdit';
 
 function enter({ table, body, response }) {
   const { xTableScrollView } = table;
@@ -10,8 +10,8 @@ function enter({ table, body, response }) {
   response.push({
     keyCode: keyCode => keyCode === 13,
     handle: (event) => {
-      if (edit.mode === XTableTextEdit.MODE.SHOW) {
-        edit.hideEdit(event);
+      if (edit.mode === BaseEdit.MODE.SHOW) {
+        edit.close(event);
       }
       let scrollView = xTableScrollView.getScrollView();
       let { maxRi } = xTableScrollView.getScrollMaxRiCi();
@@ -86,7 +86,7 @@ function tab({ table, body, response }) {
   response.push({
     keyCode: keyCode => keyCode === 9,
     handle: (event) => {
-      edit.hideEdit();
+      edit.close(event);
       let scrollView = xTableScrollView.getScrollView();
       let cLen = cols.len - 1;
       let rLen = rows.len - 1;
@@ -157,20 +157,20 @@ function tab({ table, body, response }) {
         body.scrollBarSize();
         body.scrollBarLocal();
       }
-      edit.showEdit();
+      edit.open(event);
       event.preventDefault();
     },
   });
 }
 
-function showEdit({ table, response }) {
+function open({ table, response }) {
   const { edit, xScreen } = table;
   const merges = table.getTableMerges();
   const xSelect = xScreen.findType(XSelectItem);
   response.push({
     keyCode: keyCode => (keyCode >= 48 && keyCode <= 57) || (keyCode >= 65 && keyCode <= 90),
     handle: (event) => {
-      if (edit.mode === XTableTextEdit.MODE.HIDE) {
+      if (edit.mode === BaseEdit.MODE.HIDE) {
         let { selectRange } = xSelect;
         if (selectRange) {
           let clone = selectRange.clone();
@@ -186,20 +186,20 @@ function showEdit({ table, response }) {
           } else {
             xSelect.setRange(clone);
           }
-          edit.showEdit(event);
+          edit.open(event);
         }
       }
     },
   });
 }
 
-function hideEdit({ table, response }) {
+function close({ table, response }) {
   const { edit } = table;
   response.push({
     keyCode: keyCode => keyCode === 27,
     handle: (event) => {
-      if (edit.mode === XTableTextEdit.MODE.SHOW) {
-        edit.hideEdit(event);
+      if (edit.mode === BaseEdit.MODE.SHOW) {
+        edit.close(event);
       }
     },
   });
@@ -291,7 +291,7 @@ function arrowDown({ table, body, response }) {
   response.push({
     keyCode: keyCode => keyCode === 40,
     handle: () => {
-      if (edit.mode === XTableTextEdit.MODE.SHOW) {
+      if (edit.mode === BaseEdit.MODE.SHOW) {
         return;
       }
       let scrollView = xTableScrollView.getScrollView();
@@ -344,7 +344,7 @@ function arrowUp({ table, body, response }) {
   response.push({
     keyCode: keyCode => keyCode === 38,
     handle: () => {
-      if (edit.mode === XTableTextEdit.MODE.SHOW) {
+      if (edit.mode === BaseEdit.MODE.SHOW) {
         return;
       }
       let scrollView = xTableScrollView.getScrollView();
@@ -389,7 +389,7 @@ function arrowLeft({ table, body, response }) {
   response.push({
     keyCode: keyCode => keyCode === 37,
     handle: () => {
-      if (edit.mode === XTableTextEdit.MODE.SHOW) {
+      if (edit.mode === BaseEdit.MODE.SHOW) {
         return;
       }
       let scrollView = xTableScrollView.getScrollView();
@@ -434,7 +434,7 @@ function arrowRight({ table, body, response }) {
   response.push({
     keyCode: keyCode => keyCode === 39,
     handle: () => {
-      if (edit.mode === XTableTextEdit.MODE.SHOW) {
+      if (edit.mode === BaseEdit.MODE.SHOW) {
         return;
       }
       let scrollView = xTableScrollView.getScrollView();
@@ -487,8 +487,8 @@ class XWorkBodyKeyHandle {
     home({ table, body, response });
     enter({ table, body, response });
     tab({ table, body, response });
-    showEdit({ table, body, response });
-    hideEdit({ table, body, response });
+    open({ table, body, response });
+    close({ table, body, response });
     pageUp({ table, body, response });
     pageDown({ table, body, response });
     arrowUp({ table, body, response });

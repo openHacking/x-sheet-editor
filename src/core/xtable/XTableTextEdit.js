@@ -42,7 +42,7 @@ class XTableTextEdit extends Widget {
 
   onAttach() {
     const { table } = this;
-    this.bind();
+    // this.bind();
     this.hide();
     table.focus.register({ target: this });
   }

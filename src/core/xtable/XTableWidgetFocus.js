@@ -4,8 +4,8 @@ import { XEvent } from '../../lib/XEvent';
 import { Element } from '../../lib/Element';
 import { SheetUtils } from '../../utils/SheetUtils';
 
-let root = SheetUtils.Nul;
 let instance = SheetUtils.Nul;
+let root = SheetUtils.Nul;
 
 class XTableWidgetFocus {
 
@@ -29,16 +29,16 @@ class XTableWidgetFocus {
     };
   }
 
+  bind() {
+    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.handle, true);
+  }
+
   unbind() {
     XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.handle, true);
     this.items.forEach((item) => {
       const { target, callback } = item;
       XEvent.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, callback);
     });
-  }
-
-  bind() {
-    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.handle, true);
   }
 
   include(el) {

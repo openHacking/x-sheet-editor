@@ -1,8 +1,9 @@
-import { XDraw } from '../../../draw/XDraw';
-import { h } from '../../../lib/Element';
-import { StyleEdit } from './StyleEdit';
-import { SheetUtils } from '../../../utils/SheetUtils';
-import { RichFonts } from '../tablecell/RichFonts';
+import { XDraw } from '../../../../draw/XDraw';
+import { h } from '../../../../lib/Element';
+import { StyleEdit } from '../base/StyleEdit';
+import { SheetUtils } from '../../../../utils/SheetUtils';
+import { RichFonts } from '../../tablecell/RichFonts';
+import { Constant } from '../../../../const/Constant';
 
 /**
  * RichEdit
@@ -11,11 +12,11 @@ class RichEdit extends StyleEdit {
 
   /**
    * 富文本转Html
-   * @param cell
    * @constructor
    */
-  richTextToHtml(cell) {
-    const { fonts } = cell.getComputeText();
+  richTextToHtml() {
+    const { activeCell } = this;
+    const { fonts } = activeCell.getComputeText();
     const textBreak = /\n/;
     const items = [];
     const empty = [this.EMPTY];
@@ -49,12 +50,15 @@ class RichEdit extends StyleEdit {
 
   /**
    * Html转富文本
-   * @param html
    * @constructor
    */
-  htmlToRichText(html) {
-    const div = h('div').html(html);
-    const element = div.find('p');
+  htmlToRichText() {
+    const { activeCell, selectRange } = this;
+    const { table } = this;
+    const { sri, sci } = selectRange;
+    const cloneCell = activeCell.clone();
+    const { snapshot } = table;
+    const element = this.find('p');
     const items = [];
     const findNodes = (ele) => {
       const clone = ele.clone();
@@ -118,9 +122,23 @@ class RichEdit extends StyleEdit {
     element.forEach((p) => {
       items.push(handleRow(p));
     });
-    return new RichFonts({
+    const rich = new RichFonts({
       fonts: items,
     });
+    snapshot.open();
+    cloneCell.setRichText(rich);
+    cloneCell.setCellOrNew(sri, sci, cloneCell);
+    snapshot.close({
+      type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+    });
+    table.render();
+  }
+
+  /**
+   * 检查输入的是否为富文本
+   */
+  checkedRichText() {
+
   }
 
 }

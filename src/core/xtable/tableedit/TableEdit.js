@@ -1,9 +1,9 @@
 import { XSelectItem } from '../xscreenitems/xselect/XSelectItem';
 import { Cell } from '../tablecell/Cell';
-import { TextEdit } from './TextEdit';
+import { TextEdit } from './type/TextEdit';
 import { SheetUtils } from '../../../utils/SheetUtils';
 import { XEvent } from '../../../lib/XEvent';
-import { BaseEdit } from './BaseEdit';
+import { BaseEdit } from './base/BaseEdit';
 import { Constant } from '../../../const/Constant';
 import { BaseFont } from '../../../draw/font/BaseFont';
 
@@ -16,14 +16,8 @@ class TableEdit extends TextEdit {
    * TableEdit
    * @param table
    */
-  constructor({
-    table,
-  }) {
-    super({
-      table,
-    });
-    this.activeCell = null;
-    this.selectRange = null;
+  constructor(table) {
+    super(table);
     this.closeClickHandle = XEvent.WrapFuncion.mouseClick((event) => {
       if (this.mode === BaseEdit.MODE.SHOW) {
         this.close(event);
@@ -39,12 +33,41 @@ class TableEdit extends TextEdit {
         this.open(event);
       }
     });
+    this.bind();
+  }
+
+  /**
+   * 添加键盘事件
+   */
+  onAttach() {
+    const { table } = this;
+    const { focus } = table;
+    focus.register({ target: this });
+    this.hide();
   }
 
   /**
    * 解绑事件处理
    */
-  unbind() {}
+  unbind() {
+    const { openClickHandle } = this;
+    const { closeClickHandle } = this;
+    const { table } = this;
+    const { focus } = table;
+    const { xScreen } = table;
+    const { keyboard } = table;
+    const xSelect = xScreen.findType(XSelectItem);
+    focus.remove(this);
+    keyboard.remove(this);
+    XEvent.unbind([
+      xSelect.lt,
+      xSelect.t,
+      xSelect.l,
+      xSelect.br,
+    ]);
+    XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, openClickHandle);
+    XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, closeClickHandle);
+  }
 
   /**
    * 绑定事件处理
@@ -83,8 +106,8 @@ class TableEdit extends TextEdit {
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, (event) => {
       this.close(event);
     });
-    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, openClickHandle);
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, closeClickHandle);
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, openClickHandle);
   }
 
   /**
@@ -103,35 +126,30 @@ class TableEdit extends TextEdit {
     let { sri, sci } = selectRange;
     let activeCell = cells.getCellOrNew(sri, sci);
     let { contentType } = activeCell;
+    this.activeCell = activeCell;
+    this.selectRange = selectRange;
     if (activeCell.hasFormula()) {
-      let html = this.formulaTextToHtml(activeCell);
-      this.html(html);
+      this.formulaTextToHtml();
     } else {
       switch (contentType) {
         case Cell.TYPE.STRING:
         case Cell.TYPE.NUMBER:
         case Cell.TYPE.DATE_TIME: {
-          let html = this.cellTextToHtml(activeCell);
-          this.html(html);
+          this.cellTextToText();
           break;
         }
         case Cell.TYPE.RICH_TEXT: {
-          let html = this.richTextToHtml(activeCell);
-          this.html(html);
+          this.richTextToHtml();
           break;
         }
       }
     }
-    this.activeCell = activeCell;
-    this.selectRange = selectRange;
-    super.open({
-      edit: this,
-      table,
-      native: event,
-    });
     throttle.action(() => {
       this.focus();
       SheetUtils.keepLastIndex(this.el);
+    });
+    super.open({
+      edit: this, table, native: event,
     });
     return this;
   }
@@ -143,9 +161,7 @@ class TableEdit extends TextEdit {
   close(event) {
     let { table } = this;
     super.close({
-      edit: this,
-      table,
-      native: event,
+      edit: this, table, native: event,
     });
     this.activeCell = null;
     this.selectRange = null;

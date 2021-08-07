@@ -40,6 +40,7 @@ import { XIteratorBuilder } from './iterator/XIteratorBuilder';
 import { RowHeightGroupIndex } from './tablebase/RowHeightGroupIndex';
 import { Alert } from '../../module/alert/Alert';
 import { Snapshot } from './snapshot/Snapshot';
+import { TableEdit } from './tableedit/TableEdit';
 
 class Dimensions {
 
@@ -608,6 +609,7 @@ class XTableDimension extends Widget {
     this.xHeightLight = new XHeightLight(this);
     this.yHeightLight = new YHeightLight(this);
     this.edit = new XTableTextEdit(this);
+    this.xEdit = new TableEdit(this);
     this.rowFixed = new RowFixed(this);
     this.colFixed = new ColFixed(this);
     this.dropColFixed = new DropColFixed(this);
@@ -629,36 +631,35 @@ class XTableDimension extends Widget {
       xIteratorBuilder: this.xIteratorBuilder,
     });
     // 数据变更监听
-    this.snapshot.listen
-      .registerListen('change', (event) => {
-        if (event) {
-          const { type } = event;
-          switch (type) {
-            case Constant.TABLE_EVENT_TYPE.DATA_CHANGE:
-              this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-              break;
-            case Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW:
-              this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW);
-              break;
-            case Constant.TABLE_EVENT_TYPE.REMOVE_ROW:
-              this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_ROW);
-              break;
-            case Constant.TABLE_EVENT_TYPE.ADD_NEW_COL:
-              this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_COL);
-              break;
-            case Constant.TABLE_EVENT_TYPE.REMOVE_COL:
-              this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_COL);
-              break;
-            case Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH:
-              this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH);
-              break;
-            case Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT:
-              this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT);
-              break;
-          }
+    this.snapshot.listen.registerListen('change', (event) => {
+      if (event) {
+        const { type } = event;
+        switch (type) {
+          case Constant.TABLE_EVENT_TYPE.DATA_CHANGE:
+            this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+            break;
+          case Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW:
+            this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW);
+            break;
+          case Constant.TABLE_EVENT_TYPE.REMOVE_ROW:
+            this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_ROW);
+            break;
+          case Constant.TABLE_EVENT_TYPE.ADD_NEW_COL:
+            this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_COL);
+            break;
+          case Constant.TABLE_EVENT_TYPE.REMOVE_COL:
+            this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_COL);
+            break;
+          case Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH:
+            this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH);
+            break;
+          case Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT:
+            this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT);
+            break;
         }
-        this.trigger(Constant.TABLE_EVENT_TYPE.SNAPSHOT_CHANGE);
-      });
+      }
+      this.trigger(Constant.TABLE_EVENT_TYPE.SNAPSHOT_CHANGE);
+    });
   }
 
   /**
@@ -1121,7 +1122,8 @@ class XTableDimension extends Widget {
     // 添加表格组件
     this.attach(this.xHeightLight);
     this.attach(this.yHeightLight);
-    this.attach(this.edit);
+    // this.attach(this.edit);
+    this.attach(this.xEdit);
     this.attach(this.rowFixed);
     this.attach(this.colFixed);
     this.attach(this.xReSizer);
@@ -1658,6 +1660,7 @@ class XTableDimension extends Widget {
     this.xHeightLight.destroy();
     this.yHeightLight.destroy();
     this.edit.destroy();
+    this.xEdit.destroy();
     this.rowFixed.destroy();
     this.colFixed.destroy();
     this.keyboard.destroy();
