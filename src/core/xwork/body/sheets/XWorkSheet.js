@@ -1,5 +1,5 @@
 import { Widget } from '../../../../lib/Widget';
-import { XTableDimensions } from '../../../xtable/XTableDimensions';
+import { XTableDimension } from '../../../xtable/XTableDimension';
 import { cssPrefix } from '../../../../const/Constant';
 import { SheetUtils } from '../../../../utils/SheetUtils';
 
@@ -15,7 +15,7 @@ class XWorkSheet extends Widget {
     super(`${cssPrefix}-sheet`);
     this.tab = tab;
     this.options = SheetUtils.copy({}, settings, options);
-    this.table = new XTableDimensions(this.options.tableConfig);
+    this.table = new XTableDimension(this.options.tableConfig);
   }
 
   onAttach() {

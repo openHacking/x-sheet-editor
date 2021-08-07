@@ -2603,9 +2603,9 @@ class XTableContent extends XTableContentOutUI {
 
 }
 
-// =============================== XTableDrawUIStyle ==============================
+// =============================== XTableDrawStyle ==============================
 
-class XTableDrawUIStyle extends Widget {
+class XTableDrawStyle extends Widget {
 
   /**
    * xTableScrollView
@@ -3163,5 +3163,5 @@ class XTableDrawUIStyle extends Widget {
 }
 
 export {
-  XTableDrawUIStyle,
+  XTableDrawStyle,
 };

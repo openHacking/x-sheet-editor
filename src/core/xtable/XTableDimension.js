@@ -19,7 +19,7 @@ import { RectRange } from './tablebase/RectRange';
 import { XTableScrollView } from './XTableScrollView';
 import { XTableAreaView } from './XTableAreaView';
 import { XTableTextEdit } from './XTableTextEdit';
-import { XTableDrawUIStyle } from './XTableDrawUIStyle';
+import { XTableDrawStyle } from './XTableDrawStyle';
 import { XScreen } from './xscreen/XScreen';
 import { XSelectItem } from './xscreenitems/xselect/XSelectItem';
 import { XAutoFillItem } from './xscreenitems/xautofill/XAutoFillItem';
@@ -512,7 +512,7 @@ const settings = {
 /**
  * XTable
  */
-class XTableDimensions extends Widget {
+class XTableDimension extends Widget {
 
   /**
    * XTable
@@ -583,7 +583,7 @@ class XTableDimensions extends Widget {
       scroll: this.scroll,
     });
     // 表格界面绘制
-    this.xTableStyle = new XTableDrawUIStyle({
+    this.xTableStyle = new XTableDrawStyle({
       xTableScrollView: this.xTableScrollView,
       xIteratorBuilder: this.xIteratorBuilder,
       scroll: this.scroll,
@@ -756,7 +756,7 @@ class XTableDimensions extends Widget {
 
   /**
    * 获取表格渲染对象
-   * @returns {XTableDrawUIStyle}
+   * @returns {XTableDrawStyle}
    */
   getXTableStyle() {
     const { xTableStyle } = this;
@@ -1666,5 +1666,5 @@ class XTableDimensions extends Widget {
 }
 
 export {
-  XTableDimensions,
+  XTableDimension,
 };

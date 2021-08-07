@@ -5,6 +5,7 @@ import { BaseFont } from '../../../draw/font/BaseFont';
 import { XDraw } from '../../../draw/XDraw';
 import { SheetUtils } from '../../../utils/SheetUtils';
 import { h } from '../../../lib/Element';
+import { RichFonts } from '../tablecell/RichFonts';
 
 /**
  * BaseEdit
@@ -256,17 +257,33 @@ class RichEdit extends StyleEdit {
    */
   htmlToRichText(html) {
     const div = h('div').html(html);
-    const paragraph = div.find('p');
+    const element = div.find('p');
     const items = [];
-    const plainText = (ele) => {
+    const findNodes = (ele) => {
       const clone = ele.clone();
-      clone.children()
-        .filter(i => i.nodeType === 1)
-        .forEach(i => i.remove());
+      return clone.children()
+        .filter(i => i.nodeType === 1);
+    };
+    const findFonts = (ele) => {
+      const clone = findNodes(ele);
+      clone.forEach(i => i.remove());
       return clone.text();
     };
-    paragraph.forEach((p) => {
-
+    const handleRow = (ele) => {
+      const collect = [];
+      const handle = (ele, parent) => {
+        const fonts = findFonts(ele);
+        const nodes = findNodes(ele);
+        const style = { ...parent };
+      };
+      handle(ele, {});
+      return collect;
+    };
+    element.forEach((p) => {
+      items.push(handleRow(p));
+    });
+    return new RichFonts({
+      fonts: items,
     });
   }
 
