@@ -4,7 +4,7 @@ import { cssPrefix, Constant } from '../../../const/Constant';
 import { h } from '../../../lib/Element';
 import { XEvent } from '../../../lib/XEvent';
 import { SheetUtils } from '../../../utils/SheetUtils';
-import { XTableMousePointer } from '../XTableMousePointer';
+import { XTableMousePoint } from '../XTableMousePoint';
 import { ColFixed } from '../tablefixed/ColFixed';
 
 class XReSizer extends Widget {
@@ -36,7 +36,7 @@ class XReSizer extends Widget {
     const { index } = table;
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       mousePointer.lock(XReSizer);
-      mousePointer.set(XTableMousePointer.KEYS.colResize, XReSizer);
+      mousePointer.set(XTableMousePoint.KEYS.colResize, XReSizer);
       const { left, ci } = this.getEventLeft(e);
       const min = left - cols.getWidth(ci) + cols.min;
       let { x: mx } = table.eventXy(e);
@@ -68,7 +68,7 @@ class XReSizer extends Widget {
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
       mousePointer.lock(XReSizer);
-      mousePointer.set(XTableMousePointer.KEYS.colResize, XReSizer);
+      mousePointer.set(XTableMousePoint.KEYS.colResize, XReSizer);
     });
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const { activate } = focus;

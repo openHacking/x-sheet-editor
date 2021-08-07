@@ -1,7 +1,7 @@
 import { SheetUtils } from '../../../utils/SheetUtils';
-import { Rect } from '../../../canvas/Rect';
-import { RTCosKit, RTSinKit } from '../../../canvas/RTFunction';
-import { BaseFont } from '../../../canvas/font/BaseFont';
+import { Rect } from '../../../draw/Rect';
+import { RTCosKit, RTSinKit } from '../../../draw/RTFunction';
+import { BaseFont } from '../../../draw/font/BaseFont';
 
 class BaseCellsHelper {
 

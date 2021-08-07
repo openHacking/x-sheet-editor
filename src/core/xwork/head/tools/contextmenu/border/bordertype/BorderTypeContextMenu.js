@@ -19,7 +19,7 @@ import { BorderType } from '../../icon/border/BorderType';
 import { XEvent } from '../../../../../../../lib/XEvent';
 import { BorderColorContextMenu } from '../bordercolor/BorderColorContextMenu';
 import { LineTypeContextMenu } from '../linetype/LineTypeContextMenu';
-import { LINE_TYPE } from '../../../../../../../canvas/Line';
+import { LINE_TYPE } from '../../../../../../../draw/Line';
 import { ElPopUp } from '../../../../../../../module/elpopup/ElPopUp';
 
 class BorderTypeContextMenu extends ELContextMenu {

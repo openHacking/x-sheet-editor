@@ -6,7 +6,7 @@ import { Constant, cssPrefix } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
 import { SheetUtils } from '../../../../utils/SheetUtils';
 import { XEvent } from '../../../../lib/XEvent';
-import { XTableMousePointer } from '../../XTableMousePointer';
+import { XTableMousePoint } from '../../XTableMousePoint';
 import { AutoFillType } from '../../../../module/autofilltype/AutoFillType';
 import { Serialize } from '../../helper/CellMergeCopyHelper';
 import { AutoFillTypeMenu } from '../../../../module/autofilltype/AutoFillTypeMenu';
@@ -304,7 +304,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
       xSelect.brCorner,
     ], Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
       mousePointer.lock(XAutoFillItem);
-      mousePointer.set(XTableMousePointer.KEYS.crosshair, XAutoFillItem);
+      mousePointer.set(XTableMousePoint.KEYS.crosshair, XAutoFillItem);
     });
     XEvent.bind([
       xSelect.ltCorner,
@@ -313,7 +313,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
       xSelect.brCorner,
     ], Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e1) => {
       mousePointer.lock(XAutoFillItem);
-      mousePointer.set(XTableMousePointer.KEYS.crosshair, XAutoFillItem);
+      mousePointer.set(XTableMousePoint.KEYS.crosshair, XAutoFillItem);
       const { x, y } = table.eventXy(e1);
       this.display = true;
       this.rangeHandle(x, y);

@@ -3,7 +3,7 @@ import { Constant, cssPrefix } from '../../../const/Constant';
 import { Widget } from '../../../lib/Widget';
 import { h } from '../../../lib/Element';
 import { XEvent } from '../../../lib/XEvent';
-import { XTableMousePointer } from '../XTableMousePointer';
+import { XTableMousePoint } from '../XTableMousePoint';
 
 class RowFixed extends Widget {
 
@@ -39,7 +39,7 @@ class RowFixed extends Widget {
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
       this.setActive(true);
       mousePointer.lock(RowFixed);
-      mousePointer.set(XTableMousePointer.KEYS.grab, RowFixed);
+      mousePointer.set(XTableMousePoint.KEYS.grab, RowFixed);
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
       if (!moveOff) {
@@ -59,7 +59,7 @@ class RowFixed extends Widget {
       this.fxEri = fixedView.eri;
       // 锁定鼠标指针
       mousePointer.lock(RowFixed);
-      mousePointer.set(XTableMousePointer.KEYS.grab, RowFixed);
+      mousePointer.set(XTableMousePoint.KEYS.grab, RowFixed);
       // 推拽条移动位置
       const { y } = table.eventXy(e, table);
       dropRowFixed.offset({ top: y });

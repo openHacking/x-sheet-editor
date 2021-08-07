@@ -1,11 +1,11 @@
 /* global Blob */
 import { Workbook } from 'exceljs';
-import { XDraw } from '../../canvas/XDraw';
+import { XDraw } from '../../draw/XDraw';
 import { ColorPicker } from '../../module/colorpicker/ColorPicker';
-import { BaseFont } from '../../canvas/font/BaseFont';
+import { BaseFont } from '../../draw/font/BaseFont';
 import { SheetUtils } from '../../utils/SheetUtils';
 import { Cell } from '../../core/xtable/tablecell/Cell';
-import { LINE_TYPE } from '../../canvas/Line';
+import { LINE_TYPE } from '../../draw/Line';
 import { SelectFile } from '../../lib/SelectFile';
 import { HeightUnit } from '../../core/xtable/tableunit/HeightUnit';
 import { WideUnit } from '../../core/xtable/tableunit/WideUnit';

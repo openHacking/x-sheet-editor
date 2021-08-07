@@ -7,10 +7,10 @@ import { XEvent } from '../../../../lib/XEvent';
 import { Alert } from '../../../../module/alert/Alert';
 import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBorderItem';
 import darkFilter from '../../../../../assets/svg/filter-dark.svg';
-import { XTableMousePointer } from '../../XTableMousePointer';
+import { XTableMousePoint } from '../../XTableMousePoint';
 import { XIcon } from '../../xicon/XIcon';
 import { Mask } from '../../../../module/mask/Mask';
-import { XDraw } from '../../../../canvas/XDraw';
+import { XDraw } from '../../../../draw/XDraw';
 import { FilterData } from '../../../../module/filterdata/FilterData';
 import { ElPopUp } from '../../../../module/elpopup/ElPopUp';
 import { ValueItem } from '../../../../module/filterdata/valuefilter/ValueItem';
@@ -148,7 +148,7 @@ class XFilter extends XScreenCssBorderItem {
           native.stopPropagation();
         });
         icon.setOnMove(() => {
-          mousePointer.set(XTableMousePointer.KEYS.pointer, XFilter);
+          mousePointer.set(XTableMousePoint.KEYS.pointer, XFilter);
         });
         icon.setOnLeave(() => {
           this.mask.close();

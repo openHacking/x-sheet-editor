@@ -18,7 +18,7 @@ import { XWorkTab } from './tabs/XWorkTab';
 import { XWorkSheet } from './sheets/XWorkSheet';
 import Download from '../../../lib/donwload/Download';
 import { Throttle } from '../../../lib/Throttle';
-import { XDraw } from '../../../canvas/XDraw';
+import { XDraw } from '../../../draw/XDraw';
 import { XWorkBodyKeyHandle } from './XWorkBodyKeyHandle';
 
 const settings = {

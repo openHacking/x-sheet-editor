@@ -4,9 +4,9 @@ import { cssPrefix, Constant } from '../../const/Constant';
 import { XEvent } from '../../lib/XEvent';
 import { SheetUtils } from '../../utils/SheetUtils';
 import { XSelectItem } from './xscreenitems/xselect/XSelectItem';
-import { XDraw } from '../../canvas/XDraw';
+import { XDraw } from '../../draw/XDraw';
 import { Throttle } from '../../lib/Throttle';
-import { BaseFont } from '../../canvas/font/BaseFont';
+import { BaseFont } from '../../draw/font/BaseFont';
 import { Cell } from './tablecell/Cell';
 
 class XTableTextEdit extends Widget {

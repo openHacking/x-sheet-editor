@@ -1,9 +1,9 @@
 /* global Image console */
 import { SheetUtils } from '../../../utils/SheetUtils';
-import { XDraw } from '../../../canvas/XDraw';
-import { Rect } from '../../../canvas/Rect';
+import { XDraw } from '../../../draw/XDraw';
+import { Rect } from '../../../draw/Rect';
 import { XIconOffset } from './XIconOffset';
-import { Crop } from '../../../canvas/Crop';
+import { Crop } from '../../../draw/Crop';
 
 /**
  * XIcon

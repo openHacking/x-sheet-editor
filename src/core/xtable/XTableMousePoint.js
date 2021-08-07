@@ -2,7 +2,7 @@ import cell from '../../../assets/img/cell.png';
 import sResize from '../../../assets/img/s-resize.png';
 import eResize from '../../../assets/img/e-resize.png';
 
-class XTableMousePointer {
+class XTableMousePoint {
 
   constructor(table) {
     this.flag = null;
@@ -47,7 +47,7 @@ class XTableMousePointer {
 
 }
 
-XTableMousePointer.KEYS = {
+XTableMousePoint.KEYS = {
   cell: 'cell',
   pointer: 'pointer',
   default: 'default',
@@ -59,4 +59,4 @@ XTableMousePointer.KEYS = {
   colResize: 'col-resize',
 };
 
-export { XTableMousePointer };
+export { XTableMousePoint };

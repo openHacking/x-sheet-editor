@@ -7,14 +7,14 @@ import { Widget } from '../../lib/Widget';
 import { Constant, cssPrefix } from '../../const/Constant';
 import { XEvent } from '../../lib/XEvent';
 import { Scale, ScaleAdapter } from './tablebase/Scale';
-import { XTableMousePointer } from './XTableMousePointer';
+import { XTableMousePoint } from './XTableMousePoint';
 import { XTableKeyboard } from './XTableKeyboard';
 import { XReSizer } from './resizer/XReSizer';
 import { YReSizer } from './resizer/YReSizer';
 import { XHeightLight } from './highlight/XHeightLight';
 import { YHeightLight } from './highlight/YHeightLight';
 import { XTableWidgetFocus } from './XTableWidgetFocus';
-import { XDraw } from '../../canvas/XDraw';
+import { XDraw } from '../../draw/XDraw';
 import { RectRange } from './tablebase/RectRange';
 import { XTableScrollView } from './XTableScrollView';
 import { XTableAreaView } from './XTableAreaView';
@@ -35,7 +35,7 @@ import { CellMergeCopyHelper } from './helper/CellMergeCopyHelper';
 import { Clipboard } from '../../lib/Clipboard';
 import { XIcon } from './xicon/XIcon';
 import { XIconBuilder } from './xicon/XIconBuilder';
-import { BaseFont } from '../../canvas/font/BaseFont';
+import { BaseFont } from '../../draw/font/BaseFont';
 import { XIteratorBuilder } from './iterator/XIteratorBuilder';
 import { RowHeightGroupIndex } from './tablebase/RowHeightGroupIndex';
 import { Alert } from '../../module/alert/Alert';
@@ -601,7 +601,7 @@ class XTableDimensions extends Widget {
     // table组件
     this.focus = XTableWidgetFocus.getInstance();
     this.keyboard = new XTableKeyboard(this);
-    this.mousePointer = new XTableMousePointer(this);
+    this.mousePointer = new XTableMousePoint(this);
     this.xScreen = new XScreen(this);
     this.xReSizer = new XReSizer(this);
     this.yReSizer = new YReSizer(this);
@@ -985,18 +985,18 @@ class XTableDimensions extends Widget {
     const { mousePointer } = this;
     const { ri, ci } = info;
     if (ri === -1 && ci === -1) {
-      mousePointer.set(XTableMousePointer.KEYS.default);
+      mousePointer.set(XTableMousePoint.KEYS.default);
       return;
     }
     if (ri === -1) {
-      mousePointer.set(XTableMousePointer.KEYS.sResize);
+      mousePointer.set(XTableMousePoint.KEYS.sResize);
       return;
     }
     if (ci === -1) {
-      mousePointer.set(XTableMousePointer.KEYS.eResize);
+      mousePointer.set(XTableMousePoint.KEYS.eResize);
       return;
     }
-    mousePointer.set(XTableMousePointer.KEYS.cell);
+    mousePointer.set(XTableMousePoint.KEYS.cell);
   }
 
   /**

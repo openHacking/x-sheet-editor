@@ -3,7 +3,7 @@
  */
 import * as tXml from 'txml';
 import { ColorPicker } from '../../module/colorpicker/ColorPicker';
-import { XDraw } from '../../canvas/XDraw';
+import { XDraw } from '../../draw/XDraw';
 import { SheetUtils } from '../../utils/SheetUtils';
 import { ColorArray } from '../../module/colorpicker/colorarray/ColorArray';
 

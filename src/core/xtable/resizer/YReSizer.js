@@ -4,7 +4,7 @@ import { cssPrefix, Constant } from '../../../const/Constant';
 import { h } from '../../../lib/Element';
 import { XEvent } from '../../../lib/XEvent';
 import { SheetUtils } from '../../../utils/SheetUtils';
-import { XTableMousePointer } from '../XTableMousePointer';
+import { XTableMousePoint } from '../XTableMousePoint';
 import { RowFixed } from '../tablefixed/RowFixed';
 
 class YReSizer extends Widget {
@@ -34,7 +34,7 @@ class YReSizer extends Widget {
     const { snapshot, index } = table;
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       mousePointer.lock(YReSizer);
-      mousePointer.set(XTableMousePointer.KEYS.rowResize, YReSizer);
+      mousePointer.set(XTableMousePoint.KEYS.rowResize, YReSizer);
       const { top, ri } = this.getEventTop(e);
       const min = top - rows.getHeight(ri) + rows.min;
       let { y: my } = table.eventXy(e);
@@ -66,7 +66,7 @@ class YReSizer extends Widget {
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, () => {
       mousePointer.lock(YReSizer);
-      mousePointer.set(XTableMousePointer.KEYS.rowResize, YReSizer);
+      mousePointer.set(XTableMousePoint.KEYS.rowResize, YReSizer);
     });
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
       // eslint-disable-next-line prefer-const

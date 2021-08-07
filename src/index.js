@@ -2,13 +2,13 @@
 import { Constant, cssPrefix, XSheetVersion } from './const/Constant';
 import { XWork } from './core/xwork/XWork';
 import { Widget } from './lib/Widget';
-import { XDraw } from './canvas/XDraw';
+import { XDraw } from './draw/XDraw';
 import { h } from './lib/Element';
 import { DragPanel } from './module/dragpanel/DragPanel';
 import { ElPopUp } from './module/elpopup/ElPopUp';
 import { SheetUtils } from './utils/SheetUtils';
 import { RectRange } from './core/xtable/tablebase/RectRange';
-import { BaseFont } from './canvas/font/BaseFont';
+import { BaseFont } from './draw/font/BaseFont';
 import { XIcon } from './core/xtable/xicon/XIcon';
 import { XlsxExport } from './io/xlsx/XlsxExport';
 import { ColorPicker } from './module/colorpicker/ColorPicker';

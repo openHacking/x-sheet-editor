@@ -1,5 +1,5 @@
 import { BaseCellsHelper } from './BaseCellsHelper';
-import { Rect } from '../../../canvas/Rect';
+import { Rect } from '../../../draw/Rect';
 import { SheetUtils } from '../../../utils/SheetUtils';
 import { RectRange } from '../tablebase/RectRange';
 

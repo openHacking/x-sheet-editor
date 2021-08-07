@@ -1,8 +1,8 @@
 /* global document */
 import { Widget } from '../../../lib/Widget';
 import { cssPrefix } from '../../../const/Constant';
-import { BaseFont } from '../../../canvas/font/BaseFont';
-import { XDraw } from '../../../canvas/XDraw';
+import { BaseFont } from '../../../draw/font/BaseFont';
+import { XDraw } from '../../../draw/XDraw';
 import { SheetUtils } from '../../../utils/SheetUtils';
 import { h } from '../../../lib/Element';
 
@@ -255,27 +255,19 @@ class RichEdit extends StyleEdit {
    * @constructor
    */
   htmlToRichText(html) {
-    const div = h('div');
+    const div = h('div').html(html);
+    const paragraph = div.find('p');
     const items = [];
-    const textHandle = (ele) => {
+    const plainText = (ele) => {
       const clone = ele.clone();
       clone.children()
         .filter(i => i.nodeType === 1)
         .forEach(i => i.remove());
       return clone.text();
     };
-    const lineHandle = (ele, parent, item) => {
-      const style = Object.assign({}, parent);
-      const text = textHandle(ele);
-      item.push({ style, text });
+    paragraph.forEach((p) => {
 
-      return item;
-    };
-    div.html(html)
-      .find('p')
-      .forEach((p) => {
-        items.push(lineHandle(p, {}, []));
-      });
+    });
   }
 
 }

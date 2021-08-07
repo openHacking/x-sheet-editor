@@ -4,7 +4,7 @@ import { XEvent } from '../../../../lib/XEvent';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
 import { Widget } from '../../../../lib/Widget';
-import { XTableMousePointer } from '../../XTableMousePointer';
+import { XTableMousePoint } from '../../XTableMousePoint';
 import { RANGE_OVER_GO } from '../../xscreen/item/viewborder/XScreenStyleBorderItem';
 import { XSelectPath } from './XSelectPath';
 
@@ -228,11 +228,11 @@ class XSelectItem extends XScreenCssBorderItem {
       switch (selectLocal) {
         case SELECT_LOCAL.L:
           mousePointer.lock(XSelectItem);
-          mousePointer.set(XTableMousePointer.KEYS.eResize, XSelectItem);
+          mousePointer.set(XTableMousePoint.KEYS.eResize, XSelectItem);
           break;
         case SELECT_LOCAL.T:
           mousePointer.lock(XSelectItem);
-          mousePointer.set(XTableMousePointer.KEYS.sResize, XSelectItem);
+          mousePointer.set(XTableMousePoint.KEYS.sResize, XSelectItem);
           break;
       }
       table.trigger(Constant.TABLE_EVENT_TYPE.SELECT_DOWN);

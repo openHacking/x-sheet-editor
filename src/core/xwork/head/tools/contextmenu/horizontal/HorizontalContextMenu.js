@@ -7,7 +7,7 @@ import { HorizontalIcon2 } from '../icon/horizontal/HorizontalIcon2';
 import { HorizontalIcon3 } from '../icon/horizontal/HorizontalIcon3';
 import { HorizontalContextMenuItem } from './HorizontalContextMenuItem';
 import { XEvent } from '../../../../../../lib/XEvent';
-import { BaseFont } from '../../../../../../canvas/font/BaseFont';
+import { BaseFont } from '../../../../../../draw/font/BaseFont';
 
 class HorizontalContextMenu extends ELContextMenu {
 

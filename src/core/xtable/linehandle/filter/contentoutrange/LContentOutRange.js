@@ -1,6 +1,6 @@
 import { CommonOutRange } from './CommonOutRange';
 import { SheetUtils } from '../../../../../utils/SheetUtils';
-import { BaseFont } from '../../../../../canvas/font/BaseFont';
+import { BaseFont } from '../../../../../draw/font/BaseFont';
 import { LineIteratorFilter } from '../../LineIteratorFilter';
 
 class LContentOutRange extends CommonOutRange {

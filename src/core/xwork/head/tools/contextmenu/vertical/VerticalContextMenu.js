@@ -7,7 +7,7 @@ import { VerticalIcon1 } from '../icon/vertical/VerticalIcon1';
 import { VerticalIcon2 } from '../icon/vertical/VerticalIcon2';
 import { VerticalIcon3 } from '../icon/vertical/VerticalIcon3';
 import { XEvent } from '../../../../../../lib/XEvent';
-import { BaseFont } from '../../../../../../canvas/font/BaseFont';
+import { BaseFont } from '../../../../../../draw/font/BaseFont';
 
 class VerticalContextMenu extends ELContextMenu {
 

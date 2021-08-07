@@ -1,6 +1,6 @@
-import { LINE_TYPE } from '../../../canvas/Line';
+import { LINE_TYPE } from '../../../draw/Line';
 import { SheetUtils } from '../../../utils/SheetUtils';
-import { XDraw } from '../../../canvas/XDraw';
+import { XDraw } from '../../../draw/XDraw';
 
 let zIndexID = 0;
 

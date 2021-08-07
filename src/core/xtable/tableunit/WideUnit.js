@@ -1,4 +1,4 @@
-import { XDraw } from '../../../canvas/XDraw';
+import { XDraw } from '../../../draw/XDraw';
 import { SheetUtils } from '../../../utils/SheetUtils';
 
 /**

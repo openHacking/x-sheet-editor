@@ -1,9 +1,9 @@
 /* global FileReader */
 import { Workbook } from 'exceljs';
 import { ColorPicker } from '../../module/colorpicker/ColorPicker';
-import { BaseFont } from '../../canvas/font/BaseFont';
-import { XDraw } from '../../canvas/XDraw';
-import { LINE_TYPE } from '../../canvas/Line';
+import { BaseFont } from '../../draw/font/BaseFont';
+import { XDraw } from '../../draw/XDraw';
+import { LINE_TYPE } from '../../draw/Line';
 import { SheetUtils } from '../../utils/SheetUtils';
 import { ColorArray } from '../../module/colorpicker/colorarray/ColorArray';
 import { HexRgb, Theme, ThemeXml } from './XlsxTheme';

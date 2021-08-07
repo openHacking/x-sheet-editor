@@ -7,7 +7,7 @@ import { TextWrappingIcon3 } from '../icon/textwrapping/TextWrappingIcon3';
 import { h } from '../../../../../../lib/Element';
 import { TextWrappingContextMenuItem } from './TextWrappingContextMenuItem';
 import { XEvent } from '../../../../../../lib/XEvent';
-import { BaseFont } from '../../../../../../canvas/font/BaseFont';
+import { BaseFont } from '../../../../../../draw/font/BaseFont';
 
 class TextWrappingContextMenu extends ELContextMenu {
 

@@ -5,7 +5,7 @@ import { XScreenLTZone } from './zone/XScreenLTZone';
 import { XScreenLZone } from './zone/XScreenLZone';
 import { XScreenTZone } from './zone/XScreenTZone';
 import { XEvent } from '../../../lib/XEvent';
-import { XDraw } from '../../../canvas/XDraw';
+import { XDraw } from '../../../draw/XDraw';
 
 const DISPLAY_AREA = {
   BRT: Symbol('BRT'),

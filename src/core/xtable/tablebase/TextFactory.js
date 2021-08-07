@@ -1,8 +1,8 @@
 import { ScaleAdapter } from './Scale';
-import { BaseFont } from '../../../canvas/font/BaseFont';
-import { DrawTextBuilder } from '../../../canvas/font/text/build/DrawTextBuilder';
+import { BaseFont } from '../../../draw/font/BaseFont';
+import { DrawTextBuilder } from '../../../draw/font/text/build/DrawTextBuilder';
 import { Cell } from '../tablecell/Cell';
-import { RichDrawTextBuilder } from '../../../canvas/font/rich/build/RichDrawTextBuilder';
+import { RichDrawTextBuilder } from '../../../draw/font/rich/build/RichDrawTextBuilder';
 
 class TextBuilder {
 
