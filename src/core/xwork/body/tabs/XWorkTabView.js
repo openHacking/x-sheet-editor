@@ -35,6 +35,7 @@ class XWorkTabView extends Widget {
     this.options = SheetUtils.copy({}, settings, options);
     this.left = null;
     this.tabList = [];
+    this.activeIndex = -1;
     this.bind();
   }
 
@@ -106,7 +107,7 @@ class XWorkTabView extends Widget {
    * @param index
    * @returns {*}
    */
-  setActiveByIndex(index) {
+  setActiveByIndex(index = 0) {
     const { tabList } = this;
     const tab = tabList[index];
     if (tab) {
@@ -121,6 +122,7 @@ class XWorkTabView extends Widget {
    * @returns {*}
    */
   setActive(tab) {
+    this.activeIndex = this.getIndexByTab(tab);
     tab.addClass('active');
     tab.sibling().forEach((item) => {
       item.removeClass('active');

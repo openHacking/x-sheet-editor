@@ -300,7 +300,7 @@ class XWorkBody extends Widget {
    * 激活指定索引的sheet
    * @param index
    */
-  setActiveIndex(index) {
+  setActiveIndex(index = 0) {
     const { sheetView } = this;
     const { tabView } = this;
     sheetView.setActiveByIndex(index);
