@@ -2,11 +2,11 @@ import { Widget } from '../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../const/Constant';
 import Download from '../../../lib/donwload/Download';
 import { h } from '../../../lib/Element';
-import { File } from './options/File';
-import { ForMart } from './options/ForMart';
-import { Insert } from './options/Insert';
-import { Look } from './options/Look';
-import { Update } from './options/Update';
+import { File } from './option/File';
+import { ForMart } from './option/ForMart';
+import { Insert } from './option/Insert';
+import { Look } from './option/Look';
+import { Update } from './option/Update';
 import { XEvent } from '../../../lib/XEvent';
 import { ElPopUp } from '../../../module/elpopup/ElPopUp';
 import { Alert } from '../../../module/alert/Alert';
@@ -15,8 +15,8 @@ import { XlsxImportTask } from '../../../task/XlsxImportTask';
 import { XlsxExportTask } from '../../../task/XlsxExportTask';
 import { XDraw } from '../../../draw/XDraw';
 import { Confirm } from '../../../module/confirm/Confirm';
-import { XWorkTab } from '../body/tabs/XWorkTab';
-import { XWorkSheet } from '../body/sheets/XWorkSheet';
+import { XWorkTab } from '../body/tab/XWorkTab';
+import { XWorkSheet } from '../body/sheet/XWorkSheet';
 
 class XBookTopOption extends Widget {
 
