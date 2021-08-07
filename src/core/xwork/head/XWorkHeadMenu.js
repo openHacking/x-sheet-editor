@@ -954,6 +954,21 @@ class XWorkHeadMenu extends Widget {
         }
       }
     });
+    XEvent.bind(this.filter, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      const sheet = sheetView.getActiveSheet();
+      const { table } = sheet;
+      if (!table.isReadOnly()) {
+        const { xScreen } = table;
+        const filter = xScreen.findType(XFilter);
+        if (filter.display) {
+          filter.hideFilter();
+          this.filter.active(filter.display);
+        } else {
+          filter.openFilter();
+          this.filter.active(filter.display);
+        }
+      }
+    });
     XEvent.bind(this.fontBold, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
@@ -980,21 +995,6 @@ class XWorkHeadMenu extends Widget {
             type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
           });
           table.render();
-        }
-      }
-    });
-    XEvent.bind(this.filter, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const sheet = sheetView.getActiveSheet();
-      const { table } = sheet;
-      if (!table.isReadOnly()) {
-        const { xScreen } = table;
-        const filter = xScreen.findType(XFilter);
-        if (filter.display) {
-          filter.hideFilter();
-          this.filter.active(filter.display);
-        } else {
-          filter.openFilter();
-          this.filter.active(filter.display);
         }
       }
     });
@@ -1138,45 +1138,6 @@ class XWorkHeadMenu extends Widget {
     });
 
     // 上下文菜单工具栏
-    XEvent.bind(this.scale, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      const { scale } = this;
-      const { scaleContextMenu } = scale;
-      const { elPopUp } = scaleContextMenu;
-      ElPopUp.closeAll([elPopUp]);
-      if (scaleContextMenu.isClose()) {
-        scaleContextMenu.open();
-      } else {
-        scaleContextMenu.close();
-      }
-      e.stopPropagation();
-      e.preventDefault();
-    });
-    XEvent.bind(this.format, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      const { format } = this;
-      const { formatContextMenu } = format;
-      const { elPopUp } = formatContextMenu;
-      ElPopUp.closeAll([elPopUp]);
-      if (formatContextMenu.isClose()) {
-        formatContextMenu.open();
-      } else {
-        formatContextMenu.close();
-      }
-      e.stopPropagation();
-      e.preventDefault();
-    });
-    XEvent.bind(this.font, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      const { font } = this;
-      const { fontContextMenu } = font;
-      const { elPopUp } = fontContextMenu;
-      ElPopUp.closeAll([elPopUp]);
-      if (fontContextMenu.isClose()) {
-        fontContextMenu.open();
-      } else {
-        fontContextMenu.close();
-      }
-      e.stopPropagation();
-      e.preventDefault();
-    });
     XEvent.bind(this.dprFontSize, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { dprFontSize } = this;
       const { fontSizeContextMenu } = dprFontSize;
@@ -1216,6 +1177,45 @@ class XWorkHeadMenu extends Widget {
       e.stopPropagation();
       e.preventDefault();
     });
+    XEvent.bind(this.scale, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const { scale } = this;
+      const { scaleContextMenu } = scale;
+      const { elPopUp } = scaleContextMenu;
+      ElPopUp.closeAll([elPopUp]);
+      if (scaleContextMenu.isClose()) {
+        scaleContextMenu.open();
+      } else {
+        scaleContextMenu.close();
+      }
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    XEvent.bind(this.format, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const { format } = this;
+      const { formatContextMenu } = format;
+      const { elPopUp } = formatContextMenu;
+      ElPopUp.closeAll([elPopUp]);
+      if (formatContextMenu.isClose()) {
+        formatContextMenu.open();
+      } else {
+        formatContextMenu.close();
+      }
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    XEvent.bind(this.font, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const { font } = this;
+      const { fontContextMenu } = font;
+      const { elPopUp } = fontContextMenu;
+      ElPopUp.closeAll([elPopUp]);
+      if (fontContextMenu.isClose()) {
+        fontContextMenu.open();
+      } else {
+        fontContextMenu.close();
+      }
+      e.stopPropagation();
+      e.preventDefault();
+    });
     XEvent.bind(this.border, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
       const { border } = this;
       const { borderTypeContextMenu } = border;
@@ -1225,6 +1225,19 @@ class XWorkHeadMenu extends Widget {
         borderTypeContextMenu.open();
       } else {
         borderTypeContextMenu.close();
+      }
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    XEvent.bind(this.textWrapping, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      const { textWrapping } = this;
+      const { textWrappingContextMenu } = textWrapping;
+      const { elPopUp } = textWrappingContextMenu;
+      ElPopUp.closeAll([elPopUp]);
+      if (textWrappingContextMenu.isClose()) {
+        textWrappingContextMenu.open();
+      } else {
+        textWrappingContextMenu.close();
       }
       e.stopPropagation();
       e.preventDefault();
@@ -1251,19 +1264,6 @@ class XWorkHeadMenu extends Widget {
         verticalContextMenu.open();
       } else {
         verticalContextMenu.close();
-      }
-      e.stopPropagation();
-      e.preventDefault();
-    });
-    XEvent.bind(this.textWrapping, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      const { textWrapping } = this;
-      const { textWrappingContextMenu } = textWrapping;
-      const { elPopUp } = textWrappingContextMenu;
-      ElPopUp.closeAll([elPopUp]);
-      if (textWrappingContextMenu.isClose()) {
-        textWrappingContextMenu.open();
-      } else {
-        textWrappingContextMenu.close();
       }
       e.stopPropagation();
       e.preventDefault();
