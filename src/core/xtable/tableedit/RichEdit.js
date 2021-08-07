@@ -11,11 +11,11 @@ class RichEdit extends StyleEdit {
 
   /**
    * 富文本转Html
-   * @param text
+   * @param cell
    * @constructor
    */
-  richTextToHtml(text) {
-    const { fonts } = text;
+  richTextToHtml(cell) {
+    const { fonts } = cell.getComputeText();
     const textBreak = /\n/;
     const items = [];
     const empty = [this.EMPTY];

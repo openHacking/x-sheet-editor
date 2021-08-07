@@ -7,10 +7,10 @@ class FormulaEdit extends RichEdit {
 
   /**
    * 公式转html
-   * @param text
+   * @param cell
    */
-  formulaTextToHtml(text) {
-    return text;
+  formulaTextToHtml(cell) {
+    return cell.formulaText;
   }
 
   /**

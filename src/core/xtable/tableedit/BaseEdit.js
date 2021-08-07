@@ -1,8 +1,8 @@
 import { Widget } from '../../../lib/Widget';
-import { cssPrefix } from '../../../const/Constant';
+import { Constant, cssPrefix } from '../../../const/Constant';
 import { BaseFont } from '../../../draw/font/BaseFont';
 import { XDraw } from '../../../draw/XDraw';
-import { SheetUtils } from '../../../utils/SheetUtils';
+import { Throttle } from '../../../lib/Throttle';
 
 /**
  * BaseEdit
@@ -17,10 +17,11 @@ class BaseEdit extends Widget {
     table,
   }) {
     super(`${cssPrefix}-table-edit`);
-    this.table = table;
-    this.cell = null;
-    this.selectRange = null;
     this.EMPTY = '<p><br /></p>';
+    this.table = table;
+    this.throttle = new Throttle({
+      time: 100,
+    });
     this.hide();
   }
 
@@ -110,14 +111,12 @@ class BaseEdit extends Widget {
    * 打开编辑器
    * @returns {BaseEdit}
    */
-  open() {
+  open(event) {
+    const { table } = this;
     this.mode = BaseEdit.MODE.SHOW;
     this.show();
     this.local();
-    this.throttle.action(() => {
-      this.focus();
-      SheetUtils.keepLastIndex(this.el);
-    });
+    table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_FINISH,event);
     return this;
   }
 
@@ -125,9 +124,11 @@ class BaseEdit extends Widget {
    * 关闭编辑器
    * @returns {BaseEdit}
    */
-  close() {
+  close(event) {
+    const { table } = this;
     this.mode = BaseEdit.MODE.HIDE;
     this.hide();
+    table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_START, event);
     return this;
   }
 
