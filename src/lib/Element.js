@@ -174,7 +174,10 @@ class Element {
    * @returns {boolean|ActiveX.IXMLDOMNode|*}
    */
   removeSelf() {
-    this.el.parentNode.removeChild(this.el);
+    const parent = this.el.parentNode;
+    if (parent) {
+      parent.removeChild(this.el);
+    }
     return this;
   }
 

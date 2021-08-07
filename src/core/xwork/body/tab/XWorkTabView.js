@@ -3,6 +3,9 @@ import { cssPrefix, Constant } from '../../../../const/Constant';
 import { h } from '../../../../lib/Element';
 import { SheetUtils } from '../../../../utils/SheetUtils';
 import { XEvent } from '../../../../lib/XEvent';
+import { TabContextMenu } from './contextmenu/TabContextMenu';
+import { ElPopUp } from '../../../../module/elpopup/ElPopUp';
+import { Confirm } from '../../../../module/confirm/Confirm';
 
 const settings = {
   onAdd(tab) { return tab; },
@@ -20,6 +23,14 @@ class XWorkTabView extends Widget {
    */
   constructor(options) {
     super(`${cssPrefix}-sheet-switch-tab`);
+    this.options = SheetUtils.copy({
+      onSwitch: () => {},
+      onAdded: () => {},
+      onRemove: () => {},
+    }, settings, options);
+    this.left = null;
+    this.tabList = [];
+    this.activeIndex = -1;
     this.last = h('div', `${cssPrefix}-switch-tab-last-btn`);
     this.next = h('div', `${cssPrefix}-switch-tab-next-btn`);
     this.content = h('div', `${cssPrefix}-sheet-tab-content`);
@@ -32,10 +43,29 @@ class XWorkTabView extends Widget {
       this.content,
       this.plus,
     ]);
-    this.options = SheetUtils.copy({}, settings, options);
-    this.left = null;
-    this.tabList = [];
-    this.activeIndex = -1;
+    this.contextMenu = new TabContextMenu({
+      onUpdate: (name, type) => {
+        const { tab } = this.contextMenu;
+        switch (type) {
+          case 1: {
+            this.options.onRemove(tab);
+            break;
+          }
+          case 2: {
+            break;
+          }
+          case 3: {
+            break;
+          }
+          case 4: {
+            break;
+          }
+          case 5: {
+            break;
+          }
+        }
+      },
+    });
     this.bind();
   }
 
@@ -72,22 +102,8 @@ class XWorkTabView extends Widget {
       this.tabs.css('marginLeft', `${this.left}px`);
     });
     XEvent.bind(plus, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
-      this.options.onAdd();
+      this.options.onAdded();
       this.offsetLast();
-    });
-  }
-
-  /**
-   * 添加一个新的tab
-   */
-  attach(tab) {
-    this.tabList.push(tab);
-    this.tabs.children(tab);
-    tab.onAttach();
-    tab.setRClick(() => {});
-    tab.setLClick(() => {
-      this.setActive(tab);
-      this.options.onSwitch(tab);
     });
   }
 
@@ -101,6 +117,29 @@ class XWorkTabView extends Widget {
       this.left = -(current - maxWidth);
       this.tabs.css('marginLeft', `${this.left}px`);
     }
+  }
+
+  /**
+   * 添加一个新的tab
+   */
+  attach(tab) {
+    this.tabList.push(tab);
+    this.tabs.children(tab);
+    tab.onAttach();
+    tab.setRClick((event) => {
+      const { contextMenu } = this;
+      const { elPopUp } = contextMenu;
+      elPopUp.setEL(tab);
+      ElPopUp.closeAll([elPopUp]);
+      contextMenu.open();
+      contextMenu.setTab(tab);
+      event.stopPropagation();
+      event.preventDefault();
+    });
+    tab.setLClick((event) => {
+      this.setActive(tab);
+      this.options.onSwitch(tab, event);
+    });
   }
 
   /**
@@ -161,9 +200,9 @@ class XWorkTabView extends Widget {
    */
   removeByIndex(index) {
     const { tabList } = this;
-    const tab = tabList.splice(index, 1);
-    if (tab) {
-      tab.destroy();
+    const array = tabList.splice(index, 1);
+    if (array.length) {
+      array[0].destroy();
     }
   }
 
@@ -173,6 +212,7 @@ class XWorkTabView extends Widget {
   destroy() {
     super.destroy();
     this.unbind();
+    this.contextMenu.destroy();
   }
 
 }

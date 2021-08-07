@@ -27,11 +27,10 @@ class XFilter extends XScreenCssBorderItem {
    */
   constructor(table) {
     super({ table });
-    this.display = false;
-    this.icons = [];
     this.selectRange = null;
     this.activeIcon = null;
-    this.mask = new Mask().setRoot(table);
+    this.icons = [];
+    this.display = false;
     this.filter = new FilterData({
       el: this.mask,
       ok: ({
@@ -48,15 +47,38 @@ class XFilter extends XScreenCssBorderItem {
         }).open();
       },
     });
+    this.mask = new Mask().setRoot(table);
     this.flt = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-lt`);
     this.ft = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-t`);
     this.fbr = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-br`);
     this.fl = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-l`);
-    this.blt.children(this.flt);
     this.bl.children(this.fl);
     this.bt.children(this.ft);
+    this.blt.children(this.flt);
     this.bbr.children(this.fbr);
     this.setBorderColor('rgb(0,113,207)');
+    this.tableMouseScroll = () => {
+      if (this.display) {
+        ElPopUp.closeAll();
+        this.xFilterOffset();
+      }
+    };
+    this.tableStyleRender = () => {
+      if (this.display) {
+        this.xFilterOffset();
+      }
+    };
+    this.tableResizeChange = () => {
+      if (this.display) {
+        this.xFilterOffset();
+      }
+    };
+    this.tableScaleChange = () => {
+      if (this.display) {
+        ElPopUp.closeAll();
+        this.xFilterOffset();
+      }
+    };
     this.bind();
   }
 
@@ -72,7 +94,14 @@ class XFilter extends XScreenCssBorderItem {
    */
   unbind() {
     const { table } = this;
-    XEvent.unbind(table);
+    const { tableMouseScroll } = this;
+    const { tableStyleRender } = this;
+    const { tableResizeChange } = this;
+    const { tableScaleChange } = this;
+    XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, tableMouseScroll);
+    XEvent.unbind(table, Constant.TABLE_EVENT_TYPE.RENDER, tableStyleRender);
+    XEvent.unbind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, tableResizeChange);
+    XEvent.unbind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, tableScaleChange);
   }
 
   /**
@@ -80,28 +109,14 @@ class XFilter extends XScreenCssBorderItem {
    */
   bind() {
     const { table } = this;
-    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, () => {
-      if (this.display) {
-        ElPopUp.closeAll();
-        this.xFilterOffset();
-      }
-    });
-    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RENDER, () => {
-      if (this.display) {
-        this.xFilterOffset();
-      }
-    });
-    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, () => {
-      if (this.display) {
-        this.xFilterOffset();
-      }
-    });
-    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, () => {
-      if (this.display) {
-        ElPopUp.closeAll();
-        this.xFilterOffset();
-      }
-    });
+    const { tableMouseScroll } = this;
+    const { tableStyleRender } = this;
+    const { tableResizeChange } = this;
+    const { tableScaleChange } = this;
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, tableMouseScroll);
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RENDER, tableStyleRender);
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.RESIZE_CHANGE, tableResizeChange);
+    XEvent.bind(table, Constant.TABLE_EVENT_TYPE.SCALE_CHANGE, tableScaleChange);
   }
 
   /**

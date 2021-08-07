@@ -25,20 +25,6 @@ class XWorkSheetView extends Widget {
   }
 
   /**
-   * 激活指定sheet
-   * @param sheet
-   * @returns {*}
-   */
-  setActive(sheet) {
-    this.activeIndex = this.getIndexBySheet(sheet);
-    sheet.show();
-    sheet.sibling().forEach((item) => {
-      item.hide();
-    });
-    return sheet;
-  }
-
-  /**
    * 激活指定索引的sheet
    * @param index
    * @returns {*}
@@ -49,6 +35,20 @@ class XWorkSheetView extends Widget {
     if (sheet) {
       this.setActive(sheet);
     }
+    return sheet;
+  }
+
+  /**
+   * 激活指定sheet
+   * @param sheet
+   * @returns {*}
+   */
+  setActive(sheet) {
+    this.activeIndex = this.getIndexBySheet(sheet);
+    sheet.show();
+    sheet.sibling().forEach((item) => {
+      item.hide();
+    });
     return sheet;
   }
 
@@ -92,9 +92,9 @@ class XWorkSheetView extends Widget {
    */
   removeByIndex(index = 0) {
     const { sheetList } = this;
-    const sheet = sheetList.splice(index, 1);
-    if (sheet) {
-      sheet.destroy();
+    const array = sheetList.splice(index, 1);
+    if (array.length) {
+      array[0].destroy();
     }
   }
 

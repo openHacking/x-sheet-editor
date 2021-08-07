@@ -20,6 +20,7 @@ import Download from '../../../lib/donwload/Download';
 import { Throttle } from '../../../lib/Throttle';
 import { XDraw } from '../../../draw/XDraw';
 import { XWorkBodyKeyHandle } from './XWorkBodyKeyHandle';
+import { Confirm } from '../../../module/confirm/Confirm';
 
 const settings = {
   sheets: [],
@@ -44,54 +45,6 @@ class XWorkBody extends Widget {
     this.version = h('div', `${cssPrefix}-version-tips`);
     this.version.html(`<a target="_blank" href="https://gitee.com/eigi/x-sheet">${XSheetVersion}</a>`);
     this.children(this.version);
-    // sheet表
-    this.sheetViewLayer = new HorizontalLayerElement({
-      style: {
-        flexGrow: 1,
-      },
-    });
-    // 垂直滚动条
-    this.scrollBarYLayer = new HorizontalLayerElement({
-      style: {
-        overflow: 'inherit',
-      },
-    });
-    // 水平滚动条
-    this.scrollBarXLayer = new VerticalCenterElement();
-    this.scrollBarXVerticalCenter = new VerticalCenter();
-    this.scrollBarXHorizontalLayer = new HorizontalLayerElement({
-      style: {
-        flexGrow: 2,
-      },
-    });
-    this.scrollBarXVerticalCenter.children(this.scrollBarXLayer);
-    this.scrollBarXHorizontalLayer.children(this.scrollBarXVerticalCenter);
-    // 选项卡
-    this.sheetSwitchTabLayer = new HorizontalLayerElement({
-      style: {
-        flexGrow: 3,
-      },
-    });
-    // 水平布局
-    this.horizontalLayer1 = new HorizontalLayer();
-    this.horizontalLayer2 = new HorizontalLayer();
-    this.horizontalLayer1.children(this.sheetViewLayer);
-    this.horizontalLayer1.children(this.scrollBarYLayer);
-    this.horizontalLayer2.children(this.sheetSwitchTabLayer);
-    this.horizontalLayer2.children(this.scrollBarXHorizontalLayer);
-    // 根布局
-    this.horizontalLayer1Layer = new VerticalLayerElement({
-      style: {
-        flexGrow: 1,
-      },
-    });
-    this.horizontalLayer2Layer = new VerticalLayerElement();
-    this.layerVerticalLayer = new VerticalLayer();
-    this.horizontalLayer1Layer.children(this.horizontalLayer1);
-    this.horizontalLayer2Layer.children(this.horizontalLayer2);
-    this.layerVerticalLayer.children(this.horizontalLayer1Layer);
-    this.layerVerticalLayer.children(this.horizontalLayer2Layer);
-    this.children(this.layerVerticalLayer);
     // 组件
     this.sheetView = new XWorkSheetView();
     this.tabView = new XWorkTabView({
@@ -99,10 +52,19 @@ class XWorkBody extends Widget {
         const index = this.tabView.getIndexByTab(tab);
         this.setActiveIndex(index);
       },
-      onAdd: () => {
+      onAdded: () => {
         const tab = new XWorkTab();
         const sheet = new XWorkSheet(tab);
         this.addTabSheet(tab, sheet);
+      },
+      onRemove: (tab) => {
+        const index = this.tabView.getIndexByTab(tab);
+        new Confirm({
+          message: '是否删除工作表',
+          ok: () => {
+            this.removeByIndex(index);
+          },
+        }).open();
       },
     });
     this.scrollBarY = new ScrollBarY({
@@ -161,6 +123,54 @@ class XWorkBody extends Widget {
         this.scrollBarX.scrollMove(scrollTo - width);
       },
     });
+    // sheet表
+    this.sheetViewLayer = new HorizontalLayerElement({
+      style: {
+        flexGrow: 1,
+      },
+    });
+    // 垂直滚动条
+    this.scrollBarYLayer = new HorizontalLayerElement({
+      style: {
+        overflow: 'inherit',
+      },
+    });
+    // 水平滚动条
+    this.scrollBarXLayer = new VerticalCenterElement();
+    this.scrollBarXVerticalCenter = new VerticalCenter();
+    this.scrollBarXHorizontalLayer = new HorizontalLayerElement({
+      style: {
+        flexGrow: 2,
+      },
+    });
+    this.scrollBarXVerticalCenter.children(this.scrollBarXLayer);
+    this.scrollBarXHorizontalLayer.children(this.scrollBarXVerticalCenter);
+    // 选项卡
+    this.sheetSwitchTabLayer = new HorizontalLayerElement({
+      style: {
+        flexGrow: 3,
+      },
+    });
+    // 水平布局
+    this.horizontalLayer1 = new HorizontalLayer();
+    this.horizontalLayer2 = new HorizontalLayer();
+    this.horizontalLayer1.children(this.sheetViewLayer);
+    this.horizontalLayer1.children(this.scrollBarYLayer);
+    this.horizontalLayer2.children(this.sheetSwitchTabLayer);
+    this.horizontalLayer2.children(this.scrollBarXHorizontalLayer);
+    // 根布局
+    this.horizontalLayer1Layer = new VerticalLayerElement({
+      style: {
+        flexGrow: 1,
+      },
+    });
+    this.horizontalLayer2Layer = new VerticalLayerElement();
+    this.layerVerticalLayer = new VerticalLayer();
+    this.horizontalLayer1Layer.children(this.horizontalLayer1);
+    this.horizontalLayer2Layer.children(this.horizontalLayer2);
+    this.layerVerticalLayer.children(this.horizontalLayer1Layer);
+    this.layerVerticalLayer.children(this.horizontalLayer2Layer);
+    this.children(this.layerVerticalLayer);
   }
 
   /**

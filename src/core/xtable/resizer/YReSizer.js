@@ -20,6 +20,43 @@ class YReSizer extends Widget {
       this.hoverEl,
       this.lineEl,
     ]);
+    this.tableMove = XEvent.WrapFuncion.mouseClick((event) => {
+      const { table } = this;
+      const { rows } = table;
+      const { xFixedView } = table;
+      const { index } = table;
+      let { top, ri } = this.getEventTop(event);
+      let min = top - rows.getHeight(ri) + rows.min;
+      let visualHeight = table.visualHeight();
+      let fixedView = xFixedView.getFixedView();
+      if (top > visualHeight) {
+        top = visualHeight;
+      }
+      if (top === -1 || min > visualHeight || ri === -1) {
+        this.hide();
+      } else {
+        this.show();
+        if (ri === fixedView.eri) {
+          this.css('top', `${top - this.height - RowFixed.HEIGHT / 2}px`);
+        } else {
+          this.css('top', `${top - this.height}px`);
+        }
+        this.hoverEl.css('width', `${index.getWidth()}px`);
+        this.hoverEl.css('height', `${this.height}px`);
+      }
+    });
+    this.tableDown = XEvent.WrapFuncion.mouseClick(() => {
+      const { table } = this;
+      const { focus } = table;
+      const { activate } = focus;
+      const { target } = activate;
+      if (target !== table && target !== this) {
+        this.hide();
+      }
+    });
+    this.tableLeave = XEvent.WrapFuncion.mouseClick(() => {
+      this.hide();
+    });
   }
 
   onAttach() {
@@ -29,15 +66,21 @@ class YReSizer extends Widget {
 
   bind() {
     const { table } = this;
-    const { scale, rows, mousePointer } = table;
-    const { focus, xFixedView } = table;
-    const { snapshot, index } = table;
-    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+    const { tableDown } = this;
+    const { tableMove } = this;
+    const { tableLeave } = this;
+    const { scale, rows } = table;
+    const { mousePointer } = table;
+    const { snapshot } = table;
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, tableDown);
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, tableMove);
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, tableLeave);
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (event) => {
       mousePointer.lock(YReSizer);
       mousePointer.set(XTableMousePoint.KEYS.rowResize, YReSizer);
-      const { top, ri } = this.getEventTop(e);
+      const { top, ri } = this.getEventTop(event);
       const min = top - rows.getHeight(ri) + rows.min;
-      let { y: my } = table.eventXy(e);
+      let { y: my } = table.eventXy(event);
       XEvent.mouseMoveUp(document, (e) => {
         ({ y: my } = table.eventXy(e));
         my -= this.height / 2;
@@ -68,43 +111,17 @@ class YReSizer extends Widget {
       mousePointer.lock(YReSizer);
       mousePointer.set(XTableMousePoint.KEYS.rowResize, YReSizer);
     });
-    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, (e) => {
-      // eslint-disable-next-line prefer-const
-      let { top, ri } = this.getEventTop(e);
-      const min = top - rows.getHeight(ri) + rows.min;
-      const visualHeight = table.visualHeight();
-      const fixedView = xFixedView.getFixedView();
-      if (top > visualHeight) {
-        top = visualHeight;
-      }
-      if (top === -1 || min > visualHeight || ri === -1) {
-        this.hide();
-      } else {
-        this.show();
-        if (ri === fixedView.eri) {
-          this.css('top', `${top - this.height - RowFixed.HEIGHT / 2}px`);
-        } else {
-          this.css('top', `${top - this.height}px`);
-        }
-        this.hoverEl.css('width', `${index.getWidth()}px`);
-        this.hoverEl.css('height', `${this.height}px`);
-      }
-    });
-    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, () => {
-      this.hide();
-    });
-    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
-      const { activate } = focus;
-      const { target } = activate;
-      if (target !== table && target !== this) {
-        this.hide();
-      }
-    });
   }
 
   unbind() {
     const { table } = this;
-    XEvent.unbind(table);
+    const { tableDown } = this;
+    const { tableMove } = this;
+    const { tableLeave } = this;
+    XEvent.unbind(this);
+    XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, tableDown);
+    XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_MOVE, tableMove);
+    XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_LEAVE, tableLeave);
   }
 
   getEventTop(event) {

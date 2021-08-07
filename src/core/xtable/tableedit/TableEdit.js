@@ -33,6 +33,9 @@ class TableEdit extends TextEdit {
         this.open(event);
       }
     });
+    this.tableScrollHandle = XEvent.WrapFuncion.mouseClick((event) => {
+      this.close(event);
+    });
     this.bind();
   }
 
@@ -52,21 +55,16 @@ class TableEdit extends TextEdit {
   unbind() {
     const { openClickHandle } = this;
     const { closeClickHandle } = this;
+    const { tableScrollHandle } = this;
     const { table } = this;
     const { focus } = table;
-    const { xScreen } = table;
     const { keyboard } = table;
-    const xSelect = xScreen.findType(XSelectItem);
-    focus.remove(this);
     keyboard.remove(this);
-    XEvent.unbind([
-      xSelect.lt,
-      xSelect.t,
-      xSelect.l,
-      xSelect.br,
-    ]);
+    focus.remove(this);
+    XEvent.unbind(this);
     XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, openClickHandle);
     XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, closeClickHandle);
+    XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, tableScrollHandle);
   }
 
   /**
@@ -75,6 +73,7 @@ class TableEdit extends TextEdit {
   bind() {
     const { openClickHandle } = this;
     const { closeClickHandle } = this;
+    const { tableScrollHandle } = this;
     const { table } = this;
     const { keyboard } = table;
     keyboard.register({
@@ -103,9 +102,7 @@ class TableEdit extends TextEdit {
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (event) => {
       event.stopPropagation();
     });
-    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, (event) => {
-      this.close(event);
-    });
+    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, tableScrollHandle);
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, closeClickHandle);
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, openClickHandle);
   }
