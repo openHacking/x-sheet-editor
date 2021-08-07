@@ -250,6 +250,15 @@ class Element {
   }
 
   /**
+   * 添加style
+   * @param style
+   */
+  style(style) {
+    this.attr('style', style);
+    return this;
+  }
+
+  /**
    * 添加元素属性
    * @param key
    * @param value
