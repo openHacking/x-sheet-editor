@@ -271,13 +271,36 @@ class RichEdit extends StyleEdit {
     };
     const handleRow = (ele) => {
       const collect = [];
-      const handle = (ele, parent) => {
-        const fonts = findFonts(ele);
-        const nodes = findNodes(ele);
+      return (function handle(ele, parent) {
+        const tagName = ele.tagName();
+        const node = findNodes(ele);
+        const text = findFonts(ele);
         const style = { ...parent };
-      };
-      handle(ele, {});
-      return collect;
+        switch (tagName) {
+          case 'u': {
+            break;
+          }
+          case 'i': {
+            break;
+          }
+          case 'b': {
+            break;
+          }
+          case 'font': {
+            break;
+          }
+          case 'strike': {
+            break;
+          }
+        }
+        collect.push({
+          text, style,
+        });
+        node.forEach((item) => {
+          handle(item, style);
+        });
+        return collect;
+      }(ele, {}));
     };
     element.forEach((p) => {
       items.push(handleRow(p));

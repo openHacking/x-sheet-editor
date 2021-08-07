@@ -418,6 +418,14 @@ class Element {
   }
 
   /**
+   * 节点名称
+   * @returns {string}
+   */
+  tagName() {
+    return this.el.tagName.toLocaleLowerCase();
+  }
+
+  /**
    * 在当前元素之后插入新元素
    * @param ele
    */
