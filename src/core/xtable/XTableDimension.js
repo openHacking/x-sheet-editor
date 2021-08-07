@@ -18,7 +18,6 @@ import { XDraw } from '../../draw/XDraw';
 import { RectRange } from './tablebase/RectRange';
 import { XTableScrollView } from './XTableScrollView';
 import { XTableAreaView } from './XTableAreaView';
-import { XTableTextEdit } from './XTableTextEdit';
 import { XTableDrawStyle } from './XTableDrawStyle';
 import { XScreen } from './xscreen/XScreen';
 import { XSelectItem } from './xscreenitems/xselect/XSelectItem';
@@ -608,8 +607,7 @@ class XTableDimension extends Widget {
     this.yReSizer = new YReSizer(this);
     this.xHeightLight = new XHeightLight(this);
     this.yHeightLight = new YHeightLight(this);
-    this.edit = new XTableTextEdit(this);
-    this.xEdit = new TableEdit(this);
+    this.edit = new TableEdit(this);
     this.rowFixed = new RowFixed(this);
     this.colFixed = new ColFixed(this);
     this.dropColFixed = new DropColFixed(this);
@@ -1122,8 +1120,7 @@ class XTableDimension extends Widget {
     // 添加表格组件
     this.attach(this.xHeightLight);
     this.attach(this.yHeightLight);
-    // this.attach(this.edit);
-    this.attach(this.xEdit);
+    this.attach(this.edit);
     this.attach(this.rowFixed);
     this.attach(this.colFixed);
     this.attach(this.xReSizer);
@@ -1660,7 +1657,6 @@ class XTableDimension extends Widget {
     this.xHeightLight.destroy();
     this.yHeightLight.destroy();
     this.edit.destroy();
-    this.xEdit.destroy();
     this.rowFixed.destroy();
     this.colFixed.destroy();
     this.keyboard.destroy();
