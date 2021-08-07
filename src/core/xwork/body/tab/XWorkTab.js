@@ -1,26 +1,62 @@
 import { Widget } from '../../../../lib/Widget';
-import { cssPrefix } from '../../../../const/Constant';
+import { Constant, cssPrefix } from '../../../../const/Constant';
 import { SheetUtils } from '../../../../utils/SheetUtils';
+import { XEvent } from '../../../../lib/XEvent';
 
 let number = 0;
 let include = [];
 
 class XWorkTab extends Widget {
 
-  constructor(name) {
+  constructor(name, {
+    lClickHandle = () => {},
+    rClickHandle = () => {},
+  } = {}) {
     super(`${cssPrefix}-sheet-tab`);
     this.name = '';
+    this.lClickHandle = lClickHandle;
+    this.rClickHandle = rClickHandle;
     this.setName(this.getCheckName(name));
+    this.bind();
   }
 
-  getName() {
-    number += 1;
-    return `Sheet${number}`;
+  unbind() {
+    XEvent.unbind(this);
+  }
+
+  bind() {
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (event) => {
+      if (event.button === 0) {
+        this.lClickHandle(event);
+      }
+    });
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (event) => {
+      if (event.button === 2) {
+        this.rClickHandle(event);
+        event.preventDefault();
+      }
+    });
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.CONTEXT_MENU, (event) => {
+      event.preventDefault();
+    });
   }
 
   setName(name) {
     this.name = name;
     this.text(this.name);
+  }
+
+  setRClick(handle) {
+    this.rClickHandle = handle;
+  }
+
+  setLClick(handle) {
+    this.lClickHandle = handle;
+  }
+
+  getName() {
+    number += 1;
+    return `Sheet${number}`;
   }
 
   getCheckName(name) {
@@ -32,6 +68,11 @@ class XWorkTab extends Widget {
     }
     include.push(name);
     return name;
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

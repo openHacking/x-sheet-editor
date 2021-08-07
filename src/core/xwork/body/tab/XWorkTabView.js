@@ -84,7 +84,8 @@ class XWorkTabView extends Widget {
     this.tabList.push(tab);
     this.tabs.children(tab);
     tab.onAttach();
-    XEvent.bind(tab, Constant.SYSTEM_EVENT_TYPE.CLICK, () => {
+    tab.setRClick(() => {});
+    tab.setLClick(() => {
       this.setActive(tab);
       this.options.onSwitch(tab);
     });

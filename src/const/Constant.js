@@ -7,6 +7,7 @@ Constant.WORK_BODY_EVENT_TYPE = {
 Constant.SYSTEM_EVENT_TYPE = {
   MOUSE_MOVE: 'mousemove',
   MOUSE_DOWN: 'mousedown',
+  CONTEXT_MENU: 'contextmenu',
   SCROLL: 'scroll',
   RESIZE: 'resize',
   MOUSE_UP: 'mouseup',
