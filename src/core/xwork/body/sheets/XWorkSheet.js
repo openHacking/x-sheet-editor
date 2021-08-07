@@ -23,6 +23,11 @@ class XWorkSheet extends Widget {
     this.attach(table);
   }
 
+  destroy() {
+    super.destroy();
+    this.table.destroy();
+  }
+
 }
 
 export { XWorkSheet };

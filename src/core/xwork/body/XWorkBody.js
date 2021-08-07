@@ -1,5 +1,6 @@
 /* global window */
 import { Widget } from '../../../lib/Widget';
+import { h } from '../../../lib/Element';
 import { cssPrefix, Constant, XSheetVersion } from '../../../const/Constant';
 import { VerticalLayer } from '../../../lib/layer/VerticalLayer';
 import { HorizontalLayer } from '../../../lib/layer/HorizontalLayer';
@@ -13,7 +14,6 @@ import { XWorkSheetView } from './sheets/XWorkSheetView';
 import { XWorkTabView } from './tabs/XWorkTabView';
 import { SheetUtils } from '../../../utils/SheetUtils';
 import { XEvent } from '../../../lib/XEvent';
-import { h } from '../../../lib/Element';
 import { XWorkTab } from './tabs/XWorkTab';
 import { XWorkSheet } from './sheets/XWorkSheet';
 import Download from '../../../lib/donwload/Download';
@@ -25,15 +25,21 @@ const settings = {
   sheets: [],
 };
 
+/**
+ * XWorkBody
+ */
 class XWorkBody extends Widget {
 
+  /**
+   * XWorkBody
+   * @param work
+   * @param options
+   */
   constructor(work, options) {
     super(`${cssPrefix}-work-body`);
-    this.work = work;
     this.options = SheetUtils.copy({}, settings, options);
+    this.work = work;
     this.sheets = this.options.sheets;
-    this.tabSheet = [];
-    this.activeIndex = -1;
     // 版本标识
     this.version = h('div', `${cssPrefix}-version-tips`);
     this.version.html(`<a target="_blank" href="https://gitee.com/eigi/x-sheet">${XSheetVersion}</a>`);
@@ -89,13 +95,14 @@ class XWorkBody extends Widget {
     // 组件
     this.sheetView = new XWorkSheetView();
     this.tabView = new XWorkTabView({
+      onSwitch: (tab) => {
+        const index = this.tabView.getIndexByTab(tab);
+        this.setActiveIndex(index);
+      },
       onAdd: () => {
         const tab = new XWorkTab();
         const sheet = new XWorkSheet(tab);
-        this.addTabSheet({ tab, sheet });
-      },
-      onSwitch: (tab) => {
-        this.setActiveTab(tab);
+        this.addTabSheet(tab, sheet);
       },
     });
     this.scrollBarY = new ScrollBarY({
@@ -156,18 +163,44 @@ class XWorkBody extends Widget {
     });
   }
 
+  /**
+   * 初始化Sheet
+   */
+  initializeSheet() {
+    for (const item of this.sheets) {
+      const { name } = item;
+      const tab = new XWorkTab(name);
+      const sheet = new XWorkSheet(tab, item);
+      this.addTabSheet(tab, sheet);
+    }
+    this.setActiveIndex();
+  }
+
+  /**
+   * 初始化
+   */
   onAttach() {
-    const {
-      sheetViewLayer, scrollBarYLayer, sheetSwitchTabLayer, scrollBarXLayer,
-    } = this;
+    const { sheetSwitchTabLayer, scrollBarXLayer } = this;
+    const { sheetViewLayer, scrollBarYLayer } = this;
     scrollBarYLayer.attach(this.scrollBarY);
     scrollBarXLayer.attach(this.scrollBarX);
     sheetSwitchTabLayer.attach(this.tabView);
     sheetViewLayer.attach(this.sheetView);
     this.bind();
-    this.createSheet();
+    this.initializeSheet();
   }
 
+  /**
+   * 解绑事件处理
+   */
+  unbind() {
+    XEvent.unbind(window);
+    XEvent.unbind(this.sheetView);
+  }
+
+  /**
+   * 绑定事件处理
+   */
   bind() {
     const exploreInfo = SheetUtils.getExplorerInfo();
     const throttle = new Throttle();
@@ -180,52 +213,52 @@ class XWorkBody extends Widget {
           let scrollView = xTableScrollView.getScrollView();
           table.recache();
           table.reset();
-          this.scrollBarLocal();
-          this.scrollBarSize();
+          this.refreshScrollBarLocal();
+          this.refreshScrollBarSize();
           table.resize();
           let { maxRi, maxCi } = xTableScrollView.getScrollMaxRiCi();
           if (scrollView.sri > maxRi) {
             table.scrollRi(maxRi);
-            this.scrollBarSize();
-            this.scrollBarLocal();
+            this.refreshScrollBarSize();
+            this.refreshScrollBarLocal();
           }
           if (scrollView.sci > maxCi) {
             table.scrollCi(maxCi);
-            this.scrollBarSize();
-            this.scrollBarLocal();
+            this.refreshScrollBarSize();
+            this.refreshScrollBarLocal();
           }
         }
       });
     });
     XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH, () => {
-      this.scrollBarLocal();
-      this.scrollBarSize();
+      this.refreshScrollBarLocal();
+      this.refreshScrollBarSize();
     });
     XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT, () => {
-      this.scrollBarLocal();
-      this.scrollBarSize();
+      this.refreshScrollBarLocal();
+      this.refreshScrollBarSize();
     });
     XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.REMOVE_ROW, () => {
-      this.scrollBarLocal();
-      this.scrollBarSize();
+      this.refreshScrollBarLocal();
+      this.refreshScrollBarSize();
     });
     XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.REMOVE_COL, () => {
-      this.scrollBarLocal();
-      this.scrollBarSize();
+      this.refreshScrollBarLocal();
+      this.refreshScrollBarSize();
     });
     XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW, () => {
-      this.scrollBarLocal();
-      this.scrollBarSize();
+      this.refreshScrollBarLocal();
+      this.refreshScrollBarSize();
     });
     XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.ADD_NEW_COL, () => {
-      this.scrollBarLocal();
-      this.scrollBarSize();
+      this.refreshScrollBarLocal();
+      this.refreshScrollBarSize();
     });
     XEvent.bind(this.sheetView, Constant.TABLE_EVENT_TYPE.FIXED_CHANGE, () => {
       const table = this.getActiveTable();
       if (table) {
-        this.scrollBarLocal();
-        this.scrollBarSize();
+        this.refreshScrollBarLocal();
+        this.refreshScrollBarSize();
       }
     });
     XEvent.bind(this.sheetView, Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (e) => {
@@ -263,101 +296,58 @@ class XWorkBody extends Widget {
     });
   }
 
-  unbind() {
-    XEvent.unbind(window);
-    XEvent.unbind(this.sheetView);
-  }
-
-  addTabSheet({ tab, sheet }) {
-    const {
-      tabSheet, sheetView, tabView,
-    } = this;
-    const { table } = sheet;
-    sheetView.attach(sheet);
-    tabView.attach(tab);
-    tabSheet.push({
-      tab, sheet,
-    });
-    XWorkBodyKeyHandle.register({
-      table, body: this,
-    });
-  }
-
-  scrollBarSize() {
-    const table = this.getActiveTable();
-    const {
-      scrollBarXHorizontalLayer, scrollBarY, scrollBarX,
-    } = this;
-    // 获取表格大小
-    const totalHeight = table.getScrollTotalHeight();
-    const totalWidth = table.getScrollTotalWidth();
-    // 是否显示水平滚动条
-    if (totalWidth > table.getContentWidth()) {
-      scrollBarXHorizontalLayer.show();
-    } else {
-      scrollBarXHorizontalLayer.hide();
-    }
-    // 调整滚动条尺寸
-    scrollBarY.setSize(table.getContentHeight(), totalHeight);
-    scrollBarX.setSize(table.getContentWidth(), totalWidth);
-  }
-
-  scrollBarLocal() {
-    const table = this.getActiveTable();
-    this.scrollBarY.setLocal(table.getTop());
-    this.scrollBarX.setLocal(table.getLeft());
-  }
-
-  createSheet() {
-    for (const item of this.sheets) {
-      const { name } = item;
-      const tab = new XWorkTab(name);
-      const sheet = new XWorkSheet(tab, item);
-      this.addTabSheet({ tab, sheet });
-    }
-    if (this.tabSheet.length) {
-      this.setActiveIndex(0);
-    }
-  }
-
+  /**
+   * 激活指定索引的sheet
+   * @param index
+   */
   setActiveIndex(index) {
-    const {
-      sheetView, tabView,
-    } = this;
-    sheetView.setActiveSheet(index);
-    tabView.setActiveTab(index);
+    const { sheetView } = this;
+    const { tabView } = this;
+    sheetView.setActiveByIndex(index);
+    tabView.setActiveByIndex(index);
     const table = this.getActiveTable();
     if (table) {
       table.reset();
-      this.scrollBarLocal();
-      this.scrollBarSize();
+      this.refreshScrollBarLocal();
+      this.refreshScrollBarSize();
       table.resize();
+      this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
     }
-    this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
-    this.activeIndex = index;
   }
 
+  /**
+   * 设置当前激活的sheet缩放比
+   * @param value
+   */
   setScale(value) {
     const { sheetView } = this;
     const sheet = sheetView.getActiveSheet();
     const { table } = sheet;
     table.setScale(value);
-    this.scrollBarLocal();
-    this.scrollBarSize();
+    this.refreshScrollBarLocal();
+    this.refreshScrollBarSize();
   }
 
-  setActiveTab(tab) {
-    this.tabSheet.forEach((item, index) => {
-      if (item.tab === tab) {
-        this.setActiveIndex(index);
-      }
-    });
-  }
-
+  /**
+   * 获取当前激活的sheet
+   * @returns {*}
+   */
   getActiveSheet() {
     return this.sheetView.getActiveSheet();
   }
 
+  /**
+   * 获取当前激活的tab
+   * @returns {*}
+   */
+  getActiveTab() {
+    return this.tabView.getActiveSheet();
+  }
+
+  /**
+   * 获取当前激活的table
+   * @returns {*}
+   */
   getActiveTable() {
     const sheet = this.getActiveSheet();
     if (sheet) {
@@ -366,34 +356,37 @@ class XWorkBody extends Widget {
     return null;
   }
 
-  toJson() {
-    const { activeIndex, sheetView } = this;
-    const { sheetList } = sheetView;
-    const sheet = sheetList[activeIndex];
-    if (sheet) {
-      const { table, tab } = sheet;
-      const { rows, cols, settings } = table;
-      const merges = table.getTableMerges();
-      const cells = table.getTableCells();
-      const data = {
-        name: tab.name,
-        tableConfig: {
-          table: {
-            showGrid: settings.table.showGrid,
-            background: settings.table.background,
-          },
-          merge: merges.getData(),
-          rows: rows.getData(),
-          cols: cols.getData(),
-          data: cells.getData(),
-        },
-      };
-      const text = `window['${tab.name}'] = ${JSON.stringify(data)}`;
-      Download(text, `${tab.name}.js`, 'application/x-javascript');
-    }
+  /**
+   * 添加一个新的 tab sheet
+   * @param tab
+   * @param sheet
+   */
+  addTabSheet(tab, sheet) {
+    const { tabView } = this;
+    const { sheetView } = this;
+    const { table } = sheet;
+    tabView.attach(tab);
+    sheetView.attach(sheet);
+    XWorkBodyKeyHandle.register({
+      table, body: this,
+    });
   }
 
-  toJsonAll() {
+  /**
+   * 删除指定索引的sheet
+   * @param index
+   */
+  removeByIndex(index) {
+    const { tabView } = this;
+    const { sheetView } = this;
+    tabView.removeByIndex(index);
+    sheetView.removeByIndex(index);
+  }
+
+  /**
+   * 获取所有sheet的json数据
+   */
+  getAllSheetJson() {
     const { sheetView } = this;
     const { sheetList } = sheetView;
     sheetList.forEach((sheet) => {
@@ -417,6 +410,66 @@ class XWorkBody extends Widget {
       const text = `window['${tab.name}'] = ${JSON.stringify(data)}`;
       Download(text, `${tab.name}.js`, 'application/x-javascript');
     });
+  }
+
+  /**
+   * 获取当前sheet的json数据
+   */
+  getActiveSheetJson() {
+    const { sheetView } = this;
+    const sheet = sheetView.getActiveSheet();
+    if (sheet) {
+      const { table, tab } = sheet;
+      const { rows, cols, settings } = table;
+      const merges = table.getTableMerges();
+      const cells = table.getTableCells();
+      const data = {
+        name: tab.name,
+        tableConfig: {
+          table: {
+            showGrid: settings.table.showGrid,
+            background: settings.table.background,
+          },
+          merge: merges.getData(),
+          rows: rows.getData(),
+          cols: cols.getData(),
+          data: cells.getData(),
+        },
+      };
+      const text = `window['${tab.name}'] = ${JSON.stringify(data)}`;
+      Download(text, `${tab.name}.js`, 'application/x-javascript');
+    }
+  }
+
+  /**
+   * 刷新滚动条大小
+   */
+  refreshScrollBarSize() {
+    const table = this.getActiveTable();
+    const {
+      scrollBarXHorizontalLayer, scrollBarY, scrollBarX,
+    } = this;
+    // 获取表格大小
+    const totalHeight = table.getScrollTotalHeight();
+    const totalWidth = table.getScrollTotalWidth();
+    // 是否显示水平滚动条
+    if (totalWidth > table.getContentWidth()) {
+      scrollBarXHorizontalLayer.show();
+    } else {
+      scrollBarXHorizontalLayer.hide();
+    }
+    // 调整滚动条尺寸
+    scrollBarY.setSize(table.getContentHeight(), totalHeight);
+    scrollBarX.setSize(table.getContentWidth(), totalWidth);
+  }
+
+  /**
+   * 刷新滚动条位置
+   */
+  refreshScrollBarLocal() {
+    const table = this.getActiveTable();
+    this.scrollBarY.setLocal(table.getTop());
+    this.scrollBarX.setLocal(table.getLeft());
   }
 
   destroy() {

@@ -19,6 +19,7 @@ module.exports = {
     "no-lonely-if": "off",
     "no-prototype-builtins": "off",
     "guard-for-in": "off",
+    "no-underscore-dangle": "off",
     "no-restricted-properties": "off"
   }
 };

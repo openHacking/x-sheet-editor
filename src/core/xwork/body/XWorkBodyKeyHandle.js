@@ -17,8 +17,8 @@ function pageDown({ table, body, response }) {
       let value = sri + curDiff;
       let scroll = value > maxRi ? maxRi : value;
       table.scrollRi(scroll);
-      body.scrollBarSize();
-      body.scrollBarLocal();
+      body.refreshScrollBarSize();
+      body.refreshScrollBarLocal();
       // 焦点框跟随
       let newScrollView = xTableScrollView.getScrollView();
       let { selectRange } = xSelect;
@@ -58,8 +58,8 @@ function pageUp({ table, body, response }) {
       let minDiff = 0;
       let scroll = value <= minDiff ? minDiff : value;
       table.scrollRi(scroll);
-      body.scrollBarSize();
-      body.scrollBarLocal();
+      body.refreshScrollBarSize();
+      body.refreshScrollBarLocal();
       // 焦点框跟随
       let newScrollView = xTableScrollView.getScrollView();
       let { selectRange } = xSelect;
@@ -168,8 +168,8 @@ function enter({ table, body, response }) {
         let next = scrollView.sri + diff;
         let scroll = next > maxRi ? maxRi : next;
         table.scrollRi(scroll);
-        body.scrollBarSize();
-        body.scrollBarLocal();
+        body.refreshScrollBarSize();
+        body.refreshScrollBarLocal();
       }
       event.preventDefault();
     },
@@ -253,29 +253,29 @@ function tab({ table, body, response }) {
         let diff = sci - maxCi;
         let next = scrollView.sci + diff;
         table.scrollCi(next);
-        body.scrollBarSize();
-        body.scrollBarLocal();
+        body.refreshScrollBarSize();
+        body.refreshScrollBarLocal();
       }
       if (sri > maxRi) {
         let diff = sri - maxRi;
         let next = scrollView.sri + diff;
         table.scrollRi(next);
-        body.scrollBarSize();
-        body.scrollBarLocal();
+        body.refreshScrollBarSize();
+        body.refreshScrollBarLocal();
       }
       if (sci < minCi) {
         let diff = minCi - sci;
         let last = scrollView.sci - diff;
         table.scrollCi(last);
-        body.scrollBarSize();
-        body.scrollBarLocal();
+        body.refreshScrollBarSize();
+        body.refreshScrollBarLocal();
       }
       if (sri < minRi) {
         let diff = minRi - sri;
         let last = scrollView.sri - diff;
         table.scrollRi(last);
-        body.scrollBarSize();
-        body.scrollBarLocal();
+        body.refreshScrollBarSize();
+        body.refreshScrollBarLocal();
       }
       edit.open(event);
       event.preventDefault();
@@ -329,8 +329,8 @@ function arrowDown({ table, body, response }) {
         let next = scrollView.sri + diff;
         let scroll = next > maxRi ? maxRi : next;
         table.scrollRi(scroll);
-        body.scrollBarSize();
-        body.scrollBarLocal();
+        body.refreshScrollBarSize();
+        body.refreshScrollBarLocal();
       }
     },
   });
@@ -374,8 +374,8 @@ function arrowUp({ table, body, response }) {
         let diff = minRi - sri;
         let last = scrollView.sri - diff;
         table.scrollRi(last);
-        body.scrollBarSize();
-        body.scrollBarLocal();
+        body.refreshScrollBarSize();
+        body.refreshScrollBarLocal();
       }
     },
   });
@@ -419,8 +419,8 @@ function arrowLeft({ table, body, response }) {
         let diff = minCi - sci;
         let last = scrollView.sci - diff;
         table.scrollCi(last);
-        body.scrollBarSize();
-        body.scrollBarLocal();
+        body.refreshScrollBarSize();
+        body.refreshScrollBarLocal();
       }
     },
   });
@@ -472,8 +472,8 @@ function arrowRight({ table, body, response }) {
         let next = scrollView.sci + diff;
         let scroll = next > maxCi ? maxCi : next;
         table.scrollCi(scroll);
-        body.scrollBarSize();
-        body.scrollBarLocal();
+        body.refreshScrollBarSize();
+        body.refreshScrollBarLocal();
       }
     },
   });

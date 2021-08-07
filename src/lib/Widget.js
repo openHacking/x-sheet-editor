@@ -77,6 +77,7 @@ class Widget extends Life {
    */
   destroy() {
     XEvent.unbind(this);
+    this.removeSelf();
   }
 
 }

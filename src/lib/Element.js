@@ -170,6 +170,15 @@ class Element {
   }
 
   /**
+   * 删除当前元素
+   * @returns {boolean|ActiveX.IXMLDOMNode|*}
+   */
+  removeSelf() {
+    this.el.parentNode.removeChild(this.el);
+    return this;
+  }
+
+  /**
    * 当前元素是否包含指定节点
    * @param ele
    * @returns {boolean|*}
