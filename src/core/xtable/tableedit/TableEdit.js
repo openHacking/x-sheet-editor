@@ -125,12 +125,12 @@ class TableEdit extends TextEdit {
     let { selectRange } = xSelect;
     let { sri, sci } = selectRange;
     let activeCell = cells.getCellOrNew(sri, sci);
-    let { contentType } = activeCell;
     this.activeCell = activeCell;
     this.selectRange = selectRange;
     if (activeCell.hasFormula()) {
       this.formulaTextToHtml();
     } else {
+      let { contentType } = activeCell;
       switch (contentType) {
         case Cell.TYPE.STRING:
         case Cell.TYPE.NUMBER:
@@ -160,6 +160,13 @@ class TableEdit extends TextEdit {
    */
   close(event) {
     let { table } = this;
+    if (this.checkedFormulaText()) {
+      this.htmlToFormulaText();
+    } else if (this.checkedRichText()) {
+      this.htmlToRichText();
+    } else {
+      this.textToCellText();
+    }
     super.close({
       edit: this, table, native: event,
     });

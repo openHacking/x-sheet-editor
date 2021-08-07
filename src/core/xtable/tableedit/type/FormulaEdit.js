@@ -37,7 +37,7 @@ class FormulaEdit extends RichEdit {
    * 检查输入的是否为公式内容
    */
   checkedFormulaText() {
-
+    return false;
   }
 
 }

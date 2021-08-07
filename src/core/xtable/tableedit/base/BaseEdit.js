@@ -15,9 +15,10 @@ class BaseEdit extends Widget {
    */
   constructor(table) {
     super(`${cssPrefix}-table-edit`);
-    this.activeCell = null;
-    this.selectRange = null;
     this.table = table;
+    this.mode = BaseEdit.MODE.HIDE;
+    this.selectRange = null;
+    this.activeCell = null;
     this.EMPTY = '<p><br /></p>';
     this.throttle = new Throttle({
       time: 100,
@@ -108,7 +109,7 @@ class BaseEdit extends Widget {
     this.mode = BaseEdit.MODE.SHOW;
     this.show();
     this.local();
-    table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_FINISH, event);
+    table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_START, event);
     return this;
   }
 
@@ -120,7 +121,7 @@ class BaseEdit extends Widget {
     const { table } = this;
     this.mode = BaseEdit.MODE.HIDE;
     this.hide();
-    table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_START, event);
+    table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_FINISH, event);
     return this;
   }
 

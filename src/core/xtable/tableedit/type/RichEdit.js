@@ -138,7 +138,7 @@ class RichEdit extends StyleEdit {
    * 检查输入的是否为富文本
    */
   checkedRichText() {
-
+    return false;
   }
 
 }
