@@ -38,12 +38,16 @@ class ScrollBarX extends Widget {
   }
 
   unbind() {
-    XEvent.unbind(this.block);
     XEvent.unbind(this.nextBut);
     XEvent.unbind(this.lastBut);
+    XEvent.unbind(this.block);
+    XEvent.unbind(this);
   }
 
   bind() {
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
+      XEvent.mouseHold(document, () => {});
+    });
     XEvent.bind(this.block, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (evt1) => {
       if (evt1.button !== 0) return;
       const downEventXy = this.eventXy(evt1, this.block);
