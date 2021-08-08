@@ -24,21 +24,26 @@ class XTableWidgetFocus {
   constructor() {
     this.activate = {};
     this.items = [];
-    this.handle = () => {
-      this.activate = {};
+    this.native = {};
+    this.handle = (event) => {
+      if (this.native.target === event.target) {
+        return;
+      }
+      const exist = this.include(Element.wrap(event.target));
+      this.native = event;
+      this.activate = exist || {};
     };
+    this.bind();
   }
 
   bind() {
-    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.handle, true);
+    const { handle } = this;
+    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, handle, true);
   }
 
   unbind() {
-    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.handle, true);
-    this.items.forEach((item) => {
-      const { target, callback } = item;
-      XEvent.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, callback);
-    });
+    const { handle } = this;
+    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, handle, true);
   }
 
   include(el) {
@@ -75,16 +80,7 @@ class XTableWidgetFocus {
   }
 
   register({ target }) {
-    const callback = (event) => {
-      const exist = this.include(Element.wrap(event.target));
-      if (exist) {
-        this.activate = exist;
-      } else {
-        this.activate = null;
-      }
-    };
-    this.items.push({ target, callback });
-    XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, callback);
+    this.items.push({ target });
   }
 
   destroy() {
