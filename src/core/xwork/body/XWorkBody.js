@@ -60,7 +60,7 @@ class XWorkBody extends Widget {
       onRemove: (tab) => {
         const index = this.tabView.getIndexByTab(tab);
         new Confirm({
-          message: '是否删除工作表',
+          message: `是否删除${tab.name}`,
           ok: () => {
             this.removeByIndex(index);
           },

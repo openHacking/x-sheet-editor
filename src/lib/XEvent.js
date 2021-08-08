@@ -85,15 +85,15 @@ class XEvent {
     return target;
   }
 
-  static mouseHold(target, holdFunc = () => {}, endFunc = () => {}) {
+  static mouseHold(target, holdFunc = () => {}, endFunc = () => {}, time = 150) {
+    let handle = setInterval(() => {
+      holdFunc();
+    }, time);
     let xEvtUp = (evt) => {
       clearInterval(handle);
       XEvent.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);
       endFunc(evt);
     };
-    let handle = setInterval(() => {
-      holdFunc();
-    }, 150);
     holdFunc();
     XEvent.bind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_UP, xEvtUp, true);
   }
@@ -122,7 +122,7 @@ XEvent.WrapFuncion = {
     let lastPageX = 0;
     let lastPageY = 0;
     let lastTime = 0;
-    return function (event) {
+    return (event) => {
       const { pageX, pageY } = event;
       const current = Date.now();
       const diffTime = current - lastTime <= 300;
@@ -140,7 +140,7 @@ XEvent.WrapFuncion = {
       }
     };
   },
-  mouseClick: callback => function (event) {
+  mouseClick: callback => (event) => {
     callback(event);
   },
 };
