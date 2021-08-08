@@ -34,7 +34,9 @@ class TableEdit extends TextEdit {
       }
     });
     this.tableScrollHandle = XEvent.WrapFuncion.mouseClick((event) => {
-      this.close(event);
+      if (this.mode === BaseEdit.MODE.SHOW) {
+        this.close(event);
+      }
     });
     this.bind();
   }
@@ -62,9 +64,9 @@ class TableEdit extends TextEdit {
     keyboard.remove(this);
     widgetFocus.remove(this);
     XEvent.unbind(this);
+    XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, tableScrollHandle);
     XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, openClickHandle);
     XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, closeClickHandle);
-    XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, tableScrollHandle);
   }
 
   /**

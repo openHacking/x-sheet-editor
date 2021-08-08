@@ -31,6 +31,7 @@ class XFilter extends XScreenCssBorderItem {
     this.activeIcon = null;
     this.icons = [];
     this.display = false;
+    this.mask = new Mask().setRoot(table);
     this.filter = new FilterData({
       el: this.mask,
       ok: ({
@@ -47,11 +48,10 @@ class XFilter extends XScreenCssBorderItem {
         }).open();
       },
     });
-    this.mask = new Mask().setRoot(table);
-    this.flt = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-lt`);
     this.ft = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-t`);
-    this.fbr = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-br`);
     this.fl = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-l`);
+    this.flt = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-lt`);
+    this.fbr = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-br`);
     this.bl.children(this.fl);
     this.bt.children(this.ft);
     this.blt.children(this.flt);

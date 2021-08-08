@@ -17,20 +17,6 @@ class Rect {
   }
 
   /**
-   * 计算当前矩形在指定矩形内部的位置
-   * @param rect
-   * @returns {Rect}
-   */
-  inRectPosition(rect) {
-    return new Rect({
-      x: this.x - rect.x,
-      y: this.y - rect.y,
-      width: this.width,
-      height: this.height,
-    });
-  }
-
-  /**
    * 判断两个矩形是否不发生重合
    * @param {Rect} other 区域
    * @returns {boolean}
@@ -73,6 +59,20 @@ class Rect {
     const { x, y, width, height } = rect;
     return this.x <= x && this.x + this.width >= x + width
       && this.y <= y && this.y + this.height >= y + height;
+  }
+
+  /**
+   * 计算当前矩形在指定矩形内部的位置
+   * @param rect
+   * @returns {Rect}
+   */
+  inRectPosition(rect) {
+    return new Rect({
+      x: this.x - rect.x,
+      y: this.y - rect.y,
+      width: this.width,
+      height: this.height,
+    });
   }
 
   /**
