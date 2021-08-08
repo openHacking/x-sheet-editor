@@ -128,7 +128,7 @@ class XlsxImport {
             const { name, bold, size, italic, underline, strike, color } = font;
             xCell.fontAttr.italic = italic;
             xCell.fontAttr.name = name;
-            xCell.fontAttr.size = this.fontSize(size || 12);
+            xCell.fontAttr.size = this.fontSize(size || 13);
             xCell.fontAttr.bold = bold;
             xCell.fontAttr.underline = underline;
             xCell.fontAttr.strikethrough = strike;
@@ -154,7 +154,7 @@ class XlsxImport {
               if (font) {
                 const { size, name, italic, bold } = font;
                 const { underline, strike, color } = font;
-                richFont.size = this.fontSize(size || 12);
+                richFont.size = this.fontSize(size || 13);
                 richFont.bold = bold;
                 richFont.name = name;
                 richFont.italic = italic;

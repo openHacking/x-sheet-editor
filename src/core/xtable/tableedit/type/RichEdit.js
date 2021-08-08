@@ -1,6 +1,6 @@
 import { XDraw } from '../../../../draw/XDraw';
-import { h } from '../../../../lib/Element';
 import { StyleEdit } from '../base/StyleEdit';
+import { Cell } from '../../tablecell/Cell';
 import { SheetUtils } from '../../../../utils/SheetUtils';
 import { RichFonts } from '../../tablecell/RichFonts';
 import { Constant } from '../../../../const/Constant';
@@ -32,7 +32,36 @@ class RichEdit extends StyleEdit {
         item = `<font face="${name}">${item}</font>`;
       }
       if (size) {
-        item = `<font size="${XDraw.cssPx(size)}">${item}</font>`;
+        switch (size) {
+          case 10: {
+            item = `<font size="${1}">${item}</font>`;
+            break;
+          }
+          case 13: {
+            item = `<font size="${2}">${item}</font>`;
+            break;
+          }
+          case 16: {
+            item = `<font size="${3}">${item}</font>`;
+            break;
+          }
+          case 18: {
+            item = `<font size="${4}">${item}</font>`;
+            break;
+          }
+          case 24: {
+            item = `<font size="${5}">${item}</font>`;
+            break;
+          }
+          case 32: {
+            item = `<font size="${6}">${item}</font>`;
+            break;
+          }
+          case 48: {
+            item = `<font size="${7}">${item}</font>`;
+            break;
+          }
+        }
       }
       if (bold) {
         item = `<b>${item}</b>`;
@@ -72,7 +101,7 @@ class RichEdit extends StyleEdit {
       font-family: ${name};
     `);
     let html = items.join('');
-    this.text(html).style(style);
+    this.html(html).style(style);
   }
 
   /**
@@ -81,11 +110,12 @@ class RichEdit extends StyleEdit {
    */
   htmlToRichText() {
     const { activeCell } = this;
-    const { table } = this;
     const { selectRange } = this;
+    const { table } = this;
     const { sri, sci } = selectRange;
     const { snapshot } = table;
     const cloneCell = activeCell.clone();
+    const cells = table.getTableCells();
     const collect = [];
     const handle = (element, parent) => {
       const tagName = element.tagName();
@@ -93,6 +123,7 @@ class RichEdit extends StyleEdit {
       if (element.isTextNode()) {
         collect.push({
           text: element.nodeValue(),
+          ...style,
         });
         return;
       }
@@ -119,8 +150,37 @@ class RichEdit extends StyleEdit {
           case 'font': {
             const size = element.attr('size');
             const name = element.attr('name');
-            const color = element.attr('size');
-            style.size = SheetUtils.parseInt(size);
+            const color = element.attr('color');
+            switch (size) {
+              case '1': {
+                style.size = 10;
+                break;
+              }
+              case '2': {
+                style.size = 13;
+                break;
+              }
+              case '3': {
+                style.size = 16;
+                break;
+              }
+              case '4': {
+                style.size = 18;
+                break;
+              }
+              case '5': {
+                style.size = 24;
+                break;
+              }
+              case '6': {
+                style.size = 32;
+                break;
+              }
+              case '7': {
+                style.size = 48;
+                break;
+              }
+            }
             style.name = name;
             style.color = color;
             break;
@@ -130,9 +190,6 @@ class RichEdit extends StyleEdit {
             break;
           }
         }
-        collect.push({
-          text: element.text(), style,
-        });
       }
       const children = element.children();
       for (const child of children) {
@@ -145,7 +202,8 @@ class RichEdit extends StyleEdit {
     });
     snapshot.open();
     cloneCell.setRichText(rich);
-    cloneCell.setCellOrNew(sri, sci, cloneCell);
+    cloneCell.setContentType(Cell.TYPE.RICH_TEXT);
+    cells.setCellOrNew(sri, sci, cloneCell);
     snapshot.close({
       type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
     });
@@ -156,7 +214,9 @@ class RichEdit extends StyleEdit {
    * 检查输入的是否为富文本
    */
   checkedRichText() {
-    return false;
+    const patten = /<i>|<b>|<u>|<font.*>/;
+    const html = this.html();
+    return patten.test(html);
   }
 
 }

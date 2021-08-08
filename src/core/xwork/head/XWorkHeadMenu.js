@@ -1563,7 +1563,7 @@ class XWorkHeadMenu extends Widget {
     const cells = table.getTableCells();
     const xSelect = xScreen.findType(XSelectItem);
     const { selectRange } = xSelect;
-    let size = '12';
+    let size = 13;
     if (selectRange) {
       const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
       // eslint-disable-next-line prefer-destructuring

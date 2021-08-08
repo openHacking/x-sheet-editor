@@ -117,7 +117,6 @@ class XlsxExport {
               const element = item.shift();
               const cell = element.getCell();
               if (cell) {
-                debugger;
                 const { contentType, background } = cell;
                 const { text, fontAttr, borderAttr } = cell;
                 const { top, right, left, bottom } = borderAttr;
