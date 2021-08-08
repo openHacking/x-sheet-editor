@@ -24,26 +24,12 @@ class XTableWidgetFocus {
   constructor() {
     this.activate = {};
     this.items = [];
-    this.native = {};
     this.handle = (event) => {
-      if (this.native.target === event.target) {
-        return;
-      }
-      const exist = this.include(Element.wrap(event.target));
+      const find = this.include(Element.wrap(event.target));
       this.native = event;
-      this.activate = exist || {};
+      this.activate = find || {};
     };
     this.bind();
-  }
-
-  bind() {
-    const { handle } = this;
-    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, handle, true);
-  }
-
-  unbind() {
-    const { handle } = this;
-    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, handle, true);
   }
 
   include(el) {
@@ -55,6 +41,16 @@ class XTableWidgetFocus {
       el = el.parent();
     }
     return null;
+  }
+
+  bind() {
+    const { handle } = this;
+    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, handle, true);
+  }
+
+  unbind() {
+    const { handle } = this;
+    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, handle, true);
   }
 
   exist(el) {
@@ -70,12 +66,8 @@ class XTableWidgetFocus {
 
   remove(el) {
     this.items = this.items.filter((item) => {
-      const { target, callback } = item;
-      const equals = target.equals(el);
-      if (equals) {
-        XEvent.unbind(target, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, callback);
-      }
-      return equals;
+      const { target } = item;
+      return !target.equals(el);
     });
   }
 
