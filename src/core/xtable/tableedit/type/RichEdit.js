@@ -4,6 +4,7 @@ import { StyleEdit } from '../base/StyleEdit';
 import { SheetUtils } from '../../../../utils/SheetUtils';
 import { RichFonts } from '../../tablecell/RichFonts';
 import { Constant } from '../../../../const/Constant';
+import { BaseFont } from '../../../../draw/font/BaseFont';
 
 /**
  * RichEdit
@@ -15,37 +16,63 @@ class RichEdit extends StyleEdit {
    * @constructor
    */
   richTextToHtml() {
-    const { activeCell } = this;
-    const { fonts } = activeCell.getComputeText();
-    const textBreak = /\n/;
-    const items = [];
-    const empty = [this.EMPTY];
+    let { activeCell } = this;
+    let { background, fontAttr } = activeCell;
+    let { align, size, color } = fontAttr;
+    let { bold, italic, name } = fontAttr;
+    let { fonts } = activeCell.getComputeText();
+    let textAlign = 'left';
+    let fontSize = XDraw.cssPx(size);
+    let items = [];
     fonts.forEach((font) => {
-      const { text, name, size, bold, italic, color, underline, strikethrough } = font;
-      const array = text.split(textBreak);
-      array.forEach((text) => {
-        const item = h('p');
-        const line = [];
-        if (strikethrough) {
-          line.push('line-through');
-        }
-        if (underline) {
-          line.push('underline');
-        }
-        const { length } = line;
-        const strike = length ? line.join(' ') : 'none';
-        item.css('font-family', name);
-        item.css('color', color);
-        item.css('text-decoration', strike);
-        item.css('font-size', `${XDraw.cssPx(size)}px`);
-        item.css('font-weight', bold ? 'bold' : 'none');
-        item.css('font-style', italic ? 'italic' : 'none');
-        item.text(text);
-        items.push(item);
-      });
+      let { text, name, size, bold, italic } = font;
+      let { color, underline, strikethrough } = font;
+      let item = text.replace(/\n/g, '<br/>');
+      if (name) {
+        item = `<font face="${name}">${item}</font>`;
+      }
+      if (size) {
+        item = `<font size="${XDraw.cssPx(size)}">${item}</font>`;
+      }
+      if (bold) {
+        item = `<b>${item}</b>`;
+      }
+      if (italic) {
+        item = `<i>${item}</i>`;
+      }
+      if (color) {
+        item = `<font color="${color}">${item}</font>`;
+      }
+      if (underline) {
+        item = `<u>${item}</u>`;
+      }
+      if (strikethrough) {
+        item = `<strike>${item}</strike>`;
+      }
+      items.push(item);
     });
-    const { length } = items;
-    return length ? items : empty;
+    switch (align) {
+      case BaseFont.ALIGN.left:
+        textAlign = 'left';
+        break;
+      case BaseFont.ALIGN.center:
+        textAlign = 'center';
+        break;
+      case BaseFont.ALIGN.right:
+        textAlign = 'right';
+        break;
+    }
+    let style = SheetUtils.clearBlank(`
+      text-align:${textAlign};
+      color: ${color};
+      background:${background};
+      font-style: ${italic ? 'italic' : 'initial'};
+      font-weight: ${bold ? 'bold' : 'initial'};
+      font-size: ${fontSize}px;
+      font-family: ${name};
+    `);
+    let html = items.join('');
+    this.text(html).style(style);
   }
 
   /**
@@ -53,30 +80,29 @@ class RichEdit extends StyleEdit {
    * @constructor
    */
   htmlToRichText() {
-    const { activeCell, selectRange } = this;
+    const { activeCell } = this;
     const { table } = this;
+    const { selectRange } = this;
     const { sri, sci } = selectRange;
-    const cloneCell = activeCell.clone();
     const { snapshot } = table;
-    const element = this.find('p');
-    const items = [];
-    const findNodes = (ele) => {
-      const clone = ele.clone();
-      return clone.children()
-        .filter(i => i.nodeType === 1);
-    };
-    const findFonts = (ele) => {
-      const clone = findNodes(ele);
-      clone.forEach(i => i.remove());
-      return clone.text();
-    };
-    const handleRow = (ele) => {
-      const collect = [];
-      return (function handle(ele, parent) {
-        const tagName = ele.tagName();
-        const node = findNodes(ele);
-        const text = findFonts(ele);
-        const style = { ...parent };
+    const cloneCell = activeCell.clone();
+    const collect = [];
+    const handle = (element, parent) => {
+      const tagName = element.tagName();
+      const style = { ...parent };
+      if (element.isTextNode()) {
+        collect.push({
+          text: element.nodeValue(),
+        });
+        return;
+      }
+      if (element.isBreakNode()) {
+        collect.push({
+          text: '\n',
+        });
+        return;
+      }
+      if (!element.equals(this)) {
         switch (tagName) {
           case 'u': {
             style.underline = true;
@@ -91,18 +117,12 @@ class RichEdit extends StyleEdit {
             break;
           }
           case 'font': {
-            const size = ele.attr('size');
-            const name = ele.attr('face');
-            const color = ele.attr('color');
-            if (size) {
-              style.size = SheetUtils.parseInt(size);
-            }
-            if (name) {
-              style.name = name;
-            }
-            if (color) {
-              style.color = color;
-            }
+            const size = element.attr('size');
+            const name = element.attr('name');
+            const color = element.attr('size');
+            style.size = SheetUtils.parseInt(size);
+            style.name = name;
+            style.color = color;
             break;
           }
           case 'strike': {
@@ -111,19 +131,17 @@ class RichEdit extends StyleEdit {
           }
         }
         collect.push({
-          text, style,
+          text: element.text(), style,
         });
-        node.forEach((item) => {
-          handle(item, style);
-        });
-        return collect;
-      }(ele, {}));
+      }
+      const children = element.children();
+      for (const child of children) {
+        handle(child, style);
+      }
     };
-    element.forEach((p) => {
-      items.push(handleRow(p));
-    });
+    handle(this, {});
     const rich = new RichFonts({
-      fonts: items,
+      fonts: collect,
     });
     snapshot.open();
     cloneCell.setRichText(rich);

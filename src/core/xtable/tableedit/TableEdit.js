@@ -52,24 +52,6 @@ class TableEdit extends TextEdit {
   }
 
   /**
-   * 解绑事件处理
-   */
-  unbind() {
-    const { openClickHandle } = this;
-    const { closeClickHandle } = this;
-    const { tableScrollHandle } = this;
-    const { table } = this;
-    const { widgetFocus } = table;
-    const { keyboard } = table;
-    keyboard.remove(this);
-    widgetFocus.remove(this);
-    XEvent.unbind(this);
-    XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, tableScrollHandle);
-    XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, openClickHandle);
-    XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, closeClickHandle);
-  }
-
-  /**
    * 绑定事件处理
    */
   bind() {
@@ -83,7 +65,7 @@ class TableEdit extends TextEdit {
       response: [{
         keyCode: keyCode => keyCode === 1813,
         handle: () => {
-          this.insertBreak();
+          this.insertHtml('<br />');
         },
       }],
     });
@@ -107,6 +89,24 @@ class TableEdit extends TextEdit {
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, tableScrollHandle);
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, closeClickHandle);
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, openClickHandle);
+  }
+
+  /**
+   * 解绑事件处理
+   */
+  unbind() {
+    const { openClickHandle } = this;
+    const { closeClickHandle } = this;
+    const { tableScrollHandle } = this;
+    const { table } = this;
+    const { widgetFocus } = table;
+    const { keyboard } = table;
+    keyboard.remove(this);
+    widgetFocus.remove(this);
+    XEvent.unbind(this);
+    XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, tableScrollHandle);
+    XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, openClickHandle);
+    XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, closeClickHandle);
   }
 
   /**

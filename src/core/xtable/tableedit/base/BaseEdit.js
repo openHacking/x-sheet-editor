@@ -19,7 +19,6 @@ class BaseEdit extends Widget {
     this.mode = BaseEdit.MODE.HIDE;
     this.selectRange = null;
     this.activeCell = null;
-    this.EMPTY = '<p><br /></p>';
     this.throttle = new Throttle({
       time: 100,
     });

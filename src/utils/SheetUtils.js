@@ -75,6 +75,10 @@ class SheetUtils {
     return SheetUtils.type(e) === DATA_TYPE.Array;
   }
 
+  static isLikeArray(e) {
+    return !!e.length;
+  }
+
   static isBlank(s) {
     if (SheetUtils.isUnDef(s)) {
       return true;
@@ -387,6 +391,10 @@ class SheetUtils {
 
   static if(condition, establish, otherwise) {
     return condition ? establish() : otherwise();
+  }
+
+  static slice(likeArray) {
+    return Array.prototype.slice.call(likeArray);
   }
 
   static clearBlank(str) {

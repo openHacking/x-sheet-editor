@@ -9,19 +9,20 @@ class Element {
   /**
    * 包装元素
    */
-  static wrap(args) {
-    if (SheetUtils.isArray(args)) {
-      const elements = [];
-      args.forEach((item) => {
+  static wrap(object) {
+    if (SheetUtils.isArray(object) || SheetUtils.isLikeArray(object)) {
+      let elements = [];
+      for (let i = 0; i < object.length; i++) {
+        const item = object[i];
         if (item instanceof Element) {
           elements.push(item);
         } else {
           elements.push(new Element(item));
         }
-      });
+      }
       return elements;
     }
-    return new Element(args);
+    return new Element(object);
   }
 
   /**
@@ -36,7 +37,21 @@ class Element {
     } else {
       this.el = tag;
     }
-    this.el.data = [];
+    this.el.map = {};
+  }
+
+  /**
+   * 数据绑定
+   * @param key
+   * @param value
+   * @returns {Element|*}
+   */
+  data(key, value) {
+    if (value !== undefined) {
+      this.el.map[key] = value;
+      return this;
+    }
+    return this.el.map[key];
   }
 
   /**
@@ -58,49 +73,6 @@ class Element {
    */
   append(ele) {
     this.el.appendChild(ele.el);
-  }
-
-  /**
-   * 删除Class名称
-   * @param name
-   * @returns {Element}
-   */
-  removeClass(name) {
-    this.el.classList.remove(name);
-    return this;
-  }
-
-  /**
-   * 添加Class名称
-   * @param name
-   * @returns {Element}
-   */
-  addClass(name) {
-    this.el.classList.add(name);
-    return this;
-  }
-
-  /**
-   * 是否具有指定Class名称
-   * @param name
-   * @returns {boolean}
-   */
-  hasClass(name) {
-    return this.el.classList.contains(name);
-  }
-
-  /**
-   * 数据绑定
-   * @param key
-   * @param value
-   * @returns {Element|*}
-   */
-  data(key, value) {
-    if (value !== undefined) {
-      this.el.data[key] = value;
-      return this;
-    }
-    return this.el.data[key];
   }
 
   /**
@@ -132,6 +104,35 @@ class Element {
    */
   parent() {
     return Element.wrap(this.el.parentNode);
+  }
+
+  /**
+   * 添加Class名称
+   * @param name
+   * @returns {Element}
+   */
+  addClass(name) {
+    this.el.classList.add(name);
+    return this;
+  }
+
+  /**
+   * 是否具有指定Class名称
+   * @param name
+   * @returns {boolean}
+   */
+  hasClass(name) {
+    return this.el.classList.contains(name);
+  }
+
+  /**
+   * 删除Class名称
+   * @param name
+   * @returns {Element}
+   */
+  removeClass(name) {
+    this.el.classList.remove(name);
+    return this;
   }
 
   /**
@@ -443,7 +444,39 @@ class Element {
    * @returns {string}
    */
   tagName() {
-    return this.el.tagName.toLocaleLowerCase();
+    return this.el.nodeName.toLocaleLowerCase();
+  }
+
+  /**
+   * 节点内容
+   * @returns {string}
+   */
+  nodeValue() {
+    return this.el.nodeValue;
+  }
+
+  /**
+   * 节点类型
+   * @returns {number}
+   */
+  nodeType() {
+    return this.el.nodeType;
+  }
+
+  /**
+   * 是否文本节点
+   * @returns {boolean}
+   */
+  isTextNode() {
+    return this.tagName() === '#text';
+  }
+
+  /**
+   * 是否换行节点
+   * @returns {boolean}
+   */
+  isBreakNode() {
+    return this.tagName() === 'br';
   }
 
   /**
@@ -474,6 +507,7 @@ class Element {
    */
   empty() {
     this.html('');
+    return this;
   }
 
   /**

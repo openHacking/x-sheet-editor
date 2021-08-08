@@ -58,6 +58,13 @@ class StyleEdit extends BaseEdit {
     document.execCommand('strikeThrough', false);
   }
 
+  /**
+   * 插入html
+   */
+  insertHtml(html) {
+    document.execCommand('insertHTML', false, html);
+  }
+
 }
 
 export {
