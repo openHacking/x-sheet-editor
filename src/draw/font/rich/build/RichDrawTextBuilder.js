@@ -28,12 +28,12 @@ class RichDrawTextBuilder {
         return new RichHorizonDraw({
           draw, rich, rect, overflow, attr,
         });
-      case BaseFont.TEXT_DIRECTION.VERTICAL:
-        return new RichVerticalDraw({
-          draw, rich, rect, overflow, attr,
-        });
       case BaseFont.TEXT_DIRECTION.ANGLE:
         return new RichAngleBoxDraw({
+          draw, rich, rect, overflow, attr,
+        });
+      case BaseFont.TEXT_DIRECTION.VERTICAL:
+        return new RichVerticalDraw({
           draw, rich, rect, overflow, attr,
         });
       case BaseFont.TEXT_DIRECTION.ANGLE_BAR:

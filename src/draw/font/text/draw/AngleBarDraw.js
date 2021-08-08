@@ -6,6 +6,7 @@ import { Angle } from '../../../Angle';
 import { DrawResult } from '../../DrawResult';
 import { SheetUtils } from '../../../../utils/SheetUtils';
 import { BaseText } from '../BaseText';
+import { BaseRuler } from '../../BaseRuler';
 
 class AngleBarDraw extends BaseText {
 
@@ -23,6 +24,7 @@ class AngleBarDraw extends BaseText {
   drawingFont() {
     const { ruler } = this;
     if (ruler.isBlank()) {
+      ruler.setUsedType(BaseRuler.USED.EMPTY_TEXT);
       return new DrawResult();
     }
     const { draw, attr } = this;

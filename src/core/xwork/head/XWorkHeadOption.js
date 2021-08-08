@@ -73,9 +73,7 @@ class XBookTopOption extends Widget {
                     sheets.forEach((item) => {
                       const tab = new XWorkTab(item.name);
                       const sheet = new XWorkSheet(tab, item);
-                      body.addTabSheet({
-                        tab, sheet,
-                      });
+                      body.addTabSheet(tab, sheet);
                     });
                   },
                 }).open();

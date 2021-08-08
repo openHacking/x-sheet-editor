@@ -186,8 +186,8 @@ class Cell {
    */
   setText(text) {
     this.text = text;
+    this.richText = new RichFonts();
     this.formatText = null;
-    this.richText = null;
     this.formulaText = null;
     this.formula = null;
     this.formulaInstruct = null;
@@ -212,8 +212,8 @@ class Cell {
    */
   setFormula(formula) {
     this.text = null;
+    this.richText = new RichFonts();
     this.formatText = null;
-    this.richText = null;
     this.formulaText = null;
     this.formula = formula;
     this.formulaInstruct = null;
@@ -281,21 +281,20 @@ class Cell {
    * @returns {Cell}
    */
   clone() {
-    const {
-      background, format, text, fontAttr,
-      borderAttr, contentWidth, icons,
-      contentType, custom,
-    } = this;
+    const { background, text, format, custom } = this;
+    const { richText, fontAttr, borderAttr } = this;
+    const { contentWidth, icons, contentType } = this;
     return new Cell({
       background,
       format,
       text,
+      custom,
+      richText,
       fontAttr,
       borderAttr,
       contentWidth,
       icons,
       contentType,
-      custom,
     });
   }
 

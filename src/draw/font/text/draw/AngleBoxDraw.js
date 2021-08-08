@@ -5,6 +5,7 @@ import { Angle } from '../../../Angle';
 import { Rect } from '../../../Rect';
 import { DrawResult } from '../../DrawResult';
 import { BaseText } from '../BaseText';
+import { BaseRuler } from '../../BaseRuler';
 
 class AngleBoxDraw extends BaseText {
 
@@ -22,6 +23,7 @@ class AngleBoxDraw extends BaseText {
   drawingFont() {
     const { ruler } = this;
     if (ruler.isBlank()) {
+      ruler.setUsedType(BaseRuler.USED.EMPTY_TEXT);
       return new DrawResult();
     }
     const { draw, attr } = this;

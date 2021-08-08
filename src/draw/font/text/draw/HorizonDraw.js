@@ -2,6 +2,7 @@ import { BaseFont } from '../../BaseFont';
 import { Crop } from '../../../Crop';
 import { DrawResult } from '../../DrawResult';
 import { BaseText } from '../BaseText';
+import { BaseRuler } from '../../BaseRuler';
 
 class HorizonDraw extends BaseText {
 
@@ -19,6 +20,7 @@ class HorizonDraw extends BaseText {
   drawingFont() {
     const { ruler } = this;
     if (ruler.isBlank()) {
+      ruler.setUsedType(BaseRuler.USED.EMPTY_TEXT);
       return new DrawResult();
     }
     const { draw, attr } = this;

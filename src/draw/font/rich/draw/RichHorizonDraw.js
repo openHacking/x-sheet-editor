@@ -3,6 +3,7 @@ import { DrawResult } from '../../DrawResult';
 import { BaseFont } from '../../BaseFont';
 import { Crop } from '../../../Crop';
 import { SheetUtils } from '../../../../utils/SheetUtils';
+import { BaseRuler } from '../../BaseRuler';
 
 class RichHorizonDraw extends BaseRich {
 
@@ -20,6 +21,7 @@ class RichHorizonDraw extends BaseRich {
   drawingFont() {
     const { ruler } = this;
     if (ruler.isBlank()) {
+      ruler.setUsedType(BaseRuler.USED.EMPTY_TEXT);
       return new DrawResult();
     }
     if (ruler.richHasBreak()) {

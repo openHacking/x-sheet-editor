@@ -4,7 +4,7 @@ class RichFonts {
 
   constructor({
     fonts = [],
-  }) {
+  } = {}) {
     this.fonts = fonts.map(font => new RichFont(font));
   }
 
