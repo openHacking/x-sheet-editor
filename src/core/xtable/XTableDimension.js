@@ -599,7 +599,7 @@ class XTableDimension extends Widget {
     this.xTop = new XTableTop(this);
     this.xContent = new XTableContent(this);
     // table组件
-    this.focus = XTableWidgetFocus.getInstance();
+    this.widgetFocus = XTableWidgetFocus.getInstance();
     this.keyboard = new XTableKeyboard(this);
     this.mousePointer = new XTableMousePoint(this);
     this.xScreen = new XScreen(this);
@@ -1107,7 +1107,7 @@ class XTableDimension extends Widget {
     // 绑定表格事件
     this.bindCacheClear();
     // 注册焦点元素
-    this.focus.register({ target: this });
+    this.widgetFocus.register({ target: this });
     // 表格渲染组件
     const { xTableStyle } = this;
     this.attach(xTableStyle);
@@ -1137,7 +1137,7 @@ class XTableDimension extends Widget {
    * 移除事件绑定
    */
   unbind() {
-    this.focus.remove(this);
+    this.widgetFocus.remove(this);
     XEvent.unbind(this);
   }
 
@@ -1176,7 +1176,7 @@ class XTableDimension extends Widget {
       this.xIconsEvent(XIcon.ICON_EVENT_TYPE.MOUSE_MOVE, info, e);
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      const { activate } = this.focus;
+      const { activate } = this.widgetFocus;
       const { target } = activate;
       if (target === this) {
         const { x, y } = this.eventXy(e);

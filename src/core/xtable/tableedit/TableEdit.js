@@ -44,8 +44,8 @@ class TableEdit extends TextEdit {
    */
   onAttach() {
     const { table } = this;
-    const { focus } = table;
-    focus.register({ target: this });
+    const { widgetFocus } = table;
+    widgetFocus.register({ target: this });
     this.hide();
   }
 
@@ -57,10 +57,10 @@ class TableEdit extends TextEdit {
     const { closeClickHandle } = this;
     const { tableScrollHandle } = this;
     const { table } = this;
-    const { focus } = table;
+    const { widgetFocus } = table;
     const { keyboard } = table;
     keyboard.remove(this);
-    focus.remove(this);
+    widgetFocus.remove(this);
     XEvent.unbind(this);
     XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, openClickHandle);
     XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, closeClickHandle);

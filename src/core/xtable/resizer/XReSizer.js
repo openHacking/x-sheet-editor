@@ -46,8 +46,8 @@ class XReSizer extends Widget {
     });
     this.tableDown = XEvent.WrapFuncion.mouseClick(() => {
       const { table } = this;
-      const { focus } = table;
-      const { activate } = focus;
+      const { widgetFocus } = table;
+      const { activate } = widgetFocus;
       const { target } = activate;
       if (target !== table && target !== this) {
         this.hide();
@@ -60,7 +60,7 @@ class XReSizer extends Widget {
 
   onAttach() {
     this.bind();
-    this.table.focus.register({ target: this });
+    this.table.widgetFocus.register({ target: this });
   }
 
   bind() {

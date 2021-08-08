@@ -13,13 +13,13 @@ class XTableKeyboard {
    * @param table
    */
   constructor(table) {
-    const { focus } = table;
+    const { widgetFocus } = table;
     this.table = table;
     this.items = [];
     this.keyCode = '';
     this.doHandle = (event) => {
       const { keyCode } = event;
-      const { activate } = focus;
+      const { activate } = widgetFocus;
       if (!`${this.keyCode}`.includes(`${keyCode}`)) {
         this.keyCode = `${this.keyCode}${keyCode}`;
       }

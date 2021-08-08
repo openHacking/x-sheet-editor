@@ -77,11 +77,11 @@ class XSelectItem extends XScreenCssBorderItem {
     };
     this.tableMouseDown = (e1) => {
       const { table } = this;
-      const { mousePointer, focus } = table;
+      const { mousePointer, widgetFocus } = table;
       if (e1.button !== 0) {
         return;
       }
-      const { activate } = focus;
+      const { activate } = widgetFocus;
       const { target } = activate;
       if (target !== table) {
         return;
@@ -242,10 +242,10 @@ class XSelectItem extends XScreenCssBorderItem {
     const { table } = this;
     this.bind();
     this.hide();
-    table.focus.register({ target: this.ltCorner });
-    table.focus.register({ target: this.lCorner });
-    table.focus.register({ target: this.tCorner });
-    table.focus.register({ target: this.brCorner });
+    table.widgetFocus.register({ target: this.ltCorner });
+    table.widgetFocus.register({ target: this.lCorner });
+    table.widgetFocus.register({ target: this.tCorner });
+    table.widgetFocus.register({ target: this.brCorner });
   }
 
   /**
