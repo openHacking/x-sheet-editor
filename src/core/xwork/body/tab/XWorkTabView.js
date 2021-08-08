@@ -5,7 +5,6 @@ import { SheetUtils } from '../../../../utils/SheetUtils';
 import { XEvent } from '../../../../lib/XEvent';
 import { TabContextMenu } from './contextmenu/TabContextMenu';
 import { ElPopUp } from '../../../../module/elpopup/ElPopUp';
-import { Confirm } from '../../../../module/confirm/Confirm';
 
 const settings = {
   onAdd(tab) { return tab; },
@@ -150,9 +149,7 @@ class XWorkTabView extends Widget {
   setActiveByIndex(index = 0) {
     const { tabList } = this;
     const tab = tabList[index];
-    if (tab) {
-      this.setActive(tab);
-    }
+    this.setActive(tab);
     return tab;
   }
 
@@ -162,11 +159,13 @@ class XWorkTabView extends Widget {
    * @returns {*}
    */
   setActive(tab) {
-    this.activeIndex = this.getIndexByTab(tab);
-    tab.addClass('active');
-    tab.sibling().forEach((item) => {
-      item.removeClass('active');
-    });
+    if (tab) {
+      this.activeIndex = this.getIndexByTab(tab);
+      tab.addClass('active');
+      tab.sibling().forEach((item) => {
+        item.removeClass('active');
+      });
+    }
   }
 
   /**
@@ -199,11 +198,26 @@ class XWorkTabView extends Widget {
    * @param index
    */
   removeByIndex(index) {
-    const { tabList } = this;
-    const array = tabList.splice(index, 1);
-    if (array.length) {
-      array[0].destroy();
+    const { activeIndex, tabList } = this;
+    const remove = tabList[index];
+    tabList.splice(index, 1);
+    if (remove) {
+      remove.destroy();
     }
+    const length = this.getTabCount() - 1;
+    if (activeIndex >= length) {
+      this.activeIndex = length;
+    }
+    const active = this.getActiveTab();
+    this.setActive(active);
+  }
+
+  /**
+   * 获取sheet数量
+   * @returns {number}
+   */
+  getTabCount() {
+    return this.tabList.length;
   }
 
   /**

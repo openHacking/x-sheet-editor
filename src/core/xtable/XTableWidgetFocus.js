@@ -24,7 +24,12 @@ class XTableWidgetFocus {
   constructor() {
     this.activate = {};
     this.items = [];
+    this.native = {};
     this.handle = (event) => {
+      // 如果dom多可能存在性能问题
+      if (event.target === this.native.target) {
+        return;
+      }
       const find = this.include(Element.wrap(event.target));
       this.native = event;
       this.activate = find || {};

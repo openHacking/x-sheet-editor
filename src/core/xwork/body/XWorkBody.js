@@ -50,7 +50,7 @@ class XWorkBody extends Widget {
     this.tabView = new XWorkTabView({
       onSwitch: (tab) => {
         const index = this.tabView.getIndexByTab(tab);
-        this.setActiveIndex(index);
+        this.setActiveByIndex(index);
       },
       onAdded: () => {
         const tab = new XWorkTab();
@@ -183,7 +183,7 @@ class XWorkBody extends Widget {
       const sheet = new XWorkSheet(tab, item);
       this.addTabSheet(tab, sheet);
     }
-    this.setActiveIndex();
+    this.setActiveByIndex();
   }
 
   /**
@@ -307,25 +307,6 @@ class XWorkBody extends Widget {
   }
 
   /**
-   * 激活指定索引的sheet
-   * @param index
-   */
-  setActiveIndex(index = 0) {
-    const { sheetView } = this;
-    const { tabView } = this;
-    sheetView.setActiveByIndex(index);
-    tabView.setActiveByIndex(index);
-    const table = this.getActiveTable();
-    if (table) {
-      table.reset();
-      this.refreshScrollBarLocal();
-      this.refreshScrollBarSize();
-      table.resize();
-      this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
-    }
-  }
-
-  /**
    * 设置当前激活的sheet缩放比
    * @param value
    */
@@ -336,6 +317,18 @@ class XWorkBody extends Widget {
     table.setScale(value);
     this.refreshScrollBarLocal();
     this.refreshScrollBarSize();
+  }
+
+  /**
+   * 激活指定索引的sheet
+   * @param index
+   */
+  setActiveByIndex(index = 0) {
+    const { sheetView } = this;
+    const { tabView } = this;
+    tabView.setActiveByIndex(index);
+    sheetView.setActiveByIndex(index);
+    this.refreshActiveTable();
   }
 
   /**
@@ -391,6 +384,7 @@ class XWorkBody extends Widget {
     const { sheetView } = this;
     tabView.removeByIndex(index);
     sheetView.removeByIndex(index);
+    this.refreshActiveTable();
   }
 
   /**
@@ -452,6 +446,20 @@ class XWorkBody extends Widget {
   }
 
   /**
+   * 刷新当前表格
+   */
+  refreshActiveTable() {
+    const table = this.getActiveTable();
+    if (table) {
+      table.reset();
+      this.refreshScrollBarLocal();
+      this.refreshScrollBarSize();
+      table.resize();
+      this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
+    }
+  }
+
+  /**
    * 刷新滚动条大小
    */
   refreshScrollBarSize() {
@@ -482,6 +490,9 @@ class XWorkBody extends Widget {
     this.scrollBarX.setLocal(table.getLeft());
   }
 
+  /**
+   * 组件销毁
+   */
   destroy() {
     super.destroy();
     this.unbind();

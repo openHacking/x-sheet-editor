@@ -32,9 +32,7 @@ class XWorkSheetView extends Widget {
   setActiveByIndex(index = 0) {
     const { sheetList } = this;
     const sheet = sheetList[index];
-    if (sheet) {
-      this.setActive(sheet);
-    }
+    this.setActive(sheet);
     return sheet;
   }
 
@@ -44,11 +42,13 @@ class XWorkSheetView extends Widget {
    * @returns {*}
    */
   setActive(sheet) {
-    this.activeIndex = this.getIndexBySheet(sheet);
-    sheet.show();
-    sheet.sibling().forEach((item) => {
-      item.hide();
-    });
+    if (sheet) {
+      this.activeIndex = this.getIndexBySheet(sheet);
+      sheet.show();
+      sheet.sibling().forEach((item) => {
+        item.hide();
+      });
+    }
     return sheet;
   }
 
@@ -87,15 +87,30 @@ class XWorkSheetView extends Widget {
   }
 
   /**
+   * 获取sheet数量
+   * @returns {number}
+   */
+  getSheetCount() {
+    return this.sheetList.length;
+  }
+
+  /**
    * 删除指定索引的sheet
    * @param index
    */
   removeByIndex(index = 0) {
-    const { sheetList } = this;
-    const array = sheetList.splice(index, 1);
-    if (array.length) {
-      array[0].destroy();
+    const { activeIndex, sheetList } = this;
+    const remove = sheetList[index];
+    sheetList.splice(index, 1);
+    if (remove) {
+      remove.destroy();
     }
+    const length = this.getSheetCount() - 1;
+    if (activeIndex >= length) {
+      this.activeIndex = length;
+    }
+    const active = this.getActiveSheet();
+    this.setActive(active);
   }
 
 }
