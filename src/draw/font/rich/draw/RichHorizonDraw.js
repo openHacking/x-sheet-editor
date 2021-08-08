@@ -135,6 +135,7 @@ class RichHorizonDraw extends BaseRich {
       crop.open();
       for (let i = 0, len = textArray.length; i < len; i++) {
         const item = textArray[i];
+        debugger;
         const style = SheetUtils.extends({}, attr, item.style);
         const fontItalic = `${style.italic ? 'italic' : ''}`;
         const fontBold = `${style.bold ? 'bold' : ''}`;
@@ -162,6 +163,7 @@ class RichHorizonDraw extends BaseRich {
     } else {
       for (let i = 0, len = textArray.length; i < len; i++) {
         const item = textArray[i];
+        debugger;
         const style = SheetUtils.extends({}, attr, item.style);
         const fontItalic = `${style.italic ? 'italic' : ''}`;
         const fontBold = `${style.bold ? 'bold' : ''}`;

@@ -39,55 +39,6 @@ class ElPopUp extends Widget {
   }
 
   /**
-   * 显示弹框
-   */
-  open() {
-    if (this.status === false && root) {
-      root.children(this);
-      this.status = true;
-    }
-    this.elPopUpPosition();
-    this.elPopUpAutosize();
-    this.elPopUpLocation();
-  }
-
-  /**
-   * 关闭弹框
-   */
-  close() {
-    if (this.status === true && root) {
-      root.remove(this);
-      this.status = false;
-    }
-  }
-
-  /**
-   * 卸载事件
-   */
-  unbind() {
-    XEvent.unbind(this);
-    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.elPopUpDownHandle);
-  }
-
-  /**
-   * 绑定事件
-   */
-  bind() {
-    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      e.stopPropagation();
-    });
-    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.elPopUpDownHandle);
-  }
-
-  /**
-   * 设置环绕元素
-   * @param el
-   */
-  setEL(el) {
-    this.options.el = el;
-  }
-
-  /**
    * 计算显示的大小
    */
   elPopUpAutosize() {
@@ -203,6 +154,55 @@ class ElPopUp extends Widget {
         this.css('top', `${location}px`);
         break;
     }
+  }
+
+  /**
+   * 显示弹框
+   */
+  open() {
+    if (this.status === false && root) {
+      root.children(this);
+      this.status = true;
+    }
+    this.elPopUpPosition();
+    this.elPopUpAutosize();
+    this.elPopUpLocation();
+  }
+
+  /**
+   * 关闭弹框
+   */
+  close() {
+    if (this.status === true && root) {
+      root.remove(this);
+      this.status = false;
+    }
+  }
+
+  /**
+   * 卸载事件
+   */
+  unbind() {
+    XEvent.unbind(this);
+    XEvent.unbind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.elPopUpDownHandle);
+  }
+
+  /**
+   * 绑定事件
+   */
+  bind() {
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
+      e.stopPropagation();
+    });
+    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, this.elPopUpDownHandle);
+  }
+
+  /**
+   * 设置环绕元素
+   * @param el
+   */
+  setEL(el) {
+    this.options.el = el;
   }
 
   /**

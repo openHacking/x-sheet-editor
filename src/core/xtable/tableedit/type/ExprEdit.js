@@ -2,9 +2,9 @@ import { RichEdit } from './RichEdit';
 import { Constant } from '../../../../const/Constant';
 
 /**
- * FormulaEdit
+ * ExprEdit
  */
-class FormulaEdit extends RichEdit {
+class ExprEdit extends RichEdit {
 
   /**
    * 公式转html
@@ -22,11 +22,12 @@ class FormulaEdit extends RichEdit {
     const { table } = this;
     const { sri, sci } = selectRange;
     const cloneCell = activeCell.clone();
+    const cells = table.getTableCells();
     const { snapshot } = table;
     const formula = this.text();
     snapshot.open();
     cloneCell.setFormula(formula);
-    cloneCell.setCellOrNew(sri, sci, cloneCell);
+    cells.setCellOrNew(sri, sci, cloneCell);
     snapshot.close({
       type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
     });
@@ -37,11 +38,12 @@ class FormulaEdit extends RichEdit {
    * 检查输入的是否为公式内容
    */
   checkedFormulaText() {
-    return false;
+    const text = this.text();
+    return text.startsWith('=');
   }
 
 }
 
 export {
-  FormulaEdit,
+  ExprEdit,
 };

@@ -283,11 +283,12 @@ class Cell {
   clone() {
     const { background, text, format, custom } = this;
     const { richText, fontAttr, borderAttr } = this;
-    const { contentWidth, icons, contentType } = this;
+    const { contentWidth, icons, contentType, formula } = this;
     return new Cell({
       background,
       format,
       text,
+      formula,
       custom,
       richText,
       fontAttr,

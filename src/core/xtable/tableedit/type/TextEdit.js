@@ -1,10 +1,11 @@
 import { XDraw } from '../../../../draw/XDraw';
 import { BaseFont } from '../../../../draw/font/BaseFont';
 import { SheetUtils } from '../../../../utils/SheetUtils';
-import { FormulaEdit } from './FormulaEdit';
+import { ExprEdit } from './ExprEdit';
 import { Constant } from '../../../../const/Constant';
+import { Cell } from '../../tablecell/Cell';
 
-class TextEdit extends FormulaEdit {
+class TextEdit extends ExprEdit {
 
   /**
    * 文本转html
@@ -52,6 +53,7 @@ class TextEdit extends FormulaEdit {
     const text = this.text();
     const cloneCell = activeCell.clone();
     snapshot.open();
+    cloneCell.setContentType(Cell.TYPE.STRING);
     cloneCell.setText(text);
     cells.setCellOrNew(sri, sci, cloneCell);
     snapshot.close({

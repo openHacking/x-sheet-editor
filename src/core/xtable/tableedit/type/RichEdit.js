@@ -151,38 +151,44 @@ class RichEdit extends StyleEdit {
             const size = element.attr('size');
             const name = element.attr('name');
             const color = element.attr('color');
-            switch (size) {
-              case '1': {
-                style.size = 10;
-                break;
-              }
-              case '2': {
-                style.size = 13;
-                break;
-              }
-              case '3': {
-                style.size = 16;
-                break;
-              }
-              case '4': {
-                style.size = 18;
-                break;
-              }
-              case '5': {
-                style.size = 24;
-                break;
-              }
-              case '6': {
-                style.size = 32;
-                break;
-              }
-              case '7': {
-                style.size = 48;
-                break;
+            if (size) {
+              switch (size) {
+                case '1': {
+                  style.size = 10;
+                  break;
+                }
+                case '2': {
+                  style.size = 13;
+                  break;
+                }
+                case '3': {
+                  style.size = 16;
+                  break;
+                }
+                case '4': {
+                  style.size = 18;
+                  break;
+                }
+                case '5': {
+                  style.size = 24;
+                  break;
+                }
+                case '6': {
+                  style.size = 32;
+                  break;
+                }
+                case '7': {
+                  style.size = 48;
+                  break;
+                }
               }
             }
-            style.name = name;
-            style.color = color;
+            if (name) {
+              style.name = name;
+            }
+            if (color) {
+              style.color = color;
+            }
             break;
           }
           case 'strike': {
