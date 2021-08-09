@@ -5,6 +5,7 @@ import { SheetUtils } from '../../../../utils/SheetUtils';
 import { Constant } from '../../../../const/Constant';
 import { BaseFont } from '../../../../draw/font/BaseFont';
 import { RichFont } from '../../tablecell/RichFont';
+import { RichFonts } from '../../tablecell/RichFonts';
 
 /**
  * RichEdit
@@ -112,8 +113,8 @@ class RichEdit extends StyleEdit {
     const { activeCell } = this;
     const { table } = this;
     const { selectRange } = this;
-    const { snapshot } = table;
     const { sri, sci } = selectRange;
+    const { snapshot } = table;
     const cloneCell = activeCell.clone();
     const cells = table.getTableCells();
     const collect = [];
@@ -205,14 +206,19 @@ class RichEdit extends StyleEdit {
       }
     };
     handle(this, {});
-    snapshot.open();
-    cloneCell.setContentType(Cell.TYPE.RICH_TEXT);
-    cloneCell.setRichText(collect);
-    cells.setCellOrNew(sri, sci, cloneCell);
-    snapshot.close({
-      type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+    const rich = new RichFonts({
+      rich: collect,
     });
-    table.render();
+    if (!rich.equals(activeCell.rich)) {
+      snapshot.open();
+      cloneCell.setContentType(Cell.TYPE.RICH_TEXT);
+      cloneCell.setRichText(collect);
+      cells.setCellOrNew(sri, sci, cloneCell);
+      snapshot.close({
+        type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+      });
+      table.render();
+    }
   }
 
   /**

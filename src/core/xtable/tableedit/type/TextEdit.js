@@ -51,15 +51,17 @@ class TextEdit extends ExprEdit {
     const { snapshot } = table;
     const cells = table.getTableCells();
     const text = this.text();
-    const cloneCell = activeCell.clone();
-    snapshot.open();
-    cloneCell.setContentType(Cell.TYPE.STRING);
-    cloneCell.setText(text);
-    cells.setCellOrNew(sri, sci, cloneCell);
-    snapshot.close({
-      type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
-    });
-    table.render();
+    if (text !== activeCell.getComputeText()) {
+      const cloneCell = activeCell.clone();
+      snapshot.open();
+      cloneCell.setContentType(Cell.TYPE.STRING);
+      cloneCell.setText(text);
+      cells.setCellOrNew(sri, sci, cloneCell);
+      snapshot.close({
+        type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+      });
+      table.render();
+    }
   }
 
 }
