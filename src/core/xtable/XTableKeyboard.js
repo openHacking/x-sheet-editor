@@ -95,6 +95,24 @@ class XTableKeyboard {
   }
 
   /**
+   * 转发到其他组件
+   * @param el
+   * @param event
+   */
+  forward(el, event) {
+    const find = this.find(el);
+    if (find) {
+      const { response } = find;
+      const flagCode = SheetUtils.parseInt(this.keyCode);
+      response.forEach((item) => {
+        if (item.keyCode(flagCode, event)) {
+          item.handle(event);
+        }
+      });
+    }
+  }
+
+  /**
    * 注册组件元素
    * @param response
    * @param target
@@ -102,9 +120,14 @@ class XTableKeyboard {
   register({
     response = [], target = null,
   }) {
-    this.items.push({
-      target, response,
-    });
+    let find = this.find(target);
+    if (find) {
+      find.response = find.response.concat(response);
+    } else {
+      this.items.push({
+        target, response,
+      });
+    }
   }
 
   /**
@@ -115,6 +138,21 @@ class XTableKeyboard {
     const index = this.findIndex(target);
     if (index > -1) {
       this.items.splice(index, 1);
+    }
+  }
+
+  /**
+   * 删除响应处理器
+   * @param target
+   * @param response
+   */
+  removeResponse({
+    target, item,
+  }) {
+    let find = this.find(target);
+    if (find) {
+      const { response } = find;
+      find.response = response.filter(i => i !== item);
     }
   }
 

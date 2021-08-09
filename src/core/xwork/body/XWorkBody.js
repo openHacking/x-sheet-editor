@@ -329,6 +329,7 @@ class XWorkBody extends Widget {
     tabView.setActiveByIndex(index);
     sheetView.setActiveByIndex(index);
     this.refreshActiveTable();
+    this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
   }
 
   /**
@@ -385,6 +386,7 @@ class XWorkBody extends Widget {
     tabView.removeByIndex(index);
     sheetView.removeByIndex(index);
     this.refreshActiveTable();
+    this.trigger(Constant.WORK_BODY_EVENT_TYPE.REMOVE_SHEET);
   }
 
   /**
@@ -455,7 +457,6 @@ class XWorkBody extends Widget {
       this.refreshScrollBarLocal();
       this.refreshScrollBarSize();
       table.resize();
-      this.trigger(Constant.WORK_BODY_EVENT_TYPE.CHANGE_ACTIVE);
     }
   }
 

@@ -38,16 +38,21 @@ class TableEdit extends TextEdit {
         this.close(event);
       }
     });
+    this.enterResponse = {
+      keyCode: keyCode => keyCode === 13,
+      handle: (event) => {
+        const { table } = this;
+        const { keyboard } = table;
+        keyboard.forward(table, event);
+      },
+    };
+    this.altEnterResponse = {
+      keyCode: keyCode => keyCode === 1813,
+      handle: () => {
+        this.insertHtml('<br />');
+      },
+    };
     this.bind();
-  }
-
-  /**
-   * 添加键盘事件
-   */
-  onAttach() {
-    const { table } = this;
-    const { widgetFocus } = table;
-    widgetFocus.register({ target: this });
     this.hide();
   }
 
@@ -55,20 +60,22 @@ class TableEdit extends TextEdit {
    * 绑定事件处理
    */
   bind() {
+    const { altEnterResponse } = this;
+    const { enterResponse } = this;
     const { openClickHandle } = this;
     const { closeClickHandle } = this;
     const { tableScrollHandle } = this;
     const { table } = this;
     const { keyboard } = table;
+    const { widgetFocus } = table;
     keyboard.register({
       target: this,
-      response: [{
-        keyCode: keyCode => keyCode === 1813,
-        handle: () => {
-          this.insertHtml('<br />');
-        },
-      }],
+      response: [
+        enterResponse,
+        altEnterResponse,
+      ],
     });
+    widgetFocus.register({ target: this });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (event) => {
       event.stopPropagation();
     });
@@ -99,8 +106,8 @@ class TableEdit extends TextEdit {
     const { closeClickHandle } = this;
     const { tableScrollHandle } = this;
     const { table } = this;
-    const { widgetFocus } = table;
     const { keyboard } = table;
+    const { widgetFocus } = table;
     keyboard.remove(this);
     widgetFocus.remove(this);
     XEvent.unbind(this);
