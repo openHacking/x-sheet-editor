@@ -177,11 +177,12 @@ class XlsxImport {
           } else {
             const type = SheetUtils.type(value);
             switch (type) {
+              case SheetUtils.DATA_TYPE.Date:
+                xCell.format = 'date1';
+                xCell.contentType = Cell.TYPE.DATE_TIME;
+                break;
               case SheetUtils.DATA_TYPE.Number:
                 xCell.contentType = Cell.TYPE.NUMBER;
-                break;
-              case SheetUtils.DATA_TYPE.Date:
-                xCell.contentType = Cell.TYPE.DATE_TIME;
                 break;
               case SheetUtils.DATA_TYPE.String:
                 xCell.contentType = Cell.TYPE.STRING;

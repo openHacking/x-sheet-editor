@@ -1,38 +1,6 @@
 import { SheetUtils } from '../../utils/SheetUtils';
 import { DateUtils } from '../../utils/DateUtils';
 
-function parserToDate(text) {
-  let result = text;
-  if (result instanceof Date) {
-    return result;
-  }
-  result = DateUtils.parserToDate(text, 'yyyy/MM/dd hh:mm:ss');
-  if (result) {
-    return result;
-  }
-  result = DateUtils.parserToDate(text, 'yyyy/MM/dd');
-  if (result) {
-    return result;
-  }
-  result = DateUtils.parserToDate(text, 'hh:mm:ss');
-  if (result) {
-    return result;
-  }
-  result = DateUtils.parserToDate(text, 'MM月dd日');
-  if (result) {
-    return result;
-  }
-  result = DateUtils.parserToDate(text, 'yyyy年MM月');
-  if (result) {
-    return result;
-  }
-  result = DateUtils.parserToDate(text, 'yyyy年MM月dd日');
-  if (result) {
-    return result;
-  }
-  return text;
-}
-
 class Format {
 
   eNotation(value) {
@@ -100,7 +68,7 @@ class Format {
   }
 
   time(value) {
-    const result = parserToDate(value);
+    const result = DateUtils.parse(value);
     if (result) {
       return DateUtils.dateFormat('hh:mm:ss', result);
     }
@@ -108,7 +76,7 @@ class Format {
   }
 
   date1(value) {
-    const result = parserToDate(value);
+    const result = DateUtils.parse(value);
     if (result) {
       return DateUtils.dateFormat('yyyy/MM/dd', result);
     }
@@ -116,7 +84,7 @@ class Format {
   }
 
   date2(value) {
-    const result = parserToDate(value);
+    const result = DateUtils.parse(value);
     if (result) {
       return DateUtils.dateFormat('MM月dd日', result);
     }
@@ -124,7 +92,7 @@ class Format {
   }
 
   date3(value) {
-    const result = parserToDate(value);
+    const result = DateUtils.parse(value);
     if (result) {
       return DateUtils.dateFormat('yyyy年MM月', result);
     }
@@ -132,7 +100,7 @@ class Format {
   }
 
   date4(value) {
-    const result = parserToDate(value);
+    const result = DateUtils.parse(value);
     if (result) {
       return DateUtils.dateFormat('yyyy年MM月dd日', result);
     }
@@ -140,7 +108,7 @@ class Format {
   }
 
   date5(value) {
-    const result = parserToDate(value);
+    const result = DateUtils.parse(value);
     if (result) {
       return DateUtils.dateFormat('yyyy/MM/dd hh:mm:ss', result);
     }

@@ -66,6 +66,10 @@ class SheetUtils {
     return /^\d+\/\d+$/.test(e);
   }
 
+  static isDate(e) {
+    return SheetUtils.type(e) === DATA_TYPE.Date;
+  }
+
   static isFunction(e) {
     const type = SheetUtils.type(e);
     return type === DATA_TYPE.Function;

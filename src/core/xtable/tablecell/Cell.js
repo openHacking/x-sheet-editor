@@ -147,7 +147,7 @@ class Cell {
    * 设置内容类型
    * @param type
    */
-  setContentType(type) {
+  setContentType(type = 'default') {
     this.contentType = type;
   }
 

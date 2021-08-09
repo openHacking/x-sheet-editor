@@ -37,7 +37,7 @@ class Element {
     } else {
       this.el = tag;
     }
-    this.el.map = {};
+    this.map = {};
   }
 
   /**
@@ -48,10 +48,10 @@ class Element {
    */
   data(key, value) {
     if (value !== undefined) {
-      this.el.map[key] = value;
+      this.map[key] = value;
       return this;
     }
-    return this.el.map[key];
+    return this.map[key];
   }
 
   /**
