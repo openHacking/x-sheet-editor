@@ -80,7 +80,7 @@ function pageUp({ table, body, response }) {
   });
 }
 
-function open({ table, response }) {
+function openEdit({ table, response }) {
   const { edit, xScreen } = table;
   const merges = table.getTableMerges();
   const xSelect = xScreen.findType(XSelectItem);
@@ -110,7 +110,7 @@ function open({ table, response }) {
   });
 }
 
-function close({ table, response }) {
+function closeEdit({ table, response }) {
   const { edit } = table;
   response.push({
     keyCode: keyCode => keyCode === 27,
@@ -487,8 +487,8 @@ class XWorkBodyKeyHandle {
     home({ table, body, response });
     enter({ table, body, response });
     tab({ table, body, response });
-    open({ table, body, response });
-    close({ table, body, response });
+    openEdit({ table, body, response });
+    closeEdit({ table, body, response });
     pageUp({ table, body, response });
     pageDown({ table, body, response });
     arrowUp({ table, body, response });

@@ -42,7 +42,9 @@ class TableEdit extends TextEdit {
       keyCode: keyCode => keyCode === 13,
       handle: (event) => {
         const { table } = this;
+        const { widgetFocus } = table;
         const { keyboard } = table;
+        widgetFocus.forward(table);
         keyboard.forward(table, event);
       },
     };
@@ -75,7 +77,9 @@ class TableEdit extends TextEdit {
         altEnterResponse,
       ],
     });
-    widgetFocus.register({ target: this });
+    widgetFocus.register({
+      target: this,
+    });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (event) => {
       event.stopPropagation();
     });
