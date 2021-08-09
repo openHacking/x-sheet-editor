@@ -76,7 +76,10 @@ class SheetUtils {
   }
 
   static isLikeArray(e) {
-    return !!e.length;
+    if (SheetUtils.isUnDef(e)) {
+      return false;
+    }
+    return typeof e.length === 'number';
   }
 
   static isBlank(s) {

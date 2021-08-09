@@ -44,8 +44,10 @@ class TableEdit extends TextEdit {
         const { table } = this;
         const { widgetFocus } = table;
         const { keyboard } = table;
-        widgetFocus.forward(table);
-        keyboard.forward(table, event);
+        widgetFocus.forward({ target: table });
+        keyboard.forward({
+          target: table, event,
+        });
       },
     };
     this.altEnterResponse = {
@@ -154,12 +156,12 @@ class TableEdit extends TextEdit {
         }
       }
     }
+    super.open({
+      edit: this, table, native: event,
+    });
     throttle.action(() => {
       this.focus();
       SheetUtils.keepLastIndex(this.el);
-    });
-    super.open({
-      edit: this, table, native: event,
     });
     return this;
   }
@@ -177,6 +179,7 @@ class TableEdit extends TextEdit {
     } else {
       this.textToCellText();
     }
+    this.blur();
     super.close({
       edit: this, table, native: event,
     });

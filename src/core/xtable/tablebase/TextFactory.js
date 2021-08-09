@@ -1,6 +1,6 @@
 import { ScaleAdapter } from './Scale';
-import { BaseFont } from '../../../draw/font/BaseFont';
 import { DrawTextBuilder } from '../../../draw/font/text/build/DrawTextBuilder';
+import { BaseFont } from '../../../draw/font/BaseFont';
 import { Cell } from '../tablecell/Cell';
 import { RichDrawTextBuilder } from '../../../draw/font/rich/build/RichDrawTextBuilder';
 
@@ -40,11 +40,7 @@ class TextBuilder {
       case Cell.TYPE.DATE_TIME: {
         let formatText = cell.getFormatText();
         builder = new DrawTextBuilder({
-          text: `${formatText}`,
-          attr: fontAttr,
-          draw,
-          rect,
-          overflow,
+          text: `${formatText}`, attr: fontAttr, draw, rect, overflow,
         });
         break;
       }

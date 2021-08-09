@@ -271,9 +271,11 @@ class BaseCellsHelper {
         if (blank === false) {
           const { textWrap } = fontAttr;
           if (textWrap === BaseFont.TEXT_WRAP.OVER_FLOW) {
-            if (contentWidth === 0
-                || contentWidth > width
-                || (ruler === null || ruler.rect.width !== width)) {
+            const emptyWidth = contentWidth === 0;
+            const allowWidth = contentWidth > width;
+            const rulerAllow = SheetUtils.isUnDef(ruler);
+            const rectAllow = SheetUtils.isUnDef(ruler) ? false : ruler.rect.width !== width;
+            if (emptyWidth || allowWidth || rulerAllow || rectAllow) {
               const maxWidth = this.getHorizontalMaxWidth(ri, ci, cell);
               return new Rect({
                 x: x + maxWidth.offset, y, width: maxWidth.width, height,

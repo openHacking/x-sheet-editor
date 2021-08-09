@@ -1,6 +1,7 @@
 import { VerticalVisual } from './VerticalVisual';
 import { BaseRuler } from '../../BaseRuler';
 import { BaseFont } from '../../BaseFont';
+import { SheetUtils } from '../../../../utils/SheetUtils';
 
 class VerticalRuler extends VerticalVisual {
 
@@ -143,7 +144,7 @@ class VerticalRuler extends VerticalVisual {
   }
 
   equals(other) {
-    if (other === null) {
+    if (SheetUtils.isUnDef(other)) {
       return false;
     }
     if (other.constructor !== VerticalRuler) {

@@ -145,7 +145,7 @@ class XlsxImport {
           // 富文本
           if (richText) {
             const richFonts = {
-              fonts: [],
+              rich: [],
             };
             for (let i = 0, len = richText.length; i < len; i++) {
               const item = richText[i];
@@ -169,9 +169,9 @@ class XlsxImport {
                     richFont.color = themeXlsx.setTheme(theme).setTint(tint).getThemeRgb();
                   }
                 }
-                richFonts.fonts.push(richFont);
+                richFonts.rich.push(richFont);
               } else {
-                richFonts.fonts.push(richFont);
+                richFonts.rich.push(richFont);
               }
             }
             xCell.richText = richFonts;

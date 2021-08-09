@@ -44,7 +44,7 @@ class AngleBarRuler extends AngleBoxRuler {
   }
 
   equals(other) {
-    if (other === null) {
+    if (SheetUtils.isUnDef(other)) {
       return false;
     }
     if (other.constructor !== AngleBarRuler) {

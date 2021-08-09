@@ -2,9 +2,9 @@ import { XDraw } from '../../../../draw/XDraw';
 import { StyleEdit } from '../base/StyleEdit';
 import { Cell } from '../../tablecell/Cell';
 import { SheetUtils } from '../../../../utils/SheetUtils';
-import { RichFonts } from '../../tablecell/RichFonts';
 import { Constant } from '../../../../const/Constant';
 import { BaseFont } from '../../../../draw/font/BaseFont';
+import { RichFont } from '../../tablecell/RichFont';
 
 /**
  * RichEdit
@@ -20,11 +20,11 @@ class RichEdit extends StyleEdit {
     let { background, fontAttr } = activeCell;
     let { align, size, color } = fontAttr;
     let { bold, italic, name } = fontAttr;
-    let { fonts } = activeCell.getComputeText();
+    let richFonts = activeCell.getComputeText();
     let textAlign = 'left';
     let fontSize = XDraw.cssPx(size);
     let items = [];
-    fonts.forEach((font) => {
+    richFonts.getRich().forEach((font) => {
       let { text, name, size, bold, italic } = font;
       let { color, underline, strikethrough } = font;
       let item = text.replace(/\n/g, '<br/>');
@@ -110,10 +110,10 @@ class RichEdit extends StyleEdit {
    */
   htmlToRichText() {
     const { activeCell } = this;
-    const { selectRange } = this;
     const { table } = this;
-    const { sri, sci } = selectRange;
+    const { selectRange } = this;
     const { snapshot } = table;
+    const { sri, sci } = selectRange;
     const cloneCell = activeCell.clone();
     const cells = table.getTableCells();
     const collect = [];
@@ -121,16 +121,18 @@ class RichEdit extends StyleEdit {
       const tagName = element.tagName();
       const style = { ...parent };
       if (element.isTextNode()) {
-        collect.push({
+        collect.push(new RichFont({
+
           text: element.nodeValue(),
           ...style,
-        });
+
+        }));
         return;
       }
       if (element.isBreakNode()) {
-        collect.push({
+        collect.push(new RichFont({
           text: '\n',
-        });
+        }));
         return;
       }
       if (!element.equals(this)) {
@@ -203,12 +205,9 @@ class RichEdit extends StyleEdit {
       }
     };
     handle(this, {});
-    const rich = new RichFonts({
-      fonts: collect,
-    });
     snapshot.open();
-    cloneCell.setRichText(rich);
     cloneCell.setContentType(Cell.TYPE.RICH_TEXT);
+    cloneCell.setRichText(collect);
     cells.setCellOrNew(sri, sci, cloneCell);
     snapshot.close({
       type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,

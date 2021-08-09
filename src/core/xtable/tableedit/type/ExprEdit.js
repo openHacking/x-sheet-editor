@@ -11,7 +11,7 @@ class ExprEdit extends RichEdit {
    */
   formulaTextToHtml() {
     const { activeCell } = this;
-    return activeCell.formula;
+    return activeCell.getExpr();
   }
 
   /**
@@ -24,9 +24,9 @@ class ExprEdit extends RichEdit {
     const cloneCell = activeCell.clone();
     const cells = table.getTableCells();
     const { snapshot } = table;
-    const formula = this.text();
+    const expr = this.text();
     snapshot.open();
-    cloneCell.setFormula(formula);
+    cloneCell.setExpr(expr);
     cells.setCellOrNew(sri, sci, cloneCell);
     snapshot.close({
       type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,

@@ -99,8 +99,10 @@ class XTableKeyboard {
    * @param el
    * @param event
    */
-  forward(el, event) {
-    const find = this.find(el);
+  forward({
+    target, event,
+  }) {
+    const find = this.find(target);
     if (find) {
       const { response } = find;
       const flagCode = SheetUtils.parseInt(this.keyCode);

@@ -103,7 +103,7 @@ class Element {
    * @returns {Element}
    */
   parent() {
-    return Element.wrap(this.el.parentNode);
+    return new Element(this.el.parentNode);
   }
 
   /**
@@ -250,6 +250,13 @@ class Element {
    */
   focus() {
     this.el.focus();
+  }
+
+  /**
+   * 移除焦点
+   */
+  blur() {
+    this.el.blur();
   }
 
   /**

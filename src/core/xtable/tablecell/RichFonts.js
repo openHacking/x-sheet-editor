@@ -3,24 +3,30 @@ import { RichFont } from './RichFont';
 class RichFonts {
 
   constructor({
-    fonts = [],
+    rich = [],
   } = {}) {
-    this.fonts = fonts.map(font => new RichFont(font));
+    this.rich = rich.map(font => new RichFont(font));
+  }
+
+  setRich(rich = []) {
+    this.rich = rich;
+  }
+
+  getRich() {
+    return this.rich;
   }
 
   clone() {
-    const fonts = [];
-    this.fonts.forEach((font) => {
-      fonts.push(font.clone());
+    const rich = [];
+    this.rich.forEach((font) => {
+      rich.push(font.clone());
     });
-    return new RichFont({
-      fonts,
-    });
+    return new RichFonts({ rich });
   }
 
   plain(option) {
     const result = [];
-    this.fonts.forEach((font) => {
+    this.rich.forEach((font) => {
       result.push(font.plain(option));
     });
     return result;

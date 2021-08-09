@@ -2,6 +2,7 @@ import { BaseRuler } from '../../BaseRuler';
 import { RTCosKit, RTSinKit } from '../../../RTFunction';
 import { TextRuler } from '../TextRuler';
 import { BaseFont } from '../../BaseFont';
+import { SheetUtils } from '../../../../utils/SheetUtils';
 
 class AngleBoxRuler extends TextRuler {
 
@@ -362,7 +363,7 @@ class AngleBoxRuler extends TextRuler {
   }
 
   equals(other) {
-    if (other === null) {
+    if (SheetUtils.isUnDef(other)) {
       return false;
     }
     if (other.constructor !== AngleBoxRuler) {

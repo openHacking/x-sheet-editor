@@ -10,6 +10,7 @@ module.exports = {
     "no-empty-pattern": "off",
     "no-shadow": "off",
     "no-continue": "off",
+    "max-len": ["error", 300],
     "object-curly-newline": "off",
     "padded-blocks": "off",
     "prefer-destructuring": "off",
