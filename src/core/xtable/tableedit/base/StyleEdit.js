@@ -1,4 +1,4 @@
-/* global document window */
+/* global document */
 import { BaseEdit } from './BaseEdit';
 
 /**

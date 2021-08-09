@@ -1,7 +1,7 @@
 import { Widget } from '../../../../lib/Widget';
+import { XEvent } from '../../../../lib/XEvent';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { SheetUtils } from '../../../../utils/SheetUtils';
-import { XEvent } from '../../../../lib/XEvent';
 
 let number = 0;
 let include = [];
