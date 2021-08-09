@@ -13,12 +13,9 @@ class Formula {
   constructor({
     expr = SheetUtils.EMPTY,
   } = {}) {
-    // 公式
     this.expr = expr;
-    // 内容
-    this.content = '';
-    // 指令
-    this.instruct = null;
+    this.content = SheetUtils.Nul;
+    this.instruct = SheetUtils.Nul;
   }
 
   /**
@@ -63,6 +60,8 @@ class Formula {
    */
   setExpr(expr) {
     this.expr = expr;
+    this.content = SheetUtils.Nul;
+    this.instruct = SheetUtils.Nul;
   }
 
 }
