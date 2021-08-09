@@ -144,9 +144,7 @@ class XlsxImport {
           }
           // 富文本
           if (richText) {
-            const richFonts = {
-              rich: [],
-            };
+            const rich = [];
             for (let i = 0, len = richText.length; i < len; i++) {
               const item = richText[i];
               const { font, text } = item;
@@ -169,12 +167,12 @@ class XlsxImport {
                     richFont.color = themeXlsx.setTheme(theme).setTint(tint).getThemeRgb();
                   }
                 }
-                richFonts.rich.push(richFont);
+                rich.push(richFont);
               } else {
-                richFonts.rich.push(richFont);
+                rich.push(richFont);
               }
             }
-            xCell.richText = richFonts;
+            xCell.rich = rich;
             xCell.contentType = Cell.TYPE.RICH_TEXT;
           } else {
             const type = SheetUtils.type(value);
