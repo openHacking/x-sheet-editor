@@ -71,40 +71,13 @@ class XTableWidgetFocus {
   }
 
   /**
-   * el 是否是注册的组件元素的子元素
-   * @param el
-   * @return {null|*}
-   */
-  include(el) {
-    const docu = new Element(document);
-    const body = new Element(document.body);
-    while (true) {
-      if (el.equals(root)) {
-        break;
-      }
-      if (el.equals(docu)) {
-        break;
-      }
-      if (el.equals(body)) {
-        break;
-      }
-      const find = this.exist(el);
-      if (find) {
-        return find;
-      }
-      el = el.parent();
-    }
-    return null;
-  }
-
-  /**
    * 绑定事件处理程序
    */
   bind() {
     const { downHandle } = this;
     const { focusHandle } = this;
-    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, downHandle, true);
-    XEvent.bind(document, Constant.SYSTEM_EVENT_TYPE.FOCUS, focusHandle, true);
+    XEvent.bind(root, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, downHandle, true);
+    XEvent.bind(root, Constant.SYSTEM_EVENT_TYPE.FOCUS, focusHandle, true);
   }
 
   /**
@@ -129,6 +102,33 @@ class XTableWidgetFocus {
       if (target.equals(el)) {
         return item;
       }
+    }
+    return null;
+  }
+
+  /**
+   * el 是否是注册的组件元素的子元素
+   * @param el
+   * @return {null|*}
+   */
+  include(el) {
+    const docu = new Element(document);
+    const body = new Element(document.body);
+    while (true) {
+      if (el.equals(root)) {
+        break;
+      }
+      if (el.equals(docu)) {
+        break;
+      }
+      if (el.equals(body)) {
+        break;
+      }
+      const find = this.exist(el);
+      if (find) {
+        return find;
+      }
+      el = el.parent();
     }
     return null;
   }

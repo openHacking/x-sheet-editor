@@ -55,6 +55,9 @@ class XSheet extends Widget {
    */
   constructor(selectors, options) {
     super(`${cssPrefix}`);
+    ElPopUp.setRoot(this);
+    DragPanel.setRoot(this);
+    XTableWidgetFocus.setRoot(this);
     let root = selectors;
     if (typeof selectors === 'string') {
       root = document.querySelector(selectors);
@@ -64,9 +67,6 @@ class XSheet extends Widget {
     this.options = SheetUtils.copy({}, settings, options);
     this.work = new XWork(this.options.workConfig);
     this.attach(this.work);
-    ElPopUp.setRoot(this);
-    DragPanel.setRoot(this);
-    XTableWidgetFocus.setRoot(this);
   }
 }
 
