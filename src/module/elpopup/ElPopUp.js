@@ -157,6 +157,29 @@ class ElPopUp extends Widget {
   }
 
   /**
+   * 设置显示位置
+   */
+  mousePopUpLocation(mouse) {
+    const mLeft = mouse.pageX;
+    const mlTop = mouse.pageY;
+    const winHeight = window.innerHeight;
+    const winWidth = window.innerWidth;
+    const box = this.box();
+    const rightDiff = winWidth - (mLeft + box.width);
+    const bottomDIff = winHeight - (mlTop + box.height);
+    if (rightDiff < 0) {
+      this.css('left', `${mLeft - box.width}px`);
+    } else {
+      this.css('left', `${mLeft}px`);
+    }
+    if (bottomDIff < 0) {
+      this.css('top', `${mlTop - box.height}px`);
+    } else {
+      this.css('top', `${mlTop}px`);
+    }
+  }
+
+  /**
    * 显示弹框
    */
   open() {
@@ -167,6 +190,19 @@ class ElPopUp extends Widget {
     this.elPopUpPosition();
     this.elPopUpAutosize();
     this.elPopUpLocation();
+  }
+
+  /**
+   * 显示弹框
+   * @param mouse
+   */
+  openByMouse(mouse) {
+    if (this.status === false && root) {
+      root.children(this);
+      this.status = true;
+    }
+    this.mousePopUpLocation(mouse);
+    this.elPopUpAutosize();
   }
 
   /**

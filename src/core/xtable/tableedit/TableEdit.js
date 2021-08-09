@@ -86,15 +86,17 @@ class TableEdit extends TextEdit {
       event.stopPropagation();
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.INPUT, (event) => {
-      const { activeCell } = this;
-      const { fontAttr } = activeCell;
-      const { align } = fontAttr;
-      if (align === BaseFont.ALIGN.center) {
-        this.local();
+      const { mode, activeCell } = this;
+      if (mode === BaseEdit.MODE.SHOW) {
+        const { fontAttr } = activeCell;
+        const { align } = fontAttr;
+        if (align === BaseFont.ALIGN.center) {
+          this.local();
+        }
+        table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_INPUT, {
+          native: event, table, edit: this,
+        });
       }
-      table.trigger(Constant.TABLE_EVENT_TYPE.EDIT_INPUT, {
-        native: event, table, edit: this,
-      });
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_WHEEL, (event) => {
       event.stopPropagation();

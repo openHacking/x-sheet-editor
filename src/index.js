@@ -33,9 +33,15 @@ const settings = {
       },
     },
     body: {
+      tabConfig: {
+        showMenu: true,
+      },
       sheets: [{
         tableConfig: {},
       }],
+      sheetConfig: {
+        showMenu: true,
+      },
     },
     bottom: {
       show: true,

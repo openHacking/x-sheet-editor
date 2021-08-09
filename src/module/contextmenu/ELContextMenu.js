@@ -29,6 +29,11 @@ class ELContextMenu extends Widget {
     return this;
   }
 
+  openByMouse(event) {
+    this.elPopUp.openByMouse(event);
+    return this;
+  }
+
   close() {
     this.elPopUp.close();
     return this;

@@ -7,6 +7,7 @@ import { TabContextMenu } from './contextmenu/TabContextMenu';
 import { ElPopUp } from '../../../../module/elpopup/ElPopUp';
 
 const settings = {
+  showMenu: true,
   onAdd(tab) { return tab; },
   onSwitch(tab) { return tab; },
 };
@@ -126,14 +127,16 @@ class XWorkTabView extends Widget {
     this.tabs.children(tab);
     tab.onAttach();
     tab.setRClick((event) => {
-      const { contextMenu } = this;
-      const { elPopUp } = contextMenu;
-      elPopUp.setEL(tab);
-      ElPopUp.closeAll([elPopUp]);
-      contextMenu.open();
-      contextMenu.setTab(tab);
-      event.stopPropagation();
-      event.preventDefault();
+      if (this.options.showMenu) {
+        const { contextMenu } = this;
+        const { elPopUp } = contextMenu;
+        elPopUp.setEL(tab);
+        ElPopUp.closeAll([elPopUp]);
+        contextMenu.open();
+        contextMenu.setTab(tab);
+        event.stopPropagation();
+        event.preventDefault();
+      }
     });
     tab.setLClick((event) => {
       this.setActive(tab);

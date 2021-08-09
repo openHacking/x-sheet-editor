@@ -1,5 +1,12 @@
 import { Widget } from '../../../../lib/Widget';
-import { cssPrefix } from '../../../../const/Constant';
+import { Constant, cssPrefix } from '../../../../const/Constant';
+import { SheetContextMenu } from './contextmenu/SheetContextMenu';
+import { XEvent } from '../../../../lib/XEvent';
+import { SheetUtils } from '../../../../utils/SheetUtils';
+
+const settings = {
+  showMenu: true,
+};
 
 /**
  * XWorkSheetView
@@ -9,10 +16,13 @@ class XWorkSheetView extends Widget {
   /**
    * XWorkSheetView
    */
-  constructor() {
+  constructor(option) {
     super(`${cssPrefix}-sheet-view`);
+    this.options = SheetUtils.copy({}, settings, option);
     this.sheetList = [];
     this.activeIndex = -1;
+    this.contextMenu = new SheetContextMenu();
+    this.bind();
   }
 
   /**
@@ -22,6 +32,25 @@ class XWorkSheetView extends Widget {
     this.sheetList.push(sheet);
     super.attach(sheet);
     sheet.hide();
+  }
+
+  /**
+   * 绑定事件处理
+   */
+  bind() {
+    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.CONTEXT_MENU, (event) => {
+      if (this.options.showMenu) {
+        this.contextMenu.openByMouse(event);
+        event.preventDefault();
+      }
+    });
+  }
+
+  /**
+   * 卸载事件处理
+   */
+  unbind() {
+    XEvent.unbind(this);
   }
 
   /**
@@ -79,19 +108,19 @@ class XWorkSheetView extends Widget {
   }
 
   /**
-   * 获取当前激活的sheet
-   * @returns {*}
-   */
-  getActiveSheet() {
-    return this.sheetList[this.activeIndex];
-  }
-
-  /**
    * 获取sheet数量
    * @returns {number}
    */
   getSheetCount() {
     return this.sheetList.length;
+  }
+
+  /**
+   * 获取当前激活的sheet
+   * @returns {*}
+   */
+  getActiveSheet() {
+    return this.sheetList[this.activeIndex];
   }
 
   /**
@@ -111,6 +140,11 @@ class XWorkSheetView extends Widget {
     }
     const active = this.getActiveSheet();
     this.setActive(active);
+  }
+
+  destroy() {
+    super.destroy();
+    this.unbind();
   }
 
 }

@@ -24,6 +24,8 @@ const settings = {
     sheets: [{
       tableConfig: {},
     }],
+    tabConfig: {},
+    sheetConfig: {},
   },
   bottom: {
     show: true,

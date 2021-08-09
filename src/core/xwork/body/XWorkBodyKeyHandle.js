@@ -479,20 +479,46 @@ function arrowRight({ table, body, response }) {
   });
 }
 
+function controllerZ({ table, response }) {
+  response.push({
+    keyCode: keyCode => keyCode === 1790,
+    handle: () => {
+      const { snapshot } = table;
+      if (snapshot.canUndo()) {
+        snapshot.undo();
+      }
+    },
+  });
+}
+
+function controllerY({ table, response }) {
+  response.push({
+    keyCode: keyCode => keyCode === 1789,
+    handle: () => {
+      const { snapshot } = table;
+      if (snapshot.canRedo()) {
+        snapshot.redo();
+      }
+    },
+  });
+}
+
 class XWorkBodyKeyHandle {
 
   static register({ table, body }) {
     const { keyboard } = table;
     const response = [];
     home({ table, body, response });
+    controllerZ({ table, response });
+    controllerY({ table, response });
     enter({ table, body, response });
     tab({ table, body, response });
-    openEdit({ table, body, response });
     closeEdit({ table, body, response });
+    openEdit({ table, body, response });
     pageUp({ table, body, response });
     pageDown({ table, body, response });
-    arrowUp({ table, body, response });
     arrowDown({ table, body, response });
+    arrowUp({ table, body, response });
     arrowLeft({ table, body, response });
     arrowRight({ table, body, response });
     keyboard.register({

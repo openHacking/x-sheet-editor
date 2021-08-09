@@ -30,14 +30,8 @@ class XWorkTab extends Widget {
         this.lClickHandle(event);
       }
     });
-    XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (event) => {
-      if (event.button === 2) {
-        this.rClickHandle(event);
-        event.preventDefault();
-      }
-    });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.CONTEXT_MENU, (event) => {
-      event.preventDefault();
+      this.rClickHandle(event);
     });
   }
 

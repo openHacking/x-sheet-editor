@@ -24,6 +24,8 @@ import { Confirm } from '../../../module/confirm/Confirm';
 
 const settings = {
   sheets: [],
+  tabConfig: {},
+  sheetConfig: {},
 };
 
 /**
@@ -46,8 +48,11 @@ class XWorkBody extends Widget {
     this.version.html(`<a target="_blank" href="https://gitee.com/eigi/x-sheet">${XSheetVersion}</a>`);
     this.children(this.version);
     // 组件
-    this.sheetView = new XWorkSheetView();
+    this.sheetView = new XWorkSheetView({
+      ...this.options.sheetConfig,
+    });
     this.tabView = new XWorkTabView({
+      ...this.options.tabConfig,
       onSwitch: (tab) => {
         const index = this.tabView.getIndexByTab(tab);
         this.setActiveByIndex(index);
