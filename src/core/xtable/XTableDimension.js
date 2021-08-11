@@ -638,114 +638,116 @@ class XTableDimension extends Widget {
       xIteratorBuilder: this.xIteratorBuilder,
     });
     // 数据变更监听
-    this.snapshot.listen.registerListen('change', (option, event) => {
-      if (event) {
-        const { type } = event;
-        switch (type) {
-          case Constant.TABLE_EVENT_TYPE.REMOVE_ROW:
-            this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_ROW);
-            break;
-          case Constant.TABLE_EVENT_TYPE.REMOVE_COL:
-            this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_COL);
-            break;
-          case Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW:
-            this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW);
-            break;
-          case Constant.TABLE_EVENT_TYPE.ADD_NEW_COL:
-            this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_COL);
-            break;
-          case Constant.TABLE_EVENT_TYPE.DATA_CHANGE:
-            this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
-            break;
-          case Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH:
-            this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH);
-            break;
-          case Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT:
-            this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT);
-            break;
+    this.snapshot
+      .listen
+      .registerListen('change', (event, option) => {
+        if (event) {
+          const { type } = event;
+          switch (type) {
+            case Constant.TABLE_EVENT_TYPE.REMOVE_ROW:
+              this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_ROW);
+              break;
+            case Constant.TABLE_EVENT_TYPE.REMOVE_COL:
+              this.trigger(Constant.TABLE_EVENT_TYPE.REMOVE_COL);
+              break;
+            case Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW:
+              this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW);
+              break;
+            case Constant.TABLE_EVENT_TYPE.ADD_NEW_COL:
+              this.trigger(Constant.TABLE_EVENT_TYPE.ADD_NEW_COL);
+              break;
+            case Constant.TABLE_EVENT_TYPE.DATA_CHANGE:
+              this.trigger(Constant.TABLE_EVENT_TYPE.DATA_CHANGE);
+              break;
+            case Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH:
+              this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH);
+              break;
+            case Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT:
+              this.trigger(Constant.TABLE_EVENT_TYPE.CHANGE_ROW_HEIGHT);
+              break;
+          }
         }
-      }
-      if (event) {
-        const { local, type } = event;
-        const { ri, ci } = event;
-        const { number } = event;
-        switch (type) {
-          case Constant.TABLE_EVENT_TYPE.ADD_NEW_COL:
-            if (option === 'undo') {
-              if (local === 'before') {
-                this.xTableStyle.merges.colBeforeShrink(ci, number);
+        if (event) {
+          const { local, type } = event;
+          const { ri, ci } = event;
+          const { number } = event;
+          switch (type) {
+            case Constant.TABLE_EVENT_TYPE.ADD_NEW_COL:
+              if (option === 'undo') {
+                if (local === 'before') {
+                  this.xTableStyle.merges.colBeforeShrink(ci, number);
+                }
+                if (local === 'after') {
+                  this.xTableStyle.merges.colAfterShrink(ci, number);
+                }
               }
-              if (local === 'after') {
-                this.xTableStyle.merges.colAfterShrink(ci, number);
+              if (option === 'redo') {
+                if (local === 'before') {
+                  this.xTableStyle.merges.colBeforeExpand(ci, number);
+                }
+                if (local === 'after') {
+                  this.xTableStyle.merges.colAfterExpand(ci, number);
+                }
               }
-            }
-            if (option === 'redo') {
-              if (local === 'before') {
-                this.xTableStyle.merges.colBeforeExpand(ci, number);
+              break;
+            case Constant.TABLE_EVENT_TYPE.REMOVE_COL:
+              if (option === 'undo') {
+                if (local === 'before') {
+                  this.xTableStyle.merges.colBeforeExpand(ci, number);
+                }
+                if (local === 'after') {
+                  this.xTableStyle.merges.colAfterExpand(ci, number);
+                }
               }
-              if (local === 'after') {
-                this.xTableStyle.merges.colAfterExpand(ci, number);
+              if (option === 'redo') {
+                if (local === 'before') {
+                  this.xTableStyle.merges.colBeforeShrink(ci, number);
+                }
+                if (local === 'after') {
+                  this.xTableStyle.merges.colAfterShrink(ci, number);
+                }
               }
-            }
-            break;
-          case Constant.TABLE_EVENT_TYPE.REMOVE_COL:
-            if (option === 'undo') {
-              if (local === 'before') {
-                this.xTableStyle.merges.colBeforeExpand(ci, number);
+              break;
+            case Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW:
+              if (option === 'undo') {
+                if (local === 'before') {
+                  this.xTableStyle.merges.rowBeforeShrink(ri, number);
+                }
+                if (local === 'after') {
+                  this.xTableStyle.merges.rowAfterShrink(ri, number);
+                }
               }
-              if (local === 'after') {
-                this.xTableStyle.merges.colAfterExpand(ci, number);
+              if (option === 'redo') {
+                if (local === 'before') {
+                  this.xTableStyle.merges.rowBeforeExpand(ri, number);
+                }
+                if (local === 'after') {
+                  this.xTableStyle.merges.rowAfterExpand(ri, number);
+                }
               }
-            }
-            if (option === 'redo') {
-              if (local === 'before') {
-                this.xTableStyle.merges.colBeforeShrink(ci, number);
+              break;
+            case Constant.TABLE_EVENT_TYPE.REMOVE_ROW:
+              if (option === 'undo') {
+                if (local === 'before') {
+                  this.xTableStyle.merges.rowBeforeExpand(ri, number);
+                }
+                if (local === 'after') {
+                  this.xTableStyle.merges.rowAfterExpand(ri, number);
+                }
               }
-              if (local === 'after') {
-                this.xTableStyle.merges.colAfterShrink(ci, number);
+              if (option === 'redo') {
+                if (local === 'before') {
+                  this.xTableStyle.merges.rowBeforeShrink(ri, number);
+                }
+                if (local === 'after') {
+                  this.xTableStyle.merges.rowAfterShrink(ri, number);
+                }
               }
-            }
-            break;
-          case Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW:
-            if (option === 'undo') {
-              if (local === 'before') {
-                this.xTableStyle.merges.rowBeforeShrink(ri, number);
-              }
-              if (local === 'after') {
-                this.xTableStyle.merges.rowAfterShrink(ri, number);
-              }
-            }
-            if (option === 'redo') {
-              if (local === 'before') {
-                this.xTableStyle.merges.rowBeforeExpand(ri, number);
-              }
-              if (local === 'after') {
-                this.xTableStyle.merges.rowAfterExpand(ri, number);
-              }
-            }
-            break;
-          case Constant.TABLE_EVENT_TYPE.REMOVE_ROW:
-            if (option === 'undo') {
-              if (local === 'before') {
-                this.xTableStyle.merges.rowBeforeExpand(ri, number);
-              }
-              if (local === 'after') {
-                this.xTableStyle.merges.rowAfterExpand(ri, number);
-              }
-            }
-            if (option === 'redo') {
-              if (local === 'before') {
-                this.xTableStyle.merges.rowBeforeShrink(ri, number);
-              }
-              if (local === 'after') {
-                this.xTableStyle.merges.rowAfterShrink(ri, number);
-              }
-            }
-            break;
+              break;
+          }
         }
-      }
-      this.trigger(Constant.TABLE_EVENT_TYPE.SNAPSHOT_CHANGE);
-    });
+        this.trigger(Constant.TABLE_EVENT_TYPE.SNAPSHOT_CHANGE);
+      });
   }
 
   /**
