@@ -10,8 +10,8 @@ class RContentOutRange extends CommonOutRange {
   }) {
     const { table } = this;
     const { merges } = table;
-    const nextMerge = merges.getFirstIncludes(row, col + 1);
-    const masterMerge = merges.getFirstIncludes(row, col);
+    const nextMerge = merges.getFirstInclude(row, col + 1);
+    const masterMerge = merges.getFirstInclude(row, col);
     if (masterMerge || nextMerge) {
       return LineIteratorFilter.RETURN_TYPE.EXEC;
     }
@@ -86,7 +86,7 @@ class RContentOutRange extends CommonOutRange {
         .setEnd(0)
         .setLoop((i) => {
           // 检查合并单元格
-          const merge = merges.getFirstIncludes(row, i);
+          const merge = merges.getFirstInclude(row, i);
           if (SheetUtils.isNotUnDef(merge)) {
             return false;
           }
@@ -151,7 +151,7 @@ class RContentOutRange extends CommonOutRange {
         .setEnd(0)
         .setLoop((i) => {
           // 检查合并单元格
-          const merge = merges.getFirstIncludes(row, i);
+          const merge = merges.getFirstInclude(row, i);
           if (SheetUtils.isNotUnDef(merge)) {
             return false;
           }
@@ -216,7 +216,7 @@ class RContentOutRange extends CommonOutRange {
         .setEnd(len)
         .setLoop((j) => {
           // 合并单元格检查
-          const merge = merges.getFirstIncludes(row, j);
+          const merge = merges.getFirstInclude(row, j);
           if (SheetUtils.isNotUnDef(merge)) {
             return false;
           }
@@ -281,7 +281,7 @@ class RContentOutRange extends CommonOutRange {
         .setEnd(len)
         .setLoop((j) => {
           // 合并单元格检查
-          const merge = merges.getFirstIncludes(row, j);
+          const merge = merges.getFirstInclude(row, j);
           if (SheetUtils.isNotUnDef(merge)) {
             return false;
           }

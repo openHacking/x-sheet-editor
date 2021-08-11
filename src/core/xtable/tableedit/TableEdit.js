@@ -29,7 +29,7 @@ class TableEdit extends TextEdit {
       const merges = table.getTableMerges();
       const { selectRange } = xSelect;
       const { sri, sci } = selectRange;
-      if (!selectRange.multiple() || merges.getFirstIncludes(sri, sci)) {
+      if (!selectRange.multiple() || merges.getFirstInclude(sri, sci)) {
         this.open(event);
       }
     });
@@ -132,7 +132,7 @@ class TableEdit extends TextEdit {
     let { throttle, table } = this;
     let cells = table.getTableCells();
     let { xScreen } = table;
-    if (table.isReadOnly()) {
+    if (table.isProtection()) {
       return this;
     }
     let xSelect = xScreen.findType(XSelectItem);

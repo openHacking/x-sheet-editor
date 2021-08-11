@@ -37,7 +37,7 @@ class BaseCellsHelper {
     const xTableAreaView = this.getXTableAreaView();
     const merges = this.getMerges();
     const cols = this.getCols();
-    const merge = merges.getFirstIncludes(ri, ci);
+    const merge = merges.getFirstInclude(ri, ci);
     if (merge) {
       return merge;
     }
@@ -73,7 +73,7 @@ class BaseCellsHelper {
           .setBegin(ci)
           .setEnd(cols.len)
           .setLoop((i) => {
-            const merge = merges.getFirstIncludes(ri, i);
+            const merge = merges.getFirstInclude(ri, i);
             const cell = cells.getCell(ri, i);
             const blank = SheetUtils.isUnDef(cell) || cell.isEmpty();
             if (i === ci) {
@@ -97,7 +97,7 @@ class BaseCellsHelper {
           .setBegin(ci + 1)
           .setEnd(cols.len)
           .setLoop((i) => {
-            const merge = merges.getFirstIncludes(ri, i);
+            const merge = merges.getFirstInclude(ri, i);
             const cell = cells.getCell(ri, i);
             const blank = SheetUtils.isUnDef(cell) || cell.isEmpty();
             if (blank && SheetUtils.isUnDef(merge)) {
@@ -112,7 +112,7 @@ class BaseCellsHelper {
           .setBegin(ci - 1)
           .setEnd(0)
           .setLoop((i) => {
-            const merge = merges.getFirstIncludes(ri, i);
+            const merge = merges.getFirstInclude(ri, i);
             const cell = cells.getCell(ri, i);
             const blank = SheetUtils.isUnDef(cell) || cell.isEmpty();
             if (blank && SheetUtils.isUnDef(merge)) {
@@ -135,7 +135,7 @@ class BaseCellsHelper {
           .setBegin(ci)
           .setEnd(0)
           .setLoop((i) => {
-            const merge = merges.getFirstIncludes(ri, i);
+            const merge = merges.getFirstInclude(ri, i);
             const cell = cells.getCell(ri, i);
             const blank = SheetUtils.isUnDef(cell) || cell.isEmpty();
             if (i === ci) {
@@ -161,7 +161,7 @@ class BaseCellsHelper {
     const merges = this.getMerges();
     const cols = this.getCols();
     const rows = this.getRows();
-    const merge = merges.getFirstIncludes(ri, ci);
+    const merge = merges.getFirstInclude(ri, ci);
     if (merge) {
       return merge;
     }
@@ -240,7 +240,7 @@ class BaseCellsHelper {
   getAngleBarMaxWidth(ri, ci, cell, rect) {
     const merges = this.getMerges();
     const rows = this.getRows();
-    const merge = merges.getFirstIncludes(ri, ci);
+    const merge = merges.getFirstInclude(ri, ci);
     if (merge) {
       return merge;
     }

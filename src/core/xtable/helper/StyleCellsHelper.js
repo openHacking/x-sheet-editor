@@ -79,7 +79,7 @@ class StyleCellsHelper extends BaseCellsHelper {
             .setBegin(eci)
             .setEnd(sci)
             .setLoop((col) => {
-              const merge = merges.getFirstIncludes(row, col);
+              const merge = merges.getFirstInclude(row, col);
               const width = cols.getWidth(col);
               x -= width;
               const rect = new Rect({ x, y, width, height });
@@ -131,7 +131,7 @@ class StyleCellsHelper extends BaseCellsHelper {
             .setBegin(sci)
             .setEnd(eci)
             .setLoop((col) => {
-              const merge = merges.getFirstIncludes(row, col);
+              const merge = merges.getFirstInclude(row, col);
               const width = cols.getWidth(col);
               const rect = new Rect({ x, y, width, height });
               newCol(col);
@@ -182,7 +182,7 @@ class StyleCellsHelper extends BaseCellsHelper {
             .setBegin(eci)
             .setEnd(sci)
             .setLoop((col) => {
-              const merge = merges.getFirstIncludes(row, col);
+              const merge = merges.getFirstInclude(row, col);
               const width = cols.getWidth(col);
               x -= width;
               const rect = new Rect({ x, y, width, height });
@@ -233,7 +233,7 @@ class StyleCellsHelper extends BaseCellsHelper {
             .setBegin(sci)
             .setEnd(eci)
             .setLoop((col) => {
-              const merge = merges.getFirstIncludes(row, col);
+              const merge = merges.getFirstInclude(row, col);
               const width = cols.getWidth(col);
               const rect = new Rect({ x, y, width, height });
               newCol(col);

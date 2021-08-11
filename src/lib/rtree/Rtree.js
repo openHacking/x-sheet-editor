@@ -1,8 +1,9 @@
 import { QSelect } from './Qselect';
 
 function findItem(item, items, equalsFn) {
-  if (!equalsFn) return items.indexOf(item);
-
+  if (!equalsFn) {
+    return items.indexOf(item);
+  }
   for (let i = 0; i < items.length; i++) {
     if (equalsFn(item, items[i])) return i;
   }
@@ -15,34 +16,33 @@ function extend(a, b) {
   a.maxY = Math.max(a.maxY, b.maxY);
   return a;
 }
-function compareNodeMinX(a, b) { return a.minX - b.minX; }
-function compareNodeMinY(a, b) { return a.minY - b.minY; }
-function bboxArea(a) { return (a.maxX - a.minX) * (a.maxY - a.minY); }
-function bboxMargin(a) { return (a.maxX - a.minX) + (a.maxY - a.minY); }
+function compareNodeMinX(a, b) {
+  return a.minX - b.minX;
+}
+function compareNodeMinY(a, b) {
+  return a.minY - b.minY;
+}
+function bboxArea(a) {
+  return (a.maxX - a.minX) * (a.maxY - a.minY);
+}
+function bboxMargin(a) {
+  return (a.maxX - a.minX) + (a.maxY - a.minY);
+}
 function enlargedArea(a, b) {
-  return (Math.max(b.maxX, a.maxX) - Math.min(b.minX, a.minX))
-        * (Math.max(b.maxY, a.maxY) - Math.min(b.minY, a.minY));
+  return (Math.max(b.maxX, a.maxX) - Math.min(b.minX, a.minX)) * (Math.max(b.maxY, a.maxY) - Math.min(b.minY, a.minY));
 }
 function intersectionArea(a, b) {
   const minX = Math.max(a.minX, b.minX);
   const minY = Math.max(a.minY, b.minY);
   const maxX = Math.min(a.maxX, b.maxX);
   const maxY = Math.min(a.maxY, b.maxY);
-
-  return Math.max(0, maxX - minX)
-        * Math.max(0, maxY - minY);
+  return Math.max(0, maxX - minX) * Math.max(0, maxY - minY);
 }
 function contains(a, b) {
-  return a.minX <= b.minX
-        && a.minY <= b.minY
-        && b.maxX <= a.maxX
-        && b.maxY <= a.maxY;
+  return a.minX <= b.minX && a.minY <= b.minY && b.maxX <= a.maxX && b.maxY <= a.maxY;
 }
 function intersects(a, b) {
-  return b.minX <= a.maxX
-        && b.minY <= a.maxY
-        && b.maxX >= a.minX
-        && b.maxY >= a.minY;
+  return b.minX <= a.maxX && b.minY <= a.maxY && b.maxX >= a.minX && b.maxY >= a.minY;
 }
 function createNode(children) {
   return {
@@ -102,7 +102,9 @@ class Rtree {
     let node = this.data;
     const result = [];
 
-    if (!intersects(bbox, node)) return result;
+    if (!intersects(bbox, node)) {
+      return result;
+    }
 
     const toBBox = this.toBBox;
     const nodesToSearch = [];
@@ -111,7 +113,6 @@ class Rtree {
       for (let i = 0; i < node.children.length; i++) {
         const child = node.children[i];
         const childBBox = node.leaf ? toBBox(child) : child;
-
         if (intersects(bbox, childBBox)) {
           if (node.leaf) result.push(child);
           else if (contains(bbox, childBBox)) this._all(child, result);
@@ -124,21 +125,22 @@ class Rtree {
     return result;
   }
 
-  one(bbox) {
+  first(bbox) {
     return this.search(bbox)[0];
   }
 
   collides(bbox) {
     let node = this.data;
 
-    if (!intersects(bbox, node)) return false;
+    if (!intersects(bbox, node)) {
+      return false;
+    }
 
     const nodesToSearch = [];
     while (node) {
       for (let i = 0; i < node.children.length; i++) {
         const child = node.children[i];
         const childBBox = node.leaf ? this.toBBox(child) : child;
-
         if (intersects(bbox, childBBox)) {
           if (node.leaf || contains(bbox, childBBox)) return true;
           nodesToSearch.push(child);
@@ -151,7 +153,9 @@ class Rtree {
   }
 
   load(data) {
-    if (!(data && data.length)) return this;
+    if (!(data && data.length)) {
+      return this;
+    }
 
     if (data.length < this._minEntries) {
       for (let i = 0; i < data.length; i++) {
@@ -166,11 +170,9 @@ class Rtree {
     if (!this.data.children.length) {
       // 如果树为空，则按原样保存
       this.data = node;
-
     } else if (this.data.height === node.height) {
       // 如果树具有相同的高度，则拆分根
       this._splitRoot(this.data, node);
-
     } else {
       if (this.data.height < node.height) {
         // 如果插入的树更大，则交换树
@@ -178,7 +180,6 @@ class Rtree {
         this.data = node;
         node = tmpNode;
       }
-
       // 将小树插入大树中适当的层次
       this._insert(node, this.data.height - node.height - 1, true);
     }
@@ -187,7 +188,9 @@ class Rtree {
   }
 
   insert(item) {
-    if (item) this._insert(item, this.data.height - 1);
+    if (item) {
+      this._insert(item, this.data.height - 1);
+    }
     return this;
   }
 
@@ -197,19 +200,22 @@ class Rtree {
   }
 
   remove(item, equalsFn) {
-    if (!item) return this;
+    if (!item) {
+      return this;
+    }
 
     let node = this.data;
     const bbox = this.toBBox(item);
     const path = [];
     const indexes = [];
-    let i; let parent; let
-      goingUp;
+    let i;
+    let parent;
+    let goingUp;
 
     // 深度优先迭代树遍历
     while (node || path.length) {
-
-      if (!node) { // go up
+      if (!node) {
+        // 往上
         node = path.pop();
         parent = path[path.length - 1];
         i = indexes.pop();
@@ -219,7 +225,6 @@ class Rtree {
       if (node.leaf) {
         // 检查当前节点
         const index = findItem(item, node.children, equalsFn);
-
         if (index !== -1) {
           // 找到项目，移除项目并向上压缩树
           node.children.splice(index, 1);
@@ -230,19 +235,17 @@ class Rtree {
       }
 
       if (!goingUp && !node.leaf && contains(node, bbox)) {
-        // 下降
+        // 往下
         path.push(node);
         indexes.push(i);
         i = 0;
         parent = node;
         node = node.children[0];
-
       } else if (parent) {
         // 向右走
         i++;
         node = parent.children[i];
         goingUp = false;
-
       } else {
         // 没有发现
         node = null;
@@ -252,32 +255,32 @@ class Rtree {
     return this;
   }
 
-  toBBox(item) { return item; }
+  toBBox(item) {
+    return item;
+  }
 
-  compareMinX(a, b) { return a.minX - b.minX; }
+  compareMinX(a, b) {
+    return a.minX - b.minX;
+  }
 
-  compareMinY(a, b) { return a.minY - b.minY; }
-
-  toJSON() { return this.data; }
-
-  fromJSON(data) {
-    this.data = data;
-    return this;
+  compareMinY(a, b) {
+    return a.minY - b.minY;
   }
 
   _all(node, result) {
     const nodesToSearch = [];
     while (node) {
-      if (node.leaf) result.push(...node.children);
-      else nodesToSearch.push(...node.children);
-
+      if (node.leaf) {
+        result.push(...node.children);
+      } else {
+        nodesToSearch.push(...node.children);
+      }
       node = nodesToSearch.pop();
     }
     return result;
   }
 
   _build(items, left, right, height) {
-
     const N = right - left + 1;
     let M = this._maxEntries;
     let node;
@@ -292,7 +295,6 @@ class Rtree {
     if (!height) {
       // 散装树的目标高度
       height = Math.ceil(Math.log(N) / Math.log(M));
-
       // 目标根条目数以最大限度地提高存储利用率
       M = Math.ceil(N / Math.pow(M, height - 1));
     }
@@ -302,22 +304,16 @@ class Rtree {
     node.height = height;
 
     // 将项目分成 M 个主要为方形的元素
-
     const N2 = Math.ceil(N / M);
     const N1 = N2 * Math.ceil(Math.sqrt(M));
 
     multiSelect(items, left, right, N1, this.compareMinX);
 
     for (let i = left; i <= right; i += N1) {
-
       const right2 = Math.min(i + N1 - 1, right);
-
       multiSelect(items, i, right2, N2, this.compareMinY);
-
       for (let j = i; j <= right2; j += N2) {
-
         const right3 = Math.min(j + N2 - 1, right2);
-
         // 递归地打包每个条目
         node.children.push(this._build(items, j, right3, height - 1));
       }
@@ -332,7 +328,9 @@ class Rtree {
     while (true) {
       path.push(node);
 
-      if (node.leaf || path.length - 1 === level) break;
+      if (node.leaf || path.length - 1 === level) {
+        break;
+      }
 
       let minArea = Infinity;
       let minEnlargement = Infinity;
@@ -348,7 +346,6 @@ class Rtree {
           minEnlargement = enlargement;
           minArea = area < minArea ? area : minArea;
           targetNode = child;
-
         } else if (enlargement === minEnlargement) {
           // 否则选择面积最小的一个
           if (area < minArea) {
@@ -380,7 +377,9 @@ class Rtree {
       if (insertPath[level].children.length > this._maxEntries) {
         this._split(insertPath, level);
         level--;
-      } else break;
+      } else {
+        break;
+      }
     }
 
     // 沿插入路径调整 bboxes
@@ -404,8 +403,11 @@ class Rtree {
     calcBBox(node, this.toBBox);
     calcBBox(newNode, this.toBBox);
 
-    if (level) insertPath[level - 1].children.push(newNode);
-    else this._splitRoot(node, newNode);
+    if (level) {
+      insertPath[level - 1].children.push(newNode);
+    } else {
+      this._splitRoot(node, newNode);
+    }
   }
 
   _splitRoot(node, newNode) {
@@ -432,9 +434,7 @@ class Rtree {
       if (overlap < minOverlap) {
         minOverlap = overlap;
         index = i;
-
         minArea = area < minArea ? area : minArea;
-
       } else if (overlap === minOverlap) {
         // 否则选择面积最小的分布
         if (area < minArea) {
@@ -453,10 +453,11 @@ class Rtree {
     const compareMinY = node.leaf ? this.compareMinY : compareNodeMinY;
     const xMargin = this._allDistMargin(node, m, M, compareMinX);
     const yMargin = this._allDistMargin(node, m, M, compareMinY);
-
     // 如果 x 的总分配边际值最小，则按 minX 排序,
     // 否则它已经按 minY 排序
-    if (xMargin < yMargin) node.children.sort(compareMinX);
+    if (xMargin < yMargin) {
+      node.children.sort(compareMinX);
+    }
   }
 
   // 所有可能的分割分布的总边际，其中每个节点至少是 m 满
@@ -497,10 +498,12 @@ class Rtree {
         if (i > 0) {
           siblings = path[i - 1].children;
           siblings.splice(siblings.indexOf(path[i]), 1);
-
-        } else this.clear();
-
-      } else calcBBox(path[i], this.toBBox);
+        } else {
+          this.clear();
+        }
+      } else {
+        calcBBox(path[i], this.toBBox);
+      }
     }
   }
 }

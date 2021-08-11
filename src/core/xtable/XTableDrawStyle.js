@@ -24,7 +24,6 @@ import { VIEW_MODE, XTableScrollView } from './XTableScrollView';
 import { XFixedMeasure } from './tablebase/XFixedMeasure';
 import { FixedCellIcon } from './cellicon/FixedCellIcon';
 import { StaticCellIcon } from './cellicon/StaticCellIcon';
-import { XMerges } from './xmerges/XMerges';
 import { XTableDataItems } from './XTableDataItems';
 import { Path } from '../../draw/Path';
 import { Point } from '../../draw/Point';
@@ -37,6 +36,7 @@ import { TBorderRequire } from './linehandle/filter/borderrequire/TBorderRequire
 import { BBorderRequire } from './linehandle/filter/borderrequire/BBorderRequire';
 import { LineGenerator } from './linehandle/LineGenerator';
 import { AngleHandle } from './linehandle/handle/AngleHandle';
+import { Merges } from './merges/Merges';
 
 const RENDER_MODE = {
   SCROLL: Symbol('scroll'),
@@ -2644,10 +2644,8 @@ class XTableDrawStyle extends Widget {
       snapshot: this.snapshot,
       items: this.settings.data,
     });
-    this.merges = new XMerges({
-      xIteratorBuilder: this.xIteratorBuilder,
+    this.merges = new Merges({
       snapshot: this.snapshot,
-      xTableData: this.xTableData,
       ...settings.merge,
     });
     this.scale = new Scale();
@@ -2773,11 +2771,11 @@ class XTableDrawStyle extends Widget {
         });
         return result === LineIteratorFilter.RETURN_TYPE.EXEC;
       },
-      iFMerge: (row, col) => SheetUtils.isNotEmptyObject(this.merges.getFirstIncludes(row, col)),
-      iFMergeFirstRow: (row, col) => this.merges.getFirstIncludes(row, col).sri === row,
-      iFMergeLastRow: (row, col) => this.merges.getFirstIncludes(row, col).eri === row,
-      iFMergeFirstCol: (row, col) => this.merges.getFirstIncludes(row, col).sci === col,
-      iFMergeLastCol: (row, col) => this.merges.getFirstIncludes(row, col).eci === col,
+      iFMerge: (row, col) => SheetUtils.isNotEmptyObject(this.merges.getFirstInclude(row, col)),
+      iFMergeFirstRow: (row, col) => this.merges.getFirstInclude(row, col).sri === row,
+      iFMergeLastRow: (row, col) => this.merges.getFirstInclude(row, col).eri === row,
+      iFMergeFirstCol: (row, col) => this.merges.getFirstInclude(row, col).sci === col,
+      iFMergeLastCol: (row, col) => this.merges.getFirstInclude(row, col).eci === col,
     });
     this.grid = new Grid(this.draw, {
       color: this.settings.table.gridColor,
@@ -3071,7 +3069,7 @@ class XTableDrawStyle extends Widget {
    */
   isAngleBarCell(row, col) {
     const { cells, merges } = this;
-    const merge = merges.getFirstIncludes(row, col);
+    const merge = merges.getFirstInclude(row, col);
     if (SheetUtils.isNotUnDef(merge)) {
       return false;
     }
@@ -3093,11 +3091,9 @@ class XTableDrawStyle extends Widget {
    * @param ci
    */
   removeCol(ci) {
-    const { cols, merges, xTableData } = this;
-    const { xMergesNoCol } = merges;
+    const { cols, xTableData } = this;
     cols.removeCol(ci);
     xTableData.removeCol(ci);
-    xMergesNoCol.removeCol(ci);
   }
 
   /**
@@ -3118,22 +3114,9 @@ class XTableDrawStyle extends Widget {
    */
   insertColAfter(ci) {
     const { cols, merges, xTableData } = this;
-    const { xMergesNoCol } = merges;
+    merges.colAfterExpand(ci);
     cols.insertColAfter(ci);
     xTableData.insertColAfter(ci);
-    xMergesNoCol.insertColAfter(ci);
-  }
-
-  /**
-   * 插入到指定行之后
-   * @param ri
-   */
-  insertRowAfter(ri) {
-    const { rows, merges, xTableData } = this;
-    const { xMergesNoRow } = merges;
-    rows.insertRowAfter(ri);
-    xTableData.insertRowAfter(ri);
-    xMergesNoRow.insertRowAfter(ri);
   }
 
   /**
@@ -3142,10 +3125,20 @@ class XTableDrawStyle extends Widget {
    */
   insertColBefore(ci) {
     const { cols, merges, xTableData } = this;
-    const { xMergesNoCol } = merges;
+    merges.colBeforeExpand(ci);
     cols.insertColBefore(ci);
     xTableData.insertColBefore(ci);
-    xMergesNoCol.insertColBefore(ci);
+  }
+
+  /**
+   * 插入到指定行之后
+   * @param ri
+   */
+  insertRowAfter(ri) {
+    const { rows, merges, xTableData } = this;
+    merges.rowAfterExpand(ri);
+    rows.insertRowAfter(ri);
+    xTableData.insertRowAfter(ri);
   }
 
   /**
@@ -3154,10 +3147,9 @@ class XTableDrawStyle extends Widget {
    */
   insertRowBefore(ri) {
     const { rows, merges, xTableData } = this;
-    const { xMergesNoRow } = merges;
+    merges.rowBeforeExpand(ri);
     rows.insertRowBefore(ri);
     xTableData.insertRowBefore(ri);
-    xMergesNoRow.insertRowBefore(ri);
   }
 
 }

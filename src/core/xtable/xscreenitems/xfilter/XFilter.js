@@ -8,7 +8,7 @@ import { Alert } from '../../../../module/alert/Alert';
 import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBorderItem';
 import darkFilter from '../../../../../assets/svg/filter-dark.svg';
 import { XTableMousePoint } from '../../XTableMousePoint';
-import { XIcon } from '../../xicon/XIcon';
+import { XIcon } from '../../tableicon/XIcon';
 import { Mask } from '../../../../module/mask/Mask';
 import { XDraw } from '../../../../draw/XDraw';
 import { FilterData } from '../../../../module/filterdata/FilterData';
@@ -238,7 +238,7 @@ class XFilter extends XScreenCssBorderItem {
       const { sri, sci, eri, eci } = targetRange;
       const rowLen = rows.len - 1;
       const colLen = cols.len - 1;
-      const merge = merges.getFirstIncludes(sri, sci) || RectRange.EMPTY;
+      const merge = merges.getFirstInclude(sri, sci) || RectRange.EMPTY;
       // 排除多选单元格
       if (targetRange.multiple() && !merge.equals(targetRange)) {
         this.selectRange = targetRange;

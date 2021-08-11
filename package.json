@@ -52,7 +52,7 @@
     "worker-loader": "^2.0.0"
   },
   "dependencies": {
-    "txml": "^4.0.1",
-    "exceljs": "^4.2.1"
+    "exceljs": "^4.2.1",
+    "txml": "^4.0.1"
   }
 }

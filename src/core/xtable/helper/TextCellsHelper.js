@@ -78,12 +78,12 @@ class TextCellsHelper extends BaseCellsHelper {
             .setBegin(eci)
             .setEnd(sci)
             .setLoop((col) => {
-              const merge = merges.getFirstIncludes(row, col);
+              const merge = merges.getFirstInclude(row, col);
               const width = cols.getWidth(col);
               newCol(col);
               x -= width;
               if (merge) {
-                const find = filter.find(i => i === merge);
+                const find = filter.find(i => i.equals(merge));
                 if (SheetUtils.isUnDef(find)) {
                   filter.push(merge);
                   const mergeInfo = this.mergeInfo({
@@ -132,11 +132,11 @@ class TextCellsHelper extends BaseCellsHelper {
             .setBegin(sci)
             .setEnd(eci)
             .setLoop((col) => {
-              const merge = merges.getFirstIncludes(row, col);
+              const merge = merges.getFirstInclude(row, col);
               const width = cols.getWidth(col);
               newCol(col);
               if (merge) {
-                const find = filter.find(i => i === merge);
+                const find = filter.find(i => i.equals(merge));
                 if (SheetUtils.isUnDef(find)) {
                   filter.push(merge);
                   const mergeInfo = this.mergeInfo({
@@ -185,12 +185,12 @@ class TextCellsHelper extends BaseCellsHelper {
             .setBegin(eci)
             .setEnd(sci)
             .setLoop((col) => {
-              const merge = merges.getFirstIncludes(row, col);
+              const merge = merges.getFirstInclude(row, col);
               const width = cols.getWidth(col);
               newCol(col);
               x -= width;
               if (merge) {
-                const find = filter.find(i => i === merge);
+                const find = filter.find(i => i.equals(merge));
                 if (SheetUtils.isUnDef(find)) {
                   filter.push(merge);
                   const mergeInfo = this.mergeInfo({
@@ -239,11 +239,11 @@ class TextCellsHelper extends BaseCellsHelper {
             .setBegin(sci)
             .setEnd(eci)
             .setLoop((col) => {
-              const merge = merges.getFirstIncludes(row, col);
+              const merge = merges.getFirstInclude(row, col);
               const width = cols.getWidth(col);
               newCol(col);
               if (merge) {
-                const find = filter.find(i => i === merge);
+                const find = filter.find(i => i.equals(merge));
                 if (SheetUtils.isUnDef(find)) {
                   filter.push(merge);
                   const mergeInfo = this.mergeInfo({

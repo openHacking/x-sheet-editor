@@ -67,7 +67,7 @@ class XWorkHeadMenu extends Widget {
         onUpdate: (value) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          if (!table.isReadOnly()) {
+          if (!table.isProtection()) {
             this.scale.setTitle(`${value}%`);
             const { body } = this.workTop.work;
             body.setScale(value / 100);
@@ -80,7 +80,7 @@ class XWorkHeadMenu extends Widget {
         onUpdate: (format, type, title) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          if (!table.isReadOnly()) {
+          if (!table.isProtection()) {
             const cells = table.getTableCells();
             const operateCellsHelper = table.getOperateCellsHelper();
             const { xScreen } = table;
@@ -113,7 +113,7 @@ class XWorkHeadMenu extends Widget {
         onUpdate: (type) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          if (!table.isReadOnly()) {
+          if (!table.isProtection()) {
             const operateCellsHelper = table.getOperateCellsHelper();
             const cells = table.getTableCells();
             const { xScreen } = table;
@@ -145,7 +145,7 @@ class XWorkHeadMenu extends Widget {
         onUpdate: (size) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          if (!table.isReadOnly()) {
+          if (!table.isProtection()) {
             const operateCellsHelper = table.getOperateCellsHelper();
             const cells = table.getTableCells();
             const { xScreen } = table;
@@ -177,7 +177,7 @@ class XWorkHeadMenu extends Widget {
         onUpdate: (color) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          if (!table.isReadOnly()) {
+          if (!table.isProtection()) {
             const operateCellsHelper = table.getOperateCellsHelper();
             const cells = table.getTableCells();
             const { xScreen } = table;
@@ -209,7 +209,7 @@ class XWorkHeadMenu extends Widget {
         onUpdate: (color) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          if (!table.isReadOnly()) {
+          if (!table.isProtection()) {
             const operateCellsHelper = table.getOperateCellsHelper();
             const cells = table.getTableCells();
             const { xScreen } = table;
@@ -241,7 +241,7 @@ class XWorkHeadMenu extends Widget {
         onUpdate: (type) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          if (!table.isReadOnly()) {
+          if (!table.isProtection()) {
             const { xScreen } = table;
             const xSelect = xScreen.findType(XSelectItem);
             const { selectRange } = xSelect;
@@ -299,7 +299,7 @@ class XWorkHeadMenu extends Widget {
         onUpdate: (borderType, color, lineType) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          if (!table.isReadOnly()) {
+          if (!table.isProtection()) {
             const { xScreen } = table;
             const operateCellsHelper = table.getOperateCellsHelper();
             const cells = table.getTableCells();
@@ -593,7 +593,7 @@ class XWorkHeadMenu extends Widget {
         onUpdate: (type) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          if (!table.isReadOnly()) {
+          if (!table.isProtection()) {
             const operateCellsHelper = table.getOperateCellsHelper();
             const cells = table.getTableCells();
             const { xScreen } = table;
@@ -636,7 +636,7 @@ class XWorkHeadMenu extends Widget {
         onUpdate: (type) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          if (!table.isReadOnly()) {
+          if (!table.isProtection()) {
             const operateCellsHelper = table.getOperateCellsHelper();
             const cells = table.getTableCells();
             const { xScreen } = table;
@@ -679,7 +679,7 @@ class XWorkHeadMenu extends Widget {
         onUpdateAngle: (angle) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          if (!table.isReadOnly()) {
+          if (!table.isProtection()) {
             const operateCellsHelper = table.getOperateCellsHelper();
             const cells = table.getTableCells();
             const { xScreen } = table;
@@ -713,7 +713,7 @@ class XWorkHeadMenu extends Widget {
         onUpdateType: (type) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          if (!table.isReadOnly()) {
+          if (!table.isProtection()) {
             const operateCellsHelper = table.getOperateCellsHelper();
             const cells = table.getTableCells();
             const { xScreen } = table;
@@ -743,7 +743,7 @@ class XWorkHeadMenu extends Widget {
         onUpdate: (type) => {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
-          if (!table.isReadOnly()) {
+          if (!table.isProtection()) {
             const operateCellsHelper = table.getOperateCellsHelper();
             const cells = table.getTableCells();
             const { xScreen } = table;
@@ -907,7 +907,7 @@ class XWorkHeadMenu extends Widget {
     XEvent.bind(this.paintFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      if (!table.isReadOnly()) {
+      if (!table.isProtection()) {
         const { xScreen } = table;
         const xSelect = xScreen.findType(XSelectItem);
         const { selectRange } = xSelect;
@@ -931,7 +931,7 @@ class XWorkHeadMenu extends Widget {
     XEvent.bind(this.clearFormat, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      if (!table.isReadOnly()) {
+      if (!table.isProtection()) {
         const operateCellsHelper = table.getOperateCellsHelper();
         const cells = table.getTableCells();
         const { xScreen } = table;
@@ -957,7 +957,7 @@ class XWorkHeadMenu extends Widget {
     XEvent.bind(this.filter, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      if (!table.isReadOnly()) {
+      if (!table.isProtection()) {
         const { xScreen } = table;
         const filter = xScreen.findType(XFilter);
         if (filter.display) {
@@ -972,7 +972,7 @@ class XWorkHeadMenu extends Widget {
     XEvent.bind(this.fontBold, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      if (!table.isReadOnly()) {
+      if (!table.isProtection()) {
         const operateCellsHelper = table.getOperateCellsHelper();
         const cells = table.getTableCells();
         const { xScreen } = table;
@@ -1007,7 +1007,7 @@ class XWorkHeadMenu extends Widget {
     XEvent.bind(this.merge, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      if (!table.isReadOnly()) {
+      if (!table.isProtection()) {
         const merges = table.getTableMerges();
         const cells = table.getTableCells();
         const { xScreen } = table;
@@ -1016,7 +1016,7 @@ class XWorkHeadMenu extends Widget {
         const { selectRange } = xSelect;
         if (selectRange) {
           const merge = selectRange.clone();
-          const find = merges.getFirstIncludes(merge.sri, merge.sci);
+          const find = merges.getFirstInclude(merge.sri, merge.sci);
           if (SheetUtils.isNotUnDef(find) && merge.equals(find)) {
             snapshot.open();
             merges.delete(find);
@@ -1058,7 +1058,7 @@ class XWorkHeadMenu extends Widget {
     XEvent.bind(this.fontItalic, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, () => {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
-      if (!table.isReadOnly()) {
+      if (!table.isProtection()) {
         const operateCellsHelper = table.getOperateCellsHelper();
         const cells = table.getTableCells();
         const { xScreen } = table;
@@ -1086,7 +1086,7 @@ class XWorkHeadMenu extends Widget {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const { xScreen } = table;
-      if (!table.isReadOnly()) {
+      if (!table.isProtection()) {
         const operateCellsHelper = table.getOperateCellsHelper();
         const cells = table.getTableCells();
         const { snapshot } = table;
@@ -1113,7 +1113,7 @@ class XWorkHeadMenu extends Widget {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       const { xScreen } = table;
-      if (!table.isReadOnly()) {
+      if (!table.isProtection()) {
         const operateCellsHelper = table.getOperateCellsHelper();
         const cells = table.getTableCells();
         const { snapshot } = table;

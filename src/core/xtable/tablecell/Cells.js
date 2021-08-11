@@ -2,16 +2,16 @@ import { Cell } from './Cell';
 import { SheetUtils } from '../../../utils/SheetUtils';
 import { XIteratorBuilder } from '../iterator/XIteratorBuilder';
 import { XTableDataItems } from '../XTableDataItems';
-import { XMerges } from '../xmerges/XMerges';
 import { Snapshot } from '../snapshot/Snapshot';
 import { Listen } from '../../../lib/Listen';
+import { Merges } from '../merges/Merges';
 
 class Cells {
 
   constructor({
     xIteratorBuilder = new XIteratorBuilder(),
     xTableData = new XTableDataItems(),
-    merges = new XMerges(),
+    merges = new Merges(),
     snapshot = new Snapshot(),
   } = {}) {
     this.xTableData = xTableData;
@@ -53,7 +53,7 @@ class Cells {
 
   getCellOrMergeCell(ri, ci) {
     const { merges } = this;
-    const merge = merges.getFirstIncludes(ri, ci);
+    const merge = merges.getFirstInclude(ri, ci);
     if (merge) {
       return this.getCell(merge.sri, merge.sci);
     }

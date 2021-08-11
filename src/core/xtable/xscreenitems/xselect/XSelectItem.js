@@ -179,7 +179,7 @@ class XSelectItem extends XScreenCssBorderItem {
       this.selectLocal = SELECT_LOCAL.L;
       return;
     }
-    this.downRange = merges.getFirstIncludes(ri, ci) || new RectRange(ri, ci, ri, ci);
+    this.downRange = merges.getFirstInclude(ri, ci) || new RectRange(ri, ci, ri, ci);
     this.selectRange = this.downRange;
     this.selectPath.clear();
     this.selectLocal = SELECT_LOCAL.BR;

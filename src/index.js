@@ -9,7 +9,7 @@ import { ElPopUp } from './module/elpopup/ElPopUp';
 import { SheetUtils } from './utils/SheetUtils';
 import { RectRange } from './core/xtable/tablebase/RectRange';
 import { BaseFont } from './draw/font/BaseFont';
-import { XIcon } from './core/xtable/xicon/XIcon';
+import { XIcon } from './core/xtable/tableicon/XIcon';
 import { XlsxExport } from './io/xlsx/XlsxExport';
 import { ColorPicker } from './module/colorpicker/ColorPicker';
 import FindDpi from './lib/finddpi/FindDpi';

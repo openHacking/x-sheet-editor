@@ -32,14 +32,15 @@ import { XFixedView } from './tablebase/XFixedView';
 import { XFilter } from './xscreenitems/xfilter/XFilter';
 import { CellMergeCopyHelper } from './helper/CellMergeCopyHelper';
 import { Clipboard } from '../../lib/Clipboard';
-import { XIcon } from './xicon/XIcon';
-import { XIconBuilder } from './xicon/XIconBuilder';
+import { XIcon } from './tableicon/XIcon';
+import { XIconBuilder } from './tableicon/XIconBuilder';
 import { BaseFont } from '../../draw/font/BaseFont';
 import { XIteratorBuilder } from './iterator/XIteratorBuilder';
 import { RowHeightGroupIndex } from './tablebase/RowHeightGroupIndex';
 import { Alert } from '../../module/alert/Alert';
 import { Snapshot } from './snapshot/Snapshot';
 import { TableEdit } from './tableedit/TableEdit';
+import { Protection } from './protection/Protection';
 
 class Dimensions {
 
@@ -503,10 +504,13 @@ const settings = {
     buttonColor: 'rgb(193,193,193)',
   },
   data: [],
+  protection: {
+    protections: [],
+  },
   merge: {
     merges: [],
   },
-  readOnly: false,
+  sheetProtection: false,
 };
 
 /**
@@ -555,6 +559,11 @@ class XTableDimension extends Widget {
       ...this.settings.rows,
     });
     this.scale = new Scale();
+    // 保护区域
+    this.protection = new Protection({
+      snapshot: this.snapshot,
+      ...settings.protection,
+    });
     // 冻结视图坐标
     this.xFixedView = new XFixedView(this.settings.xFixedView);
     this.xFixedMeasure = new XFixedMeasure({
@@ -1080,7 +1089,7 @@ class XTableDimension extends Widget {
       fy = (total - rows.getHeight(ri) - top) * -1;
     }
 
-    const merge = merges.getFirstIncludes(ri, ci);
+    const merge = merges.getFirstInclude(ri, ci);
     let mci = ci;
     let mri = ri;
     let sx = fx;
@@ -1482,15 +1491,15 @@ class XTableDimension extends Widget {
    * 表格是否只读
    * @returns {boolean}
    */
-  isReadOnly({
+  isProtection({
     tips = true,
     view = null,
   } = {}) {
-    let { readOnlyAlert, settings, xScreen } = this;
-    let helper = this.getOperateCellsHelper();
+    let { settings, readOnlyAlert } = this;
+    let { xScreen, protection } = this;
+    let { sheetProtection } = settings;
     // 表格是否只读
-    let { readOnly } = settings;
-    if (readOnly) {
+    if (sheetProtection) {
       if (tips) {
         readOnlyAlert.setMessage('只读模式无法编辑').open();
       }
@@ -1501,38 +1510,22 @@ class XTableDimension extends Widget {
       let xSelect = xScreen.findType(XSelectItem);
       let { selectRange } = xSelect;
       if (selectRange) {
-        helper.getCellByViewRange({
-          rectRange: selectRange,
-          callback: (r, c, cell) => {
-            if (cell) {
-              if (cell.isReadOnly()) {
-                readOnly = true;
-                return false;
-              }
-            }
-            return true;
-          },
-        });
-      }
-    } else {
-      helper.getCellByViewRange({
-        rectRange: view,
-        callback: (r, c, cell) => {
-          if (cell) {
-            if (cell.isReadOnly()) {
-              readOnly = true;
-              return false;
-            }
+        let includes = protection.getIncludes(selectRange);
+        if (includes.length) {
+          if (tips) {
+            readOnlyAlert.setMessage('只读模式无法编辑').open();
           }
           return true;
-        },
-      });
-    }
-    if (readOnly) {
-      if (tips) {
-        readOnlyAlert.setMessage('只读模式无法编辑').open();
+        }
       }
-      return true;
+    } else {
+      let includes = protection.getIncludes(view);
+      if (includes.length) {
+        if (tips) {
+          readOnlyAlert.setMessage('只读模式无法编辑').open();
+        }
+        return true;
+      }
     }
     return false;
   }
@@ -1579,29 +1572,13 @@ class XTableDimension extends Widget {
    * @param number
    */
   insertColAfter(ci, number = 1) {
-    const { snapshot, cols, xTableStyle } = this;
+    const { cols, xTableStyle } = this;
+    const { snapshot, protection } = this;
     snapshot.open();
     for (let i = 0; i < number; i++) {
       xTableStyle.insertColAfter(ci);
+      protection.colAfterExpand(ci);
       cols.insertColAfter();
-    }
-    snapshot.close({
-      type: Constant.TABLE_EVENT_TYPE.ADD_NEW_COL,
-    });
-    this.resize();
-  }
-
-  /**
-   * 插入到指定行之后
-   * @param ri
-   * @param number
-   */
-  insertRowAfter(ri, number = 1) {
-    const { snapshot, rows, xTableStyle } = this;
-    snapshot.open();
-    for (let i = 0; i < number; i++) {
-      xTableStyle.insertRowAfter(ri);
-      rows.insertRowAfter();
     }
     snapshot.close({
       type: Constant.TABLE_EVENT_TYPE.ADD_NEW_COL,
@@ -1615,11 +1592,33 @@ class XTableDimension extends Widget {
    * @param number
    */
   insertColBefore(ci, number = 1) {
-    const { snapshot, cols, xTableStyle } = this;
+    const { cols, xTableStyle } = this;
+    const { snapshot, protection } = this;
     snapshot.open();
     for (let i = 0; i < number; i++) {
       xTableStyle.insertColBefore(ci);
+      protection.colBeforeExpand(ci);
       cols.insertColBefore();
+    }
+    snapshot.close({
+      type: Constant.TABLE_EVENT_TYPE.ADD_NEW_COL,
+    });
+    this.resize();
+  }
+
+  /**
+   * 插入到指定行之后
+   * @param ri
+   * @param number
+   */
+  insertRowAfter(ri, number = 1) {
+    const { snapshot, rows } = this;
+    const { xTableStyle, protection } = this;
+    snapshot.open();
+    for (let i = 0; i < number; i++) {
+      xTableStyle.insertRowAfter(ri);
+      protection.rowAfterShrink(ri);
+      rows.insertRowAfter();
     }
     snapshot.close({
       type: Constant.TABLE_EVENT_TYPE.ADD_NEW_COL,
@@ -1633,10 +1632,12 @@ class XTableDimension extends Widget {
    * @param number
    */
   insertRowBefore(ri, number = 1) {
-    const { snapshot, rows, xTableStyle } = this;
+    const { snapshot, rows } = this;
+    const { xTableStyle, protection } = this;
     snapshot.open();
     for (let i = 0; i < number; i++) {
       xTableStyle.insertRowBefore(ri);
+      protection.rowBeforeExpand(ri);
       rows.insertRowBefore();
     }
     snapshot.close({

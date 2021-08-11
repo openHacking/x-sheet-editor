@@ -448,7 +448,7 @@ class CellMergeCopyHelper extends BaseCellsHelper {
       originViewRange,
       targetViewRange,
       xIteratorBuilder,
-      merge: (ri, ci) => merges.getFirstIncludes(ri, ci),
+      merge: (ri, ci) => merges.getFirstInclude(ri, ci),
       master: (ri, ci, m) => m.sri === ri && m.sci === ci,
       onCopy: (ri, ci, m) => {
         let [rSize, cSize] = m.size();
@@ -463,7 +463,7 @@ class CellMergeCopyHelper extends BaseCellsHelper {
           return;
         }
         newMerge.each(xIteratorBuilder, (ri, ci) => {
-          const merge = merges.getFirstIncludes(ri, ci);
+          const merge = merges.getFirstInclude(ri, ci);
           if (merge) {
             merges.delete(merge);
           }

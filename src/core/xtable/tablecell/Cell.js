@@ -1,7 +1,7 @@
 import { SheetUtils } from '../../../utils/SheetUtils';
 import { CellFont } from './CellFont';
 import { CellBorder } from './CellBorder';
-import { XIcon } from '../xicon/XIcon';
+import { XIcon } from '../tableicon/XIcon';
 import XTableFormat from '../XTableTextFormat';
 import { RichFonts } from './RichFonts';
 import { Formula } from '../../../formula/Formula';
@@ -15,7 +15,6 @@ class Cell {
   /**
    * Cell
    * @param background
-   * @param readOnly
    * @param format
    * @param text
    * @param richText
@@ -36,7 +35,6 @@ class Cell {
     rich = SheetUtils.Undef,
     text = SheetUtils.EMPTY,
     format = 'default',
-    readOnly = false,
     icons = [],
     custom = {},
     borderAttr = {},
@@ -53,8 +51,6 @@ class Cell {
     this.custom = custom;
     // 字体测量尺子
     this.ruler = ruler;
-    // 单元格是否只读
-    this.readOnly = readOnly;
     // 格式化类型
     this.format = format;
     // 单元格公式
@@ -204,14 +200,6 @@ class Cell {
    */
   hasFormula() {
     return this.formula.hasExpr();
-  }
-
-  /**
-   * 是否只读
-   * @returns {boolean}
-   */
-  isReadOnly() {
-    return this.readOnly;
   }
 
   /**

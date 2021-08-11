@@ -64,7 +64,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
         this.display = false;
         mousePointer.free(XAutoFillItem);
         const { autoFillRange } = this;
-        if (!table.isReadOnly({
+        if (!table.isProtection({
           view: autoFillRange,
         })) {
           this.autoFill();
@@ -131,7 +131,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
     const { sri, sci, eri, eci } = selectRange;
     const { ri, ci } = table.getRiCiByXy(x, y);
 
-    const merge = merges.getFirstIncludes(sri, sci);
+    const merge = merges.getFirstInclude(sri, sci);
     const zone = SELECT_LOCAL.BR !== selectLocal;
     const hasFull = zone || SheetUtils.isNotUnDef(merge);
     const [rSize, cSize] = selectRange.size();
@@ -419,9 +419,12 @@ class XAutoFillItem extends XScreenCssBorderItem {
   splitMerge() {
     const { table, autoFillRange } = this;
     const merges = table.getTableMerges();
-    merges.getIncludes(autoFillRange, (merge) => {
-      merges.delete(merge);
-    });
+    const ranges = merges.getIncludes(autoFillRange);
+    if (ranges) {
+      ranges.forEach((merge) => {
+        merges.delete(merge);
+      });
+    }
   }
 
   destroy() {
