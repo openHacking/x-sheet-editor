@@ -21,19 +21,6 @@ class Cells {
     this.xIteratorBuilder = xIteratorBuilder;
   }
 
-  emptyRectRange(rectRange) {
-    let empty = true;
-    rectRange.each(this.xIteratorBuilder, (ri, ci) => {
-      const cell = this.getCell(ri, ci);
-      if (SheetUtils.isNotEmptyObject(cell) && !cell.isEmpty()) {
-        empty = false;
-        return false;
-      }
-      return true;
-    });
-    return empty;
-  }
-
   getCellOrNew(ri, ci) {
     if (ri < 0) {
       throw new TypeError(`错误的行号${ri}`);

@@ -34,7 +34,6 @@ import { XDraw } from '../../../draw/XDraw';
 import { Alert } from '../../../module/alert/Alert';
 import { XFilter } from '../../xtable/xscreenitems/xfilter/XFilter';
 import { XCopyStyle } from '../../xtable/xscreenitems/xcopystyle/XCopyStyle';
-import { Confirm } from '../../../module/confirm/Confirm';
 import { FontAngle } from './tool/FontAngle';
 import { Divider } from './tool/base/Divider';
 import { ColorArray } from '../../../module/colorpicker/colorarray/ColorArray';
@@ -1009,42 +1008,39 @@ class XWorkHeadMenu extends Widget {
       const { table } = sheet;
       if (!table.isProtection()) {
         const merges = table.getTableMerges();
-        const cells = table.getTableCells();
         const { xScreen } = table;
         const { snapshot } = table;
         const xSelect = xScreen.findType(XSelectItem);
         const { selectRange } = xSelect;
         if (selectRange) {
           const merge = selectRange.clone();
-          const find = merges.getFirstInclude(merge.sri, merge.sci);
-          if (SheetUtils.isNotUnDef(find) && merge.equals(find)) {
-            snapshot.open();
-            merges.delete(find);
-            snapshot.close({
-              type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
-            });
-            table.render();
-          } else if (merge.multiple()) {
-            if (cells.emptyRectRange(merge)) {
+          if (merge.multiple()) {
+            const { sri, sci } = merge;
+            const find = merges.getFirstInclude(sri, sci);
+            if (SheetUtils.isNotUnDef(find)) {
+              if (merge.equals(find)) {
+                snapshot.open();
+                merges.delete(find);
+                snapshot.close({
+                  type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+                });
+                table.render();
+              } else {
+                snapshot.open();
+                merges.delete(find);
+                merges.add(merge);
+                snapshot.close({
+                  type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+                });
+                table.render();
+              }
+            } else {
               snapshot.open();
-              merges.delete(find);
               merges.add(merge);
               snapshot.close({
                 type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
               });
               table.render();
-            } else {
-              new Confirm({
-                message: '非空单元格合并将使用左上角单元格内容',
-                ok: () => {
-                  snapshot.open();
-                  merges.add(merge);
-                  snapshot.close({
-                    type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
-                  });
-                  table.render();
-                },
-              }).open();
             }
           }
         }

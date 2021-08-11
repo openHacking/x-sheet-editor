@@ -506,21 +506,13 @@ class XFilter extends XScreenCssBorderItem {
    * 显示过滤器
    */
   openFilter() {
-    const { table } = this;
-    const cells = table.getTableCells();
     this.xFilterHandle();
     const { selectRange } = this;
     if (selectRange) {
-      if (cells.emptyRectRange(selectRange)) {
-        new Alert({
-          message: '不能为空数据区创建过滤器, 请选择非空区域',
-        }).open();
-      } else {
-        this.display = true;
-        this.createFilterIcon();
-        this.show();
-        this.xFilterOffset();
-      }
+      this.display = true;
+      this.createFilterIcon();
+      this.show();
+      this.xFilterOffset();
     }
   }
 
