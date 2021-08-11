@@ -34,7 +34,7 @@ class Snapshot {
       action.undo();
     }
     this.redoStack.push(layer);
-    this.listen.execute('change', layer.event);
+    this.listen.execute('change', 'undo', layer.event);
   }
 
   /**
@@ -47,7 +47,7 @@ class Snapshot {
       action.redo();
     }
     this.undoStack.push(layer);
-    this.listen.execute('change', layer.event);
+    this.listen.execute('change', 'redo', layer.event);
   }
 
   /**
@@ -74,7 +74,7 @@ class Snapshot {
       data: [],
     };
     this.apply = false;
-    this.listen.execute('change', event);
+    this.listen.execute('change', 'close', event);
   }
 
   /**

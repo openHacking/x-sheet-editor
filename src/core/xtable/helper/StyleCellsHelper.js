@@ -86,7 +86,7 @@ class StyleCellsHelper extends BaseCellsHelper {
               newCol(col);
               loopINCallback(row, col, rect);
               if (merge) {
-                const find = filter.find(i => i === merge);
+                const find = filter.find(i => i.equals(merge));
                 if (SheetUtils.isUnDef(find)) {
                   filter.push(merge);
                   const mergeInfo = this.mergeInfo({
@@ -137,7 +137,7 @@ class StyleCellsHelper extends BaseCellsHelper {
               newCol(col);
               loopINCallback(row, col, rect);
               if (merge) {
-                const find = filter.find(i => i === merge);
+                const find = filter.find(i => i.equals(merge));
                 if (SheetUtils.isUnDef(find)) {
                   filter.push(merge);
                   const mergeInfo = this.mergeInfo({
@@ -189,7 +189,7 @@ class StyleCellsHelper extends BaseCellsHelper {
               newCol(col);
               loopINCallback(row, col, rect);
               if (merge) {
-                const find = filter.find(i => i === merge);
+                const find = filter.find(i => i.equals(merge));
                 if (SheetUtils.isUnDef(find)) {
                   filter.push(merge);
                   const mergeInfo = this.mergeInfo({
@@ -239,7 +239,7 @@ class StyleCellsHelper extends BaseCellsHelper {
               newCol(col);
               loopINCallback(row, col, rect);
               if (merge) {
-                const find = filter.find(i => i === merge);
+                const find = filter.find(i => i.equals(merge));
                 if (SheetUtils.isUnDef(find)) {
                   filter.push(merge);
                   const mergeInfo = this.mergeInfo({
