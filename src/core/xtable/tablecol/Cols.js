@@ -264,6 +264,12 @@ class Cols {
     };
   }
 
+  syncColsLen(cols) {
+    if (cols) {
+      this.len = cols.len;
+    }
+  }
+
 }
 
 export { Cols };

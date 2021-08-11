@@ -3087,69 +3087,94 @@ class XTableDrawStyle extends Widget {
   }
 
   /**
-   * 删除指定列
-   * @param ci
-   */
-  removeCol(ci) {
-    const { cols, xTableData } = this;
-    cols.removeCol(ci);
-    xTableData.removeCol(ci);
-  }
-
-  /**
    * 删除指定行
    * @param ri
+   * @param number
    */
-  removeRow(ri) {
+  removeRow(ri, number) {
     const { rows, merges, xTableData } = this;
-    const { xMergesNoRow } = merges;
-    rows.removeRow(ri);
-    xTableData.removeRow(ri);
-    xMergesNoRow.removeRow(ri);
+    for (let i = 0; i < number; i++) {
+      rows.removeRow(ri);
+      xTableData.removeRow(ri);
+    }
+    merges.rowAfterShrink(ri, number);
   }
 
   /**
-   * 插入到指定列之后
+   * 删除指定列
    * @param ci
+   * @param number
    */
-  insertColAfter(ci) {
+  removeCol(ci, number) {
     const { cols, merges, xTableData } = this;
-    merges.colAfterExpand(ci);
-    cols.insertColAfter(ci);
-    xTableData.insertColAfter(ci);
-  }
-
-  /**
-   * 插入到指定列之前
-   * @param ci
-   */
-  insertColBefore(ci) {
-    const { cols, merges, xTableData } = this;
-    merges.colBeforeExpand(ci);
-    cols.insertColBefore(ci);
-    xTableData.insertColBefore(ci);
+    for (let i = 0; i < number; i++) {
+      cols.removeCol(ci);
+      xTableData.removeCol(ci);
+    }
+    merges.colAfterShrink(ci, number);
   }
 
   /**
    * 插入到指定行之后
    * @param ri
+   * @param number
    */
-  insertRowAfter(ri) {
+  insertRowAfter(ri, number) {
     const { rows, merges, xTableData } = this;
-    merges.rowAfterExpand(ri);
-    rows.insertRowAfter(ri);
-    xTableData.insertRowAfter(ri);
+    for (let i = 0; i < number; i++) {
+      rows.insertRowAfter(ri);
+      xTableData.insertRowAfter(ri);
+    }
+    merges.rowAfterExpand(ri, number);
   }
 
   /**
    * 插入到指定行之前
    * @param ri
+   * @param number
    */
-  insertRowBefore(ri) {
+  insertRowBefore(ri, number) {
     const { rows, merges, xTableData } = this;
-    merges.rowBeforeExpand(ri);
-    rows.insertRowBefore(ri);
-    xTableData.insertRowBefore(ri);
+    for (let i = 0; i < number; i++) {
+      rows.insertRowBefore(ri);
+      xTableData.insertRowBefore(ri);
+    }
+    merges.rowBeforeExpand(ri, number);
+  }
+
+  /**
+   * 插入到指定列之后
+   * @param ci
+   * @param number
+   */
+  insertColAfter(ci, number) {
+    const { cols, merges, xTableData } = this;
+    for (let i = 0; i < number; i++) {
+      cols.insertColAfter(ci);
+      xTableData.insertColAfter(ci);
+    }
+    merges.colAfterExpand(ci, number);
+  }
+
+  /**
+   * 插入到指定列之前
+   * @param ci
+   * @param number
+   */
+  insertColBefore(ci, number) {
+    const { cols, merges, xTableData } = this;
+    for (let i = 0; i < number; i++) {
+      cols.insertColBefore(ci);
+      xTableData.insertColBefore(ci);
+    }
+    merges.colBeforeExpand(ci, number);
+  }
+
+  /**
+   * 销毁组件
+   */
+  destroy() {
+    super.destroy();
   }
 
 }

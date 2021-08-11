@@ -274,7 +274,21 @@ class RangeTree {
    * @param number
    */
   rowBeforeExpand(ri, number) {
-    this.rowAfterExpand(Math.max(ri - 1, 0), number);
+    let bbox = {
+      minX: 0,
+      minY: ri,
+      maxX: 1433,
+      maxY: 1048576,
+    };
+    let { rTree } = this;
+    let array = rTree.search(bbox);
+    for (let i = 0, len = array.length; i < len; i++) {
+      let item = array[i];
+      rTree.remove(item);
+      item.minY += number;
+      item.maxY += number;
+    }
+    rTree.load(array);
   }
 
   /**
@@ -283,7 +297,21 @@ class RangeTree {
    * @param number
    */
   colBeforeExpand(ci, number) {
-    this.colAfterExpand(Math.max(ci - 1, 0), number);
+    const bbox = {
+      minX: ci,
+      minY: 0,
+      maxX: 1433,
+      maxY: 1048576,
+    };
+    let { rTree } = this;
+    let array = rTree.search(bbox);
+    for (let i = 0, len = array.length; i < len; i++) {
+      let item = array[i];
+      rTree.remove(item);
+      item.minX += number;
+      item.maxX += number;
+    }
+    rTree.load(array);
   }
 
   /**
@@ -292,7 +320,21 @@ class RangeTree {
    * @param number
    */
   rowBeforeShrink(ri, number) {
-    this.rowAfterShrink(Math.max(ri - 1, 0), number);
+    let bbox = {
+      minX: 0,
+      minY: ri,
+      maxX: 1433,
+      maxY: 1048576,
+    };
+    let { rTree } = this;
+    let array = rTree.search(bbox);
+    for (let i = 0, len = array.length; i < len; i++) {
+      let item = array[i];
+      rTree.remove(item);
+      item.minY -= number;
+      item.maxY -= number;
+    }
+    rTree.load(array);
   }
 
   /**
@@ -301,7 +343,21 @@ class RangeTree {
    * @param number
    */
   colBeforeShrink(ci, number) {
-    this.colAfterShrink(Math.max(ci - 1, 0), number);
+    const bbox = {
+      minX: ci,
+      minY: 0,
+      maxX: 1433,
+      maxY: 1048576,
+    };
+    let { rTree } = this;
+    let array = rTree.search(bbox);
+    for (let i = 0, len = array.length; i < len; i++) {
+      let item = array[i];
+      rTree.remove(item);
+      item.minX -= number;
+      item.maxX -= number;
+    }
+    rTree.load(array);
   }
 }
 

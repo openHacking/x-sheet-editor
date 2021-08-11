@@ -1492,8 +1492,7 @@ class XTableDimension extends Widget {
    * @returns {boolean}
    */
   isProtection({
-    tips = true,
-    view = null,
+    tips = true, view = null,
   } = {}) {
     let { settings, readOnlyAlert } = this;
     let { xScreen, protection } = this;
@@ -1536,12 +1535,12 @@ class XTableDimension extends Widget {
    * @param number
    */
   removeRow(ri, number = 1) {
-    const { snapshot, rows, xTableStyle } = this;
+    const { rows, xTableStyle } = this;
+    const { snapshot, protection } = this;
     snapshot.open();
-    for (let i = 0; i < number; i++) {
-      xTableStyle.removeRow(ri);
-      rows.removeRow();
-    }
+    xTableStyle.removeRow(ri, number);
+    rows.syncRowsLen(xTableStyle.rows);
+    protection.rowAfterShrink(ri, number);
     snapshot.close({
       type: Constant.TABLE_EVENT_TYPE.REMOVE_ROW,
     });
@@ -1554,54 +1553,14 @@ class XTableDimension extends Widget {
    * @param number
    */
   removeCol(ci, number = 1) {
-    const { snapshot, cols, xTableStyle } = this;
+    const { cols, xTableStyle } = this;
+    const { snapshot, protection } = this;
     snapshot.open();
-    for (let i = 0; i < number; i++) {
-      xTableStyle.removeCol(ci);
-      cols.removeCol();
-    }
+    xTableStyle.removeCol(ci, number);
+    cols.syncColsLen(xTableStyle.cols);
+    protection.colAfterExpand(ci, number);
     snapshot.close({
       type: Constant.TABLE_EVENT_TYPE.REMOVE_COL,
-    });
-    this.resize();
-  }
-
-  /**
-   * 插入到指定列之后
-   * @param ci
-   * @param number
-   */
-  insertColAfter(ci, number = 1) {
-    const { cols, xTableStyle } = this;
-    const { snapshot, protection } = this;
-    snapshot.open();
-    for (let i = 0; i < number; i++) {
-      xTableStyle.insertColAfter(ci);
-      protection.colAfterExpand(ci);
-      cols.insertColAfter();
-    }
-    snapshot.close({
-      type: Constant.TABLE_EVENT_TYPE.ADD_NEW_COL,
-    });
-    this.resize();
-  }
-
-  /**
-   * 插入到指定列之前
-   * @param ci
-   * @param number
-   */
-  insertColBefore(ci, number = 1) {
-    const { cols, xTableStyle } = this;
-    const { snapshot, protection } = this;
-    snapshot.open();
-    for (let i = 0; i < number; i++) {
-      xTableStyle.insertColBefore(ci);
-      protection.colBeforeExpand(ci);
-      cols.insertColBefore();
-    }
-    snapshot.close({
-      type: Constant.TABLE_EVENT_TYPE.ADD_NEW_COL,
     });
     this.resize();
   }
@@ -1615,11 +1574,9 @@ class XTableDimension extends Widget {
     const { snapshot, rows } = this;
     const { xTableStyle, protection } = this;
     snapshot.open();
-    for (let i = 0; i < number; i++) {
-      xTableStyle.insertRowAfter(ri);
-      protection.rowAfterShrink(ri);
-      rows.insertRowAfter();
-    }
+    xTableStyle.insertRowAfter(ri, number);
+    rows.syncRowsLen(xTableStyle.rows);
+    protection.rowAfterShrink(ri, number);
     snapshot.close({
       type: Constant.TABLE_EVENT_TYPE.ADD_NEW_COL,
     });
@@ -1635,11 +1592,45 @@ class XTableDimension extends Widget {
     const { snapshot, rows } = this;
     const { xTableStyle, protection } = this;
     snapshot.open();
-    for (let i = 0; i < number; i++) {
-      xTableStyle.insertRowBefore(ri);
-      protection.rowBeforeExpand(ri);
-      rows.insertRowBefore();
-    }
+    xTableStyle.insertRowBefore(ri, number);
+    rows.syncRowsLen(xTableStyle.rows);
+    protection.rowBeforeExpand(ri, number);
+    snapshot.close({
+      type: Constant.TABLE_EVENT_TYPE.ADD_NEW_COL,
+    });
+    this.resize();
+  }
+
+  /**
+   * 插入到指定列之后
+   * @param ci
+   * @param number
+   */
+  insertColAfter(ci, number = 1) {
+    const { cols, xTableStyle } = this;
+    const { snapshot, protection } = this;
+    snapshot.open();
+    xTableStyle.insertColAfter(ci, number);
+    cols.syncColsLen(xTableStyle.cols);
+    protection.colAfterExpand(ci, number);
+    snapshot.close({
+      type: Constant.TABLE_EVENT_TYPE.ADD_NEW_COL,
+    });
+    this.resize();
+  }
+
+  /**
+   * 插入到指定列之前
+   * @param ci
+   * @param number
+   */
+  insertColBefore(ci, number = 1) {
+    const { cols, xTableStyle } = this;
+    const { snapshot, protection } = this;
+    snapshot.open();
+    xTableStyle.insertColBefore(ci, number);
+    cols.syncColsLen(xTableStyle.cols);
+    protection.colBeforeExpand(ci, number);
     snapshot.close({
       type: Constant.TABLE_EVENT_TYPE.ADD_NEW_COL,
     });

@@ -264,6 +264,12 @@ class Rows {
     };
   }
 
+  syncRowsLen(rows) {
+    if (rows) {
+      this.len = rows.len;
+    }
+  }
+
 }
 
 export { Rows };
