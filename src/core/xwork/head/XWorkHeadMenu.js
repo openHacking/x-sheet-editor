@@ -1027,6 +1027,7 @@ class XWorkHeadMenu extends Widget {
           } else if (merge.multiple()) {
             if (cells.emptyRectRange(merge)) {
               snapshot.open();
+              merges.delete(find);
               merges.add(merge);
               snapshot.close({
                 type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
