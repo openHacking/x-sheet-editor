@@ -665,9 +665,6 @@ class XTableDimension extends Widget {
             break;
         }
       }
-      this.trigger(Constant.TABLE_EVENT_TYPE.SNAPSHOT_CHANGE);
-    });
-    this.snapshot.listen.registerListen('change', (option, event) => {
       if (event) {
         const { local, type } = event;
         const { ri, ci } = event;
@@ -747,6 +744,7 @@ class XTableDimension extends Widget {
             break;
         }
       }
+      this.trigger(Constant.TABLE_EVENT_TYPE.SNAPSHOT_CHANGE);
     });
   }
 
@@ -1588,7 +1586,7 @@ class XTableDimension extends Widget {
       let xSelect = xScreen.findType(XSelectItem);
       let { selectRange } = xSelect;
       if (selectRange) {
-        let includes = protection.getIncludes(selectRange);
+        let includes = protection.getIntersects(selectRange);
         if (includes.length) {
           if (tips) {
             readOnlyAlert.setMessage('只读模式无法编辑').open();
@@ -1597,7 +1595,7 @@ class XTableDimension extends Widget {
         }
       }
     } else {
-      let includes = protection.getIncludes(view);
+      let includes = protection.getIntersects(view);
       if (includes.length) {
         if (tips) {
           readOnlyAlert.setMessage('只读模式无法编辑').open();

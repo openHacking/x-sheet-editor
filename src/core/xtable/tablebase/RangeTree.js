@@ -59,7 +59,7 @@ class RangeTree {
      * 获取重合的区域
      * @param rectRange
      */
-  getIncludes(rectRange) {
+  getIntersects(rectRange) {
     let { rTree } = this;
     let bbox = RtreeUtils.rangeToBbox(rectRange);
     const array = rTree.search(bbox);
@@ -124,6 +124,29 @@ class RangeTree {
       redo: () => {
         this.shift(rectRange);
         listen.execute('delete', rectRange);
+      },
+    };
+    snapshot.addAction(action);
+    action.redo();
+  }
+
+  /**
+   * 删除矩形区域
+   * @param rectRanges
+   */
+  batchDelete(rectRanges) {
+    let { listen, snapshot } = this;
+    let action = {
+      undo: () => {
+        rectRanges.forEach((rectRange) => {
+          this.push(rectRange);
+        });
+      },
+      redo: () => {
+        rectRanges.forEach((rectRange) => {
+          this.shift(rectRange);
+        });
+        listen.execute('batchDelete', rectRanges);
       },
     };
     snapshot.addAction(action);

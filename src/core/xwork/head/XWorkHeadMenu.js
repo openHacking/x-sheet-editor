@@ -1014,34 +1014,35 @@ class XWorkHeadMenu extends Widget {
         const { selectRange } = xSelect;
         if (selectRange) {
           const merge = selectRange.clone();
-          if (merge.multiple()) {
-            const { sri, sci } = merge;
-            const find = merges.getFirstInclude(sri, sci);
-            if (SheetUtils.isNotUnDef(find)) {
-              if (merge.equals(find)) {
-                snapshot.open();
-                merges.delete(find);
-                snapshot.close({
-                  type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
-                });
-                table.render();
-              } else {
-                snapshot.open();
-                merges.delete(find);
-                merges.add(merge);
-                snapshot.close({
-                  type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
-                });
-                table.render();
-              }
+          if (!merge.multiple()) {
+            return;
+          }
+          const intersects = merges.getIntersects(merge);
+          if (intersects.length) {
+            const hasEqual = intersects.find(item => item.equals(merge));
+            if (hasEqual) {
+              snapshot.open();
+              merges.batchDelete(intersects);
+              snapshot.close({
+                type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+              });
+              table.render();
             } else {
               snapshot.open();
+              merges.batchDelete(intersects);
               merges.add(merge);
               snapshot.close({
                 type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
               });
               table.render();
             }
+          } else {
+            snapshot.open();
+            merges.add(merge);
+            snapshot.close({
+              type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+            });
+            table.render();
           }
         }
       }

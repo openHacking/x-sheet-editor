@@ -25,16 +25,34 @@ class Snapshot {
   }
 
   /**
+   * 能否反撤销
+   * @returns {boolean}
+   */
+  canRedo() {
+    return this.redoStack.length > 0;
+  }
+
+  /**
+   * 能否撤销
+   * @returns {boolean}
+   */
+  canUndo() {
+    return this.undoStack.length > 0;
+  }
+
+  /**
    * 撤销
    */
   undo() {
     const layer = this.undoStack.pop();
-    for (let i = 0, len = layer.data.length; i < len; i++) {
+    for (let i = layer.data.length - 1; i >= 0; i--) {
       const action = layer.data[i];
       action.undo();
     }
     this.redoStack.push(layer);
-    this.listen.execute('change', 'undo', layer.event);
+    this.listen.execute('change', {
+      option: 'undo', event: layer.event,
+    });
   }
 
   /**
@@ -47,7 +65,9 @@ class Snapshot {
       action.redo();
     }
     this.undoStack.push(layer);
-    this.listen.execute('change', 'redo', layer.event);
+    this.listen.execute('change', {
+      option: 'redo', event: layer.event,
+    });
   }
 
   /**
@@ -74,23 +94,9 @@ class Snapshot {
       data: [],
     };
     this.apply = false;
-    this.listen.execute('change', 'close', event);
-  }
-
-  /**
-   * 能否反撤销
-   * @returns {boolean}
-   */
-  canRedo() {
-    return this.redoStack.length > 0;
-  }
-
-  /**
-   * 能否撤销
-   * @returns {boolean}
-   */
-  canUndo() {
-    return this.undoStack.length > 0;
+    this.listen.execute('change', {
+      option: 'close', event,
+    });
   }
 
   /**

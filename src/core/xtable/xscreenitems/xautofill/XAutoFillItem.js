@@ -419,7 +419,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
   splitMerge() {
     const { table, autoFillRange } = this;
     const merges = table.getTableMerges();
-    const ranges = merges.getIncludes(autoFillRange);
+    const ranges = merges.getIntersects(autoFillRange);
     if (ranges) {
       ranges.forEach((merge) => {
         merges.delete(merge);
