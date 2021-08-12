@@ -11,11 +11,13 @@ class TextEdit extends ExprEdit {
    */
   cellTextToText() {
     const { activeCell } = this;
+    const { table } = this;
+    const { scale } = table;
     if (activeCell) {
       let { background, fontAttr } = activeCell;
       let { align, size, color } = fontAttr;
       let { bold, italic, name } = fontAttr;
-      let fontSize = XDraw.cssPx(size);
+      let fontSize = XDraw.cssPx(scale.goto(size));
       let textAlign = 'left';
       switch (align) {
         case BaseFont.ALIGN.left:
