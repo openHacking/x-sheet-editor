@@ -3,6 +3,7 @@ import { Constant, cssPrefix } from '../../../../const/Constant';
 import { SheetContextMenu } from './contextmenu/SheetContextMenu';
 import { XEvent } from '../../../../lib/XEvent';
 import { SheetUtils } from '../../../../utils/SheetUtils';
+import { XSelectItem } from '../../../xtable/screenitems/xselect/XSelectItem';
 
 const settings = {
   showMenu: true,
@@ -21,7 +22,50 @@ class XWorkSheetView extends Widget {
     this.options = SheetUtils.copy({}, settings, option);
     this.sheetList = [];
     this.activeIndex = -1;
-    this.contextMenu = new SheetContextMenu();
+    this.contextMenu = new SheetContextMenu({
+      onUpdate: (name, type) => {
+        const sheet = this.getActiveSheet();
+        const { table } = sheet;
+        const { xScreen } = table;
+        const xSelect = xScreen.findType(XSelectItem);
+        const merges = table.getTableMerges();
+        const { selectRange } = xSelect;
+        switch (type) {
+          case 3: {
+            if (selectRange) {
+              const { sri, sci } = selectRange;
+              const merge = merges.getFirstInclude(sri, sci);
+              if (merge) {
+                const { eri } = merge;
+                table.insertRowAfter(eri);
+              } else {
+                table.insertRowAfter(sri);
+              }
+            }
+            break;
+          }
+          case 4: {
+            if (selectRange) {
+              const { sri, sci } = selectRange;
+              const merge = merges.getFirstInclude(sri, sci);
+              if (merge) {
+                const { eci } = merge;
+                table.insertColAfter(eci);
+              } else {
+                table.insertColAfter(sci);
+              }
+            }
+            break;
+          }
+          case 5: {
+            break;
+          }
+          case 6: {
+            break;
+          }
+        }
+      },
+    });
     this.bind();
   }
 

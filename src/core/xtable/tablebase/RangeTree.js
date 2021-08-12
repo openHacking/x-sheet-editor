@@ -200,10 +200,10 @@ class RangeTree {
     for (let i = 0, len = array.length; i < len; i++) {
       let item = array[i];
       rTree.remove(item);
-      if (item.minY === ri) {
-        item.maxY += number;
-      } else {
+      if (item.minY > ri) {
         item.minY += number;
+      }
+      if (item.maxY > ri) {
         item.maxY += number;
       }
     }
@@ -227,10 +227,10 @@ class RangeTree {
     for (let i = 0, len = array.length; i < len; i++) {
       let item = array[i];
       rTree.remove(item);
-      if (item.minX === ci) {
-        item.maxX += number;
-      } else {
+      if (item.minX > ci) {
         item.minX += number;
+      }
+      if (item.maxX > ci) {
         item.maxX += number;
       }
     }
@@ -254,10 +254,10 @@ class RangeTree {
     for (let i = 0, len = array.length; i < len; i++) {
       let item = array[i];
       rTree.remove(item);
-      if (item.minY === ri) {
-        item.maxY -= number;
-      } else {
+      if (item.minY > ri) {
         item.minY -= number;
+      }
+      if (item.maxY > ri) {
         item.maxY -= number;
       }
     }
@@ -281,10 +281,10 @@ class RangeTree {
     for (let i = 0, len = array.length; i < len; i++) {
       let item = array[i];
       rTree.remove(item);
-      if (item.minX === ci) {
-        item.maxX -= number;
-      } else {
+      if (item.minX > ci) {
         item.minX -= number;
+      }
+      if (item.maxX > ci) {
         item.maxX -= number;
       }
     }
@@ -308,8 +308,12 @@ class RangeTree {
     for (let i = 0, len = array.length; i < len; i++) {
       let item = array[i];
       rTree.remove(item);
-      item.minY += number;
-      item.maxY += number;
+      if (item.minY >= ri) {
+        item.minY += number;
+      }
+      if (item.maxY >= ri) {
+        item.maxY += number;
+      }
     }
     rTree.load(array);
   }
@@ -331,8 +335,12 @@ class RangeTree {
     for (let i = 0, len = array.length; i < len; i++) {
       let item = array[i];
       rTree.remove(item);
-      item.minX += number;
-      item.maxX += number;
+      if (item.minX >= ci) {
+        item.minX += number;
+      }
+      if (item.maxX >= ci) {
+        item.maxX += number;
+      }
     }
     rTree.load(array);
   }
@@ -354,8 +362,12 @@ class RangeTree {
     for (let i = 0, len = array.length; i < len; i++) {
       let item = array[i];
       rTree.remove(item);
-      item.minY -= number;
-      item.maxY -= number;
+      if (item.minY >= ri) {
+        item.minY -= number;
+      }
+      if (item.maxY >= ri) {
+        item.maxY -= number;
+      }
     }
     rTree.load(array);
   }
@@ -377,8 +389,12 @@ class RangeTree {
     for (let i = 0, len = array.length; i < len; i++) {
       let item = array[i];
       rTree.remove(item);
-      item.minX -= number;
-      item.maxX -= number;
+      if (item.minX >= ci) {
+        item.minX -= number;
+      }
+      if (item.maxX >= ci) {
+        item.maxX -= number;
+      }
     }
     rTree.load(array);
   }

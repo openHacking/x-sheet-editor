@@ -689,6 +689,14 @@ class XTableDimension extends Widget {
                   this.xTableStyle.merges.colAfterExpand(ci, number);
                 }
               }
+              if (option === 'close') {
+                if (local === 'before') {
+                  this.xTableStyle.merges.colBeforeExpand(ci, number);
+                }
+                if (local === 'after') {
+                  this.xTableStyle.merges.colAfterExpand(ci, number);
+                }
+              }
               break;
             case Constant.TABLE_EVENT_TYPE.REMOVE_COL:
               if (option === 'undo') {
@@ -700,6 +708,14 @@ class XTableDimension extends Widget {
                 }
               }
               if (option === 'redo') {
+                if (local === 'before') {
+                  this.xTableStyle.merges.colBeforeShrink(ci, number);
+                }
+                if (local === 'after') {
+                  this.xTableStyle.merges.colAfterShrink(ci, number);
+                }
+              }
+              if (option === 'close') {
                 if (local === 'before') {
                   this.xTableStyle.merges.colBeforeShrink(ci, number);
                 }
@@ -725,6 +741,14 @@ class XTableDimension extends Widget {
                   this.xTableStyle.merges.rowAfterExpand(ri, number);
                 }
               }
+              if (option === 'close') {
+                if (local === 'before') {
+                  this.xTableStyle.merges.rowBeforeExpand(ri, number);
+                }
+                if (local === 'after') {
+                  this.xTableStyle.merges.rowAfterExpand(ri, number);
+                }
+              }
               break;
             case Constant.TABLE_EVENT_TYPE.REMOVE_ROW:
               if (option === 'undo') {
@@ -736,6 +760,14 @@ class XTableDimension extends Widget {
                 }
               }
               if (option === 'redo') {
+                if (local === 'before') {
+                  this.xTableStyle.merges.rowBeforeShrink(ri, number);
+                }
+                if (local === 'after') {
+                  this.xTableStyle.merges.rowAfterShrink(ri, number);
+                }
+              }
+              if (option === 'close') {
                 if (local === 'before') {
                   this.xTableStyle.merges.rowBeforeShrink(ri, number);
                 }
