@@ -35,6 +35,43 @@ class SumTotalTask extends BaseTask {
   }
 
   /**
+   * 创建工作线程
+   * @param data
+   */
+  createWorker(data) {
+    const { workers } = this;
+    const worker = new SumTotalWorker();
+    workers.push(worker);
+    worker.postMessage(data);
+    worker.addEventListener('message', (event) => {
+      this.finish++;
+      this.workerFinish(event.data);
+    });
+  }
+
+  /**
+   * 完成通知
+   */
+  workerFinish(data) {
+    this.result.push(data);
+    if (this.finish === this.workers.length) {
+      let resultNumber = 0;
+      let resultTotal = 0;
+      let { length } = this.result;
+      for (let i = 0; i < length; i++) {
+        const { total, number } = this.result[i];
+        resultTotal += total;
+        resultNumber += number;
+      }
+      this.notice({
+        number: resultNumber,
+        total: resultTotal,
+        avg: resultNumber > 0 ? resultTotal / resultNumber : 0,
+      });
+    }
+  }
+
+  /**
    * 统计数据
    * @param range
    * @param items
@@ -62,61 +99,22 @@ class SumTotalTask extends BaseTask {
   /**
    * 拆分数据
    * @param range
-   * @param data
+   * @param items
    * @returns {Promise<void>}
    */
-  async splitData(range, data) {
+  async splitData(range, items) {
     return new Promise((resolve) => {
       const { workers, group } = this;
       const worker = new SplitDataWorker();
       workers.push(worker);
       worker.postMessage({
-        range, data, group,
+        range, items, group,
       });
       worker.addEventListener('message', (event) => {
-        console.log('数据拆分完成');
         this.finish++;
         resolve(event.data);
       });
     });
-  }
-
-  /**
-   * 创建工作线程
-   * @param data
-   */
-  createWorker(data) {
-    const { workers } = this;
-    const worker = new SumTotalWorker();
-    workers.push(worker);
-    worker.postMessage(data);
-    worker.addEventListener('message', (event) => {
-      this.finish++;
-      console.log('数据计算完成', this.finish, this.workers.length);
-      this.workerFinish(event.data);
-    });
-  }
-
-  /**
-   * 完成通知
-   */
-  workerFinish(data) {
-    this.result.push(data);
-    if (this.finish === this.workers.length) {
-      let resultNumber = 0;
-      let resultTotal = 0;
-      let { length } = this.result;
-      for (let i = 0; i < length; i++) {
-        const { total, number } = this.result[i];
-        resultTotal += total;
-        resultNumber += number;
-      }
-      this.notice({
-        number: resultNumber,
-        total: resultTotal,
-        avg: resultNumber > 0 ? resultTotal / resultNumber : 0,
-      });
-    }
   }
 
   /**

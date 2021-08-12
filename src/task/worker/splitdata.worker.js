@@ -1,21 +1,23 @@
 addEventListener("message" , (event) => {
-  let { range, data, group } = event.data;
-  let { sri, eri, sci, eci } = range;
-  let items = [];
+  let { range, items, group } = event.data;
+  let { sri, eri } = range;
   let result = [];
-  for (let i = sri; i <= eri; i++) {
-    if (i > 0) {
-      if (i % group === 0) {
-        result.push(items);
-        items = [];
+  let splice = [];
+  let index = 0;
+  while (sri <= eri) {
+    if (index > 0) {
+      if (index % group === 0) {
+        result.push(splice);
+        splice = [];
       }
     }
-    let row = data[i];
-    let block = row.splice(sci, eci - sci + 1);
-    items.push(block);
+    let row = items[index];
+    splice.push(row);
+    sri ++;
+    index ++;
   }
-  if (items.length) {
-    result.push(items);
+  if (splice.length) {
+    result.push(splice);
   }
   postMessage(result);
 });

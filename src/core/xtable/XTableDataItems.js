@@ -11,7 +11,7 @@ class XTableDataItems {
     this.snapshot = snapshot;
   }
 
-  split(sri, eri, sci, eci) {
+  slice(sri, sci, eri, eci) {
     const rows = this.items.slice(sri, eri + 1);
     return rows.map((row) => {
       if (row) {
