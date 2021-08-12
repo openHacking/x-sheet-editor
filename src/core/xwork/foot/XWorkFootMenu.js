@@ -3,7 +3,7 @@ import { Constant, cssPrefix } from '../../../const/Constant';
 import { h } from '../../../lib/Element';
 import { XEvent } from '../../../lib/XEvent';
 import { SheetUtils } from '../../../utils/SheetUtils';
-import { XSelectItem } from '../../xtable/xscreenitems/xselect/XSelectItem';
+import { XSelectItem } from '../../xtable/screenitems/xselect/XSelectItem';
 import { Throttle } from '../../../lib/Throttle';
 import { SumTotalTask } from '../../../task/SumTotalTask';
 import { TaskProgress } from '../../../module/taskprogress/TaskProgress';

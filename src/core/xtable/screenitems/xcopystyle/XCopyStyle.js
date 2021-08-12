@@ -3,7 +3,7 @@ import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { XEvent } from '../../../../lib/XEvent';
 import { RectRange } from '../../tablebase/RectRange';
-import { XScreenSvgBorderItem } from '../../xscreen/item/viewborder/XScreenSvgBorderItem';
+import { XScreenSvgBorderItem } from '../../tablescreen/item/viewborder/XScreenSvgBorderItem';
 
 class XCopyStyle extends XScreenSvgBorderItem {
 

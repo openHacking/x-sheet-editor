@@ -22,7 +22,9 @@ class RichFonts {
     this.rich.forEach((font) => {
       rich.push(font.clone());
     });
-    return new RichFonts({ rich });
+    return new RichFonts({
+      rich,
+    });
   }
 
   plain(option) {

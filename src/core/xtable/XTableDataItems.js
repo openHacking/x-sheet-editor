@@ -45,6 +45,21 @@ class XTableDataItems {
     return item;
   }
 
+  each(callback) {
+    const { items } = this;
+    const { length } = items;
+    for (let i = 0; i < length; i++) {
+      let item = items[i];
+      if (item) {
+        const { length } = item;
+        for (let j = 0; j < length; j++) {
+          let cell = this.get(i, j);
+          callback(cell);
+        }
+      }
+    }
+  }
+
   setOrNew(ri, ci, item) {
     const line = this.items[ri];
     if (line) {

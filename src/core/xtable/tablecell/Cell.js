@@ -23,22 +23,22 @@ class Cell {
    * @param icons
    * @param borderAttr
    * @param fontAttr
-   * @param expr
+   * @param formula
    * @param contentWidth
    * @param contentHeight
    * @param contentType
    */
   constructor({
-    background = SheetUtils.Undef,
-    expr = SheetUtils.Undef,
     ruler = SheetUtils.Undef,
-    rich = SheetUtils.Undef,
-    text = SheetUtils.EMPTY,
     format = 'default',
     icons = [],
+    fontAttr = {},
     custom = {},
     borderAttr = {},
-    fontAttr = {},
+    formula = {},
+    richText = {},
+    background = SheetUtils.Undef,
+    text = SheetUtils.EMPTY,
     contentWidth = 0,
     contentHeight = 0,
     contentType = Cell.TYPE.STRING,
@@ -54,11 +54,11 @@ class Cell {
     // 格式化类型
     this.format = format;
     // 单元格公式
-    this.formula = new Formula({ expr });
+    this.formula = new Formula(formula);
     // 文本内容
     this.text = text;
     // 富文本内容
-    this.richText = new RichFonts({ rich });
+    this.richText = new RichFonts(richText);
     // 格式化后的内容
     this.formatText = SheetUtils.EMPTY;
     // 内容的高度
@@ -294,15 +294,15 @@ class Cell {
     const { richText, fontAttr, borderAttr } = this;
     return new Cell({
       background,
-      format,
       text,
       custom,
-      expr: formula.getExpr(),
-      rich: richText.getRich(),
+      contentType,
+      format,
       fontAttr,
       borderAttr,
       icons,
-      contentType,
+      formula,
+      richText,
     });
   }
 

@@ -1,6 +1,6 @@
 /* global document */
 import { SELECT_LOCAL, XSelectItem } from '../xselect/XSelectItem';
-import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBorderItem';
+import { XScreenCssBorderItem } from '../../tablescreen/item/viewborder/XScreenCssBorderItem';
 import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';

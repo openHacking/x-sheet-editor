@@ -1,5 +1,5 @@
-import { XSelectItem } from '../../xtable/xscreenitems/xselect/XSelectItem';
-import { XSelectPath } from '../../xtable/xscreenitems/xselect/XSelectPath';
+import { XSelectItem } from '../../xtable/screenitems/xselect/XSelectItem';
+import { XSelectPath } from '../../xtable/screenitems/xselect/XSelectPath';
 import { BaseEdit } from '../../xtable/tableedit/base/BaseEdit';
 
 function pageDown({ table, body, response }) {

@@ -11,24 +11,25 @@ class TextEdit extends ExprEdit {
    */
   cellTextToText() {
     const { activeCell } = this;
-    let { background, fontAttr } = activeCell;
-    let { align, size, color } = fontAttr;
-    let { bold, italic, name } = fontAttr;
-    let fontSize = XDraw.cssPx(size);
-    let textAlign = 'left';
-    switch (align) {
-      case BaseFont.ALIGN.left:
-        textAlign = 'left';
-        break;
-      case BaseFont.ALIGN.center:
-        textAlign = 'center';
-        break;
-      case BaseFont.ALIGN.right:
-        textAlign = 'right';
-        break;
-    }
-    let text = activeCell.getFormatText();
-    let style = SheetUtils.clearBlank(`
+    if (activeCell) {
+      let { background, fontAttr } = activeCell;
+      let { align, size, color } = fontAttr;
+      let { bold, italic, name } = fontAttr;
+      let fontSize = XDraw.cssPx(size);
+      let textAlign = 'left';
+      switch (align) {
+        case BaseFont.ALIGN.left:
+          textAlign = 'left';
+          break;
+        case BaseFont.ALIGN.center:
+          textAlign = 'center';
+          break;
+        case BaseFont.ALIGN.right:
+          textAlign = 'right';
+          break;
+      }
+      let text = activeCell.getFormatText();
+      let style = SheetUtils.clearBlank(`
       text-align:${textAlign};
       color: ${color};
       background:${background};
@@ -37,30 +38,34 @@ class TextEdit extends ExprEdit {
       font-size: ${fontSize}px;
       font-family: ${name};
     `);
-    this.text(text).style(style);
+      this.text(text).style(style);
+    }
   }
 
   /**
    * html转文本
    */
   textToCellText() {
-    let { activeCell, selectRange } = this;
-    let { contentType } = activeCell;
-    let { table } = this;
-    let { sri, sci } = selectRange;
-    let { snapshot } = table;
-    let cells = table.getTableCells();
-    let text = this.text();
-    if (text !== activeCell.getFormatText()) {
-      const cloneCell = activeCell.clone();
-      snapshot.open();
-      cloneCell.setText(text);
-      cloneCell.setContentType(contentType);
-      cells.setCellOrNew(sri, sci, cloneCell);
-      snapshot.close({
-        type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
-      });
-      table.render();
+    let { selectRange } = this;
+    let { activeCell } = this;
+    if (activeCell) {
+      let { contentType } = activeCell;
+      let { table } = this;
+      let { sri, sci } = selectRange;
+      let { snapshot } = table;
+      let cells = table.getTableCells();
+      let text = this.text();
+      if (text !== activeCell.getFormatText()) {
+        const cloneCell = activeCell.clone();
+        snapshot.open();
+        cloneCell.setText(text);
+        cloneCell.setContentType(contentType);
+        cells.setCellOrNew(sri, sci, cloneCell);
+        snapshot.close({
+          type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+        });
+        table.render();
+      }
     }
   }
 

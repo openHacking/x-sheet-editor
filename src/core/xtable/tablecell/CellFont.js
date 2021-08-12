@@ -86,6 +86,7 @@ class CellFont {
   }
 
 }
+
 CellFont.scaleAdapter = null;
 
 export { CellFont };

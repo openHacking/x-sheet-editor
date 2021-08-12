@@ -1,4 +1,4 @@
-import { XSelectItem } from '../xscreenitems/xselect/XSelectItem';
+import { XSelectItem } from '../screenitems/xselect/XSelectItem';
 import { Cell } from '../tablecell/Cell';
 import { TextEdit } from './type/TextEdit';
 import { SheetUtils } from '../../../utils/SheetUtils';
@@ -50,6 +50,18 @@ class TableEdit extends TextEdit {
         });
       },
     };
+    this.tabResponse = {
+      keyCode: keyCode => keyCode === 9,
+      handle: (event) => {
+        const { table } = this;
+        const { widgetFocus } = table;
+        const { keyboard } = table;
+        widgetFocus.forward({ target: table });
+        keyboard.forward({
+          target: table, event,
+        });
+      },
+    };
     this.altEnterResponse = {
       keyCode: keyCode => keyCode === 1813,
       handle: () => {
@@ -65,6 +77,7 @@ class TableEdit extends TextEdit {
    */
   bind() {
     const { altEnterResponse } = this;
+    const { tabResponse } = this;
     const { enterResponse } = this;
     const { openClickHandle } = this;
     const { closeClickHandle } = this;
@@ -76,6 +89,7 @@ class TableEdit extends TextEdit {
       target: this,
       response: [
         enterResponse,
+        tabResponse,
         altEnterResponse,
       ],
     });

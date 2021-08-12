@@ -5,7 +5,7 @@ import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { XEvent } from '../../../../lib/XEvent';
 import { Alert } from '../../../../module/alert/Alert';
-import { XScreenCssBorderItem } from '../../xscreen/item/viewborder/XScreenCssBorderItem';
+import { XScreenCssBorderItem } from '../../tablescreen/item/viewborder/XScreenCssBorderItem';
 import darkFilter from '../../../../../assets/svg/filter-dark.svg';
 import { XTableMousePoint } from '../../XTableMousePoint';
 import { XIcon } from '../../tableicon/XIcon';
