@@ -77,7 +77,7 @@ class XSheet extends Widget {
 }
 
 XSheet.version = XSheetVersion;
-XSheet.PlainUtils = SheetUtils;
+XSheet.SheetUtils = SheetUtils;
 XSheet.XDraw = XDraw;
 XSheet.XIcon = XIcon;
 XSheet.RectRange = RectRange;

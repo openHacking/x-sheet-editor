@@ -34,6 +34,29 @@ class XWorkFootMenu extends Widget {
     this.bind();
   }
 
+  async computer() {
+    const { totalTask, workBottom } = this;
+    const { work } = workBottom;
+    const { body } = work;
+    const { sheetView } = body;
+    const sheet = sheetView.getActiveSheet();
+    const { table } = sheet;
+    const { xScreen } = table;
+    const data = table.getTableData();
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
+    if (selectRange) {
+      const { total, avg, number } = await totalTask.execute(selectRange, data.getItems());
+      this.setSum(SheetUtils.toFixed(total, 2));
+      this.setAvg(SheetUtils.toFixed(avg, 2));
+      this.setNumber(SheetUtils.toFixed(number, 2));
+    } else {
+      this.setSum(0);
+      this.setAvg(0);
+      this.setNumber(0);
+    }
+  }
+
   bind() {
     const { workBottom, grid, fullScreen, throttle } = this;
     const { work } = workBottom;
@@ -76,29 +99,6 @@ class XWorkFootMenu extends Widget {
     XEvent.unbind(grid);
     XEvent.unbind(fullScreen);
     XEvent.unbind(body);
-  }
-
-  async computer() {
-    const { totalTask, workBottom } = this;
-    const { work } = workBottom;
-    const { body } = work;
-    const { sheetView } = body;
-    const sheet = sheetView.getActiveSheet();
-    const { table } = sheet;
-    const { xScreen } = table;
-    const data = table.getTableData();
-    const xSelect = xScreen.findType(XSelectItem);
-    const { selectRange } = xSelect;
-    if (selectRange) {
-      const { total, avg, number } = await totalTask.execute(selectRange, data);
-      this.setSum(SheetUtils.toFixed(total, 2));
-      this.setAvg(SheetUtils.toFixed(avg, 2));
-      this.setNumber(SheetUtils.toFixed(number, 2));
-    } else {
-      this.setSum(0);
-      this.setAvg(0);
-      this.setNumber(0);
-    }
   }
 
   setSum(val) {

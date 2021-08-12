@@ -13,7 +13,7 @@ class Merges extends RangeTree {
   constructor({
     snapshot = new Snapshot(),
     merges = [],
-  }) {
+  } = {}) {
     super({ snapshot });
     merges.map(merge => RectRange.valueOf(merge)).forEach(view => this.add(view));
   }

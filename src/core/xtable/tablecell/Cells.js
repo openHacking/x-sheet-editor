@@ -9,8 +9,8 @@ import { Merges } from '../merges/Merges';
 class Cells {
 
   constructor({
-    xIteratorBuilder = new XIteratorBuilder(),
     xTableData = new XTableDataItems(),
+    xIteratorBuilder = new XIteratorBuilder(),
     merges = new Merges(),
     snapshot = new Snapshot(),
   } = {}) {

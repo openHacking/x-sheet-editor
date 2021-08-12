@@ -21,10 +21,28 @@ class XTableDataItems {
     });
   }
 
+  get(ri, ci) {
+    const line = this.items[ri];
+    return line && line[ci]
+      ? this.wrap(line, ci)
+      : undefined;
+  }
+
   set(ri, ci, item) {
     const line = this.items[ri] || [];
     line[ci] = item;
     this.items[ri] = line;
+  }
+
+  wrap(line, ci) {
+    let item = line[ci];
+    if (item) {
+      item = item instanceof XTableDataItem
+        ? item : new XTableDataItem(item);
+      line[ci] = item;
+      return item;
+    }
+    return item;
   }
 
   setOrNew(ri, ci, item) {
@@ -46,24 +64,6 @@ class XTableDataItems {
 
   getItems() {
     return this.items;
-  }
-
-  get(ri, ci) {
-    const line = this.items[ri];
-    return line && line[ci]
-      ? this.wrap(line, ci)
-      : undefined;
-  }
-
-  wrap(line, ci) {
-    let item = line[ci];
-    if (item) {
-      item = item instanceof XTableDataItem
-        ? item : new XTableDataItem(item);
-      line[ci] = item;
-      return item;
-    }
-    return item;
   }
 
   removeRow(ri) {

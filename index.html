@@ -16,16 +16,35 @@
 </head>
 <body id="dome"></body>
 <script>
+  console.time("生成数据消耗")
+  const bigdata = [];
+  for (let row = 0; row < 100000; row++) {
+    const items = [];
+    for (let col = 0; col < 25; col++) {
+      items.push(`row-${row}-col-${col}`);
+    }
+    bigdata.push(items);
+  }
+  console.timeEnd("生成数据消耗")
+
+  console.time("表格渲染消耗")
+  const table = {
+    name: '5w数据测试',
+    tableConfig: {
+      rows: {
+        len: bigdata.length
+      },
+      data: bigdata,
+    },
+  };
   const dome = document.getElementById('dome');
-  const xSheet = new XSheet(dome);
-  XSheet.XEvent.bind(xSheet, XSheet.Constant.TABLE_EVENT_TYPE.EDIT_START, (e) => {
-    // console.log("开始编辑", e);
+  const xSheet = new XSheet(dome, {
+    workConfig: {
+      body: {
+        sheets: [table],
+      },
+    },
   });
-  XSheet.XEvent.bind(xSheet, XSheet.Constant.TABLE_EVENT_TYPE.EDIT_INPUT, () => {
-    // console.log("编辑中");
-  });
-  XSheet.XEvent.bind(xSheet, XSheet.Constant.TABLE_EVENT_TYPE.EDIT_FINISH, () => {
-    // console.log("编辑结束");
-  });
+  console.timeEnd("表格渲染消耗")
 </script>
 </html>

@@ -13,7 +13,7 @@ class Protection extends RangeTree {
   constructor({
     snapshot = new Snapshot(),
     protections = [],
-  }) {
+  } = {}) {
     super({ snapshot });
     protections.map(protection => RectRange.valueOf(protection)).forEach(view => this.add(view));
   }
