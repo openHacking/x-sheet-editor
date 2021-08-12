@@ -517,7 +517,7 @@ class CellMergeCopyHelper extends BaseCellsHelper {
       onSerialize: (ri, ci, index) => {
         const cell = cells.getCellOrNew(ri, ci);
         const clone = cell.clone();
-        clone.text = `${index}`;
+        clone.text = index;
         cells.setCellOrNew(ri, ci, clone);
       },
     });
