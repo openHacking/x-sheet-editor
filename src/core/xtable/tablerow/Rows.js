@@ -125,7 +125,7 @@ class Rows {
       redo: () => {
         if (SheetUtils.isNotUnDef(ri)) {
           if (ri <= data.length) {
-            oldValue = data.splice(ri, 1);
+            oldValue = data.splice(ri, 1)[0];
           }
         }
         this.len--;

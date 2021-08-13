@@ -125,7 +125,7 @@ class Cols {
       redo: () => {
         if (SheetUtils.isNotUnDef(ci)) {
           if (ci <= data.length) {
-            oldValue = data.splice(ci, 1);
+            oldValue = data.splice(ci, 1)[0];
           }
         }
         this.len--;
