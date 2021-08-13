@@ -23,15 +23,19 @@ class XAutoFillItem extends XScreenCssBorderItem {
     this.moveDirection = null;
     this.autoFillRange = RectRange.EMPTY;
     this.display = false;
+    // 区域背景
     this.ltElem = new Widget(`${cssPrefix}-x-autofill-area`);
     this.brElem = new Widget(`${cssPrefix}-x-autofill-area`);
     this.lElem = new Widget(`${cssPrefix}-x-autofill-area`);
     this.tElem = new Widget(`${cssPrefix}-x-autofill-area`);
+    // 区域位置
     this.blt.children(this.ltElem);
     this.bl.children(this.lElem);
     this.bt.children(this.tElem);
     this.bbr.children(this.brElem);
+    // 边框类型
     this.setBorderType('dashed');
+    // 事件处理
     this.eventMouseDown = (e1) => {
       const { table, xScreen } = this;
       const { mousePointer } = table;
@@ -55,12 +59,14 @@ class XAutoFillItem extends XScreenCssBorderItem {
       this.rangeHandle(x, y);
       this.offsetHandle();
       this.borderHandle();
+      this.applyAnimate();
       XEvent.mouseMoveUp(document, (e2) => {
         const { x, y } = table.eventXy(e2);
         this.rangeHandle(x, y);
         this.offsetHandle();
         this.borderHandle();
       }, () => {
+        this.closeAnimate();
         this.display = false;
         mousePointer.free(XAutoFillItem);
         const { autoFillRange } = this;
@@ -108,11 +114,14 @@ class XAutoFillItem extends XScreenCssBorderItem {
 
   offsetHandle() {
     const { xScreen, autoFillRange, display } = this;
+    const xSelect = xScreen.findType(XSelectItem);
+    const { selectRange } = xSelect;
     if (display === false || autoFillRange.equals(RectRange.EMPTY)) {
       this.hide();
+      this.setDisplay(selectRange);
+      this.setSizer(selectRange);
+      this.setLocal(selectRange);
     } else {
-      const xSelect = xScreen.findType(XSelectItem);
-      const { selectRange } = xSelect;
       const unionRange = selectRange.union(autoFillRange);
       this.show();
       this.setDisplay(unionRange);
@@ -396,6 +405,17 @@ class XAutoFillItem extends XScreenCssBorderItem {
     table.render();
   }
 
+  splitMerge() {
+    const { table, autoFillRange } = this;
+    const merges = table.getTableMerges();
+    const ranges = merges.getIntersects(autoFillRange);
+    if (ranges) {
+      ranges.forEach((merge) => {
+        merges.delete(merge);
+      });
+    }
+  }
+
   fillMerge() {
     const { table, xScreen, autoFillRange } = this;
     const { cellMergeCopyHelper } = table;
@@ -416,15 +436,28 @@ class XAutoFillItem extends XScreenCssBorderItem {
     });
   }
 
-  splitMerge() {
-    const { table, autoFillRange } = this;
-    const merges = table.getTableMerges();
-    const ranges = merges.getIntersects(autoFillRange);
-    if (ranges) {
-      ranges.forEach((merge) => {
-        merges.delete(merge);
-      });
-    }
+  applyAnimate() {
+    const apply = [];
+    const t = '80ms';
+    const s = 'linear';
+    apply.push(`width ${t} ${s}`);
+    apply.push(`height ${t} ${s}`);
+    apply.push(`top ${t} ${s}`);
+    apply.push(`left ${t} ${s}`);
+    apply.push(`right ${t} ${s}`);
+    apply.push(`bottom ${t} ${s}`);
+    const transition = apply.join(',');
+    this.t.css('transition', transition);
+    this.l.css('transition', transition);
+    this.lt.css('transition', transition);
+    this.br.css('transition', transition);
+  }
+
+  closeAnimate() {
+    this.t.css('transition', 'none');
+    this.l.css('transition', 'none');
+    this.lt.css('transition', 'none');
+    this.br.css('transition', 'none');
   }
 
   destroy() {

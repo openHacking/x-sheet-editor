@@ -58,9 +58,17 @@ class XWorkSheetView extends Widget {
             break;
           }
           case 5: {
+            if (selectRange) {
+              const { sri, eri } = selectRange;
+              table.removeRow(sri, eri - sri + 1);
+            }
             break;
           }
           case 6: {
+            if (selectRange) {
+              const { sci, eci } = selectRange;
+              table.removeCol(sci, eci - sci + 1);
+            }
             break;
           }
         }

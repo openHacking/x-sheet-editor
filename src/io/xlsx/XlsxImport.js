@@ -172,7 +172,7 @@ class XlsxImport {
                 rich.push(richFont);
               }
             }
-            xCell.rich = rich;
+            xCell.richText = { rich };
             xCell.contentType = Cell.TYPE.RICH_TEXT;
           } else {
             const type = SheetUtils.type(value);

@@ -91,7 +91,7 @@ class XTableDataItems {
         }
       },
       redo: () => {
-        orderValue = this.items.splice(ri, 1);
+        orderValue = this.items.splice(ri, 1)[0];
       },
     };
     snapshot.addAction(action);
@@ -114,7 +114,7 @@ class XTableDataItems {
         for (let i = 0, len = this.items.length; i < len; i++) {
           const subItems = this.items[i];
           if (subItems) {
-            const item = subItems.splice(ci, 1);
+            const item = subItems.splice(ci, 1)[0];
             orderValue.push(item);
           }
         }

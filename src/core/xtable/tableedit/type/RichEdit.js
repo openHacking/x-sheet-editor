@@ -6,6 +6,7 @@ import { Constant } from '../../../../const/Constant';
 import { BaseFont } from '../../../../draw/font/BaseFont';
 import { RichFont } from '../../tablecell/RichFont';
 import { RichFonts } from '../../tablecell/RichFonts';
+import { ColorPicker } from '../../../../module/colorpicker/ColorPicker';
 
 /**
  * RichEdit
@@ -72,7 +73,7 @@ class RichEdit extends StyleEdit {
           item = `<i>${item}</i>`;
         }
         if (color) {
-          item = `<font color="${color}">${item}</font>`;
+          item = `<font color="#${ColorPicker.parseRgbToHex(color, '000000')}">${item}</font>`;
         }
         if (underline) {
           item = `<u>${item}</u>`;
@@ -155,8 +156,8 @@ class RichEdit extends StyleEdit {
             }
             case 'font': {
               const size = element.attr('size');
-              const name = element.attr('name');
               const color = element.attr('color');
+              const name = element.attr('name');
               if (size) {
                 switch (size) {
                   case '1': {
@@ -189,11 +190,11 @@ class RichEdit extends StyleEdit {
                   }
                 }
               }
+              if (color) {
+                style.color = ColorPicker.parseHexToRgb(color, 'rgb(0,0,0)');
+              }
               if (name) {
                 style.name = name;
-              }
-              if (color) {
-                style.color = color;
               }
               break;
             }
