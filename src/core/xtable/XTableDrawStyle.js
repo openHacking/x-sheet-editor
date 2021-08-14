@@ -3092,12 +3092,13 @@ class XTableDrawStyle extends Widget {
    * @param number
    */
   removeRow(ri, number) {
-    const { rows } = this;
+    const { rows, merges } = this;
     const { xTableData } = this;
     for (let i = 0; i < number; i++) {
       rows.removeRow(ri);
       xTableData.removeRow(ri);
     }
+    merges.removeRow(ri, number);
   }
 
   /**
@@ -3106,12 +3107,13 @@ class XTableDrawStyle extends Widget {
    * @param number
    */
   removeCol(ci, number) {
-    const { cols } = this;
+    const { cols, merges } = this;
     const { xTableData } = this;
     for (let i = 0; i < number; i++) {
       cols.removeCol(ci);
       xTableData.removeCol(ci);
     }
+    merges.removeCol(ci, number);
   }
 
   /**
@@ -3120,12 +3122,13 @@ class XTableDrawStyle extends Widget {
    * @param number
    */
   insertRowAfter(ri, number) {
-    const { rows } = this;
+    const { rows, merges } = this;
     const { xTableData } = this;
     for (let i = 0; i < number; i++) {
       rows.insertRowAfter(ri);
       xTableData.insertRowAfter(ri);
     }
+    merges.insertRowAfter(ri, number);
   }
 
   /**
@@ -3134,12 +3137,13 @@ class XTableDrawStyle extends Widget {
    * @param number
    */
   insertRowBefore(ri, number) {
-    const { rows } = this;
+    const { rows, merges } = this;
     const { xTableData } = this;
     for (let i = 0; i < number; i++) {
       rows.insertRowBefore(ri);
       xTableData.insertRowBefore(ri);
     }
+    merges.insertRowBefore(ri, number);
   }
 
   /**
@@ -3148,12 +3152,13 @@ class XTableDrawStyle extends Widget {
    * @param number
    */
   insertColAfter(ci, number) {
-    const { cols } = this;
+    const { cols, merges } = this;
     const { xTableData } = this;
     for (let i = 0; i < number; i++) {
       cols.insertColAfter(ci);
       xTableData.insertColAfter(ci);
     }
+    merges.insertColAfter(ci, number);
   }
 
   /**
@@ -3162,12 +3167,13 @@ class XTableDrawStyle extends Widget {
    * @param number
    */
   insertColBefore(ci, number) {
-    const { cols } = this;
+    const { cols, merges } = this;
     const { xTableData } = this;
     for (let i = 0; i < number; i++) {
       cols.insertColBefore(ci);
       xTableData.insertColBefore(ci);
     }
+    merges.insertColBefore(ci, number);
   }
 
   /**

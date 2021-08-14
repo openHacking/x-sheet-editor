@@ -16,35 +16,7 @@
 </head>
 <body id="dome"></body>
 <script>
-  console.time("生成数据消耗")
-  const bigdata = [];
-  for (let row = 0; row < 50000; row++) {
-    const items = [];
-    for (let col = 0; col < 25; col++) {
-      items.push(`row-${row}-col-${col}`);
-    }
-    bigdata.push(items);
-  }
-  console.timeEnd("生成数据消耗")
-
-  console.time("表格渲染消耗")
-  const table = {
-    name: '5w数据测试',
-    tableConfig: {
-      rows: {
-        len: bigdata.length
-      },
-      data: bigdata,
-    },
-  };
   const dome = document.getElementById('dome');
-  const xSheet = new XSheet(dome, {
-    workConfig: {
-      body: {
-        sheets: [table],
-      },
-    },
-  });
-  console.timeEnd("表格渲染消耗")
+  const xSheet = new XSheet(dome);
 </script>
 </html>

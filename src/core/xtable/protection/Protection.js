@@ -1,11 +1,10 @@
-import { RangeTree } from '../tablebase/RangeTree';
 import { Snapshot } from '../snapshot/Snapshot';
-import { RectRange } from '../tablebase/RectRange';
+import { Merges } from '../merges/Merges';
 
 /**
  * Protection
  */
-class Protection extends RangeTree {
+class Protection extends Merges {
 
   /**
    * Protection 保护区域管理
@@ -14,8 +13,7 @@ class Protection extends RangeTree {
     snapshot = new Snapshot(),
     protections = [],
   } = {}) {
-    super({ snapshot });
-    protections.map(protection => RectRange.valueOf(protection)).forEach(view => this.add(view));
+    super({ snapshot, merges: protections });
   }
 
   /**
@@ -23,7 +21,7 @@ class Protection extends RangeTree {
    */
   getData() {
     return {
-      merges: this.getAll().map(range => range.toString()),
+      protections: this.getAll().map(range => range.toString()),
     };
   }
 

@@ -1548,19 +1548,10 @@ class XTableDimension extends Widget {
   removeRow(ri, number = 1) {
     const { xTableStyle } = this;
     const { snapshot } = this;
-    const { merges } = xTableStyle;
-    const mergeAction = {
-      undo() {
-        merges.rowAfterExpand(ri, number);
-      },
-      redo() {
-        merges.rowAfterShrink(ri, number);
-      },
-    };
+    const { protection } = this;
     snapshot.open();
-    snapshot.addAction(mergeAction);
     xTableStyle.removeRow(ri, number);
-    mergeAction.redo();
+    protection.removeRow(ri, number);
     snapshot.close({
       type: Constant.TABLE_EVENT_TYPE.REMOVE_ROW,
     });
@@ -1575,19 +1566,10 @@ class XTableDimension extends Widget {
   removeCol(ci, number = 1) {
     const { xTableStyle } = this;
     const { snapshot } = this;
-    const { merges } = xTableStyle;
-    const mergeAction = {
-      undo() {
-        merges.colAfterExpand(ci, number);
-      },
-      redo() {
-        merges.colAfterShrink(ci, number);
-      },
-    };
+    const { protection } = this;
     snapshot.open();
-    snapshot.addAction(mergeAction);
     xTableStyle.removeCol(ci, number);
-    mergeAction.redo();
+    protection.removeCol(ci, number);
     snapshot.close({
       type: Constant.TABLE_EVENT_TYPE.REMOVE_COL,
     });
@@ -1602,19 +1584,10 @@ class XTableDimension extends Widget {
   insertRowAfter(ri, number = 1) {
     const { xTableStyle } = this;
     const { snapshot } = this;
-    const { merges } = xTableStyle;
-    const mergeAction = {
-      undo() {
-        merges.rowAfterShrink(ri, number);
-      },
-      redo() {
-        merges.rowAfterExpand(ri, number);
-      },
-    };
+    const { protection } = this;
     snapshot.open();
-    snapshot.addAction(mergeAction);
     xTableStyle.insertRowAfter(ri, number);
-    mergeAction.redo();
+    protection.insertRowAfter(ri, number);
     snapshot.close({
       type: Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW,
     });
@@ -1629,19 +1602,10 @@ class XTableDimension extends Widget {
   insertRowBefore(ri, number = 1) {
     const { xTableStyle } = this;
     const { snapshot } = this;
-    const { merges } = xTableStyle;
-    const mergeAction = {
-      undo() {
-        merges.rowBeforeShrink(ri, number);
-      },
-      redo() {
-        merges.rowBeforeExpand(ri, number);
-      },
-    };
+    const { protection } = this;
     snapshot.open();
-    snapshot.addAction(mergeAction);
     xTableStyle.insertRowBefore(ri, number);
-    mergeAction.redo();
+    protection.insertRowBefore(ri, number);
     snapshot.close({
       type: Constant.TABLE_EVENT_TYPE.ADD_NEW_ROW,
     });
@@ -1656,19 +1620,10 @@ class XTableDimension extends Widget {
   insertColAfter(ci, number = 1) {
     const { xTableStyle } = this;
     const { snapshot } = this;
-    const { merges } = xTableStyle;
-    const mergeAction = {
-      undo() {
-        merges.colAfterShrink(ci, number);
-      },
-      redo() {
-        merges.colAfterExpand(ci, number);
-      },
-    };
+    const { protection } = this;
     snapshot.open();
-    snapshot.addAction(mergeAction);
     xTableStyle.insertColAfter(ci, number);
-    mergeAction.redo();
+    protection.insertColAfter(ci, number);
     snapshot.close({
       type: Constant.TABLE_EVENT_TYPE.ADD_NEW_COL,
     });
@@ -1683,19 +1638,10 @@ class XTableDimension extends Widget {
   insertColBefore(ci, number = 1) {
     const { xTableStyle } = this;
     const { snapshot } = this;
-    const { merges } = xTableStyle;
-    const mergeAction = {
-      undo() {
-        merges.colBeforeShrink(ci, number);
-      },
-      redo() {
-        merges.colBeforeExpand(ci, number);
-      },
-    };
+    const { protection } = this;
     snapshot.open();
-    snapshot.addAction(mergeAction);
     xTableStyle.insertColBefore(ci, number);
-    mergeAction.redo();
+    protection.insertColBefore(ci, number);
     snapshot.close({
       type: Constant.TABLE_EVENT_TYPE.ADD_NEW_COL,
     });

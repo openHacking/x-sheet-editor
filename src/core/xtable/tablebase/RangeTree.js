@@ -3,6 +3,7 @@ import { Rtree } from '../../../lib/rtree/Rtree';
 import { Listen } from '../../../lib/Listen';
 import { RtreeUtils } from '../../../utils/RtreeUtils';
 import { SheetUtils } from '../../../utils/SheetUtils';
+import { RectRange } from './RectRange';
 
 /**
  * RangeTree
@@ -184,6 +185,26 @@ class RangeTree {
   }
 
   /**
+   * 获取整行区域
+   * @param ri
+   * @param number
+   * @returns {RectRange}
+   */
+  getFullRowRange(ri, number) {
+    return new RectRange(ri, 0, Math.max(ri, ri + number - 1), RangeTree.MAX_COL);
+  }
+
+  /**
+   * 获取整列区域
+   * @param ci
+   * @param number
+   * @returns {RectRange}
+   */
+  getFullColRange(ci, number) {
+    return new RectRange(0, ci, RangeTree.MAX_ROW, Math.max(ci, ci + number - 1));
+  }
+
+  /**
      * 行扩展
      * @param ri
      * @param number
@@ -192,8 +213,8 @@ class RangeTree {
     let bbox = {
       minX: 0,
       minY: ri,
-      maxX: 1433,
-      maxY: 1048576,
+      maxX: RangeTree.MAX_COL,
+      maxY: RangeTree.MAX_ROW,
     };
     let { rTree } = this;
     let array = rTree.search(bbox);
@@ -219,8 +240,8 @@ class RangeTree {
     const bbox = {
       minX: ci,
       minY: 0,
-      maxX: 1433,
-      maxY: 1048576,
+      maxX: RangeTree.MAX_COL,
+      maxY: RangeTree.MAX_ROW,
     };
     let { rTree } = this;
     let array = rTree.search(bbox);
@@ -246,8 +267,8 @@ class RangeTree {
     let bbox = {
       minX: 0,
       minY: ri,
-      maxX: 1433,
-      maxY: 1048576,
+      maxX: RangeTree.MAX_COL,
+      maxY: RangeTree.MAX_ROW,
     };
     let { rTree } = this;
     let array = rTree.search(bbox);
@@ -273,8 +294,8 @@ class RangeTree {
     const bbox = {
       minX: ci,
       minY: 0,
-      maxX: 1433,
-      maxY: 1048576,
+      maxX: RangeTree.MAX_COL,
+      maxY: RangeTree.MAX_ROW,
     };
     let { rTree } = this;
     let array = rTree.search(bbox);
@@ -300,8 +321,8 @@ class RangeTree {
     let bbox = {
       minX: 0,
       minY: ri,
-      maxX: 1433,
-      maxY: 1048576,
+      maxX: RangeTree.MAX_COL,
+      maxY: RangeTree.MAX_ROW,
     };
     let { rTree } = this;
     let array = rTree.search(bbox);
@@ -327,8 +348,8 @@ class RangeTree {
     const bbox = {
       minX: ci,
       minY: 0,
-      maxX: 1433,
-      maxY: 1048576,
+      maxX: RangeTree.MAX_COL,
+      maxY: RangeTree.MAX_ROW,
     };
     let { rTree } = this;
     let array = rTree.search(bbox);
@@ -354,8 +375,8 @@ class RangeTree {
     let bbox = {
       minX: 0,
       minY: ri,
-      maxX: 1433,
-      maxY: 1048576,
+      maxX: RangeTree.MAX_COL,
+      maxY: RangeTree.MAX_ROW,
     };
     let { rTree } = this;
     let array = rTree.search(bbox);
@@ -381,8 +402,8 @@ class RangeTree {
     const bbox = {
       minX: ci,
       minY: 0,
-      maxX: 1433,
-      maxY: 1048576,
+      maxX: RangeTree.MAX_COL,
+      maxY: RangeTree.MAX_ROW,
     };
     let { rTree } = this;
     let array = rTree.search(bbox);
@@ -399,6 +420,9 @@ class RangeTree {
     rTree.load(array);
   }
 }
+
+RangeTree.MAX_COL = 1433;
+RangeTree.MAX_ROW = 1048576;
 
 export {
   RangeTree,

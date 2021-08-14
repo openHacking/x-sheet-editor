@@ -60,6 +60,10 @@ class XTableDataItems {
     }
   }
 
+  clear(rectRange) {
+
+  }
+
   setOrNew(ri, ci, item) {
     const line = this.items[ri];
     if (line) {
@@ -103,19 +107,23 @@ class XTableDataItems {
     let orderValue = [];
     let action = {
       undo: () => {
-        for (let i = 0, len = this.items.length; i < len; i++) {
-          const subItems = this.items[i];
-          if (subItems) {
-            subItems.splice(ci, 0, orderValue[i]);
-          }
+        const { length } = orderValue;
+        for (let i = 0; i < length; i++) {
+          const value = orderValue[i];
+          const { ri, item } = value;
+          const subItems = this.items[ri];
+          subItems.splice(ci, 0, item);
         }
       },
       redo: () => {
-        for (let i = 0, len = this.items.length; i < len; i++) {
-          const subItems = this.items[i];
+        const { length } = this.items;
+        for (let ri = 0; ri < length; ri++) {
+          const subItems = this.items[ri];
           if (subItems) {
             const item = subItems.splice(ci, 1)[0];
-            orderValue.push(item);
+            orderValue.push({
+              ri, item,
+            });
           }
         }
       },

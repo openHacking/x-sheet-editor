@@ -1,24 +1,21 @@
 import { Cell } from './Cell';
 import { SheetUtils } from '../../../utils/SheetUtils';
-import { XIteratorBuilder } from '../iterator/XIteratorBuilder';
 import { XTableDataItems } from '../XTableDataItems';
-import { Snapshot } from '../snapshot/Snapshot';
 import { Listen } from '../../../lib/Listen';
 import { Merges } from '../merges/Merges';
+import { Snapshot } from '../snapshot/Snapshot';
 
 class Cells {
 
   constructor({
     xTableData = new XTableDataItems(),
-    xIteratorBuilder = new XIteratorBuilder(),
     merges = new Merges(),
     snapshot = new Snapshot(),
   } = {}) {
     this.xTableData = xTableData;
-    this.listen = new Listen();
     this.merges = merges;
     this.snapshot = snapshot;
-    this.xIteratorBuilder = xIteratorBuilder;
+    this.listen = new Listen();
   }
 
   getCellOrNew(ri, ci) {
