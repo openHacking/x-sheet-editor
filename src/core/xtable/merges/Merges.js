@@ -70,7 +70,7 @@ class Merges extends RangeTree {
               item.maxY -= diffMax;
               item.style = 'oddValue';
               change.push(item);
-              if (item.maxY !== item.minY) {
+              if (item.maxY !== item.minY || item.maxY !== item.minY) {
                 divers.push(item);
               }
               continue;
@@ -82,7 +82,7 @@ class Merges extends RangeTree {
               item.maxY -= diffMax;
               item.style = 'oddValue';
               change.push(item);
-              if (item.maxY !== item.minY) {
+              if (item.maxY !== item.minY || item.maxY !== item.minY) {
                 divers.push(item);
               }
               continue;
@@ -100,11 +100,25 @@ class Merges extends RangeTree {
                 item.minY -= diffMin;
                 item.style = 'evenValue';
                 change.push(item);
-                if (item.maxY !== item.minY) {
+                if (item.maxY !== item.minY || item.maxY !== item.minY) {
                   divers.push(item);
                 }
                 continue;
               }
+            }
+            if (item.minY > fullBbox.maxY) {
+              let diffValue = fullBbox.maxY - fullBbox.minY;
+              diffValue += 1;
+              item.oldMax = item.maxY;
+              item.oldMin = item.minY;
+              item.maxY -= diffValue;
+              item.minY -= diffValue;
+              item.style = 'evenValue';
+              change.push(item);
+              if (item.maxY !== item.minY || item.maxY !== item.minY) {
+                divers.push(item);
+              }
+              continue;
             }
           }
           if (item.minY === fullBbox.minY) {
@@ -115,7 +129,7 @@ class Merges extends RangeTree {
               item.maxY -= diffMax;
               item.style = 'oddValue';
               change.push(item);
-              if (item.maxY !== item.minY) {
+              if (item.maxY !== item.minY || item.maxY !== item.minY) {
                 divers.push(item);
               }
             }
@@ -179,7 +193,7 @@ class Merges extends RangeTree {
               item.maxX -= diffMax;
               item.style = 'oddValue';
               change.push(item);
-              if (item.maxX !== item.minX) {
+              if (item.maxX !== item.minX || item.maxY !== item.minY) {
                 divers.push(item);
               }
               continue;
@@ -191,7 +205,7 @@ class Merges extends RangeTree {
               item.maxX -= diffMax;
               item.style = 'oddValue';
               change.push(item);
-              if (item.maxX !== item.minX) {
+              if (item.maxX !== item.minX || item.maxY !== item.minY) {
                 divers.push(item);
               }
               continue;
@@ -209,11 +223,25 @@ class Merges extends RangeTree {
                 item.minX -= diffMin;
                 item.style = 'evenValue';
                 change.push(item);
-                if (item.maxX !== item.minX) {
+                if (item.maxX !== item.minX || item.maxY !== item.minY) {
                   divers.push(item);
                 }
                 continue;
               }
+            }
+            if (item.minX > fullBbox.maxX) {
+              let diffValue = fullBbox.maxX - fullBbox.minX;
+              diffValue += 1;
+              item.oldMax = item.maxX;
+              item.oldMin = item.minX;
+              item.maxX -= diffValue;
+              item.minX -= diffValue;
+              item.style = 'evenValue';
+              change.push(item);
+              if (item.maxX !== item.minX || item.maxY !== item.minY) {
+                divers.push(item);
+              }
+              continue;
             }
           }
           if (item.minX === fullBbox.minX) {
@@ -224,7 +252,7 @@ class Merges extends RangeTree {
               item.maxX -= diffMax;
               item.style = 'oddValue';
               change.push(item);
-              if (item.maxX !== item.minX) {
+              if (item.maxX !== item.minX || item.maxY !== item.minY) {
                 divers.push(item);
               }
             }

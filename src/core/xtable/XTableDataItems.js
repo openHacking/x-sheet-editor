@@ -61,7 +61,18 @@ class XTableDataItems {
   }
 
   clear(rectRange) {
-
+    let { sri, eri } = rectRange;
+    let { sci, eci } = rectRange;
+    let { snapshot, items } = this;
+    let { length } = items;
+    let ri = sri;
+    let ci = sci;
+    let action = {
+      undo: () => {},
+      redo: () => {},
+    };
+    snapshot.addAction(action);
+    action.redo();
   }
 
   setOrNew(ri, ci, item) {
@@ -107,7 +118,7 @@ class XTableDataItems {
     let orderValue = [];
     let action = {
       undo: () => {
-        const { length } = orderValue;
+        let { length } = orderValue;
         for (let i = 0; i < length; i++) {
           const value = orderValue[i];
           const { ri, item } = value;
@@ -116,7 +127,8 @@ class XTableDataItems {
         }
       },
       redo: () => {
-        const { length } = this.items;
+        let { length } = this.items;
+        orderValue = [];
         for (let ri = 0; ri < length; ri++) {
           const subItems = this.items[ri];
           if (subItems) {
