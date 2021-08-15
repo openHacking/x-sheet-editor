@@ -11,6 +11,20 @@ class XTableDataItems {
     this.snapshot = snapshot;
   }
 
+  getOrNew(ri, ci) {
+    const find = this.get(ri, ci);
+    if (find) {
+      return find;
+    }
+    const item = new XTableDataItem();
+    this.set(ri, ci, item);
+    return item;
+  }
+
+  getItems() {
+    return this.items;
+  }
+
   slice(sri, sci, eri, eci) {
     const rows = this.items.slice(sri, eri + 1);
     return rows.map((row) => {
@@ -60,16 +74,75 @@ class XTableDataItems {
     }
   }
 
-  clear(rectRange) {
+  clear(rectRange, {
+    ignoreCorner = false,
+  } = {}) {
     let { sri, eri } = rectRange;
     let { sci, eci } = rectRange;
-    let { snapshot, items } = this;
+    let { items } = this;
+    let { snapshot } = this;
     let { length } = items;
-    let ri = sri;
-    let ci = sci;
+    let oldItems = [];
+    let effRiLength = eri - sri + 1;
+    let effCiLength = eci - sci + 1;
     let action = {
-      undo: () => {},
-      redo: () => {},
+      undo: () => {
+        for (let ri = sri; ri <= eri; ri++) {
+          if (ri >= length) {
+            break;
+          }
+          let oldRowItem = oldItems[ri];
+          let rowItem = items[ri];
+          if (rowItem) {
+            for (let ci = sci; ci <= eci; ci++) {
+              if (ci >= length) {
+                break;
+              }
+              if (ignoreCorner) {
+                let firstRi = ri === sri;
+                let firstCi = ci === sci;
+                if (firstRi && firstCi) {
+                  continue;
+                }
+                rowItem[ci] = oldRowItem[ci];
+              } else {
+                rowItem[ci] = oldRowItem[ci];
+              }
+            }
+          }
+        }
+      },
+      redo: () => {
+        oldItems = new Array(effRiLength);
+        for (let ri = sri; ri <= eri; ri++) {
+          if (ri >= length) {
+            break;
+          }
+          let rowItem = items[ri];
+          if (rowItem) {
+            let oldRowItem = new Array(effCiLength);
+            let { length } = rowItem;
+            for (let ci = sci; ci <= eci; ci++) {
+              if (ci >= length) {
+                break;
+              }
+              if (ignoreCorner) {
+                let firstRi = ri === sri;
+                let firstCi = ci === sci;
+                if (firstRi && firstCi) {
+                  continue;
+                }
+                oldRowItem[ci] = rowItem[ci];
+                rowItem[ci] = undefined;
+              } else {
+                oldRowItem[ci] = rowItem[ci];
+                rowItem[ci] = undefined;
+              }
+            }
+            oldItems[ri] = oldRowItem;
+          }
+        }
+      },
     };
     snapshot.addAction(action);
     action.redo();
@@ -80,20 +153,6 @@ class XTableDataItems {
     if (line) {
       line[ci] = item;
     }
-  }
-
-  getOrNew(ri, ci) {
-    const find = this.get(ri, ci);
-    if (find) {
-      return find;
-    }
-    const item = new XTableDataItem();
-    this.set(ri, ci, item);
-    return item;
-  }
-
-  getItems() {
-    return this.items;
   }
 
   removeRow(ri) {

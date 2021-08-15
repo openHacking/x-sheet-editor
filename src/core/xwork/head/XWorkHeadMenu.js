@@ -1008,6 +1008,7 @@ class XWorkHeadMenu extends Widget {
       const { table } = sheet;
       if (!table.isProtection()) {
         const merges = table.getTableMerges();
+        const data = table.getTableData();
         const { xScreen } = table;
         const { snapshot } = table;
         const xSelect = xScreen.findType(XSelectItem);
@@ -1030,6 +1031,9 @@ class XWorkHeadMenu extends Widget {
             } else {
               snapshot.open();
               merges.batchDelete(intersects);
+              data.clear(merge, {
+                ignoreCorner: true,
+              });
               merges.add(merge);
               snapshot.close({
                 type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
@@ -1038,6 +1042,9 @@ class XWorkHeadMenu extends Widget {
             }
           } else {
             snapshot.open();
+            data.clear(merge, {
+              ignoreCorner: true,
+            });
             merges.add(merge);
             snapshot.close({
               type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
