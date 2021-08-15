@@ -1205,6 +1205,9 @@ class XTableDimension extends Widget {
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH, () => {
       this.resize();
     });
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
+      this.render();
+    });
   }
 
   /**
