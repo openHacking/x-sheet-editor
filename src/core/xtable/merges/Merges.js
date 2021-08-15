@@ -31,106 +31,99 @@ class Merges extends RangeTree {
     let fullBbox = RtreeUtils.rangeToBbox(fullRange);
     let footBbox = RtreeUtils.rangeToBbox(footRange);
     let divers = [];
-    let change = [];
     let search = [];
     let mergeAction = {
       undo: () => {
-        let { length } = change;
+        let { length } = divers;
         for (let i = 0; i < length; i++) {
-          const item = change[i];
-          const { style } = item;
+          const item = divers[i];
           rTree.remove(item);
-          switch (style) {
-            case 'oddValue': {
-              item.maxY = item.oldMax;
-              break;
-            }
-            case 'evenValue': {
-              item.minY = item.oldMin;
-              item.maxY = item.oldMax;
-              break;
-            }
-          }
         }
         rTree.load(search);
       },
       redo: () => {
         divers = [];
-        change = [];
         search = rTree.search(footBbox);
         let { length } = search;
         for (let i = 0; i < length; i++) {
           const item = search[i];
+          const clone = { ...item };
           rTree.remove(item);
-          if (item.minY < fullBbox.minY) {
-            if (item.maxY < fullBbox.maxY) {
-              let diffMax = item.maxY - fullBbox.minY;
+          if (clone.minY < fullBbox.minY) {
+            if (clone.maxY < fullBbox.maxY) {
+              let diffMax = clone.maxY - fullBbox.minY;
               diffMax += 1;
-              item.oldMax = item.maxY;
-              item.maxY -= diffMax;
-              item.style = 'oddValue';
-              change.push(item);
-              if (item.maxX !== item.minX || item.maxY !== item.minY) {
-                divers.push(item);
+              clone.oldMax = clone.maxY;
+              clone.maxY -= diffMax;
+              clone.style = 'oddValue';
+              if (clone.maxX !== clone.minX || clone.maxY !== clone.minY) {
+                divers.push(clone);
               }
               continue;
             }
-            if (item.maxY > fullBbox.maxY) {
+            if (clone.maxY > fullBbox.maxY) {
               let diffMax = fullBbox.maxY - footBbox.minY;
               diffMax += 1;
-              item.oldMax = item.maxY;
-              item.maxY -= diffMax;
-              item.style = 'oddValue';
-              change.push(item);
-              if (item.maxX !== item.minX || item.maxY !== item.minY) {
-                divers.push(item);
+              clone.oldMax = clone.maxY;
+              clone.maxY -= diffMax;
+              clone.style = 'oddValue';
+              if (clone.maxX !== clone.minX || clone.maxY !== clone.minY) {
+                divers.push(clone);
+              }
+              continue;
+            }
+            if (clone.maxY === fullBbox.maxY) {
+              let diffMax = fullBbox.maxY - footBbox.minY;
+              diffMax += 1;
+              clone.oldMax = clone.maxY;
+              clone.maxY -= diffMax;
+              clone.style = 'oddValue';
+              if (clone.maxX !== clone.minX || clone.maxY !== clone.minY) {
+                divers.push(clone);
               }
               continue;
             }
           }
-          if (item.minY > fullBbox.minY) {
-            if (item.minY < fullBbox.maxY) {
-              if (item.maxY > fullBbox.maxY) {
-                let diffMin = item.minY - fullBbox.minY;
-                let diffMax = fullBbox.maxY - item.minY;
+          if (clone.minY > fullBbox.minY) {
+            if (clone.minY < fullBbox.maxY) {
+              if (clone.maxY > fullBbox.maxY) {
+                let diffMin = clone.minY - fullBbox.minY;
+                let diffMax = fullBbox.maxY - clone.minY;
                 diffMax += diffMin + 1;
-                item.oldMax = item.maxY;
-                item.oldMin = item.minY;
-                item.maxY -= diffMax;
-                item.minY -= diffMin;
-                item.style = 'evenValue';
-                change.push(item);
-                if (item.maxX !== item.minX || item.maxY !== item.minY) {
-                  divers.push(item);
+                clone.oldMax = clone.maxY;
+                clone.oldMin = clone.minY;
+                clone.maxY -= diffMax;
+                clone.minY -= diffMin;
+                clone.style = 'evenValue';
+                if (clone.maxX !== clone.minX || clone.maxY !== clone.minY) {
+                  divers.push(clone);
                 }
                 continue;
               }
             }
-            if (item.minY > fullBbox.maxY) {
+            if (clone.minY > fullBbox.maxY) {
               let diffValue = fullBbox.maxY - fullBbox.minY;
               diffValue += 1;
-              item.oldMax = item.maxY;
-              item.oldMin = item.minY;
-              item.maxY -= diffValue;
-              item.minY -= diffValue;
-              item.style = 'evenValue';
-              change.push(item);
-              if (item.maxX !== item.minX || item.maxY !== item.minY) {
-                divers.push(item);
+              clone.oldMax = clone.maxY;
+              clone.oldMin = clone.minY;
+              clone.maxY -= diffValue;
+              clone.minY -= diffValue;
+              clone.style = 'evenValue';
+              if (clone.maxX !== clone.minX || clone.maxY !== clone.minY) {
+                divers.push(clone);
               }
               continue;
             }
           }
-          if (item.minY === fullBbox.minY) {
-            if (item.maxY > fullBbox.maxY) {
-              let diffMax = fullBbox.maxY - item.minY;
+          if (clone.minY === fullBbox.minY) {
+            if (clone.maxY > fullBbox.maxY) {
+              let diffMax = fullBbox.maxY - clone.minY;
               diffMax += 1;
-              item.oldMax = item.maxY;
-              item.maxY -= diffMax;
-              item.style = 'oddValue';
-              change.push(item);
-              if (item.maxX !== item.minX || item.maxY !== item.minY) {
-                divers.push(item);
+              clone.oldMax = clone.maxY;
+              clone.maxY -= diffMax;
+              clone.style = 'oddValue';
+              if (clone.maxX !== clone.minX || clone.maxY !== clone.minY) {
+                divers.push(clone);
               }
             }
           }
@@ -154,106 +147,99 @@ class Merges extends RangeTree {
     let fullBbox = RtreeUtils.rangeToBbox(fullRange);
     let footBbox = RtreeUtils.rangeToBbox(footRange);
     let divers = [];
-    let change = [];
     let search = [];
     let mergeAction = {
       undo: () => {
-        let { length } = change;
+        let { length } = divers;
         for (let i = 0; i < length; i++) {
-          const item = change[i];
-          const { style } = item;
+          const item = divers[i];
           rTree.remove(item);
-          switch (style) {
-            case 'oddValue': {
-              item.maxX = item.oldMax;
-              break;
-            }
-            case 'evenValue': {
-              item.minX = item.oldMin;
-              item.maxX = item.oldMax;
-              break;
-            }
-          }
         }
         rTree.load(search);
       },
       redo: () => {
         divers = [];
-        change = [];
         search = rTree.search(footBbox);
         let { length } = search;
         for (let i = 0; i < length; i++) {
           const item = search[i];
+          const clone = { ...item };
           rTree.remove(item);
-          if (item.minX < fullBbox.minX) {
-            if (item.maxX < fullBbox.maxX) {
-              let diffMax = item.maxX - fullBbox.minX;
+          if (clone.minX < fullBbox.minX) {
+            if (clone.maxX < fullBbox.maxX) {
+              let diffMax = clone.maxX - fullBbox.minX;
               diffMax += 1;
-              item.oldMax = item.maxX;
-              item.maxX -= diffMax;
-              item.style = 'oddValue';
-              change.push(item);
-              if (item.maxX !== item.minX || item.maxY !== item.minY) {
-                divers.push(item);
+              clone.oldMax = clone.maxX;
+              clone.maxX -= diffMax;
+              clone.style = 'oddValue';
+              if (clone.maxX !== clone.minX || clone.maxY !== clone.minY) {
+                divers.push(clone);
               }
               continue;
             }
-            if (item.maxX > fullBbox.maxX) {
+            if (clone.maxX > fullBbox.maxX) {
               let diffMax = fullBbox.maxX - footBbox.minX;
               diffMax += 1;
-              item.oldMax = item.maxX;
-              item.maxX -= diffMax;
-              item.style = 'oddValue';
-              change.push(item);
-              if (item.maxX !== item.minX || item.maxY !== item.minY) {
-                divers.push(item);
+              clone.oldMax = clone.maxX;
+              clone.maxX -= diffMax;
+              clone.style = 'oddValue';
+              if (clone.maxX !== clone.minX || clone.maxY !== clone.minY) {
+                divers.push(clone);
+              }
+              continue;
+            }
+            if (clone.maxX === fullBbox.maxX) {
+              let diffMax = fullBbox.maxX - footBbox.minX;
+              diffMax += 1;
+              clone.oldMax = clone.maxX;
+              clone.maxX -= diffMax;
+              clone.style = 'oddValue';
+              if (clone.maxX !== clone.minX || clone.maxY !== clone.minY) {
+                divers.push(clone);
               }
               continue;
             }
           }
-          if (item.minX > fullBbox.minX) {
-            if (item.minX < fullBbox.maxX) {
-              if (item.maxX > fullBbox.maxX) {
-                let diffMin = item.minX - fullBbox.minX;
-                let diffMax = fullBbox.maxX - item.minX;
+          if (clone.minX > fullBbox.minX) {
+            if (clone.minX < fullBbox.maxX) {
+              if (clone.maxX > fullBbox.maxX) {
+                let diffMin = clone.minX - fullBbox.minX;
+                let diffMax = fullBbox.maxX - clone.minX;
                 diffMax += diffMin + 1;
-                item.oldMax = item.maxX;
-                item.oldMin = item.minX;
-                item.maxX -= diffMax;
-                item.minX -= diffMin;
-                item.style = 'evenValue';
-                change.push(item);
-                if (item.maxX !== item.minX || item.maxY !== item.minY) {
-                  divers.push(item);
+                clone.oldMax = clone.maxX;
+                clone.oldMin = clone.minX;
+                clone.maxX -= diffMax;
+                clone.minX -= diffMin;
+                clone.style = 'evenValue';
+                if (clone.maxX !== clone.minX || clone.maxY !== clone.minY) {
+                  divers.push(clone);
                 }
                 continue;
               }
             }
-            if (item.minX > fullBbox.maxX) {
+            if (clone.minX > fullBbox.maxX) {
               let diffValue = fullBbox.maxX - fullBbox.minX;
               diffValue += 1;
-              item.oldMax = item.maxX;
-              item.oldMin = item.minX;
-              item.maxX -= diffValue;
-              item.minX -= diffValue;
-              item.style = 'evenValue';
-              change.push(item);
-              if (item.maxX !== item.minX || item.maxY !== item.minY) {
-                divers.push(item);
+              clone.oldMax = clone.maxX;
+              clone.oldMin = clone.minX;
+              clone.maxX -= diffValue;
+              clone.minX -= diffValue;
+              clone.style = 'evenValue';
+              if (clone.maxX !== clone.minX || clone.maxY !== clone.minY) {
+                divers.push(clone);
               }
               continue;
             }
           }
-          if (item.minX === fullBbox.minX) {
-            if (item.maxX > fullBbox.maxX) {
-              let diffMax = fullBbox.maxX - item.minX;
+          if (clone.minX === fullBbox.minX) {
+            if (clone.maxX > fullBbox.maxX) {
+              let diffMax = fullBbox.maxX - clone.minX;
               diffMax += 1;
-              item.oldMax = item.maxX;
-              item.maxX -= diffMax;
-              item.style = 'oddValue';
-              change.push(item);
-              if (item.maxX !== item.minX || item.maxY !== item.minY) {
-                divers.push(item);
+              clone.oldMax = clone.maxX;
+              clone.maxX -= diffMax;
+              clone.style = 'oddValue';
+              if (clone.maxX !== clone.minX || clone.maxY !== clone.minY) {
+                divers.push(clone);
               }
             }
           }
