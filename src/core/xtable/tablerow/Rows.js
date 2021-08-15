@@ -115,7 +115,7 @@ class Rows {
     let action = {
       undo: () => {
         if (SheetUtils.isNotUnDef(ri)) {
-          if (ri <= data.length || oldValue) {
+          if (oldValue) {
             data.splice(ri, 0, oldValue);
           }
         }
@@ -123,6 +123,7 @@ class Rows {
         listen.execute('removeRow', ri);
       },
       redo: () => {
+        oldValue = SheetUtils.Undef;
         if (SheetUtils.isNotUnDef(ri)) {
           if (ri <= data.length) {
             oldValue = data.splice(ri, 1)[0];

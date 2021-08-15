@@ -115,7 +115,7 @@ class Cols {
     let action = {
       undo: () => {
         if (SheetUtils.isNotUnDef(ci)) {
-          if (ci <= data.length || oldValue) {
+          if (oldValue) {
             data.splice(ci, 0, oldValue);
           }
         }
@@ -123,6 +123,7 @@ class Cols {
         listen.execute('removeCol', ci);
       },
       redo: () => {
+        oldValue = SheetUtils.Undef;
         if (SheetUtils.isNotUnDef(ci)) {
           if (ci <= data.length) {
             oldValue = data.splice(ci, 1)[0];

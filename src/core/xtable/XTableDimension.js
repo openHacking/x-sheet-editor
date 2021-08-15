@@ -639,6 +639,8 @@ class XTableDimension extends Widget {
     });
     // 数据变更监听
     this.snapshot.listen.registerListen('change', (event) => {
+      this.cols.syncColsLen(this.xTableStyle.cols);
+      this.rows.syncRowsLen(this.xTableStyle.rows);
       if (event) {
         const { type } = event;
         switch (type) {
@@ -669,8 +671,6 @@ class XTableDimension extends Widget {
             break;
         }
       }
-      this.cols.syncColsLen(this.xTableStyle.cols);
-      this.rows.syncRowsLen(this.xTableStyle.rows);
       this.trigger(Constant.TABLE_EVENT_TYPE.SNAPSHOT_CHANGE);
     });
   }
@@ -1205,7 +1205,7 @@ class XTableDimension extends Widget {
     XEvent.bind(this, Constant.TABLE_EVENT_TYPE.CHANGE_COL_WIDTH, () => {
       this.resize();
     });
-    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.DATA_CHANGE, () => {
+    XEvent.bind(this, Constant.TABLE_EVENT_TYPE.SNAPSHOT_CHANGE, () => {
       this.render();
     });
   }
