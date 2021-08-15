@@ -70,7 +70,7 @@ class Merges extends RangeTree {
               item.maxY -= diffMax;
               item.style = 'oddValue';
               change.push(item);
-              if (item.maxY !== item.minY || item.maxY !== item.minY) {
+              if (item.maxX !== item.minX || item.maxY !== item.minY) {
                 divers.push(item);
               }
               continue;
@@ -82,7 +82,7 @@ class Merges extends RangeTree {
               item.maxY -= diffMax;
               item.style = 'oddValue';
               change.push(item);
-              if (item.maxY !== item.minY || item.maxY !== item.minY) {
+              if (item.maxX !== item.minX || item.maxY !== item.minY) {
                 divers.push(item);
               }
               continue;
@@ -100,7 +100,7 @@ class Merges extends RangeTree {
                 item.minY -= diffMin;
                 item.style = 'evenValue';
                 change.push(item);
-                if (item.maxY !== item.minY || item.maxY !== item.minY) {
+                if (item.maxX !== item.minX || item.maxY !== item.minY) {
                   divers.push(item);
                 }
                 continue;
@@ -115,7 +115,7 @@ class Merges extends RangeTree {
               item.minY -= diffValue;
               item.style = 'evenValue';
               change.push(item);
-              if (item.maxY !== item.minY || item.maxY !== item.minY) {
+              if (item.maxX !== item.minX || item.maxY !== item.minY) {
                 divers.push(item);
               }
               continue;
@@ -129,7 +129,7 @@ class Merges extends RangeTree {
               item.maxY -= diffMax;
               item.style = 'oddValue';
               change.push(item);
-              if (item.maxY !== item.minY || item.maxY !== item.minY) {
+              if (item.maxX !== item.minX || item.maxY !== item.minY) {
                 divers.push(item);
               }
             }
