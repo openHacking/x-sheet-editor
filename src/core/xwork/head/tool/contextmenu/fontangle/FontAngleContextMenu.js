@@ -32,7 +32,7 @@ class FontAngleContextMenu extends ELContextMenu {
       onChange: (angle) => {
         this.options.onUpdateAngle(angle);
       },
-    });
+    }).parentWidget(this);
     div1.children(this.angle1);
     div1.children(this.angle2);
     div1.children(new FontAngleDivider());
