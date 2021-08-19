@@ -76,7 +76,7 @@ class XBookTopOption extends Widget {
                       body.addTabSheet(tab, sheet);
                     });
                   },
-                }).open();
+                }).parentWidget(this).open();
               }
               break;
             }
@@ -117,17 +117,17 @@ class XBookTopOption extends Widget {
               menu.close();
               new Alert({
                 message: '开发人员正在努力施工中....',
-              }).open();
+              }).parentWidget(this).open();
               break;
             }
           }
         },
       },
-    });
-    this.format = new ForMart();
-    this.insert = new Insert();
-    this.look = new Look();
-    this.update = new Update();
+    }).parentWidget(this);
+    this.format = new ForMart().parentWidget(this);
+    this.insert = new Insert().parentWidget(this);
+    this.look = new Look().parentWidget(this);
+    this.update = new Update().parentWidget(this);
     this.optionsEle.children(this.file);
     this.optionsEle.children(this.format);
     this.optionsEle.children(this.insert);

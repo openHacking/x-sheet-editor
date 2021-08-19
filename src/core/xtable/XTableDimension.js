@@ -13,13 +13,12 @@ import { XReSizer } from './resizer/XReSizer';
 import { YReSizer } from './resizer/YReSizer';
 import { XHeightLight } from './highlight/XHeightLight';
 import { YHeightLight } from './highlight/YHeightLight';
-import { XTableWidgetFocus } from './XTableWidgetFocus';
 import { XDraw } from '../../draw/XDraw';
 import { RectRange } from './tablebase/RectRange';
 import { XTableScrollView } from './XTableScrollView';
 import { XTableAreaView } from './XTableAreaView';
 import { XTableDrawStyle } from './XTableDrawStyle';
-import { XScreen } from './tablescreen/XScreen';
+import { XScreen } from './screen/XScreen';
 import { XSelectItem } from './screenitems/xselect/XSelectItem';
 import { XAutoFillItem } from './screenitems/xautofill/XAutoFillItem';
 import { XCopyStyle } from './screenitems/xcopystyle/XCopyStyle';
@@ -524,11 +523,16 @@ class XTableDimension extends Widget {
    */
   constructor(options) {
     super(`${cssPrefix}-table`);
-    // 表格设置
     this.settings = SheetUtils.copy({}, settings, options);
-    // 视口区域大小
-    this.visualHeightCache = null;
-    this.visualWidthCache = null;
+  }
+
+  /**
+   * onAttach
+   */
+  onAttach() {
+    this.rootWidget = this.getRootWidget();
+    // 焦点元素管理
+    this.focusManage = this.rootWidget.focusManage;
     // 图标创建器
     this.xIconBuilder = new XIconBuilder();
     // 行列迭代器
@@ -608,7 +612,9 @@ class XTableDimension extends Widget {
     this.xTop = new XTableTop(this);
     this.xContent = new XTableContent(this);
     // table组件
-    this.widgetFocus = XTableWidgetFocus.getInstance();
+    this.readOnlyAlert = new Alert({
+      closeDestroy: false,
+    }).parentWidget(this);
     this.keyboard = new XTableKeyboard(this);
     this.mousePointer = new XTableMousePoint(this);
     this.xScreen = new XScreen(this);
@@ -621,9 +627,6 @@ class XTableDimension extends Widget {
     this.colFixed = new ColFixed(this);
     this.dropColFixed = new DropColFixed(this);
     this.dropRowFixed = new DropRowFixed(this);
-    this.readOnlyAlert = new Alert({
-      closeDestroy: false,
-    });
     // 粘贴板
     this.clipboard = new Clipboard({
       filter: () => {},
@@ -673,6 +676,41 @@ class XTableDimension extends Widget {
       }
       this.trigger(Constant.TABLE_EVENT_TYPE.SNAPSHOT_CHANGE);
     });
+    // 表格事件绑定
+    this.bindTableEvent();
+    // 图标事件绑定
+    this.bindIconEvent();
+    // 初始化
+    this.initialize();
+  }
+
+  /**
+   * 初始化
+   */
+  initialize() {
+    // 注册焦点元素
+    this.focusManage.register({
+      target: this,
+    });
+    // 表格渲染组件
+    const { xTableStyle } = this;
+    this.attach(xTableStyle);
+    // 添加屏幕组件
+    this.attach(this.xScreen);
+    this.xScreen.addItem(new XFilter(this));
+    this.xScreen.addItem(new XSelectItem(this));
+    this.xScreen.addItem(new XCopyStyle(this));
+    this.xScreen.addItem(new XAutoFillItem(this));
+    // 添加表格组件
+    this.attach(this.xHeightLight);
+    this.attach(this.yHeightLight);
+    this.attach(this.edit);
+    this.attach(this.rowFixed);
+    this.attach(this.colFixed);
+    this.attach(this.xReSizer);
+    this.attach(this.yReSizer);
+    this.attach(this.dropRowFixed);
+    this.attach(this.dropColFixed);
   }
 
   /**
@@ -922,12 +960,7 @@ class XTableDimension extends Widget {
    * @return {*}
    */
   visualWidth() {
-    if (SheetUtils.isNumber(this.visualWidthCache)) {
-      return this.visualWidthCache;
-    }
-    const width = this.box().width;
-    this.visualWidthCache = width;
-    return width;
+    return this.box().width;
   }
 
   /**
@@ -935,12 +968,7 @@ class XTableDimension extends Widget {
    * @return {*}
    */
   visualHeight() {
-    if (SheetUtils.isNumber(this.visualHeightCache)) {
-      return this.visualHeightCache;
-    }
-    const height = this.box().height;
-    this.visualHeightCache = height;
-    return height;
+    return this.box().height;
   }
 
   /**
@@ -1020,9 +1048,8 @@ class XTableDimension extends Widget {
    * @returns {{ci: number, ri: number}}
    */
   getRiCiByXy(x, y) {
-    const {
-      xFixedView, rows, cols,
-    } = this;
+    const { xFixedView } = this;
+    const { rows, cols } = this;
 
     const { index } = this;
     const fixedView = xFixedView.getFixedView();
@@ -1116,43 +1143,10 @@ class XTableDimension extends Widget {
   }
 
   /**
-   * onAttach
-   */
-  onAttach() {
-    // 表格事件绑定
-    this.bindTableEvent();
-    // 图标事件绑定
-    this.bindIconEvent();
-    // 注册焦点元素
-    this.widgetFocus.register({
-      target: this,
-    });
-    // 表格渲染组件
-    const { xTableStyle } = this;
-    this.attach(xTableStyle);
-    // 添加屏幕组件
-    this.attach(this.xScreen);
-    this.xScreen.addItem(new XFilter(this));
-    this.xScreen.addItem(new XSelectItem(this));
-    this.xScreen.addItem(new XCopyStyle(this));
-    this.xScreen.addItem(new XAutoFillItem(this));
-    // 添加表格组件
-    this.attach(this.xHeightLight);
-    this.attach(this.yHeightLight);
-    this.attach(this.edit);
-    this.attach(this.rowFixed);
-    this.attach(this.colFixed);
-    this.attach(this.xReSizer);
-    this.attach(this.yReSizer);
-    this.attach(this.dropRowFixed);
-    this.attach(this.dropColFixed);
-  }
-
-  /**
    * 移除事件绑定
    */
   unbind() {
-    this.widgetFocus.remove(this);
+    this.focusManage.remove(this);
     XEvent.unbind(this);
   }
 
@@ -1167,7 +1161,7 @@ class XTableDimension extends Widget {
       this.xIconsEvent(XIcon.ICON_EVENT_TYPE.MOUSE_MOVE, info, e);
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (e) => {
-      const { activate } = this.widgetFocus;
+      const { activate } = this.focusManage;
       const { target } = activate;
       if (target === this) {
         const { x, y } = this.eventXy(e);
@@ -1410,8 +1404,6 @@ class XTableDimension extends Widget {
     const { xLeft } = this;
     const { xTop } = this;
     const { xContent } = this;
-    this.visualHeightCache = null;
-    this.visualWidthCache = null;
     xTableAreaView.reset();
     xTableFrozenContent.reset();
     xLeftIndex.reset();

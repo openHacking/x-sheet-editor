@@ -83,6 +83,7 @@ class Snapshot {
   close(event) {
     if (this.layer.data.length) {
       this.layer.event = event;
+      this.redoStack = [];
       this.undoStack.push(this.layer);
     }
     this.layer = {

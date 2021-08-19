@@ -87,9 +87,8 @@ class Element {
       });
       return this;
     }
-    const {
-      offsetTop, offsetLeft, offsetHeight, offsetWidth,
-    } = this.el;
+    const { offsetTop, offsetLeft } = this.el;
+    const { offsetHeight, offsetWidth } = this.el;
     return {
       top: offsetTop,
       left: offsetLeft,

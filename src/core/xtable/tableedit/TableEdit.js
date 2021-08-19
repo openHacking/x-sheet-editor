@@ -42,9 +42,9 @@ class TableEdit extends TextEdit {
       keyCode: keyCode => keyCode === 13,
       handle: (event) => {
         const { table } = this;
-        const { widgetFocus } = table;
+        const { focusManage } = table;
         const { keyboard } = table;
-        widgetFocus.forward({ target: table });
+        focusManage.forward({ target: table });
         keyboard.forward({
           target: table, event,
         });
@@ -54,9 +54,25 @@ class TableEdit extends TextEdit {
       keyCode: keyCode => keyCode === 9,
       handle: (event) => {
         const { table } = this;
-        const { widgetFocus } = table;
+        const { focusManage } = table;
         const { keyboard } = table;
-        widgetFocus.forward({ target: table });
+        focusManage.forward({
+          target: table,
+        });
+        keyboard.forward({
+          target: table, event,
+        });
+      },
+    };
+    this.escResponse = {
+      keyCode: keyCode => keyCode === 27,
+      handle: (event) => {
+        const { table } = this;
+        const { focusManage } = table;
+        const { keyboard } = table;
+        focusManage.forward({
+          target: table,
+        });
         keyboard.forward({
           target: table, event,
         });
@@ -79,21 +95,23 @@ class TableEdit extends TextEdit {
     const { altEnterResponse } = this;
     const { tabResponse } = this;
     const { enterResponse } = this;
+    const { escResponse } = this;
     const { openClickHandle } = this;
     const { closeClickHandle } = this;
     const { tableScrollHandle } = this;
     const { table } = this;
     const { keyboard } = table;
-    const { widgetFocus } = table;
+    const { focusManage } = table;
     keyboard.register({
       target: this,
       response: [
         enterResponse,
         tabResponse,
         altEnterResponse,
+        escResponse,
       ],
     });
-    widgetFocus.register({
+    focusManage.register({
       target: this,
     });
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, (event) => {
@@ -129,9 +147,9 @@ class TableEdit extends TextEdit {
     const { tableScrollHandle } = this;
     const { table } = this;
     const { keyboard } = table;
-    const { widgetFocus } = table;
+    const { focusManage } = table;
     keyboard.remove(this);
-    widgetFocus.remove(this);
+    focusManage.remove(this);
     XEvent.unbind(this);
     XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, tableScrollHandle);
     XEvent.unbind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, openClickHandle);

@@ -29,12 +29,12 @@ class IFFilter extends ELContextMenuItem {
     this.children(this.titleEle);
     // 条件类型
     this.selectEleBox = h('div', `${cssPrefix}-if-filter-select-box`);
-    this.selectEle = new Select();
+    this.selectEle = new Select().parentWidget(this);
     this.selectEleBox.children(this.selectEle);
     this.children(this.selectEleBox);
     // 条件值
     this.valueInputEleBox = h('div', `${cssPrefix}-if-filter-value-input-box`);
-    this.valueInput = new PlainInput();
+    this.valueInput = new PlainInput().parentWidget(this);
     this.valueInputEleBox.children(this.valueInput);
     this.children(this.valueInputEleBox);
     // 搜索类型

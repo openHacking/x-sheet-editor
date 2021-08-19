@@ -89,7 +89,7 @@ class XWorkFootMenu extends Widget {
       if (SheetUtils.isFull()) {
         SheetUtils.exitFullscreen();
       } else {
-        SheetUtils.fullScreen(work.root);
+        SheetUtils.fullScreen(work.getRootWidget());
       }
     });
   }

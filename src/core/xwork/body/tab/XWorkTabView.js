@@ -28,9 +28,15 @@ class XWorkTabView extends Widget {
       onAdded: () => {},
       onRemove: () => {},
     }, settings, options);
+  }
+
+  /**
+   * 初始化
+   */
+  onAttach() {
+    this.activeIndex = -1;
     this.left = null;
     this.tabList = [];
-    this.activeIndex = -1;
     this.last = h('div', `${cssPrefix}-switch-tab-last-btn`);
     this.next = h('div', `${cssPrefix}-switch-tab-next-btn`);
     this.content = h('div', `${cssPrefix}-sheet-tab-content`);
@@ -65,7 +71,7 @@ class XWorkTabView extends Widget {
           }
         }
       },
-    });
+    }).parentWidget(this);
     this.bind();
   }
 

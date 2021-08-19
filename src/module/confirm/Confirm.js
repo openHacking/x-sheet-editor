@@ -3,20 +3,22 @@ import { Constant, cssPrefix } from '../../const/Constant';
 import { Widget } from '../../lib/Widget';
 import { DragPanel } from '../dragpanel/DragPanel';
 import { XEvent } from '../../lib/XEvent';
+import { SheetUtils } from '../../utils/SheetUtils';
 
 class Confirm extends Widget {
 
-  constructor({
-    title = '提示',
-    message = '',
-    ok = () => {},
-    no = () => {},
-  }) {
+  constructor(options) {
     super(`${cssPrefix}-confirm`);
-    this.title = title;
-    this.message = message;
-    this.ok = ok;
-    this.no = no;
+    this.options = SheetUtils.copy({
+      title: '提示',
+      message: '',
+      no: () => {},
+      ok: () => {},
+    }, options);
+    this.title = this.options.title;
+    this.message = this.options.message;
+    this.ok = this.options.ok;
+    this.no = this.options.no;
     // 创建 UI
     this.closeEle = h('div', `${cssPrefix}-confirm-close`);
     this.titleEle = h('div', `${cssPrefix}-confirm-title`);
@@ -25,8 +27,8 @@ class Confirm extends Widget {
     this.noEle = h('div', `${cssPrefix}-confirm-button ${cssPrefix}-confirm-no`);
     this.buttonsEle = h('div', `${cssPrefix}-confirm-buttons`);
     // 显示内容消息
-    this.titleEle.html(title);
-    this.contentEle.html(message);
+    this.titleEle.html(this.title);
+    this.contentEle.html(this.message);
     this.okEle.html('确定');
     this.noEle.html('取消');
     // 添加UI
@@ -37,7 +39,9 @@ class Confirm extends Widget {
     this.children(this.contentEle);
     this.children(this.buttonsEle);
     // 拖拽组件
-    this.dragPanel = new DragPanel().children(this);
+    this.dragPanel = new DragPanel()
+      .children(this)
+      .parentWidget(this);
   }
 
   unbind() {

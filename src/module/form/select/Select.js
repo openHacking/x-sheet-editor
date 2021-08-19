@@ -30,7 +30,7 @@ class Select extends Widget {
         const { value } = item;
         this.setSelect(value);
       },
-    });
+    }).parentWidget(this);
     this.bind();
   }
 

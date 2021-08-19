@@ -22,27 +22,29 @@ class Widget extends Life {
    * Widget
    * @param className
    * @param nodeType
+   * @param $$rootFlag
    */
-  constructor(className = '', nodeType = 'div') {
+  constructor(className = '', nodeType = 'div', $$rootFlag = false) {
     if (typeof className === 'string') {
       super(nodeType, `${cssPrefix}-widget ${className}`);
     } else {
       super(className);
     }
+    this.$$rootFlag = $$rootFlag;
   }
 
   /**
    * 计算鼠标在当前
    * 元素中的位置
    * @param event
-   * @param ele
+   * @param elem
    * @returns {{x: number, y: number}}
    */
-  eventXy(event, ele = this) {
-    const { top, left } = ele.box();
+  eventXy(event, elem = this) {
+    const { top, left } = elem.box();
     return {
-      x: event.pageX - left,
-      y: event.pageY - top,
+      y: event.clientY - top,
+      x: event.clientX - left,
     };
   }
 
@@ -53,6 +55,7 @@ class Widget extends Life {
    */
   attach(widget) {
     this.children(widget);
+    widget.parentWidget(this);
     widget.onAttach(this);
   }
 
@@ -70,6 +73,29 @@ class Widget extends Life {
       node = node.parent();
     }
     return null;
+  }
+
+  /**
+   * 获取 root widget
+   */
+  getRootWidget() {
+    let parent = this.data('parent');
+    while (parent && !parent.$$rootFlag) {
+      parent = parent.data('parent');
+    }
+    return parent;
+  }
+
+  /**
+   * 设置 parent widget
+   * @param widget
+   */
+  parentWidget(widget) {
+    if (widget) {
+      this.data('parent', widget);
+      return this;
+    }
+    return this.data('parent');
   }
 
   /**

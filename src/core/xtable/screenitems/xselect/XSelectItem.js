@@ -1,11 +1,11 @@
 /* global document */
-import { XScreenCssBorderItem } from '../../tablescreen/item/viewborder/XScreenCssBorderItem';
+import { XScreenCssBorderItem } from '../../screen/item/viewborder/XScreenCssBorderItem';
 import { XEvent } from '../../../../lib/XEvent';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { RectRange } from '../../tablebase/RectRange';
 import { Widget } from '../../../../lib/Widget';
 import { XTableMousePoint } from '../../XTableMousePoint';
-import { RANGE_OVER_GO } from '../../tablescreen/item/viewborder/XScreenStyleBorderItem';
+import { RANGE_OVER_GO } from '../../screen/item/viewborder/XScreenStyleBorderItem';
 import { XSelectPath } from './XSelectPath';
 
 const SELECT_LOCAL = {
@@ -77,11 +77,11 @@ class XSelectItem extends XScreenCssBorderItem {
     };
     this.tableMouseDown = (e1) => {
       const { table } = this;
-      const { mousePointer, widgetFocus } = table;
+      const { mousePointer, focusManage } = table;
       if (e1.button !== 0) {
         return;
       }
-      const { activate } = widgetFocus;
+      const { activate } = focusManage;
       const { target } = activate;
       if (target !== table) {
         return;
@@ -158,10 +158,10 @@ class XSelectItem extends XScreenCssBorderItem {
     const { table } = this;
     this.bind();
     this.hide();
-    table.widgetFocus.register({ target: this.ltCorner });
-    table.widgetFocus.register({ target: this.lCorner });
-    table.widgetFocus.register({ target: this.tCorner });
-    table.widgetFocus.register({ target: this.brCorner });
+    table.focusManage.register({ target: this.ltCorner });
+    table.focusManage.register({ target: this.lCorner });
+    table.focusManage.register({ target: this.tCorner });
+    table.focusManage.register({ target: this.brCorner });
   }
 
   /**

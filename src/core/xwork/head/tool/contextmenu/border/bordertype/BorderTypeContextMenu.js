@@ -78,7 +78,7 @@ class BorderTypeContextMenu extends ELContextMenu {
         this.color = color;
         this.borderColor.setColor(color);
       },
-    }));
+    })).parentWidget(this);
     // 边框类型
     this.lineTypeContextMenu = new LineTypeContextMenu(SheetUtils.copy({
       el: this.borderType,
@@ -86,7 +86,7 @@ class BorderTypeContextMenu extends ELContextMenu {
       onUpdate: (type) => {
         this.type = type;
       },
-    }));
+    })).parentWidget(this);
     // 添加事件
     this.bind();
   }

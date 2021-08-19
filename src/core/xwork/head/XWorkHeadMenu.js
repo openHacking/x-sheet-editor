@@ -37,14 +37,45 @@ import { XCopyStyle } from '../../xtable/screenitems/xcopystyle/XCopyStyle';
 import { FontAngle } from './tool/FontAngle';
 import { Divider } from './tool/base/Divider';
 import { ColorArray } from '../../../module/colorpicker/colorarray/ColorArray';
+import { BaseEdit } from '../../xtable/tableedit/base/BaseEdit';
 
 class XWorkHeadMenu extends Widget {
 
   constructor(workTop) {
     super(`${cssPrefix}-tools-menu`);
-
     this.workTop = workTop;
+  }
+
+  unbind() {
     const { body } = this.workTop.work;
+    XEvent.bind(body);
+    XEvent.bind(this.scale);
+    XEvent.bind(this.undo);
+    XEvent.bind(this.redo);
+    XEvent.bind(this.paintFormat);
+    XEvent.bind(this.clearFormat);
+    XEvent.bind(this.format);
+    XEvent.bind(this.font);
+    XEvent.bind(this.dprFontSize);
+    XEvent.bind(this.fontBold);
+    XEvent.bind(this.fontItalic);
+    XEvent.bind(this.underLine);
+    XEvent.bind(this.fontStrike);
+    XEvent.bind(this.fontColor);
+    XEvent.bind(this.fillColor);
+    XEvent.bind(this.border);
+    XEvent.bind(this.merge);
+    XEvent.bind(this.horizontalAlign);
+    XEvent.bind(this.verticalAlign);
+    XEvent.bind(this.textWrapping);
+    XEvent.bind(this.fixed);
+    XEvent.bind(this.filter);
+  }
+
+  onAttach() {
+    const { workTop } = this;
+    const { work } = workTop;
+    const { body } = work;
     const { sheetView } = body;
 
     // 普通小工具
@@ -113,27 +144,32 @@ class XWorkHeadMenu extends Widget {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
           if (!table.isProtection()) {
-            const operateCellsHelper = table.getOperateCellsHelper();
-            const cells = table.getTableCells();
-            const { xScreen } = table;
-            const { snapshot } = table;
-            const xSelect = xScreen.findType(XSelectItem);
-            const { selectRange } = xSelect;
-            this.font.setTitle(type);
-            if (selectRange) {
-              snapshot.open();
-              operateCellsHelper.getCellOrNewCellByViewRange({
-                rectRange: selectRange,
-                callback: (r, c, origin) => {
-                  const cell = origin.clone();
-                  cell.fontAttr.name = type;
-                  cells.setCell(r, c, cell);
-                },
-              });
-              snapshot.close({
-                type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
-              });
-              table.render();
+            const { edit } = table;
+            if (edit.mode === BaseEdit.MODE.SHOW) {
+              edit.fontFamily(type);
+            } else {
+              const cells = table.getTableCells();
+              const operateCellsHelper = table.getOperateCellsHelper();
+              const { xScreen } = table;
+              const { snapshot } = table;
+              const xSelect = xScreen.findType(XSelectItem);
+              const { selectRange } = xSelect;
+              this.font.setTitle(type);
+              if (selectRange) {
+                snapshot.open();
+                operateCellsHelper.getCellOrNewCellByViewRange({
+                  rectRange: selectRange,
+                  callback: (r, c, origin) => {
+                    const cell = origin.clone();
+                    cell.fontAttr.name = type;
+                    cells.setCell(r, c, cell);
+                  },
+                });
+                snapshot.close({
+                  type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+                });
+                table.render();
+              }
             }
           }
         },
@@ -145,27 +181,32 @@ class XWorkHeadMenu extends Widget {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
           if (!table.isProtection()) {
-            const operateCellsHelper = table.getOperateCellsHelper();
-            const cells = table.getTableCells();
-            const { xScreen } = table;
-            const { snapshot } = table;
-            const xSelect = xScreen.findType(XSelectItem);
-            const { selectRange } = xSelect;
-            this.dprFontSize.setTitle(size);
-            if (selectRange) {
-              snapshot.open();
-              operateCellsHelper.getCellOrNewCellByViewRange({
-                rectRange: selectRange,
-                callback: (r, c, origin) => {
-                  const cell = origin.clone();
-                  cell.fontAttr.size = size;
-                  cells.setCell(r, c, cell);
-                },
-              });
-              snapshot.close({
-                type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
-              });
-              table.render();
+            const { edit } = table;
+            if (edit.mode === BaseEdit.MODE.SHOW) {
+              edit.fontSize(size);
+            } else {
+              const cells = table.getTableCells();
+              const operateCellsHelper = table.getOperateCellsHelper();
+              const { xScreen } = table;
+              const { snapshot } = table;
+              const xSelect = xScreen.findType(XSelectItem);
+              const { selectRange } = xSelect;
+              this.dprFontSize.setTitle(size);
+              if (selectRange) {
+                snapshot.open();
+                operateCellsHelper.getCellOrNewCellByViewRange({
+                  rectRange: selectRange,
+                  callback: (r, c, origin) => {
+                    const cell = origin.clone();
+                    cell.fontAttr.size = size;
+                    cells.setCell(r, c, cell);
+                  },
+                });
+                snapshot.close({
+                  type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+                });
+                table.render();
+              }
             }
           }
         },
@@ -209,27 +250,32 @@ class XWorkHeadMenu extends Widget {
           const sheet = sheetView.getActiveSheet();
           const { table } = sheet;
           if (!table.isProtection()) {
-            const operateCellsHelper = table.getOperateCellsHelper();
-            const cells = table.getTableCells();
-            const { xScreen } = table;
-            const { snapshot } = table;
-            const xSelect = xScreen.findType(XSelectItem);
-            const { selectRange } = xSelect;
-            this.fontColor.setColor(color);
-            if (selectRange) {
-              snapshot.open();
-              operateCellsHelper.getCellOrNewCellByViewRange({
-                rectRange: selectRange,
-                callback: (r, c, origin) => {
-                  const cell = origin.clone();
-                  cell.fontAttr.color = color;
-                  cells.setCell(r, c, cell);
-                },
-              });
-              snapshot.close({
-                type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
-              });
-              table.render();
+            const { edit } = table;
+            if (edit.mode === BaseEdit.MODE.SHOW) {
+              edit.fontColor(color);
+            } else {
+              const cells = table.getTableCells();
+              const operateCellsHelper = table.getOperateCellsHelper();
+              const { xScreen } = table;
+              const { snapshot } = table;
+              const xSelect = xScreen.findType(XSelectItem);
+              const { selectRange } = xSelect;
+              this.fontColor.setColor(color);
+              if (selectRange) {
+                snapshot.open();
+                operateCellsHelper.getCellOrNewCellByViewRange({
+                  rectRange: selectRange,
+                  callback: (r, c, origin) => {
+                    const cell = origin.clone();
+                    cell.fontAttr.color = color;
+                    cells.setCell(r, c, cell);
+                  },
+                });
+                snapshot.close({
+                  type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+                });
+                table.render();
+              }
             }
           }
         },
@@ -254,7 +300,9 @@ class XWorkHeadMenu extends Widget {
                   if (sri < scrollView.eri - 2 && sri >= scrollView.sri) {
                     table.setFixedRow(sri);
                   } else {
-                    new Alert({ message: '无法在当前区域内冻结单元格, 请重新选择冻结区域' }).open();
+                    new Alert({
+                      message: '无法在当前区域内冻结单元格, 请重新选择冻结区域',
+                    }).parentWidget(this).open();
                   }
                 }
                 break;
@@ -268,7 +316,9 @@ class XWorkHeadMenu extends Widget {
                   if (sci < scrollView.eci - 2 && sci >= scrollView.sci) {
                     table.setFixedCol(sci);
                   } else {
-                    new Alert({ message: '无法在当前区域内冻结单元格, 请重新选择冻结区域' }).open();
+                    new Alert({
+                      message: '无法在当前区域内冻结单元格, 请重新选择冻结区域',
+                    }).parentWidget(this).open();
                   }
                 }
                 break;
@@ -783,64 +833,35 @@ class XWorkHeadMenu extends Widget {
     });
 
     // 追加到菜单中
-    this.children(this.undo);
-    this.children(this.redo);
-    this.children(new Divider());
-    this.children(this.scale);
-    this.children(this.paintFormat);
-    this.children(this.clearFormat);
-    this.children(this.format);
-    this.children(new Divider());
-    this.children(this.font);
-    this.children(this.dprFontSize);
-    this.children(new Divider());
-    this.children(this.fontBold);
-    this.children(this.fontItalic);
-    this.children(this.underLine);
-    this.children(this.fontStrike);
-    this.children(this.fontColor);
-    this.children(new Divider());
-    this.children(this.fillColor);
-    this.children(this.border);
-    this.children(this.merge);
-    this.children(new Divider());
-    this.children(this.horizontalAlign);
-    this.children(this.verticalAlign);
-    this.children(this.textWrapping);
-    this.children(this.fontAngle);
-    this.children(new Divider());
-    this.children(this.fixed);
-    this.children(this.filter);
-    this.children(this.functions);
-  }
-
-  unbind() {
-    const { body } = this.workTop.work;
-    XEvent.bind(body);
-    XEvent.bind(this.scale);
-    XEvent.bind(this.undo);
-    XEvent.bind(this.redo);
-    XEvent.bind(this.paintFormat);
-    XEvent.bind(this.clearFormat);
-    XEvent.bind(this.format);
-    XEvent.bind(this.font);
-    XEvent.bind(this.dprFontSize);
-    XEvent.bind(this.fontBold);
-    XEvent.bind(this.fontItalic);
-    XEvent.bind(this.underLine);
-    XEvent.bind(this.fontStrike);
-    XEvent.bind(this.fontColor);
-    XEvent.bind(this.fillColor);
-    XEvent.bind(this.border);
-    XEvent.bind(this.merge);
-    XEvent.bind(this.horizontalAlign);
-    XEvent.bind(this.verticalAlign);
-    XEvent.bind(this.textWrapping);
-    XEvent.bind(this.fixed);
-    XEvent.bind(this.filter);
-  }
-
-  onAttach() {
+    this.attach(this.undo);
+    this.attach(this.redo);
+    this.attach(new Divider());
+    this.attach(this.scale);
+    this.attach(this.paintFormat);
+    this.attach(this.clearFormat);
+    this.attach(this.format);
+    this.attach(new Divider());
+    this.attach(this.font);
+    this.attach(this.dprFontSize);
+    this.attach(new Divider());
+    this.attach(this.fontBold);
+    this.attach(this.fontItalic);
+    this.attach(this.underLine);
+    this.attach(this.fontStrike);
+    this.attach(this.fontColor);
+    this.attach(new Divider());
+    this.attach(this.fillColor);
+    this.attach(this.border);
+    this.attach(this.merge);
+    this.attach(new Divider());
+    this.attach(this.horizontalAlign);
+    this.attach(this.verticalAlign);
+    this.attach(this.textWrapping);
+    this.attach(this.fontAngle);
+    this.attach(new Divider());
+    this.attach(this.fixed);
+    this.attach(this.filter);
+    this.attach(this.functions);
     this.bind();
   }
 
@@ -972,28 +993,33 @@ class XWorkHeadMenu extends Widget {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       if (!table.isProtection()) {
-        const operateCellsHelper = table.getOperateCellsHelper();
-        const cells = table.getTableCells();
-        const { xScreen } = table;
-        const { snapshot } = table;
-        const xSelect = xScreen.findType(XSelectItem);
-        const { selectRange } = xSelect;
-        if (selectRange) {
-          const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
-          const bold = !firstCell.fontAttr.bold;
-          snapshot.open();
-          operateCellsHelper.getCellOrNewCellByViewRange({
-            rectRange: selectRange,
-            callback: (r, c, origin) => {
-              const cell = origin.clone();
-              cell.fontAttr.bold = bold;
-              cells.setCell(r, c, cell);
-            },
-          });
-          snapshot.close({
-            type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
-          });
-          table.render();
+        const { edit } = table;
+        if (edit.mode === BaseEdit.MODE.SHOW) {
+          edit.fontBold();
+        } else {
+          const cells = table.getTableCells();
+          const operateCellsHelper = table.getOperateCellsHelper();
+          const { xScreen } = table;
+          const { snapshot } = table;
+          const xSelect = xScreen.findType(XSelectItem);
+          const { selectRange } = xSelect;
+          if (selectRange) {
+            const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+            const bold = !firstCell.fontAttr.bold;
+            snapshot.open();
+            operateCellsHelper.getCellOrNewCellByViewRange({
+              rectRange: selectRange,
+              callback: (r, c, origin) => {
+                const cell = origin.clone();
+                cell.fontAttr.bold = bold;
+                cells.setCell(r, c, cell);
+              },
+            });
+            snapshot.close({
+              type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+            });
+            table.render();
+          }
         }
       }
     });
@@ -1064,26 +1090,31 @@ class XWorkHeadMenu extends Widget {
       const sheet = sheetView.getActiveSheet();
       const { table } = sheet;
       if (!table.isProtection()) {
-        const operateCellsHelper = table.getOperateCellsHelper();
-        const cells = table.getTableCells();
-        const { xScreen } = table;
-        const { snapshot } = table;
-        const xSelect = xScreen.findType(XSelectItem);
-        const { selectRange } = xSelect;
-        if (selectRange) {
-          const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
-          const italic = !firstCell.fontAttr.italic;
-          snapshot.open();
-          operateCellsHelper.getCellOrNewCellByViewRange({
-            rectRange: selectRange,
-            callback: (r, c, origin) => {
-              const cell = origin.clone();
-              cell.fontAttr.italic = italic;
-              cells.setCell(r, c, cell);
-            },
-          });
-          snapshot.close();
-          table.render();
+        const { edit } = table;
+        if (edit.mode === BaseEdit.MODE.SHOW) {
+          edit.fontItalic();
+        } else {
+          const cells = table.getTableCells();
+          const operateCellsHelper = table.getOperateCellsHelper();
+          const { xScreen } = table;
+          const { snapshot } = table;
+          const xSelect = xScreen.findType(XSelectItem);
+          const { selectRange } = xSelect;
+          if (selectRange) {
+            const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+            const italic = !firstCell.fontAttr.italic;
+            snapshot.open();
+            operateCellsHelper.getCellOrNewCellByViewRange({
+              rectRange: selectRange,
+              callback: (r, c, origin) => {
+                const cell = origin.clone();
+                cell.fontAttr.italic = italic;
+                cells.setCell(r, c, cell);
+              },
+            });
+            snapshot.close();
+            table.render();
+          }
         }
       }
     });
@@ -1092,25 +1123,30 @@ class XWorkHeadMenu extends Widget {
       const { table } = sheet;
       const { xScreen } = table;
       if (!table.isProtection()) {
-        const operateCellsHelper = table.getOperateCellsHelper();
-        const cells = table.getTableCells();
-        const { snapshot } = table;
-        const xSelect = xScreen.findType(XSelectItem);
-        const { selectRange } = xSelect;
-        if (selectRange) {
-          const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
-          const underline = !firstCell.fontAttr.underline;
-          snapshot.open();
-          operateCellsHelper.getCellOrNewCellByViewRange({
-            rectRange: selectRange,
-            callback: (r, c, origin) => {
-              const cell = origin.clone();
-              cell.fontAttr.underline = underline;
-              cells.setCell(r, c, cell);
-            },
-          });
-          snapshot.close();
-          table.render();
+        const { edit } = table;
+        if (edit.mode === BaseEdit.MODE.SHOW) {
+          edit.underLine();
+        } else {
+          const cells = table.getTableCells();
+          const operateCellsHelper = table.getOperateCellsHelper();
+          const { snapshot } = table;
+          const xSelect = xScreen.findType(XSelectItem);
+          const { selectRange } = xSelect;
+          if (selectRange) {
+            const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+            const underline = !firstCell.fontAttr.underline;
+            snapshot.open();
+            operateCellsHelper.getCellOrNewCellByViewRange({
+              rectRange: selectRange,
+              callback: (r, c, origin) => {
+                const cell = origin.clone();
+                cell.fontAttr.underline = underline;
+                cells.setCell(r, c, cell);
+              },
+            });
+            snapshot.close();
+            table.render();
+          }
         }
       }
     });
@@ -1119,25 +1155,30 @@ class XWorkHeadMenu extends Widget {
       const { table } = sheet;
       const { xScreen } = table;
       if (!table.isProtection()) {
-        const operateCellsHelper = table.getOperateCellsHelper();
-        const cells = table.getTableCells();
-        const { snapshot } = table;
-        const xSelect = xScreen.findType(XSelectItem);
-        const { selectRange } = xSelect;
-        if (selectRange) {
-          const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
-          const strikethrough = !firstCell.fontAttr.strikethrough;
-          snapshot.open();
-          operateCellsHelper.getCellOrNewCellByViewRange({
-            rectRange: selectRange,
-            callback: (r, c, origin) => {
-              const cell = origin.clone();
-              cell.fontAttr.strikethrough = strikethrough;
-              cells.setCell(r, c, cell);
-            },
-          });
-          snapshot.close();
-          table.render();
+        const { edit } = table;
+        if (edit.mode === BaseEdit.MODE.SHOW) {
+          edit.strikeLine();
+        } else {
+          const cells = table.getTableCells();
+          const operateCellsHelper = table.getOperateCellsHelper();
+          const { snapshot } = table;
+          const xSelect = xScreen.findType(XSelectItem);
+          const { selectRange } = xSelect;
+          if (selectRange) {
+            const firstCell = cells.getCellOrNew(selectRange.sri, selectRange.sci);
+            const strikethrough = !firstCell.fontAttr.strikethrough;
+            snapshot.open();
+            operateCellsHelper.getCellOrNewCellByViewRange({
+              rectRange: selectRange,
+              callback: (r, c, origin) => {
+                const cell = origin.clone();
+                cell.fontAttr.strikethrough = strikethrough;
+                cells.setCell(r, c, cell);
+              },
+            });
+            snapshot.close();
+            table.render();
+          }
         }
       }
     });

@@ -5,7 +5,7 @@ import { Widget } from '../../../../lib/Widget';
 import { Constant, cssPrefix } from '../../../../const/Constant';
 import { XEvent } from '../../../../lib/XEvent';
 import { Alert } from '../../../../module/alert/Alert';
-import { XScreenCssBorderItem } from '../../tablescreen/item/viewborder/XScreenCssBorderItem';
+import { XScreenCssBorderItem } from '../../screen/item/viewborder/XScreenCssBorderItem';
 import darkFilter from '../../../../../assets/svg/filter-dark.svg';
 import { XTableMousePoint } from '../../XTableMousePoint';
 import { XIcon } from '../../tableicon/XIcon';
@@ -45,9 +45,9 @@ class XFilter extends XScreenCssBorderItem {
         this.filterFoldRow();
         new Alert({
           message: '开发人员正在努力施工中....',
-        }).open();
+        }).parentWidget(table).open();
       },
-    });
+    }).parentWidget(table);
     this.ft = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-t`);
     this.fl = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-l`);
     this.flt = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-lt`);

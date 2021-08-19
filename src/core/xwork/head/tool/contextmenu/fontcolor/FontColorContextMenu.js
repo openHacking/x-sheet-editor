@@ -26,7 +26,7 @@ class FontColorContextMenu extends ELContextMenu {
         }
         this.close();
       },
-    });
+    }).parentWidget(this);
     // 重置颜色按钮
     this.resetColorButton = new FontColorContextMenuItem('重置', new Icon('clear-color'));
     // 默认颜色筛选

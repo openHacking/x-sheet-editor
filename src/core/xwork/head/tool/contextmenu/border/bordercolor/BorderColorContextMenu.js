@@ -26,7 +26,7 @@ class BorderColorContextMenu extends ELContextMenu {
         }
         this.close();
       },
-    });
+    }).parentWidget(this);
     // 重置
     this.resetColorButton = new BorderColorContextMenuItem('重置', new Icon('clear-color'));
     // 颜色筛选

@@ -14,7 +14,7 @@ class ColorPicker extends Widget {
       selectCb: () => {},
     }, options);
     // 拖拽组件
-    this.dragPanel = new DragPanel();
+    this.dragPanel = new DragPanel().parentWidget(this);
     this.color = [360, 0, 100];
     // 头部
     this.preViewColorPoint = h('div', `${cssPrefix}-color-picker-pre-view-color-point`);

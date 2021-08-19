@@ -20,6 +20,13 @@ class XWorkSheetView extends Widget {
   constructor(option) {
     super(`${cssPrefix}-sheet-view`);
     this.options = SheetUtils.copy({}, settings, option);
+  }
+
+  /**
+   * 初始化
+   */
+  onAttach() {
+    this.rootWidget = this.getRootWidget();
     this.sheetList = [];
     this.activeIndex = -1;
     this.contextMenu = new SheetContextMenu({
@@ -75,17 +82,8 @@ class XWorkSheetView extends Widget {
           }
         }
       },
-    });
+    }).parentWidget(this);
     this.bind();
-  }
-
-  /**
-   * 添加一个新的sheet
-   */
-  attach(sheet) {
-    this.sheetList.push(sheet);
-    super.attach(sheet);
-    sheet.hide();
   }
 
   /**
@@ -105,6 +103,15 @@ class XWorkSheetView extends Widget {
    */
   unbind() {
     XEvent.unbind(this);
+  }
+
+  /**
+   * 添加一个新的sheet
+   */
+  attach(sheet) {
+    this.sheetList.push(sheet);
+    super.attach(sheet);
+    sheet.hide();
   }
 
   /**
