@@ -85,7 +85,7 @@ class TextEdit extends ExprEdit {
           style.size = DomUtils.pxToNumber(fontSize);
         }
         if (!SheetUtils.isBlank(fontFamily)) {
-          style.fontFamily = fontFamily;
+          style.name = fontFamily;
         }
         if (!SheetUtils.isBlank(fontColor)) {
           style.color = fontColor;
@@ -113,11 +113,13 @@ class TextEdit extends ExprEdit {
       let { sri, sci } = selectRange;
       let { snapshot } = table;
       let cells = table.getTableCells();
-      let text = this.text();
+      let text = this.isBlank() ? '' : this.text();
       let style = handle(this, {});
-      let allowText = text === activeCell.getFormatText();
-      let allowStyle = activeCell.fontAttr.equals(style);
-      if (!allowText || !allowStyle) {
+      let notAllowText = text === activeCell.getFormatText();
+      let notAllowStyle = activeCell.fontAttr.like(style);
+      console.log(notAllowText);
+      console.log(notAllowStyle);
+      if (!notAllowText || !notAllowStyle) {
         const cloneCell = activeCell.clone();
         const { fontAttr } = cloneCell;
         snapshot.open();

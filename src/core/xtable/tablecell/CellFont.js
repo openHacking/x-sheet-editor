@@ -1,5 +1,6 @@
 import { BaseFont } from '../../../draw/font/BaseFont';
 import { ColorArray } from '../../../module/colorpicker/colorarray/ColorArray';
+import { SheetUtils } from '../../../utils/SheetUtils';
 
 /**
  *  CellFont
@@ -102,6 +103,31 @@ class CellFont {
     this.padding = 5;
   }
 
+  like(other) {
+    let keys1 = Object.keys(this);
+    let keys2 = Object.keys(other);
+    for (let key of keys2) {
+      if (!keys1.includes(key)) {
+        return false;
+      }
+    }
+    for (let key of keys2) {
+      let src = this[key];
+      let val = other[key];
+      switch (key) {
+        case 'color': {
+          src = SheetUtils.clearBlank(src);
+          val = SheetUtils.clearBlank(val);
+          break;
+        }
+      }
+      if (src !== val) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   equals(other) {
     let keys1 = Object.keys(this);
     let keys2 = Object.keys(other);
@@ -114,7 +140,16 @@ class CellFont {
       }
     }
     for (let key of keys1) {
-      if (this[key] !== other[key]) {
+      let src = this[key];
+      let val = other[key];
+      switch (key) {
+        case 'color': {
+          src = SheetUtils.clearBlank(src);
+          val = SheetUtils.clearBlank(val);
+          break;
+        }
+      }
+      if (src !== val) {
         return false;
       }
     }

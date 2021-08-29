@@ -121,6 +121,15 @@ class BaseEdit extends Widget {
     return this;
   }
 
+  /**
+   * 标签内容是否为空
+   * @param elem
+   * @returns {boolean}
+   */
+  isBlank(elem = this) {
+    return elem.text() === '' || elem.text() === '\n';
+  }
+
 }
 
 BaseEdit.MODE = {

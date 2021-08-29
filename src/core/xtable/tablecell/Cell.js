@@ -172,7 +172,7 @@ class Cell {
         const parse = DateUtils.parse(text);
         if (SheetUtils.isDate(parse)) {
           this.contentType = Cell.TYPE.DATE_TIME;
-          this.text = SheetUtils.parseFloat(text);
+          this.text = text;
         } else {
           this.contentType = Cell.TYPE.STRING;
           this.text = `${text}`;

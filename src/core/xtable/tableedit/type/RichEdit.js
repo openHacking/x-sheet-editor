@@ -77,8 +77,8 @@ class RichEdit extends StyleEdit {
    * @constructor
    */
   htmlToRichText() {
-    const { activeCell } = this;
-    const handle = (element, parent, collect) => {
+    let { activeCell } = this;
+    let handle = (element, parent, collect) => {
       const style = { ...parent };
       if (element.isTextNode()) {
         collect.push(new RichFont({
@@ -131,17 +131,22 @@ class RichEdit extends StyleEdit {
       return collect;
     };
     if (activeCell) {
-      const { selectRange } = this;
-      const { table } = this;
-      const { sri, sci } = selectRange;
-      const { snapshot } = table;
-      const cloneCell = activeCell.clone();
-      const cells = table.getTableCells();
-      const collect = handle(this, {}, []);
-      const richText = new RichFonts({
+      let { selectRange } = this;
+      let { table } = this;
+      let { sri, sci } = selectRange;
+      let { snapshot } = table;
+      let cloneCell = activeCell.clone();
+      let cells = table.getTableCells();
+      let collect = [];
+      if (this.isBlank()) {
+        collect = [];
+      } else {
+        collect = handle(this, {}, []);
+      }
+      let richText = new RichFonts({
         rich: collect,
       });
-      if (!richText.equals(activeCell.rich)) {
+      if (!richText.equals(activeCell.richText)) {
         snapshot.open();
         cloneCell.setContentType(Cell.TYPE.RICH_TEXT);
         cloneCell.setRichText(collect);
