@@ -13,6 +13,18 @@ class RichFonts {
     this.rich = rich;
   }
 
+  each(cb = () => {}) {
+    this.rich.forEach((font) => {
+      cb(font);
+    });
+  }
+
+  reset() {
+    this.each((i) => {
+      i.reset();
+    });
+  }
+
   getRich() {
     return this.rich;
   }
@@ -27,20 +39,8 @@ class RichFonts {
     });
   }
 
-  reset() {
-    this.each((i) => {
-      i.reset();
-    });
-  }
-
   hasLength() {
     return this.rich.length > 0;
-  }
-
-  each(cb = () => {}) {
-    this.rich.forEach((font) => {
-      cb(font);
-    });
   }
 
   plain(option) {
@@ -49,6 +49,23 @@ class RichFonts {
       result.push(font.plain(option));
     });
     return result;
+  }
+
+  like(other) {
+    if (SheetUtils.isUnDef(other)) {
+      return false;
+    }
+    if (other.rich.length !== this.rich.length) {
+      return false;
+    }
+    for (let i = 0; i < this.rich.length; i++) {
+      let item1 = this.rich[i];
+      let item2 = other.rich[i];
+      if (!item1.like(item2)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   equals(other) {

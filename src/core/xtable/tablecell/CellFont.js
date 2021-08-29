@@ -131,9 +131,6 @@ class CellFont {
   equals(other) {
     let keys1 = Object.keys(this);
     let keys2 = Object.keys(other);
-    if (keys1.length !== keys2.length) {
-      return false;
-    }
     for (let key of keys1) {
       if (!keys2.includes(key)) {
         return false;

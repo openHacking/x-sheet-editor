@@ -19,14 +19,13 @@ class RichEdit extends StyleEdit {
       let { background } = activeCell;
       let { fontAttr } = activeCell;
       let { align } = fontAttr;
-      let richFonts = activeCell.getComputeText();
+      let richText = activeCell.getComputeText();
       let textAlign = 'left';
       let items = [];
-      let rich = richFonts.getRich();
-      if (rich.length === 0) {
-        rich = [new RichFont()];
+      if (!richText.hasLength()) {
+        richText = new RichFonts({ rich: [new RichFont()] });
       }
-      rich.forEach((font) => {
+      richText.each((font) => {
         let { text, name, size, bold, italic } = font;
         let { color, underline, strikethrough } = font;
         let wrap = text.replace(/\n/g, '<br/>') || '<br/>';
@@ -107,7 +106,7 @@ class RichEdit extends StyleEdit {
           style.size = DomUtils.pxToNumber(fontSize);
         }
         if (!SheetUtils.isBlank(fontFamily)) {
-          style.fontFamily = fontFamily;
+          style.name = fontFamily;
         }
         if (!SheetUtils.isBlank(fontColor)) {
           style.color = fontColor;
@@ -146,7 +145,7 @@ class RichEdit extends StyleEdit {
       let richText = new RichFonts({
         rich: collect,
       });
-      if (!richText.equals(activeCell.richText)) {
+      if (!activeCell.richText.like(richText)) {
         snapshot.open();
         cloneCell.setContentType(Cell.TYPE.RICH_TEXT);
         cloneCell.setRichText(collect);

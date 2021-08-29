@@ -14,8 +14,8 @@ class RichFont {
     underline = false,
     scaleAdapter,
   } = {}) {
-    this.text = text;
     this.color = color;
+    this.text = text;
     this.name = name;
     this.size = size;
     this.italic = italic;
@@ -48,32 +48,68 @@ class RichFont {
     return option(this.clone());
   }
 
+  like(other) {
+    let ignore = ['scaleAdapter'];
+    let keys1 = Object.keys(this);
+    let keys2 = Object.keys(other);
+    for (let key of keys2) {
+      if (ignore.includes(key)) {
+        continue;
+      }
+      if (!keys1.includes(key)) {
+        return false;
+      }
+    }
+    for (let key of keys2) {
+      if (ignore.includes(key)) {
+        continue;
+      }
+      let src = this[key];
+      let val = other[key];
+      switch (key) {
+        case 'color': {
+          src = SheetUtils.clearBlank(src);
+          val = SheetUtils.clearBlank(val);
+          break;
+        }
+      }
+      if (src !== val) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   equals(other) {
-    if (SheetUtils.isUnDef(other)) {
-      return false;
+    let ignore = ['scaleAdapter'];
+    let keys1 = Object.keys(this);
+    let keys2 = Object.keys(other);
+    for (let key of keys1) {
+      if (ignore.includes(key)) {
+        continue;
+      }
+      if (!keys2.includes(key)) {
+        return false;
+      }
     }
-    if (other.text !== this.text) {
-      return false;
+    for (let key of keys1) {
+      if (ignore.includes(key)) {
+        continue;
+      }
+      let src = this[key];
+      let val = other[key];
+      switch (key) {
+        case 'color': {
+          src = SheetUtils.clearBlank(src);
+          val = SheetUtils.clearBlank(val);
+          break;
+        }
+      }
+      if (src !== val) {
+        return false;
+      }
     }
-    if (other.color !== this.color) {
-      return false;
-    }
-    if (other.name !== this.name) {
-      return false;
-    }
-    if (other.size !== this.size) {
-      return false;
-    }
-    if (other.italic !== this.italic) {
-      return false;
-    }
-    if (other.bold !== this.bold) {
-      return false;
-    }
-    if (other.strikethrough !== this.strikethrough) {
-      return false;
-    }
-    return other.underline === this.underline;
+    return true;
   }
 
 }
