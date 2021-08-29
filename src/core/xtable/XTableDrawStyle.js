@@ -15,10 +15,10 @@ import { Cells } from './tablecell/Cells';
 import { Scale, ScaleAdapter } from './tablebase/Scale';
 import { Code } from './tablebase/Code';
 import { TextFactory } from './tablebase/TextFactory';
-import { STYLE_BREAK_LOOP, StyleCellsHelper } from './helper/StyleCellsHelper';
-import { TEXT_BREAK_LOOP, TextCellsHelper } from './helper/TextCellsHelper';
+import { STYLE_BREAK_LOOP, StyleCellsHelper } from './helper/drawstyle/StyleCellsHelper';
+import { TEXT_BREAK_LOOP, TextCellsHelper } from './helper/drawstyle/TextCellsHelper';
 import { XTableRECAreaView } from './XTableRECAreaView';
-import { OperateCellsHelper } from './helper/OperateCellsHelper';
+import { OperateCellsHelper } from './helper/drawstyle/OperateCellsHelper';
 import { BaseFont } from '../../draw/font/BaseFont';
 import { VIEW_MODE, XTableScrollView } from './XTableScrollView';
 import { XFixedMeasure } from './tablebase/XFixedMeasure';
@@ -206,7 +206,7 @@ class XTableUI {
    * @returns {RectRange}
    */
   getLineView() {
-    if (SheetUtils.isNotUnDef(this.borderView)) {
+    if (SheetUtils.isDef(this.borderView)) {
       return this.borderView.clone();
     }
     const { table } = this;
@@ -1790,7 +1790,7 @@ class XTableFrozenLeftIndex extends XTableLeftIndexUI {
   }
 
   getScrollView() {
-    if (SheetUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -1806,7 +1806,7 @@ class XTableFrozenLeftIndex extends XTableLeftIndexUI {
   }
 
   getFullScrollView() {
-    if (SheetUtils.isNotUnDef(this.fullScrollView)) {
+    if (SheetUtils.isDef(this.fullScrollView)) {
       return this.fullScrollView.clone();
     }
     const fullScrollView = this.getScrollView();
@@ -1877,7 +1877,7 @@ class XTableFrozenTopIndex extends XTableTopIndexUI {
   }
 
   getScrollView() {
-    if (SheetUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -1893,7 +1893,7 @@ class XTableFrozenTopIndex extends XTableTopIndexUI {
   }
 
   getFullScrollView() {
-    if (SheetUtils.isNotUnDef(this.fullScrollView)) {
+    if (SheetUtils.isDef(this.fullScrollView)) {
       return this.fullScrollView.clone();
     }
     const fullScrollView = this.getScrollView();
@@ -1966,7 +1966,7 @@ class XTableFrozenContent extends XTableContentOutUI {
   }
 
   getScrollView() {
-    if (SheetUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -1981,7 +1981,7 @@ class XTableFrozenContent extends XTableContentOutUI {
   }
 
   getFullScrollView() {
-    if (SheetUtils.isNotUnDef(this.fullScrollView)) {
+    if (SheetUtils.isDef(this.fullScrollView)) {
       return this.fullScrollView.clone();
     }
     const fullScrollView = this.getScrollView();
@@ -2056,7 +2056,7 @@ class XTableTopIndex extends XTableTopIndexUI {
   }
 
   getScrollView() {
-    if (SheetUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -2065,7 +2065,7 @@ class XTableTopIndex extends XTableTopIndexUI {
     const renderMode = table.getRenderMode();
     const scrollView = xTableAreaView.getScrollView();
     const enterView = xTableAreaView.getScrollEnterView();
-    const view = SheetUtils.isNotUnDef(enterView) && renderMode === RENDER_MODE.SCROLL
+    const view = SheetUtils.isDef(enterView) && renderMode === RENDER_MODE.SCROLL
       ? enterView
       : scrollView;
     view.sri = 0;
@@ -2076,7 +2076,7 @@ class XTableTopIndex extends XTableTopIndexUI {
   }
 
   getFullScrollView() {
-    if (SheetUtils.isNotUnDef(this.fullScrollView)) {
+    if (SheetUtils.isDef(this.fullScrollView)) {
       return this.fullScrollView.clone();
     }
     const { table } = this;
@@ -2091,7 +2091,7 @@ class XTableTopIndex extends XTableTopIndexUI {
   }
 
   getViewMode() {
-    if (SheetUtils.isNotUnDef(this.viewMode)) {
+    if (SheetUtils.isDef(this.viewMode)) {
       return this.viewMode;
     }
     const { table } = this;
@@ -2099,7 +2099,7 @@ class XTableTopIndex extends XTableTopIndexUI {
     const { rows } = table;
     const lastScrollView = xTableAreaView.getLastScrollView();
     const scrollView = xTableAreaView.getScrollView();
-    if (SheetUtils.isNotUnDef(lastScrollView)) {
+    if (SheetUtils.isDef(lastScrollView)) {
       lastScrollView.sri = 0;
       lastScrollView.eri = 0;
       lastScrollView.h = rows.sectionSumHeight(lastScrollView.sri, lastScrollView.eri);
@@ -2161,7 +2161,7 @@ class XTableLeftIndex extends XTableLeftIndexUI {
   }
 
   getScrollView() {
-    if (SheetUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -2170,7 +2170,7 @@ class XTableLeftIndex extends XTableLeftIndexUI {
     const renderMode = table.getRenderMode();
     const scrollView = xTableAreaView.getScrollView();
     const enterView = xTableAreaView.getScrollEnterView();
-    const view = SheetUtils.isNotUnDef(enterView) && renderMode === RENDER_MODE.SCROLL
+    const view = SheetUtils.isDef(enterView) && renderMode === RENDER_MODE.SCROLL
       ? enterView
       : scrollView;
     view.sci = 0;
@@ -2181,7 +2181,7 @@ class XTableLeftIndex extends XTableLeftIndexUI {
   }
 
   getFullScrollView() {
-    if (SheetUtils.isNotUnDef(this.fullScrollView)) {
+    if (SheetUtils.isDef(this.fullScrollView)) {
       return this.fullScrollView.clone();
     }
     const { table } = this;
@@ -2196,7 +2196,7 @@ class XTableLeftIndex extends XTableLeftIndexUI {
   }
 
   getViewMode() {
-    if (SheetUtils.isNotUnDef(this.viewMode)) {
+    if (SheetUtils.isDef(this.viewMode)) {
       return this.viewMode;
     }
     const { table } = this;
@@ -2204,7 +2204,7 @@ class XTableLeftIndex extends XTableLeftIndexUI {
     const { cols } = table;
     const lastScrollView = xTableAreaView.getLastScrollView();
     const scrollView = xTableAreaView.getScrollView();
-    if (SheetUtils.isNotUnDef(lastScrollView)) {
+    if (SheetUtils.isDef(lastScrollView)) {
       lastScrollView.sci = 0;
       lastScrollView.eci = 0;
       lastScrollView.w = cols.sectionSumWidth(lastScrollView.sci, lastScrollView.eci);
@@ -2268,7 +2268,7 @@ class XTableTop extends XTableContentOutUI {
   }
 
   getScrollView() {
-    if (SheetUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -2279,7 +2279,7 @@ class XTableTop extends XTableContentOutUI {
     const fixedView = xFixedView.getFixedView();
     const scrollView = xTableAreaView.getScrollView();
     const enterView = xTableAreaView.getScrollEnterView();
-    const view = SheetUtils.isNotUnDef(enterView) && renderMode === RENDER_MODE.SCROLL
+    const view = SheetUtils.isDef(enterView) && renderMode === RENDER_MODE.SCROLL
       ? enterView
       : scrollView;
     view.sri = fixedView.sri;
@@ -2290,7 +2290,7 @@ class XTableTop extends XTableContentOutUI {
   }
 
   getFullScrollView() {
-    if (SheetUtils.isNotUnDef(this.fullScrollView)) {
+    if (SheetUtils.isDef(this.fullScrollView)) {
       return this.fullScrollView.clone();
     }
     const { table } = this;
@@ -2307,7 +2307,7 @@ class XTableTop extends XTableContentOutUI {
   }
 
   getViewMode() {
-    if (SheetUtils.isNotUnDef(this.viewMode)) {
+    if (SheetUtils.isDef(this.viewMode)) {
       return this.viewMode;
     }
     const { table } = this;
@@ -2317,7 +2317,7 @@ class XTableTop extends XTableContentOutUI {
     const fixedView = xFixedView.getFixedView();
     const lastScrollView = xTableAreaView.getLastScrollView();
     const scrollView = xTableAreaView.getScrollView();
-    if (SheetUtils.isNotUnDef(lastScrollView)) {
+    if (SheetUtils.isDef(lastScrollView)) {
       lastScrollView.sri = fixedView.sri;
       lastScrollView.eri = fixedView.eri;
       lastScrollView.h = rows.sectionSumHeight(lastScrollView.sci, lastScrollView.eci);
@@ -2405,7 +2405,7 @@ class XTableLeft extends XTableContentOutUI {
   }
 
   getScrollView() {
-    if (SheetUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -2416,7 +2416,7 @@ class XTableLeft extends XTableContentOutUI {
     const fixedView = xFixedView.getFixedView();
     const scrollView = xTableAreaView.getScrollView();
     const enterView = xTableAreaView.getScrollEnterView();
-    const view = SheetUtils.isNotUnDef(enterView) && renderMode === RENDER_MODE.SCROLL
+    const view = SheetUtils.isDef(enterView) && renderMode === RENDER_MODE.SCROLL
       ? enterView
       : scrollView;
     view.sci = fixedView.sci;
@@ -2427,7 +2427,7 @@ class XTableLeft extends XTableContentOutUI {
   }
 
   getFullScrollView() {
-    if (SheetUtils.isNotUnDef(this.fullScrollView)) {
+    if (SheetUtils.isDef(this.fullScrollView)) {
       return this.fullScrollView.clone();
     }
     const { table } = this;
@@ -2444,7 +2444,7 @@ class XTableLeft extends XTableContentOutUI {
   }
 
   getViewMode() {
-    if (SheetUtils.isNotUnDef(this.viewMode)) {
+    if (SheetUtils.isDef(this.viewMode)) {
       return this.viewMode;
     }
     const { table } = this;
@@ -2454,7 +2454,7 @@ class XTableLeft extends XTableContentOutUI {
     const fixedView = xFixedView.getFixedView();
     const lastScrollView = xTableAreaView.getLastScrollView();
     const scrollView = xTableAreaView.getScrollView();
-    if (SheetUtils.isNotUnDef(lastScrollView)) {
+    if (SheetUtils.isDef(lastScrollView)) {
       lastScrollView.sci = fixedView.sci;
       lastScrollView.eci = fixedView.eci;
       lastScrollView.w = cols.sectionSumWidth(lastScrollView.sci, lastScrollView.eci);
@@ -2544,7 +2544,7 @@ class XTableContent extends XTableContentOutUI {
   }
 
   getScrollView() {
-    if (SheetUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -2552,7 +2552,7 @@ class XTableContent extends XTableContentOutUI {
     const renderMode = table.getRenderMode();
     const scrollView = xTableAreaView.getScrollView();
     const enterView = xTableAreaView.getScrollEnterView();
-    const view = SheetUtils.isNotUnDef(enterView) && renderMode === RENDER_MODE.SCROLL
+    const view = SheetUtils.isDef(enterView) && renderMode === RENDER_MODE.SCROLL
       ? enterView
       : scrollView;
     this.scrollView = view;
@@ -2560,7 +2560,7 @@ class XTableContent extends XTableContentOutUI {
   }
 
   getFullScrollView() {
-    if (SheetUtils.isNotUnDef(this.fullScrollView)) {
+    if (SheetUtils.isDef(this.fullScrollView)) {
       return this.fullScrollView.clone();
     }
     const { table } = this;
@@ -2571,7 +2571,7 @@ class XTableContent extends XTableContentOutUI {
   }
 
   getViewMode() {
-    if (SheetUtils.isNotUnDef(this.viewMode)) {
+    if (SheetUtils.isDef(this.viewMode)) {
       return this.viewMode;
     }
     const { table } = this;
@@ -2807,6 +2807,30 @@ class XTableDrawStyle extends Widget {
       const row = this.rows.getOrNew(ri);
       row.reCkHasAngle = true;
     });
+  }
+
+  /**
+   * 单元辅助实例
+   * @returns {OperateCellsHelper}
+   */
+  getOperateCellsHelper() {
+    return this.operateCellsHelper;
+  }
+
+  /**
+   * 单元辅助实例
+   * @returns {TextCellsHelper}
+   */
+  getTextCellsHelper() {
+    return this.textCellsHelper;
+  }
+
+  /**
+   * 单元辅助实例
+   * @returns {StyleCellsHelper}
+   */
+  getStyleCellsHelper() {
+    return this.styleCellsHelper;
   }
 
   /**
@@ -3070,7 +3094,7 @@ class XTableDrawStyle extends Widget {
   isAngleBarCell(row, col) {
     const { cells, merges } = this;
     const merge = merges.getFirstInclude(row, col);
-    if (SheetUtils.isNotUnDef(merge)) {
+    if (SheetUtils.isDef(merge)) {
       return false;
     }
     const cell = cells.getCell(row, col);

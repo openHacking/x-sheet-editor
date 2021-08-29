@@ -1,4 +1,5 @@
 import { BaseFont } from '../../../draw/font/BaseFont';
+import { ColorArray } from '../../../module/colorpicker/colorarray/ColorArray';
 
 /**
  *  CellFont
@@ -28,7 +29,7 @@ class CellFont {
     textWrap = BaseFont.TEXT_WRAP.TRUNCATE,
     strikethrough = false,
     underline = false,
-    color = 'rgb(0,0,0)',
+    color = ColorArray.BLACK,
     name = 'Arial',
     size = 14,
     bold = false,
@@ -83,6 +84,41 @@ class CellFont {
       direction,
       padding,
     });
+  }
+
+  reset() {
+    this.align = BaseFont.ALIGN.left;
+    this.verticalAlign = BaseFont.VERTICAL_ALIGN.center;
+    this.textWrap = BaseFont.TEXT_WRAP.TRUNCATE;
+    this.strikethrough = false;
+    this.underline = false;
+    this.color = ColorArray.BLACK;
+    this.name = 'Arial';
+    this.size = 14;
+    this.bold = false;
+    this.italic = false;
+    this.angle = 0;
+    this.direction = BaseFont.TEXT_DIRECTION.HORIZONTAL;
+    this.padding = 5;
+  }
+
+  equals(other) {
+    let keys1 = Object.keys(this);
+    let keys2 = Object.keys(other);
+    if (keys1.length !== keys2.length) {
+      return false;
+    }
+    for (let key of keys1) {
+      if (!keys2.includes(key)) {
+        return false;
+      }
+    }
+    for (let key of keys1) {
+      if (this[key] !== other[key]) {
+        return false;
+      }
+    }
+    return true;
   }
 
 }

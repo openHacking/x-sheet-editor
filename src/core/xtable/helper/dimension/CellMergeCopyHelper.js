@@ -1,6 +1,6 @@
-import { RectRange } from '../tablebase/RectRange';
-import { BaseCellsHelper } from './BaseCellsHelper';
-import { SheetUtils } from '../../../utils/SheetUtils';
+import { RectRange } from '../../tablebase/RectRange';
+import { BaseCellsHelper } from '../base/BaseCellsHelper';
+import { SheetUtils } from '../../../../utils/SheetUtils';
 
 class CopyMerge {
 

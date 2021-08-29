@@ -28,7 +28,7 @@ class DragPanel extends Widget {
     this.status = false;
     this.mask = h('div', `${cssPrefix}-drag-panel-mask`);
     this.content = h('div', `${cssPrefix}-drag-panel-content`);
-    super.children(this.content);
+    super.childrenNodes(this.content);
     this.bind();
   }
 
@@ -40,8 +40,8 @@ class DragPanel extends Widget {
     const { mask } = this;
     if (this.status === false && root) {
       this.status = true;
-      root.children(mask);
-      root.children(this);
+      root.childrenNodes(mask);
+      root.childrenNodes(this);
       this.dragPanelLocation();
     }
     return this;
@@ -124,8 +124,8 @@ class DragPanel extends Widget {
    * @param args
    * @returns {DragPanel}
    */
-  children(...args) {
-    this.content.children(...args);
+  childrenNodes(...args) {
+    this.content.childrenNodes(...args);
     return this;
   }
 

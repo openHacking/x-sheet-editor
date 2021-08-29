@@ -8,7 +8,7 @@ import { SheetUtils } from '../../../../utils/SheetUtils';
 import { XEvent } from '../../../../lib/XEvent';
 import { XTableMousePoint } from '../../XTableMousePoint';
 import { AutoFillType } from '../../../../module/autofilltype/AutoFillType';
-import { Serialize } from '../../helper/CellMergeCopyHelper';
+import { Serialize } from '../../helper/dimension/CellMergeCopyHelper';
 import { AutoFillTypeMenu } from '../../../../module/autofilltype/AutoFillTypeMenu';
 
 class XAutoFillItem extends XScreenCssBorderItem {
@@ -29,10 +29,10 @@ class XAutoFillItem extends XScreenCssBorderItem {
     this.lElem = new Widget(`${cssPrefix}-x-autofill-area`);
     this.tElem = new Widget(`${cssPrefix}-x-autofill-area`);
     // 区域位置
-    this.blt.children(this.ltElem);
-    this.bl.children(this.lElem);
-    this.bt.children(this.tElem);
-    this.bbr.children(this.brElem);
+    this.blt.childrenNodes(this.ltElem);
+    this.bl.childrenNodes(this.lElem);
+    this.bt.childrenNodes(this.tElem);
+    this.bbr.childrenNodes(this.brElem);
     // 边框类型
     this.setBorderType('dashed');
     // 事件处理
@@ -142,7 +142,7 @@ class XAutoFillItem extends XScreenCssBorderItem {
 
     const merge = merges.getFirstInclude(sri, sci);
     const zone = SELECT_LOCAL.BR !== selectLocal;
-    const hasFull = zone || SheetUtils.isNotUnDef(merge);
+    const hasFull = zone || SheetUtils.isDef(merge);
     const [rSize, cSize] = selectRange.size();
 
     let originSRi = ri;

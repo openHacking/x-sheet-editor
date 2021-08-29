@@ -16,7 +16,7 @@ class TaskProgress extends Widget {
     this.finish = () => {
       this.hide();
     };
-    this.children(this.progress);
+    this.childrenNodes(this.progress);
     this.bind();
     this.hide();
   }

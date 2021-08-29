@@ -34,32 +34,6 @@ class Widget extends Life {
   }
 
   /**
-   * 计算鼠标在当前
-   * 元素中的位置
-   * @param event
-   * @param elem
-   * @returns {{x: number, y: number}}
-   */
-  eventXy(event, elem = this) {
-    const { top, left } = elem.box();
-    return {
-      y: event.clientY - top,
-      x: event.clientX - left,
-    };
-  }
-
-  /**
-   * 追加节点
-   * 触发onAttach事件
-   * @param widget
-   */
-  attach(widget) {
-    this.children(widget);
-    widget.parentWidget(this);
-    widget.onAttach(this);
-  }
-
-  /**
    * 查找最邻近
    * 的class元素
    * @param clazz
@@ -87,6 +61,31 @@ class Widget extends Life {
   }
 
   /**
+   * 绑定处理事件
+   */
+  bind() {
+
+  }
+
+  /**
+   * 解绑事件处理
+   */
+  unbind() {
+    XEvent.unbind(this);
+  }
+
+  /**
+   * 追加节点
+   * 触发onAttach事件
+   * @param widget
+   */
+  attach(widget) {
+    this.childrenNodes(widget);
+    widget.parentWidget(this);
+    widget.onAttach(this);
+  }
+
+  /**
    * 设置 parent widget
    * @param widget
    */
@@ -99,11 +98,26 @@ class Widget extends Life {
   }
 
   /**
+   * 计算鼠标在当前
+   * 元素中的位置
+   * @param event
+   * @param elem
+   * @returns {{x: number, y: number}}
+   */
+  eventXy(event, elem = this) {
+    const { top, left } = elem.box();
+    return {
+      y: event.clientY - top,
+      x: event.clientX - left,
+    };
+  }
+
+  /**
    * 销毁组件
    */
   destroy() {
-    XEvent.unbind(this);
-    this.removeSelf();
+    this.unbind();
+    this.remove();
   }
 
 }

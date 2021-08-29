@@ -1,7 +1,7 @@
-import { BaseCellsHelper } from './BaseCellsHelper';
-import { Rect } from '../../../draw/Rect';
-import { SheetUtils } from '../../../utils/SheetUtils';
-import { RectRange } from '../tablebase/RectRange';
+import { BaseCellsHelper } from '../base/BaseCellsHelper';
+import { Rect } from '../../../../draw/Rect';
+import { SheetUtils } from '../../../../utils/SheetUtils';
+import { RectRange } from '../../tablebase/RectRange';
 
 const TEXT_BREAK_LOOP = {
   CONTINUE: 3,
@@ -283,7 +283,8 @@ class TextCellsHelper extends BaseCellsHelper {
   }
 
   mergeInfo({
-    view, merge,
+    view,
+    merge,
   }) {
     const rows = this.getRows();
     const cols = this.getCols();
@@ -306,15 +307,20 @@ class TextCellsHelper extends BaseCellsHelper {
   }
 
   cellsINInfo({
-    width, height, col, row, x, y, cell,
+    width,
+    height,
+    col,
+    row,
+    x, y,
+    cell,
   }) {
     const rect = new Rect({ x, y, width, height });
     const overflow = this.getCellOverFlow(row, col, rect, cell);
     return { rect, overflow };
   }
-
 }
 
 export {
-  TextCellsHelper, TEXT_BREAK_LOOP,
+  TextCellsHelper,
+  TEXT_BREAK_LOOP,
 };

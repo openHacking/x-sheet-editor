@@ -42,8 +42,8 @@ class XWorkTabView extends Widget {
     this.content = h('div', `${cssPrefix}-sheet-tab-content`);
     this.tabs = h('div', `${cssPrefix}-sheet-tab-tabs`);
     this.plus = h('div', `${cssPrefix}-sheet-tab-plus`);
-    this.content.children(this.tabs);
-    this.children(...[
+    this.content.childrenNodes(this.tabs);
+    this.childrenNodes(...[
       this.last,
       this.next,
       this.content,
@@ -130,7 +130,7 @@ class XWorkTabView extends Widget {
    */
   attach(tab) {
     this.tabList.push(tab);
-    this.tabs.children(tab);
+    this.tabs.childrenNodes(tab);
     tab.onAttach();
     tab.setRClick((event) => {
       if (this.options.showMenu) {

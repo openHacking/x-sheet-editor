@@ -29,7 +29,7 @@ import { DropColFixed } from './tablefixed/drop/DropColFixed';
 import { XFixedMeasure } from './tablebase/XFixedMeasure';
 import { XFixedView } from './tablebase/XFixedView';
 import { XFilter } from './screenitems/xfilter/XFilter';
-import { CellMergeCopyHelper } from './helper/CellMergeCopyHelper';
+import { CellMergeCopyHelper } from './helper/dimension/CellMergeCopyHelper';
 import { Clipboard } from '../../lib/Clipboard';
 import { XIcon } from './tableicon/XIcon';
 import { XIconBuilder } from './tableicon/XIconBuilder';
@@ -40,6 +40,7 @@ import { Alert } from '../../module/alert/Alert';
 import { Snapshot } from './snapshot/Snapshot';
 import { TableEdit } from './tableedit/TableEdit';
 import { Protection } from './protection/Protection';
+import { DateCellsHelper } from './helper/dimension/DateCellsHelper';
 
 class Dimensions {
 
@@ -127,7 +128,7 @@ class XTableFrozenContent extends Dimensions {
   }
 
   getScrollView() {
-    if (SheetUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -191,7 +192,7 @@ class XTableTop extends Dimensions {
   }
 
   getScrollView() {
-    if (SheetUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -258,7 +259,7 @@ class XTableLeft extends Dimensions {
   }
 
   getScrollView() {
-    if (SheetUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -323,7 +324,7 @@ class XTableLeftIndex extends Dimensions {
   }
 
   getScrollView() {
-    if (SheetUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -390,7 +391,7 @@ class XTableContent extends Dimensions {
   }
 
   getScrollView() {
-    if (SheetUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -449,7 +450,7 @@ class XTableTopIndex extends Dimensions {
   }
 
   getScrollView() {
-    if (SheetUtils.isNotUnDef(this.scrollView)) {
+    if (SheetUtils.isDef(this.scrollView)) {
       return this.scrollView.clone();
     }
     const { table } = this;
@@ -604,6 +605,8 @@ class XTableDimension extends Widget {
       settings: this.settings,
       xFixedView: this.xFixedView,
     });
+    // 数据操作帮助类
+    this.dateCellsHelper = new DateCellsHelper(this);
     // table区域
     this.xTableFrozenContent = new XTableFrozenContent(this);
     this.xLeftIndex = new XTableLeftIndex(this);
@@ -779,12 +782,28 @@ class XTableDimension extends Widget {
 
   /**
    * 单元辅助实例
+   * @returns {TextCellsHelper}
+   */
+  getTextCellsHelper() {
+    const { xTableStyle } = this;
+    return xTableStyle.getTextCellsHelper();
+  }
+
+  /**
+   * 数据操作帮助类
+   * @returns {DateCellsHelper}
+   */
+  getDateCellsHelper() {
+    return this.dateCellsHelper;
+  }
+
+  /**
+   * 单元辅助实例
    * @returns {StyleCellsHelper}
    */
   getStyleCellsHelper() {
     const { xTableStyle } = this;
-    const { styleCellsHelper } = xTableStyle;
-    return styleCellsHelper;
+    return xTableStyle.getStyleCellsHelper();
   }
 
   /**
@@ -793,8 +812,7 @@ class XTableDimension extends Widget {
    */
   getOperateCellsHelper() {
     const { xTableStyle } = this;
-    const { operateCellsHelper } = xTableStyle;
-    return operateCellsHelper;
+    return xTableStyle.getOperateCellsHelper();
   }
 
   /**
@@ -870,41 +888,6 @@ class XTableDimension extends Widget {
   }
 
   /**
-   * 获取单元格CSS样式
-   * @param row
-   * @param col
-   */
-  getCellCssStyle(row, col) {
-    const cells = this.getTableCells();
-    const cell = cells.getCell(row, col);
-    const { fontAttr, background } = cell;
-    const { align, size, color, bold, italic, name } = fontAttr;
-    const fontSize = XDraw.cssPx(this.scale.goto(size));
-    let textAlign = 'left';
-    switch (align) {
-      case BaseFont.ALIGN.left:
-        textAlign = 'left';
-        break;
-      case BaseFont.ALIGN.center:
-        textAlign = 'center';
-        break;
-      case BaseFont.ALIGN.right:
-        textAlign = 'right';
-        break;
-    }
-    const css = `
-      text-align:${textAlign};
-      color: ${color};
-      background:${background};
-      font-style: ${italic ? 'italic' : 'initial'};
-      font-weight: ${bold ? 'bold' : 'initial'};
-      font-size: ${XDraw.cssPx(fontSize)}px;
-      font-family: ${name};
-    `;
-    return css.replace(/\s/g, '');
-  }
-
-  /**
    * 索引栏高度
    * @returns {*}
    */
@@ -969,6 +952,20 @@ class XTableDimension extends Widget {
    */
   visualHeight() {
     return this.box().height;
+  }
+
+  /**
+   * 隐藏编辑器
+   */
+  hideEditor() {
+    this.edit.hide();
+  }
+
+  /**
+   * 显示编辑器
+   */
+  showEditor() {
+    this.edit.show();
   }
 
   /**

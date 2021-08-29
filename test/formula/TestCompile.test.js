@@ -38,3 +38,12 @@ Object.keys(compileExprs).forEach((key) => {
   console.log(`==========${expr}==========`)
   console.log(Compile(expr));
 });
+
+// 编译速度
+console.log("速度测试");
+console.time();
+for (let i = 0; i < 400000; i++) {
+    const expr = 'IF(IF(MAX($AN6:$AP6)<0,MIN($AN6:$AP6),MAX($AN6:$AP6))=AN6,"NO",TEXT(COLUMN(A1),"[DBnum1]")&"班")';
+    Compile(expr)
+}
+console.timeEnd();

@@ -22,12 +22,12 @@ class XWorkFootMenu extends Widget {
     this.grid = h('div', `${cssPrefix}-bottom-grid`);
     this.totalTask = new SumTotalTask();
     this.throttle = new Throttle({ time: 800 });
-    this.children(this.grid);
-    this.children(this.fullScreen);
-    this.children(this.sum);
-    this.children(this.avg);
-    this.children(this.number);
-    this.children(this.taskProgress);
+    this.childrenNodes(this.grid);
+    this.childrenNodes(this.fullScreen);
+    this.childrenNodes(this.sum);
+    this.childrenNodes(this.avg);
+    this.childrenNodes(this.number);
+    this.childrenNodes(this.taskProgress);
   }
 
   onAttach() {

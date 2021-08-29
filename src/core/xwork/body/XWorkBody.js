@@ -16,7 +16,7 @@ import { SheetUtils } from '../../../utils/SheetUtils';
 import { XEvent } from '../../../lib/XEvent';
 import { XWorkTab } from './tab/XWorkTab';
 import { XWorkSheet } from './sheet/XWorkSheet';
-import Download from '../../../lib/donwload/Download';
+import { Download } from '../../../lib/donwload/Download';
 import { Throttle } from '../../../lib/Throttle';
 import { XDraw } from '../../../draw/XDraw';
 import { XWorkBodyKeyHandle } from './XWorkBodyKeyHandle';
@@ -46,7 +46,7 @@ class XWorkBody extends Widget {
     // 版本标识
     this.version = h('div', `${cssPrefix}-version-tips`);
     this.version.html(`<a target="_blank" href="https://gitee.com/eigi/x-sheet">${XSheetVersion}</a>`);
-    this.children(this.version);
+    this.childrenNodes(this.version);
     // 组件
     this.sheetView = new XWorkSheetView({
       ...this.options.sheetConfig,

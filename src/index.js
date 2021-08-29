@@ -10,9 +10,10 @@ import { BaseFont } from './draw/font/BaseFont';
 import { XIcon } from './core/xtable/tableicon/XIcon';
 import { XlsxExport } from './io/xlsx/XlsxExport';
 import { ColorPicker } from './module/colorpicker/ColorPicker';
-import FindDpi from './lib/finddpi/FindDpi';
+import { FindDPI } from './lib/finddpi/FindDpi';
 import { HeightUnit } from './core/xtable/tableunit/HeightUnit';
 import { WideUnit } from './core/xtable/tableunit/WideUnit';
+import { Download } from './lib/donwload/Download';
 import './style/base.less';
 import './style/index.less';
 import { XEvent } from './lib/XEvent';
@@ -62,7 +63,7 @@ class XSheet extends Widget {
     if (SheetUtils.isString(el)) {
       el = document.querySelector(el);
     }
-    h(el).children(this);
+    h(el).childrenNodes(this);
     this.options = SheetUtils.copy({}, settings, options);
     this.focusManage = new WidgetFocusMange({
       root: this,
@@ -78,12 +79,13 @@ XSheet.XDraw = XDraw;
 XSheet.XIcon = XIcon;
 XSheet.RectRange = RectRange;
 XSheet.BaseFont = BaseFont;
-XSheet.FindDpi = FindDpi;
+XSheet.FindDPI = FindDPI;
 XSheet.WideUnit = WideUnit;
 XSheet.HeightUnit = HeightUnit;
 XSheet.ColorPicker = ColorPicker;
 XSheet.XEvent = XEvent;
 XSheet.Constant = Constant;
+XSheet.Download = Download;
 XSheet.XlsxExport = XlsxExport;
 XSheet.XlsxImport = XlsxImport;
 

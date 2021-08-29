@@ -87,7 +87,7 @@ class RContentOutRange extends CommonOutRange {
         .setLoop((i) => {
           // 检查合并单元格
           const merge = merges.getFirstInclude(row, i);
-          if (SheetUtils.isNotUnDef(merge)) {
+          if (SheetUtils.isDef(merge)) {
             return false;
           }
           // 检查空单元格
@@ -152,7 +152,7 @@ class RContentOutRange extends CommonOutRange {
         .setLoop((i) => {
           // 检查合并单元格
           const merge = merges.getFirstInclude(row, i);
-          if (SheetUtils.isNotUnDef(merge)) {
+          if (SheetUtils.isDef(merge)) {
             return false;
           }
           // 检查空单元格
@@ -217,7 +217,7 @@ class RContentOutRange extends CommonOutRange {
         .setLoop((j) => {
           // 合并单元格检查
           const merge = merges.getFirstInclude(row, j);
-          if (SheetUtils.isNotUnDef(merge)) {
+          if (SheetUtils.isDef(merge)) {
             return false;
           }
           // 空单元格检查
@@ -282,7 +282,7 @@ class RContentOutRange extends CommonOutRange {
         .setLoop((j) => {
           // 合并单元格检查
           const merge = merges.getFirstInclude(row, j);
-          if (SheetUtils.isNotUnDef(merge)) {
+          if (SheetUtils.isDef(merge)) {
             return false;
           }
           // 空单元格检查

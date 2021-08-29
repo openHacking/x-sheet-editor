@@ -29,8 +29,8 @@ class FilterData extends ELContextMenu {
     this.attach(this.ifFilter);
     this.attach(this.valueFilter);
     this.attach(new ELContextMenuDivider());
-    this.children(this.noEle);
-    this.children(this.okEle);
+    this.childrenNodes(this.noEle);
+    this.childrenNodes(this.okEle);
     this.okEle.html('确定');
     this.noEle.html('取消');
     this.okHandle = () => {

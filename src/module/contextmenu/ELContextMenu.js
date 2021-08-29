@@ -14,7 +14,7 @@ class ELContextMenu extends Widget {
     }, options);
     this.menus = [];
     this.elPopUp = new ElPopUp(this.options).parentWidget(this);
-    this.elPopUp.children(this);
+    this.elPopUp.childrenNodes(this);
   }
 
   isClose() {
@@ -24,7 +24,7 @@ class ELContextMenu extends Widget {
   addItem(item) {
     const { menus } = this;
     menus.push(item);
-    this.children(item);
+    this.childrenNodes(item);
     return this;
   }
 

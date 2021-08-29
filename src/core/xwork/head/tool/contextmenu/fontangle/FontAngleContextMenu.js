@@ -33,17 +33,17 @@ class FontAngleContextMenu extends ELContextMenu {
         this.options.onUpdateAngle(angle);
       },
     }).parentWidget(this);
-    div1.children(this.angle1);
-    div1.children(this.angle2);
-    div1.children(new FontAngleDivider());
-    div1.children(this.angle4);
-    div1.children(this.angle3);
-    div1.children(this.angle6);
-    div1.children(this.angle5);
-    div1.children(new FontAngleDivider());
-    div1.children(this.input);
+    div1.childrenNodes(this.angle1);
+    div1.childrenNodes(this.angle2);
+    div1.childrenNodes(new FontAngleDivider());
+    div1.childrenNodes(this.angle4);
+    div1.childrenNodes(this.angle3);
+    div1.childrenNodes(this.angle6);
+    div1.childrenNodes(this.angle5);
+    div1.childrenNodes(new FontAngleDivider());
+    div1.childrenNodes(this.input);
     this.item = new FontAngleContextMenuItem();
-    this.item.children(div1);
+    this.item.childrenNodes(div1);
     this.item.removeClass('hover');
     this.addItem(this.item);
     this.bind();

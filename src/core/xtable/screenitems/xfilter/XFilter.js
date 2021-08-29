@@ -52,10 +52,10 @@ class XFilter extends XScreenCssBorderItem {
     this.fl = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-l`);
     this.flt = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-lt`);
     this.fbr = new Widget(`${cssPrefix}-x-filter ${cssPrefix}-x-filter-br`);
-    this.bl.children(this.fl);
-    this.bt.children(this.ft);
-    this.blt.children(this.flt);
-    this.bbr.children(this.fbr);
+    this.bl.childrenNodes(this.fl);
+    this.bt.childrenNodes(this.ft);
+    this.blt.childrenNodes(this.flt);
+    this.bbr.childrenNodes(this.fbr);
     this.setBorderColor('rgb(0,113,207)');
     this.tableMouseScroll = () => {
       if (this.display) {

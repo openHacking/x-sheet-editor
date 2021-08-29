@@ -12,13 +12,13 @@ class XSelectPath {
     sri, sci, mode, set = false,
   }) {
     if (this.mode !== mode || set) {
-      if (SheetUtils.isNotUnDef(sri)) {
+      if (SheetUtils.isDef(sri)) {
         this.dri = sri;
       }
-      if (SheetUtils.isNotUnDef(sci)) {
+      if (SheetUtils.isDef(sci)) {
         this.dci = sci;
       }
-      if (SheetUtils.isNotUnDef(mode)) {
+      if (SheetUtils.isDef(mode)) {
         this.mode = mode;
       }
     }

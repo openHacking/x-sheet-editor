@@ -28,14 +28,14 @@ class Alert extends Widget {
     this.contentEle.html(this.message);
     this.okEle.html('确定');
     // 添加UI
-    this.buttonsEle.children(this.okEle);
-    this.children(this.closeEle);
-    this.children(this.titleEle);
-    this.children(this.contentEle);
-    this.children(this.buttonsEle);
+    this.buttonsEle.childrenNodes(this.okEle);
+    this.childrenNodes(this.closeEle);
+    this.childrenNodes(this.titleEle);
+    this.childrenNodes(this.contentEle);
+    this.childrenNodes(this.buttonsEle);
     // 拖拽组件
     this.dragPanel = new DragPanel()
-      .children(this)
+      .childrenNodes(this)
       .parentWidget(this);
   }
 

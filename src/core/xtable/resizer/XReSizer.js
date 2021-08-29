@@ -16,7 +16,7 @@ class XReSizer extends Widget {
     this.width = options.width;
     this.hoverEl = h('div', `${cssPrefix}-re-sizer-hover`);
     this.lineEl = h('div', `${cssPrefix}-re-sizer-line`);
-    this.children(...[
+    this.childrenNodes(...[
       this.hoverEl,
       this.lineEl,
     ]);

@@ -27,6 +27,22 @@ class RichFonts {
     });
   }
 
+  reset() {
+    this.each((i) => {
+      i.reset();
+    });
+  }
+
+  hasLength() {
+    return this.rich.length > 0;
+  }
+
+  each(cb = () => {}) {
+    this.rich.forEach((font) => {
+      cb(font);
+    });
+  }
+
   plain(option) {
     const result = [];
     this.rich.forEach((font) => {

@@ -16,7 +16,7 @@ class RowFixed extends Widget {
     this.fxSri = fixedView.sri;
     this.fxEri = fixedView.eri;
     this.block = block;
-    this.children(this.block);
+    this.childrenNodes(this.block);
     this.tableWidthChange = () => {
       this.setSize();
     };

@@ -1,5 +1,5 @@
-import { BaseCellsHelper } from './BaseCellsHelper';
-import { RectRange } from '../tablebase/RectRange';
+import { BaseCellsHelper } from '../base/BaseCellsHelper';
+import { RectRange } from '../../tablebase/RectRange';
 
 class OperateCellsHelper extends BaseCellsHelper {
 
@@ -60,6 +60,10 @@ class OperateCellsHelper extends BaseCellsHelper {
     return this.table.xTableAreaView;
   }
 
+  getStyleTable() {
+    return this.table;
+  }
+
   getRows() {
     return this.table.rows;
   }
@@ -74,10 +78,6 @@ class OperateCellsHelper extends BaseCellsHelper {
 
   getMerges() {
     return this.table.merges;
-  }
-
-  getStyleTable() {
-    return this.table;
   }
 
   getXIteratorBuilder() {

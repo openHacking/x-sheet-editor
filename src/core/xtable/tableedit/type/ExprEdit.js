@@ -1,9 +1,6 @@
 import { RichEdit } from './RichEdit';
 import { Constant } from '../../../../const/Constant';
 
-/**
- * ExprEdit
- */
 class ExprEdit extends RichEdit {
 
   /**

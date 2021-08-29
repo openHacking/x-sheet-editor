@@ -16,7 +16,7 @@ class YReSizer extends Widget {
     this.height = options.height;
     this.hoverEl = h('div', `${cssPrefix}-re-sizer-hover`);
     this.lineEl = h('div', `${cssPrefix}-re-sizer-line`);
-    this.children(...[
+    this.childrenNodes(...[
       this.hoverEl,
       this.lineEl,
     ]);

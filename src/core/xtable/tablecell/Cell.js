@@ -227,7 +227,7 @@ class Cell {
       case Cell.TYPE.NUMBER:
       case Cell.TYPE.DATE_TIME: {
         if (format) {
-          if (!formatText) {
+          if (SheetUtils.isBlank(formatText)) {
             this.formatText = XTableFormat(format, text);
             return this.formatText;
           }

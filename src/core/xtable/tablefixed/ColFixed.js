@@ -16,7 +16,7 @@ class ColFixed extends Widget {
     this.fxSci = fixedView.sci;
     this.fxEci = fixedView.eci;
     this.block = block;
-    this.children(block);
+    this.childrenNodes(block);
     this.tableWidthChange = () => {
       this.setSize();
     };

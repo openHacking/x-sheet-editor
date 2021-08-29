@@ -15,10 +15,10 @@ class XCopyStyle extends XScreenSvgBorderItem {
     this.brElem = new Widget(`${cssPrefix}-x-copy-style-area`);
     this.lElem = new Widget(`${cssPrefix}-x-copy-style-area`);
     this.tElem = new Widget(`${cssPrefix}-x-copy-style-area`);
-    this.blt.children(this.ltElem);
-    this.bl.children(this.lElem);
-    this.bt.children(this.tElem);
-    this.bbr.children(this.brElem);
+    this.blt.childrenNodes(this.ltElem);
+    this.bl.childrenNodes(this.lElem);
+    this.bt.childrenNodes(this.tElem);
+    this.bbr.childrenNodes(this.brElem);
     this.tableScroll = () => {
       if (this.display) {
         this.offsetHandle();

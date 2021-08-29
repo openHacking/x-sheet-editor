@@ -186,7 +186,7 @@ class ElPopUp extends Widget {
     const root = this.getRootWidget();
     if (this.status === false && root) {
       this.status = true;
-      root.children(this);
+      root.childrenNodes(this);
     }
     this.elPopUpPosition();
     this.elPopUpAutosize();
@@ -212,7 +212,7 @@ class ElPopUp extends Widget {
     const root = this.getRootWidget();
     if (this.status === false && root) {
       this.status = true;
-      root.children(this);
+      root.childrenNodes(this);
     }
     this.mousePopUpLocation(mouse);
     this.elPopUpAutosize();

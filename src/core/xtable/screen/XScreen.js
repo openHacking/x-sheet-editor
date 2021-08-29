@@ -25,10 +25,10 @@ class XScreen extends Widget {
     this.lZone = new XScreenLZone();
     this.ltZone = new XScreenLTZone();
     this.brZone = new XScreenBRZone();
-    this.children(this.tZone);
-    this.children(this.lZone);
-    this.children(this.ltZone);
-    this.children(this.brZone);
+    this.childrenNodes(this.tZone);
+    this.childrenNodes(this.lZone);
+    this.childrenNodes(this.ltZone);
+    this.childrenNodes(this.brZone);
     this.tableScaleChange = () => {
       this.setZone();
     };
