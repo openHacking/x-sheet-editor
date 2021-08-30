@@ -3,20 +3,20 @@ import { DateUtils } from '../../utils/DateUtils';
 
 class Format {
 
+  default(value) {
+    return this.text(value);
+  }
+
+  text(value) {
+    return value ? `${value}` : '';
+  }
+
   eNotation(value) {
     if (SheetUtils.isNumber(value)) {
       const number = SheetUtils.parseFloat(value);
       return number.toExponential(2);
     }
-    return value;
-  }
-
-  default(value) {
-    return value ? value.toString() : '';
-  }
-
-  text(value) {
-    return value;
+    return this.text(value);
   }
 
   decimal(value) {
@@ -27,44 +27,41 @@ class Format {
       }
       return `${value}.00`;
     }
-    return value;
+    return this.text(value);
   }
 
   number(value) {
-    if (SheetUtils.isNumber(value)) {
-      return SheetUtils.parseFloat(value);
-    }
-    return value;
+    return this.text(value);
   }
 
   percentage(value) {
     if (SheetUtils.isNumber(value)) {
       return `${value}%`;
     }
-    return value;
+    return this.text(value);
   }
 
   fraction(value) {
     if (SheetUtils.isFraction(value)) {
       const left = value.split('/')[0];
       const right = value.split('/')[1];
-      return SheetUtils.parseInt(left) / SheetUtils.parseInt(right);
+      return this.text(SheetUtils.parseInt(left) / SheetUtils.parseInt(right));
     }
-    return value;
+    return this.text(value);
   }
 
   rmb(value) {
     if (SheetUtils.isNumber(value)) {
       return `￥${value}`;
     }
-    return value;
+    return this.text(value);
   }
 
   hk(value) {
     if (SheetUtils.isNumber(value)) {
       return `HK${value}`;
     }
-    return value;
+    return this.text(value);
   }
 
   time(value) {
@@ -72,7 +69,7 @@ class Format {
     if (result) {
       return DateUtils.dateFormat('hh:mm:ss', result);
     }
-    return value;
+    return this.text(value);
   }
 
   date1(value) {
@@ -80,7 +77,7 @@ class Format {
     if (result) {
       return DateUtils.dateFormat('yyyy/MM/dd', result);
     }
-    return value;
+    return this.text(value);
   }
 
   date2(value) {
@@ -88,7 +85,7 @@ class Format {
     if (result) {
       return DateUtils.dateFormat('MM月dd日', result);
     }
-    return value;
+    return this.text(value);
   }
 
   date3(value) {
@@ -96,7 +93,7 @@ class Format {
     if (result) {
       return DateUtils.dateFormat('yyyy年MM月', result);
     }
-    return value;
+    return this.text(value);
   }
 
   date4(value) {
@@ -104,7 +101,7 @@ class Format {
     if (result) {
       return DateUtils.dateFormat('yyyy年MM月dd日', result);
     }
-    return value;
+    return this.text(value);
   }
 
   date5(value) {
@@ -112,14 +109,14 @@ class Format {
     if (result) {
       return DateUtils.dateFormat('yyyy/MM/dd hh:mm:ss', result);
     }
-    return value;
+    return this.text(value);
   }
 
   dollar(value) {
     if (SheetUtils.isNumber(value)) {
       return `$${value}`;
     }
-    return value;
+    return this.text(value);
   }
 
 }

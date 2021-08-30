@@ -117,8 +117,6 @@ class TextEdit extends ExprEdit {
       let style = handle(this, {});
       let notAllowText = text === activeCell.getFormatText();
       let notAllowStyle = activeCell.fontAttr.like(style);
-      console.log(notAllowText);
-      console.log(notAllowStyle);
       if (!notAllowText || !notAllowStyle) {
         const cloneCell = activeCell.clone();
         const { fontAttr } = cloneCell;
