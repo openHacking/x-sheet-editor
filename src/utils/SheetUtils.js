@@ -185,7 +185,7 @@ class SheetUtils {
       for (let key in item) {
         if (item.hasOwnProperty(key)) {
           const value = item[key];
-          if (value) {
+          if (SheetUtils.isDef(value)) {
             target[key] = value;
           }
         }

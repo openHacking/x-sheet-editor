@@ -1,0 +1,5 @@
+class ParserCharacter {}
+
+export {
+  ParserCharacter,
+};

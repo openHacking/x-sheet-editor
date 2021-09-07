@@ -2,6 +2,20 @@
 import { h } from './Element';
 import { DomUtils } from '../utils/DomUtils';
 
+function textWrap(target, wrap) {
+  if (target.hasChild()) {
+    target.childrenNodes().forEach((ele) => {
+      textWrap(ele, wrap);
+    });
+  }
+  if (target.isTextNode()) {
+    const clone = wrap.clone();
+    target.after(clone);
+    clone.append(target);
+  }
+  return target;
+}
+
 class CheckNode {
 
   constructor({
@@ -209,6 +223,10 @@ class Selection {
     this.ranged = new RangeNode();
   }
 
+  getRanged() {
+    return this.ranged;
+  }
+
   splitPoint() {
     const { ranged } = this;
     const point = h('span').addClass('selection-point');
@@ -217,27 +235,32 @@ class Selection {
     return point;
   }
 
-  getRanged() {
-    return this.ranged;
-  }
-
-  wrapSelection(container) {
+  wrap({
+    container,
+    inside = false,
+  }) {
     let cloneContents = this.getRanged().cloneContents();
     let first = cloneContents.firstTextNode();
     let last = cloneContents.lastTextNode();
     this.front(cloneContents);
-    container.append(cloneContents);
+    if (inside) {
+      textWrap(cloneContents, container);
+      container = cloneContents;
+    } else {
+      container.append(cloneContents);
+    }
     this.getRanged().deleteContents();
     this.getRanged().insertNode(container);
     this.after(container);
     this.getRanged().selectTextStartEnd({
-      start: first,
-      end: last,
+      start: first, end: last,
     });
   }
 
-  splitSelection({
-    checking, container,
+  split({
+    container,
+    checking,
+    inside = false,
   }) {
     let splitElem = this.getRanged().cloneContents();
     let splitPoint = this.splitPoint();
@@ -255,11 +278,16 @@ class Selection {
     let { nextParent } = nodeSplit;
     let { prevParent } = nodeSplit;
     let { newElement } = typeSplit;
-    let first = newElement.firstTextNode();
     let last = newElement.lastTextNode();
+    let first = newElement.firstTextNode();
     this.front(newElement);
     if (container) {
-      container.append(newElement);
+      if (inside) {
+        textWrap(newElement, container);
+        container = newElement;
+      } else {
+        container.append(newElement);
+      }
     } else {
       container = newElement;
     }
