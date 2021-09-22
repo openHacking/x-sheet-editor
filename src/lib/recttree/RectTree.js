@@ -1,4 +1,4 @@
-import { QSelect } from './Qselect';
+import { QkSelect } from './QkSelect';
 
 function findItem(item, items, equalsFn) {
   if (!equalsFn) {
@@ -81,12 +81,12 @@ function multiSelect(arr, left, right, n, compare) {
     left = stack.pop();
     if (right - left <= n) continue;
     const mid = left + Math.ceil((right - left) / n / 2) * n;
-    QSelect(arr, mid, left, right, compare);
+    QkSelect(arr, mid, left, right, compare);
     stack.push(left, mid, mid, right);
   }
 }
 
-class Rtree {
+class RectTree {
   constructor(maxEntries = 9) {
     // 默认情况下，节点中的最大条目数为 9； 最小节点填充为 40% 以获得最佳性能
     this._maxEntries = Math.max(4, maxEntries);
@@ -509,5 +509,5 @@ class Rtree {
 }
 
 export {
-  Rtree,
+  RectTree,
 };

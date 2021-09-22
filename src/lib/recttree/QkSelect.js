@@ -47,10 +47,10 @@ function QStep(arr, k, left, right, compare) {
   }
 }
 
-function QSelect(arr, k, left, right, compare) {
+function QkSelect(arr, k, left, right, compare) {
   QStep(arr, k, left || 0, right || (arr.length - 1), compare || Compare);
 }
 
 export {
-  QSelect,
+  QkSelect,
 };

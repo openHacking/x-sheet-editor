@@ -1,7 +1,7 @@
 import { Widget } from '../../lib/Widget';
 import { cssPrefix } from '../../const/Constant';
-import { VerticalLayer } from '../../lib/layer/VerticalLayer';
-import { VerticalLayerElement } from '../../lib/layer/VerticalLayerElement';
+import { VerticalLayer } from '../../lib/layers/VerticalLayer';
+import { VerticalLayerElement } from '../../lib/layers/VerticalLayerElement';
 import { XWorkHead } from './head/XWorkHead';
 import { XWorkBody } from './body/XWorkBody';
 import { XWorkFoot } from './foot/XWorkFoot';

@@ -1,5 +1,5 @@
 import { Snapshot } from '../snapshot/Snapshot';
-import { Rtree } from '../../../lib/rtree/Rtree';
+import { RectTree } from '../../../lib/recttree/RectTree';
 import { Listen } from '../../../lib/Listen';
 import { RtreeUtils } from '../../../utils/RtreeUtils';
 import { SheetUtils } from '../../../utils/SheetUtils';
@@ -17,7 +17,7 @@ class RangeTree {
     snapshot = new Snapshot(),
   }) {
     this.snapshot = snapshot;
-    this.rTree = new Rtree();
+    this.rTree = new RectTree();
     this.listen = new Listen();
   }
 

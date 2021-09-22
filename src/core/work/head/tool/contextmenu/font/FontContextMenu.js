@@ -18,6 +18,10 @@ class FontContextMenu extends ELContextMenu {
       new FontContextMenuItem('Lalo'),
       new FontContextMenuItem('Comic Sans Ms'),
       new FontContextMenuItem('Courier New'),
+      new FontContextMenuItem('宋体'),
+      new FontContextMenuItem('等线'),
+      new FontContextMenuItem('黑体'),
+      new FontContextMenuItem('华文中宋'),
       new FontContextMenuItem('微软雅黑'),
     ];
     this.items.forEach((item) => {
