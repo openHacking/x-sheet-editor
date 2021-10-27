@@ -3,6 +3,7 @@ import { Constant, cssPrefix } from '../../../../const/Constant';
 import { BaseFont } from '../../../../draw/font/BaseFont';
 import { XDraw } from '../../../../draw/XDraw';
 import { Throttle } from '../../../../lib/Throttle';
+import { SheetUtils } from '../../../../utils/SheetUtils';
 
 class BaseEdit extends Widget {
 
@@ -129,6 +130,15 @@ class BaseEdit extends Widget {
   isBlank(elem = this) {
     const text = elem.text();
     return text === '' || text === '\n' || /^\s*$/.test(text);
+  }
+
+  /**
+   * 读取文本
+   * @param text
+   * @returns {string|Element|string}
+   */
+  text(text) {
+    return text ? super.text(text) : SheetUtils.clearHideCode(super.text());
   }
 
 }

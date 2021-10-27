@@ -462,6 +462,20 @@ class SheetUtils {
     return str.replace(/\s/g, '');
   }
 
+  static clearHideCode(str) {
+    let result = '';
+    for (let i = 0; i < str.length; i++) {
+      let value = str.charAt(i);
+      // 过滤掉 &#xFEFF; 隐藏字符串
+      // 服了 ！！！！！
+      let code = encodeURI(value);
+      if (code !== '%EF%BB%BF') {
+        result += value;
+      }
+    }
+    return result;
+  }
+
 }
 
 SheetUtils.EMPTY = '';

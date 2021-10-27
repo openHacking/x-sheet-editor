@@ -300,6 +300,18 @@ class Cell {
   }
 
   /**
+   * 复制单元格样式
+   * @returns {Cell}
+   */
+  cloneStyle() {
+    return new Cell({
+      borderAttr: this.borderAttr,
+      fontAttr: this.fontAttr,
+      background: this.background,
+    });
+  }
+
+  /**
    * toJSON
    */
   toJSON() {

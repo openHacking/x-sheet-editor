@@ -1,5 +1,6 @@
 import { RichEdit } from './RichEdit';
 import { Constant } from '../../../../const/Constant';
+import { SheetUtils } from '../../../../utils/SheetUtils';
 
 class ExprEdit extends RichEdit {
 
@@ -41,8 +42,7 @@ class ExprEdit extends RichEdit {
    * 检查输入的是否为公式内容
    */
   checkedFormulaText() {
-    const text = this.text();
-    return text.startsWith('=');
+    return this.text().startsWith('=');
   }
 
 }

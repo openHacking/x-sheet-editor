@@ -20,6 +20,15 @@ class Merges extends RangeTree {
   }
 
   /**
+   * 获取矩形的json数据
+   */
+  getData() {
+    return {
+      merges: this.getAll().map(range => range.toString()),
+    };
+  }
+
+  /**
    * 删除行号
    * @param ri
    * @param number
@@ -325,15 +334,6 @@ class Merges extends RangeTree {
     };
     snapshot.addAction(mergeAction);
     mergeAction.redo();
-  }
-
-  /**
-   * 获取矩形的json数据
-   */
-  getData() {
-    return {
-      merges: this.getAll().map(range => range.toString()),
-    };
   }
 
 }

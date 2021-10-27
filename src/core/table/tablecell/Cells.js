@@ -101,12 +101,12 @@ class Items {
     });
   }
 
-  getLength() {
-    return this.data.length;
-  }
-
   getData() {
     return this.data;
+  }
+
+  getLength() {
+    return this.data.length;
   }
 
   hasItems(ri) {
@@ -330,14 +330,30 @@ class Cells extends Items {
     action.redo();
   }
 
+  copyRowStyle(ri) {
+    let row = this.data[ri];
+    let copy = [];
+    if (row) {
+      for (let i = 0, len = row.length; i < len; i++) {
+        let cell = row[i];
+        if (cell) {
+          copy[i] = this.getCell(ri, i).cloneStyle();
+        }
+      }
+    }
+    return copy;
+  }
+
   insertRowAfter(ri) {
     let { snapshot } = this;
+    let master = ri + 1;
     let action = {
       undo: () => {
-        this.data.splice(ri + 1, 1);
+        this.data.splice(master, 1);
       },
       redo: () => {
-        this.data.splice(ri + 1, 0, []);
+        const copy = this.copyRowStyle(master);
+        this.data.splice(master, 0, copy);
       },
     };
     snapshot.addAction(action);
@@ -346,12 +362,13 @@ class Cells extends Items {
 
   insertColAfter(ci) {
     let { snapshot } = this;
+    let master = ci + 1;
     let action = {
       undo: () => {
         for (let i = 0, len = this.data.length; i < len; i++) {
           const items = this.data[i];
           if (items) {
-            items.splice(ci + 1, 1);
+            items.splice(master, 1);
           }
         }
       },
@@ -359,7 +376,9 @@ class Cells extends Items {
         for (let i = 0, len = this.data.length; i < len; i++) {
           const items = this.data[i];
           if (items) {
-            items.splice(ci + 1, 0, {});
+            const cell = this.getCell(i, master);
+            const copy = cell ? cell.cloneStyle() : undefined;
+            items.splice(master, 0, copy);
           }
         }
       },
@@ -370,12 +389,14 @@ class Cells extends Items {
 
   insertRowBefore(ri) {
     let { snapshot } = this;
+    let master = ri;
     let action = {
       undo: () => {
-        this.items.splice(ri, 1);
+        this.data.splice(master, 1);
       },
       redo: () => {
-        this.items.splice(ri, 0, []);
+        const copy = this.copyRowStyle(master);
+        this.data.splice(master, 0, copy);
       },
     };
     snapshot.addAction(action);
@@ -384,12 +405,13 @@ class Cells extends Items {
 
   insertColBefore(ci) {
     let { snapshot } = this;
+    let master = ci;
     let action = {
       undo: () => {
         for (let i = 0, len = this.data.length; i < len; i++) {
           const items = this.data[i];
           if (items) {
-            items.splice(ci, 1);
+            items.splice(master, 1);
           }
         }
       },
@@ -397,7 +419,9 @@ class Cells extends Items {
         for (let i = 0, len = this.data.length; i < len; i++) {
           const items = this.data[i];
           if (items) {
-            items.splice(ci, 0, {});
+            const cell = this.getCell(i, master);
+            const copy = cell ? cell.cloneStyle() : undefined;
+            items.splice(master, 0, copy);
           }
         }
       },

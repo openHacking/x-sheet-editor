@@ -166,12 +166,12 @@ class TableEdit extends TextEdit {
    * 写内容
    */
   write() {
-    if (this.checkedRichText()) {
-      this.htmlToRichText();
-      return;
-    }
     if (this.checkedFormulaText()) {
       this.htmlToFormulaText();
+      return;
+    }
+    if (this.checkedRichText()) {
+      this.htmlToRichText();
       return;
     }
     this.textToCellText();
