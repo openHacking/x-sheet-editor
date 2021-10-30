@@ -366,13 +366,11 @@ class DateCellsHelper extends BaseCellsHelper {
             case Cell.TYPE.NUMBER:
             case Cell.TYPE.STRING:
             case Cell.TYPE.DATE_TIME: {
-              cell.fontAttr.underline = underline;
+              cell.setUnderLine(underline);
               break;
             }
             case Cell.TYPE.RICH_TEXT: {
-              cell.richText.each((i) => {
-                i.underline = underline;
-              });
+              cell.setRichUnderLine(underline);
               break;
             }
           }
@@ -407,13 +405,11 @@ class DateCellsHelper extends BaseCellsHelper {
             case Cell.TYPE.NUMBER:
             case Cell.TYPE.STRING:
             case Cell.TYPE.DATE_TIME: {
-              cell.fontAttr.strikethrough = strikethrough;
+              cell.setStrikeLine(strikethrough);
               break;
             }
             case Cell.TYPE.RICH_TEXT: {
-              cell.richText.each((i) => {
-                i.strikethrough = strikethrough;
-              });
+              cell.setRichStrikeLine(strikethrough);
               break;
             }
           }
@@ -448,13 +444,11 @@ class DateCellsHelper extends BaseCellsHelper {
             case Cell.TYPE.NUMBER:
             case Cell.TYPE.STRING:
             case Cell.TYPE.DATE_TIME: {
-              cell.fontAttr.name = name;
+              cell.setFontName(name);
               break;
             }
             case Cell.TYPE.RICH_TEXT: {
-              cell.richText.each((i) => {
-                i.name = name;
-              });
+              cell.setRichFontName(name);
               break;
             }
           }
@@ -489,13 +483,11 @@ class DateCellsHelper extends BaseCellsHelper {
             case Cell.TYPE.NUMBER:
             case Cell.TYPE.STRING:
             case Cell.TYPE.DATE_TIME: {
-              cell.fontAttr.color = color;
+              cell.setFontColor(color);
               break;
             }
             case Cell.TYPE.RICH_TEXT: {
-              cell.richText.each((i) => {
-                i.color = color;
-              });
+              cell.setRichFontColor(color);
               break;
             }
           }
@@ -530,13 +522,11 @@ class DateCellsHelper extends BaseCellsHelper {
             case Cell.TYPE.NUMBER:
             case Cell.TYPE.STRING:
             case Cell.TYPE.DATE_TIME: {
-              cell.fontAttr.size = size;
+              cell.setFontSize(size);
               break;
             }
             case Cell.TYPE.RICH_TEXT: {
-              cell.richText.each((i) => {
-                i.size = size;
-              });
+              cell.setRichFontSize(size);
               break;
             }
           }
@@ -571,13 +561,11 @@ class DateCellsHelper extends BaseCellsHelper {
             case Cell.TYPE.NUMBER:
             case Cell.TYPE.STRING:
             case Cell.TYPE.DATE_TIME: {
-              cell.fontAttr.bold = bold;
+              cell.setFontBold(bold);
               break;
             }
             case Cell.TYPE.RICH_TEXT: {
-              cell.richText.each((i) => {
-                i.bold = bold;
-              });
+              cell.setRichFontBold(bold);
               break;
             }
           }
@@ -612,13 +600,11 @@ class DateCellsHelper extends BaseCellsHelper {
             case Cell.TYPE.NUMBER:
             case Cell.TYPE.STRING:
             case Cell.TYPE.DATE_TIME: {
-              cell.fontAttr.italic = italic;
+              cell.setFontItalic(italic);
               break;
             }
             case Cell.TYPE.RICH_TEXT: {
-              cell.richText.each((i) => {
-                i.italic = italic;
-              });
+              cell.setRichFontItalic(italic);
               break;
             }
           }
@@ -994,7 +980,7 @@ class DateCellsHelper extends BaseCellsHelper {
         rectRange: selectRange,
         callback: (r, c, origin) => {
           const cell = origin.clone();
-          cell.background = background;
+          cell.setBackground(background);
           cells.setCell(r, c, cell);
         },
       });
@@ -1022,7 +1008,7 @@ class DateCellsHelper extends BaseCellsHelper {
         rectRange: selectRange,
         callback: (r, c, origin) => {
           const cell = origin.clone();
-          cell.fontAttr.align = type;
+          cell.setFontAlign(type);
           cells.setCell(r, c, cell);
         },
       });
@@ -1050,7 +1036,7 @@ class DateCellsHelper extends BaseCellsHelper {
         rectRange: selectRange,
         callback: (r, c, origin) => {
           const cell = origin.clone();
-          cell.fontAttr.verticalAlign = type;
+          cell.setFontVerticalAlign(type);
           cells.setCell(r, c, cell);
         },
       });
@@ -1078,8 +1064,7 @@ class DateCellsHelper extends BaseCellsHelper {
         rectRange: selectRange,
         callback: (r, c, origin) => {
           const cell = origin.clone();
-          cell.fontAttr.angle = 0;
-          cell.fontAttr.direction = type;
+          cell.setDirection(type);
           cells.setCell(r, c, cell);
         },
       });
@@ -1107,14 +1092,7 @@ class DateCellsHelper extends BaseCellsHelper {
         rectRange: selectRange,
         callback: (r, c, origin) => {
           const cell = origin.clone();
-          if (number === 0) {
-            cell.fontAttr.angle = number;
-            cell.fontAttr.direction = BaseFont.TEXT_DIRECTION.HORIZONTAL;
-          } else {
-            cell.borderAttr.updateMaxIndex();
-            cell.fontAttr.angle = number;
-            cell.fontAttr.direction = BaseFont.TEXT_DIRECTION.ANGLE;
-          }
+          cell.setFontAngle(number);
           cells.setCell(r, c, cell);
         },
       });
@@ -1142,7 +1120,7 @@ class DateCellsHelper extends BaseCellsHelper {
         rectRange: selectRange,
         callback: (r, c, origin) => {
           const cell = origin.clone();
-          cell.fontAttr.textWrap = type;
+          cell.setTextWrap(type);
           cells.setCell(r, c, cell);
         },
       });

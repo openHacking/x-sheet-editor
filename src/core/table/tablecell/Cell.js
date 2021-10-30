@@ -6,6 +6,7 @@ import XTableFormat from '../XTableTextFormat';
 import { RichFonts } from './RichFonts';
 import { Formula } from '../../../formula/Formula';
 import { DateUtils } from '../../../utils/DateUtils';
+import { BaseFont } from '../../../draw/font/BaseFont';
 
 /**
  * 单元格
@@ -14,33 +15,33 @@ class Cell {
 
   /**
    * Cell
-   * @param background
-   * @param format
-   * @param text
-   * @param richText
-   * @param ruler
-   * @param custom
-   * @param icons
    * @param borderAttr
    * @param fontAttr
+   * @param richText
    * @param formula
+   * @param background
+   * @param text
+   * @param ruler
    * @param contentWidth
    * @param contentHeight
+   * @param format
+   * @param custom
+   * @param icons
    * @param contentType
    */
   constructor({
-    format = 'default',
-    custom = {},
-    icons = [],
     borderAttr = SheetUtils.Undef,
-    ruler = SheetUtils.Undef,
     fontAttr = SheetUtils.Undef,
     richText = SheetUtils.Undef,
     formula = SheetUtils.Undef,
     background = SheetUtils.Undef,
     text = SheetUtils.EMPTY,
+    custom = {},
+    icons = [],
+    ruler = SheetUtils.Undef,
     contentWidth = 0,
     contentHeight = 0,
+    format = 'default',
     contentType = Cell.TYPE.STRING,
   } = {}) {
     // 背景颜色
@@ -61,10 +62,10 @@ class Cell {
     this.richText = RichFonts.getInstance(richText);
     // 格式化后的内容
     this.formatText = SheetUtils.EMPTY;
-    // 内容的高度
-    this.contentHeight = contentHeight;
     // 内容的宽度
     this.contentWidth = contentWidth;
+    // 内容的高度
+    this.contentHeight = contentHeight;
     // 字体属性
     this.fontAttr = CellFont.getInstance(fontAttr);
     // 边框属性
@@ -91,7 +92,9 @@ class Cell {
     this.text = text;
     this.formula.setExpr(null);
     this.richText.setRich([]);
+    this.setRuler(null);
     this.setContentWidth(0);
+    this.setContentHeight(0);
     return this;
   }
 
@@ -103,7 +106,9 @@ class Cell {
     this.text = null;
     this.formula.setExpr(null);
     this.richText.setRich(rich);
+    this.setRuler(null);
     this.setContentWidth(0);
+    this.setContentHeight(0);
     return this;
   }
 
@@ -115,7 +120,9 @@ class Cell {
     this.text = null;
     this.formula.setExpr(expr);
     this.richText.setRich([]);
+    this.setRuler(null);
     this.setContentWidth(0);
+    this.setContentHeight(0);
     return this;
   }
 
@@ -133,6 +140,7 @@ class Cell {
   setFormat(format = 'default') {
     this.format = format;
     this.formatText = null;
+    this.clearRuler();
     this.setContentWidth(0);
     return this;
   }
@@ -248,10 +256,7 @@ class Cell {
    * @returns {string|*}
    */
   getComputeText() {
-    let {
-      text,
-      formula,
-    } = this;
+    let { text, formula } = this;
     let { richText } = this;
     let { contentType } = this;
     // 优先获取公式值
@@ -355,6 +360,264 @@ class Cell {
    */
   setContentHeight(height) {
     this.contentHeight = height;
+    return this;
+  }
+
+  /**
+   * 设置换行类型
+   * @param textWrap
+   */
+  setTextWrap(textWrap) {
+    this.fontAttr.textWrap = textWrap;
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置字体颜色
+   * @param color
+   */
+  setFontColor(color) {
+    this.fontAttr.color = color;
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置字体颜色
+   * @param color
+   */
+  setRichFontColor(color) {
+    this.richText.each((i) => {
+      i.color = color;
+    });
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置字体大小
+   * @param size
+   */
+  setFontSize(size) {
+    this.fontAttr.size = size;
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置字体大小
+   * @param size
+   */
+  setRichFontSize(size) {
+    this.richText.each((i) => {
+      i.size = size;
+    });
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置字体加粗
+   * @param bold
+   */
+  setFontBold(bold) {
+    this.fontAttr.bold = bold;
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置字体加粗
+   * @param bold
+   */
+  setRichFontBold(bold) {
+    this.richText.each((i) => {
+      i.bold = bold;
+    });
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置斜体字
+   * @param italic
+   */
+  setFontItalic(italic) {
+    this.fontAttr.italic = italic;
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置斜体字
+   * @param italic
+   */
+  setRichFontItalic(italic) {
+    this.richText.each((i) => {
+      i.italic = italic;
+    });
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置字体名称
+   * @param name
+   */
+  setFontName(name) {
+    this.fontAttr.name = name;
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置字体名称
+   * @param name
+   */
+  setRichFontName(name) {
+    this.richText.each((i) => {
+      i.name = name;
+    });
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置下划线
+   * @param underline
+   */
+  setUnderLine(underline) {
+    this.fontAttr.underline = underline;
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置下划线
+   * @param underline
+   */
+  setRichUnderLine(underline) {
+    this.richText.each((i) => {
+      i.underline = underline;
+    });
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置删除线
+   * @param strikeline
+   */
+  setStrikeLine(strikeline) {
+    this.fontAttr.strikethrough = strikeline;
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置删除线
+   * @param strikeline
+   */
+  setRichStrikeLine(strikeline) {
+    this.richText.each((i) => {
+      i.strikethrough = strikeline;
+    });
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置字体旋转角度
+   * @param number
+   */
+  setFontAngle(number) {
+    if (number === 0) {
+      this.fontAttr.angle = number;
+      this.fontAttr.direction = BaseFont.TEXT_DIRECTION.HORIZONTAL;
+    } else {
+      this.borderAttr.updateMaxIndex();
+      this.fontAttr.angle = number;
+      this.fontAttr.direction = BaseFont.TEXT_DIRECTION.ANGLE;
+    }
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置字体方向
+   * @param direction
+   */
+  setFontDirection(direction) {
+    this.fontAttr.angle = 0;
+    this.fontAttr.direction = direction;
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置背景
+   */
+  setBackground(background) {
+    this.background = background;
+    return this;
+  }
+
+  /**
+   * 设置字体水平对齐
+   * @param align
+   */
+  setFontAlign(align) {
+    this.fontAttr.align = align;
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
+    return this;
+  }
+
+  /**
+   * 设置垂直对齐
+   * @param verticalAlign
+   */
+  setFontVerticalAlign(verticalAlign) {
+    this.fontAttr.verticalAlign = verticalAlign;
+    this.setRuler(null);
+    this.setContentWidth(0);
+    this.setContentHeight(0);
     return this;
   }
 

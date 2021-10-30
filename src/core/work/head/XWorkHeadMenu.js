@@ -33,7 +33,7 @@ import { XFilter } from '../../table/screenitems/xfilter/XFilter';
 import { XCopyStyle } from '../../table/screenitems/xcopystyle/XCopyStyle';
 import { FontAngle } from './tool/FontAngle';
 import { Divider } from './tool/base/Divider';
-import { BaseEdit } from '../../table/tableedit/base/BaseEdit';
+import { BaseEdit } from '../../table/tableedit/BaseEdit';
 
 class XWorkHeadMenu extends Widget {
 

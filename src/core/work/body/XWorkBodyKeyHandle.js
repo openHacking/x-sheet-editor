@@ -1,6 +1,6 @@
 import { XSelectItem } from '../../table/screenitems/xselect/XSelectItem';
 import { XSelectPath } from '../../table/screenitems/xselect/XSelectPath';
-import { BaseEdit } from '../../table/tableedit/base/BaseEdit';
+import { BaseEdit } from '../../table/tableedit/BaseEdit';
 
 function pageDown({ table, body, response }) {
   const { xTableScrollView, xScreen, rows } = table;

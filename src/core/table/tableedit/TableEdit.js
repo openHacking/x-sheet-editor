@@ -1,9 +1,9 @@
 import { XSelectItem } from '../screenitems/xselect/XSelectItem';
 import { Cell } from '../tablecell/Cell';
-import { TextEdit } from './type/TextEdit';
+import { TextEdit } from './TextEdit';
 import { SheetUtils } from '../../../utils/SheetUtils';
 import { XEvent } from '../../../lib/XEvent';
-import { BaseEdit } from './base/BaseEdit';
+import { BaseEdit } from './BaseEdit';
 import { Constant } from '../../../const/Constant';
 import { BaseFont } from '../../../draw/font/BaseFont';
 
@@ -166,11 +166,13 @@ class TableEdit extends TextEdit {
    * 写内容
    */
   write() {
-    if (this.checkedFormulaText()) {
+    const isRichText = this.checkedRichText();
+    const isFormula = this.checkedFormulaText();
+    if (isFormula) {
       this.htmlToFormulaText();
       return;
     }
-    if (this.checkedRichText()) {
+    if (isRichText) {
       this.htmlToRichText();
       return;
     }
