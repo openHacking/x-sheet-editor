@@ -92,7 +92,7 @@ class XWorkSheetView extends Widget {
   bind() {
     XEvent.bind(this, Constant.SYSTEM_EVENT_TYPE.CONTEXT_MENU, (event) => {
       if (this.options.showMenu) {
-        this.contextMenu.openByMouse(event);
+        this.contextMenu.mouse(event);
         event.preventDefault();
       }
     });

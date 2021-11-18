@@ -1064,7 +1064,7 @@ class DateCellsHelper extends BaseCellsHelper {
         rectRange: selectRange,
         callback: (r, c, origin) => {
           const cell = origin.clone();
-          cell.setDirection(type);
+          cell.setFontDirection(type);
           cells.setCell(r, c, cell);
         },
       });

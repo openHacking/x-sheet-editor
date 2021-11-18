@@ -7,8 +7,8 @@ import { Icon } from '../../../Icon';
 import { ColorArray } from '../../../../../../../module/colorpicker/colorarray/ColorArray';
 import { ELContextMenuDivider } from '../../../../../../../module/contextmenu/ELContextMenuDivider';
 import { BorderColorContextMenuItem } from './BorderColorContextMenuItem';
-import { h } from '../../../../../../../lib/Element';
 import { XEvent } from '../../../../../../../lib/XEvent';
+import { Widget } from '../../../../../../../lib/Widget';
 
 class BorderColorContextMenu extends ELContextMenu {
 
@@ -63,11 +63,11 @@ class BorderColorContextMenu extends ELContextMenu {
     });
     this.plus = new Icon('plus');
     this.customizeColorArrayItem = new BorderColorContextMenuItem();
-    this.customizeColorTitle = h('div', `${cssPrefix}-border-color-context-menu-color-title`);
+    this.customizeColorTitle = new Widget(`${cssPrefix}-border-color-context-menu-color-title`);
     this.customizeColorTitle.text('自定义');
     this.customizeColorArrayItem.removeClass('hover');
-    this.customizeColorArrayItem.childrenNodes(this.customizeColorTitle);
-    this.customizeColorArrayItem.childrenNodes(this.customizeColorArray);
+    this.customizeColorArrayItem.attach(this.customizeColorTitle);
+    this.customizeColorArrayItem.attach(this.customizeColorArray);
     // 菜单元素追加子节点
     this.addItem(this.resetColorButton);
     this.addItem(this.defaultColorArrayItem);

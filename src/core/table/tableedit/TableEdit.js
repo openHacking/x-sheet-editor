@@ -30,9 +30,6 @@ class TableEdit extends TextEdit {
         this.close(event);
       }
     };
-    this.userInputHandle = () => {
-      this.defaultWrap();
-    };
     this.tableScrollHandle = (event) => {
       if (this.mode === BaseEdit.MODE.SHOW) {
         this.close(event);
@@ -98,7 +95,6 @@ class TableEdit extends TextEdit {
     const { enterResponse } = this;
     const { escResponse } = this;
     const { openClickHandle } = this;
-    const { userInputHandle } = this;
     const { closeClickHandle } = this;
     const { tableScrollHandle } = this;
     const { table } = this;
@@ -136,7 +132,6 @@ class TableEdit extends TextEdit {
       event.stopPropagation();
     });
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.SCROLL, tableScrollHandle);
-    XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.INPUT, userInputHandle);
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, closeClickHandle);
     XEvent.bind(table, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN, openClickHandle);
   }

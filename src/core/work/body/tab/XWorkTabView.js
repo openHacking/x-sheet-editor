@@ -1,6 +1,5 @@
 import { Widget } from '../../../../lib/Widget';
 import { cssPrefix, Constant } from '../../../../const/Constant';
-import { h } from '../../../../lib/Element';
 import { SheetUtils } from '../../../../utils/SheetUtils';
 import { XEvent } from '../../../../lib/XEvent';
 import { TabContextMenu } from './contextmenu/TabContextMenu';
@@ -37,18 +36,16 @@ class XWorkTabView extends Widget {
     this.activeIndex = -1;
     this.left = null;
     this.tabList = [];
-    this.last = h('div', `${cssPrefix}-switch-tab-last-btn`);
-    this.next = h('div', `${cssPrefix}-switch-tab-next-btn`);
-    this.content = h('div', `${cssPrefix}-sheet-tab-content`);
-    this.tabs = h('div', `${cssPrefix}-sheet-tab-tabs`);
-    this.plus = h('div', `${cssPrefix}-sheet-tab-plus`);
-    this.content.childrenNodes(this.tabs);
-    this.childrenNodes(...[
-      this.last,
-      this.next,
-      this.content,
-      this.plus,
-    ]);
+    this.last = new Widget(`${cssPrefix}-switch-tab-last-btn`);
+    this.next = new Widget(`${cssPrefix}-switch-tab-next-btn`);
+    this.tabs = new Widget(`${cssPrefix}-sheet-tab-tabs`);
+    this.plus = new Widget(`${cssPrefix}-sheet-tab-plus`);
+    this.content = new Widget(`${cssPrefix}-sheet-tab-content`);
+    this.content.attach(this.tabs);
+    super.attach(this.last);
+    super.attach(this.next);
+    super.attach(this.content);
+    super.attach(this.plus);
     this.contextMenu = new TabContextMenu({
       onUpdate: (name, type) => {
         const { tab } = this.contextMenu;
@@ -129,9 +126,8 @@ class XWorkTabView extends Widget {
    * 添加一个新的tab
    */
   attach(tab) {
+    this.tabs.attach(tab);
     this.tabList.push(tab);
-    this.tabs.childrenNodes(tab);
-    tab.onAttach();
     tab.setRClick((event) => {
       if (this.options.showMenu) {
         const { contextMenu } = this;
@@ -148,6 +144,7 @@ class XWorkTabView extends Widget {
       this.setActive(tab);
       this.options.onSwitch(tab, event);
     });
+    tab.onAttach();
   }
 
   /**
@@ -203,6 +200,23 @@ class XWorkTabView extends Widget {
   }
 
   /**
+   * 销毁当前组件
+   */
+  destroy() {
+    super.destroy();
+    this.unbind();
+    this.contextMenu.destroy();
+  }
+
+  /**
+   * 获取sheet数量
+   * @returns {number}
+   */
+  getTabCount() {
+    return this.tabList.length;
+  }
+
+  /**
    * 删除指定索引的tab
    * @param index
    */
@@ -220,24 +234,6 @@ class XWorkTabView extends Widget {
     const active = this.getActiveTab();
     this.setActive(active);
   }
-
-  /**
-   * 获取sheet数量
-   * @returns {number}
-   */
-  getTabCount() {
-    return this.tabList.length;
-  }
-
-  /**
-   * 销毁当前组件
-   */
-  destroy() {
-    super.destroy();
-    this.unbind();
-    this.contextMenu.destroy();
-  }
-
 }
 
 export { XWorkTabView };

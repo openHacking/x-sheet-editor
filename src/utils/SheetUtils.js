@@ -459,7 +459,7 @@ class SheetUtils {
   }
 
   static clearBlank(str) {
-    return str.replace(/\s/g, '');
+    return str ? str.replace(/\s/g, '') : str;
   }
 
   static clearHideCode(str) {

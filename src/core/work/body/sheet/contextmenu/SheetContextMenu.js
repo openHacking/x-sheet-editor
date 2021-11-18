@@ -29,7 +29,6 @@ class SheetContextMenu extends ELContextMenu {
     this.bind();
   }
 
-
   unbind() {
     this.items.forEach((item) => {
       XEvent.unbind(item, Constant.SYSTEM_EVENT_TYPE.MOUSE_DOWN);

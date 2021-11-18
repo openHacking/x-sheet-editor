@@ -35,12 +35,12 @@ const settings = {
       tabConfig: {
         showMenu: true,
       },
-      sheets: [{
-        tableConfig: {},
-      }],
       sheetConfig: {
         showMenu: true,
       },
+      sheets: [{
+        tableConfig: {},
+      }],
     },
     bottom: {
       show: true,
@@ -68,8 +68,8 @@ class XSheet extends Widget {
     this.focusManage = new WidgetFocusMange({
       root: this,
     });
-    this.xWrok = new XWork(this.options.workConfig);
-    this.attach(this.xWrok);
+    this.xWork = new XWork(this.options.workConfig);
+    this.attach(this.xWork);
   }
 }
 
