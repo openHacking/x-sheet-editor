@@ -62,11 +62,11 @@ class XWork extends Widget {
     topLayer.attach(this.top);
     if (options.bottom.show) {
       bottomLayer.attach(this.bottom);
+      this.bottom.bottomMenu.setSum(0);
+      this.bottom.bottomMenu.setAvg(0);
+      this.bottom.bottomMenu.setNumber(0);
     }
     bodyLayer.attach(this.body);
-    this.bottom.bottomMenu.setSum(0);
-    this.bottom.bottomMenu.setAvg(0);
-    this.bottom.bottomMenu.setNumber(0);
   }
 
 }

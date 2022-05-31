@@ -81,6 +81,7 @@ class TableEdit extends TextEdit {
         this.insertHtml('<br />');
       },
     };
+
     this.bind();
     this.hide();
   }

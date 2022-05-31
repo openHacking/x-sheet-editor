@@ -44,9 +44,9 @@ class XWorkBody extends Widget {
     this.work = work;
     this.sheets = this.options.sheets;
     // 版本标识
-    this.version = h('div', `${cssPrefix}-version-tips`);
-    this.version.html(`<a target="_blank" href="https://gitee.com/eigi/x-sheet">${XSheetVersion}</a>`);
-    this.childrenNodes(this.version);
+    // this.version = h('div', `${cssPrefix}-version-tips`);
+    // this.version.html(`<a target="_blank" href="https://gitee.com/eigi/x-sheet">${XSheetVersion}</a>`);
+    // this.childrenNodes(this.version);
     // 组件
     this.sheetView = new XWorkSheetView({
       ...this.options.sheetConfig,

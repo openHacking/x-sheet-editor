@@ -515,6 +515,21 @@ function controllerY({ table, response }) {
   });
 }
 
+function backspace({ table, response }) {
+  response.push({
+    keyCode: keyCode => keyCode === 8 || keyCode === 46 || keyCode === 868,
+    handle: () => {
+      const { xScreen } = table;
+      const xSelect = xScreen.findType(XSelectItem);
+      let { selectRange } = xSelect;
+
+      let cells = table.getTableCells();
+      cells.clear(selectRange);
+      table.render();
+    },
+  });
+}
+
 class XWorkBodyKeyHandle {
 
   static register({ table, body }) {
@@ -533,6 +548,7 @@ class XWorkBodyKeyHandle {
     arrowUp({ table, body, response });
     arrowLeft({ table, body, response });
     arrowRight({ table, body, response });
+    backspace({ table, body, response });
     keyboard.register({
       target: table, response,
     });
