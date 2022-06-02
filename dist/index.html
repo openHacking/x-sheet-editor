@@ -1,0 +1,54 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><title>x-sheet</title><style>* {
+            padding: 0;
+            margin: 0;
+        }
+        html, body {
+            height: 100%;
+            display: block;
+        }</style><link rel="icon" href="logo.ico"><link href="css/XSheet.css" rel="stylesheet"></head><body id="demo1"><script src="js/runtime.js"></script><script src="js/vendor.js"></script><script src="js/XSheet.js"></script></body><script>new XSheet('#demo1', {
+    workConfig: {
+      name: 'x-sheet',
+      top: {
+        option: {
+          show: true,
+        },
+        menu: {
+          show: true,
+        },
+      },
+      body: {
+        sheetConfig: {
+          showMenu: true,
+        },
+        sheets: [{
+          tableConfig: {
+            rows: {
+              data: [{height: 90}]
+            },
+            data: [
+              [{
+                contentType: 2,
+                fontAttr: {
+                  textWrap: 2,
+                  direction: 'vertical'
+                },
+                richText: {
+                  rich: [{text: '哈哈aaFDF', color: 'rgb(255,0,2)'}, {text: 'FDFDFDF'}]
+                }
+              }]
+            ],
+            xFixedBar: {
+              height: 2,
+              width: 2,
+            },
+          },
+        }],
+        tabConfig: {
+          showMenu: true,
+        },
+      },
+      bottom: {
+        show: true,
+      },
+    },
+  });</script></html>
