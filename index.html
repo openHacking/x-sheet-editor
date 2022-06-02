@@ -15,54 +15,109 @@
     </style>
 </head>
 <body id="demo1">
+<div id="sheet" style="height: 500px"></div>
 </body>
 <script>
-  new XSheet('#demo1', {
+  window.xsheet = new XSheet("#sheet", {
     workConfig: {
-      name: 'x-sheet',
+      name: "x-sheet",
       top: {
         option: {
-          show: true,
+          show: false,
         },
         menu: {
-          show: true,
+          show: false,
         },
       },
       body: {
         sheetConfig: {
-          showMenu: true,
+          showMenu: false,
         },
-        sheets: [{
-          tableConfig: {
-            rows: {
-              data: [{height: 90}]
-            },
-            data: [
-              [{
-                contentType: 2,
-                fontAttr: {
-                  textWrap: 2,
-                  direction: 'vertical'
-                },
-                richText: {
-                  rich: [{text: '哈哈aaFDF', color: 'rgb(255,0,2)'}, {text: 'FDFDFDF'}]
-                }
-              }]
-            ],
-            xFixedBar: {
-              height: 2,
-              width: 2,
+        sheets: [
+          {
+            tableConfig: {
+              data: [],
             },
           },
-        }],
+        ],
         tabConfig: {
-          showMenu: true,
+          showMenu: false,
         },
       },
       bottom: {
-        show: true,
+        show: false,
       },
     },
   });
+
+  window.XSheet.XEvent.bind(window.xsheet,'datachange',()=>{
+    console.log('data change---')
+  })
+
+  const data = xsheet.xWork.body.getActiveSheet().table.xTableStyle.cells.getData()
+  const arrayData = []
+  data.forEach((row)=>{
+    const rowData = []
+    row && row.forEach((cell)=>{
+      cell && rowData.push(cell.getFormatText())
+    })
+    arrayData.push(rowData)
+  })
+
+
+  document.querySelectorAll(
+    ".x-sheet-horizontal-layer-element"
+  )[2].style.display = "none";
 </script>
+<!--<body id="demo1">-->
+<!--</body>-->
+<!--<script>-->
+<!--  new XSheet('#demo1', {-->
+<!--    workConfig: {-->
+<!--      name: 'x-sheet',-->
+<!--      top: {-->
+<!--        option: {-->
+<!--          show: true,-->
+<!--        },-->
+<!--        menu: {-->
+<!--          show: true,-->
+<!--        },-->
+<!--      },-->
+<!--      body: {-->
+<!--        sheetConfig: {-->
+<!--          showMenu: true,-->
+<!--        },-->
+<!--        sheets: [{-->
+<!--          tableConfig: {-->
+<!--            rows: {-->
+<!--              data: [{height: 90}]-->
+<!--            },-->
+<!--            data: [-->
+<!--              [{-->
+<!--                contentType: 2,-->
+<!--                fontAttr: {-->
+<!--                  textWrap: 2,-->
+<!--                  direction: 'vertical'-->
+<!--                },-->
+<!--                richText: {-->
+<!--                  rich: [{text: '哈哈aaFDF', color: 'rgb(255,0,2)'}, {text: 'FDFDFDF'}]-->
+<!--                }-->
+<!--              }]-->
+<!--            ],-->
+<!--            xFixedBar: {-->
+<!--              height: 2,-->
+<!--              width: 2,-->
+<!--            },-->
+<!--          },-->
+<!--        }],-->
+<!--        tabConfig: {-->
+<!--          showMenu: true,-->
+<!--        },-->
+<!--      },-->
+<!--      bottom: {-->
+<!--        show: true,-->
+<!--      },-->
+<!--    },-->
+<!--  });-->
+<!--</script>-->
 </html>

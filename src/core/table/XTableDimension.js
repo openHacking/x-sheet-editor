@@ -651,6 +651,8 @@ class XTableDimension extends Widget {
         selectRange.eri = selectRange.sri + dataArray.length - 1;
         selectRange.eci = selectRange.sci + dataArray[0].length - 1;
 
+        this.snapshot.open();
+
         // 将粘贴过来的数据更新到单元格中
         operateCellsHelper.getCellOrNewCellByViewRange({
           rectRange: selectRange,
@@ -662,6 +664,10 @@ class XTableDimension extends Widget {
         });
         // 设定新的选区
         xSelect.setRange(selectRange);
+
+        this.snapshot.close({
+          type: Constant.TABLE_EVENT_TYPE.DATA_CHANGE,
+        });
         // 刷新表格
         this.xContent.table.render();
       },
