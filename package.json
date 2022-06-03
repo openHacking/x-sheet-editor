@@ -1,5 +1,5 @@
 {
-  "name": "x-sheet",
+  "name": "x-sheet-excel-editor",
   "version": "1.0.2",
   "description": "a javascript web sheet",
   "main": "src/index.js",
@@ -8,10 +8,10 @@
     "dist",
     "src"
   ],
-  "author": "jerry <195658469@qq.com>",
+  "author": "openHacking <openHacking@126.com>",
   "license": "MOZILLA PUBLIC LICENSE",
   "repository": {
-    "type": "gitee",
+    "type": "github",
     "url": "https://gitee.com/eigi/x-sheet"
   },
   "scripts": {
