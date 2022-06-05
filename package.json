@@ -1,6 +1,6 @@
 {
   "name": "x-sheet-excel-editor",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "a javascript web sheet",
   "main": "src/index.js",
   "files": [

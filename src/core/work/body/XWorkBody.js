@@ -382,6 +382,17 @@ class XWorkBody extends Widget {
   }
 
   /**
+   * 从数据添加一个新的 tab sheet
+   * @param tab
+   * @param sheet
+   */
+  addTabSheetByConfig(sheetConfig) {
+    const tab = new XWorkTab(sheetConfig.name);
+    const sheet = new XWorkSheet(tab, sheetConfig);
+    this.addTabSheet(tab, sheet);
+  }
+
+  /**
    * 删除指定索引的sheet
    * @param index
    */
