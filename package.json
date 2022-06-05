@@ -1,6 +1,6 @@
 {
   "name": "x-sheet-excel-editor",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "a javascript web sheet",
   "main": "src/index.js",
   "files": [
@@ -12,7 +12,7 @@
   "license": "MOZILLA PUBLIC LICENSE",
   "repository": {
     "type": "github",
-    "url": "https://gitee.com/eigi/x-sheet"
+    "url": "https://github.com/openHacking/x-sheet-editor"
   },
   "scripts": {
     "dev": "webpack-dev-server --open --config build/webpack.dev.js",
